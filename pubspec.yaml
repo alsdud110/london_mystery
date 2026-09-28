@@ -1,0 +1,45 @@
+name: london_mystery
+description: "London Mystery — an offline detective mission game for kids (8-12)."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  # State management & navigation
+  flutter_riverpod: ^3.4.3
+  go_router: ^18.0.1
+  # Local persistence
+  shared_preferences: ^2.5.5
+  # QR missions (scan) + game-master QR display
+  mobile_scanner: ^7.4.2
+  qr_flutter: ^4.1.0
+  # Sound effects
+  audioplayers: ^6.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/sounds/
+
+  # Bundled locally (SIL Open Font License) so the game works fully offline.
+  fonts:
+    - family: Cinzel
+      fonts:
+        - asset: assets/fonts/Cinzel.ttf
+    - family: Fredoka
+      fonts:
+        - asset: assets/fonts/Fredoka.ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito.ttf
