@@ -39,19 +39,37 @@ class BadgeMedal extends StatelessWidget {
           ),
           if (showLabel) ...[
             const SizedBox(height: 6),
-            SizedBox(
+            _TwoLineText(
+              badge.title,
               width: size + 36,
-              child: Text(
-                badge.title,
-                textAlign: TextAlign.center,
-                style: AppText.button(size: 13, color: earned ? AppColors.navy : AppColors.muted),
-              ),
+              style: AppText.button(size: 13, color: earned ? AppColors.navy : AppColors.muted),
             ),
-            SizedBox(
-              width: size + 36,
-              child: Text(badge.description, textAlign: TextAlign.center, style: AppText.caption()),
-            ),
+            _TwoLineText(badge.description, width: size + 36, style: AppText.caption()),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Text that always takes the height of two lines, so medals line up at the
+/// same size whether a label wraps or not (at any text scale).
+class _TwoLineText extends StatelessWidget {
+  const _TwoLineText(this.text, {required this.width, required this.style});
+
+  final String text;
+  final double width;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Opacity(opacity: 0, child: Text('\n', style: style)), // reserves two lines
+          Text(text, textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: style),
         ],
       ),
     );

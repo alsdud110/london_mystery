@@ -506,4 +506,8 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 - **Parent Gate**: 다이얼로그 닫힘 애니메이션 중 disposed controller 사용 오류를 재현·수정 (controller를 `_ParentGateDialog` State가 소유). UI 변경 없음
 - **보호자 리포트**: Parent Gate 통과 시에만 열리는 1회용 통과권(`parentReportAccessProvider`)과 라우터 가드 추가. 브라우저 이동으로 우회되는 경로를 발견해 redirect에서 회수하도록 함
 - 테스트 28 → 41개 (플레이 시간 Case A~D·스피드 보너스·해결 후 정지·이전 데이터, lifecycle 위젯 테스트, Parent Gate 3개 경로, 보호자 리포트 우회 시나리오). `flutter analyze` 0 issues
+- 이후 UI 버그 수정 (별도 커밋 `fix: unify badge size and fix try-again sheet overflow`):
+  - `BadgeMedal`: 제목과 설명이 항상 2줄 높이를 차지하게 해서 모든 배지 크기를 통일
+  - 오답 "Not quite!" 시트: `isScrollControlled` + 스크롤로 바꿔 작은 화면에서 생기던 25px 오버플로우 해결
+  - `test/layout_test.dart` 추가 (테스트 43개)
 - 변경 파일: `lib/app.dart`, `lib/core/router/app_router.dart`, `lib/data/models/game_progress.dart`, `lib/features/game/game_controller.dart`, `lib/features/game/game_providers.dart`, `lib/features/game_master/parent_gate.dart`, `lib/features/mission_map/mission_map_screen.dart`, `lib/features/result/case_solved_screen.dart`, `test/game_controller_test.dart`, `test/full_playthrough_test.dart`, `test/resume_and_guard_test.dart`, `test/parent_gate_test.dart`(신규)

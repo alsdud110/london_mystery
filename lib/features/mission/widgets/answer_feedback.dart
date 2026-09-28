@@ -374,8 +374,12 @@ enum TryAgainChoice { retry, hint }
 Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hintAvailable}) async {
   final choice = await showModalBottomSheet<TryAgainChoice>(
     context: context,
+    // Let the sheet grow past the default 9/16 of the screen (both buttons
+    // must fit on small phones) and scroll if it still does not fit.
+    isScrollControlled: true,
+    useSafeArea: true,
     builder: (context) => SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
