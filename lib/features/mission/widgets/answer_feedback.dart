@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/theme/app_tokens.dart';
 import '../../../data/models/mission.dart';
-import '../../../widgets/badge_medal.dart';
-import '../../../widgets/evidence_card.dart';
 import '../../../widgets/game_button.dart';
-import '../../../widgets/symbol_icon.dart';
 import '../../game/scoring.dart';
 
 /// Full-screen celebration after a correct answer.
@@ -25,7 +23,8 @@ Future<void> showSuccessOverlay(
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: false,
-    barrierColor: AppColors.navyDeep.withValues(alpha: 0.9),
+    // Opaque once faded in: the page behind must not compete with the moment.
+    barrierColor: AppColors.navyDeep,
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (context, _, _) => _SuccessOverlay(
       detectiveName: detectiveName,
@@ -64,18 +63,19 @@ class _SuccessOverlay extends StatefulWidget {
 }
 
 class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))
     ..forward();
 
   Animation<double> _iv(double begin, double end, [Curve curve = Curves.easeOut]) =>
       CurvedAnimation(parent: _c, curve: Interval(begin, end, curve: curve));
 
-  late final _stamp = _iv(0, 0.18, Curves.easeOutBack);
-  late final _xpRows = [_iv(0.2, 0.32), _iv(0.3, 0.42), _iv(0.4, 0.52)];
-  late final _total = _iv(0.3, 0.62);
-  late final _found = _iv(0.55, 0.72, Curves.easeOutBack);
-  late final _badges = _iv(0.68, 0.85, Curves.elasticOut);
-  late final _button = _iv(0.75, 0.9);
+  // Same beats as before: the stamp slams down, the line appears, the XP
+  // counts up, a new badge (if any) follows, then the button.
+  late final _stamp = _iv(0, 0.2, Curves.easeOutCubic);
+  late final _line = _iv(0.2, 0.4);
+  late final _xp = _iv(0.3, 0.6);
+  late final _badges = _iv(0.55, 0.75);
+  late final _button = _iv(0.7, 0.88);
 
   @override
   void dispose() {
@@ -87,13 +87,7 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
 
   @override
   Widget build(BuildContext context) {
-    final xp = widget.xp;
-    final rows = [
-      ('Mission solved', xp.base, Icons.check_circle_rounded),
-      ('No-hint bonus', xp.noHintBonus, Icons.lightbulb_outline_rounded),
-      ('Speed bonus', xp.speedBonus, Icons.bolt_rounded),
-    ];
-
+    final clue = widget.clue;
     return Material(
       type: MaterialType.transparency,
       child: Stack(
@@ -102,124 +96,62 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(22),
+                padding: const EdgeInsets.all(AppSpace.xl),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 460),
+                  constraints: const BoxConstraints(maxWidth: 420),
                   child: AnimatedBuilder(
                     animation: _c,
                     builder: (context, _) => Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Transform.scale(
-                          scale: 2.2 - 1.2 * _stamp.value,
-                          child: Transform.rotate(
-                            angle: -0.1,
-                            child: Opacity(opacity: _o(_stamp), child: const _SuccessStamp()),
-                          ),
+                          scale: 1.8 - 0.8 * _stamp.value,
+                          child: Opacity(opacity: _o(_stamp), child: const _WellDoneStamp()),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.xxl),
                         Opacity(
-                          opacity: _o(_stamp),
+                          opacity: _o(_line),
                           child: Column(
                             children: [
-                              Text(
-                                'Well done, Detective ${widget.detectiveName}!',
-                                textAlign: TextAlign.center,
-                                style: AppText.title(size: 24, color: AppColors.goldLight),
-                              ),
-                              const SizedBox(height: 4),
                               Text(widget.message,
-                                  textAlign: TextAlign.center, style: AppText.subtitle(color: Colors.white)),
+                                  textAlign: TextAlign.center, style: AppText.subtitle(color: AppColors.paperLight)),
+                              if (clue != null) ...[
+                                const SizedBox(height: AppSpace.sm),
+                                Text('New clue: "${clue.title}"',
+                                    textAlign: TextAlign.center, style: AppText.bodyText(size: 16, color: AppColors.goldLight)),
+                              ],
                             ],
                           ),
                         ),
-                        const SizedBox(height: 18),
-                        // XP breakdown: each row slides in, the total counts up.
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: AppColors.gold.withValues(alpha: 0.5)),
-                          ),
-                          child: Column(
-                            children: [
-                              for (final (i, (label, value, icon)) in rows.indexed)
-                                if (value > 0)
-                                  Opacity(
-                                    opacity: _o(_xpRows[i]),
-                                    child: Transform.translate(
-                                      offset: Offset(24 * (1 - _xpRows[i].value), 0),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 3),
-                                        child: Row(
-                                          children: [
-                                            Icon(icon, color: AppColors.goldLight, size: 20),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(label, style: AppText.bodyText(size: 16, color: Colors.white)),
-                                            ),
-                                            Text('+$value', style: AppText.button(size: 17, color: AppColors.goldLight)),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              const Divider(color: Colors.white24, height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.star_rounded, color: AppColors.gold, size: 30),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    '+${(xp.total * _total.value).round()} XP',
-                                    style: AppText.title(size: 28, color: AppColors.gold),
-                                  ),
-                                ],
-                              ),
-                            ],
+                        const SizedBox(height: AppSpace.lg),
+                        Opacity(
+                          opacity: _o(_xp),
+                          child: Text(
+                            '+${(widget.xp.total * _xp.value).round()} XP',
+                            style: AppText.caption(color: AppColors.goldLight)
+                                .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        if (widget.clue != null || widget.evidence != null)
-                          Opacity(
-                            opacity: _o(_found),
-                            child: Transform.translate(
-                              offset: Offset(0, 30 * (1 - _found.value)),
-                              child: _FoundCard(clue: widget.clue, evidence: widget.evidence),
-                            ),
-                          ),
+                        // Only when a badge was just earned: one small line.
                         if (widget.newBadges.isNotEmpty) ...[
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpace.lg),
                           Opacity(
                             opacity: _o(_badges),
-                            child: Transform.scale(
-                              scale: _badges.value.clamp(0.0, 1.2),
-                              child: Column(
-                                children: [
-                                  Text('NEW BADGE!', style: AppText.eyebrow(color: AppColors.goldLight), textAlign: TextAlign.center),
-                                  const SizedBox(height: 8),
-                                  Wrap(
-                                    alignment: WrapAlignment.center,
-                                    spacing: 12,
-                                    children: [
-                                      for (final b in widget.newBadges)
-                                        _OnDark(child: BadgeMedal(badge: b, size: 58)),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                            child: Text(
+                              'New badge: ${widget.newBadges.map((b) => b.title).join(' · ')}',
+                              textAlign: TextAlign.center,
+                              style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.75)),
                             ),
                           ),
                         ],
-                        const SizedBox(height: 22),
+                        const SizedBox(height: AppSpace.xxl),
                         Opacity(
                           opacity: _o(_button),
                           child: IgnorePointer(
                             ignoring: _button.value < 0.5,
                             child: GameButton(
                               label: widget.buttonLabel,
-                              icon: Icons.arrow_forward_rounded,
+                              arrow: true,
                               style: GameButtonStyle.gold,
                               onPressed: () => Navigator.of(context).pop(),
                             ),
@@ -238,92 +170,26 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
   }
 }
 
-/// Medal labels are navy; give them a light backing on the dark overlay.
-class _OnDark extends StatelessWidget {
-  const _OnDark({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(6, 10, 6, 8),
-        decoration: BoxDecoration(color: AppColors.paper, borderRadius: BorderRadius.circular(18)),
-        child: child,
-      );
-}
-
-class _FoundCard extends StatelessWidget {
-  const _FoundCard({this.clue, this.evidence});
-
-  final Clue? clue;
-  final Evidence? evidence;
+/// The big rubber stamp: "WELL DONE", inked in antique gold.
+class _WellDoneStamp extends StatelessWidget {
+  const _WellDoneStamp();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.paper,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.gold, width: 3),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.auto_awesome_rounded, color: AppColors.goldDeep, size: 20),
-              const SizedBox(width: 6),
-              Flexible(child: Text('ADDED TO YOUR NOTEBOOK', style: AppText.eyebrow(), textAlign: TextAlign.center)),
-            ],
+    return Transform.rotate(
+      angle: -0.08,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.md),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.paper),
+          border: Border.all(color: AppColors.goldLight, width: 4),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
+          decoration: BoxDecoration(
+            border: Border.symmetric(horizontal: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.6), width: 1.5)),
           ),
-          const SizedBox(height: 12),
-          if (clue != null)
-            Row(
-              children: [
-                SymbolBadge(clue!.symbol, size: 56),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('CLUE', style: AppText.eyebrow()),
-                      Text('"${clue!.title}"', style: AppText.title(size: 20)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          if (clue != null && evidence != null) const Divider(height: 22, color: AppColors.parchmentDark),
-          if (evidence != null) EvidenceChip(evidence: evidence!),
-        ],
-      ),
-    );
-  }
-}
-
-class _SuccessStamp extends StatelessWidget {
-  const _SuccessStamp();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold, width: 5),
-        color: AppColors.navy,
-      ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.verified_rounded, color: AppColors.gold, size: 40),
-            const SizedBox(width: 10),
-            Text('SUCCESS!', style: AppText.logo(size: 38, color: AppColors.gold)),
-          ],
+          child: Text('WELL DONE', style: AppText.logo(size: 36, color: AppColors.goldLight)),
         ),
       ),
     );
@@ -343,7 +209,7 @@ class _ConfettiPainter extends CustomPainter {
   _ConfettiPainter(this.animation) : super(repaint: animation);
 
   final Animation<double> animation;
-  static const _colors = [AppColors.gold, AppColors.goldLight, AppColors.royalBlue, Colors.white, AppColors.waxRed];
+  static const _colors = [AppColors.gold, AppColors.goldLight, AppColors.royalBlue, AppColors.paperLight, AppColors.burgundy];
 
   @override
   void paint(Canvas canvas, Size size) {

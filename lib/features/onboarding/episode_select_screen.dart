@@ -5,29 +5,84 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
-import '../../data/models/mission.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../widgets/game_button.dart';
-import '../../widgets/landmark_art.dart';
-import '../../widgets/letter_card.dart';
+import '../../widgets/ink_icon.dart';
+import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 
-class EpisodeSelectScreen extends ConsumerWidget {
+/// One episode row in a case folder. Only the loaded episode is playable;
+/// the others are sealed files ("Coming soon").
+class _EpisodeEntry {
+  const _EpisodeEntry(this.number, {this.title, this.synopsis});
+
+  final int number;
+  final String? title;
+  final String? synopsis;
+
+  bool get playable => title != null;
+}
+
+class _CaseEntry {
+  const _CaseEntry(this.number, {this.title, required this.episodes});
+
+  final int number;
+  final String? title;
+  final List<_EpisodeEntry> episodes;
+}
+
+String _two(int n) => n.toString().padLeft(2, '0');
+
+/// The detective's shelf of case files: Case → Episode. One purpose: choose
+/// what to investigate. Display only — the playable episode is still the one
+/// the app loaded (`currentEpisodeProvider`), so the game flow is unchanged.
+class EpisodeSelectScreen extends ConsumerStatefulWidget {
   const EpisodeSelectScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final episode = ref.watch(currentEpisodeProvider);
-    final progress = ref.watch(gameControllerProvider);
-    final started = progress.introSeen;
+  ConsumerState<EpisodeSelectScreen> createState() => _EpisodeSelectScreenState();
+}
+
+class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
+  /// Index of the open folder (accordion: at most one), or null.
+  int? _openCase;
+  bool _chosen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Every visit starts with the folders closed. A detective already on the
+    // case keeps their episode chosen, so CONTINUE works without reopening it.
+    _chosen = ref.read(gameControllerProvider).introSeen;
+  }
+
+  List<_CaseEntry> _shelf() {
+    final e = ref.read(currentEpisodeProvider);
+    return [
+      _CaseEntry(1, title: e.title.toUpperCase(), episodes: [
+        _EpisodeEntry(e.number, title: e.title, synopsis: e.synopsis.first),
+        _EpisodeEntry(e.number + 1),
+        _EpisodeEntry(e.number + 2),
+      ]),
+      const _CaseEntry(2, episodes: [_EpisodeEntry(1)]),
+    ];
+  }
+
+  void _toggle(int i) => setState(() => _openCase = _openCase == i ? null : i);
+
+  @override
+  Widget build(BuildContext context) {
+    final started = ref.watch(gameControllerProvider).introSeen;
+    final shelf = _shelf();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('CASE FILES'),
         leading: IconButton(
           tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const InkIcon(InkGlyph.back),
           onPressed: () => context.go(Routes.register),
         ),
       ),
@@ -37,28 +92,37 @@ class EpisodeSelectScreen extends ConsumerWidget {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 560),
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+              child: Column(
                 children: [
-                  Text('Detective ${progress.detectiveName},\nchoose your case.',
-                      style: AppText.subtitle(color: AppColors.inkBrown), textAlign: TextAlign.center),
-                  const SizedBox(height: 20),
-                  _CaseFile(
-                    episodeLabel: 'EPISODE ${episode.numberLabel}',
-                    title: episode.title.toUpperCase(),
-                    synopsis: episode.synopsis,
-                    objectives: episode.objectives,
-                    missionCount: episode.missions.length,
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.xl),
+                      children: [
+                        for (final (i, c) in shelf.indexed) ...[
+                          _CaseFolderTile(
+                            entry: c,
+                            open: _openCase == i,
+                            chosen: _chosen,
+                            onToggle: () => _toggle(i),
+                            onChoose: () => setState(() => _chosen = true),
+                          ),
+                          const SizedBox(height: AppSpace.xl),
+                        ],
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  GameButton(
-                    label: started ? 'CONTINUE INVESTIGATION' : 'BEGIN INVESTIGATION',
-                    icon: Icons.search_rounded,
-                    style: GameButtonStyle.gold,
-                    onPressed: () => context.go(started ? Routes.map : Routes.intro),
+                  // The one action, always at the bottom of the page.
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.md, AppSpace.screen, AppSpace.lg),
+                    decoration: BoxDecoration(
+                      border: Border(top: BorderSide(color: AppLine.faint(), width: AppLine.hairline)),
+                    ),
+                    child: GameButton(
+                      label: started ? 'CONTINUE INVESTIGATION' : 'BEGIN INVESTIGATION',
+                      arrow: true,
+                      onPressed: _chosen ? () => context.go(started ? Routes.map : Routes.intro) : null,
+                    ),
                   ),
-                  const SizedBox(height: 20),
-                  const _LockedEpisode(),
                 ],
               ),
             ),
@@ -69,115 +133,73 @@ class EpisodeSelectScreen extends ConsumerWidget {
   }
 }
 
-class _CaseFile extends StatelessWidget {
-  const _CaseFile({
-    required this.episodeLabel,
-    required this.title,
-    required this.synopsis,
-    required this.objectives,
-    required this.missionCount,
+class _CaseFolderTile extends StatelessWidget {
+  const _CaseFolderTile({
+    required this.entry,
+    required this.open,
+    required this.chosen,
+    required this.onToggle,
+    required this.onChoose,
   });
 
-  final String episodeLabel;
-  final String title;
-  final List<String> synopsis;
-  final List<String> objectives;
-  final int missionCount;
+  final _CaseEntry entry;
+  final bool open;
+  final bool chosen;
+  final VoidCallback onToggle;
+  final VoidCallback onChoose;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.parchment,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.parchmentDark, width: 2),
-        boxShadow: const [BoxShadow(color: Color(0x26000000), blurRadius: 18, offset: Offset(0, 8))],
-      ),
-      clipBehavior: Clip.antiAlias,
+    final sealed = entry.title == null;
+    return CaseFolder(
+      tab: 'CASE ${_two(entry.number)}',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            height: 170,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                const LandmarkArt(Artwork.royalBox, borderRadius: 0),
-                Positioned(
-                  left: 16,
-                  top: 16,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(color: AppColors.navy, borderRadius: BorderRadius.circular(10)),
-                    child: Text(episodeLabel, style: AppText.eyebrow(color: AppColors.goldLight)),
-                  ),
-                ),
-                Positioned(
-                  right: 16,
-                  bottom: 12,
-                  child: Transform.rotate(
-                    angle: -0.18,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.waxRed, width: 2.5),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text('TOP SECRET', style: AppText.eyebrow(color: AppColors.waxRed)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppText.logo(size: 26)),
-                const SizedBox(height: 14),
-                for (final line in synopsis)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
-                    child: Text(line, style: AppText.bodyText(size: 17)),
-                  ),
-                const SizedBox(height: 12),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.7),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    children: [
-                      const WaxSeal(size: 46),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('YOUR MISSION', style: AppText.eyebrow()),
-                            for (final o in objectives) Text(o, style: AppText.subtitle(color: AppColors.navy)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
+          Semantics(
+            button: true,
+            expanded: open,
+            label: 'Case ${entry.number}${sealed ? ', sealed' : ', ${entry.title}'}',
+            excludeSemantics: true,
+            child: InkWell(
+              onTap: onToggle,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.md, AppSpace.lg),
+                child: Row(
                   children: [
-                    const Icon(Icons.place_rounded, color: AppColors.royalBlue, size: 20),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text('$missionCount missions + final case', style: AppText.caption(color: AppColors.royalBlue)),
+                    Expanded(
+                      child: sealed
+                          ? Text('A sealed case', style: AppText.aside())
+                          : Text(entry.title!, style: AppText.title(size: 20)),
+                    ),
+                    if (sealed) ...[
+                      const InkStamp('SEALED', color: AppColors.locked, size: 11),
+                      const SizedBox(width: AppSpace.md),
+                    ],
+                    AnimatedRotation(
+                      turns: open ? 0.25 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeOutCubic,
+                      child: const InkIcon(InkGlyph.arrow, size: 20, color: AppColors.inkBrown),
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            alignment: Alignment.topCenter,
+            child: !open
+                ? const SizedBox(width: double.infinity)
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final ep in entry.episodes) _EpisodeRow(entry: ep, chosen: chosen && ep.playable, onChoose: onChoose),
+                      const SizedBox(height: AppSpace.sm),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -185,32 +207,68 @@ class _CaseFile extends StatelessWidget {
   }
 }
 
-class _LockedEpisode extends StatelessWidget {
-  const _LockedEpisode();
+/// An episode inside a case: one level down (indented, smaller, ruled).
+class _EpisodeRow extends StatelessWidget {
+  const _EpisodeRow({required this.entry, required this.chosen, required this.onChoose});
+
+  final _EpisodeEntry entry;
+  final bool chosen;
+  final VoidCallback onChoose;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
+    final label = 'EPISODE ${_two(entry.number)}';
+    final row = Container(
+      margin: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.md, AppSpace.sm, AppSpace.md),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.parchmentDark, width: 2),
+        border: Border(
+          top: BorderSide(color: AppLine.faint(), width: AppLine.hairline),
+          left: BorderSide(color: chosen ? AppColors.navy : Colors.transparent, width: 3),
+        ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.lock_rounded, color: AppColors.locked, size: 30),
-          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('EPISODE 02', style: AppText.eyebrow(color: AppColors.locked)),
-                Text('Coming soon...', style: AppText.subtitle(color: AppColors.muted)),
+                Text(label, style: AppText.caption(color: entry.playable ? AppColors.inkBrown : AppColors.locked)),
+                const SizedBox(height: 2),
+                Text(
+                  entry.title ?? 'Coming soon',
+                  style: entry.playable ? AppText.subtitle(color: AppColors.navy) : AppText.aside(color: AppColors.locked),
+                ),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 200),
+                  alignment: Alignment.topLeft,
+                  child: chosen && entry.synopsis != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: AppSpace.xs),
+                          child: Text(entry.synopsis!, style: AppText.caption()),
+                        )
+                      : const SizedBox(width: double.infinity),
+                ),
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpace.sm),
+            child: entry.playable
+                ? (chosen ? const InkIcon(InkGlyph.check, size: 22, color: AppColors.navy) : const SizedBox(width: 22))
+                : const InkIcon(InkGlyph.lock, size: 18, color: AppColors.locked),
+          ),
         ],
       ),
+    );
+    if (!entry.playable) return Semantics(label: '$label, coming soon', excludeSemantics: true, child: row);
+    return Semantics(
+      button: true,
+      selected: chosen,
+      label: '$label, ${entry.title}',
+      excludeSemantics: true,
+      child: InkWell(onTap: onChoose, child: row),
     );
   }
 }

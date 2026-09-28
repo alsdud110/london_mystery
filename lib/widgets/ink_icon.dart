@@ -1,0 +1,174 @@
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+
+import '../core/theme/app_colors.dart';
+
+/// The game's one icon language: simple monochrome ink line drawings
+/// (even stroke, round ends, flat). Use these instead of emoji or mixed
+/// icon packs.
+enum InkGlyph {
+  back,
+  arrow,
+  close,
+  menu,
+  notebook,
+  letter,
+  hint,
+  lock,
+  check,
+  search,
+  backspace,
+  clear,
+  qr,
+  speaker,
+  speakerOff,
+  home,
+  folder,
+  pen,
+  pin,
+  down,
+}
+
+class InkIcon extends StatelessWidget {
+  const InkIcon(this.glyph, {super.key, this.size = 24, this.color, this.semanticLabel});
+
+  final InkGlyph glyph;
+  final double size;
+  final Color? color;
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = color ?? IconTheme.of(context).color ?? AppColors.ink;
+    final icon = CustomPaint(size: Size.square(size), painter: _InkGlyphPainter(glyph, c));
+    return semanticLabel == null ? ExcludeSemantics(child: icon) : Semantics(label: semanticLabel, child: icon);
+  }
+}
+
+/// Glyphs are drawn on a 24 × 24 grid.
+class _InkGlyphPainter extends CustomPainter {
+  _InkGlyphPainter(this.glyph, this.color);
+
+  final InkGlyph glyph;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 24, size.height / 24);
+    final p = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.9
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    void line(double x1, double y1, double x2, double y2) => canvas.drawLine(Offset(x1, y1), Offset(x2, y2), p);
+    void poly(List<Offset> pts, {bool close = false}) => canvas.drawPath(Path()..addPolygon(pts, close), p);
+    void rect(double l, double t, double r, double b, [double radius = 1.5]) =>
+        canvas.drawRRect(RRect.fromLTRBR(l, t, r, b, Radius.circular(radius)), p);
+
+    switch (glyph) {
+      case InkGlyph.back:
+        line(19, 12, 5, 12);
+        poly(const [Offset(11, 6), Offset(5, 12), Offset(11, 18)]);
+      case InkGlyph.arrow:
+        line(5, 12, 19, 12);
+        poly(const [Offset(13, 6), Offset(19, 12), Offset(13, 18)]);
+      case InkGlyph.close:
+        line(6, 6, 18, 18);
+        line(18, 6, 6, 18);
+      case InkGlyph.menu:
+        for (final y in [7.0, 12.0, 17.0]) {
+          line(4, y, 20, y);
+        }
+      case InkGlyph.notebook:
+        rect(6, 3, 19.5, 21);
+        line(9.5, 3, 9.5, 21);
+        line(12.5, 8, 16.5, 8);
+        line(12.5, 12, 16.5, 12);
+        for (final y in [7.0, 12.0, 17.0]) {
+          line(4, y, 6, y);
+        }
+      case InkGlyph.letter:
+        rect(3, 6, 21, 18);
+        poly(const [Offset(3.5, 7), Offset(12, 13.5), Offset(20.5, 7)]);
+      case InkGlyph.hint:
+        canvas.drawArc(Rect.fromCircle(center: const Offset(12, 10), radius: 6), math.pi * 0.75, math.pi * 1.5, false, p);
+        line(7.8, 14.2, 9.5, 17);
+        line(16.2, 14.2, 14.5, 17);
+        line(9.5, 17, 14.5, 17);
+        line(10.2, 20, 13.8, 20);
+      case InkGlyph.lock:
+        rect(5, 11, 19, 21, 2);
+        canvas.drawPath(
+          Path()
+            ..moveTo(8, 11)
+            ..lineTo(8, 8)
+            ..arcToPoint(const Offset(16, 8), radius: const Radius.circular(4))
+            ..lineTo(16, 11),
+          p,
+        );
+        line(12, 15, 12, 17.5);
+      case InkGlyph.check:
+        poly(const [Offset(5, 12.5), Offset(10, 17), Offset(19, 7)]);
+      case InkGlyph.search:
+        canvas.drawCircle(const Offset(10.5, 10.5), 6, p);
+        line(15, 15, 20, 20);
+      case InkGlyph.backspace:
+        poly(const [Offset(8, 5), Offset(20, 5), Offset(20, 19), Offset(8, 19), Offset(3, 12)], close: true);
+        line(11.5, 9.5, 16.5, 14.5);
+        line(16.5, 9.5, 11.5, 14.5);
+      case InkGlyph.clear:
+        canvas.drawCircle(const Offset(12, 12), 8, p);
+        line(9, 9, 15, 15);
+        line(15, 9, 9, 15);
+      case InkGlyph.qr:
+        rect(4, 4, 10, 10, 1);
+        rect(14, 4, 20, 10, 1);
+        rect(4, 14, 10, 20, 1);
+        line(14, 14, 14, 16);
+        line(17, 14, 20, 14);
+        line(17, 17, 17, 20);
+        line(20, 17, 20, 20);
+      case InkGlyph.speaker:
+      case InkGlyph.speakerOff:
+        poly(const [Offset(4, 9), Offset(8, 9), Offset(13, 5), Offset(13, 19), Offset(8, 15), Offset(4, 15)], close: true);
+        if (glyph == InkGlyph.speaker) {
+          canvas.drawArc(Rect.fromCircle(center: const Offset(13, 12), radius: 4), -math.pi / 4, math.pi / 2, false, p);
+          canvas.drawArc(Rect.fromCircle(center: const Offset(13, 12), radius: 7.5), -math.pi / 4, math.pi / 2, false, p);
+        } else {
+          line(16, 9, 21, 15);
+          line(21, 9, 16, 15);
+        }
+      case InkGlyph.home:
+        poly(const [Offset(3.5, 11.5), Offset(12, 4), Offset(20.5, 11.5)]);
+        poly(const [Offset(6, 10), Offset(6, 20), Offset(18, 20), Offset(18, 10)]);
+        poly(const [Offset(10, 20), Offset(10, 15), Offset(14, 15), Offset(14, 20)]);
+      case InkGlyph.folder:
+        poly(
+          const [Offset(3, 6), Offset(9.5, 6), Offset(11.5, 8.5), Offset(21, 8.5), Offset(21, 19), Offset(3, 19)],
+          close: true,
+        );
+      case InkGlyph.pen:
+        poly(const [Offset(4, 20), Offset(5, 16), Offset(16, 5), Offset(19, 8), Offset(8, 19)], close: true);
+        line(14, 7, 17, 10);
+      case InkGlyph.pin:
+        canvas.drawPath(
+          Path()
+            ..moveTo(12, 21.5)
+            ..lineTo(6.8, 12.5)
+            ..arcToPoint(const Offset(17.2, 12.5), radius: const Radius.circular(6), largeArc: true)
+            ..close(),
+          p,
+        );
+        canvas.drawCircle(const Offset(12, 9.5), 2.2, p);
+      case InkGlyph.down:
+        line(12, 4, 12, 19);
+        poly(const [Offset(7, 14), Offset(12, 19), Offset(17, 14)]);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_InkGlyphPainter old) => old.glyph != glyph || old.color != color;
+}

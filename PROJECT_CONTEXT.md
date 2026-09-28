@@ -60,7 +60,7 @@ STORY → EXPLORATION → PUZZLE → DISCOVERY → REWARD
 - [x] **Player Registration (Detective ID)** — `register_screen.dart`. 이름 1~12자, 영문/숫자/한글/공백/`.`/`-`만 허용, 대문자 변환. 클라이언트 입력 필터 + `GameController.validateName` 이중 검증
 - [x] **Episode Selection (Case Files)** — `episode_select_screen.dart`. EP01 케이스 파일 카드 + "EPISODE 02 Coming soon..." 잠금 카드(하드코딩)
 - [x] **Story Intro** — `story_intro_screen.dart`. 타자기 효과, 탭으로 줄 넘김, SKIP, "Are you ready?" → `startInvestigation()`(사건 타이머 시작)
-- [x] **Mission Map** — `features/mission_map/`. CustomPainter 런던 지도, 경로 점선/실선, 핀 3상태(completed/current/locked), 헤더(에피소드·탐정 이름·XP·경과시간·진행바), 게임 메뉴(사운드 토글/노트북/결과/타이틀)
+- [x] **Mission Map** — `features/mission_map/`. CustomPainter로 그린 옛 런던 지도, 수사 경로(실선/점선), 핀 3상태(completed/current/locked), 헤더는 사건 제목 + 메뉴만. 게임 메뉴(탐정 이름·XP·플레이 시간 / 사운드 토글 / 노트북 / 결과 / 타이틀). Phase 3에서 리디자인됨
 - [x] **Mission (3단계)** — `features/mission/mission_screen.dart`. story(장면+봉인 편지) → letter(편지 읽기) → puzzle. 상단 단계 점 표시, 재진입 시 퍼즐 단계로 바로 이동, 퍼즐 중 편지 다시 읽기
 - [x] **Question 타입 5종 + Final** — `mission/widgets/question_widgets.dart`, `qr_question.dart`
   - Multiple Choice (m01), Word Input (m02), Number Code 키패드 (m03), Image Choice (m04, 이름 숨김), QR Scan (m05, 수동 입력 폴백)
@@ -403,6 +403,71 @@ node tool/gen_sounds.js  # 효과음 재생성
 
 ---
 
+## Phase 3 — Visual & UX Redesign (진행 중 — Step 3 완료, 사용자 확인 대기)
+
+Goal: Reduce UI density and establish a consistent London Mystery visual identity.
+
+Visual Direction: **Vintage London Detective Storybook**
+
+Principles:
+- One Screen = One Primary Purpose
+- Progressive Disclosure
+- Story-first UI
+- Minimal UI
+- Consistent iconography
+- Consistent illustration style
+- Preserve existing game systems
+
+Status:
+- [x] Step 1 — 전체 UI Audit (2026-09-28)
+- [x] Step 0/2 — Design System 정의 및 구현 (2026-09-28, 승인됨)
+- [x] Step 3 — Start / Mission Map / Mission 리디자인 (2026-09-28)
+- [x] Step 3.1 — 실기기 피드백 반영 (2026-09-28): Case Files, 지도 YOU'RE HERE, GO TO 버튼 고정 크기, 편지 UI와 오픈 애니메이션, Well Done 정리
+- [x] Step 3.2 — 2차 실기기 피드백 반영 (2026-09-28): Case Files 기본 접힘, YOU'RE HERE 표시를 지도에 맞게 정리, 봉투 디자인과 오픈 애니메이션 재설계
+- [ ] Step 5 — 나머지 화면 적용 (**사용자 확인 후 진행. 임의로 진행하지 말 것**): 오답 시트, Story Scene, Notebook, Evidence, Final Case, Case Solved, Register, Story Intro, 다이얼로그, Parent Report
+
+Step 3.2 변경 (UI만. 로직·모델·라우팅·저장은 그대로. 아래 3.1의 설명 중 해당 항목을 대체):
+- **Case Files**: 항상 모든 폴더가 접힌 상태로 시작(자동 펼침 없음). 이미 시작한 탐정은 에피소드가 선택된 상태로 간주해 CONTINUE가 바로 활성
+- **지도 현재 위치**: 네이비 원·펜 원·테두리 이름표·종이 박스 제거. 남은 것: 작은 "YOU'RE HERE"(Cinzel 9.5) + 작은 잉크 화살표 + 잉크 위치 핀(`_InkPinPainter`, 핀 끝 = 지도상의 위치 = 점선 경로의 끝) + 지도에 직접 쓴 장소명. 글자는 얇은 종이색 외곽선(`_MapLettering`, 인쇄 지도식 표기, glow 아님)으로 경로선 위에서도 읽힘. 외곽선 레이어는 semantics·text finder에서 제외
+- **봉투** (`letter_card.dart`): 빅토리아풍 봉투 뒷면. 레이어별 painter로 분리(`_PocketPainter` 몸통 / `_FlapPainter` 덮개 / `_WaxBlobPainter` 봉랍) → PNG/SVG로 교체 쉬움. 살짝 불규칙한 가장자리와 모서리, -1.4° 기울기, 오래된 manila 색 + 미세한 반점 + 모서리 foxing, 약한 종이 그림자, 곡선 끝의 덮개, 불규칙한 봉랍, 흐린 손도장 우체국 소인("LONDON")
+- **오픈 애니메이션** (`EnvelopeReveal`, 850ms): ① 봉랍이 가운데로 갈라져 벌어지며 사라짐 → ② 덮개가 뒤로 젖혀짐 → ③ 세 번 접힌 편지가 봉투 안에서 위로 나옴(봉투 몸통 뒤에서) → ④ 봉투가 아래로 빠지며 사라지고 편지는 중앙으로 오며 접힌 1/3에서 전체로 펼쳐짐(0.82→1 소폭 스케일, 기울기 -1.4°→-0.6°) → ⑤ 글씨가 마지막에 짧게 fade-in. 마지막 프레임과 완성된 `LetterCard`가 같은 위치라 전환이 튀지 않음. 이미 연 편지는 애니메이션 없이 바로 표시
+- `LetterCard(textOpacity:)` 추가(애니메이션용)
+
+Step 3.1 변경 (UI만. 로직·모델·라우팅·저장은 그대로):
+- **Case Files** (`episode_select_screen.dart`): 사건 폴더(`CaseFolder`: 탭 + 마닐라 종이) 목록만 먼저 보이고, 폴더를 누르면 에피소드가 아래로 펼쳐지는 아코디언(한 번에 하나, 220ms). 에피소드는 한 단계 낮은 계층(들여쓰기·얇은 구분선). 선택하면 왼쪽 네이비 선 + 체크 + 시놉시스 한 줄. `BEGIN/CONTINUE INVESTIGATION`은 화면 하단 고정이고, 에피소드를 고르기 전에는 비활성. Case/Episode 목록은 화면 안의 표시용 목록(Case 01 = EP01 + 봉인된 EP02·03, Case 02 봉인)이며, 플레이 가능한 에피소드는 여전히 `currentEpisodeProvider` 하나. 이미 시작한 탐정은 폴더가 열리고 선택된 상태로 시작
+- **지도**: 현재 장소 위에 "YOU'RE HERE" + 잉크 화살표(Cinzel 10, burgundy, 종이 배경이라 경로선이 뒤로 지나감, 2px 느린 이동만). 현재 마커 아이콘은 잉크 위치 핀(`InkGlyph.pin`). 핀 앵커는 `MapPin.anchorY`
+- **GO TO 버튼**: `GameButton(singleLine: true)` = 높이 56 고정, 한 줄, 화살표 위치 고정, 긴 이름은 줄바꿈 대신 약간 축소(FittedBox). 가로는 하단 행의 Expanded로 고정. 360dp에서도 오버플로우 없음 확인
+- **편지** (`letter_card.dart`): `LetterCard`를 CustomPaint로 다시 그림 — 살짝 불규칙한 종이 가장자리, 세 번 접힌 자국, 아주 옅은 얼룩, 부드러운 종이 그림자, 하단 모서리 밀랍 봉인. 오픈 애니메이션(`EnvelopeReveal`)은 850ms 한 흐름으로 새로 설계: 봉인이 들리고 flap이 열림 → 종이가 올라옴 → 봉투가 사라지며 편지가 위에서 아래로 펼쳐지고 자리잡음. bounce·큰 확대·회전·glow 없음. 이미 연 편지는 애니메이션 없이 바로 표시
+- **Well Done** (`answer_feedback.dart`): 애니메이션 순서(도장 → 한 줄 → XP 카운트 → 배지 → 버튼)는 유지하고 요소를 줄임. 큰 "WELL DONE" 도장, 미션 결과 한 줄, `New clue: "…"` 한 줄, 작은 `+XP`, 새로 얻은 배지가 있을 때만 텍스트 한 줄, `CONTINUE →`. 제거: XP 세부 내역, "ADDED TO YOUR NOTEBOOK" 카드, 증거 카드, 중복 인사말, 다색 메달. 배경은 불투명 네이비. 컨페티는 유지하되 팔레트 색으로만. XP·배지·단서·증거 저장은 그대로
+
+Design System (구현됨):
+- 색 `lib/core/theme/app_colors.dart`: ink `#2A2622`, navy `#1E2A44`(Primary), paper `#F4ECDA`, paperLight `#FAF5EA`, muted royal blue `#3E5A8C`, antique gold `#A8844A`, burgundy `#7A2E2E`. 상태 색은 도장·작은 글씨·선·아이콘에만 사용: muted green `#5E7A55`, muted burgundy `#94453D`, muted gray `#A39C8C`. 기존 색 이름은 호환을 위해 유지하고 값만 교체
+- 폰트 `app_text.dart`: Cinzel = 짧은 대문자 라벨·도장·로고만 / Libre Baskerville(`assets/fonts`, OFL) = 제목·장소명 / Nunito = 본문·버튼. Fredoka는 더 이상 사용하지 않음(pubspec 등록만 남음)
+- 토큰 `app_tokens.dart`: `AppSpace`(4pt 스케일, 화면 여백 24), `AppRadius`(paper 4 / button 12 / sheet 20), `AppShadow.paperLift`(유일한 그림자), `AppLine`
+- 공통 컴포넌트: `GameButton`(평평함, navy=종이 위 Primary, gold=밤 화면 Primary, outline=보조, `arrow:`로 →, 비활성은 흐린 연필 윤곽) · `InkTextButton` · `InkIcon`/`InkGlyph`(CustomPainter 잉크 선 아이콘 18종) · `PaperSheet` · `InkStamp` · `DetectiveTipNotes` · `LondonSkyline` · `PaperBackground`(단색 종이 + 섬유 결)
+- 삽화 `LandmarkArt`: 하늘 gradient·구름·glow 제거 → 종이 바탕 + 잉크 선(손그림 느낌의 두 번째 선) + 제한된 워시 색. 큰 그림에서도 선이 두꺼워지지 않게 선 굵기 보정. `Artwork` 키 구조는 유지(향후 PNG/SVG로 교체 가능)
+
+리디자인한 화면 요약:
+- Start: 떠다니는 엠블럼·배지·에피소드 표기 제거 → 잉크 도장 + 로고 + 한 줄 + CTA 1개 + 잉크 스카이라인. 도장 길게 누르기 = Game Master (기존과 동일)
+- Mission Map: 헤더의 에피소드 라벨·타이머·탐정 이름·XP·진행바·n/5 제거 → 사건 제목 + 메뉴만. **탐정 이름·XP·플레이 시간은 메뉴 시트로 이동.** 핀: 현재 장소만 이름표, 해결한 곳은 체크 도장, 잠긴 곳은 "?". 경로는 해결한 곳까지 실선, 현재 장소까지 점선, 그 뒤는 숨김. pulse·glow·sparkle 제거, 해금 연출은 "UNLOCKED" 도장. CTA 문구 `GO TO {장소} →`
+- Mission: appbar 제목·단계 점 제거. story(장소·장면·짧은 이야기·INVESTIGATE) → letter(봉투 → 열면 SOLVE THE PUZZLE) → puzzle(질문·답·조용한 Letter / Need a tip? 링크). 팁은 종이 쪽지로 표시하고, XP 비용 문구는 제거
+
+Phase 3 남은 이슈:
+- [ ] 리디자인하지 않은 화면은 색·폰트 톤만 바뀐 상태라, 새 화면과 기존 카드 스타일이 섞여 있음 (Step 5에서 해결)
+- [ ] 오답 시트에 이모지(💡) 남아 있음. 최종 미션 `TipsPanel`, `GameSymbol` 다색 아이콘, `BadgeMedal` gradient(노트북 배지 탭)도 남아 있음 (Step 5 대상)
+- [ ] Case Files의 Case 02, EP02·03은 표시용 자리(봉인). 실제 에피소드를 추가할 때 `EpisodeRepository.availableEpisodeIds()`와 연결해야 함
+- [ ] 지도의 실시간 타이머를 제거함. 플레이 시간은 메뉴를 열었을 때 그 시점 값으로 표시 (측정·저장 동작은 그대로)
+- [ ] Fredoka 폰트 등록 정리 (전체 리디자인 완료 후)
+- [ ] 실기기에서 폰트 렌더링과 작은 화면(360dp) 확인 필요
+
+Audit 요약 (현재 UI가 "AI가 만든 교육용 앱"처럼 보이는 원인):
+- 장식 과다: gradient·glow·bounce·이모지가 20개 파일에서 45곳 사용됨 (paper 배경, 편지, 밀랍 봉인, 메달, 증거 아이콘, 하늘, 지도)
+- 색이 너무 많음: 심볼·배지에 보라/청록/초록/빨강이 섞여 있고, gold `#E2A93B`, royalBlue `#3257C8`의 채도가 높음
+- 폰트: 둥근 Fredoka(제목·버튼)가 교육용 앱 인상을 줌
+- 아이콘: Material filled rounded 아이콘, 이모지(💡🎉), 컬러 원형 배지가 섞여 있음
+- 카드: 흰 배경 + 22~28px 라운드 + 그림자가 모든 화면에서 반복됨
+- 정보 과다: 지도 헤더(에피소드·제목·타이머·메뉴·이름·XP·진행바·n/5), 성공 오버레이(약 12개 요소가 동시에 표시), Case Closed(약 18개 요소)
+
 ## Next Development Goal
 
 **아직 사용자가 확정하지 않았다. 아래는 모두 `Proposed` 이며, 승인 전에는 개발하지 않는다.**
@@ -499,6 +564,27 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 - Phase 2 game experience features implemented (이전 세션)
 - 새 세션에서 인수인계 분석 수행: 소스 전수 확인, `flutter analyze` 0 issues, `flutter test` 28/28 통과
 - PROJECT_CONTEXT.md created (코드 수정 없음)
+
+### 2026-09-28 — Phase 3 Step 3.2 (2차 실기기 피드백)
+
+- Case Files 기본 접힘. 지도 현재 위치 표시를 작은 잉크 요소로 정리(카드·배지 형태 제거). 봉투를 오래된 사건 편지 소품처럼 다시 그리고, 오픈 애니메이션을 봉랍 → 덮개 → 꺼내기 → 펼치기 → 글씨 순서의 물리적 동작으로 재설계
+- `flutter analyze` 0 issues, 테스트 43개 통과 (테스트 수정 없음)
+
+### 2026-09-28 — Phase 3 Step 3.1 (실기기 피드백)
+
+- Case Files를 Case → Episode 아코디언으로 변경하고 CTA를 하단에 고정. 지도에 YOU'RE HERE 추가, GO TO 버튼 고정 크기, 편지 종이와 오픈 애니메이션 재설계, Well Done 정보량 축소
+- 새 공통 요소: `CaseFolder`, `InkGlyph.pin` / `InkGlyph.down`, `GameButton.singleLine`
+- 테스트 문구만 갱신 (Case Files 선택 단계, `WELL DONE`, `New clue`, `New badge:`, `YOU'RE HERE`). 게임 로직 검증은 그대로
+- `flutter analyze` 0 issues, 테스트 43개 통과
+
+### 2026-09-28 — Phase 3 Step 0 + 핵심 3개 화면
+
+- Visual Direction "Vintage London Detective Storybook" 승인 후 구현
+- Design System(색·폰트·토큰·공통 컴포넌트·AppTheme) 적용, Libre Baskerville 폰트 추가(OFL)
+- Start / Mission Map / Mission(문제 5종 포함) 리디자인. 게임 로직·데이터 모델·라우팅·저장은 변경 없음
+- 버튼 문구 변경에 맞춰 위젯 테스트의 문구만 수정 (`PLAY MISSION 0X` → `GO TO {장소}`, `NOTES` → notebook tooltip, 진행 표시 `n / 5` → CTA 문구, `UNLOCKED!` → `UNLOCKED`, `NEED A TIP?` → `Need a tip?`). 게임 로직 검증은 그대로 유지
+- 리디자인 중 발견해 수정: "TAP TO OPEN" 라벨이 탭 영역 밖에 있던 문제, 긴 링크 문구 오버플로우
+- `flutter analyze` 0 issues, 테스트 43개 통과
 
 ### 2026-09-28 — Phase 2 안정화
 

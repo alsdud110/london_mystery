@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 
-/// Warm "old paper" backdrop used across the game. [night] switches to the
-/// friendly navy night-sky used for the story intro and big reveals.
+/// Flat aged-paper backdrop used across the game (no gradients: just the
+/// paper colour and a faint fibre grain). [night] switches to the navy
+/// night sky used for the story intro and big reveals.
 class PaperBackground extends StatelessWidget {
   const PaperBackground({super.key, required this.child, this.night = false});
 
@@ -14,22 +15,8 @@ class PaperBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: night
-            ? const RadialGradient(
-                center: Alignment(0, -0.4),
-                radius: 1.3,
-                colors: [Color(0xFF2A3E6B), AppColors.navy, AppColors.navyDeep],
-                stops: [0, 0.55, 1],
-              )
-            : const RadialGradient(
-                center: Alignment(0, -0.3),
-                radius: 1.25,
-                colors: [Color(0xFFFFFBF1), AppColors.paper, Color(0xFFF0E4C8)],
-                stops: [0, 0.6, 1],
-              ),
-      ),
+    return ColoredBox(
+      color: night ? AppColors.navy : AppColors.paper,
       child: CustomPaint(
         painter: night ? const _StarsPainter() : const _PaperGrainPainter(),
         child: child,
@@ -44,14 +31,16 @@ class _PaperGrainPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rnd = math.Random(7);
-    final speck = Paint()..color = AppColors.inkBrown.withValues(alpha: 0.05);
-    final count = (size.width * size.height / 2600).clamp(60, 600).toInt();
+    final fibre = Paint()
+      ..color = AppColors.inkBrown.withValues(alpha: 0.05)
+      ..strokeWidth = 0.8
+      ..strokeCap = StrokeCap.round;
+    final count = (size.width * size.height / 3200).clamp(40, 400).toInt();
     for (var i = 0; i < count; i++) {
-      canvas.drawCircle(
-        Offset(rnd.nextDouble() * size.width, rnd.nextDouble() * size.height),
-        rnd.nextDouble() * 1.3 + 0.3,
-        speck,
-      );
+      final at = Offset(rnd.nextDouble() * size.width, rnd.nextDouble() * size.height);
+      final a = rnd.nextDouble() * math.pi;
+      final len = 1.5 + rnd.nextDouble() * 4;
+      canvas.drawLine(at, at + Offset(math.cos(a), math.sin(a)) * len, fibre);
     }
   }
 
@@ -65,19 +54,22 @@ class _StarsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rnd = math.Random(11);
-    for (var i = 0; i < 70; i++) {
-      final paint = Paint()..color = Colors.white.withValues(alpha: 0.15 + rnd.nextDouble() * 0.5);
+    for (var i = 0; i < 40; i++) {
+      final paint = Paint()..color = AppColors.paperLight.withValues(alpha: 0.12 + rnd.nextDouble() * 0.3);
       canvas.drawCircle(
-        Offset(rnd.nextDouble() * size.width, rnd.nextDouble() * size.height * 0.75),
-        rnd.nextDouble() * 1.4 + 0.3,
+        Offset(rnd.nextDouble() * size.width, rnd.nextDouble() * size.height * 0.7),
+        rnd.nextDouble() * 1.1 + 0.3,
         paint,
       );
     }
-    // Moon.
-    final moon = Offset(size.width * 0.82, size.height * 0.12);
-    canvas.drawCircle(moon, 34, Paint()..color = AppColors.goldLight.withValues(alpha: 0.12));
-    canvas.drawCircle(moon, 20, Paint()..color = AppColors.goldLight.withValues(alpha: 0.45));
-    canvas.drawCircle(moon + const Offset(8, -5), 17, Paint()..color = AppColors.navy.withValues(alpha: 0.95));
+    // A thin crescent moon, drawn as ink on the night paper.
+    final moon = Offset(size.width * 0.82, size.height * 0.1);
+    final crescent = Path.combine(
+      PathOperation.difference,
+      Path()..addOval(Rect.fromCircle(center: moon, radius: 16)),
+      Path()..addOval(Rect.fromCircle(center: moon + const Offset(6, -4), radius: 14)),
+    );
+    canvas.drawPath(crescent, Paint()..color = AppColors.goldLight.withValues(alpha: 0.55));
   }
 
   @override

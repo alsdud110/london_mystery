@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../data/models/mission.dart';
 
-/// Flat, storybook-style illustrations of London landmarks, drawn in code so
-/// the app ships small and works offline.
+/// Vintage storybook illustrations of London landmarks: ink outlines with a
+/// slightly hand-drawn double line, a few muted washes, paper instead of sky.
+/// Drawn in code so the app ships small and works offline. Each scene is
+/// addressed by an [Artwork] key, so it can later be swapped for a real
+/// PNG/SVG illustration without touching the screens.
 class LandmarkArt extends StatelessWidget {
   const LandmarkArt(this.artwork, {super.key, this.borderRadius = 24, this.showSky = true});
 
@@ -32,62 +35,76 @@ class _LandmarkPainter extends CustomPainter {
   final Artwork artwork;
   final bool showSky;
 
-  static const _stone = Color(0xFFEADFC8);
-  static const _stoneShade = Color(0xFFD3C4A3);
-  static const _brick = Color(0xFFC98A62);
-  static const _leather = Color(0xFF9A5B34);
-  static const _leatherDark = Color(0xFF6E3E22);
-  static const _window = Color(0xFF8FB3DB);
-  static const _guardRed = Color(0xFFD2463C);
+  // A small, muted wash palette (ink does the drawing, colour only tints).
+  static const _stone = AppColors.stone;
+  static const _stoneShade = AppColors.parchmentDark;
+  static const _brick = AppColors.brick;
+  static const _leather = Color(0xFFA88462);
+  static const _leatherDark = Color(0xFF7A5E44);
+  static const _window = AppColors.river;
+  static const _guardRed = Color(0xFFA85A4E);
+  static const _paper = AppColors.paperLight;
 
   Paint _fill(Color c) => Paint()..color = c;
 
+  /// Keeps outlines pen-thin on large pictures (the scene is drawn in 100
+  /// units, so without this a big picture would get a marker-thick line).
+  double _pen = 1;
+
   Paint get _ink => Paint()
-    ..color = AppColors.navy
+    ..color = AppColors.ink.withValues(alpha: 0.9)
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 1.4
+    ..strokeWidth = 0.95 * _pen
     ..strokeJoin = StrokeJoin.round
     ..strokeCap = StrokeCap.round;
+
+  /// A faint second pass, slightly off the first, like a pen going over a
+  /// line twice.
+  Paint get _sketch => Paint()
+    ..color = AppColors.ink.withValues(alpha: 0.28)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.5
+    ..strokeCap = StrokeCap.round;
+
+  void _outline(Canvas c, Path path) {
+    c.drawPath(path, _ink);
+    c.drawPath(path.shift(const Offset(0.55, 0.4)), _sketch);
+  }
 
   void _box(Canvas c, double l, double t, double r, double b, Color color, {double radius = 0.6}) {
     final rr = RRect.fromLTRBR(l, t, r, b, Radius.circular(radius));
     c.drawRRect(rr, _fill(color));
-    c.drawRRect(rr, _ink);
+    _outline(c, Path()..addRRect(rr));
   }
 
   void _poly(Canvas c, List<Offset> pts, Color color) {
     final path = Path()..addPolygon(pts, true);
     c.drawPath(path, _fill(color));
-    c.drawPath(path, _ink);
+    _outline(c, path);
   }
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Background fills the whole card.
+    // Paper, not sky: the scene is a picture in a storybook.
     final bg = Rect.fromLTWH(0, 0, size.width, size.height);
-    if (showSky) {
-      canvas.drawRect(
-        bg,
-        Paint()
-          ..shader = const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFCFE2F5), Color(0xFFF7EFDC)],
-          ).createShader(bg),
-      );
-    }
+    if (showSky) canvas.drawRect(bg, _fill(AppColors.paperLight));
 
     // Draw the scene in a centred 100x100 unit box.
     final s = math.min(size.width, size.height) / 100;
+    _pen = (2.2 / s).clamp(0.6, 1.0);
     canvas.save();
     canvas.translate((size.width - 100 * s) / 2, (size.height - 100 * s) / 2);
     canvas.scale(s);
 
     if (showSky) {
-      // Ground strip extends across the full card width.
+      // Ground: a light wash across the full width, shaded with ink hatching.
       final extra = (size.width / s - 100) / 2 + 1;
-      canvas.drawRect(Rect.fromLTRB(-extra, 84, 100 + extra, 140), _fill(_groundColor));
-      _clouds(canvas);
+      canvas.drawRect(Rect.fromLTRB(-extra, 84, 100 + extra, 140), _fill(_groundColor.withValues(alpha: 0.55)));
+      canvas.drawLine(Offset(-extra, 84), Offset(100 + extra, 84), _ink..strokeWidth = 0.77);
+      final hatch = _sketch..strokeWidth = 0.42;
+      for (var x = -extra; x < 100 + extra; x += 3.2) {
+        canvas.drawLine(Offset(x, 87), Offset(x + 2.4, 84.6), hatch);
+      }
     }
 
     switch (artwork) {
@@ -120,13 +137,6 @@ class _LandmarkPainter extends CustomPainter {
         _ => const Color(0xFFD9CBA8),
       };
 
-  void _clouds(Canvas c) {
-    final p = _fill(Colors.white.withValues(alpha: 0.85));
-    for (final (x, y, r) in [(16.0, 14.0, 5.0), (22.0, 12.0, 6.5), (28.0, 14.5, 4.5), (78.0, 20.0, 4.0), (84.0, 18.0, 5.5)]) {
-      c.drawCircle(Offset(x, y), r, p);
-    }
-  }
-
   void _kingsCross(Canvas c) {
     _box(c, 8, 44, 92, 86, _brick);
     // Two great arched train sheds.
@@ -140,13 +150,13 @@ class _LandmarkPainter extends CustomPainter {
       c.drawPath(arch, _fill(_window));
       c.drawPath(arch, _ink);
       for (var i = 1; i < 4; i++) {
-        c.drawLine(Offset(left + i * 8, 52), Offset(left + i * 8, 86), _ink..strokeWidth = 0.8);
+        c.drawLine(Offset(left + i * 8, 52), Offset(left + i * 8, 86), _ink..strokeWidth = 0.56);
       }
     }
     // Clock tower.
     _box(c, 43, 20, 57, 46, _brick);
     _poly(c, const [Offset(42, 20), Offset(50, 10), Offset(58, 20)], AppColors.navy);
-    c.drawCircle(const Offset(50, 30), 5, _fill(Colors.white));
+    c.drawCircle(const Offset(50, 30), 5, _fill(_paper));
     c.drawCircle(const Offset(50, 30), 5, _ink);
     c.drawLine(const Offset(50, 30), const Offset(50, 26.5), _ink);
     c.drawLine(const Offset(50, 30), const Offset(52.5, 31), _ink);
@@ -156,7 +166,7 @@ class _LandmarkPainter extends CustomPainter {
     // Platform sign "9" in the background.
     _box(c, 64, 12, 92, 30, AppColors.navy, radius: 2);
     _text(c, '9', const Offset(78, 21), 14, AppColors.goldLight);
-    c.drawLine(const Offset(70, 30), const Offset(70, 40), _ink..strokeWidth = 1.6);
+    c.drawLine(const Offset(70, 30), const Offset(70, 40), _ink..strokeWidth = 1.12);
     c.drawLine(const Offset(86, 30), const Offset(86, 40), _ink);
 
     // Handle.
@@ -165,11 +175,11 @@ class _LandmarkPainter extends CustomPainter {
       ..lineTo(40, 38)
       ..quadraticBezierTo(50, 32, 60, 38)
       ..lineTo(60, 46);
-    c.drawPath(handle, _ink..strokeWidth = 3.2);
+    c.drawPath(handle, _ink..strokeWidth = 2.24);
     c.drawPath(handle, Paint()
       ..color = _leatherDark
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2);
+      ..strokeWidth = 1.4);
 
     // Body + straps.
     _box(c, 14, 45, 86, 84, _leather, radius: 5);
@@ -180,8 +190,8 @@ class _LandmarkPainter extends CustomPainter {
 
     // Travel stickers.
     c.drawCircle(const Offset(48, 58), 6, _fill(AppColors.royalBlue));
-    c.drawCircle(const Offset(48, 58), 6, _ink..strokeWidth = 1.2);
-    _text(c, 'L', const Offset(48, 58), 7, Colors.white);
+    c.drawCircle(const Offset(48, 58), 6, _ink..strokeWidth = 0.84);
+    _text(c, 'L', const Offset(48, 58), 7, _paper);
     _box(c, 44, 68, 60, 77, AppColors.goldLight, radius: 1.5);
     _text(c, 'LDN', const Offset(52, 72.5), 4.6, AppColors.navy);
 
@@ -189,7 +199,7 @@ class _LandmarkPainter extends CustomPainter {
     c.save();
     c.translate(76, 44);
     c.rotate(0.25);
-    _box(c, -8, -8, 10, 4, Colors.white, radius: 0.8);
+    _box(c, -8, -8, 10, 4, _paper, radius: 0.8);
     c.drawCircle(const Offset(1, -2), 2.6, _fill(AppColors.waxRed));
     c.restore();
   }
@@ -201,7 +211,7 @@ class _LandmarkPainter extends CustomPainter {
     for (var i = 0; i < 8; i++) {
       final x = 16 + i * 9.4;
       _box(c, x, 47, x + 5, 78, _stone, radius: 0.4);
-      c.drawLine(Offset(x + 2.5, 50), Offset(x + 2.5, 75), _ink..strokeWidth = 0.5);
+      c.drawLine(Offset(x + 2.5, 50), Offset(x + 2.5, 75), _ink..strokeWidth = 0.35);
     }
     _box(c, 10, 78, 90, 82, _stoneShade);
     _box(c, 6, 82, 94, 86, _stone);
@@ -218,17 +228,17 @@ class _LandmarkPainter extends CustomPainter {
     }
     // Clock face.
     _box(c, 37, 34, 63, 56, AppColors.goldLight, radius: 1);
-    c.drawCircle(const Offset(50, 45), 9.5, _fill(Colors.white));
-    c.drawCircle(const Offset(50, 45), 9.5, _ink..strokeWidth = 1.4);
+    c.drawCircle(const Offset(50, 45), 9.5, _fill(_paper));
+    c.drawCircle(const Offset(50, 45), 9.5, _ink..strokeWidth = 0.98);
     for (var i = 0; i < 12; i++) {
       final a = i * math.pi / 6;
       c.drawLine(
         Offset(50 + 7.6 * math.cos(a), 45 + 7.6 * math.sin(a)),
         Offset(50 + 8.8 * math.cos(a), 45 + 8.8 * math.sin(a)),
-        _ink..strokeWidth = 0.7,
+        _ink..strokeWidth = 0.49,
       );
     }
-    c.drawLine(const Offset(50, 45), const Offset(50, 38.5), _ink..strokeWidth = 1.2);
+    c.drawLine(const Offset(50, 45), const Offset(50, 38.5), _ink..strokeWidth = 0.84);
     c.drawLine(const Offset(50, 45), const Offset(54.5, 45), _ink);
     // Belfry + spire.
     _box(c, 41, 24, 59, 34, _stone);
@@ -253,17 +263,17 @@ class _LandmarkPainter extends CustomPainter {
     c.drawOval(lake, _ink);
     // Two swans.
     for (final x in [38.0, 60.0]) {
-      c.drawOval(Rect.fromCenter(center: Offset(x, 77), width: 12, height: 6), _fill(Colors.white));
-      c.drawOval(Rect.fromCenter(center: Offset(x, 77), width: 12, height: 6), _ink..strokeWidth = 1);
+      c.drawOval(Rect.fromCenter(center: Offset(x, 77), width: 12, height: 6), _fill(_paper));
+      c.drawOval(Rect.fromCenter(center: Offset(x, 77), width: 12, height: 6), _ink..strokeWidth = 0.7);
       final neck = Path()
         ..moveTo(x + 4, 76)
         ..quadraticBezierTo(x + 7, 70, x + 4.5, 67.5);
-      c.drawPath(neck, _ink..strokeWidth = 2.6);
+      c.drawPath(neck, _ink..strokeWidth = 1.82);
       c.drawPath(neck, Paint()
-        ..color = Colors.white
+        ..color = _paper
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.4);
-      c.drawCircle(Offset(x + 4.5, 67.5), 1.6, _fill(Colors.white));
+        ..strokeWidth = 0.98);
+      c.drawCircle(Offset(x + 4.5, 67.5), 1.6, _fill(_paper));
       c.drawCircle(Offset(x + 3.0, 68.2), 0.9, _fill(AppColors.gold)); // beak
     }
   }
@@ -273,14 +283,14 @@ class _LandmarkPainter extends CustomPainter {
     _box(c, 36, 36, 64, 44, _stone);
     _poly(c, const [Offset(34, 36), Offset(50, 28), Offset(66, 36)], _stoneShade);
     // Flag.
-    c.drawLine(const Offset(50, 28), const Offset(50, 12), _ink..strokeWidth = 1);
+    c.drawLine(const Offset(50, 28), const Offset(50, 12), _ink..strokeWidth = 0.7);
     _box(c, 50, 12, 62, 19, AppColors.royalBlue, radius: 0.3);
     c.drawLine(const Offset(50, 12), const Offset(62, 19), Paint()
       ..color = _guardRed
-      ..strokeWidth = 1.4);
+      ..strokeWidth = 0.98);
     c.drawLine(const Offset(50, 19), const Offset(62, 12), Paint()
       ..color = _guardRed
-      ..strokeWidth = 1.4);
+      ..strokeWidth = 0.98);
     // Windows.
     for (var row = 0; row < 2; row++) {
       for (var i = 0; i < 9; i++) {
@@ -290,10 +300,10 @@ class _LandmarkPainter extends CustomPainter {
     }
     // Gate with gold tips.
     for (var x = 12.0; x <= 88; x += 4) {
-      c.drawLine(Offset(x, 72), Offset(x, 86), _ink..strokeWidth = 1);
+      c.drawLine(Offset(x, 72), Offset(x, 86), _ink..strokeWidth = 0.7);
       c.drawCircle(Offset(x, 71.5), 0.9, _fill(AppColors.gold));
     }
-    c.drawLine(const Offset(10, 76), const Offset(90, 76), _ink..strokeWidth = 1);
+    c.drawLine(const Offset(10, 76), const Offset(90, 76), _ink..strokeWidth = 0.7);
     // Two guards: red coats + tall black hats.
     for (final x in [28.0, 72.0]) {
       _box(c, x - 3.6, 71, x + 3.6, 82, _guardRed, radius: 1);
@@ -308,14 +318,14 @@ class _LandmarkPainter extends CustomPainter {
   void _towerBridge(Canvas c) {
     // River shading.
     for (var y = 88.0; y < 100; y += 4) {
-      c.drawLine(Offset(10, y), Offset(30, y), _ink..strokeWidth = 0.6);
+      c.drawLine(Offset(10, y), Offset(30, y), _ink..strokeWidth = 0.42);
       c.drawLine(Offset(60, y + 2), Offset(84, y + 2), _ink);
     }
     // Suspension cables.
     final cable = Paint()
       ..color = AppColors.royalBlue
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.6;
+      ..strokeWidth = 1.12;
     c.drawPath(Path()
       ..moveTo(0, 60)
       ..quadraticBezierTo(14, 58, 22, 40), cable);
@@ -340,33 +350,29 @@ class _LandmarkPainter extends CustomPainter {
     const center = Offset(50, 46);
     const r = 32.0;
     // Legs.
-    c.drawLine(center, const Offset(34, 86), _ink..strokeWidth = 2.2);
+    c.drawLine(center, const Offset(34, 86), _ink..strokeWidth = 1.54);
     c.drawLine(center, const Offset(66, 86), _ink);
     // Spokes & rim.
     for (var i = 0; i < 16; i++) {
       final a = i * math.pi / 8;
-      c.drawLine(center, center + Offset(r * math.cos(a), r * math.sin(a)), _ink..strokeWidth = 0.5);
+      c.drawLine(center, center + Offset(r * math.cos(a), r * math.sin(a)), _ink..strokeWidth = 0.35);
     }
     c.drawCircle(center, r, Paint()
       ..color = AppColors.royalBlue
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2);
-    c.drawCircle(center, r - 3, _ink..strokeWidth = 0.8);
+      ..strokeWidth = 1.4);
+    c.drawCircle(center, r - 3, _ink..strokeWidth = 0.56);
     for (var i = 0; i < 16; i++) {
       final a = i * math.pi / 8;
       final p = center + Offset((r + 2) * math.cos(a), (r + 2) * math.sin(a));
-      c.drawOval(Rect.fromCenter(center: p, width: 4.6, height: 3.2), _fill(Colors.white));
-      c.drawOval(Rect.fromCenter(center: p, width: 4.6, height: 3.2), _ink..strokeWidth = 0.7);
+      c.drawOval(Rect.fromCenter(center: p, width: 4.6, height: 3.2), _fill(_paper));
+      c.drawOval(Rect.fromCenter(center: p, width: 4.6, height: 3.2), _ink..strokeWidth = 0.49);
     }
     c.drawCircle(center, 3, _fill(AppColors.gold));
-    c.drawCircle(center, 3, _ink..strokeWidth = 1);
+    c.drawCircle(center, 3, _ink..strokeWidth = 0.7);
   }
 
   void _royalBox(Canvas c) {
-    // Soft glow.
-    c.drawCircle(const Offset(50, 58), 38, Paint()
-      ..shader = RadialGradient(colors: [AppColors.goldLight.withValues(alpha: 0.8), AppColors.goldLight.withValues(alpha: 0)])
-          .createShader(Rect.fromCircle(center: const Offset(50, 58), radius: 38)));
     _box(c, 18, 52, 82, 86, AppColors.gold, radius: 2);
     final lid = Path()
       ..moveTo(16, 54)
@@ -375,7 +381,7 @@ class _LandmarkPainter extends CustomPainter {
       ..lineTo(84, 54)
       ..close();
     c.drawPath(lid, _fill(AppColors.goldDeep));
-    c.drawPath(lid, _ink);
+    _outline(c, lid);
     for (final x in [26.0, 74.0]) {
       _box(c, x - 2.5, 40, x + 2.5, 86, AppColors.goldLight, radius: 0.5);
     }
@@ -383,7 +389,7 @@ class _LandmarkPainter extends CustomPainter {
     c.drawCircle(const Offset(50, 60.5), 1.8, _fill(AppColors.goldLight));
     c.drawLine(const Offset(50, 61), const Offset(50, 65), Paint()
       ..color = AppColors.goldLight
-      ..strokeWidth = 1.4);
+      ..strokeWidth = 0.98);
     _crown(c, const Offset(50, 41), 8);
   }
 
@@ -399,7 +405,7 @@ class _LandmarkPainter extends CustomPainter {
       ..lineTo(center.dx + w, center.dy + h / 2)
       ..close();
     c.drawPath(path, _fill(AppColors.goldLight));
-    c.drawPath(path, _ink..strokeWidth = 1);
+    c.drawPath(path, _ink..strokeWidth = 0.7);
     c.drawCircle(Offset(center.dx, center.dy + h / 5), w / 6, _fill(AppColors.waxRed));
   }
 
@@ -408,7 +414,7 @@ class _LandmarkPainter extends CustomPainter {
       text: TextSpan(
         text: text,
         style: TextStyle(
-          fontFamily: 'Fredoka',
+          fontFamily: 'Nunito',
           fontSize: size,
           fontWeight: FontWeight.w700,
           fontVariations: const [FontVariation('wght', 700)],

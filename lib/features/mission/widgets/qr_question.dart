@@ -5,8 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/theme/app_tokens.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/game_button.dart';
+import '../../../widgets/ink_icon.dart';
+import '../../../widgets/paper.dart';
 import 'question_widgets.dart';
 
 /// TYPE 5 — Scan a real QR code placed in the play space.
@@ -50,50 +53,34 @@ class _QrQuestionState extends State<QrQuestion> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppColors.navy,
-            borderRadius: BorderRadius.circular(22),
-          ),
+        PaperSheet(
+          padding: const EdgeInsets.all(AppSpace.lg),
           child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.gold, width: 3),
-                ),
-                child: const Icon(Icons.qr_code_2_rounded, size: 56, color: AppColors.navy),
-              ),
-              const SizedBox(width: 16),
+              const InkIcon(InkGlyph.qr, size: 52, color: AppColors.navy),
+              const SizedBox(width: AppSpace.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('SECRET CODE', style: AppText.eyebrow(color: AppColors.goldLight)),
-                    const SizedBox(height: 4),
-                    Text('Look for the golden crown sticker!',
-                        style: AppText.subtitle(color: Colors.white)),
+                    Text('SECRET CODE', style: AppText.eyebrow()),
+                    const SizedBox(height: AppSpace.xs),
+                    Text('Look for the golden crown sticker!', style: AppText.subtitle()),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        GameButton(
-          label: 'SCAN QR CODE',
-          icon: Icons.qr_code_scanner_rounded,
-          style: GameButtonStyle.gold,
-          onPressed: _scan,
-        ),
-        const SizedBox(height: 8),
-        TextButton.icon(
-          onPressed: () => setState(() => _showManual = !_showManual),
-          icon: Icon(_showManual ? Icons.expand_less_rounded : Icons.keyboard_rounded, color: AppColors.royalBlue),
-          label: Text("Can't scan? Type the code", style: AppText.button(size: 15, color: AppColors.royalBlue)),
+        const SizedBox(height: AppSpace.lg),
+        GameButton(label: 'SCAN QR CODE', onPressed: _scan),
+        const SizedBox(height: AppSpace.sm),
+        Center(
+          child: InkTextButton(
+            label: "Can't scan? Type the code",
+            glyph: InkGlyph.pen,
+            onPressed: () => setState(() => _showManual = !_showManual),
+          ),
         ),
         AnimatedSize(
           duration: const Duration(milliseconds: 250),
@@ -127,7 +114,6 @@ class _QrQuestionState extends State<QrQuestion> {
                       GameButton(
                         label: 'CHECK CODE',
                         style: GameButtonStyle.outline,
-                        icon: Icons.check_circle_rounded,
                         onPressed: _manual.text.trim().isEmpty ? null : () => widget.onSubmit(_manual.text),
                       ),
                     ],

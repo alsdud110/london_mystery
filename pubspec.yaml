@@ -43,3 +43,9 @@ flutter:
     - family: Nunito
       fonts:
         - asset: assets/fonts/Nunito.ttf
+    # Storybook titles (license: assets/fonts/OFL-LibreBaskerville.txt).
+    - family: LibreBaskerville
+      fonts:
+        - asset: assets/fonts/LibreBaskerville.ttf
+        - asset: assets/fonts/LibreBaskerville-Italic.ttf
+          style: italic

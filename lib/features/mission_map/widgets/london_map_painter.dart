@@ -4,115 +4,100 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 
-/// Illustrated, treasure-map style London. Pins are laid over it as widgets.
+/// An old paper map of London on which the detective marks the route in ink.
+/// Pins are laid over it as widgets.
+///
+/// Route legs: solid ink between places already investigated, a dashed line
+/// to the current place, and nothing beyond it (the next stop is unknown).
 class LondonMapPainter extends CustomPainter {
   LondonMapPainter({required this.route, required this.completedLegs});
 
   /// Pin centres (fractions of the map size) in play order.
   final List<Offset> route;
 
-  /// How many legs of [route] are already travelled.
+  /// How many places of [route] are already solved.
   final int completedLegs;
 
   Offset _p(Size s, double x, double y) => Offset(x * s.width, y * s.height);
 
+  Paint _stroke(Color color, double width, {double alpha = 1}) => Paint()
+    ..color = color.withValues(alpha: alpha)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width
+    ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round;
+
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    final paper = RRect.fromRectAndRadius(rect, const Radius.circular(28));
-    canvas.drawRRect(
-      paper,
-      Paint()
-        ..shader = const RadialGradient(
-          colors: [Color(0xFFFFF9EA), AppColors.parchment, Color(0xFFE6D2A5)],
-          stops: [0, 0.7, 1],
-        ).createShader(rect),
-    );
+    final paper = RRect.fromRectAndRadius(rect, const Radius.circular(6));
+    canvas.drawRRect(paper, Paint()..color = AppColors.paperLight);
     canvas.save();
     canvas.clipRRect(paper);
 
-    _grid(canvas, size);
     _parks(canvas, size);
     _roads(canvas, size);
     _river(canvas, size);
     _route(canvas, size);
-    _compass(canvas, _p(size, 0.86, 0.13), math.min(size.width, size.height) * 0.075);
+    _compass(canvas, _p(size, 0.88, 0.1), math.min(size.width, size.height) * 0.055);
     canvas.restore();
 
-    canvas.drawRRect(
-      paper.deflate(1.5),
-      Paint()
-        ..color = AppColors.inkBrown.withValues(alpha: 0.45)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3,
-    );
-    canvas.drawRRect(
-      paper.deflate(9),
-      Paint()
-        ..color = AppColors.inkBrown.withValues(alpha: 0.2)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2,
-    );
-  }
-
-  void _grid(Canvas c, Size s) {
-    final p = Paint()
-      ..color = AppColors.inkBrown.withValues(alpha: 0.06)
-      ..strokeWidth = 1;
-    for (var x = 0.0; x < s.width; x += 36) {
-      c.drawLine(Offset(x, 0), Offset(x, s.height), p);
-    }
-    for (var y = 0.0; y < s.height; y += 36) {
-      c.drawLine(Offset(0, y), Offset(s.width, y), p);
-    }
+    // Printed map frame: a line and a hairline.
+    canvas.drawRRect(paper.deflate(1), _stroke(AppColors.ink, 1.5, alpha: 0.45));
+    canvas.drawRRect(paper.deflate(7), _stroke(AppColors.ink, 0.8, alpha: 0.25));
   }
 
   void _parks(Canvas c, Size s) {
-    final fill = Paint()..color = AppColors.park.withValues(alpha: 0.85);
-    final edge = Paint()
-      ..color = AppColors.parkDeep
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+    final fill = Paint()..color = AppColors.park.withValues(alpha: 0.6);
+    final edge = _stroke(AppColors.parkDeep, 1, alpha: 0.7);
     final parks = [
       Rect.fromLTRB(s.width * 0.03, s.height * 0.31, s.width * 0.32, s.height * 0.53), // Hyde Park
       Rect.fromLTRB(s.width * 0.28, s.height * 0.03, s.width * 0.46, s.height * 0.17), // Regent's Park
       Rect.fromLTRB(s.width * 0.34, s.height * 0.60, s.width * 0.54, s.height * 0.70), // St James's Park
     ];
+    final tuft = _stroke(AppColors.parkDeep, 1, alpha: 0.8);
     for (final r in parks) {
-      final rr = RRect.fromRectAndRadius(r, Radius.circular(r.shortestSide * 0.45));
-      c.drawRRect(rr, fill);
-      c.drawRRect(rr, edge);
-      // Little trees.
+      final shape = _blob(r, r.left.toInt());
+      c.drawPath(shape, fill);
+      c.drawPath(shape, edge);
+      // A few pen-drawn trees.
       final rnd = math.Random(r.left.toInt());
-      for (var i = 0; i < 6; i++) {
-        final pt = Offset(
-          r.left + r.width * (0.15 + rnd.nextDouble() * 0.7),
-          r.top + r.height * (0.2 + rnd.nextDouble() * 0.6),
-        );
-        c.drawCircle(pt, 5, Paint()..color = AppColors.parkDeep);
+      for (var i = 0; i < 3; i++) {
+        final pt = Offset(r.left + r.width * (0.2 + rnd.nextDouble() * 0.6), r.top + r.height * (0.25 + rnd.nextDouble() * 0.5));
+        c.drawCircle(pt, 3.5, tuft);
       }
     }
     // The Serpentine lake in Hyde Park.
     final lake = Path()
       ..moveTo(s.width * 0.12, s.height * 0.47)
       ..quadraticBezierTo(s.width * 0.19, s.height * 0.44, s.width * 0.25, s.height * 0.37);
-    c.drawPath(lake, Paint()
-      ..color = AppColors.river
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 7
-      ..strokeCap = StrokeCap.round);
+    c.drawPath(lake, _stroke(AppColors.river, 6));
+  }
+
+  /// An irregular, hand-drawn outline filling [r] (same shape every frame).
+  Path _blob(Rect r, int seed) {
+    final rnd = math.Random(seed);
+    const n = 9;
+    final pts = [
+      for (var i = 0; i < n; i++)
+        () {
+          final a = i * 2 * math.pi / n;
+          final k = 0.86 + rnd.nextDouble() * 0.14;
+          return r.center + Offset(math.cos(a) * r.width / 2 * k, math.sin(a) * r.height / 2 * k);
+        }(),
+    ];
+    Offset mid(Offset a, Offset b) => Offset((a.dx + b.dx) / 2, (a.dy + b.dy) / 2);
+    final start = mid(pts.last, pts.first);
+    final path = Path()..moveTo(start.dx, start.dy);
+    for (var i = 0; i < n; i++) {
+      final m = mid(pts[i], pts[(i + 1) % n]);
+      path.quadraticBezierTo(pts[i].dx, pts[i].dy, m.dx, m.dy);
+    }
+    return path..close();
   }
 
   void _roads(Canvas c, Size s) {
-    final casing = Paint()
-      ..color = Colors.white.withValues(alpha: 0.9)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 9
-      ..strokeCap = StrokeCap.round;
-    final line = Paint()
-      ..color = AppColors.parchmentDark
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+    final road = _stroke(AppColors.ink, 1.1, alpha: 0.18);
     final roads = <Path>[
       Path()
         ..moveTo(0, s.height * 0.22)
@@ -128,8 +113,9 @@ class LondonMapPainter extends CustomPainter {
         ..lineTo(s.width * 0.34, s.height * 0.57),
     ];
     for (final r in roads) {
-      c.drawPath(r, casing);
-      c.drawPath(r, line);
+      // Double-line streets, as on printed maps.
+      c.drawPath(r.shift(const Offset(0, -2.5)), road);
+      c.drawPath(r.shift(const Offset(0, 2.5)), road);
     }
   }
 
@@ -138,28 +124,20 @@ class LondonMapPainter extends CustomPainter {
       ..moveTo(-10, s.height * 0.80)
       ..cubicTo(s.width * 0.25, s.height * 0.95, s.width * 0.55, s.height * 0.92, s.width * 0.66, s.height * 0.74)
       ..cubicTo(s.width * 0.72, s.height * 0.60, s.width * 0.86, s.height * 0.66, s.width + 10, s.height * 0.62);
-    c.drawPath(river, Paint()
-      ..color = AppColors.riverDeep
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = s.width * 0.085
-      ..strokeCap = StrokeCap.round);
-    c.drawPath(river, Paint()
-      ..color = AppColors.river
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = s.width * 0.07
-      ..strokeCap = StrokeCap.round);
+    final w = s.width * 0.065;
+    c.drawPath(river, _stroke(AppColors.riverDeep, w + 2, alpha: 0.6)); // inked banks
+    c.drawPath(river, _stroke(AppColors.river, w));
 
-    // Label along the river.
     final tp = TextPainter(
       text: TextSpan(
         text: 'RIVER THAMES',
         style: TextStyle(
           fontFamily: 'Cinzel',
-          fontSize: math.max(10, s.width * 0.028),
+          fontSize: math.max(9, s.width * 0.024),
           fontWeight: FontWeight.w700,
           fontVariations: const [FontVariation('wght', 700)],
           letterSpacing: 3,
-          color: Colors.white.withValues(alpha: 0.9),
+          color: AppColors.ink.withValues(alpha: 0.4),
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -172,66 +150,58 @@ class LondonMapPainter extends CustomPainter {
   }
 
   void _route(Canvas c, Size s) {
-    if (route.length < 2) return;
-    final done = Paint()
-      ..color = AppColors.gold
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5
-      ..strokeCap = StrokeCap.round;
-    final todo = Paint()
-      ..color = AppColors.inkBrown.withValues(alpha: 0.35)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
+    if (route.length < 2 || completedLegs == 0) return;
+    final travelled = _stroke(AppColors.navy, 3);
+    final heading = _stroke(AppColors.navy, 2.2, alpha: 0.7);
 
     for (var i = 0; i < route.length - 1; i++) {
+      // Leg i leads from place i to place i + 1.
+      final solvedTarget = i < completedLegs - 1;
+      final toCurrent = i == completedLegs - 1;
+      if (!solvedTarget && !toCurrent) break;
       final a = _p(s, route[i].dx, route[i].dy);
       final b = _p(s, route[i + 1].dx, route[i + 1].dy);
       final mid = Offset((a.dx + b.dx) / 2, (a.dy + b.dy) / 2) + Offset((b.dy - a.dy) * 0.18, (a.dx - b.dx) * 0.18);
       final leg = Path()
         ..moveTo(a.dx, a.dy)
         ..quadraticBezierTo(mid.dx, mid.dy, b.dx, b.dy);
-      if (i < completedLegs) {
-        c.drawPath(leg, done);
+      if (solvedTarget) {
+        c.drawPath(leg, travelled);
       } else {
-        _dashed(c, leg, todo);
+        _dashed(c, leg, heading);
       }
     }
   }
 
   void _dashed(Canvas c, Path path, Paint paint) {
     for (final metric in path.computeMetrics()) {
-      for (var d = 0.0; d < metric.length; d += 16) {
-        c.drawPath(metric.extractPath(d, math.min(d + 8, metric.length)), paint);
+      for (var d = 0.0; d < metric.length; d += 14) {
+        c.drawPath(metric.extractPath(d, math.min(d + 7, metric.length)), paint);
       }
     }
   }
 
   void _compass(Canvas c, Offset center, double r) {
-    final ring = Paint()
-      ..color = AppColors.inkBrown.withValues(alpha: 0.55)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    c.drawCircle(center, r, Paint()..color = Colors.white.withValues(alpha: 0.5));
-    c.drawCircle(center, r, ring);
-    for (var i = 0; i < 4; i++) {
-      final a = i * math.pi / 2 - math.pi / 2;
-      final tip = center + Offset(math.cos(a), math.sin(a)) * r * 0.9;
-      final left = center + Offset(math.cos(a - math.pi / 2), math.sin(a - math.pi / 2)) * r * 0.18;
-      final right = center + Offset(math.cos(a + math.pi / 2), math.sin(a + math.pi / 2)) * r * 0.18;
-      c.drawPath(
-        Path()..addPolygon([tip, left, right], true),
-        Paint()..color = i == 0 ? AppColors.waxRed : AppColors.navy,
-      );
-    }
+    final ink = _stroke(AppColors.ink, 1.2, alpha: 0.6);
+    c.drawCircle(center, r, ink);
+    c.drawLine(center + Offset(0, -r * 1.25), center + Offset(0, r * 1.25), ink);
+    c.drawLine(center + Offset(-r * 1.25, 0), center + Offset(r * 1.25, 0), ink);
+    c.drawPath(
+      Path()
+        ..moveTo(center.dx, center.dy - r * 0.95)
+        ..lineTo(center.dx - r * 0.25, center.dy)
+        ..lineTo(center.dx + r * 0.25, center.dy)
+        ..close(),
+      Paint()..color = AppColors.burgundy.withValues(alpha: 0.8),
+    );
     final tp = TextPainter(
-      text: const TextSpan(
+      text: TextSpan(
         text: 'N',
-        style: TextStyle(fontFamily: 'Cinzel', fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.waxRed),
+        style: TextStyle(fontFamily: 'Cinzel', fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.ink.withValues(alpha: 0.7)),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    tp.paint(c, center + Offset(-tp.width / 2, -r - tp.height - 1));
+    tp.paint(c, center + Offset(-tp.width / 2, -r * 1.25 - tp.height - 1));
   }
 
   @override

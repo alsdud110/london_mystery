@@ -32,22 +32,22 @@ Future<void> tapText(WidgetTester t, String text, {Duration after = const Durati
   await wait(t, after);
 }
 
-/// Map → mission: open the envelope, read the letter, go to the puzzle.
+/// Map → mission: investigate the place, open the letter, go to the puzzle.
 Future<void> openMission(WidgetTester t, String goLabel) async {
   await tapText(t, goLabel, after: const Duration(milliseconds: 1500));
-  expect(find.text('TAP TO OPEN'), findsOneWidget, reason: 'step 1: the sealed letter');
+  expect(find.text('INVESTIGATE'), findsOneWidget, reason: 'step 1: the place');
+  await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
+  expect(find.text('TAP TO OPEN'), findsOneWidget, reason: 'step 2: the sealed letter');
   await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
-  expect(find.text('THE LETTER'), findsOneWidget, reason: 'step 2: read the letter');
-  await tapText(t, 'I READ IT! SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
-  expect(find.text('NEED A TIP?'), findsOneWidget, reason: 'step 3: the puzzle');
+  await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
+  expect(find.text('Need a tip?'), findsOneWidget, reason: 'step 3: the puzzle');
 }
 
 /// Success overlay → story scene → back on the map (unlock ceremony).
 Future<void> finishMission(WidgetTester t, {required String sceneLine}) async {
   await wait(t, const Duration(milliseconds: 2800));
-  expect(find.text('SUCCESS!'), findsOneWidget);
-  expect(find.text('Well done, Detective MINYOUNG!'), findsOneWidget);
-  expect(find.text('ADDED TO YOUR NOTEBOOK'), findsOneWidget);
+  expect(find.text('WELL DONE'), findsOneWidget);
+  expect(find.textContaining('New clue'), findsOneWidget);
   await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
   expect(find.text(sceneLine), findsOneWidget, reason: 'story transition');
   await t.tapAt(const Offset(200, 400)); // skip typing
@@ -82,22 +82,33 @@ void main() {
     await t.enterText(find.byType(TextField), 'minyoung');
     await tapText(t, 'START MISSION');
 
-    // Episode → story intro.
+    // Case files: only the cases at first; open one, choose its episode, begin.
     expect(find.text('THE MISSING CROWN'), findsOneWidget);
+    expect(find.text('The Missing Crown'), findsNothing, reason: 'episodes stay folded away');
+    await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 400));
+    expect(find.text('CASE FILES'), findsOneWidget, reason: 'nothing chosen yet');
+    await tapText(t, 'THE MISSING CROWN', after: const Duration(milliseconds: 400));
+    await tapText(t, 'The Missing Crown', after: const Duration(milliseconds: 400));
     await tapText(t, 'BEGIN INVESTIGATION');
     await tapText(t, 'SKIP ›');
     await tapText(t, "I'M READY", after: const Duration(milliseconds: 1500));
 
-    // Map: only King's Cross is open; locked pins explain themselves.
-    expect(find.text('0 / 5'), findsOneWidget);
+    // Map: one way forward; the case status lives in the menu.
+    expect(find.text("GO TO KING'S CROSS"), findsOneWidget);
+    expect(find.text("YOU'RE HERE"), findsOneWidget, reason: 'only the current place is marked');
+    expect(find.text('BRITISH MUSEUM'), findsNothing, reason: 'locked places stay a mystery');
+    await t.tap(find.byTooltip('Menu'));
+    await wait(t);
     expect(find.text('Detective MINYOUNG'), findsOneWidget);
-    await t.tap(find.text('BRITISH MUSEUM'));
+    await t.tapAt(const Offset(20, 20)); // close the menu
+    await wait(t);
+    await t.tap(find.byKey(const ValueKey('pin-m02')));
     await wait(t);
     expect(find.textContaining('Locked!'), findsOneWidget);
     await wait(t, const Duration(seconds: 3));
 
     // ── Mission 01: word card, a wrong answer, a tip, then the answer.
-    await openMission(t, 'PLAY MISSION 01');
+    await openMission(t, "GO TO KING'S CROSS");
     await tapText(t, 'Letter', after: const Duration(milliseconds: 600)); // re-read the letter
     await t.tapOnText(find.textRange.ofSubstring('museum').first);
     await wait(t, const Duration(milliseconds: 600));
@@ -114,32 +125,33 @@ void main() {
     await tapText(t, 'The British Museum', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await wait(t, const Duration(milliseconds: 2800));
-    expect(find.text('NEW BADGE!'), findsOneWidget);
-    expect(find.text('First Clue'), findsOneWidget);
+    expect(find.textContaining('New badge:'), findsOneWidget);
+    expect(find.textContaining('First Clue'), findsOneWidget);
     await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
     expect(find.text('The letter suddenly begins to glow...'), findsOneWidget);
     await t.tapAt(const Offset(200, 400));
     await wait(t, const Duration(milliseconds: 900));
     expect(find.text('NEW PLACE UNLOCKED'), findsOneWidget);
     await tapText(t, 'TO THE MAP', after: const Duration(milliseconds: 1400));
-    expect(find.text('UNLOCKED!'), findsOneWidget, reason: 'pin ceremony');
+    expect(find.text('UNLOCKED'), findsOneWidget, reason: 'pin ceremony');
     await wait(t, const Duration(milliseconds: 3000));
     expect(audio.played, contains(GameSound.unlock));
-    expect(find.text('1 / 5'), findsOneWidget);
+    expect(find.text('BRITISH MUSEUM'), findsOneWidget, reason: 'the new place is named on the map');
 
     // ── Mission 02: word input, using both tips.
-    await openMission(t, 'PLAY MISSION 02');
-    await tapText(t, 'NEED A TIP?', after: const Duration(milliseconds: 500));
-    await tapText(t, 'ONE MORE TIP', after: const Duration(milliseconds: 500));
+    await openMission(t, 'GO TO BRITISH MUSEUM');
+    await tapText(t, 'Need a tip?', after: const Duration(milliseconds: 500));
+    await tapText(t, 'One more tip', after: const Duration(milliseconds: 500));
     expect(find.text('DETECTIVE TIP 2'), findsOneWidget);
-    expect(find.text('NEED A TIP?'), findsNothing);
+    expect(find.text('Need a tip?'), findsNothing);
+    expect(find.text('One more tip'), findsNothing, reason: 'at most two tips');
     await reveal(t, find.byType(TextField));
     await t.enterText(find.byType(TextField), 'stone');
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await finishMission(t, sceneLine: 'The old stone shines in the dark.');
 
     // ── Mission 03: number code keypad.
-    await openMission(t, 'PLAY MISSION 03');
+    await openMission(t, 'GO TO BIG BEN');
     for (final d in ['4', '1', '7']) {
       await tapText(t, d, after: const Duration(milliseconds: 150));
     }
@@ -147,7 +159,7 @@ void main() {
     await finishMission(t, sceneLine: 'Inside the box, there is a photo.');
 
     // ── Mission 04: image choice (picture C = Buckingham Palace).
-    await openMission(t, 'PLAY MISSION 04');
+    await openMission(t, 'GO TO HYDE PARK');
     final pictureC = find.bySemanticsLabel('Picture C');
     await reveal(t, pictureC);
     await t.tap(pictureC);
@@ -156,20 +168,21 @@ void main() {
     await finishMission(t, sceneLine: 'The swans fly up into the sky.');
 
     // ── Mission 05: QR (typed fallback, as on a device without a camera).
-    await openMission(t, 'PLAY MISSION 05');
+    await openMission(t, 'GO TO BUCKINGHAM PALACE');
     await tapText(t, "Can't scan? Type the code", after: const Duration(milliseconds: 400));
     await reveal(t, find.byType(TextField));
     await t.enterText(find.byType(TextField), 'LM-EP01-PALACE');
     await tapText(t, 'CHECK CODE', after: Duration.zero);
     await finishMission(t, sceneLine: 'The guard opens a secret door.');
-    expect(find.text('5 / 5'), findsOneWidget);
+    expect(find.text('OPEN THE FINAL CASE'), findsOneWidget, reason: 'all five places solved');
 
     // Progress is persisted after every step.
     final prefs = appRef.read(sharedPreferencesProvider);
     expect(prefs.getString(AppConstants.progressStorageKey), contains('"m05"'));
 
     // Notebook: evidence can be zoomed; the Crown Symbol shows the lock order.
-    await tapText(t, 'NOTES', after: const Duration(milliseconds: 1000));
+    await t.tap(find.byTooltip('Detective notebook'));
+    await wait(t, const Duration(milliseconds: 1000));
     await tapText(t, 'EVIDENCE', after: const Duration(milliseconds: 600));
     await tapText(t, 'Crown Symbol', after: const Duration(milliseconds: 800));
     expect(find.textContaining('Four pictures for four locks'), findsOneWidget);

@@ -6,11 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/game_button.dart';
+import '../../../widgets/ink_icon.dart';
 import '../../../widgets/landmark_art.dart';
 import '../../game/game_providers.dart';
+
+/// Paper answer surface shared by the puzzle types: faint ink border,
+/// navy when chosen.
+BoxDecoration _answerPaper({bool selected = false, double radius = 8}) => BoxDecoration(
+      color: selected ? AppColors.royalBlueSoft : AppColors.paperLight,
+      borderRadius: BorderRadius.circular(radius),
+      border: Border.all(
+        color: selected ? AppColors.navy : AppLine.faint(0.3),
+        width: selected ? AppLine.ink : AppLine.rule,
+      ),
+    );
 
 typedef AnswerCallback = void Function(String answer);
 
@@ -78,7 +91,7 @@ class _MultipleChoiceQuestionState extends ConsumerState<MultipleChoiceQuestion>
       children: [
         for (var i = 0; i < options.length; i++)
           Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: AppSpace.md),
             child: _ChoiceTile(
               letter: String.fromCharCode(65 + i),
               label: options[i].label,
@@ -89,10 +102,9 @@ class _MultipleChoiceQuestionState extends ConsumerState<MultipleChoiceQuestion>
               },
             ),
           ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
         GameButton(
           label: 'CHECK ANSWER',
-          icon: Icons.check_circle_rounded,
           onPressed: _selected == null ? null : () => widget.onSubmit(_selected!),
         ),
       ],
@@ -118,31 +130,16 @@ class _ChoiceTile extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          constraints: const BoxConstraints(minHeight: 68),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            color: selected ? AppColors.royalBlueSoft : Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: selected ? AppColors.royalBlue : AppColors.parchmentDark, width: selected ? 3 : 2),
-          ),
+          duration: const Duration(milliseconds: 150),
+          constraints: const BoxConstraints(minHeight: 60),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
+          decoration: _answerPaper(selected: selected),
           child: Row(
             children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                width: 44,
-                height: 44,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: selected ? AppColors.royalBlue : AppColors.paper,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: selected ? AppColors.royalBlue : AppColors.parchmentDark, width: 2),
-                ),
-                child: Text(letter, style: AppText.button(size: 19, color: selected ? Colors.white : AppColors.navy)),
-              ),
-              const SizedBox(width: 14),
-              Expanded(child: Text(label, style: AppText.subtitle(color: AppColors.navy))),
-              if (selected) const Icon(Icons.radio_button_checked_rounded, color: AppColors.royalBlue),
+              SizedBox(width: 28, child: Text('$letter.', style: AppText.title(size: 18, color: AppColors.navy))),
+              const SizedBox(width: AppSpace.sm),
+              Expanded(child: Text(label, style: AppText.subtitle())),
+              if (selected) const InkIcon(InkGlyph.check, size: 22, color: AppColors.navy),
             ],
           ),
         ),
@@ -193,21 +190,19 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (prompt != null)
+          // The name, written on a museum label.
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-            decoration: BoxDecoration(
-              color: AppColors.navy,
-              borderRadius: BorderRadius.circular(18),
-            ),
+            padding: const EdgeInsets.symmetric(vertical: AppSpace.lg, horizontal: AppSpace.md),
+            decoration: _answerPaper(radius: AppRadius.paper),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
                 prompt.replaceAll(RegExp(r'_+'), _controller.text.trim().isEmpty ? '______' : _controller.text.trim().toUpperCase()),
-                style: AppText.style(AppText.display, size: 28, weight: FontWeight.w800, color: AppColors.goldLight, letterSpacing: 2),
+                style: AppText.title(size: 26).copyWith(letterSpacing: 2),
               ),
             ),
           ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         TextField(
           controller: _controller,
           textAlign: TextAlign.center,
@@ -219,19 +214,17 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
             FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
             LengthLimitingTextInputFormatter(20),
           ],
-          style: AppText.title(size: 28, color: AppColors.navy).copyWith(letterSpacing: 4),
+          style: AppText.title(size: 26).copyWith(letterSpacing: 4),
           decoration: InputDecoration(
             hintText: 'Type the word',
             hintStyle: AppText.bodyText(size: 18, color: AppColors.muted),
             counterText: '',
-            prefixIcon: const Icon(Icons.edit_rounded, color: AppColors.royalBlue),
           ),
           onSubmitted: (_) => _submit(),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         GameButton(
           label: 'CHECK ANSWER',
-          icon: Icons.check_circle_rounded,
           onPressed: _controller.text.trim().isEmpty ? null : _submit,
         ),
       ],
@@ -276,29 +269,23 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // The lock's number wheels: the next one to fill is marked in navy.
             for (var i = 0; i < _length; i++)
               AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
+                duration: const Duration(milliseconds: 120),
                 margin: const EdgeInsets.symmetric(horizontal: 6),
-                width: 64,
-                height: 78,
+                width: 60,
+                height: 72,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: i < _code.length ? AppColors.navy : Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: i == _code.length ? AppColors.gold : AppColors.parchmentDark,
-                    width: i == _code.length ? 3 : 2,
-                  ),
-                ),
+                decoration: _answerPaper(selected: i == _code.length, radius: AppRadius.paper),
                 child: Text(
-                  i < _code.length ? _code[i] : '_',
-                  style: AppText.title(size: 36, color: i < _code.length ? AppColors.goldLight : AppColors.parchmentDark),
+                  i < _code.length ? _code[i] : '',
+                  style: AppText.title(size: 34),
                 ),
               ),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpace.xl),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 330),
           child: GridView.count(
@@ -310,16 +297,15 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
             childAspectRatio: 1.45,
             children: [
               for (final d in ['1', '2', '3', '4', '5', '6', '7', '8', '9']) _Key(label: d, onTap: () => _press(d)),
-              _Key(icon: Icons.backspace_rounded, onTap: _delete, subtle: true, semantic: 'Delete'),
+              _Key(glyph: InkGlyph.backspace, onTap: _delete, subtle: true, semantic: 'Delete'),
               _Key(label: '0', onTap: () => _press('0')),
-              _Key(icon: Icons.clear_rounded, onTap: () => setState(() => _code = ''), subtle: true, semantic: 'Clear'),
+              _Key(glyph: InkGlyph.clear, onTap: () => setState(() => _code = ''), subtle: true, semantic: 'Clear'),
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         GameButton(
           label: 'UNLOCK',
-          icon: Icons.lock_open_rounded,
           onPressed: _code.length == _length
               ? () {
                   widget.onSubmit(_code);
@@ -333,10 +319,10 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
 }
 
 class _Key extends StatelessWidget {
-  const _Key({this.label, this.icon, required this.onTap, this.subtle = false, this.semantic});
+  const _Key({this.label, this.glyph, required this.onTap, this.subtle = false, this.semantic});
 
   final String? label;
-  final IconData? icon;
+  final InkGlyph? glyph;
   final VoidCallback onTap;
   final bool subtle;
   final String? semantic;
@@ -344,20 +330,20 @@ class _Key extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: subtle ? AppColors.parchment : Colors.white,
-      borderRadius: BorderRadius.circular(16),
+      color: subtle ? AppColors.parchment : AppColors.paperLight,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
         onTap: onTap,
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.parchmentDark, width: 2),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppLine.faint(0.25), width: AppLine.rule),
           ),
           child: label != null
-              ? Text(label!, style: AppText.title(size: 28, color: AppColors.navy))
-              : Icon(icon, color: AppColors.inkBrown, semanticLabel: semantic),
+              ? Text(label!, style: AppText.title(size: 26, color: AppColors.ink))
+              : InkIcon(glyph!, color: AppColors.inkBrown, semanticLabel: semantic),
         ),
       ),
     );
@@ -407,10 +393,9 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
               ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         GameButton(
           label: 'CHECK ANSWER',
-          icon: Icons.check_circle_rounded,
           onPressed: _selected == null ? null : () => widget.onSubmit(_selected!),
         ),
       ],
@@ -435,44 +420,32 @@ class _ImageTile extends StatelessWidget {
       excludeSemantics: true,
       child: GestureDetector(
         onTap: onTap,
-        child: AnimatedScale(
-          scale: selected ? 1.0 : 0.97,
-          duration: const Duration(milliseconds: 180),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: selected ? AppColors.royalBlue : Colors.white,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: selected ? AppColors.royalBlue : AppColors.parchmentDark, width: 2),
-              boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 6, offset: Offset(0, 3))],
-            ),
-            child: Stack(
-              children: [
-                Positioned.fill(child: LandmarkArt(artwork, borderRadius: 18)),
+        // A small photograph: white border, letter written in the corner.
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.all(6),
+          decoration: _answerPaper(selected: selected, radius: AppRadius.paper),
+          child: Stack(
+            children: [
+              Positioned.fill(child: LandmarkArt(artwork, borderRadius: 2)),
+              Positioned(
+                left: 6,
+                top: 4,
+                child: Text(letter, style: AppText.title(size: 20, color: AppColors.navy)),
+              ),
+              if (selected)
                 Positioned(
-                  left: 8,
-                  top: 8,
+                  right: 6,
+                  top: 6,
                   child: Container(
-                    width: 36,
-                    height: 36,
+                    width: 30,
+                    height: 30,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: selected ? AppColors.royalBlue : AppColors.navy,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                    child: Text(letter, style: AppText.button(size: 17, color: Colors.white)),
+                    decoration: const BoxDecoration(color: AppColors.navy, shape: BoxShape.circle),
+                    child: const InkIcon(InkGlyph.check, size: 18, color: AppColors.paperLight),
                   ),
                 ),
-                if (selected)
-                  const Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Icon(Icons.check_circle_rounded, color: AppColors.royalBlue, size: 32),
-                  ),
-              ],
-            ),
+            ],
           ),
         ),
       ),

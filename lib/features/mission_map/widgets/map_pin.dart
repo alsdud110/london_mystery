@@ -4,10 +4,17 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../core/theme/app_tokens.dart';
+import '../../../widgets/ink_icon.dart';
+import '../../../widgets/paper.dart';
 
 enum PinState { completed, current, locked }
 
-/// A location marker on the mission map.
+/// A place marked on the detective's map. One visual point per place:
+/// - current: "YOU'RE HERE", a small ink arrow, an ink location pin whose tip
+///   sits on the place, and the place name lettered onto the map,
+/// - completed: a small ink check stamp,
+/// - locked: a faint "?" (the place is still a mystery).
 class MapPin extends StatefulWidget {
   const MapPin({
     super.key,
@@ -20,18 +27,27 @@ class MapPin extends StatefulWidget {
     this.onUnlockShown,
   });
 
-  static const width = 124.0;
-  static const circle = 58.0;
+  /// Hit box of a pin: the note above the place, the name below it.
+  static const width = 132.0;
+  static const hereBox = 34.0;
+  static const markerBox = 64.0;
+  static const height = hereBox + markerBox + 34;
+
+  /// Distance from the top of the pin to the point that sits on the map
+  /// position (the pin's tip / the centre of the other marks).
+  static const anchorY = hereBox + markerBox / 2;
+
+  static const _pinSize = Size(26, 34);
 
   final String label;
   final PinState state;
   final VoidCallback onTap;
   final bool isFinal;
 
-  /// Plays the LOCKED → UNLOCKED ceremony once.
+  /// Plays the LOCKED → UNLOCKED stamp once.
   final bool celebrateUnlock;
 
-  /// Called at the moment the lock breaks open (play the sound here).
+  /// Called at the moment the lock opens (play the sound here).
   final VoidCallback? onUnlockBurst;
   final VoidCallback? onUnlockShown;
 
@@ -40,65 +56,65 @@ class MapPin extends StatefulWidget {
 }
 
 class _MapPinState extends State<MapPin> with TickerProviderStateMixin {
-  static const _burstAt = 0.3;
+  static const _openAt = 0.25;
 
-  late final AnimationController _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
-  late final AnimationController _unlock = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400));
+  late final AnimationController _unlock = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
 
-  /// True from the moment an unlock is requested until the ceremony ends, so
-  /// the pin keeps looking locked until the lock actually "breaks".
+  /// A very slow 2px drift of the "YOU'RE HERE" arrow (no pulse, no glow).
+  late final AnimationController _drift = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
+
+  /// True from the moment an unlock is requested until the stamp has faded,
+  /// so the pin keeps looking locked until the lock actually opens.
   bool _ceremony = false;
-  bool _burstFired = false;
+  bool _opened = false;
+
+  void _syncDrift() {
+    if (widget.state == PinState.current) {
+      if (!_drift.isAnimating) _drift.repeat(reverse: true);
+    } else {
+      _drift.stop();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _unlock.addListener(_checkBurst);
-    _syncPulse();
+    _unlock.addListener(_checkOpen);
+    _syncDrift();
     if (widget.celebrateUnlock) _playUnlock();
   }
 
   @override
   void didUpdateWidget(MapPin old) {
     super.didUpdateWidget(old);
-    _syncPulse();
+    _syncDrift();
     if (widget.celebrateUnlock && !old.celebrateUnlock) _playUnlock();
   }
 
-  void _checkBurst() {
-    if (!_burstFired && _unlock.value >= _burstAt) {
-      _burstFired = true;
+  void _checkOpen() {
+    if (!_opened && _unlock.value >= _openAt) {
+      _opened = true;
       widget.onUnlockBurst?.call();
-    }
-  }
-
-  void _syncPulse() {
-    if (widget.state == PinState.current && !_ceremony) {
-      if (!_pulse.isAnimating) _pulse.repeat();
-    } else {
-      _pulse.stop();
     }
   }
 
   Future<void> _playUnlock() async {
     setState(() {
       _ceremony = true;
-      _burstFired = false;
+      _opened = false;
     });
-    _syncPulse();
-    await Future<void>.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
     if (!mounted) return;
     await _unlock.forward(from: 0);
     if (!mounted) return;
     setState(() => _ceremony = false);
-    _syncPulse();
     widget.onUnlockShown?.call();
   }
 
   @override
   void dispose() {
-    _pulse.dispose();
     _unlock.dispose();
+    _drift.dispose();
     super.dispose();
   }
 
@@ -113,87 +129,52 @@ class _MapPinState extends State<MapPin> with TickerProviderStateMixin {
         behavior: HitTestBehavior.opaque,
         child: SizedBox(
           width: MapPin.width,
+          height: MapPin.height,
           child: AnimatedBuilder(
-            animation: Listenable.merge([_pulse, _unlock]),
+            animation: Listenable.merge([_unlock, _drift]),
             builder: (context, _) {
               final u = _unlock.value;
-              final beforeBurst = _ceremony && u < _burstAt;
-              final afterBurst = _ceremony && u >= _burstAt;
-              // During the ceremony the pin looks locked until the burst.
-              final state = beforeBurst ? PinState.locked : widget.state;
+              final beforeOpen = _ceremony && u < _openAt;
+              final afterOpen = _ceremony && u >= _openAt;
+              final state = beforeOpen ? PinState.locked : widget.state;
+              // A short nudge while locked, then the new mark settles in.
+              final nudge = beforeOpen ? math.sin(u * 50) * 2.5 : 0.0;
+              final settle = afterOpen ? Curves.easeOutCubic.transform(((u - _openAt) / 0.2).clamp(0.0, 1.0)) : 1.0;
+              // The stamp shows for most of the ceremony, then fades.
+              final stamp = afterOpen ? (1 - ((u - 0.8) / 0.2).clamp(0.0, 1.0)) : 0.0;
+              const a = MapPin.anchorY;
+              final pinTop = a - MapPin._pinSize.height;
 
-              final (fill, border, icon, iconColor) = switch (state) {
-                PinState.completed => (AppColors.gold, AppColors.navy, Icons.check_rounded, AppColors.navy),
-                PinState.current => (
-                    AppColors.navy,
-                    AppColors.gold,
-                    afterBurst && u < 0.7
-                        ? Icons.lock_open_rounded
-                        : (widget.isFinal ? Icons.vpn_key_rounded : Icons.search_rounded),
-                    AppColors.goldLight,
-                  ),
-                PinState.locked => (const Color(0xFFE5DFD0), AppColors.locked, Icons.lock_rounded, AppColors.locked),
-              };
-
-              // Locked pin wiggles, then pops open with an elastic bounce.
-              final shake = beforeBurst ? math.sin(u * 60) * 5 * (u / _burstAt) : 0.0;
-              final pop = afterBurst ? Curves.elasticOut.transform(((u - _burstAt) / (1 - _burstAt)).clamp(0, 1)) : 1.0;
-              final burst = afterBurst ? ((u - _burstAt) / 0.5).clamp(0.0, 1.0) : 0.0;
-              final showUnlockedLabel = afterBurst && u < 0.92;
-
-              return Column(
-                mainAxisSize: MainAxisSize.min,
+              return Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
                 children: [
-                  SizedBox(
-                    width: MapPin.circle + 36,
-                    height: MapPin.circle + 36,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      clipBehavior: Clip.none,
-                      children: [
-                        if (afterBurst) _Glow(progress: burst),
-                        if (state == PinState.current && !_ceremony) ...[
-                          _ring(_pulse.value, AppColors.gold),
-                          _ring((_pulse.value + 0.5) % 1, AppColors.gold),
-                        ],
-                        if (afterBurst) _Sparkles(progress: burst),
-                        Transform.translate(
-                          offset: Offset(shake, 0),
-                          child: Transform.scale(
-                            scale: afterBurst ? 0.6 + 0.4 * pop : 1.0,
-                            child: Container(
-                              width: MapPin.circle,
-                              height: MapPin.circle,
-                              decoration: BoxDecoration(
-                                color: fill,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: border, width: 3.5),
-                                boxShadow: [
-                                  if (state != PinState.locked)
-                                    BoxShadow(
-                                      color: (state == PinState.current ? AppColors.gold : AppColors.navy)
-                                          .withValues(alpha: 0.45),
-                                      blurRadius: state == PinState.current ? 16 : 6,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                ],
-                              ),
-                              child: Icon(icon, color: iconColor, size: 30),
-                            ),
-                          ),
-                        ),
-                      ],
+                  if (state == PinState.current) ...[
+                    // The note, drifting a hair above the pin.
+                    Positioned(
+                      top: pinTop - 30 + Curves.easeInOut.transform(_drift.value) * 2,
+                      child: Opacity(opacity: settle, child: const _YouAreHere()),
                     ),
-                  ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
-                    child: beforeBurst
-                        ? _Label(key: const ValueKey('locked'), text: 'LOCKED', state: PinState.locked)
-                        : showUnlockedLabel
-                            ? const _Label(key: ValueKey('unlocked'), text: 'UNLOCKED!', unlocked: true)
-                            : _Label(key: const ValueKey('name'), text: widget.label, state: state),
-                  ),
+                    Positioned(
+                      top: pinTop + 8 * (1 - settle),
+                      child: Opacity(opacity: settle, child: const _InkPin()),
+                    ),
+                  ] else
+                    Positioned(
+                      top: MapPin.hereBox,
+                      left: 0,
+                      right: 0,
+                      height: MapPin.markerBox,
+                      child: Center(
+                        child: Transform.translate(offset: Offset(nudge, 0), child: _Mark(state: state, isFinal: widget.isFinal)),
+                      ),
+                    ),
+                  if (state == PinState.current && stamp == 0) Positioned(top: a + 3, child: _PlaceName(widget.label)),
+                  if (stamp > 0)
+                    Positioned(
+                      top: a + 2,
+                      child: Opacity(opacity: stamp, child: const InkStamp('UNLOCKED', color: AppColors.success, size: 13)),
+                    ),
                 ],
               );
             },
@@ -202,114 +183,173 @@ class _MapPinState extends State<MapPin> with TickerProviderStateMixin {
       ),
     );
   }
+}
 
-  Widget _ring(double t, Color color) {
-    return Container(
-      width: MapPin.circle + 34 * t,
-      height: MapPin.circle + 34 * t,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: color.withValues(alpha: (1 - t) * 0.8), width: 3),
+/// Marks for places that are not the current one.
+class _Mark extends StatelessWidget {
+  const _Mark({required this.state, required this.isFinal});
+
+  final PinState state;
+  final bool isFinal;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state == PinState.completed) {
+      return Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.paperLight,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.success, width: AppLine.ink),
+        ),
+        child: const InkIcon(InkGlyph.check, size: 19, color: AppColors.success),
+      );
+    }
+    return CustomPaint(
+      painter: const _DashedCirclePainter(),
+      child: SizedBox(
+        width: isFinal ? 34 : 28,
+        height: isFinal ? 34 : 28,
+        child: Center(child: Text('?', style: AppText.title(size: isFinal ? 18 : 15, color: AppColors.locked))),
       ),
     );
   }
 }
 
-class _Label extends StatelessWidget {
-  const _Label({super.key, required this.text, this.state = PinState.current, this.unlocked = false});
+/// Text lettered straight onto the map, with a thin paper outline so the
+/// roads and the route pass behind it (as on printed maps — not a glow).
+class _MapLettering extends StatelessWidget {
+  const _MapLettering(this.text, {required this.style, this.maxLines = 2});
 
   final String text;
-  final PinState state;
-  final bool unlocked;
+  final TextStyle style;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
-    final locked = state == PinState.locked;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: unlocked ? AppColors.success : (locked ? Colors.white.withValues(alpha: 0.7) : Colors.white),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: unlocked ? Colors.white : (state == PinState.current ? AppColors.gold : AppColors.parchmentDark),
-          width: state == PinState.current || unlocked ? 2 : 1,
-        ),
-      ),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        maxLines: 2,
-        style: AppText.style(
-          AppText.heading,
-          size: 12.5,
-          weight: FontWeight.w600,
-          color: unlocked ? Colors.white : (locked ? AppColors.muted : AppColors.navy),
-          height: 1.1,
-        ),
-      ),
+    final halo = style.copyWith(
+      foreground: Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..strokeJoin = StrokeJoin.round
+        ..color = AppColors.paperLight,
+      color: null,
     );
-  }
-}
-
-/// Soft golden light that brightens the pin as it unlocks.
-class _Glow extends StatelessWidget {
-  const _Glow({required this.progress});
-
-  final double progress;
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MapPin.circle + 70 * progress;
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [
-              AppColors.goldLight.withValues(alpha: 0.9 * (1 - progress)),
-              AppColors.goldLight.withValues(alpha: 0),
-            ],
+    return Stack(
+      children: [
+        // The outline is decoration only: not read out, not a second label.
+        ExcludeSemantics(
+          child: RichText(
+            textAlign: TextAlign.center,
+            maxLines: maxLines,
+            textScaler: MediaQuery.textScalerOf(context),
+            text: TextSpan(text: text, style: halo),
           ),
         ),
-      ),
+        Text(text, textAlign: TextAlign.center, maxLines: maxLines, style: style),
+      ],
     );
   }
 }
 
-class _Sparkles extends StatelessWidget {
-  const _Sparkles({required this.progress});
-
-  final double progress;
+/// "YOU'RE HERE" with a small ink arrow, written in the margin of the map.
+class _YouAreHere extends StatelessWidget {
+  const _YouAreHere();
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: CustomPaint(
-        size: const Size.square(MapPin.circle + 36),
-        painter: _SparklePainter(progress),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _MapLettering(
+          "YOU'RE HERE",
+          maxLines: 1,
+          style: AppText.style(AppText.display, size: 9.5, weight: FontWeight.w800, color: AppColors.burgundy, letterSpacing: 1.4),
+        ),
+        const InkIcon(InkGlyph.down, size: 13, color: AppColors.burgundy),
+      ],
+    );
+  }
+}
+
+/// The place name under the pin.
+class _PlaceName extends StatelessWidget {
+  const _PlaceName(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: MapPin.width),
+      child: _MapLettering(
+        text,
+        style: AppText.style(AppText.heading, size: 12.5, weight: FontWeight.w700, color: AppColors.navy, height: 1.15, letterSpacing: 0.4),
       ),
     );
   }
 }
 
-class _SparklePainter extends CustomPainter {
-  _SparklePainter(this.t);
+/// An ink location pin; its tip is the exact place.
+class _InkPin extends StatelessWidget {
+  const _InkPin();
 
-  final double t;
+  @override
+  Widget build(BuildContext context) =>
+      CustomPaint(size: MapPin._pinSize, painter: const _InkPinPainter());
+}
+
+class _InkPinPainter extends CustomPainter {
+  const _InkPinPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final r = w / 2 - 1;
+    final c = Offset(w / 2, r + 1);
+    final pin = Path()
+      ..moveTo(w / 2, h - 0.5)
+      ..quadraticBezierTo(w * 0.12, h * 0.55, c.dx - r, c.dy)
+      ..arcToPoint(Offset(c.dx + r, c.dy), radius: Radius.circular(r))
+      ..quadraticBezierTo(w * 0.88, h * 0.55, w / 2, h - 0.5)
+      ..close();
+    canvas.drawPath(pin, Paint()..color = AppColors.navy);
+    canvas.drawPath(
+      pin,
+      Paint()
+        ..color = AppColors.paperLight
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
+    canvas.drawCircle(c, r * 0.36, Paint()..color = AppColors.paperLight);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _DashedCirclePainter extends CustomPainter {
+  const _DashedCirclePainter();
 
   @override
   void paint(Canvas canvas, Size size) {
     final c = size.center(Offset.zero);
-    final paint = Paint()..color = AppColors.gold.withValues(alpha: (1 - t).clamp(0, 1));
-    for (var i = 0; i < 10; i++) {
-      final a = i * math.pi / 5;
-      final d = 20 + 34 * Curves.easeOut.transform(t);
-      canvas.drawCircle(c + Offset(math.cos(a), math.sin(a)) * d, 4 * (1 - t) + 1, paint);
+    final r = size.shortestSide / 2;
+    canvas.drawCircle(c, r, Paint()..color = AppColors.paperLight.withValues(alpha: 0.8));
+    final dash = Paint()
+      ..color = AppColors.locked
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = AppLine.rule
+      ..strokeCap = StrokeCap.round;
+    const n = 10;
+    for (var i = 0; i < n; i++) {
+      canvas.drawArc(Rect.fromCircle(center: c, radius: r), i * 2 * math.pi / n, math.pi / n, false, dash);
     }
   }
 
   @override
-  bool shouldRepaint(_SparklePainter old) => old.t != t;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

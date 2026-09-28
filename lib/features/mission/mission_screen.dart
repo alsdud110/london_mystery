@@ -5,14 +5,18 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/clue_card.dart';
+import '../../widgets/detective_tips.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
+import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
@@ -24,7 +28,7 @@ import 'widgets/question_widgets.dart';
 /// The three steps of a mission. Each screen offers one main action.
 enum MissionStage { story, letter, puzzle }
 
-/// One mission: story → sealed letter → puzzle → clue & evidence.
+/// One mission: the place → the sealed letter → the puzzle.
 class MissionScreen extends ConsumerStatefulWidget {
   const MissionScreen({super.key, required this.missionId});
 
@@ -36,6 +40,7 @@ class MissionScreen extends ConsumerStatefulWidget {
 
 class _MissionScreenState extends ConsumerState<MissionScreen> {
   late MissionStage _stage;
+  bool _letterOpened = false;
   int _wrongPulse = 0;
 
   @override
@@ -57,7 +62,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
 
   void _onLetterOpened() {
     ref.read(audioServiceProvider).play(GameSound.clue);
-    _goTo(MissionStage.letter);
+    setState(() => _letterOpened = true);
   }
 
   void _showHint(Mission m) => ref.read(gameControllerProvider.notifier).useHint(m);
@@ -68,13 +73,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       isScrollControlled: true,
       builder: (context) => SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(22, 0, 22, 24),
+          padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.xl),
           child: Column(
             children: [
-              Text('THE LETTER', style: AppText.eyebrow()),
-              const SizedBox(height: 14),
               LetterCard(text: m.letter),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               GameButton(label: 'BACK TO THE PUZZLE', onPressed: () => Navigator.of(context).pop()),
             ],
           ),
@@ -136,9 +139,15 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)
         : switch (_stage) {
-            MissionStage.story => _StoryStage(key: const ValueKey('story'), mission: m, onOpened: _onLetterOpened),
-            MissionStage.letter =>
-              _LetterStage(key: const ValueKey('letter'), mission: m, onDone: () => _goTo(MissionStage.puzzle)),
+            MissionStage.story =>
+              _StoryStage(key: const ValueKey('story'), mission: m, onInvestigate: () => _goTo(MissionStage.letter)),
+            MissionStage.letter => _LetterStage(
+                key: const ValueKey('letter'),
+                mission: m,
+                opened: _letterOpened,
+                onOpened: _onLetterOpened,
+                onDone: () => _goTo(MissionStage.puzzle),
+              ),
             MissionStage.puzzle => _PuzzleStage(
                 key: const ValueKey('puzzle'),
                 mission: m,
@@ -152,40 +161,29 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('MISSION ${m.numberLabel}'),
         leading: IconButton(
           tooltip: 'Back to map',
-          icon: const Icon(Icons.map_rounded),
+          icon: const InkIcon(InkGlyph.back),
           onPressed: () => context.canPop() ? context.pop() : context.go(Routes.map),
         ),
         actions: [
           IconButton(
             tooltip: 'Detective notebook',
-            icon: const Icon(Icons.menu_book_rounded),
+            icon: const InkIcon(InkGlyph.notebook),
             onPressed: () => context.push(Routes.notebook),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpace.xs),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(10),
-          child: _StageDots(stage: solved ? null : _stage),
-        ),
       ),
       body: PaperBackground(
         child: SafeArea(
           top: false,
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600),
+              constraints: const BoxConstraints(maxWidth: 560),
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 350),
-                transitionBuilder: (child, anim) => FadeTransition(
-                  opacity: anim,
-                  child: SlideTransition(
-                    position: Tween(begin: const Offset(0.06, 0), end: Offset.zero).animate(anim),
-                    child: child,
-                  ),
-                ),
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
                 child: body,
               ),
             ),
@@ -196,36 +194,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   }
 }
 
-/// Three dots showing story → letter → puzzle.
-class _StageDots extends StatelessWidget {
-  const _StageDots({required this.stage});
-
-  final MissionStage? stage;
-
-  @override
-  Widget build(BuildContext context) {
-    if (stage == null) return const SizedBox(height: 10);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        for (final s in MissionStage.values)
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: s == stage ? 28 : 10,
-            height: 8,
-            decoration: BoxDecoration(
-              color: s.index <= stage!.index ? AppColors.gold : AppColors.parchmentDark,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _MissionHeader extends StatelessWidget {
-  const _MissionHeader({required this.mission});
+/// The place: its name, and the story's title in a quiet line below.
+class _PlaceHeading extends StatelessWidget {
+  const _PlaceHeading({required this.mission});
 
   final Mission mission;
 
@@ -233,104 +204,103 @@ class _MissionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(mission.location, style: AppText.logo(size: 30), textAlign: TextAlign.center),
-        const SizedBox(height: 4),
-        Text(mission.title, style: AppText.subtitle(color: AppColors.goldDeep), textAlign: TextAlign.center),
+        Text(
+          mission.location,
+          textAlign: TextAlign.center,
+          style: AppText.title(size: 26).copyWith(letterSpacing: 1.5),
+        ),
+        const SizedBox(height: AppSpace.xs),
+        Text(mission.title, textAlign: TextAlign.center, style: AppText.aside()),
       ],
     );
   }
 }
 
-// STEP 1 — the scene. One action: open the sealed letter.
+// STEP 1 — the place. One action: investigate.
 class _StoryStage extends StatelessWidget {
-  const _StoryStage({super.key, required this.mission, required this.onOpened});
+  const _StoryStage({super.key, required this.mission, required this.onInvestigate});
 
   final Mission mission;
-  final VoidCallback onOpened;
+  final VoidCallback onInvestigate;
 
   @override
   Widget build(BuildContext context) {
     final m = mission;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(22, 12, 22, 40),
+      padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.xxl),
       children: [
-        _MissionHeader(mission: m),
-        const SizedBox(height: 16),
-        AspectRatio(
-          aspectRatio: 16 / 10,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(26),
-              border: Border.all(color: AppColors.navy, width: 3),
-              boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 12, offset: Offset(0, 6))],
-            ),
-            child: LandmarkArt(m.scene, borderRadius: 23),
-          ),
+        _PlaceHeading(mission: m),
+        const SizedBox(height: AppSpace.xl),
+        // The scene, printed like a picture in a storybook.
+        PaperSheet(
+          padding: const EdgeInsets.all(AppSpace.sm),
+          tilt: -0.01,
+          child: AspectRatio(aspectRatio: 4 / 3, child: LandmarkArt(m.scene, borderRadius: 2)),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: AppSpace.xl),
         for (final (i, line) in m.story.indexed)
           _FadeIn(
-            delay: Duration(milliseconds: 200 + i * 450),
+            delay: Duration(milliseconds: 150 + i * 400),
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: AppSpace.sm),
               child: GlossaryText(line, style: AppText.bodyText(size: 19), textAlign: TextAlign.center),
             ),
           ),
-        _FadeIn(
-          delay: Duration(milliseconds: 200 + m.story.length * 450),
-          child: GlossaryText(
-            m.letterIntro,
-            style: AppText.bodyText(size: 18, weight: FontWeight.w800, color: AppColors.navy),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(height: 16),
-        EnvelopeReveal(letterText: m.letter, onOpened: onOpened),
+        const SizedBox(height: AppSpace.xl),
+        GameButton(label: 'INVESTIGATE', arrow: true, onPressed: onInvestigate),
       ],
     );
   }
 }
 
-// STEP 2 — read the letter. One action: go solve.
+// STEP 2 — the letter. One action at a time: open it, then go solve.
 class _LetterStage extends StatelessWidget {
-  const _LetterStage({super.key, required this.mission, required this.onDone});
+  const _LetterStage({
+    super.key,
+    required this.mission,
+    required this.opened,
+    required this.onOpened,
+    required this.onDone,
+  });
 
   final Mission mission;
+  final bool opened;
+  final VoidCallback onOpened;
   final VoidCallback onDone;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(22, 16, 22, 40),
+      padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.lg, AppSpace.screen, AppSpace.xxl),
       children: [
-        Text('THE LETTER', style: AppText.eyebrow(), textAlign: TextAlign.center),
-        const SizedBox(height: 16),
-        LetterCard(text: mission.letter),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.touch_app_rounded, size: 18, color: AppColors.royalBlue),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text('Tap a dotted word to see what it means.',
-                  style: AppText.caption(color: AppColors.royalBlue)),
-            ),
-          ],
+        GlossaryText(
+          mission.letterIntro,
+          style: AppText.bodyText(size: 19),
+          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 22),
-        GameButton(
-          label: 'I READ IT! SOLVE THE PUZZLE',
-          icon: Icons.extension_rounded,
-          style: GameButtonStyle.gold,
-          onPressed: onDone,
+        const SizedBox(height: AppSpace.xl),
+        EnvelopeReveal(letterText: mission.letter, initiallyOpen: opened, onOpened: onOpened),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: !opened
+              ? const SizedBox(key: ValueKey('sealed'), height: AppSpace.xl)
+              : Column(
+                  key: const ValueKey('open'),
+                  children: [
+                    const SizedBox(height: AppSpace.lg),
+                    Text('Tap a dotted word to see what it means.', style: AppText.caption(), textAlign: TextAlign.center),
+                    const SizedBox(height: AppSpace.xl),
+                    GameButton(label: 'SOLVE THE PUZZLE', arrow: true, onPressed: onDone),
+                  ],
+                ),
         ),
       ],
     );
   }
 }
 
-// STEP 3 — the puzzle. One action: answer (tips are optional helpers).
+// STEP 3 — the puzzle. One action: answer. The letter and tips are quiet
+// helpers, opened only when the detective wants them.
 class _PuzzleStage extends StatelessWidget {
   const _PuzzleStage({
     super.key,
@@ -351,28 +321,23 @@ class _PuzzleStage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tipLabel = nextTipLabel(mission.hints, hintsShown);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+      padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.xxl),
       children: [
-        Row(
+        GlossaryText(mission.question, style: AppText.title(size: 24), textAlign: TextAlign.center),
+        const SizedBox(height: AppSpace.xl),
+        ShakeOnChange(trigger: wrongPulse, child: child),
+        const SizedBox(height: AppSpace.lg),
+        DetectiveTipNotes(hints: mission.hints, revealed: hintsShown),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: AppSpace.sm,
           children: [
-            const Icon(Icons.extension_rounded, color: AppColors.goldDeep),
-            const SizedBox(width: 8),
-            Expanded(child: Text('PUZZLE · ${mission.location}', style: AppText.eyebrow())),
-            TextButton.icon(
-              onPressed: onReread,
-              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-              icon: const Icon(Icons.mail_rounded, color: AppColors.royalBlue),
-              label: Text('Letter', style: AppText.button(size: 15, color: AppColors.royalBlue)),
-            ),
+            InkTextButton(label: 'Letter', glyph: InkGlyph.letter, onPressed: onReread),
+            if (tipLabel != null) InkTextButton(label: tipLabel, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onHint),
           ],
         ),
-        const SizedBox(height: 6),
-        GlossaryText(mission.question, style: AppText.title(size: 25)),
-        const SizedBox(height: 18),
-        ShakeOnChange(trigger: wrongPulse, child: child),
-        const SizedBox(height: 22),
-        TipsPanel(hints: mission.hints, revealed: hintsShown, onReveal: onHint),
       ],
     );
   }
@@ -389,50 +354,25 @@ class _SolvedStage extends ConsumerWidget {
     final clues = ref.watch(gameControllerProvider).collectedClues(episode);
     final m = mission;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(22, 12, 22, 40),
+      padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.xxl),
       children: [
-        _MissionHeader(mission: m),
-        const SizedBox(height: 18),
-        Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: AppColors.successSoft,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.success, width: 2),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.verified_rounded, color: AppColors.success, size: 36),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('MISSION SOLVED', style: AppText.eyebrow(color: AppColors.success)),
-                    Text(m.successMessage, style: AppText.bodyText(size: 16)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
+        _PlaceHeading(mission: m),
+        const SizedBox(height: AppSpace.lg),
+        const Center(child: InkStamp('SOLVED', color: AppColors.success)),
+        const SizedBox(height: AppSpace.md),
+        Text(m.successMessage, style: AppText.bodyText(), textAlign: TextAlign.center),
+        const SizedBox(height: AppSpace.xl),
         LetterCard(text: m.letter),
         if (m.clue != null) ...[
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           ClueCard(clue: m.clue!, index: clues.indexWhere((c) => c.id == m.clue!.id), location: m.location),
         ],
         if (m.evidence != null) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           SizedBox(height: 170, child: EvidenceTile(evidence: m.evidence!, location: m.location)),
         ],
-        const SizedBox(height: 20),
-        GameButton(
-          label: 'BACK TO MAP',
-          icon: Icons.map_rounded,
-          style: GameButtonStyle.gold,
-          onPressed: () => context.go(Routes.map),
-        ),
+        const SizedBox(height: AppSpace.xl),
+        GameButton(label: 'BACK TO MAP', onPressed: () => context.go(Routes.map)),
       ],
     );
   }
@@ -461,15 +401,6 @@ class _FadeInState extends State<_FadeIn> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: _visible ? 1 : 0,
-      duration: const Duration(milliseconds: 500),
-      child: AnimatedSlide(
-        offset: _visible ? Offset.zero : const Offset(0, 0.3),
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
-        child: widget.child,
-      ),
-    );
+    return AnimatedOpacity(opacity: _visible ? 1 : 0, duration: const Duration(milliseconds: 400), child: widget.child);
   }
 }
