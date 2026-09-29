@@ -4,8 +4,8 @@
 > README.md(사용자/운영자용 안내)와 달리, 이 파일은 **다음 개발 세션이 현재 상태를 정확히 파악하기 위한 문서**다.
 > 새 세션은 반드시 이 파일을 먼저 읽고, 아래 *Session Continuity Protocol*을 따른다.
 >
-> 최종 검증일: 2026-09-28 (실제 소스 전수 확인 + `flutter analyze` + `flutter test` 기준)
-> 마지막 작업: Phase 2 안정화 — 플레이 시간 / Parent Gate lifecycle / 보호자 리포트 보호 (Change Log 참고)
+> 최종 검증일: 2026-09-29 (`flutter analyze` 0 issues + `flutter test` **253개** 통과 + Android 에뮬레이터 실기 QA)
+> 마지막 작업: **Phase 4 — 실제 플레이 테스트 준비 + Visual Polish** (아래 *Phase 4* 및 Change Log 참고)
 
 ---
 
@@ -18,7 +18,7 @@
 | 목적 | 8~12세 어린이용 **오프라인 탐정 미션 게임**. 실제 놀이 공간(체험관/행사장)에서 진행자가 운영할 수 있는 형태 |
 | 핵심 컨셉 | 런던에서 사라진 왕관을 쫓는 탐정이 되어, 영어로 된 편지·단서를 읽고 퍼즐을 풀어 사건을 해결 |
 | Target User | 8~12세 어린이 (플레이어) / 보호자 (결과 리포트) / 현장 운영자 (Game Master) |
-| 현재 개발 단계 | Phase 2 — Game Experience Enhancement **구현 완료** 상태 (다음 Phase 미확정) |
+| 현재 개발 단계 | Season 1(Case 01~12) 구현·QA 완료, **Phase 4 플레이 테스트 준비 완료** — 다음: 실제 아이 플레이 테스트 (다음 Phase 미확정) |
 
 ### 핵심 경험
 
@@ -48,6 +48,9 @@ STORY → EXPLORATION → PUZZLE → DISCOVERY → REWARD
   - `flutter analyze` → **No issues found**
   - `flutter test` → **41개 테스트 전부 통과** (타이틀 → 케이스 리포트까지 전체 플레이스루 위젯 테스트 포함)
 - 다음 Phase: **미확정** (아래 *Next Development Goal* 참고)
+- **2026-09-29 Season 1 콘텐츠 추가**: Case 02~12 구현, 멀티 케이스 저장/잠금 해제 구조. `flutter analyze` 0 issues, `flutter test` **116개 통과**, Android 에뮬레이터(API 34)에서 Case 01 구세이브 → Case 02 해금 → Case 02 전체 플레이 → 재시작 후 복구 → Case 03 해금 확인
+- **2026-09-29 Season 1 QA**: P0 0 · P1 7 수정 · P2 9 수정, Notebook CASE ARCHIVE, OPEN MY NOTEBOOK 가독성. `flutter analyze` 0 issues, `flutter test` **236개 통과**
+- **2026-09-29 Phase 4 (Playtest Preparation & Visual Polish)**: 남은 P2 3건 + 새로 찾은 P2 2건 수정, Game Master 플레이 테스트 도구, 8~12세 체크리스트, Visual Asset Inventory, 그림 교체 구조(`ArtAssets`). `flutter analyze` 0 issues, `flutter test` **253개 통과**
 
 ---
 
@@ -107,7 +110,7 @@ STORY → EXPLORATION → PUZZLE → DISCOVERY → REWARD
 - [ ] 난이도 선택 / 연령별 콘텐츠 분기
 - [ ] TTS 또는 녹음된 음성 내레이션, BGM
 - [ ] Episode 02 이후 콘텐츠
-- [ ] 이미지 asset 기반 일러스트 (현재 전부 CustomPainter; `Artwork` enum 키로 추후 URL 대체 가능하게 설계만 됨)
+- [ ] 이미지 asset 기반 일러스트 — **교체 구조는 준비됨**(`ArtAssets`, 2026-09-29), 실제 그림 파일은 아직 없음 (`docs/art/VISUAL_ASSET_INVENTORY.md`)
 - [ ] 백엔드 / 계정 / 클라우드 동기화 (의도적으로 없음 — 명시 요청 전에는 도입 금지)
 - [ ] 다국어(l10n) 프레임워크 — UI 영어 + 보호자/운영자 문구 한국어가 코드에 직접 작성됨
 - [ ] 다중 플레이어(한 기기 여러 프로필) — 기기당 한 명, Game Master에서 초기화
@@ -164,7 +167,7 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 |---|---|---|
 | `/` | StartScreen | 항상 |
 | `/register` | RegisterScreen | 항상 |
-| `/episodes` | EpisodeSelectScreen | 탐정 등록 필요 |
+| `/episodes` (`?case=epNN`) | EpisodeSelectScreen (`case`: 그 사건 폴더를 열고 선택한 채 스크롤. 봉인/모르는 id는 무시) | 탐정 등록 필요 |
 | `/intro` | StoryIntroScreen | 탐정 등록 필요 |
 | `/map`, `/notebook`, `/scan` | 지도 / 노트북 / QR 스캐너 | + introSeen |
 | `/mission/:id` | MissionScreen | + 해금된 일반 미션만 (final 불가) |
@@ -190,7 +193,7 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 
 ## Episode
 
-### Episode 01 — The Missing Crown (`ep01`) — **유일하게 구현된 에피소드**
+### Episode 01 — The Missing Crown (`ep01`) — Season 1의 첫 사건 (데이터·정답·로직 변경 없음)
 
 **Story**: 런던 Royal Archive에서 왕관이 사라졌다(밤 10:42). 도둑 "The Shadow"가 도시 곳곳에 단서를 남겼고, 플레이어는 탐정으로 선택되어 단서를 추적한다.
 
@@ -210,6 +213,121 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 - Glossary: 43개 단어 (영어 소문자 → 한국어 뜻), `'s` 소유격 처리
 - 미션별 skills: vocabulary / reading / problemSolving (보호자 리포트 별점 계산용)
 - 지도 핀 위치: `mapX`, `mapY` (0..1 비율)
+
+---
+
+## Season 1 (2026-09-29 추가)
+
+12개 사건 모두 **구현 완료** (데이터 + 전체 진행 테스트). 각 사건 = 일반 미션 3개 + Final 1개 (Opening → 장소 3곳(단서·퍼즐·증거) → Final Case → Case Solved → Season Hook). Episode 01만 5+1 구조.
+
+### 시즌 스토리 줄기
+모든 사건의 증거에 작은 까마귀 표식 → 비밀 조직 **Raven Society**(Case 04에서 이름 판명) → 명령을 내리는 **the Clockmaker**(Case 12). Case 01의 도둑 **The Shadow**는 Case 11에서 가면 쓴 인물로 재등장해 조력자가 됨. Case 06의 정체불명 인물은 적이 아니라 **Inspector Grey**(Case 03 방문객 명단에 "Mr Grey"로 복선). Case 03의 도둑 **Miss Rose** = Case 06 붉은 모자 여인 = Case 08 **Mrs Robin**(빨간 단추가 빠진 코트로 입증). 시즌 마지막: Clockmaker는 사라지고 **PARIS**가 새겨진 시계만 남음 → Season 2 훅.
+
+### Case 목록
+| # | id | 제목 | 장소 | 핵심 퍼즐 방식 | 미션 타입 (m1 / m2 / m3 / final) | Final 정답 | Case Badge |
+|---|---|---|---|---|---|---|---|
+| 01 | ep01 | The Missing Crown | 런던 전역 | 그림 자물쇠 | (기존 5+1) | 7924 | — |
+| 02 | ep02 | The Silent Clock | Westminster / Big Ben | 시계 읽기·시간 | numberCode `817` / MC / **sequence** / finalCode `917` | 9:17 | Clock Watcher |
+| 03 | ep03 | The Vanishing Painting | British Museum | 사물 묘사·색·위치 | MC / MC / sequence(젖은→마른 발자국) / imageChoice | King's Cross | Evidence Hunter |
+| 04 | ep04 | The Secret Letter | King's Cross | 편지 읽기 | MC(영업시간) / MC(RED·FOUR·CLOCK·PLATFORM) / imageChoice(소인) / wordInput | RAVEN | Letter Reader |
+| 05 | ep05 | The Locked Room | Tower of London | 명령문·방향 | MC / sequence(L·R·L·R) / wordInput `SEVEN` / finalCode | 745 | Code Breaker |
+| 06 | ep06 | The Midnight Detective | Covent Garden | 목격자 비교 | MC / wordInput `GREY` / numberCode(차이 4개) / MC | Inspector Grey | — |
+| 07 | ep07 | The Lost Map | Hyde Park | 지도·전치사 | imageChoice(공원 지도) / MC(behind) / sequence(위→아래) / imageChoice | 옛 문(old gate) 지도 | Map Master |
+| 08 | ep08 | The Mystery on Platform 9 | King's Cross | 질문·대답 | MC(질문 고르기) / wordInput `ROBIN` / numberCode `429` / MC(증거로 반박) | 단추 증거 | — |
+| 09 | ep09 | The Missing Jewel | Buckingham Palace | 소유·논리 | MC(누구의 열쇠) / wordInput `ANNA` / numberCode `12` / wordInput | HAT | — |
+| 10 | ep10 | The London Raven | Tower of London | 단어 순서·숨은 메시지 | MC / sequence(요일) / imageChoice / sequence(문장) | THE CLOCKMAKER WILL STOP BIG BEN AT MIDNIGHT | — |
+| 11 | ep11 | The Masked Stranger | Covent Garden 극장 | 묘사 비교·정체 | MC / wordInput(거꾸로 `MIDNIGHT`) / imageChoice / MC | The Shadow | — |
+| 12 | ep12 | The Midnight Case | 런던 전역 | 시즌 단서 종합 | MC / numberCode `1140` / wordInput `BIG BEN` / finalCode | 487 | London Legend |
+
+- 정답 전체는 Game Master 화면의 "정답표"(현재 열린 사건 기준)와 각 `episodeNN_mock.dart` 파일 상단 설계 주석 참고
+- Case 12는 이전 사건 지식을 요구(Case 02 까마귀 톱니, Case 04 빨간 시계 = 4번 승강장, Case 05 까마귀 7마리·Brass Key, Case 10 경고문). 기억이 안 나면 힌트가 해당 Case 번호를 짚어준다
+- QR 미션은 새 사건에 넣지 않음(현장 카드 준비가 필요해서) — 테스트로 강제
+
+### 구조 (Episode 추가 방법)
+1. `lib/data/mock/season1/episodeNN_mock.dart`에 Episode 01과 **같은 JSON 모양**으로 작성 (위젯 코드 없음 → JSON/원격 전환 가능)
+2. `season1_mock.dart`의 `season1Json`에 등록 → `MockEpisodeRepository`가 번호순 카탈로그로 제공
+3. (선택) 사건 배지: `GameBadge`에 `episodeId: 'epNN'`으로 추가
+4. `test/season_content_test.dart`가 자동 검증: 순서/ID 중복, 정답 풀이 가능, 힌트 1~2개, 증거·단서·transition, MC 선택지 ≥3, imageChoice 장면 그림이 정답을 노출하지 않음, **힌트가 정답을 직접 말하지 않음**, **인트로·장면 문장이 입력 정답을 미리 말하지 않음**, 사건당 퍼즐 타입 ≥3종, 모르는 심볼 없음, JSON 왕복
+
+### 새/변경된 모델 필드 (모두 선택값, Episode 01 JSON은 그대로)
+- `Episode.caseSummary` / `keyWords` / `hook` — 리포트 문장, 보호자 코멘트 핵심 단어, Case Solved 화면 시즌 훅. 없으면 Episode 01의 기존 문구
+- `MissionType.sequence` — 선택지를 순서대로 탭 (정답 = id를 `,`로 연결). 선택지 수 < `codeLength`면 재사용 가능(LEFT/RIGHT), 아니면 1회씩
+- `Mission.finale` — `Episode.fromJson`이 `finalMission`에 설정. Final Case가 어떤 퍼즐 타입이든 될 수 있음 (`isFinal = finale || type == finalCode`)
+- `Mission.answerLabel` — Game Master 정답표용
+- 새 `Artwork`: clockFace, gallery, towerOfLondon, lockedDoor, coventGarden, theatre, raven, jewelCase, parkMapA~D (LandmarkArt 잉크 스타일로 직접 그림)
+- 새 `InkGlyph`(18개): clock, gear, key, footprint, button, cloth, map, ticket, feather, mask, gem, bag, raven, umbrella, seal, frame, whistle, train
+
+---
+
+## Season 1 QA (2026-09-29)
+
+**범위**: Case 01~12 전 텍스트(인트로·스토리·편지·질문·선택지·정답·힌트·증거·전환·훅) 수검 / 잠금·저장·보상 코드 경로 / 화면 전체(에뮬레이터 실기 + 360×640 자동 렌더 101화면) / 회귀 테스트.
+
+**Case별 결과**: 12개 사건 모두 통과. Case 01은 데이터·정답·로직 변경 없음 (구버전 실세이브로 에뮬레이터에서 끝까지 플레이: XP 510→1120, 기존 배지 6개, Royal Box 엔딩 동일).
+
+**발견·수정 (P0 0 / P1 7 / P2 9)**
+| P | 위치 | 문제 | 수정 |
+|---|---|---|---|
+| P1 | Final 화면 (전 사건) | OPEN MY NOTEBOOK 밤 배경 대비 부족 | 공통 `GameButton.outline` 표면 인식 |
+| P1 | Case 08 Final | 편지 마지막 줄이 정답 선택지를 그대로 말함 | 줄 삭제, 힌트 → Archive |
+| P1 | 공통 단어 입력 | 빈칸이 데이터와 무관하게 항상 5칸 (Case 09 "four letters"인데 5칸) | 프롬프트의 빈칸 유지 (Case 01은 5칸이라 동일), Case 09·12 빈칸 수 정정, 규칙 테스트 |
+| P1 | Case Solved (Case 12) | 마지막 사건 후 Case Files로 갈 길 없음 | "CASE FILES" 버튼 |
+| P1 | Notebook EVIDENCE (Case 01 포함, 기존) | 360dp 폰에서 증거 타일 overflow | `EvidenceTile`이 공간 부족 시에만 그림 축소 |
+| P1 | Case Archive | 증거 타일 overflow (좁은 폴더 안) | 고정 높이 그리드 |
+| P1 | Case 12 | 이전 사건 증거를 볼 수 없음 | CASE ARCHIVE |
+| P2 | Case 03 M2 | 파란 천 위치 모순 (액자 위 ↔ Egypt Room) | "같은 천의 다른 조각" |
+| P2 | Case 07 M1 | 증거 "Park Map Piece" ↔ M3 "river piece" | "River Map Piece" |
+| P2 | Case 12 M2 | 힌트 "without the dots" | "as four numbers" |
+| P2 | Case Files | Play again 하면 SOLVED 도장 사라짐 | 시즌 해결 기록 기준 |
+| P2 | Archive / Case Files | 긴 제목이 도장에 붙음 | 간격 |
+| P2 | Case 07 지도 그림 | 그림 글자(A~D)가 옛 문 그림을 가림 | 문·길 위치 이동 |
+| P2 | Final 자물쇠 | 톱니 심볼 테두리 = 황동 다이얼 색 | 잉크 갈색 |
+| P2 | Case 08·11·12 | 과거 사건 기억 의존 | 힌트가 Archive의 해당 Case를 가리킴 |
+| P2 | Case Solved | "OPEN CASE NN"이 임시 잉크 링크 | 공통 outline 버튼으로 통일 |
+
+**유지 판단 (설계 의도)**: Case 11 M3가 Case 03 Final과 같은 King's Cross 그림 선택(“I love trains” 복선) / Case 12 M3 정답(Big Ben)이 맥락상 추측 가능(수수께끼 읽기가 핵심) / 일부 힌트 2단계가 꽤 직접적(8~12세 진행 보장, 정답 문자열 자체는 없음 — 테스트로 강제).
+
+**UI — OPEN MY NOTEBOOK**: `PaperBackground(night: true)`가 `InkSurface(night)`를 내려주고 `PaperSheet`는 종이로 재설정. `GameButton.outline`만 이를 읽음: 종이 = 기존 ink / 밤 = `goldLight` 글자·아이콘 + gold 테두리 (navy 대비 4.5:1 이상 테스트). 크기·아이콘 위치·pressed/disabled 동작 불변 (테스트). Case 01~12 동일 스타일, 사건별 분기 없음. 바텀시트(별도 route)는 종이로 처리.
+
+**Tests**: 기존 116 → **236** (+120). `season_screens_test`(12 Case × 모든 미션 story/puzzle + Final + Notebook + Archive, 360×640 실제 폰트, 레이아웃 오류 시 실패, `LM_SCREENSHOTS=폴더`로 PNG 저장), `season_archive_test`(Archive 상태·Case 12 열람·Play again 무중복·Case 01 세이브 호환·잠금·Notebook 이동/복귀·Final 시트 → Archive·Case Solved → Notebook → Back·마지막 사건 CASE FILES), `game_button_surface_test`, 프롬프트 빈칸 규칙.
+
+**Emulator QA (API 34)**: FLOW A Case 01 구세이브 끝까지 / FLOW C Archive / FLOW D Case 12(미션 → Archive → 복귀 → 앱 재시작 복구 → Final → 시트 → Archive → 해결 → CASE FILES) / FLOW E 잠긴 사건 / Case 07 지도 퍼즐. Case 03~11은 전 화면 자동 렌더 + 일부 실기. 끝난 뒤 에뮬레이터 세이브를 원본으로 복원(바이트 동일 확인).
+
+---
+
+## Phase 4 — Playtest Preparation & Visual Polish (2026-09-29)
+
+**원칙**: 게임 로직·정답·범인·결말·저장 키·Case 01 데이터 변경 없음. 새 dependency·상태 관리 없음.
+
+**P2 수정 (Season 1 QA에서 남긴 3건)**
+| 위치 | 문제 | 수정 |
+|---|---|---|
+| Case 02 Final | 해결 후에도 시계 8:17 | `LandmarkArt(solved: 0~1)`: 해결 애니메이션 진행도로 바늘이 9:17까지 돌아감. Case Solved 사진은 `solved: 1`. 다른 장면은 무시(픽셀 동일 테스트) |
+| 시퀀스 퍼즐 | Undo/Start again 비활성 구분 없음 | 공통 `InkTextButton`: `onPressed == null`이면 글자·아이콘 `AppColors.locked` |
+| Case Solved → Case Files | OPEN CASE NN 후 다음 사건 미선택 | `Routes.caseFile(id)` = `/episodes?case=id`. 폴더 열림 + 선택 + `Scrollable.ensureVisible`. 봉인·모르는 id는 무시. 마지막 사건의 CASE FILES는 기존 `/episodes` |
+
+**작업 중 새로 찾아 수정한 P2**
+- Case Files가 `ListView`(지연 생성)라 화면 밖 사건(예: Case 07)으로 스크롤되지 않음 → 에뮬레이터에서 발견. 12개 폴더를 한 번에 만드는 `SingleChildScrollView + Column`으로 변경, 360×640 테스트 추가
+- 밤 배경 초승달이 인트로 `SKIP ›`(오른쪽 위 액션) 뒤에 겹쳐 읽기 어려움 → 공통 `PaperBackground`에서 달을 앱바 줄 아래(최소 130dp)로 이동. 모든 밤 화면에 같이 적용
+
+**실제 플레이 준비 (게임 로직 변경 없음)**
+- `lib/features/game_master/playtest_tools.dart`: `playtestToolsEnabled = kDebugMode || bool.fromEnvironment('LM_PLAYTEST')`. 일반 release 빌드에서는 보이지 않음
+- Game Master(기존 Parent Gate 뒤) → **플레이 테스트 도구**
+  - `CASE NN부터`: 확인 창 → `resetAll()` → 앞 사건을 완료 세이브 + 시즌 해결로 기록(힌트·배지 없음, Archive에 증거 표시) → 해당 사건 새 세이브(이름 유지, 없으면 `TESTER`) → `/episodes?case=` 로 이동
+  - `지금 사건 처음부터`: 기존 `playAgain()`과 같음(이 사건만 초기화)
+- QR이 필요한 사건은 Case 01뿐. Case 02~12는 기기만으로 플레이 가능
+- 체크리스트: `docs/playtest/SEASON1_PLAYTEST_CHECKLIST.md` (준비 방법, 공통 10항목, 사건별 관찰 포인트·기록표)
+
+**Visual Asset Inventory / 교체 구조**
+- 목록·사양·우선순위: `docs/art/VISUAL_ASSET_INVENTORY.md`
+- `lib/widgets/art_assets.dart` `ArtAssets` (`scenes`, `solvedScenes`, `symbols`, `badges` — 현재 모두 비어 있음 = 화면 변화 없음)
+- `LandmarkArt`: 파일 → 코드 그림. `InkMark`: 파일(한 색, `srcIn` 틴트) → 글리프 → 모노그램. `GameSymbol.of`, `BadgeMedal`이 `InkMark`로 전달. 파일 오류 시 `errorBuilder`로 코드 그림
+- 새 `Artwork` 키 6개(`boathouse`, `roseGarden`, `waitingRoom`, `staffRoom`, `courtyard`, `dressingRoom`)를 데이터에서 사용. 그림 전에는 `LandmarkArt.standIns`의 기존 장면을 그대로 그림(픽셀 동일 테스트)
+- PNG/WebP/JPEG만 (SVG는 새 dependency 필요 → 사용 안 함)
+
+**Tests**: 236 → **253** (+17). `phase4_polish_test`(시계 solved 상태·픽셀 차이, Case Solved 사진, Undo 비활성 색, OPEN CASE 02 선택·열림·BEGIN, 360×640에서 OPEN CASE 07 스크롤, 봉인/모르는 id 무시), `playtest_tools_test`(도구 노출, CASE 07부터 → 시즌·Archive·배지/힌트 없음·인트로부터, 지금 사건 처음부터 → 다른 사건 세이브 불변, 이름 없는 기기), `art_assets_test`(stand-in 픽셀 동일, 모든 장면 렌더, 여섯 장소 키 사용, 등록 파일 존재·pubspec·확장자·키 유효, 파일 없을 때 글리프/모노그램 폴백). 기존 테스트 1곳(`season_playthrough_test`)만 새 동작에 맞춰 수정: OPEN CASE 03 뒤 폴더가 이미 열려 있으므로 폴더를 다시 탭하지 않음(검증 항목은 유지 + BEGIN INVESTIGATION 추가)
+
+**Emulator (API 34, debug APK)**: Game Master → 플레이 테스트 도구 표시 → `CASE 07부터` → Case Files에서 Case 07 열림·선택·화면 안(수정 후) → BEGIN → 인트로(달이 SKIP과 겹치지 않음). 시작 전 세이브 백업 → 끝난 뒤 복원(바이트 동일 확인, "Welcome back, Detective KIM!")
 
 ---
 
@@ -237,18 +355,24 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 | puzzleSolver | Puzzle Solver | 3개 이상 해결 (Final 포함 카운트) |
 | londonExplorer | London Explorer | 일반 미션 5개 모두 해결 |
 | masterDetective | Master Detective | 사건 해결 (Final 해결) |
+| clockWatcher / evidenceHunter / letterReader / codeBreaker / mapMaster / londonLegend | (Case Badge) | 각각 Case 02 / 03 / 04 / 05 / 07 / 12 해결 |
 - 정답 제출 시 조건 검사 → 신규 배지는 `badgeIds`에 획득 순서대로 추가, 성공 오버레이에 "NEW BADGE!" 표시
+- 배지는 **사건별**(각 사건의 `GameProgress.badgeIds`). `GameBadge.forEpisode(e)` = 공통 6개 + 그 사건의 Case Badge. Episode 01 배지 선반은 기존 6개 그대로 (테스트로 고정)
+- 리포트 대표 배지: 그 사건의 Case Badge → 없으면 Master Detective → 없으면 마지막 획득
 
 ### Evidence
 - 각 미션 데이터의 `evidence` (id, name, icon, description, inscription?, symbols[])
 - 별도 저장 없이 `completedMissionIds` 순서에서 파생 (`collectedEvidence`)
 - 노트북 EVIDENCE 탭 / 최종 미션 노트북 시트에서 탭 → 확대(`showEvidenceZoom`), inscription·symbols 표시
 
-### Detective Notebook
-- CLUES: 발견 순서의 단서 카드(심볼·값·장소·메모) + 미발견 슬롯
-- EVIDENCE: 2열 그리드 + 잠금 슬롯
-- BADGES: 6개 메달 (획득/미획득)
-- 커버: 탐정 이름 + 총 XP
+### Detective Notebook (2026-09-29: 두 "쪽" 구조)
+수첩 상단의 **THIS CASE / CASE ARCHIVE** (Cinzel 글자 + 잉크 밑줄, Material 탭 아님). 같은 route 안의 상태 전환이라 닫으면 진행 중 화면이 그대로 (미션 단계·열린 팁·Final 스크롤 유지 — 테스트·실기 확인).
+- **THIS CASE** (기존 그대로): 커버(탐정 이름 + 현재 사건 XP) + CLUES / EVIDENCE / BADGES(공통 6개 + 그 사건 Case Badge)
+- **CASE ARCHIVE** (`features/notebook/season_archive.dart`): 12개 사건을 기존 `CaseFolder`로 나열, 펼치면 EVIDENCE(기존 `EvidenceTile`, 탭 → 기존 확대 화면) + CLUES(기존 `ClueCard`)
+  - 상태: `SOLVED`(시즌 해결 기록) → 그 사건의 **전체** Evidence·Clues (해결했으니 모두 찾은 것 — Play again 중에도 유지) / `THIS CASE` → 지금까지 찾은 것 / `OPEN` → 다른 진행 중 사건, 그 사건 세이브에서 읽음 / "Not opened yet." / `SEALED` → 내용 없음
+  - **새 저장 키 없음**: `lm.season.v1` + `lm.progress.v1[.epNN]` + 에피소드 데이터에서 계산 (`seasonArchiveProvider`)
+- 진입: 모든 화면의 Notebook → CASE ARCHIVE, 라우트 `/notebook?view=archive`(`Routes.archive`), Final 화면 "OPEN MY NOTEBOOK" 시트 하단 "OPEN THE CASE ARCHIVE"(이전에 해결한 사건이 있을 때만 → Case 01 첫 플레이 시트는 기존 그대로)
+- Case 12 사용: M2 힌트 "Open Case 04 in your Case Archive…"(빨간 시계 = Platform 4), Case 08·11 Final 힌트도 Archive의 Case 03 Red Button / Case 01 Old Letter를 가리킴
 
 ### Mission Unlock
 - `GameProgress.isUnlocked`: 이미 해결했거나 = `currentMission`(아직 안 푼 첫 번째 일반 미션, 모두 풀면 Final)
@@ -271,10 +395,15 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 - 라우터 가드: `/report`는 통과권이 있을 때만 열린다. `/report`가 아닌 location으로 이동하면 redirect에서 통과권을 회수한다(웹 브라우저 이동이나 URL 입력 대비. go_router는 `go()`로 교체된 push의 Future를 완료하지 않기 때문)
 - 결과적으로 매번 보호자 확인이 필요하고, URL·딥링크·재시작·뒤로가기 후 재접근으로는 우회할 수 없다 (테스트로 검증)
 
-### Persistence (`lm.progress.v1`, `lm.settings.sound`)
+### Persistence (`lm.progress.v1`, `lm.progress.v1.epNN`, `lm.season.v1`, `lm.settings.sound`)
 `GameProgress` 필드: detectiveName, introSeen, completedMissionIds(해결 순서, final 포함), attempts, wrongAnswers, hintsUsed, missionStartedAt, missionStartPlayMillis, solveSeconds, badgeIds, lookedUpWords, startedAt, completedAt, playMillis
-- Play again: 이름만 유지하고 사건 초기화 (`resetCase`)
-- Reset all: 전부 삭제 (Start 화면 "Start a new case", Game Master 초기화)
+- **사건별 저장**: Episode 01은 기존 키 `lm.progress.v1` 그대로(이전 세이브 호환), 나머지는 `lm.progress.v1.ep02` … (`AppConstants.progressKeyFor`)
+- **시즌 기록** `lm.season.v1` = `SeasonProgress { activeEpisodeId, solvedEpisodeIds }`. 해결 기록은 사건 세이브가 아니라 여기에 남아 **다시 하기(Play again)를 해도 다음 사건이 잠기지 않음**
+- 이전 버전 세이브 마이그레이션: 시즌 기록이 없고 ep01이 해결돼 있으면 ep01을 solved로 간주 (`SeasonNotifier.build`) — 에뮬레이터의 실제 구버전 세이브로 확인
+- 사건 전환: `GameController.openEpisode(id)` — 잠긴 사건은 **컨트롤러에서 거부**(UI만의 검사 아님), 떠나는 사건의 플레이 시간을 먼저 저장, 탐정 이름을 대상 사건 세이브로 복사, `seasonProvider.open()` → 컨트롤러가 대상 사건 세이브로 rebuild
+- `currentEpisodeProvider`는 이제 `seasonProvider.activeEpisodeId` + `episodeCatalogProvider`에서 파생 (main에서 카탈로그를 override)
+- Play again: 이름만 유지하고 **현재 사건만** 초기화 (`resetCase`)
+- Reset all: 모든 사건 세이브 + 시즌 기록 삭제, Case 01로 복귀 (Start 화면 "Start a new case", Game Master 초기화)
 
 ### Reports (`detective_report.dart`)
 - 미션 점수 = `1.0 − 0.2×min(오답,3) − 0.15×힌트`, 0.3~1.0으로 clamp → 스킬별 평균 × 5 → 별 1~5
@@ -319,8 +448,8 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 |---|---|---|
 | Fonts | `assets/fonts/Cinzel.ttf`, `Fredoka.ttf`, `Nunito.ttf` | SIL OFL, 로컬 번들 (`AppText.display/heading/body`) |
 | Audio | `assets/sounds/tap.wav`, `success.wav`, `wrong.wav`, `unlock.wav`, `clue.wav`, `final.wav` | `tool/gen_sounds.js`로 생성한 합성음 |
-| Images | **없음** | 랜드마크·지도·Royal Box·증거 아이콘 모두 CustomPainter (`widgets/landmark_art.dart`, `london_map_painter.dart`, `final_mission_screen.dart`) |
-| Icons | Material Icons + 이모지 일부 | 앱 런처 아이콘은 Flutter 기본값 |
+| Images | **없음** | 랜드마크·지도·Royal Box·증거 아이콘 모두 CustomPainter (`widgets/landmark_art.dart`, `london_map_painter.dart`, `final_mission_screen.dart`). PNG 교체 지점: `widgets/art_assets.dart` (*Phase 4* 참고) |
+| Icons | Ink Icon System (`InkGlyph`, `widgets/ink_icon.dart`). 예외: QR 스캐너 화면에 Material 아이콘 3개(손전등·카메라 없음·카메라 꺼짐)가 남아 있음. 그림이 없는 심볼·배지는 모노그램 | 앱 런처 아이콘은 별도 커밋에서 통일 |
 | Animations | **asset 없음** | Flutter 내장 애니메이션(AnimationController, Tween, AnimatedSwitcher)만 사용 |
 
 pubspec에 등록된 asset 디렉터리는 `assets/sounds/` 뿐이다 (폰트는 `fonts:` 섹션).
@@ -350,8 +479,9 @@ pubspec에 등록된 asset 디렉터리는 `assets/sounds/` 뿐이다 (폰트는
 ```bash
 flutter pub get
 flutter run
-flutter analyze        # 2026-09-28: No issues found
-flutter test           # 2026-09-28: 41 tests passed
+flutter analyze        # 2026-09-29: No issues found
+flutter test           # 2026-09-29: 253 tests passed
+flutter build apk --dart-define=LM_PLAYTEST=true   # 플레이 테스트 도구가 보이는 빌드 (Phase 4)
 node tool/gen_sounds.js  # 효과음 재생성
 ```
 
@@ -376,7 +506,13 @@ node tool/gen_sounds.js  # 효과음 재생성
 - [ ] **런처 아이콘·스플래시 기본값**
 - [ ] **README와 실제 플랫폼 불일치** — README는 QR이 macOS에서 동작한다고 하지만 `macos/` 폴더가 없음
 - [ ] **Game Master 접근 권한이 세션 동안 유지됨** — `gameMasterAccessProvider`는 한 번 통과하면 앱을 끌 때까지 true. 모바일에서는 UI가 매번 Parent Gate를 요구하지만, 웹에서는 통과 후 `/game-master` URL로 다시 들어갈 수 있음 (이번 범위 밖, 기존 동작)
-- [ ] **EP02 "Coming soon" 카드 하드코딩** — 에피소드 목록이 데이터(`availableEpisodeIds`)와 연결되어 있지 않음
+- [x] ~~**EP02 "Coming soon" 카드 하드코딩**~~ — 2026-09-29 Case Files가 카탈로그(`episodeCatalogProvider`)와 연결됨
+- [x] ~~**Final 화면 "OPEN MY NOTEBOOK" 버튼 가독성**~~ — 2026-09-29 공통 `GameButton.outline`이 밤 배경을 인식해 gold ink로 전환 (*Season 1 QA → UI* 참고)
+- [x] ~~**Notebook은 사건별**~~ — 2026-09-29 CASE ARCHIVE 추가, Case 12에서 이전 사건 Evidence·Clues 열람 가능
+- [x] ~~**Case Files에서 방금 해결한 사건의 다음 사건이 자동 선택되지 않음**~~ — 2026-09-29 `/episodes?case=epNN`: 폴더 열림 + 선택 + 스크롤 (*Phase 4*)
+- [x] ~~(경미) Case 02 Final 해결 후에도 시계가 8:17~~ — 2026-09-29 해결 애니메이션과 함께 9:17로 돌아감 (`LandmarkArt.solved`)
+- [x] ~~(경미) 시퀀스 퍼즐의 Undo/Start again 비활성 구분 없음~~ — 2026-09-29 공통 `InkTextButton`이 비활성일 때 `locked` 회색
+- [ ] (경미) **CONTINUE ADVENTURE로 Case Files에 들어오면 인트로를 아직 안 본 사건은 선택되지 않음** — 기존 동작(인트로를 본 사건만 선택 유지). `OPEN CASE NN`과 플레이 테스트 도구(`CASE NN부터`)로 들어오면 선택되어 있음
 - [ ] (경미) `StorySceneScreen.build()` 안에서 `lines.isEmpty`일 때 `_done = true`를 대입 (build 중 상태 변경). 현재 모든 일반 미션에 transition이 있어 실제로 발생하지 않음
 
 ---
@@ -390,7 +526,12 @@ node tool/gen_sounds.js  # 효과음 재생성
 
 ### Medium Priority
 - [ ] 영어 난이도 처리 방향 결정 (난이도 레벨 / TTS 읽어주기 / 현 상태 유지)
-- [ ] 에피소드 선택을 `EpisodeRepository.availableEpisodeIds()`와 연결 (EP02 준비 시)
+- [x] ~~에피소드 선택을 `EpisodeRepository.availableEpisodeIds()`와 연결~~ (2026-09-29)
+- [ ] Season 1 Case 03~11 **처음부터 끝까지 실기 플레이** — **준비 완료**: Game Master `CASE NN부터` / `지금 사건 처음부터` (테스트 빌드 전용). 남은 것은 실제 기기에서 플레이하는 일 (Case 07은 에뮬레이터에서 도구로 시작 확인)
+- [ ] 8~12세 대상 **실제 아이 플레이 테스트**로 난이도·힌트 강도 조정 — 체크리스트 준비됨: `docs/playtest/SEASON1_PLAYTEST_CHECKLIST.md` (특히 Case 02 시계 읽기, Case 09 Final 논리 소거, 힌트 2가 답에 가까운 Case 05 M3·Case 09 M2·Case 11 M2)
+- [ ] TODO: CUSTOM ASSET REQUIRED — 목록·사양·우선순위: `docs/art/VISUAL_ASSET_INVENTORY.md`. A: Case 01 심볼 crown·park·museum, 배지 masterDetective / B: 배지 3개, 장면 staffRoom·courtyard·dressingRoom·waitingRoom / C: boathouse·roseGarden, palace(미사용), 기타 UI 글리프. 파일이 오면 `ArtAssets`에 한 줄 추가
+- [x] ~~Final 화면 notebook 버튼 가독성~~ (2026-09-29 공통 스타일로 수정)
+- [x] ~~시즌 통합 노트북~~ (2026-09-29 CASE ARCHIVE)
 - [ ] 효과음 품질 개선 (합성음 → 실제 효과음, 라이선스 확인)
 - [x] ~~Parent Report 접근 정책 결정~~ — 매번 Parent Gate 요구로 결정·구현 (2026-09-28)
 - [ ] Game Master 접근도 1회용 통과권으로 바꿀지 결정 (웹 배포 시 의미 있음)
@@ -474,7 +615,10 @@ Audit 요약 (현재 UI가 "AI가 만든 교육용 앱"처럼 보이는 원인):
 
 - ~~Phase 2 안정화: 경과 시간 / ParentGate / 보호자 리포트~~ — **완료** (2026-09-28)
 - `Proposed` — **Phase 2 마무리**: git 보존 → 실기기 QA (lifecycle, QR, 사운드 포함)
-- `Proposed` — **Phase 3 후보 A: Episode 02** — 기존 데이터 구조(`episode01_mock.dart` 형태)로 새 에피소드 추가 + 에피소드 선택 연결
+- ~~`Proposed` — **Phase 3 후보 A: Episode 02**~~ — **완료** (2026-09-29, Season 1 Case 02~12 전체)
+- ~~`Proposed` — **Season 1 QA**~~ — **완료** (2026-09-29)
+- ~~**Phase 4 — Playtest Preparation & Visual Polish**~~ — **완료** (2026-09-29). 다음 단계 후보: ① 체크리스트로 실제 아이 플레이 테스트 → 결과로 문장·힌트 데이터 조정 ② A등급 그림 발주·교체 ③ 효과음
+- `Proposed` — **Season 2 (Paris?)**: Case 12 훅(PARIS 시계)에서 이어짐
 - `Proposed` — **Phase 3 후보 B: 탐정 성장 시스템** — XP 누적 → 탐정 등급/칭호, 탐정 ID 카드
 - `Proposed` — **Phase 3 후보 C: 영어 접근성** — 문장 읽어주기(TTS/녹음), 난이도 선택
 
@@ -557,6 +701,32 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 ---
 
 ## Change Log
+
+### 2026-09-29 — Phase 4: Playtest Preparation & Visual Polish
+
+- P2: Case 02 시계가 해결과 함께 9:17로, 비활성 `InkTextButton` 회색, OPEN CASE NN → `/episodes?case=` (열림·선택·스크롤)
+- 새로 찾은 P2: Case Files 지연 생성 목록이 먼 사건으로 스크롤 안 됨(에뮬레이터 발견), 밤 배경 달이 SKIP과 겹침
+- Game Master 플레이 테스트 도구(`LM_PLAYTEST`/debug 전용): `CASE NN부터`, `지금 사건 처음부터`
+- `docs/playtest/SEASON1_PLAYTEST_CHECKLIST.md`, `docs/art/VISUAL_ASSET_INVENTORY.md`
+- `ArtAssets` 교체 구조 + `Artwork` 장소 키 6개(stand-in으로 그림 동일). 새 dependency 없음
+- 테스트 236 → 253, 상세는 *Phase 4*
+
+### 2026-09-29 — Season 1 QA + Case Archive + OPEN MY NOTEBOOK
+
+- Notebook에 CASE ARCHIVE (새 저장 키 없음), Final 시트 → Archive 링크, `/notebook?view=archive`
+- 공통 `GameButton.outline` 밤 배경 가독성 (`InkSurface`), `EvidenceTile` 소형 화면 대응, 단어 입력 빈칸 수 유지, 마지막 사건 CASE FILES 버튼, Case Files SOLVED 도장 시즌 기준
+- 콘텐츠 최소 수정: Case 03 M2 story, Case 07 M1 증거 이름, Case 08 Final 편지(정답 노출 제거)·힌트, Case 09 Final·Case 12 M3 빈칸 수, Case 11·12 힌트 → Archive, Case 12 M2 힌트 표현. 정답·순서·범인·결말 변경 없음
+- 테스트 116 → 236, 상세는 *Season 1 QA*
+
+### 2026-09-29 — Season 1 (Case 02~12)
+
+- 멀티 케이스 구조: `SeasonProgress`(`lm.season.v1`), 사건별 세이브 키, `seasonProvider`/`episodeCatalogProvider`, `GameController.openEpisode`(잠금 검사), Case Files를 카탈로그 기반 아코디언으로(SEALED/SOLVED 도장, "Solve Case NN to open this file."), 지도 메뉴에 "Case files", Case Solved에 시즌 훅 + "OPEN CASE NN"
+- 콘텐츠: `lib/data/mock/season1/episode02~12_mock.dart` (사건당 3+1 미션, 증거 4개, 시즌 스토리 줄기)
+- 새 퍼즐 타입 `sequence` + `SequenceQuestion` 위젯, Final Case가 모든 퍼즐 타입 지원(`Mission.finale`), 비-Royal Box 사건은 장면 그림 + 사건별 성공 문구
+- 사건 배지 6개(사건별 스코프), 리포트 문구/핵심 단어/사진을 사건 데이터에서 가져옴 (Episode 01은 기존 문구 fallback)
+- 새 LandmarkArt 장면 12개, 새 InkGlyph 18개 (Case 01의 clock/key/watch/map/train 심볼도 모노그램 → 잉크 그림으로 바뀜 — 시각 변경만, 데이터 동일)
+- 테스트 43 → 116: `season_content_test`(전 사건 콘텐츠 규칙), `season_flow_test`(잠금 사슬·중복 지급 없음·Ep01 불변·재시작 복구·구세이브 마이그레이션·Play again/Reset), `season_playthrough_test`(Case 01 구세이브 → Case 02 UI 전체 → Case 03 해금). 기존 테스트는 "모든 배지 = Episode 01 배지" 가정 3곳만 명시적으로 수정
+- 에뮬레이터 실기 확인 중 발견·수정: Case Solved의 outline 버튼이 밤 배경에서 보이지 않음 → 잉크 링크로 교체. Case 02 인트로가 Mission 1 정답(8:17)을 미리 말함 → 인트로 수정 + 재발 방지 테스트 추가. Case 03/07 Final 장면 그림이 정답 그림과 같음 → 교체 + 테스트 추가
 
 ### 2026-09-28
 

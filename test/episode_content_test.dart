@@ -10,9 +10,11 @@ import 'helpers.dart';
 void main() {
   final e = episode01;
 
-  test('repository serves episode 01', () async {
+  test('repository serves episode 01 first, then the season', () async {
     const repo = MockEpisodeRepository();
-    expect(await repo.availableEpisodeIds(), ['ep01']);
+    final ids = await repo.availableEpisodeIds();
+    expect(ids.first, 'ep01');
+    expect(ids, containsAllInOrder(['ep01', 'ep02', 'ep03', 'ep04', 'ep05']));
     expect((await repo.fetchEpisode('ep01')).title, 'The Missing Crown');
     expect(() => repo.fetchEpisode('nope'), throwsArgumentError);
   });

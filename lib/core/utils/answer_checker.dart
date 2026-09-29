@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../data/models/mission.dart';
 
 /// Decides whether a player's submission solves a mission.
@@ -14,6 +16,10 @@ abstract final class AnswerChecker {
       case MissionType.multipleChoice:
       case MissionType.imageChoice:
         return submission == mission.answer;
+      case MissionType.sequence:
+        final given = Mission.sequenceIds(submission);
+        final expected = Mission.sequenceIds(mission.answer);
+        return given.isNotEmpty && listEquals(given, expected);
       case MissionType.wordInput:
       case MissionType.numberCode:
       case MissionType.qrScan:

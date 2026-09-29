@@ -15,6 +15,7 @@ import '../../widgets/evidence_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
+import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
@@ -70,9 +71,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
 
   void _showHint() => ref.read(gameControllerProvider.notifier).useHint(_mission);
 
-  Future<void> _tryOpen() async {
+  Future<void> _tryOpen() => _submit(_digits.join());
+
+  Future<void> _submit(String answer) async {
     final audio = ref.read(audioServiceProvider);
-    final outcome = ref.read(gameControllerProvider.notifier).submitAnswer(_mission, _digits.join());
+    final outcome = ref.read(gameControllerProvider.notifier).submitAnswer(_mission, answer);
     switch (outcome.result) {
       case SubmitResult.locked:
         context.go(Routes.map);
@@ -102,6 +105,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     final evidence = progress.collectedEvidence(episode);
     String locationOfClue(Clue c) => episode.allMissions.firstWhere((m) => m.clue?.id == c.id).location;
     String locationOfEvidence(Evidence e) => episode.allMissions.firstWhere((m) => m.evidence?.id == e.id).location;
+    final earlierCases = ref.read(seasonProvider).solvedEpisodeIds.any((id) => id != episode.id);
 
     showModalBottomSheet<void>(
       context: context,
@@ -134,6 +138,20 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ClueCard(clue: c, index: i, location: locationOfClue(c)),
               ),
+            // Earlier cases (e.g. Case 12 needs them): their evidence is in
+            // the archive. Hidden while no other case has been solved.
+            if (earlierCases) ...[
+              const SizedBox(height: 8),
+              GameButton(
+                label: 'OPEN THE CASE ARCHIVE',
+                glyph: InkGlyph.folder,
+                style: GameButtonStyle.outline,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  this.context.push(Routes.archive);
+                },
+              ),
+            ],
           ],
         ),
       ),
@@ -166,14 +184,29 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
                 controller: _scroll,
                 padding: const EdgeInsets.fromLTRB(22, 0, 22, 40),
                 children: [
-                  Text(m.location, style: AppText.logo(size: 28, color: AppColors.goldLight), textAlign: TextAlign.center),
+                  Text(
+                    m.location,
+                    style: AppText.logo(size: 28, color: AppColors.goldLight),
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: 12),
-                  SizedBox(height: 250, child: ClipRect(child: RoyalBoxAnimation(animation: _open))),
+                  SizedBox(
+                    height: 250,
+                    child: ClipRect(
+                      child: m.scene == Artwork.royalBox
+                          ? RoyalBoxAnimation(animation: _open)
+                          : _SceneReveal(scene: m.scene, animation: _open),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   AnimatedBuilder(
                     animation: _open,
                     builder: (context, _) => _open.value > 0.55
-                        ? _CaseSolvedBanner(progress: _open.value, detectiveName: progress.detectiveName ?? '')
+                        ? _CaseSolvedBanner(
+                            progress: _open.value,
+                            message: m.successMessage,
+                            detectiveName: progress.detectiveName ?? '',
+                          )
                         : _intro(m),
                   ),
                   const SizedBox(height: 24),
@@ -188,67 +221,92 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   }
 
   Widget _intro(Mission m) => Column(
-        children: [
-          for (final line in m.story)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: GlossaryText(line, textAlign: TextAlign.center, style: AppText.subtitle(color: Colors.white)),
-            ),
-          const SizedBox(height: 12),
-          LetterCard(text: m.letter, tilt: 0.01),
-        ],
-      );
-
-  List<Widget> _puzzle(Mission m, int hintsShown) => [
-        Text(m.question, textAlign: TextAlign.center, style: AppText.title(size: 24, color: AppColors.gold)),
-        const SizedBox(height: 16),
-        ShakeOnChange(
-          trigger: _wrongPulse,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (var i = 0; i < _digits.length; i++)
-                Flexible(
-                  child: _Dial(
-                    value: _digits[i],
-                    index: i,
-                    symbol: i < m.dialSymbols.length ? m.dialSymbols[i] : null,
-                    onUp: () => _turn(i, 1),
-                    onDown: () => _turn(i, 9),
-                  ),
-                ),
-            ],
+    children: [
+      for (final line in m.story)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: GlossaryText(
+            line,
+            textAlign: TextAlign.center,
+            style: AppText.subtitle(color: Colors.white),
           ),
         ),
-        const SizedBox(height: 22),
-        // Custom Asset Required: an open-lock glyph for this button.
-        GameButton(label: 'OPEN THE BOX', style: GameButtonStyle.gold, onPressed: _tryOpen),
-        const SizedBox(height: 12),
-        GameButton(
-          label: 'OPEN MY NOTEBOOK',
-          glyph: InkGlyph.notebook,
-          style: GameButtonStyle.outline,
-          onPressed: _peekNotebook,
+      const SizedBox(height: 12),
+      LetterCard(text: m.letter, tilt: 0.01),
+    ],
+  );
+
+  List<Widget> _puzzle(Mission m, int hintsShown) => [
+    Text(
+      m.question,
+      textAlign: TextAlign.center,
+      style: AppText.title(size: 24, color: AppColors.gold),
+    ),
+    const SizedBox(height: 16),
+    if (m.type == MissionType.finalCode) ...[
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (var i = 0; i < _digits.length; i++)
+              Flexible(
+                child: _Dial(
+                  value: _digits[i],
+                  index: i,
+                  symbol: i < m.dialSymbols.length ? m.dialSymbols[i] : null,
+                  onUp: () => _turn(i, 1),
+                  onDown: () => _turn(i, 9),
+                ),
+              ),
+          ],
         ),
-        const SizedBox(height: 18),
-        TipsPanel(hints: m.hints, revealed: hintsShown, onReveal: _showHint, dark: true),
-      ];
+      ),
+      const SizedBox(height: 22),
+      // Custom Asset Required: an open-lock glyph for this button.
+      GameButton(
+        label: m.scene == Artwork.royalBox ? 'OPEN THE BOX' : 'UNLOCK',
+        style: GameButtonStyle.gold,
+        onPressed: _tryOpen,
+      ),
+    ] else
+      // Any other puzzle type: the case's last page, laid on the desk.
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: PaperSheet(padding: const EdgeInsets.all(AppSpace.lg), child: questionFor(m, _submit)),
+      ),
+    const SizedBox(height: 12),
+    GameButton(
+      label: 'OPEN MY NOTEBOOK',
+      glyph: InkGlyph.notebook,
+      style: GameButtonStyle.outline,
+      onPressed: _peekNotebook,
+    ),
+    const SizedBox(height: 18),
+    TipsPanel(hints: m.hints, revealed: hintsShown, onReveal: _showHint, dark: true),
+  ];
 
   Widget _solvedActions() => AnimatedBuilder(
-        animation: _open,
-        builder: (context, child) => Opacity(opacity: ((_open.value - 0.8) / 0.2).clamp(0, 1), child: child),
-        child: GameButton(
-          label: 'SEE MY CASE REPORT',
-          glyph: InkGlyph.folder,
-          style: GameButtonStyle.gold,
-          onPressed: () => context.go(Routes.solved),
-        ),
-      );
+    animation: _open,
+    builder: (context, child) => Opacity(opacity: ((_open.value - 0.8) / 0.2).clamp(0, 1), child: child),
+    child: GameButton(
+      label: 'SEE MY CASE REPORT',
+      glyph: InkGlyph.folder,
+      style: GameButtonStyle.gold,
+      onPressed: () => context.go(Routes.solved),
+    ),
+  );
 }
 
 /// One lock: a picture on top and a number wheel below.
 class _Dial extends StatelessWidget {
-  const _Dial({required this.value, required this.index, required this.symbol, required this.onUp, required this.onDown});
+  const _Dial({
+    required this.value,
+    required this.index,
+    required this.symbol,
+    required this.onUp,
+    required this.onDown,
+  });
 
   final int value;
   final int index;
@@ -270,7 +328,7 @@ class _Dial extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SymbolBadge(symbol, size: 46, light: true),
+          if (symbol != null) SymbolBadge(symbol, size: 46, light: true),
           IconButton(
             tooltip: 'Lock ${index + 1} up',
             onPressed: onUp,
@@ -310,9 +368,10 @@ class _Dial extends StatelessWidget {
 }
 
 class _CaseSolvedBanner extends StatelessWidget {
-  const _CaseSolvedBanner({required this.progress, required this.detectiveName});
+  const _CaseSolvedBanner({required this.progress, required this.message, required this.detectiveName});
 
   final double progress;
+  final String message;
   final String detectiveName;
 
   @override
@@ -326,13 +385,53 @@ class _CaseSolvedBanner extends StatelessWidget {
           children: [
             const InkStamp('CASE SOLVED', color: AppColors.gold, size: 26),
             const SizedBox(height: 14),
-            Text('The Crown has been found!', style: AppText.title(size: 24, color: Colors.white), textAlign: TextAlign.center),
+            Text(
+              message,
+              style: AppText.title(size: 24, color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 6),
-            Text('Brilliant work, Detective $detectiveName!',
-                style: AppText.subtitle(color: AppColors.goldLight), textAlign: TextAlign.center),
+            Text(
+              'Brilliant work, Detective $detectiveName!',
+              style: AppText.subtitle(color: AppColors.goldLight),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The final place of a case other than Episode 01: its scene, printed like
+/// a storybook picture, settles into place when the case is solved.
+class _SceneReveal extends StatelessWidget {
+  const _SceneReveal({required this.scene, required this.animation});
+
+  final Artwork scene;
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = Curves.easeOutCubic.transform(animation.value);
+        return Transform.scale(
+          scale: 1 + 0.04 * t,
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 4 / 3,
+              child: PaperSheet(
+                padding: const EdgeInsets.all(AppSpace.sm),
+                tilt: -0.01,
+                // The picture changes with the solve (the Case 02 clock starts again).
+                child: LandmarkArt(scene, borderRadius: 2, solved: t),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -427,7 +526,10 @@ class _RoyalBoxPainter extends CustomPainter {
     );
     canvas.drawRRect(plate, Paint()..color = lid > 0 ? AppColors.success : AppColors.navy);
     canvas.drawCircle(plate.center.translate(0, -6), 6, Paint()..color = AppColors.goldLight);
-    canvas.drawRect(Rect.fromCenter(center: plate.center.translate(0, 6), width: 5, height: 14), Paint()..color = AppColors.goldLight);
+    canvas.drawRect(
+      Rect.fromCenter(center: plate.center.translate(0, 6), width: 5, height: 14),
+      Paint()..color = AppColors.goldLight,
+    );
 
     if (lid == 0) _lid(canvas, body, boxH, cx, ink);
   }
@@ -467,10 +569,13 @@ class _RoyalBoxPainter extends CustomPainter {
       ..lineTo(r, bottom)
       ..close();
     c.drawPath(path, Paint()..color = emblem ? AppColors.goldLight : AppColors.gold);
-    c.drawPath(path, Paint()
-      ..color = AppColors.navyDeep
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = emblem ? 1.5 : 3);
+    c.drawPath(
+      path,
+      Paint()
+        ..color = AppColors.navyDeep
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = emblem ? 1.5 : 3,
+    );
     if (!emblem) {
       c.drawRect(Rect.fromLTRB(l, bottom - h * 0.22, r, bottom), Paint()..color = AppColors.goldDeep);
       for (final (fx, color) in [(0.2, AppColors.royalBlue), (0.5, AppColors.waxRed), (0.8, AppColors.royalBlue)]) {

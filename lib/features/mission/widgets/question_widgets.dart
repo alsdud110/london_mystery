@@ -13,6 +13,7 @@ import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/landmark_art.dart';
 import '../../game/game_providers.dart';
+import 'qr_question.dart';
 
 /// Paper answer surface shared by the puzzle types: faint ink border,
 /// navy when chosen.
@@ -239,12 +240,14 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                prompt.replaceAll(
-                  RegExp(r'_+'),
-                  _controller.text.trim().isEmpty
-                      ? '_____'
-                      : _controller.text.trim().toUpperCase(),
-                ),
+                // Empty: the prompt's own blanks, one per letter (a case may
+                // say "four letters"). Typing: the child's word in their place.
+                _controller.text.trim().isEmpty
+                    ? prompt
+                    : prompt.replaceAll(
+                        RegExp(r'_+'),
+                        _controller.text.trim().toUpperCase(),
+                      ),
                 style: AppText.title(size: 26).copyWith(letterSpacing: 2),
               ),
             ),
@@ -552,3 +555,198 @@ class _ImageTile extends StatelessWidget {
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// TYPE 5 — Sequence (put steps, turns or words in order)
+// ---------------------------------------------------------------------------
+
+class SequenceQuestion extends ConsumerStatefulWidget {
+  const SequenceQuestion({
+    super.key,
+    required this.mission,
+    required this.onSubmit,
+  });
+
+  final Mission mission;
+  final AnswerCallback onSubmit;
+
+  @override
+  ConsumerState<SequenceQuestion> createState() => _SequenceQuestionState();
+}
+
+class _SequenceQuestionState extends ConsumerState<SequenceQuestion> {
+  final _picked = <String>[];
+
+  int get _length =>
+      widget.mission.codeLength ??
+      Mission.sequenceIds(widget.mission.answer).length;
+
+  /// Turns (LEFT / RIGHT) can repeat; steps and words are used once.
+  bool get _reusable => widget.mission.options.length < _length;
+
+  String _label(String id) =>
+      widget.mission.options.firstWhere((o) => o.id == id).label;
+
+  void _pick(String id) {
+    if (_picked.length >= _length) return;
+    ref.read(audioServiceProvider).play(GameSound.tap);
+    setState(() => _picked.add(id));
+  }
+
+  void _undo() {
+    if (_picked.isEmpty) return;
+    setState(() => _picked.removeLast());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final options = widget.mission.options;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // The order so far, written down like numbered notebook lines.
+        for (var i = 0; i < _length; i++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpace.sm),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              constraints: const BoxConstraints(minHeight: 52),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpace.lg,
+                vertical: AppSpace.sm,
+              ),
+              decoration: _answerPaper(selected: i == _picked.length),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 28,
+                    child: Text(
+                      '${i + 1}.',
+                      style: AppText.title(size: 18, color: AppColors.navy),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpace.sm),
+                  Expanded(
+                    child: Text(
+                      i < _picked.length ? _label(_picked[i]) : '',
+                      semanticsLabel: i < _picked.length
+                          ? 'Step ${i + 1}: ${_label(_picked[i])}'
+                          : 'Step ${i + 1}: empty',
+                      style: AppText.subtitle(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        const SizedBox(height: AppSpace.md),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: AppSpace.sm,
+          runSpacing: AppSpace.sm,
+          children: [
+            for (final o in options)
+              _SequenceTile(
+                label: o.label,
+                used: !_reusable && _picked.contains(o.id),
+                onTap: () => _pick(o.id),
+              ),
+          ],
+        ),
+        const SizedBox(height: AppSpace.md),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkTextButton(
+              label: 'Undo',
+              glyph: InkGlyph.backspace,
+              onPressed: _picked.isEmpty ? null : _undo,
+            ),
+            InkTextButton(
+              label: 'Start again',
+              glyph: InkGlyph.clear,
+              onPressed: _picked.isEmpty
+                  ? null
+                  : () => setState(_picked.clear),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpace.sm),
+        GameButton(
+          label: 'CHECK ANSWER',
+          onPressed: _picked.length == _length
+              ? () => widget.onSubmit(_picked.join(','))
+              : null,
+        ),
+      ],
+    );
+  }
+}
+
+class _SequenceTile extends StatelessWidget {
+  const _SequenceTile({
+    required this.label,
+    required this.used,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool used;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      enabled: !used,
+      label: label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: used ? null : onTap,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 150),
+          opacity: used ? 0.35 : 1,
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 52, minWidth: 96),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpace.lg,
+              vertical: AppSpace.md,
+            ),
+            decoration: _answerPaper(),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppText.subtitle(color: AppColors.navy),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The puzzle widget for [mission] (shared by missions and final cases).
+Widget questionFor(Mission mission, AnswerCallback onSubmit) =>
+    switch (mission.type) {
+      MissionType.multipleChoice => MultipleChoiceQuestion(
+        mission: mission,
+        onSubmit: onSubmit,
+      ),
+      MissionType.wordInput => WordInputQuestion(
+        mission: mission,
+        onSubmit: onSubmit,
+      ),
+      MissionType.numberCode || MissionType.finalCode => NumberCodeQuestion(
+        mission: mission,
+        onSubmit: onSubmit,
+      ),
+      MissionType.imageChoice => ImageChoiceQuestion(
+        mission: mission,
+        onSubmit: onSubmit,
+      ),
+      MissionType.qrScan => QrQuestion(mission: mission, onSubmit: onSubmit),
+      MissionType.sequence => SequenceQuestion(
+        mission: mission,
+        onSubmit: onSubmit,
+      ),
+    };

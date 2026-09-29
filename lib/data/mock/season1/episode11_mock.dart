@@ -1,0 +1,248 @@
+/// Case 11 — The Masked Stranger (Covent Garden theatre). Theme: comparing
+/// descriptions. The player finds the witness who does not agree, reads a
+/// word written backwards inside the mask, follows the stranger by a
+/// description, and unmasks a thief the player met in Case 01: the Shadow
+/// ("P.S. I love trains!").
+const Map<String, dynamic> episode11Json = {
+  'id': 'ep11',
+  'number': 11,
+  'title': 'The Masked Stranger',
+  'synopsis': [
+    'After every show, a masked stranger sits in Row R, Seat 17.',
+    'Three people saw the stranger. Their stories do not all agree.',
+    'Compare them, and find out who is behind the mask.',
+  ],
+  'objectives': ['Compare what the witnesses saw.', 'Find out who wears the mask.'],
+  'intro': [
+    'Covent Garden, 10:30 PM...',
+    'The show is over. The theatre is almost empty.',
+    'But in Row R, Seat 17, a masked stranger is still sitting.',
+    'When the lights come on, the seat is empty.',
+    'The Clockmaker\'s plan is close. This stranger knows it.',
+  ],
+  'caseSummary': 'You compared every description and found out who was behind the mask.',
+  'keyWords': ['mask', 'cloak', 'backwards'],
+  'hook': 'The Shadow says: "At midnight, the Clockmaker opens his door under Big Ben."',
+  'missions': [
+    {
+      'id': 'ep11_m1',
+      'number': 1,
+      'title': 'Three Stories',
+      'location': 'THE THEATRE',
+      'scene': 'theatre',
+      'story': [
+        'Red seats, gold lamps and a big dark stage.',
+        'Three people saw the masked stranger tonight.',
+      ],
+      'letterIntro': 'You write down their stories.',
+      'letter':
+          'The usher: "The mask was white. The stranger wore a long black cloak."\n\n'
+          'The actor: "A white mask and a black cloak. And I heard a train whistle!"\n\n'
+          'The child: "The mask was gold. The cloak was green and short."',
+      'type': 'multipleChoice',
+      'question': 'One witness does not agree with the other two. Who?',
+      'options': [
+        {'id': 'a', 'label': 'The usher'},
+        {'id': 'b', 'label': 'The actor'},
+        {'id': 'c', 'label': 'The child'},
+      ],
+      'answer': 'c',
+      'hints': [
+        'Compare the colour of the mask in each story.',
+        'Two stories have the same mask and the same cloak.',
+      ],
+      'clue': {
+        'id': 'ep11_c1',
+        'title': 'White Mask',
+        'value': 'Black cloak',
+        'symbol': 'mask',
+        'note': 'A white mask, a long black cloak — and a train whistle.',
+      },
+      'evidence': {
+        'id': 'ep11_e1',
+        'name': "Usher's Notes",
+        'icon': 'letter',
+        'description': 'Two stories agree. One does not.',
+        'inscription': 'White mask · long black cloak · a train whistle',
+      },
+      'successMessage': 'The child saw a different person!',
+      'transition': [
+        'The child was looking at an actor in a costume, not the stranger.',
+        'Behind the stage, you find a white mask on a chair.',
+        'Something is written inside it.',
+      ],
+      'nextMissionId': 'ep11_m2',
+      'skills': ['reading', 'problemSolving'],
+      'mapX': 0.28,
+      'mapY': 0.22,
+    },
+    {
+      'id': 'ep11_m2',
+      'number': 2,
+      'title': 'The White Mask',
+      'location': 'BEHIND THE STAGE',
+      'scene': 'dressingRoom',
+      'story': [
+        'The white mask is cold and smooth.',
+        'Inside, one word is written backwards.',
+      ],
+      'letterIntro': 'Inside the mask:',
+      'letter':
+          'THGINDIM\n\n'
+          'Read me from right to left.',
+      'type': 'wordInput',
+      'question': 'What is the word inside the mask?',
+      'prompt': '________',
+      'answer': 'MIDNIGHT',
+      'hints': [
+        'Start with the last letter, T. Then go left: H, G, I...',
+        'It is a time: twelve o\'clock at night.',
+      ],
+      'clue': {
+        'id': 'ep11_c2',
+        'title': 'Midnight',
+        'value': '12',
+        'symbol': 'clock',
+        'note': 'The plan happens at midnight.',
+      },
+      'evidence': {
+        'id': 'ep11_e2',
+        'name': 'White Mask',
+        'icon': 'mask',
+        'description': 'Left behind the stage.',
+        'inscription': 'Written inside, backwards: MIDNIGHT',
+      },
+      'successMessage': 'MIDNIGHT!',
+      'transition': [
+        'Footsteps! The stranger runs out of the stage door.',
+        'You hear a sound: toot-toot, like a small train whistle.',
+        'A guard shouts: "He went to the station that never sleeps!"',
+      ],
+      'nextMissionId': 'ep11_m3',
+      'skills': ['reading', 'vocabulary'],
+      'mapX': 0.72,
+      'mapY': 0.46,
+    },
+    {
+      'id': 'ep11_m3',
+      'number': 3,
+      'title': 'The Stage Door',
+      'location': 'THE STAGE DOOR',
+      'scene': 'coventGarden',
+      'story': [
+        'Outside, the street is wet and dark.',
+        'A taxi driver saw the stranger run past.',
+      ],
+      'letterIntro': 'The taxi driver says:',
+      'letter':
+          '"He ran north, to a big station.\n'
+          'It has two big arches and a clock tower.\n'
+          'He kept saying: I love trains, I love trains!"',
+      'type': 'imageChoice',
+      'question': 'Where did the stranger go?',
+      'options': [
+        {'id': 'a', 'label': "King's Cross", 'artwork': 'kingsCross'},
+        {'id': 'b', 'label': 'Buckingham Palace', 'artwork': 'buckinghamPalace'},
+        {'id': 'c', 'label': 'Hyde Park', 'artwork': 'hydePark'},
+        {'id': 'd', 'label': 'Big Ben', 'artwork': 'bigBen'},
+      ],
+      'answer': 'a',
+      'hints': [
+        'A station is where trains stop. Which picture has room for trains?',
+        'Look for two big round arches.',
+      ],
+      'clue': {
+        'id': 'ep11_c3',
+        'title': 'I Love Trains',
+        'value': 'Station',
+        'symbol': 'train',
+        'note': 'The stranger loves trains — like someone from your first case.',
+      },
+      'evidence': {
+        'id': 'ep11_e3',
+        'name': 'Toy Train Whistle',
+        'icon': 'whistle',
+        'description': 'Dropped by the stage door.',
+        'inscription': 'Toot-toot!',
+      },
+      'successMessage': 'He ran to the station!',
+      'transition': [
+        'On Platform 9, you catch up with the stranger.',
+        'He turns around. He is wearing a long black cloak.',
+        'Who is it?',
+      ],
+      'nextMissionId': 'ep11_final',
+      'skills': ['reading', 'problemSolving'],
+      'mapX': 0.3,
+      'mapY': 0.64,
+    },
+  ],
+  'finalMission': {
+    'id': 'ep11_final',
+    'number': 4,
+    'title': 'Behind the Mask',
+    'location': 'PLATFORM 9',
+    'scene': 'suitcase',
+    'story': [
+      'The stranger smiles and bows.',
+      '"Hello again, Detective," he says. "Do you remember me?"',
+    ],
+    'letterIntro': 'He gives you a small card. It is signed.',
+    'letter':
+        'We met at the very start.\n'
+        'I took the Crown and left you a letter in a suitcase.\n'
+        'I still love trains.\n\n'
+        'I left the Raven Society. I want to help you now.',
+    'type': 'multipleChoice',
+    'question': 'Who is behind the mask?',
+    'options': [
+      {'id': 'a', 'label': 'Inspector Grey'},
+      {'id': 'b', 'label': 'Mrs Robin'},
+      {'id': 'c', 'label': 'The Ravenmaster'},
+      {'id': 'd', 'label': 'The Shadow, the thief from Case 01'},
+    ],
+    'answer': 'd',
+    'hints': [
+      'Think about your very first case. Who took the Crown?',
+      'Open Case 01 in your Case Archive. Who signed the Old Letter?',
+    ],
+    'evidence': {
+      'id': 'ep11_e4',
+      'name': "The Shadow's Card",
+      'icon': 'letter',
+      'description': 'An old thief. A new friend?',
+      'inscription': 'P.S. I still love trains!',
+    },
+    'successMessage': 'It is the Shadow!',
+    'skills': ['reading', 'problemSolving'],
+    'mapX': 0.74,
+    'mapY': 0.84,
+  },
+  'glossary': {
+    'masked': '가면을 쓴',
+    'mask': '가면',
+    'stranger': '낯선 사람',
+    'show': '공연',
+    'usher': '안내원',
+    'actor': '배우',
+    'cloak': '망토',
+    'whistle': '호루라기',
+    'agree': '의견이 같다',
+    'costume': '의상',
+    'stage': '무대',
+    'smooth': '매끄러운',
+    'backwards': '거꾸로',
+    'footsteps': '발소리',
+    'shouts': '외친다',
+    'arches': '아치들',
+    'station': '기차역',
+    'catch': '따라잡다',
+    'bows': '인사하다',
+    'remember': '기억하다',
+    'signed': '서명된',
+    'crown': '왕관',
+    'theatre': '극장',
+    'seat': '좌석',
+    'row': '줄',
+  },
+};

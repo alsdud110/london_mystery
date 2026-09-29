@@ -7,12 +7,17 @@ enum MissionType {
   numberCode,
   imageChoice,
   qrScan,
-  finalCode;
+  finalCode,
+
+  /// Tap the options in the right order (ids joined by commas). An option
+  /// can be used again when there are fewer options than [Mission.codeLength]
+  /// (e.g. LEFT / RIGHT turns); otherwise each is used once.
+  sequence;
 
   static MissionType fromJson(String value) => MissionType.values.firstWhere(
-        (t) => t.name == value,
-        orElse: () => throw FormatException('Unknown mission type: $value'),
-      );
+    (t) => t.name == value,
+    orElse: () => throw FormatException('Unknown mission type: $value'),
+  );
 }
 
 /// English skills a mission exercises (used by the parent report).
@@ -21,10 +26,8 @@ enum Skill {
   reading,
   problemSolving;
 
-  static Skill fromJson(String value) => Skill.values.firstWhere(
-        (s) => s.name == value,
-        orElse: () => throw FormatException('Unknown skill: $value'),
-      );
+  static Skill fromJson(String value) =>
+      Skill.values.firstWhere((s) => s.name == value, orElse: () => throw FormatException('Unknown skill: $value'));
 }
 
 /// Illustrations drawn in-app (see `LandmarkArt`). Keeping them as keys lets
@@ -38,12 +41,33 @@ enum Artwork {
   buckinghamPalace,
   towerBridge,
   londonEye,
-  royalBox;
+  royalBox,
+  clockFace,
+  gallery,
+  towerOfLondon,
+  lockedDoor,
+  coventGarden,
+  theatre,
+  raven,
+  jewelCase,
 
-  static Artwork fromJson(String value) => Artwork.values.firstWhere(
-        (a) => a.name == value,
-        orElse: () => throw FormatException('Unknown artwork: $value'),
-      );
+  // Places with no drawing of their own yet (Custom Asset Required): each is
+  // drawn as a nearby scene until its picture is added (see `ArtAssets`).
+  boathouse,
+  roseGarden,
+  waitingRoom,
+  staffRoom,
+  courtyard,
+  dressingRoom,
+
+  // Hyde Park paths (Case 07): the same park, a different spot marked X.
+  parkMapA,
+  parkMapB,
+  parkMapC,
+  parkMapD;
+
+  static Artwork fromJson(String value) =>
+      Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));
 }
 
 @immutable
@@ -55,16 +79,12 @@ class ChoiceOption {
   final Artwork? artwork;
 
   factory ChoiceOption.fromJson(Map<String, dynamic> json) => ChoiceOption(
-        id: json['id'] as String,
-        label: json['label'] as String,
-        artwork: json['artwork'] == null ? null : Artwork.fromJson(json['artwork'] as String),
-      );
+    id: json['id'] as String,
+    label: json['label'] as String,
+    artwork: json['artwork'] == null ? null : Artwork.fromJson(json['artwork'] as String),
+  );
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'label': label,
-        if (artwork != null) 'artwork': artwork!.name,
-      };
+  Map<String, dynamic> toJson() => {'id': id, 'label': label, if (artwork != null) 'artwork': artwork!.name};
 }
 
 /// A clue saved to the Detective Notebook when a mission is solved.
@@ -83,20 +103,20 @@ class Clue {
   final String? symbol;
 
   factory Clue.fromJson(Map<String, dynamic> json) => Clue(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        value: json['value'] as String,
-        note: json['note'] as String,
-        symbol: json['symbol'] as String?,
-      );
+    id: json['id'] as String,
+    title: json['title'] as String,
+    value: json['value'] as String,
+    note: json['note'] as String,
+    symbol: json['symbol'] as String?,
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'value': value,
-        'note': note,
-        if (symbol != null) 'symbol': symbol,
-      };
+    'id': id,
+    'title': title,
+    'value': value,
+    'note': note,
+    if (symbol != null) 'symbol': symbol,
+  };
 }
 
 /// A collectible object found at a location. Players can zoom in on it in
@@ -126,22 +146,22 @@ class Evidence {
   final List<String> symbols;
 
   factory Evidence.fromJson(Map<String, dynamic> json) => Evidence(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        icon: json['icon'] as String,
-        description: json['description'] as String,
-        inscription: json['inscription'] as String?,
-        symbols: (json['symbols'] as List? ?? const []).cast<String>(),
-      );
+    id: json['id'] as String,
+    name: json['name'] as String,
+    icon: json['icon'] as String,
+    description: json['description'] as String,
+    inscription: json['inscription'] as String?,
+    symbols: (json['symbols'] as List? ?? const []).cast<String>(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'icon': icon,
-        'description': description,
-        if (inscription != null) 'inscription': inscription,
-        if (symbols.isNotEmpty) 'symbols': symbols,
-      };
+    'id': id,
+    'name': name,
+    'icon': icon,
+    'description': description,
+    if (inscription != null) 'inscription': inscription,
+    if (symbols.isNotEmpty) 'symbols': symbols,
+  };
 }
 
 @immutable
@@ -172,6 +192,7 @@ class Mission {
     this.transition = const [],
     this.nextMissionId,
     this.skills = const [],
+    this.finale = false,
   });
 
   final String id;
@@ -185,7 +206,7 @@ class Mission {
   final MissionType type;
   final String question;
 
-  /// Extra prompt shown with the question (e.g. "ROSETTA ______").
+  /// Extra prompt shown with the question (e.g. "ROSETTA _____").
   final String? prompt;
   final List<ChoiceOption> options;
 
@@ -212,65 +233,86 @@ class Mission {
   final double mapX;
   final double mapY;
 
-  bool get isFinal => type == MissionType.finalCode;
+  /// The episode's final case. Set by `Episode` for its `finalMission`, so a
+  /// final case can use any puzzle type (Episode 01 uses the picture locks).
+  final bool finale;
+
+  bool get isFinal => finale || type == MissionType.finalCode;
 
   String get numberLabel => number.toString().padLeft(2, '0');
 
-  factory Mission.fromJson(Map<String, dynamic> json) => Mission(
-        id: json['id'] as String,
-        number: json['number'] as int,
-        title: json['title'] as String,
-        location: json['location'] as String,
-        story: (json['story'] as List).cast<String>(),
-        scene: Artwork.fromJson(json['scene'] as String),
-        letterIntro: json['letterIntro'] as String,
-        letter: json['letter'] as String,
-        type: MissionType.fromJson(json['type'] as String),
-        question: json['question'] as String,
-        prompt: json['prompt'] as String?,
-        options: [
-          for (final o in (json['options'] as List? ?? const [])) ChoiceOption.fromJson(o as Map<String, dynamic>),
-        ],
-        answer: json['answer'] as String,
-        acceptedAnswers: (json['acceptedAnswers'] as List? ?? const []).cast<String>(),
-        codeLength: json['codeLength'] as int?,
-        dialSymbols: (json['dialSymbols'] as List? ?? const []).cast<String>(),
-        hints: (json['hints'] as List).cast<String>(),
-        clue: json['clue'] == null ? null : Clue.fromJson(json['clue'] as Map<String, dynamic>),
-        evidence: json['evidence'] == null ? null : Evidence.fromJson(json['evidence'] as Map<String, dynamic>),
-        successMessage: json['successMessage'] as String,
-        transition: (json['transition'] as List? ?? const []).cast<String>(),
-        nextMissionId: json['nextMissionId'] as String?,
-        skills: [for (final s in (json['skills'] as List? ?? const [])) Skill.fromJson(s as String)],
-        mapX: (json['mapX'] as num).toDouble(),
-        mapY: (json['mapY'] as num).toDouble(),
-      );
+  /// Order of option ids for a [MissionType.sequence] answer.
+  static List<String> sequenceIds(String answer) =>
+      answer.isEmpty ? const [] : answer.split(',').map((s) => s.trim()).toList();
+
+  String _optionLabel(String id) => options
+      .firstWhere(
+        (o) => o.id == id,
+        orElse: () => ChoiceOption(id: id, label: id),
+      )
+      .label;
+
+  /// The answer as a helper reads it (game master answer key).
+  String get answerLabel => switch (type) {
+    MissionType.multipleChoice || MissionType.imageChoice => _optionLabel(answer),
+    MissionType.sequence => sequenceIds(answer).map(_optionLabel).join(' → '),
+    _ => answer,
+  };
+
+  factory Mission.fromJson(Map<String, dynamic> json, {bool finale = false}) => Mission(
+    finale: finale,
+    id: json['id'] as String,
+    number: json['number'] as int,
+    title: json['title'] as String,
+    location: json['location'] as String,
+    story: (json['story'] as List).cast<String>(),
+    scene: Artwork.fromJson(json['scene'] as String),
+    letterIntro: json['letterIntro'] as String,
+    letter: json['letter'] as String,
+    type: MissionType.fromJson(json['type'] as String),
+    question: json['question'] as String,
+    prompt: json['prompt'] as String?,
+    options: [for (final o in (json['options'] as List? ?? const [])) ChoiceOption.fromJson(o as Map<String, dynamic>)],
+    answer: json['answer'] as String,
+    acceptedAnswers: (json['acceptedAnswers'] as List? ?? const []).cast<String>(),
+    codeLength: json['codeLength'] as int?,
+    dialSymbols: (json['dialSymbols'] as List? ?? const []).cast<String>(),
+    hints: (json['hints'] as List).cast<String>(),
+    clue: json['clue'] == null ? null : Clue.fromJson(json['clue'] as Map<String, dynamic>),
+    evidence: json['evidence'] == null ? null : Evidence.fromJson(json['evidence'] as Map<String, dynamic>),
+    successMessage: json['successMessage'] as String,
+    transition: (json['transition'] as List? ?? const []).cast<String>(),
+    nextMissionId: json['nextMissionId'] as String?,
+    skills: [for (final s in (json['skills'] as List? ?? const [])) Skill.fromJson(s as String)],
+    mapX: (json['mapX'] as num).toDouble(),
+    mapY: (json['mapY'] as num).toDouble(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'number': number,
-        'title': title,
-        'location': location,
-        'story': story,
-        'scene': scene.name,
-        'letterIntro': letterIntro,
-        'letter': letter,
-        'type': type.name,
-        'question': question,
-        if (prompt != null) 'prompt': prompt,
-        'options': [for (final o in options) o.toJson()],
-        'answer': answer,
-        'acceptedAnswers': acceptedAnswers,
-        if (codeLength != null) 'codeLength': codeLength,
-        if (dialSymbols.isNotEmpty) 'dialSymbols': dialSymbols,
-        'hints': hints,
-        if (clue != null) 'clue': clue!.toJson(),
-        if (evidence != null) 'evidence': evidence!.toJson(),
-        'successMessage': successMessage,
-        if (transition.isNotEmpty) 'transition': transition,
-        if (nextMissionId != null) 'nextMissionId': nextMissionId,
-        'skills': [for (final s in skills) s.name],
-        'mapX': mapX,
-        'mapY': mapY,
-      };
+    'id': id,
+    'number': number,
+    'title': title,
+    'location': location,
+    'story': story,
+    'scene': scene.name,
+    'letterIntro': letterIntro,
+    'letter': letter,
+    'type': type.name,
+    'question': question,
+    if (prompt != null) 'prompt': prompt,
+    'options': [for (final o in options) o.toJson()],
+    'answer': answer,
+    'acceptedAnswers': acceptedAnswers,
+    if (codeLength != null) 'codeLength': codeLength,
+    if (dialSymbols.isNotEmpty) 'dialSymbols': dialSymbols,
+    'hints': hints,
+    if (clue != null) 'clue': clue!.toJson(),
+    if (evidence != null) 'evidence': evidence!.toJson(),
+    'successMessage': successMessage,
+    if (transition.isNotEmpty) 'transition': transition,
+    if (nextMissionId != null) 'nextMissionId': nextMissionId,
+    'skills': [for (final s in skills) s.name],
+    'mapX': mapX,
+    'mapY': mapY,
+  };
 }

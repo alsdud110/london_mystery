@@ -42,6 +42,26 @@ enum InkGlyph {
   speakerOff,
   home,
   folder,
+
+  // Objects (clue symbols, evidence, badges)
+  clock,
+  gear,
+  key,
+  footprint,
+  button,
+  cloth,
+  map,
+  ticket,
+  feather,
+  mask,
+  gem,
+  bag,
+  raven,
+  umbrella,
+  seal,
+  frame,
+  whistle,
+  train,
 }
 
 class InkIcon extends StatelessWidget {
@@ -66,35 +86,58 @@ class InkIcon extends StatelessWidget {
   }
 }
 
-/// A data-driven picture (clue symbol, evidence, badge): its [glyph] when one
-/// exists, otherwise its [monogram] lettered like a wax-seal initial.
+/// A data-driven picture (clue symbol, evidence, badge): its finished
+/// [asset] picture when one has been added (see `ArtAssets`), else its
+/// [glyph] when one exists, otherwise its [monogram] lettered like a
+/// wax-seal initial.
 ///
 /// A monogram marks "Custom Asset Required" — the drawing is still to come.
 /// Never stand in a different icon family instead.
 class InkMark extends StatelessWidget {
-  const InkMark({super.key, required this.glyph, required this.monogram, this.size = AppIconSize.regular, this.color});
+  const InkMark({
+    super.key,
+    required this.glyph,
+    required this.monogram,
+    this.size = AppIconSize.regular,
+    this.color,
+    this.asset,
+  });
 
   final InkGlyph? glyph;
   final String monogram;
   final double size;
   final Color? color;
 
+  /// A one-colour picture file, tinted with [color] like the ink glyphs.
+  final String? asset;
+
   @override
   Widget build(BuildContext context) {
     final c = color ?? IconTheme.of(context).color ?? AppColors.ink;
-    if (glyph != null) return InkIcon(glyph!, size: size, color: c);
-    return ExcludeSemantics(
-      child: SizedBox.square(
-        dimension: size,
-        child: Center(
-          child: Text(
-            monogram,
-            maxLines: 1,
-            textScaler: TextScaler.noScaling,
-            style: AppText.style(AppText.display, size: size * 0.8, weight: FontWeight.w700, color: c, height: 1),
-          ),
-        ),
-      ),
+    final drawn = glyph != null
+        ? InkIcon(glyph!, size: size, color: c)
+        : ExcludeSemantics(
+            child: SizedBox.square(
+              dimension: size,
+              child: Center(
+                child: Text(
+                  monogram,
+                  maxLines: 1,
+                  textScaler: TextScaler.noScaling,
+                  style: AppText.style(AppText.display, size: size * 0.8, weight: FontWeight.w700, color: c, height: 1),
+                ),
+              ),
+            ),
+          );
+    if (asset == null) return drawn;
+    return Image.asset(
+      asset!,
+      width: size,
+      height: size,
+      color: c,
+      colorBlendMode: BlendMode.srcIn,
+      excludeFromSemantics: true,
+      errorBuilder: (context, error, stack) => drawn, // a missing file keeps the drawing
     );
   }
 }
@@ -175,7 +218,13 @@ class _InkGlyphPainter extends CustomPainter {
         rect(3, 6, 21, 18);
         poly(const [Offset(3.5, 7), Offset(12, 13.5), Offset(20.5, 7)]);
       case InkGlyph.hint:
-        canvas.drawArc(Rect.fromCircle(center: const Offset(12, 10), radius: 6), math.pi * 0.75, math.pi * 1.5, false, p);
+        canvas.drawArc(
+          Rect.fromCircle(center: const Offset(12, 10), radius: 6),
+          math.pi * 0.75,
+          math.pi * 1.5,
+          false,
+          p,
+        );
         line(7.8, 14.2, 9.5, 17);
         line(16.2, 14.2, 14.5, 17);
         line(9.5, 17, 14.5, 17);
@@ -214,10 +263,23 @@ class _InkGlyphPainter extends CustomPainter {
         line(20, 17, 20, 20);
       case InkGlyph.speaker:
       case InkGlyph.speakerOff:
-        poly(const [Offset(4, 9), Offset(8, 9), Offset(13, 5), Offset(13, 19), Offset(8, 15), Offset(4, 15)], close: true);
+        poly(const [
+          Offset(4, 9),
+          Offset(8, 9),
+          Offset(13, 5),
+          Offset(13, 19),
+          Offset(8, 15),
+          Offset(4, 15),
+        ], close: true);
         if (glyph == InkGlyph.speaker) {
           canvas.drawArc(Rect.fromCircle(center: const Offset(13, 12), radius: 4), -math.pi / 4, math.pi / 2, false, p);
-          canvas.drawArc(Rect.fromCircle(center: const Offset(13, 12), radius: 7.5), -math.pi / 4, math.pi / 2, false, p);
+          canvas.drawArc(
+            Rect.fromCircle(center: const Offset(13, 12), radius: 7.5),
+            -math.pi / 4,
+            math.pi / 2,
+            false,
+            p,
+          );
         } else {
           line(16, 9, 21, 15);
           line(21, 9, 16, 15);
@@ -227,10 +289,14 @@ class _InkGlyphPainter extends CustomPainter {
         poly(const [Offset(6, 10), Offset(6, 20), Offset(18, 20), Offset(18, 10)]);
         poly(const [Offset(10, 20), Offset(10, 15), Offset(14, 15), Offset(14, 20)]);
       case InkGlyph.folder:
-        poly(
-          const [Offset(3, 6), Offset(9.5, 6), Offset(11.5, 8.5), Offset(21, 8.5), Offset(21, 19), Offset(3, 19)],
-          close: true,
-        );
+        poly(const [
+          Offset(3, 6),
+          Offset(9.5, 6),
+          Offset(11.5, 8.5),
+          Offset(21, 8.5),
+          Offset(21, 19),
+          Offset(3, 19),
+        ], close: true);
       case InkGlyph.pen:
         poly(const [Offset(4, 20), Offset(5, 16), Offset(16, 5), Offset(19, 8), Offset(8, 19)], close: true);
         line(14, 7, 17, 10);
@@ -247,6 +313,155 @@ class _InkGlyphPainter extends CustomPainter {
       case InkGlyph.down:
         line(12, 4, 12, 19);
         poly(const [Offset(7, 14), Offset(12, 19), Offset(17, 14)]);
+      case InkGlyph.clock:
+        canvas.drawCircle(const Offset(12, 12), 8.5, p);
+        line(12, 12, 12, 7);
+        line(12, 12, 15.5, 13.5);
+        for (final (x, y) in const [(12.0, 4.8), (19.2, 12.0), (12.0, 19.2), (4.8, 12.0)]) {
+          canvas.drawCircle(Offset(x, y), 0.2, p);
+        }
+      case InkGlyph.gear:
+        canvas.drawCircle(const Offset(12, 12), 5.5, p);
+        canvas.drawCircle(const Offset(12, 12), 1.8, p);
+        for (var i = 0; i < 8; i++) {
+          final a = i * math.pi / 4;
+          line(12 + 5.5 * math.cos(a), 12 + 5.5 * math.sin(a), 12 + 8.5 * math.cos(a), 12 + 8.5 * math.sin(a));
+        }
+      case InkGlyph.key:
+        canvas.drawCircle(const Offset(7.5, 12), 3.5, p);
+        line(11, 12, 21, 12);
+        line(17.5, 12, 17.5, 15.5);
+        line(20.5, 12, 20.5, 14.5);
+      case InkGlyph.footprint:
+        canvas.drawOval(const Rect.fromLTRB(7.5, 2.5, 16, 13.5), p);
+        canvas.drawOval(const Rect.fromLTRB(8.5, 15, 14.5, 21.5), p);
+      case InkGlyph.button:
+        canvas.drawCircle(const Offset(12, 12), 8.5, p);
+        canvas.drawCircle(const Offset(12, 12), 6, p);
+        for (final (x, y) in const [(10.3, 10.3), (13.7, 10.3), (10.3, 13.7), (13.7, 13.7)]) {
+          canvas.drawCircle(Offset(x, y), 0.5, p);
+        }
+      case InkGlyph.cloth:
+        poly(const [
+          Offset(4, 6), Offset(9, 4.5), Offset(14, 6), Offset(20, 4.5), Offset(19, 11), //
+          Offset(20.5, 18), Offset(15, 19.5), Offset(11, 17.5), Offset(5, 19.5), Offset(5.5, 12),
+        ], close: true);
+        line(8, 9, 16, 9);
+        line(8, 13, 16, 13);
+      case InkGlyph.map:
+        poly(const [
+          Offset(3, 6),
+          Offset(9, 4),
+          Offset(15, 6),
+          Offset(21, 4),
+          Offset(21, 18),
+          Offset(15, 20),
+          Offset(9, 18),
+          Offset(3, 20),
+        ], close: true);
+        line(9, 4, 9, 18);
+        line(15, 6, 15, 20);
+      case InkGlyph.ticket:
+        rect(3, 7, 21, 17, 1);
+        for (final y in const [8.8, 11.2, 13.6]) {
+          line(15.5, y, 15.5, y + 1.4);
+        }
+        line(6, 10.5, 12, 10.5);
+        line(6, 13.5, 10, 13.5);
+      case InkGlyph.feather:
+        line(5, 20, 18.5, 4.5);
+        canvas.drawPath(
+          Path()
+            ..moveTo(18.5, 4.5)
+            ..quadraticBezierTo(21, 13, 9.5, 15.5),
+          p,
+        );
+        canvas.drawPath(
+          Path()
+            ..moveTo(18.5, 4.5)
+            ..quadraticBezierTo(9.5, 5, 8.2, 15),
+          p,
+        );
+      case InkGlyph.mask:
+        canvas.drawPath(
+          Path()
+            ..moveTo(3, 9)
+            ..quadraticBezierTo(12, 6.5, 21, 9)
+            ..quadraticBezierTo(20.5, 16.5, 15.5, 16.5)
+            ..quadraticBezierTo(12, 13.5, 8.5, 16.5)
+            ..quadraticBezierTo(3.5, 16.5, 3, 9)
+            ..close(),
+          p,
+        );
+        canvas.drawOval(const Rect.fromLTRB(6.5, 10.2, 10.5, 13.2), p);
+        canvas.drawOval(const Rect.fromLTRB(13.5, 10.2, 17.5, 13.2), p);
+      case InkGlyph.gem:
+        poly(const [Offset(7, 5), Offset(17, 5), Offset(21, 10), Offset(12, 20), Offset(3, 10)], close: true);
+        line(3, 10, 21, 10);
+        line(9.5, 10, 12, 20);
+        line(14.5, 10, 12, 20);
+      case InkGlyph.bag:
+        rect(4, 9, 20, 20, 2);
+        canvas.drawPath(
+          Path()
+            ..moveTo(8.5, 9)
+            ..lineTo(8.5, 7)
+            ..arcToPoint(const Offset(15.5, 7), radius: const Radius.circular(3.5))
+            ..lineTo(15.5, 9),
+          p,
+        );
+        line(4, 13.5, 20, 13.5);
+        line(12, 13.5, 12, 15.5);
+      case InkGlyph.raven:
+        canvas.drawPath(
+          Path()
+            ..moveTo(3.5, 15)
+            ..quadraticBezierTo(8, 8.5, 15, 8.5)
+            ..lineTo(21, 7)
+            ..lineTo(17.5, 11)
+            ..quadraticBezierTo(16, 16.5, 9, 16.5)
+            ..close(),
+          p,
+        );
+        line(10, 16.5, 9, 20.5);
+        line(13, 16.5, 13, 20.5);
+        canvas.drawCircle(const Offset(15.3, 9.8), 0.3, p);
+      case InkGlyph.umbrella:
+        canvas.drawPath(
+          Path()
+            ..moveTo(3.5, 12)
+            ..arcToPoint(const Offset(20.5, 12), radius: const Radius.circular(8.5))
+            ..close(),
+          p,
+        );
+        canvas.drawPath(
+          Path()
+            ..moveTo(12, 12)
+            ..lineTo(12, 18.5)
+            ..arcToPoint(const Offset(15, 18.5), radius: const Radius.circular(1.5), clockwise: false),
+          p,
+        );
+      case InkGlyph.seal:
+        canvas.drawCircle(const Offset(12, 12), 8.5, p);
+        canvas.drawCircle(const Offset(12, 12), 5, p);
+        line(12, 9.5, 12, 14.5);
+        line(9.5, 12, 14.5, 12);
+      case InkGlyph.frame:
+        rect(3, 4, 21, 20, 1);
+        rect(6, 7, 18, 17, 0.5);
+        poly(const [Offset(7, 16), Offset(10.5, 11.5), Offset(13, 14), Offset(14.5, 12.5), Offset(17, 16)]);
+      case InkGlyph.whistle:
+        canvas.drawCircle(const Offset(14.5, 13.5), 5.5, p);
+        poly(const [Offset(14.5, 8), Offset(3, 8), Offset(3, 12), Offset(9.5, 12)]);
+        canvas.drawCircle(const Offset(14.5, 13.5), 1.4, p);
+        line(19, 9.5, 21, 5.5);
+      case InkGlyph.train:
+        rect(3, 9.5, 14.5, 17, 1);
+        rect(14.5, 5.5, 21, 17, 1);
+        rect(6, 5, 9, 9.5, 0.5);
+        line(16.5, 8.5, 19, 8.5);
+        canvas.drawCircle(const Offset(7.5, 19), 2, p);
+        canvas.drawCircle(const Offset(17, 19), 2, p);
     }
   }
 

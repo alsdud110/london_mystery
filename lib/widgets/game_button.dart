@@ -7,6 +7,7 @@ import '../core/theme/app_tokens.dart';
 import '../core/utils/audio_service.dart';
 import '../features/game/game_providers.dart';
 import 'ink_icon.dart';
+import 'paper_background.dart';
 
 /// [navy] is the primary action on paper, [gold] the primary action on the
 /// dark night screens, [outline] a secondary action. One primary per screen.
@@ -59,7 +60,12 @@ class _GameButtonState extends ConsumerState<GameButton> {
     var (bg, fg, border) = switch (widget.style) {
       GameButtonStyle.navy => (AppColors.navy, AppColors.paperLight, AppColors.navy),
       GameButtonStyle.gold => (AppColors.goldLight, AppColors.navyDeep, AppColors.goldLight),
-      GameButtonStyle.outline => (Colors.transparent, AppColors.ink, AppLine.faint(0.45)),
+      // Ink on paper; gold ink on the navy night background, where dark
+      // ink would disappear (e.g. "OPEN MY NOTEBOOK" in the final case).
+      GameButtonStyle.outline =>
+        InkSurface.isNight(context)
+            ? (Colors.transparent, AppColors.goldLight, AppColors.goldLight.withValues(alpha: 0.7))
+            : (Colors.transparent, AppColors.ink, AppLine.faint(0.45)),
     };
     // Not ready yet (e.g. no answer chosen): a faint pencilled outline
     // instead of a grey block, so it does not draw the eye.
@@ -86,22 +92,26 @@ class _GameButtonState extends ConsumerState<GameButton> {
             ],
           )
         : Row(
-      mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (widget.glyph != null) ...[
-          InkIcon(widget.glyph!, size: AppIconSize.medium, color: fg),
-          const SizedBox(width: AppSpace.md),
-        ],
-        Flexible(
-          child: Text(widget.label, textAlign: TextAlign.center, style: AppText.button(color: fg)),
-        ),
-        if (widget.arrow) ...[
-          const SizedBox(width: AppSpace.md),
-          InkIcon(InkGlyph.arrow, size: AppIconSize.medium, color: fg),
-        ],
-      ],
-    );
+            mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.glyph != null) ...[
+                InkIcon(widget.glyph!, size: AppIconSize.medium, color: fg),
+                const SizedBox(width: AppSpace.md),
+              ],
+              Flexible(
+                child: Text(
+                  widget.label,
+                  textAlign: TextAlign.center,
+                  style: AppText.button(color: fg),
+                ),
+              ),
+              if (widget.arrow) ...[
+                const SizedBox(width: AppSpace.md),
+                InkIcon(InkGlyph.arrow, size: AppIconSize.medium, color: fg),
+              ],
+            ],
+          );
 
     return Semantics(
       button: true,
@@ -125,7 +135,9 @@ class _GameButtonState extends ConsumerState<GameButton> {
             duration: const Duration(milliseconds: 90),
             scale: _pressed ? 0.98 : 1,
             child: Container(
-              constraints: widget.singleLine ? const BoxConstraints.tightFor(height: 56) : const BoxConstraints(minHeight: 56),
+              constraints: widget.singleLine
+                  ? const BoxConstraints.tightFor(height: 56)
+                  : const BoxConstraints(minHeight: 56),
               padding: EdgeInsets.symmetric(
                 horizontal: widget.singleLine ? AppSpace.lg : AppSpace.xl,
                 vertical: widget.singleLine ? 0 : AppSpace.lg,
@@ -146,7 +158,13 @@ class _GameButtonState extends ConsumerState<GameButton> {
 
 /// A quiet ink text action with an optional glyph ("Letter", "Need a tip?").
 class InkTextButton extends StatelessWidget {
-  const InkTextButton({super.key, required this.label, required this.onPressed, this.glyph, this.color = AppColors.royalBlue});
+  const InkTextButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.glyph,
+    this.color = AppColors.royalBlue,
+  });
 
   final String label;
   final VoidCallback? onPressed;
@@ -155,22 +173,30 @@ class InkTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Disabled (e.g. Undo with nothing to undo): the ink greys out, so it
+    // does not look like it can be tapped.
+    final ink = onPressed == null ? AppColors.locked : color;
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
         minimumSize: const Size(48, 48),
         foregroundColor: color,
+        disabledForegroundColor: AppColors.locked,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (glyph != null) ...[
-            InkIcon(glyph!, size: AppIconSize.small, color: color),
+            InkIcon(glyph!, size: AppIconSize.small, color: ink),
             const SizedBox(width: AppSpace.sm),
           ],
           Flexible(
-            child: Text(label, textAlign: TextAlign.center, style: AppText.button(size: 15, color: color).copyWith(letterSpacing: 0.3)),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppText.button(size: 15, color: ink).copyWith(letterSpacing: 0.3),
+            ),
           ),
         ],
       ),

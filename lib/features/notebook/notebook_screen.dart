@@ -17,15 +17,76 @@ import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
+import 'season_archive.dart';
 
-/// The Detective Notebook: clues, evidence and badges collected so far.
-class NotebookScreen extends ConsumerWidget {
-  const NotebookScreen({super.key});
+/// The Detective Notebook, in two parts: THIS CASE (clues, evidence and
+/// badges of the open case) and the CASE ARCHIVE (every case of the season,
+/// so evidence from earlier cases can be checked again, e.g. in Case 12).
+///
+/// Switching parts is state inside this one screen: closing the notebook
+/// always returns to the mission exactly as it was.
+class NotebookScreen extends ConsumerStatefulWidget {
+  const NotebookScreen({super.key, this.startInArchive = false});
+
+  final bool startInArchive;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NotebookScreen> createState() => _NotebookScreenState();
+}
+
+class _NotebookScreenState extends ConsumerState<NotebookScreen> {
+  late bool _archive = widget.startInArchive;
+
+  @override
+  Widget build(BuildContext context) {
     final episode = ref.watch(currentEpisodeProvider);
     final progress = ref.watch(gameControllerProvider);
+
+    final Widget casePage = Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+          child: _NotebookCover(episode: episode, progress: progress),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.parchment,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: TabBar(
+              dividerHeight: 0,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: BoxDecoration(
+                color: AppColors.navy,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              labelColor: AppColors.goldLight,
+              unselectedLabelColor: AppColors.inkBrown,
+              labelStyle: AppText.button(size: 15),
+              unselectedLabelStyle: AppText.button(size: 15),
+              // Lettered tabs until the evidence and badge glyphs
+              // exist (Custom Asset Required) — all three match.
+              tabs: const [
+                Tab(height: 52, text: 'CLUES'),
+                Tab(height: 52, text: 'EVIDENCE'),
+                Tab(height: 52, text: 'BADGES'),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            children: [
+              _CluesTab(episode: episode, progress: progress),
+              _EvidenceTab(episode: episode, progress: progress),
+              _BadgesTab(episode: episode, progress: progress),
+            ],
+          ),
+        ),
+      ],
+    );
 
     return DefaultTabController(
       length: 3,
@@ -46,47 +107,8 @@ class NotebookScreen extends ConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 560),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-                      child: _NotebookCover(episode: episode, progress: progress),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.parchment,
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: TabBar(
-                          dividerHeight: 0,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          indicator: BoxDecoration(
-                            color: AppColors.navy,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          labelColor: AppColors.goldLight,
-                          unselectedLabelColor: AppColors.inkBrown,
-                          labelStyle: AppText.button(size: 15),
-                          unselectedLabelStyle: AppText.button(size: 15),
-                          // Lettered tabs until the evidence and badge glyphs
-                          // exist (Custom Asset Required) — all three match.
-                          tabs: const [
-                            Tab(height: 52, text: 'CLUES'),
-                            Tab(height: 52, text: 'EVIDENCE'),
-                            Tab(height: 52, text: 'BADGES'),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          _CluesTab(episode: episode, progress: progress),
-                          _EvidenceTab(episode: episode, progress: progress),
-                          _BadgesTab(episode: episode, progress: progress),
-                        ],
-                      ),
-                    ),
+                    _NotebookParts(archive: _archive, onChanged: (a) => setState(() => _archive = a)),
+                    Expanded(child: _archive ? const SeasonArchive() : casePage),
                   ],
                 ),
               ),
@@ -177,7 +199,9 @@ class _CluesTab extends StatelessWidget {
         _Footer(
           text: clues.length < total
               ? 'Solve missions to find more clues!'
-              : 'All clues found! Match each picture to its number.',
+              : episode.finalMission.dialSymbols.isNotEmpty
+                  ? 'All clues found! Match each picture to its number.'
+                  : 'All clues found! Now solve the final case.',
         ),
       ],
     );
@@ -240,11 +264,11 @@ class _BadgesTab extends StatelessWidget {
           spacing: 12,
           runSpacing: 20,
           children: [
-            for (final b in GameBadge.values) BadgeMedal(badge: b, earned: earned.contains(b.name), size: 72),
+            for (final b in GameBadge.forEpisode(episode)) BadgeMedal(badge: b, earned: earned.contains(b.name), size: 72),
           ],
         ),
         const SizedBox(height: 16),
-        _Footer(text: '${earned.length} / ${GameBadge.values.length} badges'),
+        _Footer(text: '${earned.length} / ${GameBadge.forEpisode(episode).length} badges'),
       ],
     );
   }
@@ -316,4 +340,49 @@ class _Footer extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8),
         child: Text(text, textAlign: TextAlign.center, style: AppText.bodyText(size: 16, color: AppColors.muted)),
       );
+}
+
+/// The notebook's two parts, written like section headings in a detective's
+/// notebook: the chosen one is underlined in ink.
+class _NotebookParts extends StatelessWidget {
+  const _NotebookParts({required this.archive, required this.onChanged});
+
+  final bool archive;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget part(String label, bool selected, bool value) => Expanded(
+          child: Semantics(
+            button: true,
+            selected: selected,
+            label: label,
+            excludeSemantics: true,
+            child: InkWell(
+              onTap: () => onChanged(value),
+              child: Container(
+                height: 48,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: selected
+                        ? const BorderSide(color: AppColors.navy, width: AppLine.ink)
+                        : BorderSide(color: AppLine.faint(), width: AppLine.hairline),
+                  ),
+                ),
+                child: Text(label, style: AppText.eyebrow(color: selected ? AppColors.navy : AppColors.muted)),
+              ),
+            ),
+          ),
+        );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+      child: Row(
+        children: [
+          part('THIS CASE', !archive, false),
+          part('CASE ARCHIVE', archive, true),
+        ],
+      ),
+    );
+  }
 }

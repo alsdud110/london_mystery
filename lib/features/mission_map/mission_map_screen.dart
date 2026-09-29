@@ -150,6 +150,10 @@ class MissionMapScreen extends ConsumerWidget {
                       Navigator.of(sheetContext).pop();
                       context.go(Routes.solved);
                     }),
+                  item(InkGlyph.folder, 'Case files', () {
+                    Navigator.of(sheetContext).pop();
+                    context.go(Routes.episodes);
+                  }),
                   item(InkGlyph.home, 'Title screen', () {
                     Navigator.of(sheetContext).pop();
                     context.go(Routes.start);

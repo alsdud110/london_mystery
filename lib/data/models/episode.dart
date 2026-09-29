@@ -14,6 +14,9 @@ class Episode {
     required this.missions,
     required this.finalMission,
     this.glossary = const {},
+    this.caseSummary,
+    this.keyWords = const [],
+    this.hook,
   });
 
   final String id;
@@ -31,6 +34,15 @@ class Episode {
 
   /// Tap-to-reveal meanings for harder words (lower-case word → Korean meaning).
   final Map<String, String> glossary;
+
+  /// One English sentence for the case report (null: the report's default).
+  final String? caseSummary;
+
+  /// A few key English words of the case, named in the parent report.
+  final List<String> keyWords;
+
+  /// Season story hook shown after the case is closed ("what happens next?").
+  final String? hook;
 
   List<Mission> get allMissions => [...missions, finalMission];
 
@@ -63,11 +75,14 @@ class Episode {
         objectives: (json['objectives'] as List).cast<String>(),
         intro: (json['intro'] as List).cast<String>(),
         missions: [for (final m in json['missions'] as List) Mission.fromJson(m as Map<String, dynamic>)],
-        finalMission: Mission.fromJson(json['finalMission'] as Map<String, dynamic>),
+        finalMission: Mission.fromJson(json['finalMission'] as Map<String, dynamic>, finale: true),
         glossary: {
           for (final e in (json['glossary'] as Map? ?? const {}).entries)
             e.key.toString().toLowerCase(): e.value.toString(),
         },
+        caseSummary: json['caseSummary'] as String?,
+        keyWords: (json['keyWords'] as List? ?? const []).cast<String>(),
+        hook: json['hook'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -80,5 +95,8 @@ class Episode {
         'missions': [for (final m in missions) m.toJson()],
         'finalMission': finalMission.toJson(),
         'glossary': glossary,
+        if (caseSummary != null) 'caseSummary': caseSummary,
+        if (keyWords.isNotEmpty) 'keyWords': keyWords,
+        if (hook != null) 'hook': hook,
       };
 }

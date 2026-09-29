@@ -49,14 +49,28 @@ enum GameBadge {
   quickThinker('Quick Thinker', '미션을 빠르게 해결', null, AppColors.burgundy), // stopwatch
   puzzleSolver('Puzzle Solver', '퍼즐 3개 해결', null, AppColors.navy), // puzzle piece
   londonExplorer('London Explorer', '모든 장소 방문', InkGlyph.pin, AppColors.inkBrown),
-  masterDetective('Master Detective', '에피소드 완료', null, AppColors.goldDeep); // deerstalker
+  masterDetective('Master Detective', '에피소드 완료', null, AppColors.goldDeep), // deerstalker
 
-  const GameBadge(this.title, this.description, this.glyph, this.color);
+  // Case badges: earned by closing one case of the season. Each is shown
+  // only in its own case, next to the six badges above.
+  clockWatcher('Clock Watcher', '멈춘 시계의 비밀 해결', InkGlyph.clock, AppColors.royalBlue, episodeId: 'ep02'),
+  evidenceHunter('Evidence Hunter', '작은 단서로 범인 추적', InkGlyph.footprint, AppColors.burgundy, episodeId: 'ep03'),
+  letterReader('Letter Reader', '비밀 편지 해독', InkGlyph.letter, AppColors.inkBrown, episodeId: 'ep04'),
+  codeBreaker('Code Breaker', '잠긴 방의 암호 해제', InkGlyph.key, AppColors.navy, episodeId: 'ep05'),
+  mapMaster('Map Master', '잃어버린 지도 완성', InkGlyph.map, AppColors.success, episodeId: 'ep07'),
+  londonLegend('London Legend', '시즌 1 마지막 사건 해결', InkGlyph.raven, AppColors.goldDeep, episodeId: 'ep12');
+
+  const GameBadge(this.title, this.description, this.glyph, this.color, {this.episodeId});
 
   final String title;
   final String description;
   final InkGlyph? glyph;
   final Color color;
+
+  /// The case this badge belongs to; null for badges every case can give.
+  final String? episodeId;
+
+  bool get isCaseBadge => episodeId != null;
 
   static GameBadge? byId(String id) {
     for (final b in values) {
@@ -65,7 +79,12 @@ enum GameBadge {
     return null;
   }
 
+  /// The badges a case can give: the shared ones plus its own case badge.
+  static List<GameBadge> forEpisode(Episode e) =>
+      [for (final b in values) if (b.episodeId == null || b.episodeId == e.id) b];
+
   bool isEarned(Episode e, GameProgress p) {
+    if (episodeId != null) return episodeId == e.id && p.isCaseSolved;
     final solved = e.allMissions.where((m) => p.isCompleted(m.id)).toList();
     return switch (this) {
       GameBadge.firstClue => p.collectedClues(e).isNotEmpty,
@@ -74,6 +93,7 @@ enum GameBadge {
       GameBadge.puzzleSolver => solved.length >= 3,
       GameBadge.londonExplorer => p.allMissionsDone(e),
       GameBadge.masterDetective => p.isCaseSolved,
+      _ => false, // case badges are handled above
     };
   }
 }

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/episode.dart';
+import '../../data/models/season_progress.dart';
 import '../../data/repositories/episode_repository.dart';
 import '../../data/repositories/progress_repository.dart';
 
@@ -19,10 +20,59 @@ final progressRepositoryProvider = Provider<ProgressRepository>(
   (ref) => SharedPrefsProgressRepository(ref.watch(sharedPreferencesProvider)),
 );
 
-/// The episode being played (pre-loaded before the app starts).
-final currentEpisodeProvider = Provider<Episode>(
-  (ref) => throw UnimplementedError('currentEpisodeProvider must be overridden'),
-);
+/// Every case of the season in case order (pre-loaded before the app starts;
+/// defaults to the bundled content).
+final episodeCatalogProvider = Provider<List<Episode>>((ref) => MockEpisodeRepository.bundled());
+
+/// Which case file is open and which cases are solved. Persisted.
+class SeasonNotifier extends Notifier<SeasonProgress> {
+  @override
+  SeasonProgress build() {
+    final repo = ref.read(progressRepositoryProvider);
+    var season = repo.loadSeason();
+    // Saves from before the season existed: a solved Episode 01 still opens Case 02.
+    if (!season.isSolved(AppConstants.currentEpisodeId) && repo.load().isCaseSolved) {
+      season = season.markSolved(AppConstants.currentEpisodeId);
+    }
+    final catalog = ref.read(episodeCatalogProvider);
+    if (!catalog.any((e) => e.id == season.activeEpisodeId)) {
+      season = season.copyWith(activeEpisodeId: catalog.first.id);
+    }
+    return season;
+  }
+
+  void _set(SeasonProgress next) {
+    state = next;
+    ref.read(progressRepositoryProvider).saveSeason(next);
+  }
+
+  void open(String episodeId) => _set(state.copyWith(activeEpisodeId: episodeId));
+
+  void markSolved(String episodeId) {
+    if (!state.isSolved(episodeId)) _set(state.markSolved(episodeId));
+  }
+
+  /// Forgets the season in memory (storage is cleared by the repository).
+  void reset() => state = SeasonProgress.empty;
+
+  /// Case 01 is always open; every other case opens once the case before it
+  /// has been solved.
+  bool isUnlocked(String episodeId) {
+    final catalog = ref.read(episodeCatalogProvider);
+    final i = catalog.indexWhere((e) => e.id == episodeId);
+    if (i < 0) return false;
+    return i == 0 || state.isSolved(catalog[i - 1].id);
+  }
+}
+
+final seasonProvider = NotifierProvider<SeasonNotifier, SeasonProgress>(SeasonNotifier.new);
+
+/// The episode being played: the open case file.
+final currentEpisodeProvider = Provider<Episode>((ref) {
+  final id = ref.watch(seasonProvider.select((s) => s.activeEpisodeId));
+  final catalog = ref.watch(episodeCatalogProvider);
+  return catalog.firstWhere((e) => e.id == id, orElse: () => catalog.first);
+});
 
 class SoundEnabledNotifier extends Notifier<bool> {
   @override

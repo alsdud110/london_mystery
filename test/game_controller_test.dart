@@ -123,7 +123,8 @@ void main() {
     }
     final last = ctrl().submitAnswer(m['final']!, '7924');
     expect(last.newBadges, [GameBadge.masterDetective]);
-    expect(state().badgeIds.toSet(), {for (final b in GameBadge.values) b.name});
+    expect(state().badgeIds.toSet(), {for (final b in GameBadge.forEpisode(episode01)) b.name});
+    expect(GameBadge.forEpisode(episode01), hasLength(6), reason: 'Episode 01 keeps its six badges');
   });
 
   test('full run solves the case and survives an app restart', () async {

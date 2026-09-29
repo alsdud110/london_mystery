@@ -96,6 +96,9 @@ class DetectiveReport {
   GameBadge? get topBadge {
     final earned = badges;
     if (earned.isEmpty) return null;
+    for (final b in earned) {
+      if (b.isCaseBadge) return b; // the case's own badge headlines its report
+    }
     return earned.contains(GameBadge.masterDetective) ? GameBadge.masterDetective : earned.last;
   }
 
@@ -108,7 +111,7 @@ class DetectiveReport {
 
   /// Short English case summary for the kid-facing report.
   String get caseSummary {
-    final buffer = StringBuffer('You followed the clues across London and found the missing crown.');
+    final buffer = StringBuffer(episode.caseSummary ?? 'You followed the clues across London and found the missing crown.');
     if (hintsUsed == 0) {
       buffer.write(' You did it without a single hint!');
     } else if (firstTryCount >= performances.length - 1) {
@@ -131,6 +134,10 @@ class DetectiveReport {
         Skill.problemSolving => '문제 해결',
       };
 
+  /// Key words of the case named in the parent comment (Episode 01 keeps its
+  /// original three).
+  List<String> get _keyWords => episode.keyWords.isEmpty ? const ['museum', 'stone', 'palace'] : episode.keyWords;
+
   /// Warm, game-report style comment for parents (not a report card).
   List<String> get parentComments {
     final name = detectiveName;
@@ -143,7 +150,7 @@ class DetectiveReport {
     final weakest = sorted.last;
     comments.add(switch (best.key) {
       Skill.reading => '특히 문장 속에서 장소와 인물의 단서를 찾아내는 읽기 능력이 돋보였어요.',
-      Skill.vocabulary => '특히 museum, stone, palace 같은 핵심 단어를 잘 알아보고 활용했어요.',
+      Skill.vocabulary => '특히 ${_keyWords.join(', ')} 같은 핵심 단어를 잘 알아보고 활용했어요.',
       Skill.problemSolving => '특히 여러 단서를 조합해 최종 암호를 푸는 논리적 사고력이 돋보였어요.',
     });
 

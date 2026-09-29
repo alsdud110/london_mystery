@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
+import 'paper_background.dart';
 
 /// A sheet of paper lying on the desk: the base surface for documents,
 /// letters, notes and scene pictures (instead of rounded app cards).
@@ -35,7 +36,8 @@ class PaperSheet extends StatelessWidget {
         border: Border.all(color: AppLine.faint(), width: AppLine.hairline),
         boxShadow: lifted ? AppShadow.paperLift : null,
       ),
-      child: child,
+      // Paper, even when laid on the night desk: ink widgets inside use paper ink.
+      child: InkSurface(night: false, child: child),
     );
     return tilt == 0 ? sheet : Transform.rotate(angle: tilt, child: sheet);
   }

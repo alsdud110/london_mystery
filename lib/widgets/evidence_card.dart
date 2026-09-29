@@ -31,29 +31,46 @@ class EvidenceTile extends StatelessWidget {
             border: Border.all(color: AppColors.parchmentDark, width: 1.5),
             boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 3))],
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Hero(
-                tag: 'evidence-${evidence.id}',
-                child: _EvidenceArt(icon: evidence.icon, size: 70),
-              ),
-              const SizedBox(height: 10),
-              Text(evidence.name,
+          // The picture gives way on short tiles (small phones, large text,
+          // two-line names) so the name and "Look closer" always fit.
+          child: LayoutBuilder(
+            builder: (context, box) => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Hero(
+                  tag: 'evidence-${evidence.id}',
+                  child: _EvidenceArt(
+                    icon: evidence.icon,
+                    size: box.hasBoundedHeight
+                        ? (box.maxHeight - 12 - 72 * MediaQuery.textScalerOf(context).scale(1)).clamp(32.0, 70.0)
+                        : 70,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  evidence.name,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppText.button(size: 15, color: AppColors.navy)),
-              const SizedBox(height: 2),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkIcon(InkGlyph.search, size: AppIconSize.small, color: s.color),
-                  const SizedBox(width: 2),
-                  Flexible(child: Text('Look closer', style: AppText.caption(color: s.color), overflow: TextOverflow.ellipsis)),
-                ],
-              ),
-            ],
+                  style: AppText.button(size: 15, color: AppColors.navy),
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkIcon(InkGlyph.search, size: AppIconSize.small, color: s.color),
+                    const SizedBox(width: 2),
+                    Flexible(
+                      child: Text(
+                        'Look closer',
+                        style: AppText.caption(color: s.color),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -63,16 +80,18 @@ class EvidenceTile extends StatelessWidget {
 
 /// Opens the evidence in a large, inspectable view.
 Future<void> showEvidenceZoom(BuildContext context, Evidence evidence, {String? location}) {
-  return Navigator.of(context).push(PageRouteBuilder<void>(
-    opaque: false,
-    barrierDismissible: true,
-    barrierColor: AppColors.navyDeep.withValues(alpha: 0.85),
-    transitionDuration: const Duration(milliseconds: 350),
-    pageBuilder: (context, anim, _) => FadeTransition(
-      opacity: anim,
-      child: _EvidenceZoom(evidence: evidence, location: location),
+  return Navigator.of(context).push(
+    PageRouteBuilder<void>(
+      opaque: false,
+      barrierDismissible: true,
+      barrierColor: AppColors.navyDeep.withValues(alpha: 0.85),
+      transitionDuration: const Duration(milliseconds: 350),
+      pageBuilder: (context, anim, _) => FadeTransition(
+        opacity: anim,
+        child: _EvidenceZoom(evidence: evidence, location: location),
+      ),
     ),
-  ));
+  );
 }
 
 class _EvidenceZoom extends StatelessWidget {
@@ -110,7 +129,10 @@ class _EvidenceZoom extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Hero(tag: 'evidence-${evidence.id}', child: _EvidenceArt(icon: evidence.icon, size: 150)),
+                        Hero(
+                          tag: 'evidence-${evidence.id}',
+                          child: _EvidenceArt(icon: evidence.icon, size: 150),
+                        ),
                         const SizedBox(height: 18),
                         Text(evidence.name, style: AppText.title(size: 28), textAlign: TextAlign.center),
                         if (location != null) Text(location!, style: AppText.eyebrow(color: AppColors.royalBlue)),

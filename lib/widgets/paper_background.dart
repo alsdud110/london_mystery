@@ -19,10 +19,26 @@ class PaperBackground extends StatelessWidget {
       color: night ? AppColors.navy : AppColors.paper,
       child: CustomPaint(
         painter: night ? const _StarsPainter() : const _PaperGrainPainter(),
-        child: child,
+        child: InkSurface(night: night, child: child),
       ),
     );
   }
+}
+
+/// Tells ink widgets below whether they sit on the navy night background or
+/// on paper, so a shared style (e.g. the outline `GameButton`) can pick a
+/// readable ink. Paper laid on the night desk (`PaperSheet`) sets it back.
+class InkSurface extends InheritedWidget {
+  const InkSurface({super.key, required this.night, required super.child});
+
+  final bool night;
+
+  /// False (paper) when there is no surface above, e.g. in a bottom sheet.
+  static bool isNight(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<InkSurface>()?.night ?? false;
+
+  @override
+  bool updateShouldNotify(InkSurface oldWidget) => night != oldWidget.night;
 }
 
 class _PaperGrainPainter extends CustomPainter {
@@ -62,8 +78,10 @@ class _StarsPainter extends CustomPainter {
         paint,
       );
     }
-    // A thin crescent moon, drawn as ink on the night paper.
-    final moon = Offset(size.width * 0.82, size.height * 0.1);
+    // A thin crescent moon, drawn as ink on the night paper. Kept below the
+    // app bar row (at least 130 px down), so it never sits behind a top-right
+    // action such as SKIP.
+    final moon = Offset(size.width * 0.82, math.max(size.height * 0.1, 130));
     final crescent = Path.combine(
       PathOperation.difference,
       Path()..addOval(Rect.fromCircle(center: moon, radius: 16)),

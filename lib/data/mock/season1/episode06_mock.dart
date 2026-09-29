@@ -1,0 +1,261 @@
+/// Case 06 — The Midnight Detective (Covent Garden). Theme: people and
+/// clothes. Witnesses describe the stranger in a dark coat differently; the
+/// player compares what they agree on, reads a smudged card, and finds out
+/// there are two people in dark coats. Final case: who the stranger really
+/// is — a detective watching the Raven Society (an ally, not a new enemy).
+const Map<String, dynamic> episode06Json = {
+  'id': 'ep06',
+  'number': 6,
+  'title': 'The Midnight Detective',
+  'synopsis': [
+    'Every night, a stranger in a dark coat comes to Covent Garden.',
+    'Everyone tells a different story about him.',
+    'Compare what they saw, and find out who he is.',
+  ],
+  'objectives': ['Compare what the witnesses saw.', 'Find out who the stranger is.'],
+  'intro': [
+    'Covent Garden, 11:55 PM...',
+    'Every night at this time, a stranger appears in the market.',
+    'He wears a long dark coat.',
+    'People say he works for the Raven Society.',
+    'Tonight, you will find out who he really is.',
+  ],
+  'caseSummary': 'You compared what every witness saw and found the truth behind the dark coat.',
+  'keyWords': ['coat', 'hat', 'carried'],
+  'hook': 'Inspector Grey says: "They have half of an old map. Find the other half in Hyde Park."',
+  'missions': [
+    {
+      'id': 'ep06_m1',
+      'number': 1,
+      'title': 'Three Witnesses',
+      'location': 'THE MARKET HALL',
+      'scene': 'coventGarden',
+      'story': [
+        'The market is closing. The lamps are still on.',
+        'Three people saw the stranger last night.',
+      ],
+      'letterIntro': 'You write down what each witness says.',
+      'letter':
+          'The flower seller: "He was wearing a dark coat. He carried a small bag."\n\n'
+          'The juggler: "He had a grey hat. He carried a small bag, too."\n\n'
+          'The baker: "He had a dark coat and a big red umbrella."',
+      'type': 'multipleChoice',
+      'question': 'Two witnesses agree. What did the stranger carry?',
+      'options': [
+        {'id': 'a', 'label': 'A big red umbrella'},
+        {'id': 'b', 'label': 'A small bag'},
+        {'id': 'c', 'label': 'A bunch of flowers'},
+        {'id': 'd', 'label': 'A grey hat'},
+      ],
+      'answer': 'b',
+      'hints': [
+        '"Carried" is what he held in his hand. A hat is worn, not carried.',
+        'One thing is said by two people. The other thing only by one.',
+      ],
+      'clue': {
+        'id': 'ep06_c1',
+        'title': 'A Small Bag',
+        'value': 'Bag',
+        'symbol': 'bag',
+        'note': 'Two witnesses saw a small bag.',
+      },
+      'evidence': {
+        'id': 'ep06_e1',
+        'name': 'Witness Notes',
+        'icon': 'letter',
+        'description': 'What three witnesses saw.',
+        'inscription': 'Dark coat · grey hat · small bag',
+      },
+      'successMessage': 'He carried a small bag!',
+      'transition': [
+        'At midnight, you see him — a dark coat, a grey hat, a small bag!',
+        'He walks to the fountain... and drops a small card.',
+        'Then he is gone.',
+      ],
+      'nextMissionId': 'ep06_m2',
+      'skills': ['reading', 'problemSolving'],
+      'mapX': 0.28,
+      'mapY': 0.7,
+    },
+    {
+      'id': 'ep06_m2',
+      'number': 2,
+      'title': 'The Wet Card',
+      'location': 'THE FOUNTAIN',
+      'scene': 'coventGarden',
+      'story': [
+        'The card is wet from the fountain.',
+        'Some letters of the name are gone.',
+      ],
+      'letterIntro': 'You hold the card under the lamp.',
+      'letter':
+          'INSPECTOR ____\n'
+          'London Detective Agency\n\n'
+          'On the back, in small writing:\n'
+          '"My name is a colour.\n'
+          'It is the colour of rain clouds and old stones."',
+      'type': 'wordInput',
+      'question': 'What is the name on the card?',
+      'prompt': 'INSPECTOR ____',
+      'answer': 'GREY',
+      'acceptedAnswers': ['GRAY', 'INSPECTOR GREY', 'INSPECTOR GRAY'],
+      'hints': [
+        'Look up at the sky on a rainy day. What colour are the clouds?',
+        'It is not black and not white. It is in between. It has four letters.',
+      ],
+      'clue': {
+        'id': 'ep06_c2',
+        'title': 'A Detective',
+        'value': 'Inspector',
+        'symbol': 'ticket',
+        'note': 'The stranger is an inspector from the Detective Agency.',
+      },
+      'evidence': {
+        'id': 'ep06_e2',
+        'name': 'Detective Card',
+        'icon': 'ticket',
+        'description': 'Dropped by the fountain.',
+        'inscription': 'INSPECTOR GREY — LONDON DETECTIVE AGENCY',
+      },
+      'successMessage': 'Inspector Grey!',
+      'transition': [
+        'A detective? Then why do people say he is with the Raven Society?',
+        'The flower seller whispers:',
+        '"I saw a person in a dark coat by the theatre, too."',
+      ],
+      'nextMissionId': 'ep06_m3',
+      'skills': ['reading', 'vocabulary'],
+      'mapX': 0.74,
+      'mapY': 0.48,
+    },
+    {
+      'id': 'ep06_m3',
+      'number': 3,
+      'title': 'Two Dark Coats',
+      'location': 'THE THEATRE DOOR',
+      'scene': 'theatre',
+      'story': [
+        'The theatre is dark. Only the stage light is on.',
+        'The theatre guard keeps a notebook of everyone who walks past.',
+      ],
+      'letterIntro': "The guard's notebook says:",
+      'letter':
+          'MONDAY, MIDNIGHT\n'
+          'A tall man. A dark coat.\n'
+          'A grey hat. A small bag.\n\n'
+          'TUESDAY, MIDNIGHT\n'
+          'A short woman. A dark coat.\n'
+          'A red hat. A big bag.',
+      'type': 'numberCode',
+      'question': 'Compare Monday and Tuesday. How many things are different?',
+      'codeLength': 1,
+      'answer': '4',
+      'hints': [
+        'Check every part, one by one: tall or short? man or woman? the coat? the hat? the bag?',
+        'The coat is the same on both days. Count only the parts that change.',
+      ],
+      'clue': {
+        'id': 'ep06_c3',
+        'title': 'Two People',
+        'value': 'Red hat',
+        'symbol': 'mask',
+        'note': 'A second person in a dark coat wears a red hat.',
+      },
+      'evidence': {
+        'id': 'ep06_e3',
+        'name': 'Theatre Ticket',
+        'icon': 'ticket',
+        'description': 'Dropped by the woman in the red hat.',
+        'inscription': 'ROW R · SEAT 17',
+      },
+      'successMessage': 'Four things are different. There are two dark coats!',
+      'transition': [
+        'Row R, seat 17. R for Raven. 17, like 8:17.',
+        'The woman in the red hat is with the Raven Society!',
+        'And the man in the grey hat is watching her.',
+      ],
+      'nextMissionId': 'ep06_final',
+      'skills': ['reading', 'problemSolving'],
+      'mapX': 0.3,
+      'mapY': 0.26,
+    },
+  ],
+  'finalMission': {
+    'id': 'ep06_final',
+    'number': 4,
+    'title': 'The Midnight Detective',
+    'location': 'MIDNIGHT',
+    'scene': 'coventGarden',
+    'story': [
+      'The church clock rings twelve times.',
+      'The man in the grey hat is standing by the fountain again.',
+    ],
+    'letterIntro': 'He hands you a note before he speaks.',
+    'letter':
+        'Detective,\n\n'
+        'I lost my card. I think you found it.\n'
+        'I come here every night to watch a woman in a red hat.\n'
+        'She carries a big bag. She works for the Raven Society.\n'
+        'I am on your side.',
+    'type': 'multipleChoice',
+    'question': 'Who is the Midnight Detective?',
+    'options': [
+      {'id': 'a', 'label': 'A thief from the Raven Society'},
+      {'id': 'b', 'label': 'The juggler in a costume'},
+      {'id': 'c', 'label': 'Inspector Grey, who is watching the Raven Society'},
+      {'id': 'd', 'label': 'The woman in the red hat'},
+    ],
+    'answer': 'c',
+    'hints': [
+      'Look at the Detective Card in your notebook. Whose card was it?',
+      '"I am on your side" means he is a friend, not a thief.',
+    ],
+    'evidence': {
+      'id': 'ep06_e4',
+      'name': 'Silver Whistle',
+      'icon': 'whistle',
+      'description': 'A gift from Inspector Grey.',
+      'inscription': '"Blow it if you need help."',
+    },
+    'successMessage': 'The Midnight Detective is a friend!',
+    'skills': ['reading', 'problemSolving'],
+    'mapX': 0.72,
+    'mapY': 0.84,
+  },
+  'glossary': {
+    'midnight': '자정, 밤 12시',
+    'stranger': '낯선 사람',
+    'appears': '나타나다',
+    'witness': '목격자',
+    'witnesses': '목격자들',
+    'seller': '판매원',
+    'juggler': '저글링하는 사람',
+    'baker': '제빵사',
+    'carried': '들고 다녔다',
+    'carries': '들고 다닌다',
+    'wearing': '입고 있는',
+    'wore': '입었다',
+    'agree': '의견이 같다',
+    'umbrella': '우산',
+    'fountain': '분수',
+    'inspector': '형사, 경감',
+    'agency': '사무소, 기관',
+    'colour': '색깔',
+    'clouds': '구름들',
+    'smudged': '번진',
+    'tall': '키가 큰',
+    'short': '키가 작은',
+    'same': '같은',
+    'different': '다른',
+    'theatre': '극장',
+    'stage': '무대',
+    'costume': '의상, 변장',
+    'side': '편',
+    'whispers': '속삭인다',
+    'lamps': '등불들',
+    'church': '교회',
+    'ticket': '표',
+    'row': '줄, 열',
+    'seat': '좌석',
+  },
+};

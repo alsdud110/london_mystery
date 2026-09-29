@@ -293,6 +293,7 @@ class _MissionRow extends StatelessWidget {
       MissionType.imageChoice => '그림 추리',
       MissionType.qrScan => 'QR 현장 탐색',
       MissionType.finalCode => '최종 암호',
+      MissionType.sequence => '순서 추리',
     };
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),

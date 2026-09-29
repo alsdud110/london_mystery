@@ -1,9 +1,18 @@
 /// App-wide constants: storage keys and scoring rules.
 abstract final class AppConstants {
+  /// The first case of the season (always open; the default active case).
   static const currentEpisodeId = 'ep01';
 
   // Local storage keys (versioned so the schema can evolve safely).
+  /// Progress of Episode 01. Kept unchanged so saves made before the season
+  /// existed still load; later episodes use [progressKeyFor].
   static const progressStorageKey = 'lm.progress.v1';
+
+  /// Which case is open and which cases are solved (see `SeasonProgress`).
+  static const seasonStorageKey = 'lm.season.v1';
+
+  static String progressKeyFor(String episodeId) =>
+      episodeId == currentEpisodeId ? progressStorageKey : '$progressStorageKey.$episodeId';
   static const soundEnabledKey = 'lm.settings.sound';
 
   // Detective name rules.

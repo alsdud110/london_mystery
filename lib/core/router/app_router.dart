@@ -25,6 +25,7 @@ abstract final class Routes {
   static const intro = '/intro';
   static const map = '/map';
   static const notebook = '/notebook';
+  static const archive = '/notebook?view=archive';
   static const finalMission = '/final';
   static const solved = '/solved';
   static const report = '/report';
@@ -34,23 +35,26 @@ abstract final class Routes {
   static String mission(String id) => '/mission/$id';
 
   static String story(String id) => '/story/$id';
+
+  /// Case Files with one case chosen and its folder open ("OPEN CASE 03").
+  static String caseFile(String episodeId) => '$episodes?case=$episodeId';
 }
 
 CustomTransitionPage<void> _fade(GoRouterState state, Widget child) => CustomTransitionPage<void>(
-      key: state.pageKey,
-      child: child,
-      transitionDuration: const Duration(milliseconds: 380),
-      transitionsBuilder: (context, animation, secondary, child) {
-        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-        return FadeTransition(
-          opacity: curved,
-          child: SlideTransition(
-            position: Tween(begin: const Offset(0, 0.03), end: Offset.zero).animate(curved),
-            child: child,
-          ),
-        );
-      },
+  key: state.pageKey,
+  child: child,
+  transitionDuration: const Duration(milliseconds: 380),
+  transitionsBuilder: (context, animation, secondary, child) {
+    final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+    return FadeTransition(
+      opacity: curved,
+      child: SlideTransition(
+        position: Tween(begin: const Offset(0, 0.03), end: Offset.zero).animate(curved),
+        child: child,
+      ),
     );
+  },
+);
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -110,10 +114,16 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: Routes.start, pageBuilder: (c, s) => _fade(s, const StartScreen())),
       GoRoute(path: Routes.register, pageBuilder: (c, s) => _fade(s, const RegisterScreen())),
-      GoRoute(path: Routes.episodes, pageBuilder: (c, s) => _fade(s, const EpisodeSelectScreen())),
+      GoRoute(
+        path: Routes.episodes,
+        pageBuilder: (c, s) => _fade(s, EpisodeSelectScreen(focusCase: s.uri.queryParameters['case'])),
+      ),
       GoRoute(path: Routes.intro, pageBuilder: (c, s) => _fade(s, const StoryIntroScreen())),
       GoRoute(path: Routes.map, pageBuilder: (c, s) => _fade(s, const MissionMapScreen())),
-      GoRoute(path: Routes.notebook, pageBuilder: (c, s) => _fade(s, const NotebookScreen())),
+      GoRoute(
+        path: Routes.notebook,
+        pageBuilder: (c, s) => _fade(s, NotebookScreen(startInArchive: s.uri.queryParameters['view'] == 'archive')),
+      ),
       GoRoute(
         path: '/mission/:id',
         pageBuilder: (c, s) => _fade(s, MissionScreen(missionId: s.pathParameters['id']!)),

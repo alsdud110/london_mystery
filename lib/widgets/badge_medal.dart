@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../features/game/scoring.dart';
+import 'art_assets.dart';
 import 'ink_icon.dart';
 
 /// A round medal for a [GameBadge]. Locked badges are shown as grey outlines
@@ -37,6 +38,7 @@ class BadgeMedal extends StatelessWidget {
             child: earned
                 ? InkMark(
                     glyph: badge.glyph,
+                    asset: ArtAssets.badges[badge],
                     monogram: badge.title.substring(0, 1),
                     size: size * 0.5,
                     color: AppColors.paperLight,
@@ -98,8 +100,9 @@ class XpCounter extends StatelessWidget {
       curve: Curves.easeOutCubic,
       builder: (context, v, _) => Text(
         '$v$suffix',
-        style: (style ?? AppText.button(size: 14, color: Colors.white))
-            .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+        style: (style ?? AppText.button(size: 14, color: Colors.white)).copyWith(
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
       ),
     );
   }

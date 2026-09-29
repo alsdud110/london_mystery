@@ -41,7 +41,7 @@ class _StartScreenState extends ConsumerState<StartScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Start a new case?', style: AppText.title(size: 22)),
-        content: Text('Your current case will be closed and the clues will be cleared.', style: AppText.bodyText(size: 16)),
+        content: Text('All case files and clues will be cleared.', style: AppText.bodyText(size: 16)),
         actions: [
           TextButton(onPressed: () => context.pop(false), child: const Text('Keep playing')),
           FilledButton(onPressed: () => context.pop(true), child: const Text('New case')),

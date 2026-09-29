@@ -24,7 +24,7 @@ void main() {
         wrongAnswers: wrong,
         hintsUsed: hints,
         solveSeconds: {for (final id in ids) id: secondsEach},
-        badgeIds: [for (final b in GameBadge.values) b.name],
+        badgeIds: [for (final b in GameBadge.forEpisode(episode01)) b.name],
         lookedUpWords: words,
         startedAt: start,
         completedAt: start.add(const Duration(minutes: 42, seconds: 18)),

@@ -47,8 +47,10 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     super.dispose();
   }
 
-  Animation<double> _iv(double a, double b, [Curve curve = Curves.easeOutCubic]) =>
-      CurvedAnimation(parent: _c, curve: Interval(a, b, curve: curve));
+  Animation<double> _iv(double a, double b, [Curve curve = Curves.easeOutCubic]) => CurvedAnimation(
+    parent: _c,
+    curve: Interval(a, b, curve: curve),
+  );
 
   /// The report is for grown-ups: ask the parent gate every time, and take
   /// the pass back as soon as the report is closed.
@@ -81,6 +83,9 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
   @override
   Widget build(BuildContext context) {
     final report = DetectiveReport.from(ref.watch(currentEpisodeProvider), ref.watch(gameControllerProvider));
+    final catalog = ref.watch(episodeCatalogProvider);
+    final at = catalog.indexWhere((e) => e.id == report.episode.id);
+    final nextCase = at >= 0 && at + 1 < catalog.length ? catalog[at + 1] : null;
     final paper = _iv(0, 0.25, Curves.easeOutBack);
     final stamp = _iv(0.3, 0.45, Curves.easeInCubic);
     final xp = _iv(0.4, 0.75);
@@ -116,9 +121,31 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                       opacity: footer.value,
                       child: Column(
                         children: [
-                          Text('London needs you again.',
-                              style: AppText.subtitle(color: AppColors.goldLight), textAlign: TextAlign.center),
+                          // The season goes on: what the case left unanswered.
+                          if (report.episode.hook != null) ...[
+                            Text(
+                              report.episode.hook!,
+                              style: AppText.aside(color: Colors.white70),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          Text(
+                            'London needs you again.',
+                            style: AppText.subtitle(color: AppColors.goldLight),
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: 16),
+                          // Always a way back to the shelf; after the last
+                          // case of the season it is simply the case files.
+                          GameButton(
+                            label: nextCase != null ? 'OPEN CASE ${nextCase.numberLabel}' : 'CASE FILES',
+                            glyph: InkGlyph.folder,
+                            style: GameButtonStyle.outline,
+                            onPressed: () =>
+                                context.go(nextCase != null ? Routes.caseFile(nextCase.id) : Routes.episodes),
+                          ),
+                          const SizedBox(height: 10),
                           GameButton(
                             label: 'VIEW MY DETECTIVE REPORT',
                             glyph: InkGlyph.folder,
@@ -187,16 +214,25 @@ class _CaseFile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Custom Asset Required: a brass push-pin for the file corner.
-              Text('LONDON MYSTERY · FILE ${report.episode.numberLabel}', style: AppText.eyebrow(color: AppColors.inkBrown)),
+              Text(
+                'LONDON MYSTERY · FILE ${report.episode.numberLabel}',
+                style: AppText.eyebrow(color: AppColors.inkBrown),
+              ),
               const SizedBox(height: 10),
-              Text('CASE CLOSED', style: AppText.logo(size: 36, color: AppColors.navy), textAlign: TextAlign.center),
+              Text(
+                'CASE CLOSED',
+                style: AppText.logo(size: 36, color: AppColors.navy),
+                textAlign: TextAlign.center,
+              ),
               const _Rule(),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: _Field(label: 'Detective', value: report.detectiveName, big: true)),
+                  Expanded(
+                    child: _Field(label: 'Detective', value: report.detectiveName, big: true),
+                  ),
                   const SizedBox(width: 12),
-                  _Photo(),
+                  _Photo(scene: report.episode.finalMission.scene),
                 ],
               ),
               const SizedBox(height: 10),
@@ -218,9 +254,13 @@ class _CaseFile extends StatelessWidget {
               _Row(label: 'Time', value: Formatters.clock(report.elapsed)),
               _Row(
                 label: 'XP',
-                child: Text('$xpShown',
-                    style: AppText.logo(size: 26, color: AppColors.goldDeep)
-                        .copyWith(fontFeatures: const [FontFeature.tabularFigures()])),
+                child: Text(
+                  '$xpShown',
+                  style: AppText.logo(
+                    size: 26,
+                    color: AppColors.goldDeep,
+                  ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+                ),
               ),
               if (top != null) ...[
                 const _Rule(),
@@ -244,7 +284,10 @@ class _CaseFile extends StatelessWidget {
                             children: [
                               for (final b in report.badges)
                                 if (b != top)
-                                  Tooltip(message: b.title, child: BadgeMedal(badge: b, size: 30, showLabel: false)),
+                                  Tooltip(
+                                    message: b.title,
+                                    child: BadgeMedal(badge: b, size: 30, showLabel: false),
+                                  ),
                             ],
                           ),
                         ],
@@ -261,8 +304,7 @@ class _CaseFile extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text('— London Mystery Detective Agency',
-                        style: AppText.caption(color: AppColors.inkBrown)),
+                    child: Text('— London Mystery Detective Agency', style: AppText.caption(color: AppColors.inkBrown)),
                   ),
                   const WaxSeal(size: 50),
                 ],
@@ -313,6 +355,10 @@ class _Stamp extends StatelessWidget {
 }
 
 class _Photo extends StatelessWidget {
+  const _Photo({required this.scene});
+
+  final Artwork scene;
+
   @override
   Widget build(BuildContext context) {
     return Transform.rotate(
@@ -326,7 +372,7 @@ class _Photo extends StatelessWidget {
           boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(1, 3))],
           borderRadius: BorderRadius.circular(4),
         ),
-        child: const LandmarkArt(Artwork.royalBox, borderRadius: 2),
+        child: LandmarkArt(scene, borderRadius: 2, solved: 1),
       ),
     );
   }
@@ -388,7 +434,9 @@ class _Row extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: AppText.subtitle(color: AppColors.inkBrown))),
+          Expanded(
+            child: Text(label, style: AppText.subtitle(color: AppColors.inkBrown)),
+          ),
           child ?? Text(value ?? '', style: AppText.title(size: 21)),
         ],
       ),

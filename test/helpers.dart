@@ -13,7 +13,6 @@ Future<List<Override>> testOverrides({Map<String, Object> prefs = const {}, Audi
   final instance = await SharedPreferences.getInstance();
   return [
     sharedPreferencesProvider.overrideWithValue(instance),
-    currentEpisodeProvider.overrideWithValue(episode01),
     audioServiceProvider.overrideWithValue(audio ?? MockAudioService()),
   ];
 }

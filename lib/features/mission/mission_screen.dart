@@ -22,7 +22,6 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
-import 'widgets/qr_question.dart';
 import 'widgets/question_widgets.dart';
 
 /// The three steps of a mission. Each screen offers one main action.
@@ -117,16 +116,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     }
   }
 
-  Widget _questionFor(Mission m) {
-    void onSubmit(String a) => _submit(m, a);
-    return switch (m.type) {
-      MissionType.multipleChoice => MultipleChoiceQuestion(mission: m, onSubmit: onSubmit),
-      MissionType.wordInput => WordInputQuestion(mission: m, onSubmit: onSubmit),
-      MissionType.numberCode || MissionType.finalCode => NumberCodeQuestion(mission: m, onSubmit: onSubmit),
-      MissionType.imageChoice => ImageChoiceQuestion(mission: m, onSubmit: onSubmit),
-      MissionType.qrScan => QrQuestion(mission: m, onSubmit: onSubmit),
-    };
-  }
+  Widget _questionFor(Mission m) => questionFor(m, (a) => _submit(m, a));
 
   @override
   Widget build(BuildContext context) {

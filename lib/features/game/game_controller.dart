@@ -30,10 +30,15 @@ class GameController extends Notifier<GameProgress> {
   /// background is never added to the play time.
   DateTime? _activeSince;
 
+  /// The case this run belongs to (the open case file).
+  late String _episodeId;
+
   @override
   GameProgress build() {
+    // Rebuilt when another case file is opened: that case's own save loads.
+    _episodeId = ref.watch(seasonProvider.select((s) => s.activeEpisodeId));
     _activeSince = now(); // the app is starting, so it is in the foreground
-    return ref.read(progressRepositoryProvider).load();
+    return ref.read(progressRepositoryProvider).load(_episodeId);
   }
 
   /// The case clock runs from the story intro until the case is solved.
@@ -60,7 +65,27 @@ class GameController extends Notifier<GameProgress> {
     }
     if (_activeSince != null) _activeSince = at;
     state = next;
-    ref.read(progressRepositoryProvider).save(next);
+    ref.read(progressRepositoryProvider).save(next, _episodeId);
+  }
+
+  /// Opens another case file. Refused (false) while the case is still sealed:
+  /// the check lives here, not only in the case files UI. The detective
+  /// keeps their name; each case keeps its own clues, XP and badges.
+  bool openEpisode(String episodeId) {
+    final season = ref.read(seasonProvider.notifier);
+    if (!season.isUnlocked(episodeId)) return false;
+    if (episodeId == _episodeId) return true;
+
+    _update(state); // bank the play time of the case being left
+    final repo = ref.read(progressRepositoryProvider);
+    final target = repo.load(episodeId);
+    final name = state.detectiveName;
+    if (name != null && target.detectiveName != name) {
+      repo.save(target.copyWith(detectiveName: name), episodeId);
+    }
+    ref.read(recentUnlockProvider.notifier).set(null);
+    season.open(episodeId); // rebuilds this controller with the new case
+    return true;
   }
 
   /// The app went to the background (or is closing): stop and save the clock.
@@ -171,13 +196,15 @@ class GameController extends Notifier<GameProgress> {
     );
 
     final newBadges = [
-      for (final b in GameBadge.values)
+      for (final b in GameBadge.forEpisode(episode))
         if (!next.badgeIds.contains(b.name) && b.isEarned(episode, next)) b,
     ];
     if (newBadges.isNotEmpty) {
       next = next.copyWith(badgeIds: [...next.badgeIds, for (final b in newBadges) b.name]);
     }
     _update(next);
+    // The next case file opens (and stays open, even if this case is replayed).
+    if (mission.isFinal) ref.read(seasonProvider.notifier).markSolved(episode.id);
 
     if (mission.nextMissionId != null) {
       ref.read(recentUnlockProvider.notifier).set(mission.nextMissionId);
@@ -191,11 +218,12 @@ class GameController extends Notifier<GameProgress> {
     _update(state.resetCase());
   }
 
-  /// Wipes everything, including the detective name.
+  /// Wipes everything — every case and the season — including the name.
   Future<void> resetAll() async {
     ref.read(recentUnlockProvider.notifier).set(null);
     state = GameProgress.empty;
     await ref.read(progressRepositoryProvider).clear();
+    ref.read(seasonProvider.notifier).reset(); // back to Case 01
   }
 }
 
