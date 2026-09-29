@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../features/game/scoring.dart';
+import 'ink_icon.dart';
 
 /// A round medal for a [GameBadge]. Locked badges are shown as grey outlines
 /// so children can see what is still to discover.
@@ -23,19 +24,24 @@ class BadgeMedal extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // A flat pressed medal: one ink colour, gold rim (no gradient or glow).
           Container(
             width: size,
             height: size,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: earned
-                  ? RadialGradient(colors: [Color.lerp(color, Colors.white, 0.45)!, color])
-                  : null,
-              color: earned ? null : const Color(0xFFEDE7D8),
+              color: earned ? color : AppColors.parchment,
               border: Border.all(color: earned ? AppColors.gold : AppColors.parchmentDark, width: size / 16),
-              boxShadow: earned ? [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 10)] : null,
             ),
-            child: Icon(earned ? badge.icon : Icons.lock_rounded, color: earned ? Colors.white : color, size: size * 0.5),
+            child: earned
+                ? InkMark(
+                    glyph: badge.glyph,
+                    monogram: badge.title.substring(0, 1),
+                    size: size * 0.5,
+                    color: AppColors.paperLight,
+                  )
+                : InkIcon(InkGlyph.lock, size: size * 0.5, color: color),
           ),
           if (showLabel) ...[
             const SizedBox(height: 6),
@@ -76,7 +82,7 @@ class _TwoLineText extends StatelessWidget {
   }
 }
 
-/// Smoothly counts from the previous value to [value] ("⭐ 340 XP").
+/// Smoothly counts from the previous value to [value] ("340 XP").
 class XpCounter extends StatelessWidget {
   const XpCounter({super.key, required this.value, this.style, this.suffix = ' XP'});
 

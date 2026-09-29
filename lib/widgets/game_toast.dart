@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import 'ink_icon.dart';
 
 OverlayEntry? _current;
 
 /// A short message at the top of the screen that never blocks taps
 /// (unlike a SnackBar, which would cover the big bottom buttons).
-void showGameToast(BuildContext context, String message, {IconData icon = Icons.lock_rounded}) {
+void showGameToast(BuildContext context, String message, {InkGlyph glyph = InkGlyph.lock}) {
   final overlay = Overlay.maybeOf(context);
   if (overlay == null) return;
   _current?.remove();
@@ -15,7 +16,7 @@ void showGameToast(BuildContext context, String message, {IconData icon = Icons.
   entry = OverlayEntry(
     builder: (context) => _Toast(
       message: message,
-      icon: icon,
+      glyph: glyph,
       onDone: () {
         if (_current == entry) _current = null;
         if (entry.mounted) entry.remove();
@@ -27,10 +28,10 @@ void showGameToast(BuildContext context, String message, {IconData icon = Icons.
 }
 
 class _Toast extends StatefulWidget {
-  const _Toast({required this.message, required this.icon, required this.onDone});
+  const _Toast({required this.message, required this.glyph, required this.onDone});
 
   final String message;
-  final IconData icon;
+  final InkGlyph glyph;
   final VoidCallback onDone;
 
   @override
@@ -82,7 +83,7 @@ class _ToastState extends State<_Toast> with SingleTickerProviderStateMixin {
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                     child: Row(
                       children: [
-                        Icon(widget.icon, color: AppColors.goldLight),
+                        InkIcon(widget.glyph, color: AppColors.goldLight),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(widget.message, style: AppText.bodyText(size: 16, color: Colors.white)),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import '../core/theme/app_tokens.dart';
 import '../data/models/mission.dart';
+import 'ink_icon.dart';
 import 'symbol_icon.dart';
 
 /// A square evidence tile for the notebook grid. Tap to zoom in.
@@ -46,7 +48,7 @@ class EvidenceTile extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.zoom_in_rounded, size: 16, color: s.color),
+                  InkIcon(InkGlyph.search, size: AppIconSize.small, color: s.color),
                   const SizedBox(width: 2),
                   Flexible(child: Text('Look closer', style: AppText.caption(color: s.color), overflow: TextOverflow.ellipsis)),
                 ],
@@ -202,12 +204,13 @@ class _EvidenceArt extends StatelessWidget {
     return Container(
       width: size,
       height: size,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(colors: [Colors.white, s.color.withValues(alpha: 0.18)]),
+        color: AppColors.paperLight,
         border: Border.all(color: s.color.withValues(alpha: 0.6), width: size / 30),
       ),
-      child: Icon(s.icon, size: size * 0.55, color: s.color),
+      child: s.mark(size: size * 0.55),
     );
   }
 }

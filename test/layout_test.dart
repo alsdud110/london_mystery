@@ -33,7 +33,7 @@ void main() {
     await t.pumpAndSettle();
     expect(t.takeException(), isNull, reason: 'no overflow');
     expect(find.text('TRY AGAIN'), findsOneWidget);
-    await t.tap(find.text('💡 GET A TIP'));
+    await t.tap(find.text('GET A TIP'));
     await t.pumpAndSettle();
     expect(await choice, TryAgainChoice.hint);
   });

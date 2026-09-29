@@ -5,12 +5,14 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../widgets/badge_medal.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/evidence_card.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
@@ -32,7 +34,7 @@ class NotebookScreen extends ConsumerWidget {
           title: const Text('DETECTIVE NOTEBOOK'),
           leading: IconButton(
             tooltip: 'Close',
-            icon: const Icon(Icons.close_rounded),
+            icon: const InkIcon(InkGlyph.close),
             onPressed: () => context.canPop() ? context.pop() : context.go(Routes.map),
           ),
         ),
@@ -66,10 +68,12 @@ class NotebookScreen extends ConsumerWidget {
                           unselectedLabelColor: AppColors.inkBrown,
                           labelStyle: AppText.button(size: 15),
                           unselectedLabelStyle: AppText.button(size: 15),
+                          // Lettered tabs until the evidence and badge glyphs
+                          // exist (Custom Asset Required) — all three match.
                           tabs: const [
-                            Tab(height: 52, icon: Icon(Icons.search_rounded, size: 20), text: 'CLUES'),
-                            Tab(height: 52, icon: Icon(Icons.inventory_2_rounded, size: 20), text: 'EVIDENCE'),
-                            Tab(height: 52, icon: Icon(Icons.emoji_events_rounded, size: 20), text: 'BADGES'),
+                            Tab(height: 52, text: 'CLUES'),
+                            Tab(height: 52, text: 'EVIDENCE'),
+                            Tab(height: 52, text: 'BADGES'),
                           ],
                         ),
                       ),
@@ -114,8 +118,9 @@ class _NotebookCover extends StatelessWidget {
           Container(
             width: 56,
             height: 56,
+            alignment: Alignment.center,
             decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle),
-            child: const Icon(Icons.search_rounded, size: 34, color: AppColors.navy),
+            child: const InkIcon(InkGlyph.search, size: AppIconSize.emblem, color: AppColors.navy),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -131,7 +136,7 @@ class _NotebookCover extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Icon(Icons.star_rounded, color: AppColors.gold),
+              const InkStar(color: AppColors.gold),
               XpCounter(value: XpBreakdown.totalFor(episode, progress),
                   style: AppText.button(size: 15, color: AppColors.goldLight)),
             ],
@@ -281,7 +286,7 @@ class _EmptySlot extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.35),
       ),
       child: square
-          ? const Center(child: Icon(Icons.lock_rounded, color: AppColors.locked, size: 36))
+          ? const Center(child: InkIcon(InkGlyph.lock, color: AppColors.locked, size: AppIconSize.emblem))
           : Row(
               children: [
                 Container(
@@ -294,7 +299,7 @@ class _EmptySlot extends StatelessWidget {
                 const SizedBox(width: 16),
                 Text(label, style: AppText.eyebrow(color: AppColors.locked)),
                 const Spacer(),
-                const Icon(Icons.lock_rounded, color: AppColors.locked),
+                const InkIcon(InkGlyph.lock, color: AppColors.locked),
               ],
             ),
     );

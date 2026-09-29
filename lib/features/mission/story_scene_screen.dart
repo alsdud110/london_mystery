@@ -7,9 +7,11 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/typewriter_text.dart';
@@ -133,7 +135,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                   const SizedBox(height: 18),
                                   GameButton(
                                     label: 'TO THE MAP',
-                                    icon: Icons.map_rounded,
+                                    arrow: true,
                                     style: GameButtonStyle.gold,
                                     onPressed: () => context.go(Routes.map),
                                   ),
@@ -196,7 +198,7 @@ class _UnlockedCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.lock_open_rounded, color: AppColors.success, size: 18),
+                      const InkIcon(InkGlyph.check, size: AppIconSize.small, color: AppColors.success),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(isFinal ? 'FINAL CASE UNLOCKED' : 'NEW PLACE UNLOCKED',

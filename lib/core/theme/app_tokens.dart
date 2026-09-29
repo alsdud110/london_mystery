@@ -26,6 +26,31 @@ abstract final class AppShadow {
   static const paperLift = [BoxShadow(color: Color(0x1F2A2622), blurRadius: 6, offset: Offset(0, 2))];
 }
 
+/// Icon sizes for [InkIcon] (logical px). Picture-sized art such as the
+/// register screen's detective emblem is sized on its own.
+abstract final class AppIconSize {
+  /// Tiny marks inside small labels (map pin arrow).
+  static const tiny = 14.0;
+
+  /// Inline with caption text (clue location, "Look closer").
+  static const small = 18.0;
+
+  /// Buttons, choice ticks, tabs.
+  static const medium = 22.0;
+
+  /// App bars and list tiles (the [InkIcon] default).
+  static const regular = 24.0;
+
+  /// Floating actions.
+  static const large = 28.0;
+
+  /// A glyph centred in a round emblem (start screen, notebook cover).
+  static const emblem = 40.0;
+
+  /// The single picture of a panel (QR prompt, try-again sheet).
+  static const hero = 52.0;
+}
+
 /// Line weights for ink drawing.
 abstract final class AppLine {
   static const hairline = 1.0;

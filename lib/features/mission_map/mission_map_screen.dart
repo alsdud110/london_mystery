@@ -196,7 +196,7 @@ class MissionMapScreen extends ConsumerWidget {
                         IconButton(
                           tooltip: 'Menu',
                           onPressed: () => _showMenu(context, ref),
-                          icon: const InkIcon(InkGlyph.menu, size: 26),
+                          icon: const InkIcon(InkGlyph.menu),
                         ),
                       ],
                     ),
@@ -290,7 +290,7 @@ class _NotebookButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.button),
               border: Border.all(color: AppLine.faint(0.45), width: AppLine.rule),
             ),
-            child: const InkIcon(InkGlyph.notebook, size: 28, semanticLabel: 'Detective notebook'),
+            child: const InkIcon(InkGlyph.notebook, size: AppIconSize.large, semanticLabel: 'Detective notebook'),
           ),
         ),
       ),

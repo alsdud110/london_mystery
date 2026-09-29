@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/mission.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
@@ -25,7 +27,7 @@ class ParentReportScreen extends ConsumerWidget {
         title: const Text('DETECTIVE REPORT'),
         leading: IconButton(
           tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const InkIcon(InkGlyph.back),
           onPressed: () => context.canPop() ? context.pop() : context.go(Routes.solved),
         ),
       ),
@@ -95,7 +97,7 @@ class ParentReportScreen extends ConsumerWidget {
                               children: [
                                 const Padding(
                                   padding: EdgeInsets.only(top: 3),
-                                  child: Icon(Icons.star_rounded, size: 18, color: AppColors.gold),
+                                  child: InkStar(size: AppIconSize.small, color: AppColors.gold),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(child: Text(c, style: AppText.bodyText(size: 16))),
@@ -242,10 +244,10 @@ class _SkillRow extends StatelessWidget {
               ),
             ),
             for (var i = 0; i < 5; i++)
-              Icon(
-                i < stars ? Icons.star_rounded : Icons.star_outline_rounded,
+              InkStar(
+                filled: i < stars,
                 color: i < stars ? AppColors.gold : AppColors.parchmentDark,
-                size: 28,
+                size: AppIconSize.large,
               ),
           ],
         ),
@@ -304,9 +306,10 @@ class _MissionRow extends StatelessWidget {
               color: performance.firstTry ? AppColors.successSoft : AppColors.royalBlueSoft,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              performance.firstTry ? Icons.bolt_rounded : Icons.refresh_rounded,
-              size: 20,
+            // Every row is a solved mission; the colour tells first try apart.
+            child: InkIcon(
+              InkGlyph.check,
+              size: AppIconSize.small,
               color: performance.firstTry ? AppColors.success : AppColors.royalBlue,
             ),
           ),
@@ -327,7 +330,15 @@ class _MissionRow extends StatelessWidget {
                 performance.firstTry ? '한 번에 해결' : '${performance.wrongAnswers + 1}번째 도전 성공',
                 style: AppText.caption(color: AppColors.charcoal),
               ),
-              if (performance.usedHint) Text('💡 힌트 ${performance.hints}개 사용', style: AppText.caption()),
+              if (performance.usedHint)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const InkIcon(InkGlyph.hint, size: AppIconSize.tiny, color: AppColors.muted),
+                    const SizedBox(width: 2),
+                    Text('힌트 ${performance.hints}개 사용', style: AppText.caption()),
+                  ],
+                ),
             ],
           ),
         ],

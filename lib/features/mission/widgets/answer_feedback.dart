@@ -7,6 +7,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/game_button.dart';
+import '../../../widgets/ink_icon.dart';
 import '../../game/scoring.dart';
 
 /// Full-screen celebration after a correct answer.
@@ -254,7 +255,8 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
               width: 84,
               height: 84,
               decoration: const BoxDecoration(color: AppColors.tryAgainSoft, shape: BoxShape.circle),
-              child: const Icon(Icons.psychology_alt_rounded, size: 50, color: AppColors.tryAgain),
+              // "Good detectives look again": the magnifier.
+              child: const InkIcon(InkGlyph.search, size: AppIconSize.hero, color: AppColors.tryAgain),
             ),
             const SizedBox(height: 14),
             Text('Not quite!', style: AppText.title(size: 30, color: AppColors.tryAgain)),
@@ -265,15 +267,16 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
               style: AppText.bodyText(size: 17),
             ),
             const SizedBox(height: 20),
+            // Custom Asset Required: a retry glyph.
             GameButton(
               label: 'TRY AGAIN',
-              icon: Icons.refresh_rounded,
               onPressed: () => Navigator.of(context).pop(TryAgainChoice.retry),
             ),
             if (hintAvailable) ...[
               const SizedBox(height: 12),
               GameButton(
-                label: '💡 GET A TIP',
+                label: 'GET A TIP',
+                glyph: InkGlyph.hint,
                 style: GameButtonStyle.outline,
                 onPressed: () => Navigator.of(context).pop(TryAgainChoice.hint),
               ),
@@ -317,7 +320,7 @@ class TipsPanel extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                 backgroundColor: dark ? Colors.white.withValues(alpha: 0.08) : AppColors.goldLight.withValues(alpha: 0.35),
               ),
-              icon: const Text('💡', style: TextStyle(fontSize: 22)),
+              icon: InkIcon(InkGlyph.hint, size: AppIconSize.medium, color: dark ? AppColors.goldLight : AppColors.goldDeep),
               label: Text(label, style: AppText.button(size: 16, color: dark ? AppColors.goldLight : AppColors.goldDeep)),
             ),
           ),
@@ -359,7 +362,7 @@ class _TipNote extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('💡', style: TextStyle(fontSize: 26)),
+            const InkIcon(InkGlyph.hint, size: AppIconSize.large, color: AppColors.goldDeep),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

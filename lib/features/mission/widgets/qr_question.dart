@@ -57,7 +57,7 @@ class _QrQuestionState extends State<QrQuestion> {
           padding: const EdgeInsets.all(AppSpace.lg),
           child: Row(
             children: [
-              const InkIcon(InkGlyph.qr, size: 52, color: AppColors.navy),
+              const InkIcon(InkGlyph.qr, size: AppIconSize.hero, color: AppColors.navy),
               const SizedBox(width: AppSpace.lg),
               Expanded(
                 child: Column(

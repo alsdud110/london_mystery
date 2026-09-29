@@ -34,7 +34,8 @@ const Map<String, dynamic> episode01Json = {
         'Next to Platform 9, you find a mysterious suitcase.',
       ],
       'letterIntro': 'Inside the suitcase, there is a letter.',
-      'letter': 'Dear Detective,\n\n'
+      'letter':
+          'Dear Detective,\n\n'
           'I took the Crown! Ha ha!\n'
           'My next stop is a very big museum.\n'
           'It has old mummies from Egypt and a famous stone.\n\n'
@@ -87,19 +88,17 @@ const Map<String, dynamic> episode01Json = {
         'In Room 4, you see a big grey stone with strange writing.',
       ],
       'letterIntro': 'Someone left a note next to the stone!',
-      'letter': 'This stone helped people read old Egyptian writing.\n'
+      'letter':
+          'This stone helped people read old Egyptian writing.\n'
           'Its name has two words.\n'
           'The first word is ROSETTA.\n'
           'The second word means a hard piece of rock.',
       'type': 'wordInput',
       'question': 'Complete the name of the famous stone.',
-      'prompt': 'ROSETTA ______',
+      'prompt': 'ROSETTA _____',
       'answer': 'STONE',
       'acceptedAnswers': ['ROSETTA STONE'],
-      'hints': [
-        'It is another word for rock.',
-        'It has 5 letters: S _ _ _ E',
-      ],
+      'hints': ['It is another word for rock.', 'It has 5 letters: S _ _ _ E'],
       'clue': {
         'id': 'c02',
         'title': 'Room 4',
@@ -136,7 +135,8 @@ const Map<String, dynamic> episode01Json = {
         'At the bottom, there is a small metal box with a 3-number lock.',
       ],
       'letterIntro': 'A note is stuck on the box.',
-      'letter': 'My code is in three sentences:\n\n'
+      'letter':
+          'My code is in three sentences:\n\n'
           '1. The tower has FOUR clock faces.\n'
           '2. At one o\'clock, the bell rings ONE time.\n'
           '3. I left London at SEVEN o\'clock.\n\n'
@@ -185,7 +185,8 @@ const Map<String, dynamic> episode01Json = {
         'Two white swans are swimming on the lake.',
       ],
       'letterIntro': 'Under a bench, you find a note from the thief.',
-      'letter': 'My last stop is a big palace.\n'
+      'letter':
+          'My last stop is a big palace.\n'
           'Soldiers stand at the gate.\n'
           'They wear red coats and tall black hats.\n'
           'The King lives there!',
@@ -194,7 +195,11 @@ const Map<String, dynamic> episode01Json = {
       'options': [
         {'id': 'a', 'label': 'Tower Bridge', 'artwork': 'towerBridge'},
         {'id': 'b', 'label': 'London Eye', 'artwork': 'londonEye'},
-        {'id': 'c', 'label': 'Buckingham Palace', 'artwork': 'buckinghamPalace'},
+        {
+          'id': 'c',
+          'label': 'Buckingham Palace',
+          'artwork': 'buckinghamPalace',
+        },
         {'id': 'd', 'label': 'Big Ben', 'artwork': 'bigBen'},
       ],
       'answer': 'c',
@@ -238,7 +243,8 @@ const Map<String, dynamic> episode01Json = {
         'A guard in a red coat smiles at you.',
       ],
       'letterIntro': 'The guard gives you a small card.',
-      'letter': 'Detective, the thief hid a secret code near the gate.\n\n'
+      'letter':
+          'Detective, the thief hid a secret code near the gate.\n\n'
           'Look for the QR code with the golden crown sticker.\n'
           'Scan it to open the last door!',
       'type': 'qrScan',
@@ -260,7 +266,8 @@ const Map<String, dynamic> episode01Json = {
         'name': 'Crown Symbol',
         'icon': 'crown',
         'description': 'A golden card with a crown on it.',
-        'inscription': 'Four pictures for four locks.\nRead them from left to right.',
+        'inscription':
+            'Four pictures for four locks.\nRead them from left to right.',
         'symbols': ['clock', 'train', 'park', 'museum'],
       },
       'successMessage': 'The last door is open!',
@@ -286,7 +293,8 @@ const Map<String, dynamic> episode01Json = {
       'The Crown is inside.',
     ],
     'letterIntro': 'A message is carved on the lid.',
-    'letter': 'Four locks keep the Crown safe.\n'
+    'letter':
+        'Four locks keep the Crown safe.\n'
         'Each lock has a picture.\n\n'
         'Every picture is a place you visited.\n'
         'Find its number in your Detective Notebook!',

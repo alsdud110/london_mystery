@@ -6,6 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../widgets/game_button.dart';
+import '../../widgets/ink_icon.dart';
 
 /// Full-screen camera scanner. Pops with the scanned text, or null.
 class QrScannerScreen extends StatefulWidget {
@@ -67,9 +68,11 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
         title: Text('SCAN THE SECRET CODE', style: AppText.eyebrow(color: AppColors.goldLight)),
         leading: IconButton(
           tooltip: 'Close',
-          icon: const Icon(Icons.close_rounded),
+          icon: const InkIcon(InkGlyph.close),
           onPressed: () => context.pop(),
         ),
+        // Camera controls and camera errors keep Material icons: device
+        // functions, the one exception to the Ink Icon System.
         actions: [
           if (controller != null)
             IconButton(

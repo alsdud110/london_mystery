@@ -7,13 +7,16 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/letter_card.dart';
+import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/symbol_icon.dart';
 import '../game/game_controller.dart';
@@ -148,7 +151,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         title: const Text('FINAL MISSION'),
         leading: IconButton(
           tooltip: 'Back to map',
-          icon: const Icon(Icons.map_rounded),
+          icon: const InkIcon(InkGlyph.back),
           onPressed: () => context.go(Routes.map),
         ),
       ),
@@ -218,11 +221,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
           ),
         ),
         const SizedBox(height: 22),
-        GameButton(label: 'OPEN THE BOX', icon: Icons.lock_open_rounded, style: GameButtonStyle.gold, onPressed: _tryOpen),
+        // Custom Asset Required: an open-lock glyph for this button.
+        GameButton(label: 'OPEN THE BOX', style: GameButtonStyle.gold, onPressed: _tryOpen),
         const SizedBox(height: 12),
         GameButton(
           label: 'OPEN MY NOTEBOOK',
-          icon: Icons.menu_book_rounded,
+          glyph: InkGlyph.notebook,
           style: GameButtonStyle.outline,
           onPressed: _peekNotebook,
         ),
@@ -235,7 +239,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         builder: (context, child) => Opacity(opacity: ((_open.value - 0.8) / 0.2).clamp(0, 1), child: child),
         child: GameButton(
           label: 'SEE MY CASE REPORT',
-          icon: Icons.assignment_turned_in_rounded,
+          glyph: InkGlyph.folder,
           style: GameButtonStyle.gold,
           onPressed: () => context.go(Routes.solved),
         ),
@@ -270,9 +274,9 @@ class _Dial extends StatelessWidget {
           IconButton(
             tooltip: 'Lock ${index + 1} up',
             onPressed: onUp,
-            iconSize: 34,
             color: AppColors.navy,
-            icon: const Icon(Icons.keyboard_arrow_up_rounded),
+            // The ink "down" arrow turned over (no separate up glyph).
+            icon: const RotatedBox(quarterTurns: 2, child: InkIcon(InkGlyph.down, size: AppIconSize.large)),
           ),
           Container(
             width: 58,
@@ -296,9 +300,8 @@ class _Dial extends StatelessWidget {
           IconButton(
             tooltip: 'Lock ${index + 1} down',
             onPressed: onDown,
-            iconSize: 34,
             color: AppColors.navy,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            icon: const InkIcon(InkGlyph.down, size: AppIconSize.large),
           ),
         ],
       ),
@@ -321,8 +324,8 @@ class _CaseSolvedBanner extends StatelessWidget {
         scale: 0.8 + 0.2 * Curves.easeOutBack.transform(t),
         child: Column(
           children: [
-            Text('🎉 CASE SOLVED', style: AppText.logo(size: 32, color: AppColors.gold), textAlign: TextAlign.center),
-            const SizedBox(height: 8),
+            const InkStamp('CASE SOLVED', color: AppColors.gold, size: 26),
+            const SizedBox(height: 14),
             Text('The Crown has been found!', style: AppText.title(size: 24, color: Colors.white), textAlign: TextAlign.center),
             const SizedBox(height: 6),
             Text('Brilliant work, Detective $detectiveName!',

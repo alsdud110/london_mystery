@@ -19,7 +19,7 @@ class GameButton extends ConsumerStatefulWidget {
     required this.label,
     required this.onPressed,
     this.style = GameButtonStyle.navy,
-    this.icon,
+    this.glyph,
     this.arrow = false,
     this.singleLine = false,
     this.expand = true,
@@ -29,7 +29,7 @@ class GameButton extends ConsumerStatefulWidget {
   final String label;
   final VoidCallback? onPressed;
   final GameButtonStyle style;
-  final IconData? icon;
+  final InkGlyph? glyph;
 
   /// Shows a trailing ink arrow: the button moves the story forward.
   final bool arrow;
@@ -67,7 +67,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
       (bg, fg, border) = (Colors.transparent, AppColors.navy, AppLine.faint(0.35));
     }
 
-    const arrowBox = 22.0 + AppSpace.md;
+    const arrowBox = AppIconSize.medium + AppSpace.md;
     final content = widget.singleLine
         ? Row(
             children: [
@@ -81,7 +81,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
               ),
               if (widget.arrow) ...[
                 const SizedBox(width: AppSpace.md),
-                InkIcon(InkGlyph.arrow, size: 22, color: fg),
+                InkIcon(InkGlyph.arrow, size: AppIconSize.medium, color: fg),
               ],
             ],
           )
@@ -89,8 +89,8 @@ class _GameButtonState extends ConsumerState<GameButton> {
       mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (widget.icon != null) ...[
-          Icon(widget.icon, color: fg, size: 22),
+        if (widget.glyph != null) ...[
+          InkIcon(widget.glyph!, size: AppIconSize.medium, color: fg),
           const SizedBox(width: AppSpace.md),
         ],
         Flexible(
@@ -98,7 +98,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
         ),
         if (widget.arrow) ...[
           const SizedBox(width: AppSpace.md),
-          InkIcon(InkGlyph.arrow, size: 22, color: fg),
+          InkIcon(InkGlyph.arrow, size: AppIconSize.medium, color: fg),
         ],
       ],
     );
@@ -144,7 +144,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
   }
 }
 
-/// A quiet ink text action with an optional glyph ("✎ Letter", "Need a tip?").
+/// A quiet ink text action with an optional glyph ("Letter", "Need a tip?").
 class InkTextButton extends StatelessWidget {
   const InkTextButton({super.key, required this.label, required this.onPressed, this.glyph, this.color = AppColors.royalBlue});
 
@@ -166,7 +166,7 @@ class InkTextButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (glyph != null) ...[
-            InkIcon(glyph!, size: 20, color: color),
+            InkIcon(glyph!, size: AppIconSize.small, color: color),
             const SizedBox(width: AppSpace.sm),
           ],
           Flexible(

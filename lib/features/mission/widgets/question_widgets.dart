@@ -16,7 +16,8 @@ import '../../game/game_providers.dart';
 
 /// Paper answer surface shared by the puzzle types: faint ink border,
 /// navy when chosen.
-BoxDecoration _answerPaper({bool selected = false, double radius = 8}) => BoxDecoration(
+BoxDecoration _answerPaper({bool selected = false, double radius = 8}) =>
+    BoxDecoration(
       color: selected ? AppColors.royalBlueSoft : AppColors.paperLight,
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(
@@ -38,8 +39,12 @@ class ShakeOnChange extends StatefulWidget {
   State<ShakeOnChange> createState() => _ShakeOnChangeState();
 }
 
-class _ShakeOnChangeState extends State<ShakeOnChange> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+class _ShakeOnChangeState extends State<ShakeOnChange>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 450),
+  );
 
   @override
   void didUpdateWidget(ShakeOnChange old) {
@@ -58,7 +63,10 @@ class _ShakeOnChangeState extends State<ShakeOnChange> with SingleTickerProvider
     return AnimatedBuilder(
       animation: _c,
       builder: (context, child) => Transform.translate(
-        offset: Offset(math.sin(_c.value * math.pi * 6) * 10 * (1 - _c.value), 0),
+        offset: Offset(
+          math.sin(_c.value * math.pi * 6) * 10 * (1 - _c.value),
+          0,
+        ),
         child: child,
       ),
       child: widget.child,
@@ -71,16 +79,22 @@ class _ShakeOnChangeState extends State<ShakeOnChange> with SingleTickerProvider
 // ---------------------------------------------------------------------------
 
 class MultipleChoiceQuestion extends ConsumerStatefulWidget {
-  const MultipleChoiceQuestion({super.key, required this.mission, required this.onSubmit});
+  const MultipleChoiceQuestion({
+    super.key,
+    required this.mission,
+    required this.onSubmit,
+  });
 
   final Mission mission;
   final AnswerCallback onSubmit;
 
   @override
-  ConsumerState<MultipleChoiceQuestion> createState() => _MultipleChoiceQuestionState();
+  ConsumerState<MultipleChoiceQuestion> createState() =>
+      _MultipleChoiceQuestionState();
 }
 
-class _MultipleChoiceQuestionState extends ConsumerState<MultipleChoiceQuestion> {
+class _MultipleChoiceQuestionState
+    extends ConsumerState<MultipleChoiceQuestion> {
   String? _selected;
 
   @override
@@ -105,7 +119,9 @@ class _MultipleChoiceQuestionState extends ConsumerState<MultipleChoiceQuestion>
         const SizedBox(height: AppSpace.sm),
         GameButton(
           label: 'CHECK ANSWER',
-          onPressed: _selected == null ? null : () => widget.onSubmit(_selected!),
+          onPressed: _selected == null
+              ? null
+              : () => widget.onSubmit(_selected!),
         ),
       ],
     );
@@ -113,7 +129,12 @@ class _MultipleChoiceQuestionState extends ConsumerState<MultipleChoiceQuestion>
 }
 
 class _ChoiceTile extends StatelessWidget {
-  const _ChoiceTile({required this.letter, required this.label, required this.selected, required this.onTap});
+  const _ChoiceTile({
+    required this.letter,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String letter;
   final String label;
@@ -132,14 +153,28 @@ class _ChoiceTile extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           constraints: const BoxConstraints(minHeight: 60),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpace.lg,
+            vertical: AppSpace.md,
+          ),
           decoration: _answerPaper(selected: selected),
           child: Row(
             children: [
-              SizedBox(width: 28, child: Text('$letter.', style: AppText.title(size: 18, color: AppColors.navy))),
+              SizedBox(
+                width: 28,
+                child: Text(
+                  '$letter.',
+                  style: AppText.title(size: 18, color: AppColors.navy),
+                ),
+              ),
               const SizedBox(width: AppSpace.sm),
               Expanded(child: Text(label, style: AppText.subtitle())),
-              if (selected) const InkIcon(InkGlyph.check, size: 22, color: AppColors.navy),
+              if (selected)
+                const InkIcon(
+                  InkGlyph.check,
+                  size: AppIconSize.medium,
+                  color: AppColors.navy,
+                ),
             ],
           ),
         ),
@@ -153,7 +188,11 @@ class _ChoiceTile extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class WordInputQuestion extends StatefulWidget {
-  const WordInputQuestion({super.key, required this.mission, required this.onSubmit});
+  const WordInputQuestion({
+    super.key,
+    required this.mission,
+    required this.onSubmit,
+  });
 
   final Mission mission;
   final AnswerCallback onSubmit;
@@ -192,12 +231,20 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
         if (prompt != null)
           // The name, written on a museum label.
           Container(
-            padding: const EdgeInsets.symmetric(vertical: AppSpace.lg, horizontal: AppSpace.md),
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpace.lg,
+              horizontal: AppSpace.md,
+            ),
             decoration: _answerPaper(radius: AppRadius.paper),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                prompt.replaceAll(RegExp(r'_+'), _controller.text.trim().isEmpty ? '______' : _controller.text.trim().toUpperCase()),
+                prompt.replaceAll(
+                  RegExp(r'_+'),
+                  _controller.text.trim().isEmpty
+                      ? '_____'
+                      : _controller.text.trim().toUpperCase(),
+                ),
                 style: AppText.title(size: 26).copyWith(letterSpacing: 2),
               ),
             ),
@@ -237,7 +284,11 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
 // ---------------------------------------------------------------------------
 
 class NumberCodeQuestion extends ConsumerStatefulWidget {
-  const NumberCodeQuestion({super.key, required this.mission, required this.onSubmit});
+  const NumberCodeQuestion({
+    super.key,
+    required this.mission,
+    required this.onSubmit,
+  });
 
   final Mission mission;
   final AnswerCallback onSubmit;
@@ -277,7 +328,10 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
                 width: 60,
                 height: 72,
                 alignment: Alignment.center,
-                decoration: _answerPaper(selected: i == _code.length, radius: AppRadius.paper),
+                decoration: _answerPaper(
+                  selected: i == _code.length,
+                  radius: AppRadius.paper,
+                ),
                 child: Text(
                   i < _code.length ? _code[i] : '',
                   style: AppText.title(size: 34),
@@ -296,10 +350,21 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
             crossAxisSpacing: 10,
             childAspectRatio: 1.45,
             children: [
-              for (final d in ['1', '2', '3', '4', '5', '6', '7', '8', '9']) _Key(label: d, onTap: () => _press(d)),
-              _Key(glyph: InkGlyph.backspace, onTap: _delete, subtle: true, semantic: 'Delete'),
+              for (final d in ['1', '2', '3', '4', '5', '6', '7', '8', '9'])
+                _Key(label: d, onTap: () => _press(d)),
+              _Key(
+                glyph: InkGlyph.backspace,
+                onTap: _delete,
+                subtle: true,
+                semantic: 'Delete',
+              ),
               _Key(label: '0', onTap: () => _press('0')),
-              _Key(glyph: InkGlyph.clear, onTap: () => setState(() => _code = ''), subtle: true, semantic: 'Clear'),
+              _Key(
+                glyph: InkGlyph.clear,
+                onTap: () => setState(() => _code = ''),
+                subtle: true,
+                semantic: 'Clear',
+              ),
             ],
           ),
         ),
@@ -319,7 +384,13 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
 }
 
 class _Key extends StatelessWidget {
-  const _Key({this.label, this.glyph, required this.onTap, this.subtle = false, this.semantic});
+  const _Key({
+    this.label,
+    this.glyph,
+    required this.onTap,
+    this.subtle = false,
+    this.semantic,
+  });
 
   final String? label;
   final InkGlyph? glyph;
@@ -342,8 +413,15 @@ class _Key extends StatelessWidget {
             border: Border.all(color: AppLine.faint(0.25), width: AppLine.rule),
           ),
           child: label != null
-              ? Text(label!, style: AppText.title(size: 26, color: AppColors.ink))
-              : InkIcon(glyph!, color: AppColors.inkBrown, semanticLabel: semantic),
+              ? Text(
+                  label!,
+                  style: AppText.title(size: 26, color: AppColors.ink),
+                )
+              : InkIcon(
+                  glyph!,
+                  color: AppColors.inkBrown,
+                  semanticLabel: semantic,
+                ),
         ),
       ),
     );
@@ -355,13 +433,18 @@ class _Key extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class ImageChoiceQuestion extends ConsumerStatefulWidget {
-  const ImageChoiceQuestion({super.key, required this.mission, required this.onSubmit});
+  const ImageChoiceQuestion({
+    super.key,
+    required this.mission,
+    required this.onSubmit,
+  });
 
   final Mission mission;
   final AnswerCallback onSubmit;
 
   @override
-  ConsumerState<ImageChoiceQuestion> createState() => _ImageChoiceQuestionState();
+  ConsumerState<ImageChoiceQuestion> createState() =>
+      _ImageChoiceQuestionState();
 }
 
 class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
@@ -396,7 +479,9 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
         const SizedBox(height: AppSpace.lg),
         GameButton(
           label: 'CHECK ANSWER',
-          onPressed: _selected == null ? null : () => widget.onSubmit(_selected!),
+          onPressed: _selected == null
+              ? null
+              : () => widget.onSubmit(_selected!),
         ),
       ],
     );
@@ -404,7 +489,12 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
 }
 
 class _ImageTile extends StatelessWidget {
-  const _ImageTile({required this.letter, required this.artwork, required this.selected, required this.onTap});
+  const _ImageTile({
+    required this.letter,
+    required this.artwork,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String letter;
   final Artwork artwork;
@@ -431,7 +521,10 @@ class _ImageTile extends StatelessWidget {
               Positioned(
                 left: 6,
                 top: 4,
-                child: Text(letter, style: AppText.title(size: 20, color: AppColors.navy)),
+                child: Text(
+                  letter,
+                  style: AppText.title(size: 20, color: AppColors.navy),
+                ),
               ),
               if (selected)
                 Positioned(
@@ -441,8 +534,15 @@ class _ImageTile extends StatelessWidget {
                     width: 30,
                     height: 30,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(color: AppColors.navy, shape: BoxShape.circle),
-                    child: const InkIcon(InkGlyph.check, size: 18, color: AppColors.paperLight),
+                    decoration: const BoxDecoration(
+                      color: AppColors.navy,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const InkIcon(
+                      InkGlyph.check,
+                      size: AppIconSize.small,
+                      color: AppColors.paperLight,
+                    ),
                   ),
                 ),
             ],

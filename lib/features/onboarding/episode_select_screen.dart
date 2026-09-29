@@ -180,7 +180,7 @@ class _CaseFolderTile extends StatelessWidget {
                       turns: open ? 0.25 : 0,
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeOutCubic,
-                      child: const InkIcon(InkGlyph.arrow, size: 20, color: AppColors.inkBrown),
+                      child: const InkIcon(InkGlyph.arrow, size: AppIconSize.medium, color: AppColors.inkBrown),
                     ),
                   ],
                 ),
@@ -256,8 +256,8 @@ class _EpisodeRow extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: AppSpace.sm),
             child: entry.playable
-                ? (chosen ? const InkIcon(InkGlyph.check, size: 22, color: AppColors.navy) : const SizedBox(width: 22))
-                : const InkIcon(InkGlyph.lock, size: 18, color: AppColors.locked),
+                ? (chosen ? const InkIcon(InkGlyph.check, size: AppIconSize.medium, color: AppColors.navy) : const SizedBox(width: AppIconSize.medium))
+                : const InkIcon(InkGlyph.lock, size: AppIconSize.small, color: AppColors.locked),
           ),
         ],
       ),

@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/badge_medal.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper_background.dart';
@@ -119,7 +121,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                           const SizedBox(height: 16),
                           GameButton(
                             label: 'VIEW MY DETECTIVE REPORT',
-                            icon: Icons.assignment_rounded,
+                            glyph: InkGlyph.folder,
                             style: GameButtonStyle.gold,
                             onPressed: _openParentReport,
                           ),
@@ -127,18 +129,16 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                           Row(
                             children: [
                               Expanded(
-                                child: TextButton.icon(
+                                child: InkTextButton(
+                                  label: 'Notebook',
+                                  glyph: InkGlyph.notebook,
+                                  color: Colors.white70,
                                   onPressed: () => context.push(Routes.notebook),
-                                  icon: const Icon(Icons.menu_book_rounded, color: Colors.white70),
-                                  label: Text('Notebook', style: AppText.button(size: 15, color: Colors.white70)),
                                 ),
                               ),
+                              // Custom Asset Required: a replay glyph.
                               Expanded(
-                                child: TextButton.icon(
-                                  onPressed: _playAgain,
-                                  icon: const Icon(Icons.replay_rounded, color: Colors.white70),
-                                  label: Text('Play again', style: AppText.button(size: 15, color: Colors.white70)),
-                                ),
+                                child: InkTextButton(label: 'Play again', color: Colors.white70, onPressed: _playAgain),
                               ),
                             ],
                           ),
@@ -186,15 +186,8 @@ class _CaseFile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text('LONDON MYSTERY · FILE ${report.episode.numberLabel}',
-                        style: AppText.eyebrow(color: AppColors.inkBrown)),
-                  ),
-                  const Icon(Icons.push_pin_rounded, color: AppColors.waxRed, size: 22),
-                ],
-              ),
+              // Custom Asset Required: a brass push-pin for the file corner.
+              Text('LONDON MYSTERY · FILE ${report.episode.numberLabel}', style: AppText.eyebrow(color: AppColors.inkBrown)),
               const SizedBox(height: 10),
               Text('CASE CLOSED', style: AppText.logo(size: 36, color: AppColors.navy), textAlign: TextAlign.center),
               const _Rule(),
@@ -215,11 +208,7 @@ class _CaseFile extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     for (var i = 0; i < report.missionsTotal; i++)
-                      Icon(
-                        i < report.missionsCompleted ? Icons.star_rounded : Icons.star_outline_rounded,
-                        color: AppColors.gold,
-                        size: 26,
-                      ),
+                      InkStar(filled: i < report.missionsCompleted, color: AppColors.gold, size: AppIconSize.regular),
                   ],
                 ),
               ),

@@ -3,35 +3,49 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
+import '../core/theme/app_text.dart';
+import '../core/theme/app_tokens.dart';
 
-/// The game's one icon language: simple monochrome ink line drawings
-/// (even stroke, round ends, flat). Use these instead of emoji or mixed
-/// icon packs.
+/// London Mystery Ink Icon System — the game's one icon language: simple
+/// monochrome ink line drawings (24 × 24 grid, 1.9 stroke, round ends, flat).
+///
+/// Every icon in the game is `InkIcon(InkGlyph.x)`, sized with [AppIconSize]
+/// and coloured from [AppColors]. No Material icons, emoji or other icon
+/// packs (the camera/flash controls of the QR scanner are the one exception).
+/// A picture that has no glyph yet is shown with [InkMark] until its drawing
+/// is added here.
 enum InkGlyph {
+  // Navigation
   back,
   arrow,
   close,
   menu,
+  down,
+
+  // Investigation
+  search,
   notebook,
   letter,
-  hint,
   lock,
+  pin,
+  hint,
+
+  // Game
   check,
-  search,
+  qr,
+  pen,
   backspace,
   clear,
-  qr,
+
+  // System
   speaker,
   speakerOff,
   home,
   folder,
-  pen,
-  pin,
-  down,
 }
 
 class InkIcon extends StatelessWidget {
-  const InkIcon(this.glyph, {super.key, this.size = 24, this.color, this.semanticLabel});
+  const InkIcon(this.glyph, {super.key, this.size = AppIconSize.regular, this.color, this.semanticLabel});
 
   final InkGlyph glyph;
   final double size;
@@ -41,8 +55,75 @@ class InkIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = color ?? IconTheme.of(context).color ?? AppColors.ink;
-    final icon = CustomPaint(size: Size.square(size), painter: _InkGlyphPainter(glyph, c));
+    // Keeps its size inside slots with a minimum (text-field prefix,
+    // 48 px tap targets), like Material's Icon.
+    final icon = Center(
+      widthFactor: 1,
+      heightFactor: 1,
+      child: CustomPaint(size: Size.square(size), painter: _InkGlyphPainter(glyph, c)),
+    );
     return semanticLabel == null ? ExcludeSemantics(child: icon) : Semantics(label: semanticLabel, child: icon);
+  }
+}
+
+/// A data-driven picture (clue symbol, evidence, badge): its [glyph] when one
+/// exists, otherwise its [monogram] lettered like a wax-seal initial.
+///
+/// A monogram marks "Custom Asset Required" — the drawing is still to come.
+/// Never stand in a different icon family instead.
+class InkMark extends StatelessWidget {
+  const InkMark({super.key, required this.glyph, required this.monogram, this.size = AppIconSize.regular, this.color});
+
+  final InkGlyph? glyph;
+  final String monogram;
+  final double size;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = color ?? IconTheme.of(context).color ?? AppColors.ink;
+    if (glyph != null) return InkIcon(glyph!, size: size, color: c);
+    return ExcludeSemantics(
+      child: SizedBox.square(
+        dimension: size,
+        child: Center(
+          child: Text(
+            monogram,
+            maxLines: 1,
+            textScaler: TextScaler.noScaling,
+            style: AppText.style(AppText.display, size: size * 0.8, weight: FontWeight.w700, color: c, height: 1),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A rating star. Custom Asset Required: there is no ink star yet, so this
+/// sets the typographic ★ / ☆ (text, not emoji) in one place until the
+/// drawing is added to [InkGlyph].
+class InkStar extends StatelessWidget {
+  const InkStar({super.key, this.filled = true, this.size = AppIconSize.regular, this.color});
+
+  final bool filled;
+  final double size;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = color ?? IconTheme.of(context).color ?? AppColors.gold;
+    return ExcludeSemantics(
+      child: SizedBox.square(
+        dimension: size,
+        child: Center(
+          child: Text(
+            filled ? '★' : '☆',
+            textScaler: TextScaler.noScaling,
+            style: TextStyle(fontSize: size * 0.9, height: 1, color: c),
+          ),
+        ),
+      ),
+    );
   }
 }
 

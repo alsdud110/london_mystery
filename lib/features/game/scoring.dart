@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
+import '../../widgets/ink_icon.dart';
 
 /// XP earned for one solved mission, split into the parts shown to the player.
 @immutable
@@ -39,19 +40,22 @@ class XpBreakdown {
 }
 
 /// Achievements shown in the notebook and on the case report.
+///
+/// [glyph] is null while the badge's drawing is a Custom Asset Required
+/// (the medal shows the title's initial until then).
 enum GameBadge {
-  firstClue('First Clue', '첫 단서 발견', Icons.search_rounded, AppColors.royalBlue),
-  sharpEyes('Sharp Eyes', '힌트 없이 미션 해결', Icons.visibility_rounded, Color(0xFF3E9B6A)),
-  quickThinker('Quick Thinker', '미션을 빠르게 해결', Icons.bolt_rounded, Color(0xFFE0735A)),
-  puzzleSolver('Puzzle Solver', '퍼즐 3개 해결', Icons.extension_rounded, Color(0xFF8A5CC7)),
-  londonExplorer('London Explorer', '모든 장소 방문', Icons.map_rounded, Color(0xFF2E8FA3)),
-  masterDetective('Master Detective', '에피소드 완료', Icons.emoji_events_rounded, AppColors.goldDeep);
+  firstClue('First Clue', '첫 단서 발견', InkGlyph.search, AppColors.royalBlue),
+  sharpEyes('Sharp Eyes', '힌트 없이 미션 해결', null, AppColors.success), // eye
+  quickThinker('Quick Thinker', '미션을 빠르게 해결', null, AppColors.burgundy), // stopwatch
+  puzzleSolver('Puzzle Solver', '퍼즐 3개 해결', null, AppColors.navy), // puzzle piece
+  londonExplorer('London Explorer', '모든 장소 방문', InkGlyph.pin, AppColors.inkBrown),
+  masterDetective('Master Detective', '에피소드 완료', null, AppColors.goldDeep); // deerstalker
 
-  const GameBadge(this.title, this.description, this.icon, this.color);
+  const GameBadge(this.title, this.description, this.glyph, this.color);
 
   final String title;
   final String description;
-  final IconData icon;
+  final InkGlyph? glyph;
   final Color color;
 
   static GameBadge? byId(String id) {

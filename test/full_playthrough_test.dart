@@ -120,7 +120,7 @@ void main() {
     await tapText(t, 'CHECK ANSWER');
     expect(find.text('Not quite!'), findsOneWidget);
     expect(audio.played, contains(GameSound.wrong));
-    await tapText(t, '💡 GET A TIP');
+    await tapText(t, 'GET A TIP');
     expect(find.text('DETECTIVE TIP 1'), findsOneWidget);
     await tapText(t, 'The British Museum', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
@@ -205,7 +205,7 @@ void main() {
     }
     await wait(t, const Duration(milliseconds: 300));
     await tapText(t, 'OPEN THE BOX', after: const Duration(milliseconds: 3500));
-    expect(find.text('🎉 CASE SOLVED'), findsOneWidget);
+    expect(find.text('CASE SOLVED'), findsOneWidget);
     expect(find.text('Brilliant work, Detective MINYOUNG!'), findsOneWidget);
     expect(audio.played, contains(GameSound.finale));
 

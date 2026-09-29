@@ -140,7 +140,7 @@ class _Seal extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: AppLine.faint(0.35), width: AppLine.hairline),
         ),
-        child: const InkIcon(InkGlyph.search, size: 40, color: AppColors.navy),
+        child: const InkIcon(InkGlyph.search, size: AppIconSize.emblem, color: AppColors.navy),
       ),
     );
   }

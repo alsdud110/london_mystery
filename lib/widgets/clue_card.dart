@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import '../core/theme/app_tokens.dart';
 import '../core/utils/formatters.dart';
 import '../data/models/mission.dart';
+import 'ink_icon.dart';
 import 'symbol_icon.dart';
 
 /// A notebook page entry: "CLUE #01 — Platform 9".
@@ -69,7 +71,7 @@ class ClueCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.place_rounded, size: 16, color: AppColors.royalBlue),
+                      const InkIcon(InkGlyph.pin, size: AppIconSize.small, color: AppColors.royalBlue),
                       const SizedBox(width: 4),
                       Flexible(child: Text(location!, style: AppText.caption(color: AppColors.royalBlue))),
                     ],

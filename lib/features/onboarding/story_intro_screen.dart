@@ -163,7 +163,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                   const SizedBox(height: 20),
                                   GameButton(
                                     label: "I'M READY",
-                                    icon: Icons.bolt_rounded,
+                                    arrow: true,
                                     style: GameButtonStyle.gold,
                                     onPressed: _start,
                                   ),

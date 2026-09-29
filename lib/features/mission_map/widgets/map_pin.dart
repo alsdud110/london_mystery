@@ -204,7 +204,7 @@ class _Mark extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.success, width: AppLine.ink),
         ),
-        child: const InkIcon(InkGlyph.check, size: 19, color: AppColors.success),
+        child: const InkIcon(InkGlyph.check, size: AppIconSize.small, color: AppColors.success),
       );
     }
     return CustomPaint(
@@ -268,7 +268,7 @@ class _YouAreHere extends StatelessWidget {
           maxLines: 1,
           style: AppText.style(AppText.display, size: 9.5, weight: FontWeight.w800, color: AppColors.burgundy, letterSpacing: 1.4),
         ),
-        const InkIcon(InkGlyph.down, size: 13, color: AppColors.burgundy),
+        const InkIcon(InkGlyph.down, size: AppIconSize.tiny, color: AppColors.burgundy),
       ],
     );
   }

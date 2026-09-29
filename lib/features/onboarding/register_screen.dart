@@ -8,6 +8,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../widgets/game_button.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 
@@ -45,7 +46,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       appBar: AppBar(
         leading: IconButton(
           tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const InkIcon(InkGlyph.back),
           onPressed: () => context.go(Routes.start),
         ),
       ),
@@ -85,13 +86,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           labelStyle: AppText.bodyText(size: 16, color: AppColors.muted),
                           hintText: 'MINYOUNG',
                           hintStyle: AppText.title(size: 28, color: AppColors.parchmentDark),
-                          prefixIcon: const Icon(Icons.badge_rounded, color: AppColors.royalBlue),
+                          prefixIcon: const InkIcon(InkGlyph.pen, color: AppColors.royalBlue),
                         ),
                         validator: GameController.validateName,
                         onFieldSubmitted: (_) => _submit(),
                       ),
                       const SizedBox(height: 20),
-                      GameButton(label: 'START MISSION', icon: Icons.play_arrow_rounded, onPressed: _submit),
+                      GameButton(label: 'START MISSION', arrow: true, onPressed: _submit),
                     ],
                   ),
                 ),
@@ -118,7 +119,10 @@ class _DetectiveBadgeCard extends StatelessWidget {
         border: Border.all(color: AppColors.navy, width: 4),
         boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 16, offset: Offset(0, 8))],
       ),
-      child: const Icon(Icons.local_police_rounded, size: 64, color: AppColors.navy),
+      // The same magnifier emblem as the start screen, at picture size.
+      // Custom Asset Required: a detective emblem (deerstalker & pipe).
+      alignment: Alignment.center,
+      child: const InkIcon(InkGlyph.search, size: 64, color: AppColors.navy),
     );
   }
 }

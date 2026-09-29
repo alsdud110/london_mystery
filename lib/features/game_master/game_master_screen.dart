@@ -81,11 +81,11 @@ class GameMasterScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 24),
-          OutlinedButton.icon(
+          // Custom Asset Required: a reset glyph.
+          OutlinedButton(
             style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(56)),
             onPressed: () => _reset(context, ref),
-            icon: const Icon(Icons.restart_alt_rounded),
-            label: const Text('다음 플레이어를 위해 기기 초기화'),
+            child: const Text('다음 플레이어를 위해 기기 초기화'),
           ),
         ],
       ),
