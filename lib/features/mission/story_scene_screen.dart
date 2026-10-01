@@ -13,6 +13,7 @@ import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
+import '../../widgets/place_art.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/typewriter_text.dart';
 import '../game/game_controller.dart';
@@ -131,7 +132,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                             ? Column(
                                 key: const ValueKey('done'),
                                 children: [
-                                  if (next != null) _UnlockedCard(nextLocation: next.location, isFinal: next.isFinal, art: next.scene),
+                                  if (next != null) _UnlockedCard(nextLocation: next.location, isFinal: next.isFinal, art: PlaceArt.placeOf(next)),
                                   const SizedBox(height: 18),
                                   GameButton(
                                     label: 'TO THE MAP',
@@ -190,7 +191,12 @@ class _UnlockedCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            SizedBox(width: 72, height: 72, child: LandmarkArt(art, borderRadius: 16, showName: false)),
+            // A picture shows whole at its own ratio; a drawing stays square.
+            SizedBox(
+              width: LandmarkArt.hasPicture(art) ? 72 * LandmarkArt.aspectOf(art) : 72,
+              height: 72,
+              child: LandmarkArt(art, borderRadius: LandmarkArt.hasPicture(art) ? 4 : 16),
+            ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(

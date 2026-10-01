@@ -27,6 +27,19 @@ enum Landmark {
 
   final String name;
   final Offset at;
+
+  /// The landmark's scene picture key (its picture: `ArtAssets.scenes`).
+  Artwork get artwork => switch (this) {
+    kingsCross => Artwork.kingsCross,
+    britishMuseum => Artwork.britishMuseum,
+    coventGarden => Artwork.coventGarden,
+    hydePark => Artwork.hydePark,
+    towerOfLondon => Artwork.towerOfLondon,
+    bigBen => Artwork.bigBen,
+    buckinghamPalace => Artwork.buckinghamPalace,
+    londonEye => Artwork.londonEye,
+    towerBridge => Artwork.towerBridge,
+  };
 }
 
 /// Where every mission of a case is on the London map.

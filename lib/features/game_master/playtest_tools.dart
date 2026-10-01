@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/game_progress.dart';
@@ -7,7 +6,7 @@ import '../game/game_providers.dart';
 
 /// Playtest tools appear in debug builds, or in a build made with
 /// `--dart-define=LM_PLAYTEST=true`. A normal release build never shows them.
-const playtestToolsEnabled = kDebugMode || bool.fromEnvironment('LM_PLAYTEST');
+const playtestToolsEnabled = operatorToolsInBuild;
 
 /// Name used when the device has no detective yet.
 const playtestDetectiveName = 'TESTER';

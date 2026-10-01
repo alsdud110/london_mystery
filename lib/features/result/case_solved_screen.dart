@@ -364,7 +364,8 @@ class _Photo extends StatelessWidget {
     return Transform.rotate(
       angle: 0.05,
       child: Container(
-        width: 96,
+        // A picture shows whole at its own ratio; a drawing stays square.
+        width: LandmarkArt.hasPicture(scene, solved: 1) ? 86 * LandmarkArt.aspectOf(scene, solved: 1) + 10 : 96,
         height: 96,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
@@ -372,7 +373,7 @@ class _Photo extends StatelessWidget {
           boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(1, 3))],
           borderRadius: BorderRadius.circular(4),
         ),
-        child: LandmarkArt(scene, borderRadius: 2, solved: 1, showName: false),
+        child: LandmarkArt(scene, borderRadius: 2, solved: 1),
       ),
     );
   }

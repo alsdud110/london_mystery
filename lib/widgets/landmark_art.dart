@@ -6,11 +6,14 @@ import '../core/theme/app_colors.dart';
 import '../data/models/mission.dart';
 import 'art_assets.dart';
 
-/// Vintage storybook illustrations of London landmarks: ink outlines with a
-/// slightly hand-drawn double line, a few muted washes, paper instead of sky.
-/// Drawn in code so the app ships small and works offline. Each scene is
-/// addressed by an [Artwork] key, so it can later be swapped for a real
-/// PNG illustration without touching the screens (see [ArtAssets]).
+/// The scene of a place, everywhere the game shows one (mission, final case,
+/// image choices, the unlocked-place card, the Case Solved photo).
+///
+/// A place with a picture in [ArtAssets.scenes] (the nine London landmarks)
+/// shows that picture, whole; every other place, or a picture that fails to
+/// load, is drawn in code: vintage storybook ink outlines with a slightly
+/// hand-drawn double line and a few muted washes. Screens only name the
+/// [Artwork]; which file or drawing it is lives here and in [ArtAssets].
 class LandmarkArt extends StatelessWidget {
   const LandmarkArt(
     this.artwork, {
@@ -19,15 +22,21 @@ class LandmarkArt extends StatelessWidget {
     this.showSky = true,
     this.solved = 0,
     this.showName = true,
-  });
+  }) : _picture = true;
+
+  /// The code drawing of [artwork] only, never its picture (what shows when
+  /// a picture is missing).
+  const LandmarkArt.drawing(this.artwork, {super.key, this.borderRadius = 24, this.showSky = true, this.solved = 0})
+    : showName = true,
+      _picture = false;
 
   final Artwork artwork;
   final double borderRadius;
   final bool showSky;
 
-  /// False cuts off the name plate printed on a scene picture: on an
-  /// image-choice answer (the picture must be recognized, not read) and on
-  /// small thumbnails. Drawn scenes have no name either way.
+  /// False hides the name plate printed on a scene picture. Only for an
+  /// image-choice answer: the place must be recognized, not read (the plate
+  /// would tell the answer). Drawn scenes have no name either way.
   final bool showName;
 
   /// 0 = the place as the detective finds it, 1 = after the case is solved
@@ -35,9 +44,16 @@ class LandmarkArt extends StatelessWidget {
   /// when solved use it: the Case 02 clock turns from 8:17 to 9:17.
   final double solved;
 
-  /// Places with no drawing of their own yet, and the scene drawn for each
-  /// until its picture is added to [ArtAssets.scenes].
+  final bool _picture;
+
+  /// Places inside a landmark with no drawing of their own yet, and the
+  /// drawing used for each. A stand-in lends its *drawing* only, never its
+  /// picture: the Boathouse is a place in Hyde Park, not Hyde Park, so it
+  /// stays drawn until it has a picture of its own in [ArtAssets.scenes].
   static const standIns = {
+    Artwork.oldSuitcase: Artwork.suitcase,
+    Artwork.egyptRoom: Artwork.britishMuseum,
+    Artwork.greatCourt: Artwork.britishMuseum,
     Artwork.boathouse: Artwork.hydePark,
     Artwork.roseGarden: Artwork.hydePark,
     Artwork.waitingRoom: Artwork.kingsCross,
@@ -46,14 +62,21 @@ class LandmarkArt extends StatelessWidget {
     Artwork.dressingRoom: Artwork.theatre,
   };
 
+  /// Whether [artwork] shows a picture file (not the code drawing).
+  static bool hasPicture(Artwork artwork, {double solved = 0}) => ArtAssets.scene(artwork, solved: solved) != null;
+
+  /// Width / height of a frame that fits [artwork]: the picture's own ratio,
+  /// so it shows whole without stretching, or 4:3 for a drawing.
+  static double aspectOf(Artwork artwork, {double solved = 0}) =>
+      hasPicture(artwork, solved: solved) ? ArtAssets.sceneAspect(artwork) : 4 / 3;
+
   @override
   Widget build(BuildContext context) {
     final drawn = CustomPaint(
       painter: _LandmarkPainter(standIns[artwork] ?? artwork, showSky: showSky, solved: solved),
       child: const SizedBox.expand(),
     );
-    final standIn = standIns[artwork];
-    final file = ArtAssets.scene(artwork, solved: solved) ?? (standIn == null ? null : ArtAssets.scene(standIn, solved: solved));
+    final file = _picture ? ArtAssets.scene(artwork, solved: solved) : null;
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: file == null ? drawn : _ScenePicture(file, showName: showName, fallback: drawn),
@@ -61,8 +84,9 @@ class LandmarkArt extends StatelessWidget {
   }
 }
 
-/// A scene picture filling its frame (cover), without its printed paper
-/// frame, and without its name plate unless [showName].
+/// A scene picture: whole (contain), with its own paper frame and name plate.
+/// Without the name plate ([showName] false), the part above it fills the
+/// frame instead.
 class _ScenePicture extends StatelessWidget {
   const _ScenePicture(this.file, {required this.showName, required this.fallback});
 
@@ -72,6 +96,21 @@ class _ScenePicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (showName) {
+      return LayoutBuilder(
+        builder: (context, box) => Image.asset(
+          file,
+          fit: BoxFit.contain,
+          width: double.infinity,
+          height: double.infinity,
+          // Decoded at display size (a place picture is ~1300 px); never
+          // enlarged beyond the file.
+          cacheWidth: box.maxWidth.isFinite ? (box.maxWidth * MediaQuery.devicePixelRatioOf(context)).ceil() : null,
+          excludeFromSemantics: true,
+          errorBuilder: (context, error, stack) => fallback,
+        ),
+      );
+    }
     final spec = ArtAssets.scenePrint;
     // The part of the picture to show, in fractions of its size.
     final left = spec.frame;
@@ -217,7 +256,10 @@ class _LandmarkPainter extends CustomPainter {
       case Artwork.jewelCase:
         _jewelCase(canvas);
       // Drawn through their stand-in scene (see `LandmarkArt.standIns`).
-      case Artwork.boathouse ||
+      case Artwork.oldSuitcase ||
+          Artwork.egyptRoom ||
+          Artwork.greatCourt ||
+          Artwork.boathouse ||
           Artwork.roseGarden ||
           Artwork.waitingRoom ||
           Artwork.staffRoom ||

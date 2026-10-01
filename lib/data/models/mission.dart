@@ -51,8 +51,15 @@ enum Artwork {
   raven,
   jewelCase,
 
-  // Places with no drawing of their own yet (Custom Asset Required): each is
-  // drawn as a nearby scene until its picture is added (see `ArtAssets`).
+  // Places inside a landmark: each has its own picture (see `ArtAssets`);
+  // without it, it is drawn as its landmark (see `LandmarkArt.standIns`).
+  // Egypt Room and Great Court are named by the presentation only
+  // (`PlaceArt.missionScenes`), not by mission data.
+  egyptRoom,
+  greatCourt,
+  // The old brown suitcase (Case 01, Case 04): its picture, else drawn as
+  // the suitcase scene. Named by the presentation (`PlaceArt.missionScenes`).
+  oldSuitcase,
   boathouse,
   roseGarden,
   waitingRoom,

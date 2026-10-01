@@ -67,6 +67,9 @@ class _StartScreenState extends ConsumerState<StartScreen> {
     final hasSave = progress.hasDetective;
 
     return Scaffold(
+      // No text field here: the keyboard of the parent gate dialog must not
+      // squeeze the title page (the dialog moves above the keyboard itself).
+      resizeToAvoidBottomInset: false,
       body: PaperBackground(
         child: SafeArea(
           bottom: false,

@@ -8,6 +8,7 @@ import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/mission_map/map_camera.dart';
 import 'package:london_mystery/features/mission_map/map_world.dart';
+import 'package:london_mystery/features/mission_map/widgets/london_map_painter.dart';
 import 'package:london_mystery/features/mission_map/widgets/map_pin.dart';
 import 'package:london_mystery/widgets/game_button.dart';
 
@@ -130,6 +131,9 @@ void main() {
     }
 
     final goTo = find.ancestor(of: find.textContaining('GO TO'), matching: find.byType(GameButton));
+    /// How much of the red dashed way to the current place is drawn.
+    double redWay(WidgetTester t) =>
+        t.widgetList<CustomPaint>(find.byType(CustomPaint)).map((w) => w.painter).whereType<LondonMapPainter>().single.heading!.value;
     Offset worldAt(WidgetTester t) => t.getRect(find.byKey(const ValueKey('map-world'))).topLeft;
     Rect inner(WidgetTester t) => t.getRect(find.byKey(const ValueKey('map-viewport'))).deflate(5);
     Offset cameraOn(WidgetTester t, String id) =>
@@ -140,6 +144,7 @@ void main() {
       expect(worldAt(t), offsetMoreOrLessEquals(cameraOn(t, 'm01'), epsilon: 0.5));
       await t.pump(const Duration(milliseconds: 500));
       expect(worldAt(t), offsetMoreOrLessEquals(cameraOn(t, 'm01'), epsilon: 0.5), reason: 'same place: no animation');
+      expect(redWay(t), 1, reason: 'not travelling: the way is drawn (nothing solved yet, so nothing shows)');
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -156,6 +161,7 @@ void main() {
 
       await t.pump(const Duration(milliseconds: 500));
       final middle = worldAt(t);
+      expect(redWay(t), inExclusiveRange(0, 1), reason: 'the red dashed way is being drawn with the camera');
       expect(middle, isNot(start), reason: 'the camera is moving');
       expect(middle, isNot(offsetMoreOrLessEquals(cameraOn(t, 'm02'), epsilon: 0.5)), reason: 'not a jump');
       expect(relative(find.byKey(const ValueKey('pin-m02'))), offsetMoreOrLessEquals(pin));
@@ -166,6 +172,7 @@ void main() {
       final buttons = [t.getRect(goTo), t.getRect(find.byTooltip('Detective notebook'))];
       await t.pump(const Duration(milliseconds: 600));
       expect(worldAt(t), offsetMoreOrLessEquals(cameraOn(t, 'm02'), epsilon: 0.5), reason: 'lands on the new place');
+      expect(redWay(t), 1, reason: 'the red dashed way reaches the new place');
       expect([t.getRect(goTo), t.getRect(find.byTooltip('Detective notebook'))], buttons, reason: 'the buttons stay put');
       await wait(t, const Duration(seconds: 3)); // the pin's unlock stamp
       expect(find.text("YOU'RE HERE"), findsOneWidget);

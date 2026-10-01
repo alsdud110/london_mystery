@@ -79,6 +79,7 @@ class GameMasterScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final episode = ref.watch(currentEpisodeProvider);
     final catalog = ref.watch(episodeCatalogProvider);
+    final operatorOn = ref.watch(operatorAccessProvider);
     final qrMissions = episode.allMissions.where((m) => m.type == MissionType.qrScan).toList();
 
     return Scaffold(
@@ -116,8 +117,16 @@ class GameMasterScreen extends ConsumerWidget {
                 ListTile(
                   dense: true,
                   title: Text('${m.numberLabel}. ${m.location}'),
-                  subtitle: Text(m.question),
-                  trailing: Text(m.answerLabel, style: AppText.button(size: 14, color: AppColors.royalBlue)),
+                  // The answer under the question, not as a trailing widget:
+                  // a sequence answer (A → B → C → D) is longer than a tile.
+                  subtitle: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: '${m.question}\n'),
+                        TextSpan(text: '정답: ${m.answerLabel}', style: AppText.button(size: 14, color: AppColors.royalBlue)),
+                      ],
+                    ),
+                  ),
                 ),
             ],
           ),
@@ -141,6 +150,24 @@ class GameMasterScreen extends ConsumerWidget {
               onPressed: () => _restartCase(context, ref, episode),
               child: Text('지금 사건(CASE ${episode.numberLabel}) 처음부터'),
             ),
+            const SizedBox(height: 12),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text('전체 사건 열기 (OPERATOR MODE)', style: AppText.subtitle()),
+              subtitle: Text(
+                'CASE 01~${catalog.last.numberLabel}을 순서와 상관없이 열 수 있습니다. 해결 기록·XP·배지·증거는 '
+                '바뀌지 않습니다(위의 "CASE NN부터"와 달리 이전 사건을 해결로 표시하지 않음). 앱을 다시 시작하면 꺼집니다.',
+                style: AppText.caption(),
+              ),
+              value: operatorOn,
+              onChanged: (on) => ref.read(operatorAccessSwitchProvider.notifier).set(on),
+            ),
+            if (operatorOn)
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                onPressed: () => context.go(Routes.episodes),
+                child: const Text('CASE FILES로 이동'),
+              ),
           ],
           const SizedBox(height: 24),
           // Custom Asset Required: a reset glyph.

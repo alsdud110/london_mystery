@@ -49,6 +49,8 @@ class _ParentGateDialogState extends State<_ParentGateDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      // Above the keyboard on a small phone the room is short: scroll inside.
+      scrollable: true,
       backgroundColor: AppColors.paper,
       title: Text('For grown-ups', style: AppText.title(size: 22)),
       content: Column(

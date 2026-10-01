@@ -47,6 +47,11 @@ class MapCamera {
   /// Clamps [v] to [min, 0]; when the world is smaller (min > 0), centres.
   static double _clamp(double v, double min) => min > 0 ? min / 2 : v.clamp(min, 0.0);
 
+  /// This camera with the world magnified [scale] times (1 or more) and the
+  /// focus point at the exact centre: the camera moving in on a place, still
+  /// clamped so the world covers the viewport.
+  MapCamera zoomed(double scale) => MapCamera(viewport: viewport, world: world * scale, focusDrop: 0);
+
   /// Where [place] appears in the viewport with the camera at [offset].
   Offset onScreen(Offset place, Offset offset) => toWorld(place) + offset;
 }

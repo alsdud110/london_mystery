@@ -30,8 +30,57 @@ import 'widgets/map_pin.dart';
 
 /// The detective's map of London. One purpose: go to the next place.
 /// Case status (name, XP, play time) lives in the menu, not on the map.
-class MissionMapScreen extends ConsumerWidget {
+class MissionMapScreen extends ConsumerStatefulWidget {
   const MissionMapScreen({super.key});
+
+  @override
+  ConsumerState<MissionMapScreen> createState() => _MissionMapScreenState();
+}
+
+class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
+    with SingleTickerProviderStateMixin {
+  /// The place being travelled to (GO TO): the camera zooms right in on its
+  /// pin, the map fades out, then its mission page fades in — once. Null
+  /// when not going.
+  Mission? _goingTo;
+
+  /// The map fading out as the camera comes in on the pin (it starts while
+  /// the zoom is finishing, so the two blend).
+  late final AnimationController _leave = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 400),
+  );
+
+  @override
+  void dispose() {
+    _leave.dispose();
+    super.dispose();
+  }
+
+  /// GO TO a place: travel there on the map first. A second tap while
+  /// travelling does nothing.
+  void _goTo(Mission m) {
+    if (_goingTo != null) return;
+    setState(() => _goingTo = m);
+  }
+
+  /// The camera is nearly in on the pin: the map fades out over the end of
+  /// the zoom, then the mission page fades in.
+  Future<void> _onArriving() async {
+    final m = _goingTo;
+    if (!mounted || m == null) return;
+    try {
+      await _leave.forward(from: 0).orCancel;
+    } on TickerCanceled {
+      return; // the map went away meanwhile
+    }
+    if (!mounted) return;
+    await context.push(m.isFinal ? Routes.finalMission : Routes.mission(m.id));
+    // Back on the map (the mission was left with back): the map as it was.
+    if (!mounted) return;
+    _leave.value = 0;
+    setState(() => _goingTo = null);
+  }
 
   PinState _stateOf(GameProgress p, Episode e, Mission m) {
     if (p.isCompleted(m.id)) return PinState.completed;
@@ -53,28 +102,42 @@ class MissionMapScreen extends ConsumerWidget {
               : 'Locked! First solve the case at ${current?.location ?? ''}.',
         );
       case PinState.current:
-        context.push(m.isFinal ? Routes.finalMission : Routes.mission(m.id));
+        _goTo(m);
       case PinState.completed:
         _showSolvedSheet(context, progress, episode, m);
     }
   }
 
-  void _showSolvedSheet(BuildContext context, GameProgress progress, Episode episode, Mission m) {
+  void _showSolvedSheet(
+    BuildContext context,
+    GameProgress progress,
+    Episode episode,
+    Mission m,
+  ) {
     final clues = progress.collectedClues(episode);
-    final clueIndex = m.clue == null ? -1 : clues.indexWhere((c) => c.id == m.clue!.id);
+    final clueIndex = m.clue == null
+        ? -1
+        : clues.indexWhere((c) => c.id == m.clue!.id);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) => SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.xl),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpace.screen,
+            0,
+            AppSpace.screen,
+            AppSpace.xl,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(m.location, style: AppText.title(size: 24))),
+                  Expanded(
+                    child: Text(m.location, style: AppText.title(size: 24)),
+                  ),
                   const InkStamp('SOLVED', color: AppColors.success, size: 13),
                 ],
               ),
@@ -110,7 +173,8 @@ class MissionMapScreen extends ConsumerWidget {
           final playTime = ref.read(gameControllerProvider.notifier).playTime;
           final xp = XpBreakdown.totalFor(episode, progress);
 
-          Widget item(InkGlyph glyph, String label, VoidCallback onTap) => ListTile(
+          Widget item(InkGlyph glyph, String label, VoidCallback onTap) =>
+              ListTile(
                 leading: InkIcon(glyph, color: AppColors.ink),
                 title: Text(label, style: AppText.subtitle()),
                 onTap: onTap,
@@ -124,27 +188,43 @@ class MissionMapScreen extends ConsumerWidget {
                 children: [
                   // Case status: shown here, on request, instead of on the map.
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.sm),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpace.screen,
+                      0,
+                      AppSpace.screen,
+                      AppSpace.sm,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(episode.title, style: AppText.aside()),
-                        Text('Detective ${progress.detectiveName}', style: AppText.title(size: 22)),
+                        Text(
+                          'Detective ${progress.detectiveName}',
+                          style: AppText.title(size: 22),
+                        ),
                         const SizedBox(height: AppSpace.xs),
                         Text(
                           '$xp XP  ·  ${Formatters.clock(playTime)}',
                           style: AppText.caption(color: AppColors.goldDeep)
-                              .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+                              .copyWith(
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
+                              ),
                         ),
                       ],
                     ),
                   ),
                   const Divider(),
                   SwitchListTile(
-                    secondary: InkIcon(soundOn ? InkGlyph.speaker : InkGlyph.speakerOff, color: AppColors.ink),
+                    secondary: InkIcon(
+                      soundOn ? InkGlyph.speaker : InkGlyph.speakerOff,
+                      color: AppColors.ink,
+                    ),
                     title: Text('Sound effects', style: AppText.subtitle()),
                     value: soundOn,
-                    onChanged: (_) => ref.read(soundEnabledProvider.notifier).toggle(),
+                    onChanged: (_) =>
+                        ref.read(soundEnabledProvider.notifier).toggle(),
                   ),
                   item(InkGlyph.notebook, 'Detective Notebook', () {
                     Navigator.of(sheetContext).pop();
@@ -174,7 +254,8 @@ class MissionMapScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final going = _goingTo;
     final episode = ref.watch(currentEpisodeProvider);
     final progress = ref.watch(gameControllerProvider);
     final recentUnlock = ref.watch(recentUnlockProvider);
@@ -183,7 +264,9 @@ class MissionMapScreen extends ConsumerWidget {
     final places = MapWorld.places(episode);
     // Back from solving a place: the map opens on the place it unlocked.
     final unlockedAt = all.indexWhere((m) => m.id == recentUnlock);
-    final arrivedFrom = unlockedAt > 0 && current?.id == recentUnlock ? all[unlockedAt - 1] : null;
+    final arrivedFrom = unlockedAt > 0 && current?.id == recentUnlock
+        ? all[unlockedAt - 1]
+        : null;
 
     final ctaLabel = current == null
         ? 'SEE MY CASE FILE'
@@ -191,7 +274,7 @@ class MissionMapScreen extends ConsumerWidget {
         ? 'OPEN THE FINAL CASE'
         : 'GO TO ${current.location}';
 
-    return Scaffold(
+    final map = Scaffold(
       body: PaperBackground(
         child: SafeArea(
           child: Center(
@@ -200,15 +283,27 @@ class MissionMapScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.sm, AppSpace.xs),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpace.screen,
+                      AppSpace.sm,
+                      AppSpace.sm,
+                      AppSpace.xs,
+                    ),
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(episode.title, style: AppText.title(size: 20), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          child: Text(
+                            episode.title,
+                            style: AppText.title(size: 20),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         IconButton(
                           tooltip: 'Menu',
-                          onPressed: () => _showMenu(context, ref),
+                          onPressed: going != null
+                              ? null
+                              : () => _showMenu(context, ref),
                           icon: const InkIcon(InkGlyph.menu),
                         ),
                       ],
@@ -216,27 +311,44 @@ class MissionMapScreen extends ConsumerWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.md),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpace.lg,
+                        AppSpace.xs,
+                        AppSpace.lg,
+                        AppSpace.md,
+                      ),
                       child: _MapViewport(
                         // The camera follows the game: the current place,
                         // or the last one once every place is solved.
                         focus: places[(current ?? all.last).id]!,
                         // Just back from solving a place: start the camera
                         // there and travel to the place it unlocked.
-                        arriveFrom: arrivedFrom == null ? null : places[arrivedFrom.id],
-                        world: (size) => _MapWorldView(
+                        arriveFrom: arrivedFrom == null
+                            ? null
+                            : places[arrivedFrom.id],
+                        // GO TO: the camera moves in on the place.
+                        zoomIn: going != null,
+                        onArriving: _onArriving,
+                        world: (size, heading) => _MapWorldView(
+                          heading: heading,
                           size: size,
                           route: [for (final m in all) places[m.id]!],
                           completedLegs: progress.completedMissionIds.length,
                           // The current place's own name is on its pin.
-                          hideName: current == null ? null : MapWorld.missionLandmarks[current.id],
+                          hideName: current == null
+                              ? null
+                              : MapWorld.missionLandmarks[current.id],
                           pins: [
                             // The current place last, so its note is on top.
-                            for (final m in [...all.where((m) => m != current), ?current])
+                            for (final m in [
+                              ...all.where((m) => m != current),
+                              ?current,
+                            ])
                               // A place stays off the map until it is
                               // unlocked: where it is would tell the answer
                               // of the case before it.
-                              if (_stateOf(progress, episode, m) != PinState.locked)
+                              if (_stateOf(progress, episode, m) !=
+                                  PinState.locked)
                                 (
                                   at: places[m.id]!,
                                   pin: MapPin(
@@ -245,8 +357,12 @@ class MissionMapScreen extends ConsumerWidget {
                                     isFinal: m.isFinal,
                                     state: _stateOf(progress, episode, m),
                                     celebrateUnlock: recentUnlock == m.id,
-                                    onUnlockBurst: () => ref.read(audioServiceProvider).play(GameSound.unlock),
-                                    onUnlockShown: () => ref.read(recentUnlockProvider.notifier).set(null),
+                                    onUnlockBurst: () => ref
+                                        .read(audioServiceProvider)
+                                        .play(GameSound.unlock),
+                                    onUnlockShown: () => ref
+                                        .read(recentUnlockProvider.notifier)
+                                        .set(null),
                                     onTap: () => _openMission(context, ref, m),
                                   ),
                                 ),
@@ -256,17 +372,28 @@ class MissionMapScreen extends ConsumerWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.md),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpace.lg,
+                      0,
+                      AppSpace.lg,
+                      AppSpace.md,
+                    ),
                     child: Row(
                       children: [
-                        _NotebookButton(onTap: () => context.push(Routes.notebook)),
+                        _NotebookButton(
+                          onTap: () => context.push(Routes.notebook),
+                        ),
                         const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: GameButton(
                             label: ctaLabel,
                             arrow: true,
                             singleLine: true,
-                            onPressed: current == null ? () => context.go(Routes.solved) : () => _openMission(context, ref, current),
+                            onPressed: going != null
+                                ? null
+                                : current == null
+                                ? () => context.go(Routes.solved)
+                                : () => _openMission(context, ref, current),
                           ),
                         ),
                       ],
@@ -279,6 +406,27 @@ class MissionMapScreen extends ConsumerWidget {
         ),
       ),
     );
+
+    return PopScope(
+      // No leaving half-way: the trip ends in the mission.
+      canPop: going == null,
+      // While travelling the map takes no taps (pins, menu, notebook).
+      child: AbsorbPointer(
+        absorbing: going != null,
+        // Fades out to the page colour; the mission page fades in from it.
+        child: ColoredBox(
+          color: AppColors.paper,
+          child: FadeTransition(
+            key: const ValueKey('map-page'),
+            opacity: Tween(
+              begin: 1.0,
+              end: 0.0,
+            ).animate(CurvedAnimation(parent: _leave, curve: Curves.easeInOut)),
+            child: map,
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -287,7 +435,27 @@ class MissionMapScreen extends ConsumerWidget {
 /// dragged or zoomed): the current place sits at the centre, and when a new
 /// place is unlocked the whole world pans there, pins and all.
 class _MapViewport extends StatefulWidget {
-  const _MapViewport({required this.focus, required this.arriveFrom, required this.world});
+  const _MapViewport({
+    required this.focus,
+    required this.arriveFrom,
+    required this.world,
+    this.zoomIn = false,
+    this.onArriving,
+  });
+
+  /// Moves the camera in on [focus] (GO TO); false puts it back at once.
+  final bool zoomIn;
+
+  /// Called once, as the camera is nearly in ([arrivingAt] of the zoom), so
+  /// the next step can overlap the end of the zoom.
+  final VoidCallback? onArriving;
+
+  /// Share of the zoom after which [onArriving] is called.
+  static const arrivingAt = 0.5;
+
+  /// How close the camera comes on GO TO: right in on the pin's tip.
+  static const travelZoom = 3.0;
+  static const zoomDuration = Duration(milliseconds: 1200);
 
   /// The place the camera shows (fractions of the map).
   final Offset focus;
@@ -296,7 +464,7 @@ class _MapViewport extends StatefulWidget {
   final Offset? arriveFrom;
 
   /// Builds the map world at its size in the viewport.
-  final Widget Function(Size size) world;
+  final Widget Function(Size size, Animation<double> heading) world;
 
   /// Height / width of the viewport (the map world is 3:2, much wider).
   static const tallness = 1.25;
@@ -316,8 +484,33 @@ class _MapViewport extends StatefulWidget {
   State<_MapViewport> createState() => _MapViewportState();
 }
 
-class _MapViewportState extends State<_MapViewport> with SingleTickerProviderStateMixin {
-  late final AnimationController _pan = AnimationController(vsync: this, duration: _MapViewport.panDuration, value: 1);
+class _MapViewportState extends State<_MapViewport>
+    with TickerProviderStateMixin {
+  late final AnimationController _pan = AnimationController(
+    vsync: this,
+    duration: _MapViewport.panDuration,
+    value: 1,
+  );
+  late final AnimationController _zoom = AnimationController(
+    vsync: this,
+    duration: _MapViewport.zoomDuration,
+  )..addListener(_checkArriving);
+
+  /// The camera's travel to the current place (the pan, as drawn): the red
+  /// dashed way grows with it. Complete when the camera is not travelling.
+  late final Animation<double> _heading = CurvedAnimation(parent: _pan, curve: _MapViewport.panCurve);
+
+  /// Whether [_MapViewport.onArriving] was called for this zoom.
+  bool _arriving = false;
+
+  void _checkArriving() {
+    if (_arriving || !widget.zoomIn || _zoom.value < _MapViewport.arrivingAt) {
+      return;
+    }
+    _arriving = true;
+    widget.onArriving?.call();
+  }
+
   late Offset _from = widget.arriveFrom ?? widget.focus;
   late Offset _to = widget.focus;
 
@@ -331,8 +524,18 @@ class _MapViewportState extends State<_MapViewport> with SingleTickerProviderSta
   @override
   void didUpdateWidget(_MapViewport old) {
     super.didUpdateWidget(old);
+    if (widget.zoomIn && !old.zoomIn) {
+      _arriving = false;
+      _zoom.forward(from: 0);
+    } else if (!widget.zoomIn && old.zoomIn) {
+      _zoom.value = 0;
+    }
     if (widget.focus == _to) return; // same place: the camera stays
-    _from = Offset.lerp(_from, _to, _MapViewport.panCurve.transform(_pan.value))!;
+    _from = Offset.lerp(
+      _from,
+      _to,
+      _MapViewport.panCurve.transform(_pan.value),
+    )!;
     _to = widget.focus;
     _pan.forward(from: 0);
   }
@@ -340,7 +543,30 @@ class _MapViewportState extends State<_MapViewport> with SingleTickerProviderSta
   @override
   void dispose() {
     _pan.dispose();
+    _zoom.dispose();
     super.dispose();
+  }
+
+  /// Where the world is, and how large, for the pan and the zoom: the zoom
+  /// moves from the panned camera to the zoomed-in one (same clamping, so
+  /// the world covers the viewport at every step, map edges included).
+  Matrix4 _camera(MapCamera camera) {
+    final pan = Offset.lerp(
+      camera.offsetFor(_from),
+      camera.offsetFor(_to),
+      _MapViewport.panCurve.transform(_pan.value),
+    )!;
+    final z = Curves.easeInOutCubic.transform(_zoom.value);
+    final offset = z == 0
+        ? pan
+        : Offset.lerp(
+            pan,
+            camera.zoomed(_MapViewport.travelZoom).offsetFor(_to),
+            z,
+          )!;
+    final scale = 1 + (_MapViewport.travelZoom - 1) * z;
+    return Matrix4.diagonal3Values(scale, scale, 1)
+      ..setTranslationRaw(offset.dx, offset.dy, 0);
   }
 
   @override
@@ -350,7 +576,10 @@ class _MapViewportState extends State<_MapViewport> with SingleTickerProviderSta
         const f = _MapViewport.inset;
         final width = box.maxWidth;
         final height = math.min(box.maxHeight, width * _MapViewport.tallness);
-        final camera = MapCamera.cover(Size(width - 2 * f, height - 2 * f), aspect: ArtAssets.londonMapAspect);
+        final camera = MapCamera.cover(
+          Size(width - 2 * f, height - 2 * f),
+          aspect: ArtAssets.londonMapAspect,
+        );
         // Between the header and the buttons, with the spare height shared.
         return Center(
           child: Container(
@@ -361,12 +590,18 @@ class _MapViewportState extends State<_MapViewport> with SingleTickerProviderSta
             decoration: BoxDecoration(
               color: AppColors.parchment,
               borderRadius: BorderRadius.circular(AppRadius.paper),
-              border: Border.all(color: AppLine.faint(0.45), width: AppLine.hairline),
+              border: Border.all(
+                color: AppLine.faint(0.45),
+                width: AppLine.hairline,
+              ),
               boxShadow: AppShadow.paperLift,
             ),
             foregroundDecoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppRadius.paper),
-              border: Border.all(color: AppLine.faint(0.3), width: AppLine.hairline),
+              border: Border.all(
+                color: AppLine.faint(0.3),
+                width: AppLine.hairline,
+              ),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.paper / 2),
@@ -377,13 +612,14 @@ class _MapViewportState extends State<_MapViewport> with SingleTickerProviderSta
                 minHeight: camera.world.height,
                 maxHeight: camera.world.height,
                 child: AnimatedBuilder(
-                  animation: _pan,
-                  builder: (context, world) {
-                    final t = _MapViewport.panCurve.transform(_pan.value);
-                    return Transform.translate(offset: Offset.lerp(camera.offsetFor(_from), camera.offsetFor(_to), t)!, child: world);
-                  },
+                  animation: Listenable.merge([_pan, _zoom]),
+                  builder: (context, world) =>
+                      Transform(transform: _camera(camera), child: world),
                   // Built once per game state, not per frame of the pan.
-                  child: RepaintBoundary(key: const ValueKey('map-world'), child: widget.world(camera.world)),
+                  child: RepaintBoundary(
+                    key: const ValueKey('map-world'),
+                    child: widget.world(camera.world, _heading),
+                  ),
                 ),
               ),
             ),
@@ -398,7 +634,14 @@ class _MapViewportState extends State<_MapViewport> with SingleTickerProviderSta
 /// names, and the pins of the places found so far — all at map positions,
 /// so they all move together with the camera.
 class _MapWorldView extends StatelessWidget {
-  const _MapWorldView({required this.size, required this.route, required this.completedLegs, required this.pins, required this.hideName});
+  const _MapWorldView({
+    required this.size,
+    required this.route,
+    required this.completedLegs,
+    required this.heading,
+    required this.pins,
+    required this.hideName,
+  });
 
   final Size size;
 
@@ -406,6 +649,10 @@ class _MapWorldView extends StatelessWidget {
   /// many are solved: the route inked between them.
   final List<Offset> route;
   final int completedLegs;
+
+  /// How much of the red dashed way to the current place is drawn: it
+  /// follows the camera as it travels there.
+  final Animation<double> heading;
 
   /// Each pin with its place on the map (fractions of the map).
   final List<({Offset at, MapPin pin})> pins;
@@ -425,19 +672,28 @@ class _MapWorldView extends StatelessWidget {
   static Offset clearOf(Offset at, Offset current, Size world) {
     const r = MapPin.markRadius;
     const gap = 3.0;
-    final keepOut = [for (final k in MapPin.currentMarks) k.shift(current).inflate(gap)];
-    bool clear(Offset p) => keepOut.every((k) => !k.overlaps(Rect.fromCircle(center: p, radius: r)));
-    bool inside(Offset p) => p.dx >= r && p.dy >= r && p.dx <= world.width - r && p.dy <= world.height - r;
+    final keepOut = [
+      for (final k in MapPin.currentMarks) k.shift(current).inflate(gap),
+    ];
+    bool clear(Offset p) => keepOut.every(
+      (k) => !k.overlaps(Rect.fromCircle(center: p, radius: r)),
+    );
+    bool inside(Offset p) =>
+        p.dx >= r &&
+        p.dy >= r &&
+        p.dx <= world.width - r &&
+        p.dy <= world.height - r;
     if (clear(at)) return at;
-    final spots = [
-      for (final k in keepOut) ...[
-        Offset(k.left - r, at.dy),
-        Offset(k.right + r, at.dy),
-        Offset(at.dx, k.top - r),
-        Offset(at.dx, k.bottom + r),
-      ],
-    ].where((p) => clear(p) && inside(p)).toList()
-      ..sort((a, b) => (a - at).distance.compareTo((b - at).distance));
+    final spots =
+        [
+            for (final k in keepOut) ...[
+              Offset(k.left - r, at.dy),
+              Offset(k.right + r, at.dy),
+              Offset(at.dx, k.top - r),
+              Offset(at.dx, k.bottom + r),
+            ],
+          ].where((p) => clear(p) && inside(p)).toList()
+          ..sort((a, b) => (a - at).distance.compareTo((b - at).distance));
     return spots.isEmpty ? at : spots.first;
   }
 
@@ -448,15 +704,26 @@ class _MapWorldView extends StatelessWidget {
     final dpr = MediaQuery.devicePixelRatioOf(context);
     Offset px(Offset p) => Offset(p.dx * w, p.dy * h);
     // Solved marks step aside from the current pin's note, pin and name.
-    final current = pins.where((p) => p.pin.state == PinState.current).map((p) => px(p.at)).firstOrNull;
+    final current = pins
+        .where((p) => p.pin.state == PinState.current)
+        .map((p) => px(p.at))
+        .firstOrNull;
     final drawnAt = {
       for (final p in pins)
-        p.at: current == null || p.pin.state != PinState.completed ? px(p.at) : clearOf(px(p.at), current, size),
+        p.at: current == null || p.pin.state != PinState.completed
+            ? px(p.at)
+            : clearOf(px(p.at), current, size),
     };
     final ink = LondonMapPainter(
-      route: [for (final r in route) drawnAt[r] == null ? r : Offset(drawnAt[r]!.dx / w, drawnAt[r]!.dy / h)],
+      route: [
+        for (final r in route)
+          drawnAt[r] == null
+              ? r
+              : Offset(drawnAt[r]!.dx / w, drawnAt[r]!.dy / h),
+      ],
       completedLegs: completedLegs,
       drawMap: false,
+      heading: heading,
     );
     return Stack(
       clipBehavior: Clip.none,
@@ -468,9 +735,13 @@ class _MapWorldView extends StatelessWidget {
             fit: BoxFit.cover,
             // Decode once at display size (never above the source size); the
             // world keeps its size while the camera pans, so no re-decode.
-            cacheWidth: math.min(w * dpr, ArtAssets.londonMapPixels.width).round(),
+            cacheWidth: math
+                .min(w * dpr, ArtAssets.londonMapPixels.width)
+                .round(),
             excludeFromSemantics: true,
-            errorBuilder: (context, error, stack) => CustomPaint(painter: LondonMapPainter(route: const [], completedLegs: 0)),
+            errorBuilder: (context, error, stack) => CustomPaint(
+              painter: LondonMapPainter(route: const [], completedLegs: 0),
+            ),
           ),
         ),
         for (final l in Landmark.values)
@@ -483,15 +754,26 @@ class _MapWorldView extends StatelessWidget {
                 child: MapLettering(
                   l.name,
                   maxLines: 1,
-                  style: AppText.style(AppText.heading, size: 11.5, weight: FontWeight.w700, color: AppColors.inkBrown, letterSpacing: 0.3),
+                  style: AppText.style(
+                    AppText.heading,
+                    size: 11.5,
+                    weight: FontWeight.w700,
+                    color: AppColors.inkBrown,
+                    letterSpacing: 0.3,
+                  ),
                 ),
               ),
             ),
         Positioned.fill(
-          child: IgnorePointer(child: CustomPaint(painter: ink)),
+          // Its own layer: the red way is redrawn as it grows, not the map.
+          child: IgnorePointer(child: RepaintBoundary(child: CustomPaint(painter: ink))),
         ),
         for (final p in pins)
-          Positioned(left: drawnAt[p.at]!.dx - MapPin.width / 2, top: drawnAt[p.at]!.dy - MapPin.anchorY, child: p.pin),
+          Positioned(
+            left: drawnAt[p.at]!.dx - MapPin.width / 2,
+            top: drawnAt[p.at]!.dy - MapPin.anchorY,
+            child: p.pin,
+          ),
       ],
     );
   }
@@ -518,9 +800,16 @@ class _NotebookButton extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppRadius.button),
-              border: Border.all(color: AppLine.faint(0.45), width: AppLine.rule),
+              border: Border.all(
+                color: AppLine.faint(0.45),
+                width: AppLine.rule,
+              ),
             ),
-            child: const InkIcon(InkGlyph.notebook, size: AppIconSize.large, semanticLabel: 'Detective notebook'),
+            child: const InkIcon(
+              InkGlyph.notebook,
+              size: AppIconSize.large,
+              semanticLabel: 'Detective notebook',
+            ),
           ),
         ),
       ),

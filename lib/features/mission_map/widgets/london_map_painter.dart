@@ -7,14 +7,20 @@ import '../../../core/theme/app_colors.dart';
 /// An old paper map of London on which the detective marks the route in ink.
 /// Pins are laid over it as widgets.
 ///
-/// Route legs: solid ink between places already investigated, a dashed line
-/// to the current place, and nothing beyond it (the next stop is unknown).
+/// Route legs: solid ink between places already investigated, a red dashed
+/// line to the current place (the way the detective is heading), and nothing
+/// beyond it (the next stop is unknown).
 class LondonMapPainter extends CustomPainter {
-  LondonMapPainter({required this.route, required this.completedLegs, this.drawMap = true});
+  LondonMapPainter({required this.route, required this.completedLegs, this.drawMap = true, this.heading})
+    : super(repaint: heading);
 
   /// False when the map artwork is under this painter: only the route is
   /// inked on top of it.
   final bool drawMap;
+
+  /// How much of the red dashed leg to the current place is drawn (0..1):
+  /// it follows the camera as it travels there. Null draws all of it.
+  final Animation<double>? heading;
 
   /// Pin centres (fractions of the map size) in play order.
   final List<Offset> route;
@@ -160,7 +166,7 @@ class LondonMapPainter extends CustomPainter {
   void _route(Canvas c, Size s) {
     if (route.length < 2 || completedLegs == 0) return;
     final travelled = _stroke(AppColors.navy, 3);
-    final heading = _stroke(AppColors.navy, 2.2, alpha: 0.7);
+    final shown = (heading?.value ?? 1).clamp(0.0, 1.0);
 
     for (var i = 0; i < route.length - 1; i++) {
       // Leg i leads from place i to place i + 1.
@@ -176,15 +182,30 @@ class LondonMapPainter extends CustomPainter {
       if (solvedTarget) {
         c.drawPath(leg, travelled);
       } else {
-        _dashed(c, leg, heading);
+        _heading(c, leg, shown);
       }
     }
   }
 
-  void _dashed(Canvas c, Path path, Paint paint) {
-    for (final metric in path.computeMetrics()) {
-      for (var d = 0.0; d < metric.length; d += 14) {
-        c.drawPath(metric.extractPath(d, math.min(d + 7, metric.length)), paint);
+  /// The way to the current place: red ink dashes on a thin paper outline
+  /// (so they read on the busy map), drawn up to [shown] of the way, with a
+  /// small red dot at the pen while it is still drawing.
+  void _heading(Canvas c, Path leg, double shown) {
+    if (shown <= 0) return;
+    final metric = leg.computeMetrics().first;
+    final end = metric.length * shown;
+    final outline = _stroke(AppColors.paperLight, 4.6, alpha: 0.85);
+    final ink = _stroke(AppColors.burgundy, 2.6);
+    for (final paint in [outline, ink]) {
+      for (var d = 0.0; d < end; d += 14) {
+        c.drawPath(metric.extractPath(d, math.min(d + 7, end)), paint);
+      }
+    }
+    if (shown < 1) {
+      final pen = metric.getTangentForOffset(end)?.position;
+      if (pen != null) {
+        c.drawCircle(pen, 4, Paint()..color = AppColors.paperLight);
+        c.drawCircle(pen, 3, Paint()..color = AppColors.burgundy);
       }
     }
   }
@@ -213,5 +234,6 @@ class LondonMapPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LondonMapPainter old) => old.completedLegs != completedLegs || old.route != route || old.drawMap != drawMap;
+  bool shouldRepaint(LondonMapPainter old) =>
+      old.completedLegs != completedLegs || old.route != route || old.drawMap != drawMap || old.heading != heading;
 }

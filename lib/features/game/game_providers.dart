@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,11 +57,14 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
   void reset() => state = SeasonProgress.empty;
 
   /// Case 01 is always open; every other case opens once the case before it
-  /// has been solved.
+  /// has been solved. With operator access on (test builds only), every case
+  /// of the season opens. This is the one place that decides it: the case
+  /// files, the case-file link and [GameController.openEpisode] all ask here.
   bool isUnlocked(String episodeId) {
     final catalog = ref.read(episodeCatalogProvider);
     final i = catalog.indexWhere((e) => e.id == episodeId);
     if (i < 0) return false;
+    if (ref.read(operatorAccessProvider)) return true;
     return i == 0 || state.isSolved(catalog[i - 1].id);
   }
 }
@@ -113,6 +117,35 @@ class GameMasterAccessNotifier extends Notifier<bool> {
 }
 
 final gameMasterAccessProvider = NotifierProvider<GameMasterAccessNotifier, bool>(GameMasterAccessNotifier.new);
+
+/// Whether this build has operator (playtest) tools: debug builds, or a
+/// build made with `--dart-define=LM_PLAYTEST=true`. A compile-time
+/// constant, so a normal release build has none of them.
+const operatorToolsInBuild = kDebugMode || bool.fromEnvironment('LM_PLAYTEST');
+
+/// [operatorToolsInBuild], as a provider so tests can check a release build.
+final operatorToolsAvailableProvider = Provider<bool>((ref) => operatorToolsInBuild);
+
+/// Operator full case access, for QA: every case file of the season opens,
+/// out of order (see [SeasonNotifier.isUnlocked]). Switched on in the Game
+/// Master tools, behind the parent gate; never on in a build without
+/// operator tools. Access only: it marks no case solved and gives no XP,
+/// badges or evidence — those still come from playing. Session-only, never
+/// saved, so a restart turns it off.
+class OperatorAccessNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool on) => state = on && ref.read(operatorToolsAvailableProvider);
+}
+
+/// The operator access switch (see [operatorAccessProvider] for the effect).
+final operatorAccessSwitchProvider = NotifierProvider<OperatorAccessNotifier, bool>(OperatorAccessNotifier.new);
+
+/// True while operator full case access is on (and allowed in this build).
+final operatorAccessProvider = Provider<bool>(
+  (ref) => ref.watch(operatorToolsAvailableProvider) && ref.watch(operatorAccessSwitchProvider),
+);
 
 /// One-time pass to the parent report: granted after the parent gate, taken
 /// back when the report is closed, so every visit asks a grown-up again.

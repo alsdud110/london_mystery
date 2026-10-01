@@ -4,6 +4,7 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
 import '../data/models/mission.dart';
+import 'art_assets.dart';
 import 'ink_icon.dart';
 import 'symbol_icon.dart';
 
@@ -40,7 +41,7 @@ class EvidenceTile extends StatelessWidget {
                 Hero(
                   tag: 'evidence-${evidence.id}',
                   child: _EvidenceArt(
-                    icon: evidence.icon,
+                    evidence: evidence,
                     size: box.hasBoundedHeight
                         ? (box.maxHeight - 12 - 72 * MediaQuery.textScalerOf(context).scale(1)).clamp(32.0, 70.0)
                         : 70,
@@ -131,7 +132,7 @@ class _EvidenceZoom extends StatelessWidget {
                       children: [
                         Hero(
                           tag: 'evidence-${evidence.id}',
-                          child: _EvidenceArt(icon: evidence.icon, size: 150),
+                          child: _EvidenceArt(evidence: evidence, size: 150),
                         ),
                         const SizedBox(height: 18),
                         Text(evidence.name, style: AppText.title(size: 28), textAlign: TextAlign.center),
@@ -214,15 +215,20 @@ class SymbolSequence extends StatelessWidget {
   }
 }
 
+/// The evidence's picture in a round paper frame: its real picture where it
+/// has one (ArtAssets.evidencePictures), else its ink symbol. A picture
+/// that fails to load shows the symbol too.
 class _EvidenceArt extends StatelessWidget {
-  const _EvidenceArt({required this.icon, required this.size});
+  const _EvidenceArt({required this.evidence, required this.size});
 
-  final String icon;
+  final Evidence evidence;
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    final s = GameSymbol.of(icon);
+    final s = GameSymbol.of(evidence.icon);
+    final mark = s.mark(size: size * 0.55);
+    final picture = ArtAssets.evidencePictures[evidence.id];
     return Container(
       width: size,
       height: size,
@@ -232,7 +238,23 @@ class _EvidenceArt extends StatelessWidget {
         color: AppColors.paperLight,
         border: Border.all(color: s.color.withValues(alpha: 0.6), width: size / 30),
       ),
-      child: s.mark(size: size * 0.55),
+      // The object is drawn in the middle of its square parchment, so the
+      // round frame shows all of it (only plain parchment is left out).
+      child: picture == null
+          ? mark
+          : ClipOval(
+              child: Image.asset(
+                picture,
+                fit: BoxFit.cover,
+                width: size,
+                height: size,
+                cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                excludeFromSemantics: true,
+                // Its symbol until the picture is ready: never an empty ring.
+                frameBuilder: (context, child, frame, sync) => sync || frame != null ? child : Center(child: mark),
+                errorBuilder: (context, error, stack) => Center(child: mark),
+              ),
+            ),
     );
   }
 }
@@ -247,7 +269,7 @@ class EvidenceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _EvidenceArt(icon: evidence.icon, size: 56),
+        _EvidenceArt(evidence: evidence, size: 56),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

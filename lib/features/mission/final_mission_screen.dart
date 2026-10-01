@@ -421,7 +421,7 @@ class _SceneReveal extends StatelessWidget {
           scale: 1 + 0.04 * t,
           child: Center(
             child: AspectRatio(
-              aspectRatio: 4 / 3,
+              aspectRatio: LandmarkArt.aspectOf(scene),
               child: PaperSheet(
                 padding: const EdgeInsets.all(AppSpace.sm),
                 tilt: -0.01,

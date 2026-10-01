@@ -15,6 +15,7 @@ import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
+import '../../widgets/place_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
@@ -222,10 +223,17 @@ class _StoryStage extends StatelessWidget {
         _PlaceHeading(mission: m),
         const SizedBox(height: AppSpace.xl),
         // The scene, printed like a picture in a storybook.
-        PaperSheet(
-          padding: const EdgeInsets.all(AppSpace.sm),
-          tilt: -0.01,
-          child: AspectRatio(aspectRatio: 4 / 3, child: LandmarkArt(m.scene, borderRadius: 2)),
+        // A square picture (the raven, the suitcase) is kept a page-size
+        // print, so the story still starts on the first screen.
+        Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)) < 1.2 ? 240 : double.infinity),
+            child: PaperSheet(
+              padding: const EdgeInsets.all(AppSpace.sm),
+              tilt: -0.01,
+              child: AspectRatio(aspectRatio: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)), child: LandmarkArt(PlaceArt.sceneOf(m), borderRadius: 2)),
+            ),
+          ),
         ),
         const SizedBox(height: AppSpace.xl),
         for (final (i, line) in m.story.indexed)

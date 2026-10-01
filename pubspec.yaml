@@ -32,7 +32,18 @@ flutter:
   assets:
     - assets/sounds/
     - assets/images/london_mystery.png
-    - assets/art/scenes/
+    # Scene pictures: the nine landmarks, and the places inside them.
+    - assets/art/scenes/landmarks/
+    - assets/art/scenes/british_museum/
+    - assets/art/scenes/hyde_park/
+    - assets/art/scenes/buckingham_palace/
+    - assets/art/scenes/covent_garden/
+    - assets/art/scenes/kings_cross/
+    # Characters, story objects, the Raven Society mark, special pictures.
+    - assets/art/characters/
+    - assets/art/objects/
+    - assets/art/symbols/
+    - assets/art/special/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:

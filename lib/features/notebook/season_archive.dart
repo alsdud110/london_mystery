@@ -41,6 +41,7 @@ final seasonArchiveProvider = Provider<List<ArchiveEntry>>((ref) {
   final season = ref.watch(seasonProvider);
   final active = ref.watch(currentEpisodeProvider);
   final activeProgress = ref.watch(gameControllerProvider);
+  ref.watch(operatorAccessProvider); // which files are sealed
   final unlocks = ref.read(seasonProvider.notifier);
   final repo = ref.read(progressRepositoryProvider);
 

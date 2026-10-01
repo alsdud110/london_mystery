@@ -315,6 +315,7 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 - Game Master(기존 Parent Gate 뒤) → **플레이 테스트 도구**
   - `CASE NN부터`: 확인 창 → `resetAll()` → 앞 사건을 완료 세이브 + 시즌 해결로 기록(힌트·배지 없음, Archive에 증거 표시) → 해당 사건 새 세이브(이름 유지, 없으면 `TESTER`) → `/episodes?case=` 로 이동
   - `지금 사건 처음부터`: 기존 `playAgain()`과 같음(이 사건만 초기화)
+  - `전체 사건 열기 (OPERATOR MODE)` 스위치 (2026-10-01): Case 01~12를 순서와 상관없이 열 수 있음. **접근만** 허용하고 아무것도 해결로 기록하지 않음(XP·배지·증거·시즌 해결 기록 그대로) — 이전 사건을 해결로 저장하는 `CASE NN부터`와 다른 점. 세션 전용(저장 안 함, 재시작하면 꺼짐). 켜져 있으면 Case Files 상단에 작은 `OPERATOR MODE` 도장 + `CASE FILES로 이동` 버튼
 - QR이 필요한 사건은 Case 01뿐. Case 02~12는 기기만으로 플레이 가능
 - 체크리스트: `docs/playtest/SEASON1_PLAYTEST_CHECKLIST.md` (준비 방법, 공통 10항목, 사건별 관찰 포인트·기록표)
 
@@ -701,6 +702,82 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 ---
 
 ## Change Log
+
+### 2026-10-01 — Season 1 Art Asset Integration (characters / objects / symbols / special)
+
+- 새 에셋 10장(전부 양피지 배경의 컬러 그림, 투명 아님): `assets/art/characters/`(raven_master, clockmaker_master), `objects/`(crown, key, letter, map, pocket_watch, suitcase), `symbols/raven_mark.png`, `special/royal_box.png`. pubspec에 4개 폴더 등록
+- 레지스트리(`ArtAssets`, 기존 구조 확장): `characters`, `objects`, `ravenMark`, `special`, `objectScenes`(Artwork.raven → raven_master, Artwork.oldSuitcase → suitcase), `sceneAspects`/`sceneAspect()`(그림별 실제 비율 — 내부 장소 8장도 이제 실제 비율), `evidencePictures`(증거 id → 그림). 컬러 그림은 색을 입히는 1색 `symbols` 슬롯에 넣지 않음
+- 적용:
+  - 까마귀 장면 5곳(Case 05 M3, Case 10 M1·M2·Final, Case 12 M3: 모두 Tower 까마귀 Poppy) → raven_master
+  - 여행 가방: Case 01 M1("mysterious suitcase"), Case 04 M1("old brown suitcase") → suitcase (`PlaceArt.missionScenes` → `Artwork.oldSuitcase`, 없으면 기존 가방 코드 그림). Case 08 M1·M3은 "black suitcase"라 갈색 그림과 맞지 않아 코드 그림 유지. 다른 suitcase 장면(엽서 소인·마지막 기차·Platform 9 가면)은 가방이 주제가 아니라 유지
+  - 증거(노트북 타일·확대·축하 칩, `_EvidenceArt`의 둥근 종이 틀 안 `cover` — 물건이 정사각형 가운데 있어 잘리는 건 빈 양피지뿐): e01 Old Letter·ep10_e3 Ravenmaster's Letter → letter, e02 Golden Key·ep05_e3 Brass Key → key, e06 The Missing Crown → crown, ep04_e1 Black Wax Seal("A raven is pressed into the wax") → raven_mark, ep12_e4 The Clockmaker's Watch → pocket_watch. 읽는 동안·실패 시 기존 기호
+  - 미션 화면의 정사각형 그림은 최대 폭 240dp(본문이 첫 화면에 보이도록)
+- **일부러 적용하지 않음(그림과 게임 내용이 어긋남)**:
+  - royal_box.png = 극장 귀빈석 그림 / 게임의 Royal Box = "a heavy golden box", 왕관이 든 상자(열리는 애니메이션) → 등록만, `RoyalBoxAnimation` 유지
+  - Case 01 Pocket Watch("stopped at 7 o'clock") / London Map("Two swans") — Royal Box 암호 7924의 숫자 단서인데 그림은 10시 10분·돛단배 → 기호 유지
+  - Case 04 The Secret Letter(검은 봉랍) ↔ letter.png(빨간 봉랍), Case 05·07 지도 조각/Old London Map(그려진 까마귀 단서) ↔ map.png(까마귀 없음) → 기호 유지. map.png는 현재 사용처 없음
+  - clockmaker_master: 시즌 내내 직접 등장하지 않음(Case 12도 "The Clockmaker is gone"), 기존 자리 표시·실루엣 없음 → 등록만
+  - letter.png를 편지 읽기 종이 배경으로: 그림의 소인·봉랍 위로 본문이 겹치고 편지 길이가 제각각 → 기존 종이 유지
+- 테스트 370 → 373: 캐릭터·오브젝트·마크·스페셜 경로, 증거 그림 대응표 + "7시 시계·두 마리 백조 지도는 제외" 근거 검사, 증거 타일이 그림/기호를 보여줌, 기존 매핑 테스트를 19개 장면 + 그림별 비율로 갱신, Case 08 가방·Royal Box는 코드 그림
+- QA: 360×640 전 사건 화면 레이아웃 검사 + 스크린샷(King's Cross 가방, Tower Green 까마귀, Case 10 Final), 360·390 노트북 증거 그리드·확대(Case 01·04·05·10·12). 에뮬레이터 실기는 안 함
+
+### 2026-10-01 — 카메라 이동 빨간 점선 (사용자 요청)
+
+- 현재 장소로 가는 길(해결한 마지막 장소 → 현재 장소)을 남색 점선 → **빨간(`AppColors.burgundy`) 점선**으로. 지도 위에서도 읽히도록 얇은 종이색 외곽선 위에 그림(`LondonMapPainter._heading`). 지나온 길은 기존 남색 실선
+- 카메라가 다음 장소로 이동할 때(미션을 풀고 돌아온 직후, 또는 지도가 열린 채 풀었을 때) **점선이 카메라 팬과 같은 곡선으로 점점 그려지고**, 그리는 동안 펜 끝에 작은 빨간 점. 이동이 없으면 처음부터 끝까지 그려져 있음. 구현: `LondonMapPainter.heading`(`Animation<double>`, `super(repaint:)`) ← `_MapViewport._heading` = `CurvedAnimation(_pan, panCurve)` → world builder `(size, heading)`. 경로 레이어는 자체 `RepaintBoundary`라 점선이 자랄 때 지도 그림은 다시 그리지 않음
+- `map_camera_test`: 이동 중 점선 0~1 사이, 도착하면 1, 이동 없음이면 1
+- 사용자가 `_MapViewport.arrivingAt`을 0.7 → **0.5**로 조정(페이드 아웃 600~1000ms, 줌은 1200ms까지 → 지도가 사라진 뒤 줌 마지막 200ms는 보이지 않고 미션이 약 1.4초에 열림). `place_arrival_test` Great Court 시나리오를 고정 타이밍 대신 20ms 프레임 기록으로 순서만 검사하도록 변경(줌 먼저 → 줌 중 페이드 시작 → 빈 가장자리 없음 → 핀 끝으로 접근(3배 도달 시 정중앙) → 지도가 사라진 뒤 미션) — 이 값을 다시 조정해도 테스트가 깨지지 않음
+
+### 2026-10-01 — GO TO: 줌과 페이드 아웃 겹치기 (사용자 피드백: "딱딱하다")
+
+- 줌이 끝난 뒤 페이드 아웃하던 것을 **줌 70% 지점(약 840ms)부터 페이드 아웃 시작**으로 변경: `_MapViewport.arrivingAt = 0.7`에서 `onArriving`(이전 `onZoomedIn`) 1회 호출 → 지도 페이드 아웃 400ms easeInOut(이전 300ms easeIn)이 줌 마지막 360ms와 겹침 → 페이드가 끝나면(약 1240ms) 미션 push → 380ms 페이드 인. 총 약 1.6초(이전 1.9초)
+- `place_arrival_test` Great Court 시나리오: 줌 50%에는 불투명, 줌 진행 중(아직 3배 미만)에 이미 페이드 아웃 중, 줌 끝에는 절반 이상 사라짐, 완전히 사라진 뒤 미션 push
+
+### 2026-10-01 — GO TO: 핀 끝까지 줌인 → 지도 페이드 아웃 → 미션 페이드 인 (사용자 피드백)
+
+- 줌: 1.25배/1000ms → **3배/1200ms**, 핀 끝(장소 좌표)을 뷰포트 정중앙에(`MapCamera.zoomed`, focusDrop 0, clamp 유지). 핀·YOU'RE HERE도 world와 함께 커짐
+- 줌이 끝나면 지도 화면 전체(헤더·지도·버튼)가 300ms easeIn으로 종이색(`AppColors.paper`) 배경으로 **페이드 아웃**(`_leave`, 키 `map-page`) → 그다음 미션 페이지 push(기존 380ms **페이드 인**). 총 약 1.9초. 미션에서 돌아오면 줌·불투명도 원상태
+- `place_arrival_test` 갱신(테스트 수 그대로): 3배·핀 끝이 중앙에서 1px 이내·clamp, 줌 중에는 지도 불투명, 페이드 아웃 중에는 아직 지도 페이지, 완전히 사라진 뒤 미션 push → 페이드 인, 돌아오면 지도 불투명도 1
+
+### 2026-10-01 — GO TO: 줌 후 바로 미션 페이지로 (사용자 피드백)
+
+- 사용자 요청: "랜드마크를 한 번 보여주고 Investigate 페이지로" → **줌이 끝나면 곧바로 Investigate 페이지가 페이드 인**. 아래 항목의 `_PlaceArrival`(장소 그림 + 이름 + hold 800ms)을 제거. 흐름: GO TO → 카메라 줌 1.0→1.25(1000ms) → 미션 페이지 push(기존 `_fade` 380ms 페이드)로 확대된 지도 위에 페이드 인. 총 약 1.4초
+- 이동 중 보호는 그대로: `PopScope` 뒤로가기 차단, `AbsorbPointer`로 지도 전체 탭 차단(핀·메뉴·노트북), GO TO·메뉴 비활성, push 정확히 1회, 돌아오면 줌 원상태
+- 장소 PNG는 계속 쓰임: 미션 페이지 장면(`PlaceArt.sceneOf`), NEW PLACE UNLOCKED 카드(`PlaceArt.placeOf`)
+- 테스트 수 그대로(370): `place_arrival_test`를 새 흐름으로 다시 씀 — 즉시 이동 안 함 → 점진 줌 → 1.25배·중앙·clamp → 줌 끝난 다음 프레임에 미션 push(중간 페이지 없음) → 페이드 중 → 미션 페이지에 장소 PNG / 연속 탭 1회 / 이동 중 뒤로가기 무시 / 7개 장소(미션 페이지 장면 확인) / 360·390 줌 중 빈 가장자리 없음
+- 작업 중 실수와 복구: 도착 화면 클래스를 지우면서 뒤의 `_MapViewport`·`_MapWorldView`·`_NotebookButton`까지 지워짐 → HEAD(`548d71f`)에서 복원하고 줌 변경만 다시 적용. HEAD 대비 diff로 의도한 변경만 남았음을 확인
+
+### 2026-10-01 — Landmark Artwork Integration + Location Transition (GO TO)
+
+- **Asset 구조**: `assets/art/scenes/landmarks/`(9개 랜드마크) + 랜드마크별 폴더 `british_museum/`(great_court, egypt_room), `hyde_park/`(boathouse, rose_garden), `buckingham_palace/`(palace_staff_room, palace_courtyard), `covent_garden/`(dressing_room), `kings_cross/`(waiting_hall). 파일명 변경 없음. Flutter asset 폴더는 하위 폴더를 포함하지 않으므로 pubspec에 6개 폴더를 각각 등록(이전 `assets/art/scenes/` 1줄 대체)
+- **중앙 매핑**: `ArtAssets.landmarkScenes`(9) + `ArtAssets.insideScenes`(8) → `ArtAssets.scenes`(17). 내부 장소 PNG는 약 1270×830이라 화면 크기로 디코딩(`cacheWidth`, 원본보다 크게는 안 함). `Artwork`에 `egyptRoom`·`greatCourt` 추가(표시용 키, 데이터 아님). 코드 그림 fallback: 내부 장소는 각 랜드마크 코드 그림(`LandmarkArt.standIns`, Dressing Room은 Theatre), 파일이 없을 때만
+- **장소 선택 단일 지점**: `lib/widgets/place_art.dart` `PlaceArt` — `sceneOf(m)`: 미션 화면 장면(퍼즐 장면은 유지, Egypt Room·Great Court만 `missionScenes` 대응표로 내부 장소 — 미션 데이터의 `scene`은 그대로), `placeOf(m)`: 도착 장소(내부 장소 → 그 PNG, 아니면 `MapWorld.missionLandmarks`의 랜드마크 PNG — 예: Case 01 King's Cross는 suitcase가 아니라 kings_cross.png). `Landmark.artwork` 추가(좌표 변경 없음). NEW PLACE UNLOCKED 카드는 `placeOf(next)`
+- **GO TO 전환**(`mission_map_screen.dart`): GO TO(또는 현재 핀) → `_goTo` → ① 카메라 줌 1.0→1.25, 1000ms easeInOutCubic(`_MapViewport.travelZoom/zoomDuration`): `MapCamera.zoomed(1.25)`로 장소를 정중앙(focusDrop 0) 쪽으로, 같은 clamp라 매 프레임 세계가 뷰포트를 덮음(지도 가장자리 장소 포함). 기존 950ms 팬과 독립(`Matrix4` 한 번에 합성) ② `_PlaceArrival`: 양피지 페이지 위 장소 PNG(PaperSheet, contain) + 장소 이름(이미지에 글자 추가 없음), 360ms fade + 0.96→1 settle, 440ms hold — 줌 시작 때 투명하게 미리 빌드해 PNG를 디코딩 ③ `context.push` 1회 → 기존 미션 화면(기존 380ms 페이드). 총 약 1.8초 + 페이지 전환. glow/bounce/shake 없음
+- 보호: 이동 중 GO TO·메뉴 비활성, 도착 화면이 모든 탭 흡수, `PopScope`로 뒤로가기 차단, `_goTo` 중복 무시, 도착 후 push는 정확히 1회. 미션에서 뒤로 오면 지도 원상태(줌 0, 도착 화면 없음, GO TO 활성)
+- 테스트 357 → 370: `place_arrival_test`(Great Court 대표 시나리오: 즉시 이동 안 함 → 점진 줌 → 1.25배·중앙·clamp → 이름과 함께 등장 → hold → 미션 1회, 해결 기록 변화 없음 / 연속 탭 → 미션 1개만 / 이동 중 뒤로가기 무시 / King's Cross·Egypt Room·Boathouse·Waiting Room·Courtyard·Dressing Room·Tower Bridge(Final) 각각 올바른 PNG / 360×640·390×844 도착 화면이 화면 안·비율 유지·이름이 그림 아래), `art_assets_test` 17개 매핑·폴더 규칙·번들 존재·장소 선택 규칙. 기존 플레이 테스트의 GO TO 대기 1500ms → `goToTime` 2800ms(검사 내용 동일)
+- QA: 360×640·390×844 프레임별 스크린샷(지도 → 줌 → 겹쳐 등장 → 장소 → 미션). 발견·수정: 도착 화면이 Scaffold 밖이라 글자에 노란 밑줄(Material 없음 경고) → `Material` 배경으로 수정 + 테스트. 에뮬레이터 실기는 안 함
+
+### 2026-10-01 — 9개 Landmark PNG artwork replacement
+
+- 역할 분리: `assets/images/london_mystery.png` = 지도 세계(Map Camera, Flutter 핀/라벨 오버레이 — 변경 없음), `assets/art/scenes/*.png` 9장 = 미션·스토리에서 장소를 보여주는 삽화. 지도에는 장면 PNG를 넣지 않음
+- 중앙 매핑: `ArtAssets.scenes`(Artwork → PNG, 9개 고정: kingsCross·britishMuseum·coventGarden·bigBen·hydePark·buckinghamPalace·towerBridge·towerOfLondon·londonEye) + `LandmarkArt`(모든 장면 표시의 단일 위젯). 화면은 `Artwork`만 넘기고 `Image.asset`을 직접 쓰지 않음. 지도의 `Landmark` 9곳과 같은 장소 집합(테스트로 확인)
+- 표시: PNG를 **자르지 않고** `BoxFit.contain`으로 종이 테두리·이름표까지 전체 표시. 프레임이 PNG 비율을 따름(`LandmarkArt.aspectOf` / `hasPicture`) — 미션·Final 장면(이전 4:3 → 400:256), NEW PLACE UNLOCKED 카드(72×72 → 112×72), Case Solved 사진(96×96 → 144×96). 코드 그림인 장소는 이전 크기 그대로. 필터·그라데이션·그림자 추가 없음
+- 예외 1곳: 이미지 선택 퀴즈 타일은 이름표를 계속 숨김(`showName: false`, 이름표 위쪽만 cover로 표시) — 이름표가 정답을 글자로 알려주기 때문(정답 무결성 우선)
+- **세부 장소는 랜드마크 PNG를 빌리지 않음**(이전 기록의 "stand-in 장소는 stand-in의 그림 사용"을 되돌림): Boathouse·Rose Garden(Hyde Park 코드 그림), Waiting Room(King's Cross 코드 그림), Staff Room·Courtyard(Buckingham Palace 코드 그림), Dressing Room(Theatre 코드 그림). 전용 PNG를 `ArtAssets.scenes`에 추가하면 그 장소만 바뀜. 다음 단계 권장 순서: Boathouse → Rose Garden → Staff Room → Courtyard → Dressing Room → Waiting Room
+- 그대로 둔 비-랜드마크 artwork: Royal Box·Clock Face·Gallery·Locked Door·Raven·Jewel Case·Suitcase·Theatre·Park Map A~D(코드 그림), 단서 도장 기호(`train`·`clock`은 잉크 glyph, `museum`·`palace`·`park`는 monogram) — 단서 기호는 Case 01 Royal Box 다이얼 퍼즐의 정답 기호와 같아야 하므로 교체하지 않음(전용 1색 기호 PNG는 `ArtAssets.symbols` 슬롯)
+- fallback 유지: PNG가 없거나 깨지면 `LandmarkArt.drawing`(기존 CustomPainter). 새 named constructor `LandmarkArt.drawing`은 fallback과 테스트에 사용
+- 테스트 354 → 357: 9개 매핑 경로 고정·9개만 그림 보유, 9개 PNG가 번들에 있음, PNG는 `BoxFit.contain` + PNG 비율 프레임, 세부 장소·Royal Box·Raven·Clock Face는 그림 없이 코드 그림·4:3 유지. 기존 "stand-in 장면과 똑같이 보임"은 "stand-in의 **코드 그림**과 똑같이 보임 + 랜드마크 PNG를 빌리지 않음"으로(stand-in 랜드마크가 PNG를 갖게 되어 비교 대상을 명시)
+- QA: 360×640 전 사건 화면 렌더(레이아웃 검사 173개), 390×844 미션 장면·NEW PLACE UNLOCKED 카드·Case Solved(Case 01 Royal Box / Case 07 Hyde Park) 스크린샷. Map 테스트 72개 그대로 통과(지도 코드 변경 없음). 에뮬레이터 실기 확인은 안 함
+
+### 2026-10-01 — Operator Full Case Access
+
+- 기존 구조 재사용: Game Master(부모 게이트 + 라우터 가드 `gameMasterAccessProvider`) → 플레이 테스트 도구(`playtestToolsEnabled`)에 스위치 추가. 새 인증·환경변수·dependency·저장 형식 없음
+- 정책은 한 곳: `SeasonNotifier.isUnlocked` 안에서 `operatorAccessProvider`가 켜져 있으면 모든 사건 허용. Case Files, `/episodes?case=` 직접 링크, `GameController.openEpisode`(실제 열기 가드), Case Archive(SEALED 표시)가 모두 이 함수를 씀. 사건 안의 미션 순서(`GameProgress.isUnlocked`)·라우터의 미션/결과 가드는 그대로
+- 상태 분리: 접근 ≠ 해결 ≠ XP ≠ 배지 ≠ 증거. 사건을 열면 그 사건의 실제 세이브(없으면 새 세이브)를 불러올 뿐, 해결·XP·배지·증거를 저장하는 코드는 지나지 않음. Archive는 해결하지 않은 사건에 실제로 모은 증거만 표시
+- Release Safety(3중): `operatorToolsInBuild = kDebugMode || bool.fromEnvironment('LM_PLAYTEST')` 컴파일 상수(`playtestToolsEnabled`도 이 값) → `operatorToolsAvailableProvider` → 스위치 `set()`이 거부 + `operatorAccessProvider`가 AND. 일반 release 빌드에서는 UI가 없고, 켜는 방법도 없고, 정책도 무시함
+- 파일: `features/game/game_providers.dart`(정책·provider), `features/game_master/playtest_tools.dart`(상수 공유), `game_master_screen.dart`(스위치), `onboarding/episode_select_screen.dart`(도장·재빌드), `notebook/season_archive.dart`(재빌드)
+- 테스트 339 → 352: `operator_access_test`(일반 사용자 순차 해금·컨트롤러 거부, Case 01~12 전체 접근, Case 08 열기로 해결·XP·배지·증거·다른 세이브 변화 없음, 사건 안 미션 순서 유지, 스위치 끄면 원래 규칙, 운영 도구 없는 빌드에서 켤 수 없음, Case 07/08/12 링크 → 인트로, 일반 사용자 링크는 잠긴 사건 선택 안 됨, 스위치는 부모 게이트 뒤에만)
+- 실제 QA(위젯 렌더 스크린샷): 새 기기에서 Operator Mode → Case Files 12개 모두 열림 + `OPERATOR MODE` 도장, Case 01·02·07·08·12 인트로 진입. 에뮬레이터 실기는 안 함
 
 ### 2026-10-01 — Mission Map Camera
 

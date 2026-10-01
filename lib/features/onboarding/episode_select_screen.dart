@@ -90,6 +90,7 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
     final active = ref.watch(currentEpisodeProvider);
     final activeProgress = ref.watch(gameControllerProvider);
     ref.watch(seasonProvider); // re-read when a case is solved
+    ref.watch(operatorAccessProvider); // or when operator access is switched
     final season = ref.read(seasonProvider.notifier);
     final repo = ref.read(progressRepositoryProvider);
     return [
@@ -134,6 +135,14 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
           icon: const InkIcon(InkGlyph.back),
           onPressed: () => context.go(Routes.register),
         ),
+        actions: [
+          // QA only: every file is open (Game Master tools, test builds).
+          if (ref.watch(operatorAccessProvider))
+            const Padding(
+              padding: EdgeInsets.only(right: AppSpace.lg),
+              child: Center(child: InkStamp('OPERATOR MODE', size: 10, tilt: 0)),
+            ),
+        ],
       ),
       body: PaperBackground(
         child: SafeArea(

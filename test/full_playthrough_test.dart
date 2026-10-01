@@ -33,8 +33,11 @@ Future<void> tapText(WidgetTester t, String text, {Duration after = const Durati
 }
 
 /// Map → mission: investigate the place, open the letter, go to the puzzle.
+/// GO TO a place: the map zooms in, the place appears, the mission opens.
+const goToTime = Duration(milliseconds: 2800);
+
 Future<void> openMission(WidgetTester t, String goLabel) async {
-  await tapText(t, goLabel, after: const Duration(milliseconds: 1500));
+  await tapText(t, goLabel, after: goToTime);
   expect(find.text('INVESTIGATE'), findsOneWidget, reason: 'step 1: the place');
   await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
   expect(find.text('TAP TO OPEN'), findsOneWidget, reason: 'step 2: the sealed letter');
@@ -193,7 +196,7 @@ void main() {
     await wait(t);
 
     // ── Final case: picture locks clock-train-park-museum → 7 9 2 4.
-    await tapText(t, 'OPEN THE FINAL CASE', after: const Duration(milliseconds: 1500));
+    await tapText(t, 'OPEN THE FINAL CASE', after: goToTime);
     expect(find.text('THE ROYAL ARCHIVE'), findsOneWidget);
     for (final (i, digit) in [7, 9, 2, 4].indexed) {
       final up = find.byTooltip('Lock ${i + 1} up');

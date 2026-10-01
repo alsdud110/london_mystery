@@ -8,7 +8,7 @@ import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 
-import 'full_playthrough_test.dart' show finishMission, openMission, reveal, tapText, wait;
+import 'full_playthrough_test.dart' show finishMission, goToTime, openMission, reveal, tapText, wait;
 import 'helpers.dart';
 
 void main() {
@@ -77,7 +77,7 @@ void main() {
     await finishMission(t, sceneLine: 'You hold the brass gear up to the light.');
 
     // ── Mission 3: the plan in order (sequence), with one undo.
-    await tapText(t, 'GO TO THE BELFRY', after: const Duration(milliseconds: 1500));
+    await tapText(t, 'GO TO THE BELFRY', after: goToTime);
     await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
     await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
     await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
@@ -92,7 +92,7 @@ void main() {
     await finishMission(t, sceneLine: 'Gallery 8. Picture 17.');
 
     // ── Final case: set the Great Clock to 9:17 on the dials.
-    await tapText(t, 'OPEN THE FINAL CASE', after: const Duration(milliseconds: 1500));
+    await tapText(t, 'OPEN THE FINAL CASE', after: goToTime);
     expect(find.text('INSIDE BIG BEN'), findsOneWidget);
     for (final (i, digit) in [9, 1, 7].indexed) {
       final up = find.byTooltip('Lock ${i + 1} up');
