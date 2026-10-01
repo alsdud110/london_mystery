@@ -23,6 +23,9 @@ void main() {
         child: SizedBox(width: 160, height: 120, child: LandmarkArt(a)),
       ),
     ));
+    // Let a scene picture decode, so both sides of a comparison are drawn.
+    await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 200)));
+    await t.pump();
     return (await t.runAsync(() async {
       final image = await t.renderObject<RenderRepaintBoundary>(find.byKey(const ValueKey('art'))).toImage();
       return (await image.toByteData())!.buffer.asUint8List().toList();
@@ -61,6 +64,16 @@ void main() {
     expect(scenes['ep11_m2'], Artwork.dressingRoom);
   });
 
+  test('a scene picture (whose name plate shows) never names its own image-choice answer', () {
+    for (final e in MockEpisodeRepository.bundled()) {
+      for (final m in e.allMissions.where((m) => m.type == MissionType.imageChoice)) {
+        final answer = m.options.firstWhere((o) => o.id == m.answer).artwork;
+        final scene = LandmarkArt.standIns[m.scene] ?? m.scene;
+        expect(scene, isNot(answer), reason: m.id);
+      }
+    }
+  });
+
   test('every listed file exists and its folder is bundled in pubspec.yaml', () {
     final pubspec = File('pubspec.yaml').readAsStringSync();
     final files = [
@@ -81,7 +94,7 @@ void main() {
     expect(GameBadge.values, containsAll(ArtAssets.badges.keys));
   });
 
-  test('until a picture is added, the drawing (or monogram) is used everywhere', () {
+  test('a place without a picture keeps its drawing (or monogram)', () {
     for (final a in Artwork.values) {
       expect(ArtAssets.scene(a), ArtAssets.scenes[a]);
     }

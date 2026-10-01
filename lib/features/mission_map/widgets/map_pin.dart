@@ -37,6 +37,18 @@ class MapPin extends StatefulWidget {
   /// position (the pin's tip / the centre of the other marks).
   static const anchorY = hereBox + markerBox / 2;
 
+  /// What a current pin draws around its point (relative to it): the
+  /// "YOU'RE HERE" note with its arrow, the pin, the place name (up to two
+  /// lines). Other marks on the map are kept out of these.
+  static const currentMarks = [
+    Rect.fromLTRB(-43, -64, 43, -33),
+    Rect.fromLTRB(-14, -34, 14, 0),
+    Rect.fromLTRB(-66, 2, 66, 32),
+  ];
+
+  /// Half the size of a solved (check) or locked mark, with its border.
+  static const markRadius = 17.0;
+
   static const _pinSize = Size(26, 34);
 
   final String label;
@@ -220,8 +232,8 @@ class _Mark extends StatelessWidget {
 
 /// Text lettered straight onto the map, with a thin paper outline so the
 /// roads and the route pass behind it (as on printed maps — not a glow).
-class _MapLettering extends StatelessWidget {
-  const _MapLettering(this.text, {required this.style, this.maxLines = 2});
+class MapLettering extends StatelessWidget {
+  const MapLettering(this.text, {super.key, required this.style, this.maxLines = 2});
 
   final String text;
   final TextStyle style;
@@ -263,7 +275,7 @@ class _YouAreHere extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _MapLettering(
+        MapLettering(
           "YOU'RE HERE",
           maxLines: 1,
           style: AppText.style(AppText.display, size: 9.5, weight: FontWeight.w800, color: AppColors.burgundy, letterSpacing: 1.4),
@@ -284,7 +296,7 @@ class _PlaceName extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: MapPin.width),
-      child: _MapLettering(
+      child: MapLettering(
         text,
         style: AppText.style(AppText.heading, size: 12.5, weight: FontWeight.w700, color: AppColors.navy, height: 1.15, letterSpacing: 0.4),
       ),

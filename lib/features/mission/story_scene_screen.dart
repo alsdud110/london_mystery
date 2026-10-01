@@ -190,7 +190,7 @@ class _UnlockedCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            SizedBox(width: 72, height: 72, child: LandmarkArt(art, borderRadius: 16)),
+            SizedBox(width: 72, height: 72, child: LandmarkArt(art, borderRadius: 16, showName: false)),
             const SizedBox(width: 14),
             Expanded(
               child: Column(

@@ -102,10 +102,10 @@ void main() {
     expect(find.text('Detective MINYOUNG'), findsOneWidget);
     await t.tapAt(const Offset(20, 20)); // close the menu
     await wait(t);
-    await t.tap(find.byKey(const ValueKey('pin-m02')));
-    await wait(t);
-    expect(find.textContaining('Locked!'), findsOneWidget);
-    await wait(t, const Duration(seconds: 3));
+    // Where the next place is would give away the answer of this one.
+    expect(find.byKey(const ValueKey('pin-m02')), findsNothing, reason: 'locked places stay off the map');
+    expect(find.text("King's Cross"), findsNothing, reason: 'the current pin names its own landmark');
+    expect(find.text('British Museum'), findsOneWidget, reason: 'the map letters its landmarks');
 
     // ── Mission 01: word card, a wrong answer, a tip, then the answer.
     await openMission(t, "GO TO KING'S CROSS");

@@ -31,6 +31,8 @@ flutter:
 
   assets:
     - assets/sounds/
+    - assets/images/london_mystery.png
+    - assets/art/scenes/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:

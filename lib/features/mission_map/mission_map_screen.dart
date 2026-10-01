@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +13,7 @@ import '../../core/utils/formatters.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
+import '../../widgets/art_assets.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/game_toast.dart';
@@ -20,6 +23,8 @@ import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
+import 'map_camera.dart';
+import 'map_world.dart';
 import 'widgets/london_map_painter.dart';
 import 'widgets/map_pin.dart';
 
@@ -175,12 +180,16 @@ class MissionMapScreen extends ConsumerWidget {
     final recentUnlock = ref.watch(recentUnlockProvider);
     final current = progress.currentMission(episode);
     final all = episode.allMissions;
+    final places = MapWorld.places(episode);
+    // Back from solving a place: the map opens on the place it unlocked.
+    final unlockedAt = all.indexWhere((m) => m.id == recentUnlock);
+    final arrivedFrom = unlockedAt > 0 && current?.id == recentUnlock ? all[unlockedAt - 1] : null;
 
     final ctaLabel = current == null
         ? 'SEE MY CASE FILE'
         : current.isFinal
-            ? 'OPEN THE FINAL CASE'
-            : 'GO TO ${current.location}';
+        ? 'OPEN THE FINAL CASE'
+        : 'GO TO ${current.location}';
 
     return Scaffold(
       body: PaperBackground(
@@ -208,26 +217,29 @@ class MissionMapScreen extends ConsumerWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.md),
-                      child: LayoutBuilder(
-                        builder: (context, box) {
-                          final w = box.maxWidth;
-                          final h = box.maxHeight;
-                          return Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Positioned.fill(
-                                child: CustomPaint(
-                                  painter: LondonMapPainter(
-                                    route: [for (final m in all) Offset(m.mapX, m.mapY)],
-                                    completedLegs: progress.completedMissionIds.length,
-                                  ),
-                                ),
-                              ),
-                              for (final m in all)
-                                Positioned(
-                                  left: (m.mapX * w - MapPin.width / 2).clamp(0, w - MapPin.width),
-                                  top: (m.mapY * h - MapPin.anchorY).clamp(0, h - MapPin.height),
-                                  child: MapPin(
+                      child: _MapViewport(
+                        // The camera follows the game: the current place,
+                        // or the last one once every place is solved.
+                        focus: places[(current ?? all.last).id]!,
+                        // Just back from solving a place: start the camera
+                        // there and travel to the place it unlocked.
+                        arriveFrom: arrivedFrom == null ? null : places[arrivedFrom.id],
+                        world: (size) => _MapWorldView(
+                          size: size,
+                          route: [for (final m in all) places[m.id]!],
+                          completedLegs: progress.completedMissionIds.length,
+                          // The current place's own name is on its pin.
+                          hideName: current == null ? null : MapWorld.missionLandmarks[current.id],
+                          pins: [
+                            // The current place last, so its note is on top.
+                            for (final m in [...all.where((m) => m != current), ?current])
+                              // A place stays off the map until it is
+                              // unlocked: where it is would tell the answer
+                              // of the case before it.
+                              if (_stateOf(progress, episode, m) != PinState.locked)
+                                (
+                                  at: places[m.id]!,
+                                  pin: MapPin(
                                     key: ValueKey('pin-${m.id}'),
                                     label: m.location,
                                     isFinal: m.isFinal,
@@ -238,9 +250,8 @@ class MissionMapScreen extends ConsumerWidget {
                                     onTap: () => _openMission(context, ref, m),
                                   ),
                                 ),
-                            ],
-                          );
-                        },
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -267,6 +278,221 @@ class MissionMapScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The camera over the London map: a tall viewport, the size of a page,
+/// showing one part of the map world. It follows the game (it is never
+/// dragged or zoomed): the current place sits at the centre, and when a new
+/// place is unlocked the whole world pans there, pins and all.
+class _MapViewport extends StatefulWidget {
+  const _MapViewport({required this.focus, required this.arriveFrom, required this.world});
+
+  /// The place the camera shows (fractions of the map).
+  final Offset focus;
+
+  /// Where the camera starts when the map opens, if not at [focus].
+  final Offset? arriveFrom;
+
+  /// Builds the map world at its size in the viewport.
+  final Widget Function(Size size) world;
+
+  /// Height / width of the viewport (the map world is 3:2, much wider).
+  static const tallness = 1.25;
+
+  /// Parchment margin around the map, inside its hairline border.
+  static const frame = 4.0;
+
+  /// From the viewport's outer edge to the map: border and margin.
+  static const inset = frame + AppLine.hairline;
+
+  /// The pan from one place to the next, after a short pause so the screen
+  /// has opened first.
+  static const panDuration = Duration(milliseconds: 950);
+  static const panCurve = Interval(0.2, 1, curve: Curves.easeInOutCubic);
+
+  @override
+  State<_MapViewport> createState() => _MapViewportState();
+}
+
+class _MapViewportState extends State<_MapViewport> with SingleTickerProviderStateMixin {
+  late final AnimationController _pan = AnimationController(vsync: this, duration: _MapViewport.panDuration, value: 1);
+  late Offset _from = widget.arriveFrom ?? widget.focus;
+  late Offset _to = widget.focus;
+
+  @override
+  void initState() {
+    super.initState();
+    // First look: already on the current place, unless just arriving.
+    if (_from != _to) _pan.forward(from: 0);
+  }
+
+  @override
+  void didUpdateWidget(_MapViewport old) {
+    super.didUpdateWidget(old);
+    if (widget.focus == _to) return; // same place: the camera stays
+    _from = Offset.lerp(_from, _to, _MapViewport.panCurve.transform(_pan.value))!;
+    _to = widget.focus;
+    _pan.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _pan.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, box) {
+        const f = _MapViewport.inset;
+        final width = box.maxWidth;
+        final height = math.min(box.maxHeight, width * _MapViewport.tallness);
+        final camera = MapCamera.cover(Size(width - 2 * f, height - 2 * f), aspect: ArtAssets.londonMapAspect);
+        // Between the header and the buttons, with the spare height shared.
+        return Center(
+          child: Container(
+            key: const ValueKey('map-viewport'),
+            width: width,
+            height: height,
+            padding: const EdgeInsets.all(_MapViewport.frame),
+            decoration: BoxDecoration(
+              color: AppColors.parchment,
+              borderRadius: BorderRadius.circular(AppRadius.paper),
+              border: Border.all(color: AppLine.faint(0.45), width: AppLine.hairline),
+              boxShadow: AppShadow.paperLift,
+            ),
+            foregroundDecoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadius.paper),
+              border: Border.all(color: AppLine.faint(0.3), width: AppLine.hairline),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.paper / 2),
+              child: OverflowBox(
+                alignment: Alignment.topLeft,
+                minWidth: camera.world.width,
+                maxWidth: camera.world.width,
+                minHeight: camera.world.height,
+                maxHeight: camera.world.height,
+                child: AnimatedBuilder(
+                  animation: _pan,
+                  builder: (context, world) {
+                    final t = _MapViewport.panCurve.transform(_pan.value);
+                    return Transform.translate(offset: Offset.lerp(camera.offsetFor(_from), camera.offsetFor(_to), t)!, child: world);
+                  },
+                  // Built once per game state, not per frame of the pan.
+                  child: RepaintBoundary(key: const ValueKey('map-world'), child: widget.world(camera.world)),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// The London map world: the artwork, the route inked on it, the landmark
+/// names, and the pins of the places found so far — all at map positions,
+/// so they all move together with the camera.
+class _MapWorldView extends StatelessWidget {
+  const _MapWorldView({required this.size, required this.route, required this.completedLegs, required this.pins, required this.hideName});
+
+  final Size size;
+
+  /// Every place of the case in play order (fractions of the map), and how
+  /// many are solved: the route inked between them.
+  final List<Offset> route;
+  final int completedLegs;
+
+  /// Each pin with its place on the map (fractions of the map).
+  final List<({Offset at, MapPin pin})> pins;
+
+  /// A landmark whose name is not lettered (the current pin names it).
+  final Landmark? hideName;
+
+  static const _nameWidth = 140.0;
+
+  /// The landmark name sits this far below the landmark point.
+  static const _nameDrop = 18.0;
+
+  /// Where to draw a solved place's mark, at [at] (world px): there, or —
+  /// if it would cover the current pin's note, pin or name around [current]
+  /// — just clear of them, at the nearest spot inside the world. Only the
+  /// drawing moves; the place itself stays where it is.
+  static Offset clearOf(Offset at, Offset current, Size world) {
+    const r = MapPin.markRadius;
+    const gap = 3.0;
+    final keepOut = [for (final k in MapPin.currentMarks) k.shift(current).inflate(gap)];
+    bool clear(Offset p) => keepOut.every((k) => !k.overlaps(Rect.fromCircle(center: p, radius: r)));
+    bool inside(Offset p) => p.dx >= r && p.dy >= r && p.dx <= world.width - r && p.dy <= world.height - r;
+    if (clear(at)) return at;
+    final spots = [
+      for (final k in keepOut) ...[
+        Offset(k.left - r, at.dy),
+        Offset(k.right + r, at.dy),
+        Offset(at.dx, k.top - r),
+        Offset(at.dx, k.bottom + r),
+      ],
+    ].where((p) => clear(p) && inside(p)).toList()
+      ..sort((a, b) => (a - at).distance.compareTo((b - at).distance));
+    return spots.isEmpty ? at : spots.first;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final w = size.width;
+    final h = size.height;
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    Offset px(Offset p) => Offset(p.dx * w, p.dy * h);
+    // Solved marks step aside from the current pin's note, pin and name.
+    final current = pins.where((p) => p.pin.state == PinState.current).map((p) => px(p.at)).firstOrNull;
+    final drawnAt = {
+      for (final p in pins)
+        p.at: current == null || p.pin.state != PinState.completed ? px(p.at) : clearOf(px(p.at), current, size),
+    };
+    final ink = LondonMapPainter(
+      route: [for (final r in route) drawnAt[r] == null ? r : Offset(drawnAt[r]!.dx / w, drawnAt[r]!.dy / h)],
+      completedLegs: completedLegs,
+      drawMap: false,
+    );
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            ArtAssets.londonMap,
+            // The world has the artwork's ratio: nothing is stretched or cut.
+            fit: BoxFit.cover,
+            // Decode once at display size (never above the source size); the
+            // world keeps its size while the camera pans, so no re-decode.
+            cacheWidth: math.min(w * dpr, ArtAssets.londonMapPixels.width).round(),
+            excludeFromSemantics: true,
+            errorBuilder: (context, error, stack) => CustomPaint(painter: LondonMapPainter(route: const [], completedLegs: 0)),
+          ),
+        ),
+        for (final l in Landmark.values)
+          if (l != hideName)
+            Positioned(
+              left: l.at.dx * w - _nameWidth / 2,
+              top: l.at.dy * h + _nameDrop,
+              width: _nameWidth,
+              child: IgnorePointer(
+                child: MapLettering(
+                  l.name,
+                  maxLines: 1,
+                  style: AppText.style(AppText.heading, size: 11.5, weight: FontWeight.w700, color: AppColors.inkBrown, letterSpacing: 0.3),
+                ),
+              ),
+            ),
+        Positioned.fill(
+          child: IgnorePointer(child: CustomPaint(painter: ink)),
+        ),
+        for (final p in pins)
+          Positioned(left: drawnAt[p.at]!.dx - MapPin.width / 2, top: drawnAt[p.at]!.dy - MapPin.anchorY, child: p.pin),
+      ],
     );
   }
 }

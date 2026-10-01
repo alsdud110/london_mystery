@@ -372,7 +372,7 @@ class _Photo extends StatelessWidget {
           boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(1, 3))],
           borderRadius: BorderRadius.circular(4),
         ),
-        child: LandmarkArt(scene, borderRadius: 2, solved: 1),
+        child: LandmarkArt(scene, borderRadius: 2, solved: 1, showName: false),
       ),
     );
   }

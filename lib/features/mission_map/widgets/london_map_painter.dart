@@ -10,7 +10,11 @@ import '../../../core/theme/app_colors.dart';
 /// Route legs: solid ink between places already investigated, a dashed line
 /// to the current place, and nothing beyond it (the next stop is unknown).
 class LondonMapPainter extends CustomPainter {
-  LondonMapPainter({required this.route, required this.completedLegs});
+  LondonMapPainter({required this.route, required this.completedLegs, this.drawMap = true});
+
+  /// False when the map artwork is under this painter: only the route is
+  /// inked on top of it.
+  final bool drawMap;
 
   /// Pin centres (fractions of the map size) in play order.
   final List<Offset> route;
@@ -29,6 +33,10 @@ class LondonMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (!drawMap) {
+      _route(canvas, size);
+      return;
+    }
     final rect = Offset.zero & size;
     final paper = RRect.fromRectAndRadius(rect, const Radius.circular(6));
     canvas.drawRRect(paper, Paint()..color = AppColors.paperLight);
@@ -205,5 +213,5 @@ class LondonMapPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LondonMapPainter old) => old.completedLegs != completedLegs || old.route != route;
+  bool shouldRepaint(LondonMapPainter old) => old.completedLegs != completedLegs || old.route != route || old.drawMap != drawMap;
 }

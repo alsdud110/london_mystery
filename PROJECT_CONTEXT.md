@@ -63,7 +63,7 @@ STORY → EXPLORATION → PUZZLE → DISCOVERY → REWARD
 - [x] **Player Registration (Detective ID)** — `register_screen.dart`. 이름 1~12자, 영문/숫자/한글/공백/`.`/`-`만 허용, 대문자 변환. 클라이언트 입력 필터 + `GameController.validateName` 이중 검증
 - [x] **Episode Selection (Case Files)** — `episode_select_screen.dart`. EP01 케이스 파일 카드 + "EPISODE 02 Coming soon..." 잠금 카드(하드코딩)
 - [x] **Story Intro** — `story_intro_screen.dart`. 타자기 효과, 탭으로 줄 넘김, SKIP, "Are you ready?" → `startInvestigation()`(사건 타이머 시작)
-- [x] **Mission Map** — `features/mission_map/`. CustomPainter로 그린 옛 런던 지도, 수사 경로(실선/점선), 핀 3상태(completed/current/locked), 헤더는 사건 제목 + 메뉴만. 게임 메뉴(탐정 이름·XP·플레이 시간 / 사운드 토글 / 노트북 / 결과 / 타이틀). Phase 3에서 리디자인됨
+- [x] **Mission Map** — `features/mission_map/`. Map Camera: 세로 뷰포트가 3:2 런던 지도 world(`ArtAssets.londonMap`, 없으면 CustomPainter 지도)의 일부를 보여주고 현재 장소로 자동 이동(`map_camera.dart`, `map_world.dart`). 수사 경로(실선/점선), 랜드마크 이름, 핀(completed/current만 표시, 잠긴 장소는 숨김), 헤더는 사건 제목 + 메뉴만. 게임 메뉴(탐정 이름·XP·플레이 시간 / 사운드 토글 / 노트북 / 결과 / 타이틀). Phase 3에서 리디자인됨
 - [x] **Mission (3단계)** — `features/mission/mission_screen.dart`. story(장면+봉인 편지) → letter(편지 읽기) → puzzle. 상단 단계 점 표시, 재진입 시 퍼즐 단계로 바로 이동, 퍼즐 중 편지 다시 읽기
 - [x] **Question 타입 5종 + Final** — `mission/widgets/question_widgets.dart`, `qr_question.dart`
   - Multiple Choice (m01), Word Input (m02), Number Code 키패드 (m03), Image Choice (m04, 이름 숨김), QR Scan (m05, 수동 입력 폴백)
@@ -448,7 +448,7 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 |---|---|---|
 | Fonts | `assets/fonts/Cinzel.ttf`, `Fredoka.ttf`, `Nunito.ttf` | SIL OFL, 로컬 번들 (`AppText.display/heading/body`) |
 | Audio | `assets/sounds/tap.wav`, `success.wav`, `wrong.wav`, `unlock.wav`, `clue.wav`, `final.wav` | `tool/gen_sounds.js`로 생성한 합성음 |
-| Images | **없음** | 랜드마크·지도·Royal Box·증거 아이콘 모두 CustomPainter (`widgets/landmark_art.dart`, `london_map_painter.dart`, `final_mission_screen.dart`). PNG 교체 지점: `widgets/art_assets.dart` (*Phase 4* 참고) |
+| Images | Mission Map 지도 1장 (`assets/images/london_mystery.png`) | 그 외 랜드마크·Royal Box·증거 아이콘 모두 CustomPainter (`widgets/landmark_art.dart`, `london_map_painter.dart`, `final_mission_screen.dart`). PNG 교체 지점: `widgets/art_assets.dart` (*Phase 4* 참고) |
 | Icons | Ink Icon System (`InkGlyph`, `widgets/ink_icon.dart`). 예외: QR 스캐너 화면에 Material 아이콘 3개(손전등·카메라 없음·카메라 꺼짐)가 남아 있음. 그림이 없는 심볼·배지는 모노그램 | 앱 런처 아이콘은 별도 커밋에서 통일 |
 | Animations | **asset 없음** | Flutter 내장 애니메이션(AnimationController, Tween, AnimatedSwitcher)만 사용 |
 
@@ -569,7 +569,7 @@ Status:
 
 Step 3.2 변경 (UI만. 로직·모델·라우팅·저장은 그대로. 아래 3.1의 설명 중 해당 항목을 대체):
 - **Case Files**: 항상 모든 폴더가 접힌 상태로 시작(자동 펼침 없음). 이미 시작한 탐정은 에피소드가 선택된 상태로 간주해 CONTINUE가 바로 활성
-- **지도 현재 위치**: 네이비 원·펜 원·테두리 이름표·종이 박스 제거. 남은 것: 작은 "YOU'RE HERE"(Cinzel 9.5) + 작은 잉크 화살표 + 잉크 위치 핀(`_InkPinPainter`, 핀 끝 = 지도상의 위치 = 점선 경로의 끝) + 지도에 직접 쓴 장소명. 글자는 얇은 종이색 외곽선(`_MapLettering`, 인쇄 지도식 표기, glow 아님)으로 경로선 위에서도 읽힘. 외곽선 레이어는 semantics·text finder에서 제외
+- **지도 현재 위치**: 네이비 원·펜 원·테두리 이름표·종이 박스 제거. 남은 것: 작은 "YOU'RE HERE"(Cinzel 9.5) + 작은 잉크 화살표 + 잉크 위치 핀(`_InkPinPainter`, 핀 끝 = 지도상의 위치 = 점선 경로의 끝) + 지도에 직접 쓴 장소명. 글자는 얇은 종이색 외곽선(`MapLettering`, 인쇄 지도식 표기, glow 아님)으로 경로선 위에서도 읽힘. 외곽선 레이어는 semantics·text finder에서 제외
 - **봉투** (`letter_card.dart`): 빅토리아풍 봉투 뒷면. 레이어별 painter로 분리(`_PocketPainter` 몸통 / `_FlapPainter` 덮개 / `_WaxBlobPainter` 봉랍) → PNG/SVG로 교체 쉬움. 살짝 불규칙한 가장자리와 모서리, -1.4° 기울기, 오래된 manila 색 + 미세한 반점 + 모서리 foxing, 약한 종이 그림자, 곡선 끝의 덮개, 불규칙한 봉랍, 흐린 손도장 우체국 소인("LONDON")
 - **오픈 애니메이션** (`EnvelopeReveal`, 850ms): ① 봉랍이 가운데로 갈라져 벌어지며 사라짐 → ② 덮개가 뒤로 젖혀짐 → ③ 세 번 접힌 편지가 봉투 안에서 위로 나옴(봉투 몸통 뒤에서) → ④ 봉투가 아래로 빠지며 사라지고 편지는 중앙으로 오며 접힌 1/3에서 전체로 펼쳐짐(0.82→1 소폭 스케일, 기울기 -1.4°→-0.6°) → ⑤ 글씨가 마지막에 짧게 fade-in. 마지막 프레임과 완성된 `LetterCard`가 같은 위치라 전환이 튀지 않음. 이미 연 편지는 애니메이션 없이 바로 표시
 - `LetterCard(textOpacity:)` 추가(애니메이션용)
@@ -701,6 +701,37 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 ---
 
 ## Change Log
+
+### 2026-10-01 — Mission Map Camera
+
+- 지도 artwork가 clean 버전으로 교체됨(인쇄된 핀·장소명·타이틀 없음, 같은 경로·1536×1024) → 장소명은 앱이 씀. 이전 기록의 "artwork 핀과 Flutter 핀 중복" 문제는 해소
+- 3:2 지도판(`_MapBoard`, 전체 표시)을 **Map Camera**로 교체: 세로 뷰포트(`_MapViewport`, 높이 = min(남은 높이, 폭×1.25), 헤더와 버튼 사이 가운데) 안에 3:2 map world(뷰포트를 덮는 크기 × zoom 1.2)를 두고, world 전체(artwork·경로·랜드마크 이름·핀·YOU'RE HERE)를 `Transform.translate`로 이동. 360×640: 뷰포트 328×410, 390×844: 358×448
+- `MapCamera`(`map_camera.dart`, 순수 계산): 정규화 좌표 → world px, 장소를 뷰포트 중앙(아래로 20dp, YOU'RE HERE 자리)에 두는 offset, world가 빈 공간을 드러내지 않게 clamp, world가 뷰포트보다 작은 축은 가운데 정렬
+- 애니메이션: 첫 진입은 현재 장소에 바로 표시. 미션을 풀고 돌아오면(`recentUnlockProvider` = 현재 미션) 방금 푼 장소에서 시작해 950ms(앞 20% 대기 + easeInOutCubic)로 새 장소까지 이동 — 핀의 해금 도장과 타이밍이 맞음. 지도가 열린 채 현재 장소가 바뀌어도 같은 방식으로 이동, 같은 장소면 움직이지 않음. 사용자 드래그·줌 없음
+- **시각 좌표와 진행 좌표 분리**(`map_world.dart`): `Landmark` 9곳(artwork 위 실제 위치) + 미션 → 랜드마크 표. 진행용 `mapX/mapY`는 그대로 두고, 같은 랜드마크를 쓰는 미션들은 랜드마크 주변 반경 0.12 무리로 배치(무리 모양 = `mapX/mapY` 배치). 위쪽 끝 무리는 모양을 유지한 채 아래로(`topMargin` 0.15). 에피소드 데이터 구조 변경 없음
+- **잠긴 장소는 지도에 표시하지 않음**(사용자 결정): 핀이 실제 랜드마크에 있으면 잠긴 핀 위치가 이전 퀴즈 정답(다음 장소)을 알려주기 때문. 잠긴 미션 URL 차단은 라우터 가드 그대로. 현재 장소의 랜드마크 이름은 숨김(핀이 자기 이름을 표시), 현재 핀은 맨 위에 그림
+- 성능: world는 게임 상태가 바뀔 때만 빌드(`AnimatedBuilder` child + `RepaintBoundary`), artwork는 world 폭 × dpr(최대 원본 1536px)로 한 번 디코딩, 이동 중 재디코딩 없음
+- `MapLettering`(지도 글씨)을 `map_pin.dart`에서 공개해 랜드마크 이름에도 사용. `ArtAssets.londonMapPixels` 추가
+- 테스트 326 → 339: `map_camera_test`(camera math 7, map world 3, 진입·복귀 이동·열린 상태 이동 3). `season_screens_test` 지도 검사 72개를 카메라 기준으로 다시 씀(뷰포트 비율·크기, world 3:2·빈 공간 없음, 카메라 = 현재 장소, 핀 = world 위치, 잠긴 핀 없음, YOU'RE HERE가 보임, 버튼이 지도 아래 고정). `full_playthrough_test`의 "잠긴 핀 탭 → Locked! 안내"는 "잠긴 핀이 지도에 없음 + 랜드마크 이름 표시"로 변경(잠긴 핀 숨김 결정에 따름)
+- 남은 문제: (1) King's Cross·Tower Bridge처럼 지도 가장자리 랜드마크는 카메라가 끝에서 멈춰 정중앙에 오지 않음(빈 공간을 드러내지 않기 위한 clamp). (2) ~~Case 08 중간 등 King's Cross 무리에서 해결한 장소 표시가 현재 장소의 YOU'RE HERE 글자에 살짝 걸림~~ → 2026-10-01 수정: 현재 핀이 차지하는 영역(`MapPin.currentMarks`: 메모·핀·장소명)에 해결한 체크 표시가 겹치면, 그리기 위치만 가장 가까운 빈 자리(지도 안)로 옮김(`_MapWorldView.clearOf`). 경로선은 옮긴 표시까지 이어짐. 장소 좌표·현재 핀·카메라는 그대로. Case 08 중간은 체크가 메모 위로, Case 07 중간은 체크가 이름 옆으로 몇 dp 이동. `season_screens_test`에 렌더링 영역 기준 겹침 검사 추가(수정을 끄면 Case 08 두 크기에서 실패함을 확인). (3) world가 원본보다 커서(390폭 기준 약 2400px 필요, 원본 1536px) 약 1.5배 확대 — 약간 부드러움. 2400px 이상 원본이면 선명. (4) 에뮬레이터 실기 확인 안 함(위젯 테스트 렌더 + 스크린샷으로 확인)
+
+### 2026-09-30 — Landmark 장면 그림 적용
+
+- 랜드마크 9장(약 400×256, 종이 테두리 + 하단 이름표 인쇄)을 `assets/art/scenes/<key>.png`로 옮기고(원래 `assets/images/`에 공백 포함 이름) `ArtAssets.scenes`에 연결: kingsCross, britishMuseum, bigBen, hydePark, buckinghamPalace, towerBridge, londonEye, towerOfLondon, coventGarden
+- `ArtAssets.scenePrint`(frame 4.5%, nameTop 68%): 앱이 이미 액자를 두므로 인쇄된 테두리를 모든 곳에서 잘라냄. `LandmarkArt(showName: false)`는 이름표도 잘라냄 → 이미지 선택 퀴즈 타일(정답 노출 방지), 스토리 72dp 썸네일, Case Solved 96dp 사진. 미션·Final 4:3 장면은 이름표 표시
+- stand-in 장소(boathouse/roseGarden → Hyde Park, waitingRoom → King's Cross, staffRoom/courtyard → Buckingham Palace)는 전용 그림이 생길 때까지 stand-in의 그림을 사용. 파일이 없거나 깨지면 코드 드로잉으로 대체
+- 테스트 325 → 326: 이미지 선택 미션의 장면 그림 ≠ 정답 그림(장면 이름표가 정답을 말하지 않음), 이미지 선택 타일은 항상 `showName: false`
+- 남은 문제: 원본 해상도가 약 400px라 4:3 미션 장면(3x 기기 기준 약 930px)에서 2배 이상 확대돼 약간 흐림. 800px 이상 원본을 권장. 이미지 선택 타일(거의 정사각)에서는 가운데만 보여서 Tower Bridge는 탑 하나와 보행교만 보임
+
+### 2026-09-30 — Mission Map Landscape Board
+
+- 지도 artwork(`assets/images/london_mystery.png`, 1536×1024)를 pubspec에 등록하고 `ArtAssets.londonMap` / `londonMapAspect`(3:2)로 연결. 파일이 없거나 깨지면 `LondonMapPainter` 지도로 대체
+- Mission Map의 지도 영역을 3:2 지도판(`_MapBoard`: parchment 5dp 프레임 + 옅은 잉크 테두리 + `AppShadow.paperLift`, `AspectRatio`)으로 변경. 폭 = 화면 폭 − 16×2(360 → 328×219, 390 → 358×239). `BoxFit.contain`으로 잘림 없음. 헤더 아래 배치(위 40dp는 상단 핀의 YOU'RE HERE 자리), 남는 높이는 버튼 위로
+- `LondonMapPainter(drawMap: false)`: artwork 위에는 수사 경로만 그림
+- 핀: 정규화 좌표(`mapX*w`, `mapY*h`)에 핀 끝을 정확히 둠. 예전의 세로 clamp(핀 박스를 지도 안에 가두면서 위치가 밀림) 제거. 가로 clamp는 화면 여백(16dp)까지만 적용
+- 지도 가로 스크롤·줌·드래그 없음(원래 코드에도 없었음). 게임 로직·좌표 데이터·저장 구조 변경 없음
+- 테스트 253 → 325: `season_screens_test`에 지도 검사 72개 추가(12개 사건 × 시작/중간/완료 × 360×640·390×844). 3:2 비율, artwork 크기 = 지도판 크기, 핀 끝 위치, 버튼이 지도 아래 화면 안에 있는지, overflow 없음을 확인
+- **남은 문제**: artwork에 인쇄된 빨간 핀·장소 이름과 Flutter 핀이 서로 다른 위치에 함께 보임. `mapX/mapY`는 artwork 이전의 배치값이고 Ep02~12는 한 장소 안의 세부 위치(Gallery 8 등)라 artwork의 랜드마크와 대응하지 않음. 핀·라벨이 없는 clean artwork로 교체하거나 좌표를 artwork에 맞춰 다시 정해야 함
 
 ### 2026-09-29 — Phase 4: Playtest Preparation & Visual Polish
 

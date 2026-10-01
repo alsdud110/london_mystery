@@ -520,7 +520,7 @@ class _ImageTile extends StatelessWidget {
           decoration: _answerPaper(selected: selected, radius: AppRadius.paper),
           child: Stack(
             children: [
-              Positioned.fill(child: LandmarkArt(artwork, borderRadius: 2)),
+              Positioned.fill(child: LandmarkArt(artwork, borderRadius: 2, showName: false)),
               Positioned(
                 left: 6,
                 top: 4,

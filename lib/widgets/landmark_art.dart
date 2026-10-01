@@ -12,11 +12,23 @@ import 'art_assets.dart';
 /// addressed by an [Artwork] key, so it can later be swapped for a real
 /// PNG illustration without touching the screens (see [ArtAssets]).
 class LandmarkArt extends StatelessWidget {
-  const LandmarkArt(this.artwork, {super.key, this.borderRadius = 24, this.showSky = true, this.solved = 0});
+  const LandmarkArt(
+    this.artwork, {
+    super.key,
+    this.borderRadius = 24,
+    this.showSky = true,
+    this.solved = 0,
+    this.showName = true,
+  });
 
   final Artwork artwork;
   final double borderRadius;
   final bool showSky;
+
+  /// False cuts off the name plate printed on a scene picture: on an
+  /// image-choice answer (the picture must be recognized, not read) and on
+  /// small thumbnails. Drawn scenes have no name either way.
+  final bool showName;
 
   /// 0 = the place as the detective finds it, 1 = after the case is solved
   /// (in between while the solve animation plays). Only scenes that change
@@ -40,18 +52,52 @@ class LandmarkArt extends StatelessWidget {
       painter: _LandmarkPainter(standIns[artwork] ?? artwork, showSky: showSky, solved: solved),
       child: const SizedBox.expand(),
     );
-    final file = ArtAssets.scene(artwork, solved: solved);
+    final standIn = standIns[artwork];
+    final file = ArtAssets.scene(artwork, solved: solved) ?? (standIn == null ? null : ArtAssets.scene(standIn, solved: solved));
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: file == null
-          ? drawn
-          : Image.asset(
+      child: file == null ? drawn : _ScenePicture(file, showName: showName, fallback: drawn),
+    );
+  }
+}
+
+/// A scene picture filling its frame (cover), without its printed paper
+/// frame, and without its name plate unless [showName].
+class _ScenePicture extends StatelessWidget {
+  const _ScenePicture(this.file, {required this.showName, required this.fallback});
+
+  final String file;
+  final bool showName;
+  final Widget fallback;
+
+  @override
+  Widget build(BuildContext context) {
+    final spec = ArtAssets.scenePrint;
+    // The part of the picture to show, in fractions of its size.
+    final left = spec.frame;
+    final top = spec.frame;
+    final width = 1 - 2 * spec.frame;
+    final height = (showName ? 1 - spec.frame : spec.nameTop) - top;
+    return FittedBox(
+      fit: BoxFit.cover,
+      clipBehavior: Clip.hardEdge,
+      child: ClipRect(
+        child: Align(
+          // Places the part [left, top, width, height] in the clip.
+          alignment: Alignment(2 * left / (1 - width) - 1, 2 * top / (1 - height) - 1),
+          widthFactor: width,
+          heightFactor: height,
+          child: SizedBox.fromSize(
+            size: spec.size,
+            child: Image.asset(
               file,
               fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              errorBuilder: (context, error, stack) => drawn,
+              excludeFromSemantics: true,
+              errorBuilder: (context, error, stack) => fallback,
             ),
+          ),
+        ),
+      ),
     );
   }
 }
