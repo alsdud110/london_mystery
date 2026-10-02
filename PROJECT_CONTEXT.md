@@ -710,6 +710,15 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 
 ## Change Log
 
+### 2026-10-02 — Detective Registration · NEW ADVENTURE 확인: 같은 탐정 사무실 안의 문서
+
+- 원칙: 세계 = 어두운 cinematic 런던 / 문서 = 밝은 ivory 종이 / 주 행동 = navy + antique gold
+- **Registration** (`register_screen.dart`): 배경 = Title의 `titleDetectiveOffice`(책상 쪽 정렬, blur 3, 가장자리가 짙은 navy 그늘, Scaffold 밖이라 키보드가 올라와도 고정). 앱바 Back은 그림 위 gold + 반투명 원. 문서는 화면보다 좁게(좌우 32, 최대 400) — 360×640에서 책상이 주변에 보임. 문구: `DETECTIVE ID` → `DETECTIVE REGISTRATION`, 질문 → `What should we call you,\nDetective?`, letterhead 한 줄 fit. 크기 축소(엠블럼 88→64, 질문 28→24, 입력 28→24, 안쪽 여백 축소). 입력줄: 라벨 고정(떠오르지 않음, Cinzel 작은 글자), focus = inkBrown 같은 굵기(밝은 accent 없음), 연필 inkBrown, 카운터 caption. CTA `OPEN THE CASEBOOK` = `glass` 한 줄. 문서 300ms fade + 10px settle(모션 줄이기 = 없음). 검증·저장 로직 그대로
+- **NEW ADVENTURE 확인**: `Start a New Adventure?` / "Your investigation progress, case files and clues will be cleared. You will sign up again with a detective name."(실제 `resetAll` 범위: 모든 사건 세이브·시즌 기록·탐정 이름) / `START NEW ADVENTURE` / `Keep playing`. `GameDialog.confirm(onScene: true)` — 반투명 navyDeep 장막(0.55, 사무실이 보임), 240ms fade + 0.98→1 scale. 기본값 false라 지도 "Leave the case?"·Case Solved "Play again"은 그대로
+- Tests 435 → 441: `title_screen_test`에 신규(360/390/1.3배: 사무실 배경·문구·문서 주변 여백·키보드 위 입력·버튼 → Season) / 기존(NEW ADVENTURE → 문구·"new case" 없음·장막 반투명 → Keep playing 유지 → START NEW ADVENTURE → 등록). 기존 테스트는 바뀐 문구 2곳만(`resume_and_guard` 질문, `season_screen` 확인 버튼)
+- 후속(같은 날) 입력줄: (1) 중앙 정렬 — 원인은 `prefixIcon`(연필)이 왼쪽에 최소 48dp 상자를 차지해 입력 영역이 오른쪽으로 24dp 밀린 것(라벨은 전체 폭 기준 중앙). 오른쪽에 같은 크기의 빈 `suffixIcon` 칸을 두어 입력 영역을 대칭으로 → 라벨·힌트·입력 이름의 중심이 문서 중심과 1.5px 안. 긴 이름(최대 12자)은 줄보다 넓어 줄 안에서 스크롤되던 기존 문제 → 줄에 맞게 글자 크기만 줄임(`_nameStyle`, 힌트 SHERLOCK도 같은 규칙 — 1.0배에서도 잘리지 않음). (2) `autofocus` 제거 — 진입 시 포커스·키보드 없음. (3) `onTapOutside` → unfocus(탭을 소비하지 않아 Back·OPEN THE CASEBOOK 그대로 동작, 입력값 유지). 연필 탭 = 입력줄 포커스. 오류 문구는 기존처럼 왼쪽 한 줄(360폭에서 "…na…"로 잘림은 기존 그대로 — 두 줄로 하면 Flutter가 입력줄의 가운데 정렬을 오류 문구에도 적용해 가운데로 감). 키보드 테스트 2곳(`small_screen`, `title_screen`)은 이제 입력줄을 탭해서 키보드를 연 뒤 검사(실제처럼)
+- 남은 것: 1.3배 글자에서 입력줄 힌트 `SHERLOCK`이 `SHERLO…`로 잘림(힌트만, 입력한 이름은 줄 전체 사용), 확인 버튼 `START NEW ADVENTURE`는 360폭에서 두 줄
+
 ### 2026-10-02 — Title Screen: 탐정 사무실 artwork
 
 - 파일: `assets/images/title/title_detective_office.png`(941×1672), pubspec `assets/images/title/`, `ArtAssets.titleDetectiveOffice` + `…Pixels`. 타이틀 화면 전용(Season Cover 파노라마 재사용 안 함)

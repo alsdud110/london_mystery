@@ -24,25 +24,47 @@ class GameDialog extends StatelessWidget {
 
   /// A child-facing yes/no question. Primary action on top, full width;
   /// "keep going" below as a quiet ink link. Returns true for [confirmLabel].
+  ///
+  /// [onScene]: asked over a painted scene (the title page's office). The
+  /// scene stays in view under a translucent night shade, and the paper is
+  /// simply laid down — a short fade and the slightest settle — rather than
+  /// popping up like an app alert.
   static Future<bool> confirm(
     BuildContext context, {
     required String title,
     required String message,
     required String confirmLabel,
     required String cancelLabel,
+    bool onScene = false,
   }) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => GameDialog(
-        title: title,
-        content: Text(message, textAlign: TextAlign.center, style: AppText.bodyText(size: 16)),
-        actions: [
-          GameButton(label: confirmLabel, onPressed: () => Navigator.of(context).pop(true)),
-          const SizedBox(height: AppSpace.xs),
-          InkTextButton(label: cancelLabel, color: AppColors.inkBrown, onPressed: () => Navigator.of(context).pop(false)),
-        ],
-      ),
+    Widget dialog(BuildContext context) => GameDialog(
+      title: title,
+      content: Text(message, textAlign: TextAlign.center, style: AppText.bodyText(size: 16)),
+      actions: [
+        GameButton(label: confirmLabel, onPressed: () => Navigator.of(context).pop(true)),
+        const SizedBox(height: AppSpace.xs),
+        InkTextButton(label: cancelLabel, color: AppColors.inkBrown, onPressed: () => Navigator.of(context).pop(false)),
+      ],
     );
+    final ok = onScene
+        ? await showGeneralDialog<bool>(
+            context: context,
+            barrierDismissible: true,
+            barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+            barrierColor: AppColors.navyDeep.withValues(alpha: 0.55),
+            transitionDuration: (MediaQuery.maybeDisableAnimationsOf(context) ?? false)
+                ? Duration.zero
+                : const Duration(milliseconds: 240),
+            pageBuilder: (context, _, _) => dialog(context),
+            transitionBuilder: (context, animation, _, child) {
+              final t = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+              return FadeTransition(
+                opacity: t,
+                child: ScaleTransition(scale: Tween(begin: 0.98, end: 1.0).animate(t), child: child),
+              );
+            },
+          )
+        : await showDialog<bool>(context: context, builder: dialog);
     return ok ?? false;
   }
 

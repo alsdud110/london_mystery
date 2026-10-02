@@ -173,6 +173,6 @@ void main() {
     final ref = await pumpApp(t, GameProgress.empty);
     ref.read(routerProvider).go(Routes.map);
     await wait(t);
-    expect(find.text('What is your\ndetective name?'), findsOneWidget);
+    expect(find.text('What should we call you,\nDetective?'), findsOneWidget);
   });
 }

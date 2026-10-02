@@ -668,7 +668,7 @@ void main() {
   testWidgets('reset all: the season starts again with its casebook', (t) async {
     await pumpApp(t, seasonSaves(6));
     await tapText(t, 'NEW ADVENTURE');
-    await tapText(t, 'New case', after: const Duration(milliseconds: 1000));
+    await tapText(t, 'START NEW ADVENTURE', after: const Duration(milliseconds: 1000));
     expect(path(), Routes.register);
     await t.enterText(find.byType(TextField), 'kim');
     await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 2200));

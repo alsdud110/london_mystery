@@ -114,10 +114,13 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     _setAmbient(false);
     final ok = await GameDialog.confirm(
       context,
-      title: 'Start a new case?',
-      message: 'All case files and clues will be cleared.',
-      confirmLabel: 'New case',
+      title: 'Start a New Adventure?',
+      // What resetAll() clears: every case save, the season record and the
+      // detective's name (registration comes next).
+      message: 'Your investigation progress, case files and clues will be cleared. You will sign up again with a detective name.',
+      confirmLabel: 'START NEW ADVENTURE',
       cancelLabel: 'Keep playing',
+      onScene: true,
     );
     if (ok && mounted) {
       await ref.read(gameControllerProvider.notifier).resetAll();

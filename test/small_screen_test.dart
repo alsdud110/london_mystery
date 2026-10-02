@@ -16,6 +16,9 @@ void main() {
     await wait(t, const Duration(milliseconds: 300));
     await tapText(t, 'START ADVENTURE');
     // The keyboard takes about 300 dp of the 640.
+    // The keyboard opens when the name line is tapped (no autofocus).
+    await t.tap(find.byType(TextField));
+    await t.pump();
     t.view.viewInsets = const FakeViewPadding(bottom: 900);
     addTearDown(t.view.resetViewInsets);
     await wait(t, const Duration(milliseconds: 600));
