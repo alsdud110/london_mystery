@@ -17,6 +17,9 @@ abstract final class AppText {
   static const heading = 'LibreBaskerville';
   static const body = 'Nunito';
 
+  /// System Hangul faces: iOS, then Android (Noto CJK), then generic names.
+  static const _hangulFallback = ['Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans KR', 'sans-serif'];
+
   static TextStyle style(
     String family, {
     double size = 16,
@@ -28,6 +31,10 @@ abstract final class AppText {
   }) {
     return TextStyle(
       fontFamily: family,
+      // The bundled faces are Latin only. Korean (a detective's name, the
+      // grown-ups' pages) falls back to one clear system Hangul face on each
+      // platform instead of whatever the engine picks per glyph.
+      fontFamilyFallback: _hangulFallback,
       fontSize: size,
       fontWeight: weight,
       fontStyle: fontStyle,

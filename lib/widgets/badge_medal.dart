@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import '../core/theme/app_tokens.dart';
 import '../features/game/scoring.dart';
 import 'art_assets.dart';
 import 'ink_icon.dart';
@@ -25,16 +28,14 @@ class BadgeMedal extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // A flat pressed medal: one ink colour, gold rim (no gradient or glow).
+          // A pressed award rosette: scalloped brass edge, an enamel face in
+          // the badge's colour and a fine gold ring. Still to win: a pencil
+          // outline of the same rosette with a lock.
           Container(
             width: size,
             height: size,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: earned ? color : AppColors.parchment,
-              border: Border.all(color: earned ? AppColors.gold : AppColors.parchmentDark, width: size / 16),
-            ),
+            decoration: _RosetteDecoration(earned: earned, face: color),
             child: earned
                 ? InkMark(
                     glyph: badge.glyph,
@@ -104,6 +105,72 @@ class XpCounter extends StatelessWidget {
           fontFeatures: const [FontFeature.tabularFigures()],
         ),
       ),
+    );
+  }
+}
+
+class _RosetteDecoration extends Decoration {
+  const _RosetteDecoration({required this.earned, required this.face});
+
+  final bool earned;
+  final Color face;
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _RosettePainter(earned, face);
+}
+
+class _RosettePainter extends BoxPainter {
+  _RosettePainter(this.earned, this.face);
+
+  final bool earned;
+  final Color face;
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final size = configuration.size!;
+    final c = offset + size.center(Offset.zero);
+    final r = size.shortestSide / 2;
+
+    // The scalloped edge: 18 small bumps around the disc.
+    const bumps = 18;
+    final edge = Path();
+    for (var i = 0; i <= bumps * 8; i++) {
+      final a = i * 2 * math.pi / (bumps * 8);
+      final rr = r * (0.93 + 0.07 * math.cos(a * bumps).abs());
+      final p = c + Offset(math.cos(a) * rr, math.sin(a) * rr);
+      i == 0 ? edge.moveTo(p.dx, p.dy) : edge.lineTo(p.dx, p.dy);
+    }
+    edge.close();
+
+    if (!earned) {
+      canvas.drawPath(edge, Paint()..color = AppColors.parchment);
+      canvas.drawPath(
+        edge,
+        Paint()
+          ..color = AppColors.parchmentDark
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = AppLine.rule,
+      );
+      return;
+    }
+    canvas.drawPath(edge.shift(Offset(0, r * 0.05)), Paint()..color = const Color(0x332A2622));
+    canvas.drawPath(
+      edge,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.goldLight, AppColors.gold, AppColors.goldDeep],
+        ).createShader(Rect.fromCircle(center: c, radius: r)),
+    );
+    canvas.drawCircle(c, r * 0.76, Paint()..color = face);
+    canvas.drawCircle(
+      c,
+      r * 0.68,
+      Paint()
+        ..color = AppColors.goldLight.withValues(alpha: 0.55)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = math.max(0.8, r / 40),
     );
   }
 }

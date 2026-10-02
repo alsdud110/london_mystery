@@ -86,7 +86,7 @@ lib/
                ClueCard, TypewriterText, PaperBackground, game toast
 ```
 
-- **Content is data.** Missions live in `data/mock/episode01_mock.dart` as the
+- **Content is data.** Missions live in `data/mock/season1/episode01_mock.dart` as the
   same JSON a backend would return and are parsed with `Episode.fromJson`.
   Adding an episode means adding data, not widgets.
 - **Backend-ready.** `EpisodeRepository` and `ProgressRepository` are

@@ -10,6 +10,7 @@ import '../../data/models/episode.dart';
 import '../../data/models/mission.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
+import '../../widgets/game_dialog.dart';
 import 'playtest_tools.dart';
 
 /// Operator tools for the play space: the QR cards to place on site, the
@@ -18,36 +19,22 @@ class GameMasterScreen extends ConsumerWidget {
   const GameMasterScreen({super.key});
 
   Future<void> _reset(BuildContext context, WidgetRef ref) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('다음 플레이어를 위해 초기화할까요?'),
-        content: const Text('탐정 이름과 진행 기록이 모두 삭제됩니다.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('취소')),
-          FilledButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('초기화')),
-        ],
-      ),
+    final ok = await GameDialog.confirmPlain(
+      context,
+      title: '다음 플레이어를 위해 초기화할까요?',
+      message: '탐정 이름과 진행 기록이 모두 삭제됩니다.',
+      confirmLabel: '초기화',
+      cancelLabel: '취소',
+      destructive: true,
     );
-    if (ok == true) {
+    if (ok) {
       await ref.read(gameControllerProvider.notifier).resetAll();
       if (context.mounted) context.go(Routes.start);
     }
   }
 
   Future<bool> _confirm(BuildContext context, String title, String body, String action) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('취소')),
-          FilledButton(onPressed: () => Navigator.of(context).pop(true), child: Text(action)),
-        ],
-      ),
-    );
-    return ok == true;
+    return GameDialog.confirmPlain(context, title: title, message: body, confirmLabel: action, cancelLabel: '취소');
   }
 
   Future<void> _startAt(BuildContext context, WidgetRef ref, Episode e) async {
@@ -169,10 +156,18 @@ class GameMasterScreen extends ConsumerWidget {
                 child: const Text('CASE FILES로 이동'),
               ),
           ],
-          const SizedBox(height: 24),
+          // The one destructive action, set apart from the test tools below a
+          // rule and in the try-again ink, so it is never tapped by mistake.
+          const SizedBox(height: 32),
+          const Divider(),
+          const SizedBox(height: 8),
           // Custom Asset Required: a reset glyph.
           OutlinedButton(
-            style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(56)),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size.fromHeight(56),
+              foregroundColor: AppColors.tryAgain,
+              side: const BorderSide(color: AppColors.tryAgain, width: 1.5),
+            ),
             onPressed: () => _reset(context, ref),
             child: const Text('다음 플레이어를 위해 기기 초기화'),
           ),

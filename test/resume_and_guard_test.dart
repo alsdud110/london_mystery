@@ -46,7 +46,7 @@ void main() {
     await pumpApp(t, midGame);
     expect(find.text('Welcome back, Detective MINYOUNG!'), findsOneWidget);
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1200));
-    expect(find.text('GO TO BIG BEN'), findsOneWidget, reason: 'two places solved, Big Ben is next');
+    expect(find.bySemanticsLabel('GO TO BIG BEN'), findsOneWidget, reason: 'two places solved, Big Ben is next');
     await t.tap(find.byTooltip('Detective notebook'));
     await wait(t, const Duration(milliseconds: 1200));
     expect(find.text('"Platform 9"'), findsOneWidget);

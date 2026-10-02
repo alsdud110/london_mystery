@@ -59,7 +59,7 @@ void main() {
   /// The page on top (a pushed page included).
   String path() => appRef.read(routerProvider).routerDelegate.currentConfiguration.last.matchedLocation;
   int depth() => appRef.read(routerProvider).routerDelegate.currentConfiguration.matches.length;
-  final goTo = find.ancestor(of: find.textContaining('GO TO'), matching: find.byType(GameButton));
+  final goTo = find.ancestor(of: find.text('GO'), matching: find.byType(GameButton));
   Rect world(WidgetTester t) => t.getRect(find.byKey(const ValueKey('map-world')));
   Rect inner(WidgetTester t) => t.getRect(find.byKey(const ValueKey('map-viewport'))).deflate(5);
 
@@ -77,7 +77,7 @@ void main() {
   testWidgets('GO TO THE GREAT COURT: zoom right in on the pin, the map fades out, the mission page fades in', (t) async {
     await openMap(t, 'ep03', 2);
     final e = season.firstWhere((e) => e.id == 'ep03');
-    expect(find.text('GO TO THE GREAT COURT'), findsOneWidget);
+    expect(find.bySemanticsLabel('GO TO THE GREAT COURT'), findsOneWidget);
     final before = world(t);
 
     // Frame by frame (20 ms): how far in the camera is, how faded the map,
@@ -177,8 +177,8 @@ void main() {
   ]) {
     testWidgets('$label: the camera moves in, then $route', (t) async {
       await openMap(t, episode, solved);
-      expect(find.text(label), findsOneWidget);
-      await t.tap(find.ancestor(of: find.text(label), matching: find.byType(GameButton)));
+      expect(find.bySemanticsLabel(label), findsOneWidget);
+      await t.tap(find.bySemanticsLabel(label));
       await t.pump();
       await t.pump(const Duration(milliseconds: 600));
       expect(path(), Routes.map, reason: 'moving in first');

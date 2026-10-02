@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import '../core/theme/app_tokens.dart';
 import '../features/game/game_controller.dart';
 import '../features/game/game_providers.dart';
+import 'game_button.dart';
+import 'paper.dart';
 
 /// English text where harder words (from the episode glossary) get a dotted
 /// underline. Tapping one shows its meaning — the translation is never shown
@@ -85,29 +88,14 @@ Future<void> showWordMeaning(BuildContext context, String word, String meaning) 
           children: [
             Text('WORD CARD', style: AppText.eyebrow()),
             const SizedBox(height: 10),
+            // A dictionary entry: the word, a rule, its meaning.
             Text(word, style: AppText.title(size: 34)),
-            const SizedBox(height: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              decoration: BoxDecoration(
-                color: AppColors.royalBlueSoft,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Text('= $meaning', style: AppText.subtitle(color: AppColors.royalBlue)),
-            ),
+            const SizedBox(height: AppSpace.sm),
+            const OrnamentRule(),
+            const SizedBox(height: AppSpace.sm),
+            Text('= $meaning', style: AppText.title(size: 22, color: AppColors.royalBlue)),
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.navy,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('GOT IT!', style: AppText.button(size: 17)),
-              ),
-            ),
+            GameButton(label: 'GOT IT!', playTapSound: false, onPressed: () => Navigator.of(context).pop()),
           ],
         ),
       ),

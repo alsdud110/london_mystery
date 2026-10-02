@@ -204,7 +204,11 @@ class GameController extends Notifier<GameProgress> {
     }
     _update(next);
     // The next case file opens (and stays open, even if this case is replayed).
-    if (mission.isFinal) ref.read(seasonProvider.notifier).markSolved(episode.id);
+    if (mission.isFinal) {
+      // A first solve is news for the season board; a replay is not.
+      if (!ref.read(seasonProvider).isSolved(episode.id)) ref.read(recentSolveProvider.notifier).add(episode.id);
+      ref.read(seasonProvider.notifier).markSolved(episode.id);
+    }
 
     if (mission.nextMissionId != null) {
       ref.read(recentUnlockProvider.notifier).set(mission.nextMissionId);
@@ -221,6 +225,7 @@ class GameController extends Notifier<GameProgress> {
   /// Wipes everything — every case and the season — including the name.
   Future<void> resetAll() async {
     ref.read(recentUnlockProvider.notifier).set(null);
+    ref.read(recentSolveProvider.notifier).clear();
     state = GameProgress.empty;
     await ref.read(progressRepositoryProvider).clear();
     ref.read(seasonProvider.notifier).reset(); // back to Case 01

@@ -14,6 +14,7 @@ import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/place_art.dart';
+import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/typewriter_text.dart';
 import '../game/game_controller.dart';
@@ -96,9 +97,11 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                   child: Column(
                     children: [
                       Text('MISSION ${m.numberLabel} COMPLETE', style: AppText.eyebrow(color: AppColors.goldLight)),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpace.sm),
+                      const OrnamentRule(color: AppColors.goldLight),
+                      const SizedBox(height: AppSpace.sm),
                       Text('Great work, Detective $name.',
-                          textAlign: TextAlign.center, style: AppText.bodyText(size: 16, color: Colors.white70)),
+                          textAlign: TextAlign.center, style: AppText.bodyText(size: 16, color: AppColors.paperLight.withValues(alpha: 0.72))),
                       Expanded(
                         child: Center(
                           child: SingleChildScrollView(
@@ -145,7 +148,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                             : Padding(
                                 key: const ValueKey('tap'),
                                 padding: const EdgeInsets.only(bottom: 20),
-                                child: Text('Tap to skip', style: AppText.caption(color: Colors.white38)),
+                                child: Text('Tap to skip', style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.75))),
                               ),
                       ),
                     ],
@@ -163,7 +166,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
         AppText.heading,
         size: last ? 24 : 22,
         weight: last ? FontWeight.w600 : FontWeight.w500,
-        color: last ? AppColors.goldLight : Colors.white,
+        color: last ? AppColors.goldLight : AppColors.paperLight,
         height: 1.35,
       );
 }
@@ -179,23 +182,22 @@ class _UnlockedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 700),
-      curve: Curves.easeOutBack,
-      builder: (context, t, child) => Transform.scale(scale: 0.85 + 0.15 * t, child: Opacity(opacity: t.clamp(0, 1), child: child)),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.paper,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: AppColors.gold, width: 3),
-        ),
+      // Settles in without overshoot: a card laid down, not bounced.
+      duration: (MediaQuery.maybeDisableAnimationsOf(context) ?? false) ? Duration.zero : const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      builder: (context, t, child) => Transform.scale(scale: 0.94 + 0.06 * t, child: Opacity(opacity: t.clamp(0, 1), child: child)),
+      // A paper card handed across the night desk.
+      child: PaperSheet(
+        ruled: true,
+        tilt: -0.012,
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.lg),
         child: Row(
           children: [
             // A picture shows whole at its own ratio; a drawing stays square.
             SizedBox(
               width: LandmarkArt.hasPicture(art) ? 72 * LandmarkArt.aspectOf(art) : 72,
               height: 72,
-              child: LandmarkArt(art, borderRadius: LandmarkArt.hasPicture(art) ? 4 : 16),
+              child: LandmarkArt(art, borderRadius: LandmarkArt.hasPicture(art) ? 2 : 6),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -212,6 +214,7 @@ class _UnlockedCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 2),
                   Text(nextLocation, style: AppText.title(size: 21)),
                 ],
               ),

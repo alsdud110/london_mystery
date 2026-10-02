@@ -58,12 +58,52 @@ abstract final class AppTheme {
         backgroundColor: AppColors.paperLight,
         showDragHandle: true,
         dragHandleColor: AppLine.faint(0.3),
+        surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.sheet))),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.paperLight,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.paper * 2)),
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.paper),
+          side: BorderSide(color: AppLine.faint(0.3), width: AppLine.hairline),
+        ),
+        contentTextStyle: AppText.bodyText(size: 16),
       ),
+      // Dialog and sheet actions in the game's own ink, not Material purple.
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.navy,
+          foregroundColor: AppColors.paperLight,
+          minimumSize: const Size(64, 48),
+          textStyle: AppText.style(AppText.display, size: 15, weight: FontWeight.w700, letterSpacing: 1.2),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.inkBrown,
+          minimumSize: const Size(48, 48),
+          textStyle: AppText.button(size: 15, color: AppColors.inkBrown).copyWith(letterSpacing: 0.3),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+        ),
+      ),
+      // Operator tools (Game Master): ink outline, not Material seed colours.
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.navy,
+          minimumSize: const Size(48, 48),
+          side: BorderSide(color: AppLine.faint(0.45)),
+          textStyle: AppText.button(size: 15, color: AppColors.navy).copyWith(letterSpacing: 0.3),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? AppColors.goldLight : AppColors.paperLight),
+        trackColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? AppColors.navy : AppColors.parchmentDark),
+        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+      ),
+      listTileTheme: const ListTileThemeData(iconColor: AppColors.ink, contentPadding: EdgeInsets.symmetric(horizontal: AppSpace.screen)),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.paperLight,

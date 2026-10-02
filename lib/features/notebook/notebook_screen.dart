@@ -13,6 +13,7 @@ import '../../widgets/badge_medal.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/ink_icon.dart';
+import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
@@ -50,22 +51,20 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.parchment,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: TabBar(
-              dividerHeight: 0,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                color: AppColors.navy,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              labelColor: AppColors.goldLight,
-              unselectedLabelColor: AppColors.inkBrown,
-              labelStyle: AppText.button(size: 15),
-              unselectedLabelStyle: AppText.button(size: 15),
+          // Index tabs of the notebook: the open one underlined in ink.
+          child: TabBar(
+              dividerHeight: AppLine.hairline,
+              dividerColor: AppLine.faint(),
+              indicatorSize: TabBarIndicatorSize.label,
+              indicator: const UnderlineTabIndicator(borderSide: BorderSide(color: AppColors.burgundy, width: AppLine.ink + 0.5)),
+              labelColor: AppColors.navy,
+              unselectedLabelColor: AppColors.muted,
+              // Three equal tabs on a 360-wide phone: a narrow side padding so
+              // "EVIDENCE" is not clipped.
+              labelPadding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
+              labelStyle: AppText.style(AppText.display, size: 13, weight: FontWeight.w700, letterSpacing: 0.8),
+              unselectedLabelStyle: AppText.style(AppText.display, size: 13, weight: FontWeight.w700, letterSpacing: 0.8),
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
               // Lettered tabs until the evidence and badge glyphs
               // exist (Custom Asset Required) — all three match.
               tabs: const [
@@ -73,7 +72,6 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 Tab(height: 52, text: 'EVIDENCE'),
                 Tab(height: 52, text: 'BADGES'),
               ],
-            ),
           ),
         ),
         Expanded(
@@ -128,39 +126,45 @@ class _NotebookCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The notebook's leather cover, gold-tooled at the edge.
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 18, 16),
       decoration: BoxDecoration(
-        color: AppColors.navy,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.gold, width: 3),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.leather, AppColors.leatherDeep],
+        ),
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: AppShadow.paperLift,
       ),
+      foregroundDecoration: RuledFrame(color: AppColors.goldLight, inset: 6),
       child: Row(
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle),
-            child: const InkIcon(InkGlyph.search, size: AppIconSize.emblem, color: AppColors.navy),
-          ),
+          const BrassEmblem(size: 56),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('CASE NOTES OF', style: AppText.eyebrow(color: AppColors.goldLight)),
-                Text('Detective ${progress.detectiveName ?? ''}',
-                    style: AppText.title(size: 21, color: Colors.white), overflow: TextOverflow.ellipsis),
+                // The whole name, a little smaller if it must be ("Detective MI…" hid it).
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text('Detective ${progress.detectiveName ?? ''}',
+                      maxLines: 1, style: AppText.title(size: 21, color: AppColors.paperLight)),
+                ),
               ],
             ),
           ),
+          const SizedBox(width: AppSpace.md),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const InkStar(color: AppColors.gold),
-              XpCounter(value: XpBreakdown.totalFor(episode, progress),
-                  style: AppText.button(size: 15, color: AppColors.goldLight)),
+              Text('XP', style: AppText.eyebrow(color: AppColors.goldLight.withValues(alpha: 0.7))),
+              XpCounter(value: XpBreakdown.totalFor(episode, progress), suffix: '',
+                  style: AppText.title(size: 22, color: AppColors.goldLight)),
             ],
           ),
         ],
@@ -221,13 +225,10 @@ class _EvidenceTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
       children: [
-        GridView.count(
-          crossAxisCount: 2,
+        GridView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 0.95,
+          gridDelegate: evidenceGridDelegate(context),
           children: [
             for (final (i, e) in found.indexed)
               _Appear(
@@ -282,9 +283,12 @@ class _Appear extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // A short cascade, capped: the tenth clue is not kept waiting, and with
+    // reduced motion the page is simply there.
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: Duration(milliseconds: 350 + index * 120),
+      duration: still ? Duration.zero : Duration(milliseconds: 350 + (index * 80).clamp(0, 320)),
       curve: Curves.easeOutCubic,
       builder: (context, t, child) =>
           Opacity(opacity: t, child: Transform.translate(offset: Offset(0, 24 * (1 - t)), child: child)),
@@ -301,13 +305,14 @@ class _EmptySlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // An empty pocket of the notebook, pencilled in.
     return Container(
       height: square ? null : 84,
       padding: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.parchmentDark, width: 2),
-        color: Colors.white.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(AppRadius.paper),
+        border: Border.all(color: AppColors.parchmentDark, width: AppLine.rule),
+        color: AppColors.parchment.withValues(alpha: 0.5),
       ),
       child: square
           ? const Center(child: InkIcon(InkGlyph.lock, color: AppColors.locked, size: AppIconSize.emblem))
@@ -317,11 +322,11 @@ class _EmptySlot extends StatelessWidget {
                   width: 52,
                   height: 52,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: AppColors.parchment, borderRadius: BorderRadius.circular(14)),
+                  decoration: BoxDecoration(color: AppColors.parchment, borderRadius: BorderRadius.circular(6)),
                   child: Text('?', style: AppText.title(size: 26, color: AppColors.locked)),
                 ),
                 const SizedBox(width: 16),
-                Text(label, style: AppText.eyebrow(color: AppColors.locked)),
+                Text(label, style: AppText.eyebrow(color: AppColors.muted)),
                 const Spacer(),
                 const InkIcon(InkGlyph.lock, color: AppColors.locked),
               ],

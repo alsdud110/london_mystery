@@ -88,7 +88,7 @@ class SymbolBadge extends StatelessWidget {
         height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: light ? Colors.white : s.color.withValues(alpha: 0.14),
+          color: light ? AppColors.paperLight : s.color.withValues(alpha: 0.14),
           shape: BoxShape.circle,
           border: Border.all(color: s.color, width: size / 16),
         ),

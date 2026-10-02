@@ -77,12 +77,13 @@ void main() {
     await finishMission(t, sceneLine: 'You hold the brass gear up to the light.');
 
     // ── Mission 3: the plan in order (sequence), with one undo.
-    await tapText(t, 'GO TO THE BELFRY', after: goToTime);
+    await t.tap(find.bySemanticsLabel('GO TO THE BELFRY'));
+    await wait(t, goToTime);
     await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
     await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
     await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
-    await reveal(t, find.text('Need a tip?')); // a taller puzzle: the tip link is further down
-    expect(find.text('Need a tip?'), findsOneWidget);
+    await reveal(t, find.text('Get a tip')); // a taller puzzle: the tip link is further down
+    expect(find.text('Get a tip'), findsOneWidget);
     await tapText(t, 'Walk to the museum', after: const Duration(milliseconds: 150));
     await tapText(t, 'Undo', after: const Duration(milliseconds: 150));
     for (final step in ['Stop Big Ben', 'Walk to the museum', 'Hide in Gallery 8', 'Take Picture 17']) {

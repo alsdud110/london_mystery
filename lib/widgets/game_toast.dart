@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import '../core/theme/app_tokens.dart';
 import 'ink_icon.dart';
 
 OverlayEntry? _current;
@@ -78,7 +79,10 @@ class _ToastState extends State<_Toast> with SingleTickerProviderStateMixin {
                 child: Material(
                   color: AppColors.navy,
                   elevation: 6,
-                  borderRadius: BorderRadius.circular(18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.button),
+                    side: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.4), width: AppLine.hairline),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                     child: Row(
@@ -86,7 +90,7 @@ class _ToastState extends State<_Toast> with SingleTickerProviderStateMixin {
                         InkIcon(widget.glyph, color: AppColors.goldLight),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text(widget.message, style: AppText.bodyText(size: 16, color: Colors.white)),
+                          child: Text(widget.message, style: AppText.bodyText(size: 16, color: AppColors.paperLight)),
                         ),
                       ],
                     ),

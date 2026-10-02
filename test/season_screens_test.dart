@@ -174,7 +174,7 @@ void main() {
             final current = e.allMissions[upTo];
             final pinRect = t.getRect(find.byKey(ValueKey('pin-${current.id}')));
             final tip = Offset(pinRect.center.dx, pinRect.top + MapPin.anchorY);
-            final taken = [here, t.getRect(find.text(current.location)), Rect.fromLTRB(tip.dx - 13, tip.dy - 34, tip.dx + 13, tip.dy)];
+            final taken = [here, t.getRect(find.descendant(of: find.byKey(ValueKey('pin-${current.id}')), matching: find.text(current.location))), Rect.fromLTRB(tip.dx - 13, tip.dy - 34, tip.dx + 13, tip.dy)];
             for (final m in e.allMissions.take(upTo)) {
               final r = t.getRect(find.byKey(ValueKey('pin-${m.id}')));
               final mark = Rect.fromCircle(center: Offset(r.center.dx, r.top + MapPin.anchorY), radius: 16);

@@ -133,7 +133,8 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
         leading: IconButton(
           tooltip: 'Back',
           icon: const InkIcon(InkGlyph.back),
-          onPressed: () => context.go(Routes.register),
+          // Up to the season the case files belong to.
+          onPressed: () => context.go(Routes.season),
         ),
         actions: [
           // QA only: every file is open (Game Master tools, test builds).
@@ -179,11 +180,15 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
                   Container(
                     padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.md, AppSpace.screen, AppSpace.lg),
                     decoration: BoxDecoration(
+                      color: AppColors.paper,
                       border: Border(
                         top: BorderSide(color: AppLine.faint(), width: AppLine.hairline),
                       ),
+                      boxShadow: const [BoxShadow(color: Color(0x142A2622), blurRadius: 12, offset: Offset(0, -4))],
                     ),
-                    child: GameButton(label: label, arrow: true, onPressed: chosen == null ? null : () => _go(chosen)),
+                    // One line at a steady size ("BEGIN INVESTIGATION" wrapped to two
+                    // lines on a 360-wide phone).
+                    child: GameButton(label: label, arrow: true, singleLine: true, onPressed: chosen == null ? null : () => _go(chosen)),
                   ),
                 ],
               ),
@@ -312,11 +317,11 @@ class _EpisodeRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: AppText.caption(color: playable ? AppColors.inkBrown : AppColors.locked)),
+                Text(label, style: AppText.caption(color: playable ? AppColors.inkBrown : AppColors.muted)),
                 const SizedBox(height: 2),
                 Text(
                   e.title,
-                  style: playable ? AppText.subtitle(color: AppColors.navy) : AppText.aside(color: AppColors.locked),
+                  style: playable ? AppText.subtitle(color: AppColors.navy) : AppText.aside(color: AppColors.muted),
                 ),
                 if (!playable && previous != null)
                   Padding(

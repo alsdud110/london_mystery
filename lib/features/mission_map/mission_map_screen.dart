@@ -16,6 +16,7 @@ import '../../data/models/mission.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/game_button.dart';
+import '../../widgets/game_dialog.dart';
 import '../../widgets/game_toast.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
@@ -80,6 +81,17 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
     if (!mounted) return;
     _leave.value = 0;
     setState(() => _goingTo = null);
+  }
+
+  Future<void> _confirmLeave() async {
+    final leave = await GameDialog.confirm(
+      context,
+      title: 'Leave the case?',
+      message: 'Your clues are saved. You can come back to the map any time.',
+      confirmLabel: 'TITLE SCREEN',
+      cancelLabel: 'Keep investigating',
+    );
+    if (leave && mounted) context.go(Routes.start);
   }
 
   PinState _stateOf(GameProgress p, Episode e, Mission m) {
@@ -235,6 +247,10 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
                       Navigator.of(sheetContext).pop();
                       context.go(Routes.solved);
                     }),
+                  item(InkGlyph.pin, 'Season board', () {
+                    Navigator.of(sheetContext).pop();
+                    context.go(Routes.season);
+                  }),
                   item(InkGlyph.folder, 'Case files', () {
                     Navigator.of(sheetContext).pop();
                     context.go(Routes.episodes);
@@ -268,11 +284,14 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
         ? all[unlockedAt - 1]
         : null;
 
+    // The place is named in the next lead above the button; the button keeps
+    // one short word at a steady size (a long place name used to shrink it).
     final ctaLabel = current == null
         ? 'SEE MY CASE FILE'
         : current.isFinal
         ? 'OPEN THE FINAL CASE'
-        : 'GO TO ${current.location}';
+        : 'GO';
+    final ctaSemantics = current == null || current.isFinal ? null : 'GO TO ${current.location}';
 
     final map = Scaffold(
       body: PaperBackground(
@@ -292,11 +311,21 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            episode.title,
-                            style: AppText.title(size: 20),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'CASE ${episode.numberLabel}',
+                                style: AppText.eyebrow(),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                episode.title,
+                                style: AppText.title(size: 21),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
                         ),
                         IconButton(
@@ -317,58 +346,84 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
                         AppSpace.lg,
                         AppSpace.md,
                       ),
-                      child: _MapViewport(
-                        // The camera follows the game: the current place,
-                        // or the last one once every place is solved.
-                        focus: places[(current ?? all.last).id]!,
-                        // Just back from solving a place: start the camera
-                        // there and travel to the place it unlocked.
-                        arriveFrom: arrivedFrom == null
-                            ? null
-                            : places[arrivedFrom.id],
-                        // GO TO: the camera moves in on the place.
-                        zoomIn: going != null,
-                        onArriving: _onArriving,
-                        world: (size, heading) => _MapWorldView(
-                          heading: heading,
-                          size: size,
-                          route: [for (final m in all) places[m.id]!],
-                          completedLegs: progress.completedMissionIds.length,
-                          // The current place's own name is on its pin.
-                          hideName: current == null
-                              ? null
-                              : MapWorld.missionLandmarks[current.id],
-                          pins: [
-                            // The current place last, so its note is on top.
-                            for (final m in [
-                              ...all.where((m) => m != current),
-                              ?current,
-                            ])
-                              // A place stays off the map until it is
-                              // unlocked: where it is would tell the answer
-                              // of the case before it.
-                              if (_stateOf(progress, episode, m) !=
-                                  PinState.locked)
-                                (
-                                  at: places[m.id]!,
-                                  pin: MapPin(
-                                    key: ValueKey('pin-${m.id}'),
-                                    label: m.location,
-                                    isFinal: m.isFinal,
-                                    state: _stateOf(progress, episode, m),
-                                    celebrateUnlock: recentUnlock == m.id,
-                                    onUnlockBurst: () => ref
-                                        .read(audioServiceProvider)
-                                        .play(GameSound.unlock),
-                                    onUnlockShown: () => ref
-                                        .read(recentUnlockProvider.notifier)
-                                        .set(null),
-                                    onTap: () => _openMission(context, ref, m),
-                                  ),
+                      // The map and the next lead under it, one group in the
+                      // middle of the page (no empty band above or below).
+                      // The lead keeps its natural height (larger text grows
+                      // it); the map takes the rest, up to its own shape.
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: _MapViewport(
+                                // The camera follows the game: the current place,
+                                // or the last one once every place is solved.
+                                focus: places[(current ?? all.last).id]!,
+                                // Just back from solving a place: start the camera
+                                // there and travel to the place it unlocked.
+                                arriveFrom: arrivedFrom == null
+                                    ? null
+                                    : places[arrivedFrom.id],
+                                // GO TO: the camera moves in on the place.
+                                zoomIn: going != null,
+                                onArriving: _onArriving,
+                                world: (size, heading) => _MapWorldView(
+                                  heading: heading,
+                                  size: size,
+                                  route: [for (final m in all) places[m.id]!],
+                                  completedLegs:
+                                      progress.completedMissionIds.length,
+                                  // The current place's own name is on its pin.
+                                  hideName: current == null
+                                      ? null
+                                      : MapWorld.missionLandmarks[current.id],
+                                  pins: [
+                                    // The current place last, so its note is on top.
+                                    for (final m in [
+                                      ...all.where((m) => m != current),
+                                      ?current,
+                                    ])
+                                      // A place stays off the map until it is
+                                      // unlocked: where it is would tell the answer
+                                      // of the case before it.
+                                      if (_stateOf(progress, episode, m) !=
+                                          PinState.locked)
+                                        (
+                                          at: places[m.id]!,
+                                          pin: MapPin(
+                                            key: ValueKey('pin-${m.id}'),
+                                            label: m.location,
+                                            isFinal: m.isFinal,
+                                            state: _stateOf(
+                                              progress,
+                                              episode,
+                                              m,
+                                            ),
+                                            celebrateUnlock:
+                                                recentUnlock == m.id,
+                                            onUnlockBurst: () => ref
+                                                .read(audioServiceProvider)
+                                                .play(GameSound.unlock),
+                                            onUnlockShown: () => ref
+                                                .read(
+                                                  recentUnlockProvider.notifier,
+                                                )
+                                                .set(null),
+                                            onTap: () =>
+                                                _openMission(context, ref, m),
+                                          ),
+                                        ),
+                                  ],
                                 ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpace.md),
+                            _LeadNote(
+                              episode: episode,
+                              progress: progress,
+                              current: current,
+                            ),
                           ],
                         ),
-                      ),
                     ),
                   ),
                   Padding(
@@ -387,6 +442,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
                         Expanded(
                           child: GameButton(
                             label: ctaLabel,
+                            semanticLabel: ctaSemantics,
                             arrow: true,
                             singleLine: true,
                             onPressed: going != null
@@ -408,8 +464,13 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen>
     );
 
     return PopScope(
-      // No leaving half-way: the trip ends in the mission.
-      canPop: going == null,
+      // The map is the root of a case (nothing under it): Android back asks
+      // before going to the title page instead of closing the app. While
+      // travelling it does nothing: the trip ends in the mission.
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _goingTo == null) _confirmLeave();
+      },
       // While travelling the map takes no taps (pins, menu, notebook).
       child: AbsorbPointer(
         absorbing: going != null,
@@ -498,7 +559,10 @@ class _MapViewportState extends State<_MapViewport>
 
   /// The camera's travel to the current place (the pan, as drawn): the red
   /// dashed way grows with it. Complete when the camera is not travelling.
-  late final Animation<double> _heading = CurvedAnimation(parent: _pan, curve: _MapViewport.panCurve);
+  late final Animation<double> _heading = CurvedAnimation(
+    parent: _pan,
+    curve: _MapViewport.panCurve,
+  );
 
   /// Whether [_MapViewport.onArriving] was called for this zoom.
   bool _arriving = false;
@@ -588,13 +652,24 @@ class _MapViewportState extends State<_MapViewport>
             height: height,
             padding: const EdgeInsets.all(_MapViewport.frame),
             decoration: BoxDecoration(
-              color: AppColors.parchment,
+              color: AppColors.paperLight,
               borderRadius: BorderRadius.circular(AppRadius.paper),
               border: Border.all(
-                color: AppLine.faint(0.45),
+                color: AppLine.faint(0.3),
                 width: AppLine.hairline,
               ),
-              boxShadow: AppShadow.paperLift,
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x1A2A2622),
+                  blurRadius: 2,
+                  offset: Offset(0, 1),
+                ),
+                BoxShadow(
+                  color: Color(0x2E2A2622),
+                  blurRadius: 18,
+                  offset: Offset(0, 8),
+                ),
+              ],
             ),
             foregroundDecoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppRadius.paper),
@@ -756,7 +831,7 @@ class _MapWorldView extends StatelessWidget {
                   maxLines: 1,
                   style: AppText.style(
                     AppText.heading,
-                    size: 11.5,
+                    size: 12.5,
                     weight: FontWeight.w700,
                     color: AppColors.inkBrown,
                     letterSpacing: 0.3,
@@ -766,7 +841,9 @@ class _MapWorldView extends StatelessWidget {
             ),
         Positioned.fill(
           // Its own layer: the red way is redrawn as it grows, not the map.
-          child: IgnorePointer(child: RepaintBoundary(child: CustomPaint(painter: ink))),
+          child: IgnorePointer(
+            child: RepaintBoundary(child: CustomPaint(painter: ink)),
+          ),
         ),
         for (final p in pins)
           Positioned(
@@ -799,10 +876,18 @@ class _NotebookButton extends StatelessWidget {
             height: 56,
             alignment: Alignment.center,
             decoration: BoxDecoration(
+              color: AppColors.paperLight.withValues(alpha: 0.55),
               borderRadius: BorderRadius.circular(AppRadius.button),
               border: Border.all(
                 color: AppLine.faint(0.45),
-                width: AppLine.rule,
+                width: AppLine.hairline,
+              ),
+            ),
+            foregroundDecoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadius.button - 3),
+              border: Border.all(
+                color: AppLine.faint(0.2),
+                width: AppLine.hairline,
               ),
             ),
             child: const InkIcon(
@@ -811,6 +896,120 @@ class _NotebookButton extends StatelessWidget {
               semanticLabel: 'Detective notebook',
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The next lead, written under the map: how far the case has gone (one
+/// mark per place), the place to go next — named here, right above the GO
+/// button — and the title of the mission waiting there.
+class _LeadNote extends StatelessWidget {
+  const _LeadNote({
+    required this.episode,
+    required this.progress,
+    required this.current,
+  });
+
+  final Episode episode;
+  final GameProgress progress;
+  final Mission? current;
+
+  @override
+  Widget build(BuildContext context) {
+    final all = episode.allMissions;
+    final m = current;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          m == null
+              ? 'EVERY PLACE SOLVED'
+              : m.isFinal
+              ? 'NEXT LEAD · FINAL CASE'
+              : 'NEXT LEAD · MISSION ${m.numberLabel}',
+          style: AppText.eyebrow(color: AppColors.burgundy),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: AppSpace.xs),
+        if (m != null && !m.isFinal)
+          // The full width of the page for the name: it shrinks only a
+          // little for the longest places, never like the old button label.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              m.location,
+              key: const ValueKey('next-place'),
+              maxLines: 1,
+              style: AppText.title(size: 20).copyWith(letterSpacing: 0.8),
+            ),
+          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                m?.title ?? 'The case is closed.',
+                style: AppText.aside(size: 15, color: AppColors.ink),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: AppSpace.md),
+            // One mark per place: solved, the current one, still ahead.
+            ExcludeSemantics(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final x in all)
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppSpace.xs),
+                      child: _ProgressMark(
+                        done: progress.isCompleted(x.id),
+                        here: x == m,
+                        isFinal: x.isFinal,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ProgressMark extends StatelessWidget {
+  const _ProgressMark({
+    required this.done,
+    required this.here,
+    required this.isFinal,
+  });
+
+  final bool done;
+  final bool here;
+  final bool isFinal;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = isFinal ? 16.0 : 12.0;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: isFinal ? BoxShape.rectangle : BoxShape.circle,
+        borderRadius: isFinal ? BorderRadius.circular(3) : null,
+        color: done
+            ? AppColors.navy
+            : (here ? AppColors.paperLight : Colors.transparent),
+        border: Border.all(
+          color: done
+              ? AppColors.navy
+              : (here ? AppColors.burgundy : AppLine.faint(0.35)),
+          width: here ? AppLine.ink : AppLine.rule,
         ),
       ),
     );

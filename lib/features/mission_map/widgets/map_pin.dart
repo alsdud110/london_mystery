@@ -81,7 +81,9 @@ class _MapPinState extends State<MapPin> with TickerProviderStateMixin {
   bool _opened = false;
 
   void _syncDrift() {
-    if (widget.state == PinState.current) {
+    // Reduced motion: the arrow simply stands still.
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    if (widget.state == PinState.current && !still) {
       if (!_drift.isAnimating) _drift.repeat(reverse: true);
     } else {
       _drift.stop();
@@ -92,8 +94,13 @@ class _MapPinState extends State<MapPin> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _unlock.addListener(_checkOpen);
-    _syncDrift();
     if (widget.celebrateUnlock) _playUnlock();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncDrift();
   }
 
   @override
@@ -278,7 +285,7 @@ class _YouAreHere extends StatelessWidget {
         MapLettering(
           "YOU'RE HERE",
           maxLines: 1,
-          style: AppText.style(AppText.display, size: 9.5, weight: FontWeight.w800, color: AppColors.burgundy, letterSpacing: 1.4),
+          style: AppText.style(AppText.display, size: 11, weight: FontWeight.w800, color: AppColors.burgundy, letterSpacing: 1.2),
         ),
         const InkIcon(InkGlyph.down, size: AppIconSize.tiny, color: AppColors.burgundy),
       ],
@@ -298,7 +305,7 @@ class _PlaceName extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: MapPin.width),
       child: MapLettering(
         text,
-        style: AppText.style(AppText.heading, size: 12.5, weight: FontWeight.w700, color: AppColors.navy, height: 1.15, letterSpacing: 0.4),
+        style: AppText.style(AppText.heading, size: 13.5, weight: FontWeight.w700, color: AppColors.navy, height: 1.15, letterSpacing: 0.3),
       ),
     );
   }

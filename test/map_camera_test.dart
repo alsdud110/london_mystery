@@ -130,7 +130,7 @@ void main() {
       await t.pump(const Duration(milliseconds: 16));
     }
 
-    final goTo = find.ancestor(of: find.textContaining('GO TO'), matching: find.byType(GameButton));
+    final goTo = find.ancestor(of: find.text('GO'), matching: find.byType(GameButton));
     /// How much of the red dashed way to the current place is drawn.
     double redWay(WidgetTester t) =>
         t.widgetList<CustomPaint>(find.byType(CustomPaint)).map((w) => w.painter).whereType<LondonMapPainter>().single.heading!.value;

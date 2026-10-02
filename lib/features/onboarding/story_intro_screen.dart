@@ -28,15 +28,34 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
   bool _ready = false;
   Timer? _pause;
 
+  /// Keeps the newest line in view: on a small phone (or with large text)
+  /// the story grows past the screen and the line being typed would be
+  /// below the edge.
+  final _scroll = ScrollController();
+
   List<String> get _lines => ref.read(currentEpisodeProvider).intro;
 
   @override
   void dispose() {
     _pause?.cancel();
+    _scroll.dispose();
     super.dispose();
   }
 
+  void _followNewestLine() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scroll.hasClients) return;
+      final end = _scroll.position.maxScrollExtent;
+      if (MediaQuery.disableAnimationsOf(context)) {
+        _scroll.jumpTo(end);
+      } else {
+        _scroll.animateTo(end, duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
+      }
+    });
+  }
+
   void _onLineFinished() {
+    _followNewestLine();
     _lineDone = true;
     _pause?.cancel();
     _pause = Timer(const Duration(milliseconds: 750), _advance);
@@ -53,6 +72,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
         _ready = true;
       }
     });
+    _followNewestLine();
   }
 
   void _onTap() {
@@ -72,6 +92,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
       _skipCurrent = true;
       _ready = true;
     });
+    _followNewestLine();
   }
 
   void _start() {
@@ -111,6 +132,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                       Expanded(
                         child: Center(
                           child: SingleChildScrollView(
+                            controller: _scroll,
                             child: Column(
                               children: [
                                 for (var i = 0; i <= _line && i < lines.length; i++)
@@ -136,7 +158,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                                 AppText.heading,
                                                 size: 23,
                                                 weight: FontWeight.w500,
-                                                color: Colors.white,
+                                                color: AppColors.paperLight,
                                                 height: 1.35,
                                               ),
                                         onFinished: i == _line ? _onLineFinished : null,
@@ -159,7 +181,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                             ? Column(
                                 key: const ValueKey('ready'),
                                 children: [
-                                  Text('Are you ready?', style: AppText.title(size: 32, color: AppColors.gold)),
+                                  Text('Are you ready?', style: AppText.title(size: 32, color: AppColors.goldLight)),
                                   const SizedBox(height: 20),
                                   GameButton(
                                     label: "I'M READY",
@@ -174,7 +196,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                 padding: const EdgeInsets.only(bottom: 24),
                                 child: Text(
                                   'Tap to continue',
-                                  style: AppText.caption(color: Colors.white.withValues(alpha: 0.5)),
+                                  style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.75)),
                                 ),
                               ),
                       ),

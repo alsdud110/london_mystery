@@ -3,8 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../widgets/game_dialog.dart';
 
 /// A simple grown-ups-only check (random multiplication) before opening
 /// operator tools. It keeps curious kids out; it is not an auth mechanism.
@@ -48,11 +48,11 @@ class _ParentGateDialogState extends State<_ParentGateDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return GameDialog(
       // Above the keyboard on a small phone the room is short: scroll inside.
       scrollable: true,
-      backgroundColor: AppColors.paper,
-      title: Text('For grown-ups', style: AppText.title(size: 22)),
+      plain: true,
+      title: 'For grown-ups',
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

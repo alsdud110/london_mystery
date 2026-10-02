@@ -32,6 +32,10 @@ flutter:
   assets:
     - assets/sounds/
     - assets/images/london_mystery.png
+    # The title screen (the detective's office).
+    - assets/images/title/
+    # Season hero pictures (the opening of Season 1).
+    - assets/images/season1/
     # Scene pictures: the nine landmarks, and the places inside them.
     - assets/art/scenes/landmarks/
     - assets/art/scenes/british_museum/

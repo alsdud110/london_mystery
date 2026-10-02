@@ -17,10 +17,15 @@ import '../../features/onboarding/start_screen.dart';
 import '../../features/onboarding/story_intro_screen.dart';
 import '../../features/result/case_solved_screen.dart';
 import '../../features/result/parent_report_screen.dart';
+import '../../features/season/season_prologue_screen.dart';
+import '../../features/season/season_screen.dart';
+import '../../widgets/back_to.dart';
 
 abstract final class Routes {
   static const start = '/';
   static const register = '/register';
+  static const season = '/season';
+  static const prologue = '/season/prologue';
   static const episodes = '/episodes';
   static const intro = '/intro';
   static const map = '/map';
@@ -55,6 +60,12 @@ CustomTransitionPage<void> _fade(GoRouterState state, Widget child) => CustomTra
     );
   },
 );
+
+/// These pages are reached with `go`, so nothing lies under them: Android
+/// back would close the app. Back goes where a player expects instead
+/// (the same place as the page's own back arrow, or the step before it).
+Widget _backTo(BuildContext context, String location, Widget page) =>
+    BackTo(onBack: () => GoRouter.of(context).go(location), child: page);
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -113,12 +124,19 @@ final routerProvider = Provider<GoRouter>((ref) {
     errorBuilder: (context, state) => const StartScreen(),
     routes: [
       GoRoute(path: Routes.start, pageBuilder: (c, s) => _fade(s, const StartScreen())),
-      GoRoute(path: Routes.register, pageBuilder: (c, s) => _fade(s, const RegisterScreen())),
+      GoRoute(path: Routes.register, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const RegisterScreen()))),
+      // The season above its cases (needs a detective, like every page below).
+      GoRoute(path: Routes.season, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const SeasonScreen()))),
+      // The season's opening, once, from the casebook, before Case 01. It
+      // handles back itself: the scene before, or the casebook.
+      GoRoute(path: Routes.prologue, pageBuilder: (c, s) => _fade(s, const SeasonPrologueScreen())),
       GoRoute(
         path: Routes.episodes,
-        pageBuilder: (c, s) => _fade(s, EpisodeSelectScreen(focusCase: s.uri.queryParameters['case'])),
+        // The case files sit under the season: back goes up to it.
+        pageBuilder: (c, s) =>
+            _fade(s, _backTo(c, Routes.season, EpisodeSelectScreen(focusCase: s.uri.queryParameters['case']))),
       ),
-      GoRoute(path: Routes.intro, pageBuilder: (c, s) => _fade(s, const StoryIntroScreen())),
+      GoRoute(path: Routes.intro, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.episodes, const StoryIntroScreen()))),
       GoRoute(path: Routes.map, pageBuilder: (c, s) => _fade(s, const MissionMapScreen())),
       GoRoute(
         path: Routes.notebook,
@@ -130,11 +148,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/story/:id',
-        pageBuilder: (c, s) => _fade(s, StorySceneScreen(missionId: s.pathParameters['id']!)),
+        // The mission is solved: back is the same as TO THE MAP.
+        pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.map, StorySceneScreen(missionId: s.pathParameters['id']!))),
       ),
       GoRoute(path: Routes.qrScanner, pageBuilder: (c, s) => _fade(s, const QrScannerScreen())),
       GoRoute(path: Routes.finalMission, pageBuilder: (c, s) => _fade(s, const FinalMissionScreen())),
-      GoRoute(path: Routes.solved, pageBuilder: (c, s) => _fade(s, const CaseSolvedScreen())),
+      GoRoute(path: Routes.solved, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.map, const CaseSolvedScreen()))),
       GoRoute(path: Routes.report, pageBuilder: (c, s) => _fade(s, const ParentReportScreen())),
       GoRoute(path: Routes.gameMaster, pageBuilder: (c, s) => _fade(s, const GameMasterScreen())),
     ],

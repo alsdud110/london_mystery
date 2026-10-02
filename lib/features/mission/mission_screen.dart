@@ -11,6 +11,7 @@ import '../../data/models/mission.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/detective_tips.dart';
 import '../../widgets/evidence_card.dart';
+import '../../widgets/back_to.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
@@ -58,6 +59,21 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       ref.read(gameControllerProvider.notifier).markMissionStarted(widget.missionId);
     }
     setState(() => _stage = stage);
+  }
+
+  /// Back (arrow or Android back) walks back one step: puzzle → letter →
+  /// place → map. A read letter stays open when coming back to it.
+  bool get _atFirstStep => _stage == MissionStage.story || ref.read(gameControllerProvider).isCompleted(widget.missionId);
+
+  void _back() {
+    if (_atFirstStep) {
+      context.canPop() ? context.pop() : context.go(Routes.map);
+      return;
+    }
+    setState(() {
+      if (_stage == MissionStage.puzzle) _letterOpened = true;
+      _stage = _stage == MissionStage.puzzle ? MissionStage.letter : MissionStage.story;
+    });
   }
 
   void _onLetterOpened() {
@@ -150,12 +166,19 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               ),
           };
 
-    return Scaffold(
+    // Android back always takes the same path as the app bar arrow
+    // ([_back]), on every step, the first one included. Letting the route
+    // pop by itself on the place step left the answer to the route stack
+    // and the platform: with nothing under the mission, an Android 16
+    // device (predictive back) sends the app away instead of to the map.
+    return BackTo(
+      onBack: _back,
+      child: Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Back to map',
+          tooltip: solved || _stage == MissionStage.story ? 'Back to map' : 'Back',
           icon: const InkIcon(InkGlyph.back),
-          onPressed: () => context.canPop() ? context.pop() : context.go(Routes.map),
+          onPressed: _back,
         ),
         actions: [
           IconButton(
@@ -181,6 +204,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           ),
         ),
       ),
+      ),
     );
   }
 }
@@ -193,17 +217,7 @@ class _PlaceHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          mission.location,
-          textAlign: TextAlign.center,
-          style: AppText.title(size: 26).copyWith(letterSpacing: 1.5),
-        ),
-        const SizedBox(height: AppSpace.xs),
-        Text(mission.title, textAlign: TextAlign.center, style: AppText.aside()),
-      ],
-    );
+    return PageHeading(eyebrow: 'MISSION ${mission.numberLabel}', title: mission.location, subtitle: mission.title);
   }
 }
 
@@ -273,7 +287,7 @@ class _LetterStage extends StatelessWidget {
       children: [
         GlossaryText(
           mission.letterIntro,
-          style: AppText.bodyText(size: 19),
+          style: AppText.aside(size: 19, color: AppColors.inkBrown),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpace.xl),
@@ -323,7 +337,11 @@ class _PuzzleStage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.xxl),
       children: [
+        Text('MISSION ${mission.numberLabel} · THE PUZZLE', textAlign: TextAlign.center, style: AppText.eyebrow()),
+        const SizedBox(height: AppSpace.sm),
         GlossaryText(mission.question, style: AppText.title(size: 24), textAlign: TextAlign.center),
+        const SizedBox(height: AppSpace.md),
+        const Center(child: OrnamentRule()),
         const SizedBox(height: AppSpace.xl),
         ShakeOnChange(trigger: wrongPulse, child: child),
         const SizedBox(height: AppSpace.lg),
@@ -367,7 +385,11 @@ class _SolvedStage extends ConsumerWidget {
         ],
         if (m.evidence != null) ...[
           const SizedBox(height: AppSpace.md),
-          SizedBox(height: 170, child: EvidenceTile(evidence: m.evidence!, location: m.location)),
+          // The same tile height as the notebook grid (grows with larger text).
+          SizedBox(
+            height: evidenceTileHeight(context),
+            child: EvidenceTile(evidence: m.evidence!, location: m.location),
+          ),
         ],
         const SizedBox(height: AppSpace.xl),
         GameButton(label: 'BACK TO MAP', onPressed: () => context.go(Routes.map)),

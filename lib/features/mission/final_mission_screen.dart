@@ -41,6 +41,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   late List<int> _digits;
   int _wrongPulse = 0;
 
+  /// The locks (question, dials, OPEN): a returning detective lands here,
+  /// and the letter is one tap away instead of a scroll back up.
+  final _locksKey = GlobalKey();
+
   Mission get _mission => ref.read(currentEpisodeProvider).finalMission;
 
   @override
@@ -48,12 +52,17 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     super.initState();
     final length = _mission.codeLength ?? _mission.answer.length;
     _digits = List.filled(length, 0);
-    if (ref.read(gameControllerProvider).isCaseSolved) {
+    final progress = ref.read(gameControllerProvider);
+    if (progress.isCaseSolved) {
       _open.value = 1;
     } else {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ref.read(gameControllerProvider.notifier).markMissionStarted(_mission.id),
-      );
+      // Back again (the story and the letter were read before): open on the locks.
+      final returning = progress.missionStartedAt.containsKey(_mission.id);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(gameControllerProvider.notifier).markMissionStarted(_mission.id);
+        final locks = _locksKey.currentContext;
+        if (returning && locks != null && locks.mounted) Scrollable.ensureVisible(locks, alignment: 0.05);
+      });
     }
   }
 
@@ -98,6 +107,25 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     }
   }
 
+  void _rereadLetter() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.xl),
+          child: Column(
+            children: [
+              LetterCard(text: _mission.letter),
+              const SizedBox(height: AppSpace.xl),
+              GameButton(label: 'BACK TO THE LOCKS', onPressed: () => Navigator.of(context).pop()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _peekNotebook() {
     final episode = ref.read(currentEpisodeProvider);
     final progress = ref.read(gameControllerProvider);
@@ -121,13 +149,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
             const SizedBox(height: 12),
             Text('Evidence', style: AppText.title(size: 20)),
             const SizedBox(height: 8),
-            GridView.count(
-              crossAxisCount: 2,
+            GridView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 1.05,
+              gridDelegate: evidenceGridDelegate(context),
               children: [for (final e in evidence) EvidenceTile(evidence: e, location: locationOfEvidence(e))],
             ),
             const SizedBox(height: 16),
@@ -165,7 +190,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     final solved = progress.isCaseSolved;
 
     return Scaffold(
+      // The night page runs up under the app bar (no paper band on top).
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        foregroundColor: AppColors.goldLight,
+        iconTheme: const IconThemeData(color: AppColors.goldLight),
+        titleTextStyle: AppText.eyebrow(color: AppColors.goldLight),
         title: const Text('FINAL MISSION'),
         leading: IconButton(
           tooltip: 'Back to map',
@@ -176,22 +206,29 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       body: PaperBackground(
         night: true,
         child: SafeArea(
-          top: false,
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 560),
-              child: ListView(
+              // Built whole (not lazily), so the page can open on the locks.
+              child: SingleChildScrollView(
                 controller: _scroll,
-                padding: const EdgeInsets.fromLTRB(22, 0, 22, 40),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // The app bar already says FINAL MISSION: the page starts on the place.
                   Text(
                     m.location,
                     style: AppText.logo(size: 28, color: AppColors.goldLight),
                     textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: AppSpace.sm),
+                  const Center(child: OrnamentRule(color: AppColors.goldLight)),
                   const SizedBox(height: 12),
+                  // A smaller stage on a small phone, so the story and the locks
+                  // come sooner; the full 250 on taller screens.
                   SizedBox(
-                    height: 250,
+                    height: (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                     child: ClipRect(
                       child: m.scene == Artwork.royalBox
                           ? RoyalBoxAnimation(animation: _open)
@@ -199,19 +236,27 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
                     ),
                   ),
                   const SizedBox(height: 12),
-                  AnimatedBuilder(
-                    animation: _open,
-                    builder: (context, _) => _open.value > 0.55
-                        ? _CaseSolvedBanner(
-                            progress: _open.value,
-                            message: m.successMessage,
-                            detectiveName: progress.detectiveName ?? '',
-                          )
-                        : _intro(m),
+                  // The story gives way to the banner: the height eases over
+                  // instead of jumping.
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeInOut,
+                    alignment: Alignment.topCenter,
+                    child: AnimatedBuilder(
+                      animation: _open,
+                      builder: (context, _) => _open.value > 0.55
+                          ? _CaseSolvedBanner(
+                              progress: _open.value,
+                              message: m.successMessage,
+                              detectiveName: progress.detectiveName ?? '',
+                            )
+                          : _intro(m),
+                    ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpace.xl),
                   if (!solved) ..._puzzle(m, progress.hintsFor(m.id)) else _solvedActions(),
                 ],
+              ),
               ),
             ),
           ),
@@ -228,7 +273,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
           child: GlossaryText(
             line,
             textAlign: TextAlign.center,
-            style: AppText.subtitle(color: Colors.white),
+            style: AppText.subtitle(color: AppColors.paperLight),
           ),
         ),
       const SizedBox(height: 12),
@@ -238,9 +283,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
 
   List<Widget> _puzzle(Mission m, int hintsShown) => [
     Text(
+      key: _locksKey,
       m.question,
       textAlign: TextAlign.center,
-      style: AppText.title(size: 24, color: AppColors.gold),
+      style: AppText.title(size: 24, color: AppColors.goldLight),
     ),
     const SizedBox(height: 16),
     if (m.type == MissionType.finalCode) ...[
@@ -268,6 +314,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         label: m.scene == Artwork.royalBox ? 'OPEN THE BOX' : 'UNLOCK',
         style: GameButtonStyle.gold,
         onPressed: _tryOpen,
+      ),
+      // The letter again, without scrolling back up (as on every puzzle).
+      Center(
+        child: InkTextButton(label: 'Letter', glyph: InkGlyph.letter, color: AppColors.goldLight, onPressed: _rereadLetter),
       ),
     ] else
       // Any other puzzle type: the case's last page, laid on the desk.
@@ -317,14 +367,21 @@ class _Dial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = GameSymbol.of(symbol).label;
+    // A brass lock plate with its picture, wheel and two levers.
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
       decoration: BoxDecoration(
-        color: AppColors.goldDeep,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.goldLight, width: 2),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.goldLight, AppColors.gold, AppColors.goldDeep],
+        ),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.goldDeep, width: AppLine.hairline),
+        boxShadow: AppShadow.onNight,
       ),
+      foregroundDecoration: const RuledFrame(color: AppColors.navyDeep, inset: 3),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -340,7 +397,11 @@ class _Dial extends StatelessWidget {
             width: 58,
             height: 66,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: AppColors.navy, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(
+              color: AppColors.navy,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: AppColors.goldDeep, width: AppLine.rule),
+            ),
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 160),
               transitionBuilder: (child, anim) => SlideTransition(
@@ -380,14 +441,14 @@ class _CaseSolvedBanner extends StatelessWidget {
     return Opacity(
       opacity: t,
       child: Transform.scale(
-        scale: 0.8 + 0.2 * Curves.easeOutBack.transform(t),
+        scale: 0.92 + 0.08 * Curves.easeOutCubic.transform(t),
         child: Column(
           children: [
             const InkStamp('CASE SOLVED', color: AppColors.gold, size: 26),
             const SizedBox(height: 14),
             Text(
               message,
-              style: AppText.title(size: 24, color: Colors.white),
+              style: AppText.title(size: 24, color: AppColors.paperLight),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 6),
@@ -449,7 +510,8 @@ class RoyalBoxAnimation extends StatelessWidget {
       builder: (context, _) {
         final t = animation.value;
         final shake = t < 0.2 ? math.sin(t * 90) * 4 * (1 - t / 0.2) : 0.0;
-        final lid = Curves.easeOutBack.transform(((t - 0.2) / 0.3).clamp(0, 1));
+        // The heavy lid swings open and settles (no spring back).
+        final lid = Curves.easeOutCubic.transform(((t - 0.2) / 0.3).clamp(0, 1));
         final crown = Curves.easeOutCubic.transform(((t - 0.4) / 0.45).clamp(0, 1));
         return Transform.translate(
           offset: Offset(shake, 0),

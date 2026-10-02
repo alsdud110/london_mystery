@@ -1,4 +1,4 @@
-import '../mock/episode01_mock.dart';
+import '../mock/season1/episode01_mock.dart';
 import '../mock/season1/season1_mock.dart';
 import '../models/episode.dart';
 

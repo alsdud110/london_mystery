@@ -5,8 +5,24 @@ import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
 import '../data/models/mission.dart';
 import 'art_assets.dart';
+import 'game_button.dart';
 import 'ink_icon.dart';
+import 'paper.dart';
 import 'symbol_icon.dart';
+
+/// The grid every [EvidenceTile] sits in (notebook, case archive, the final
+/// case's notebook peek): two columns of a fixed height, not a ratio, so a
+/// two-line name at large text sizes still fits on a 360-wide phone.
+SliverGridDelegate evidenceGridDelegate(BuildContext context) => SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+      mainAxisSpacing: AppSpace.md,
+      crossAxisSpacing: AppSpace.md,
+      mainAxisExtent: evidenceTileHeight(context),
+    );
+
+/// The height of an [EvidenceTile], growing with the text size (up to the
+/// app's 1.3× cap).
+double evidenceTileHeight(BuildContext context) => 196 * MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 1.3);
 
 /// A square evidence tile for the notebook grid. Tap to zoom in.
 class EvidenceTile extends StatelessWidget {
@@ -24,14 +40,16 @@ class EvidenceTile extends StatelessWidget {
       excludeSemantics: true,
       child: GestureDetector(
         onTap: () => showEvidenceZoom(context, evidence, location: location),
+        // An evidence tag: paper, a printed frame, the object in the middle.
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.parchmentDark, width: 1.5),
-            boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 3))],
+            color: AppColors.paperLight,
+            borderRadius: BorderRadius.circular(AppRadius.paper),
+            border: Border.all(color: AppLine.faint(0.2), width: AppLine.hairline),
+            boxShadow: AppShadow.paperLift,
           ),
+          foregroundDecoration: const RuledFrame(),
           // The picture gives way on short tiles (small phones, large text,
           // two-line names) so the name and "Look closer" always fit.
           child: LayoutBuilder(
@@ -53,7 +71,7 @@ class EvidenceTile extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppText.button(size: 15, color: AppColors.navy),
+                  style: AppText.title(size: 15, color: AppColors.navy),
                 ),
                 const SizedBox(height: 2),
                 Row(
@@ -120,14 +138,11 @@ class _EvidenceZoom extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFFFFF8E6), AppColors.parchment],
-                      ),
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(color: AppColors.gold, width: 3),
+                      color: AppColors.paperLight,
+                      borderRadius: BorderRadius.circular(AppRadius.paper),
+                      boxShadow: AppShadow.onNight,
                     ),
+                    foregroundDecoration: const RuledFrame(inset: 8),
                     child: Column(
                       children: [
                         Hero(
@@ -145,9 +160,9 @@ class _EvidenceZoom extends StatelessWidget {
                             width: double.infinity,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.parchmentDark, width: 1.5),
+                              color: AppColors.parchment.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(AppRadius.paper),
+                              border: Border.all(color: AppColors.parchmentDark, width: AppLine.hairline),
                             ),
                             child: Text(
                               evidence.inscription!,
@@ -166,15 +181,11 @@ class _EvidenceZoom extends StatelessWidget {
                   const SizedBox(height: 20),
                   SizedBox(
                     width: 200,
-                    height: 56,
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.gold,
-                        foregroundColor: AppColors.navy,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                      ),
+                    child: GameButton(
+                      label: 'CLOSE',
+                      style: GameButtonStyle.gold,
+                      playTapSound: false,
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text('CLOSE', style: AppText.button(size: 17, color: AppColors.navy)),
                     ),
                   ),
                 ],

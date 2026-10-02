@@ -13,8 +13,10 @@ import '../../widgets/badge_medal.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
+import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/game_button.dart';
+import '../../widgets/game_dialog.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
@@ -31,6 +33,13 @@ class CaseSolvedScreen extends ConsumerStatefulWidget {
 
 class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with SingleTickerProviderStateMixin {
   late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2800));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reduced motion: the closed file is simply there, stamp and all.
+    if (_c.isDismissed && (MediaQuery.maybeDisableAnimationsOf(context) ?? false)) _c.value = 1;
+  }
 
   @override
   void initState() {
@@ -62,19 +71,14 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
   }
 
   Future<void> _playAgain() async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.paper,
-        title: Text('Play the case again?', style: AppText.title(size: 22)),
-        content: Text('Your clues and results will be cleared.', style: AppText.bodyText(size: 16)),
-        actions: [
-          TextButton(onPressed: () => context.pop(false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => context.pop(true), child: const Text('Play again')),
-        ],
-      ),
+    final ok = await GameDialog.confirm(
+      context,
+      title: 'Play the case again?',
+      message: 'Your clues and results will be cleared.',
+      confirmLabel: 'Play again',
+      cancelLabel: 'Cancel',
     );
-    if (ok == true && mounted) {
+    if (ok && mounted) {
       ref.read(gameControllerProvider.notifier).playAgain();
       context.go(Routes.episodes);
     }
@@ -86,10 +90,10 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     final catalog = ref.watch(episodeCatalogProvider);
     final at = catalog.indexWhere((e) => e.id == report.episode.id);
     final nextCase = at >= 0 && at + 1 < catalog.length ? catalog[at + 1] : null;
-    final paper = _iv(0, 0.25, Curves.easeOutBack);
+    final paper = _iv(0, 0.25);
     final stamp = _iv(0.3, 0.45, Curves.easeInCubic);
     final xp = _iv(0.4, 0.75);
-    final badge = _iv(0.6, 0.85, Curves.elasticOut);
+    final badge = _iv(0.6, 0.85);
     final footer = _iv(0.8, 1);
 
     return Scaffold(
@@ -125,7 +129,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                           if (report.episode.hook != null) ...[
                             Text(
                               report.episode.hook!,
-                              style: AppText.aside(color: Colors.white70),
+                              style: AppText.aside(color: AppColors.paperLight.withValues(alpha: 0.75)),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 8),
@@ -136,36 +140,45 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 16),
-                          // Always a way back to the shelf; after the last
-                          // case of the season it is simply the case files.
+                          // The child's next step is the primary action: on to the
+                          // next case (after the last case of the season, the
+                          // season's completed investigation board).
                           GameButton(
-                            label: nextCase != null ? 'OPEN CASE ${nextCase.numberLabel}' : 'CASE FILES',
-                            glyph: InkGlyph.folder,
-                            style: GameButtonStyle.outline,
-                            onPressed: () =>
-                                context.go(nextCase != null ? Routes.caseFile(nextCase.id) : Routes.episodes),
+                            label: nextCase != null ? 'OPEN CASE ${nextCase.numberLabel}' : 'INVESTIGATION BOARD',
+                            glyph: nextCase != null ? InkGlyph.folder : InkGlyph.pin,
+                            arrow: true,
+                            singleLine: true,
+                            style: GameButtonStyle.gold,
+                            onPressed: () => context.go(nextCase != null ? Routes.caseFile(nextCase.id) : Routes.season),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: AppSpace.md),
+                          // For grown-ups (behind the parent gate): secondary, and
+                          // the lock says it asks first.
                           GameButton(
                             label: 'VIEW MY DETECTIVE REPORT',
-                            glyph: InkGlyph.folder,
-                            style: GameButtonStyle.gold,
+                            glyph: InkGlyph.lock,
+                            singleLine: true, // one line on a 360-wide phone
+                            style: GameButtonStyle.outline,
                             onPressed: _openParentReport,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: AppSpace.sm),
                           Row(
                             children: [
                               Expanded(
                                 child: InkTextButton(
                                   label: 'Notebook',
                                   glyph: InkGlyph.notebook,
-                                  color: Colors.white70,
+                                  color: AppColors.paperLight.withValues(alpha: 0.75),
                                   onPressed: () => context.push(Routes.notebook),
                                 ),
                               ),
                               // Custom Asset Required: a replay glyph.
                               Expanded(
-                                child: InkTextButton(label: 'Play again', color: Colors.white70, onPressed: _playAgain),
+                                child: InkTextButton(
+                                  label: 'Play again',
+                                  color: AppColors.paperLight.withValues(alpha: 0.75),
+                                  onPressed: _playAgain,
+                                ),
                               ),
                             ],
                           ),
@@ -206,10 +219,11 @@ class _CaseFile extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [Color(0xFFFFFAEC), AppColors.parchment, Color(0xFFEAD8AE)],
             ),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.parchmentDark, width: 2),
-            boxShadow: const [BoxShadow(color: Color(0x66000000), blurRadius: 26, offset: Offset(0, 12))],
+            borderRadius: BorderRadius.circular(AppRadius.paper),
+            border: Border.all(color: AppColors.parchmentDark, width: AppLine.hairline),
+            boxShadow: AppShadow.onNight,
           ),
+          foregroundDecoration: const RuledFrame(inset: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -232,7 +246,33 @@ class _CaseFile extends StatelessWidget {
                     child: _Field(label: 'Detective', value: report.detectiveName, big: true),
                   ),
                   const SizedBox(width: 12),
-                  _Photo(scene: report.episode.finalMission.scene),
+                  // The red stamp comes down on the case photo: placed by the
+                  // photo, not at a fixed point of the page, so it never covers
+                  // the name whatever the text size.
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      _Photo(scene: report.episode.finalMission.scene),
+                      if (stamp > 0)
+                        Positioned(
+                          left: -AppSpace.md,
+                          right: -AppSpace.md,
+                          top: 34,
+                          child: IgnorePointer(
+                            child: Opacity(
+                              opacity: stamp.clamp(0, 1),
+                              child: Transform.rotate(
+                                angle: -0.25,
+                                child: Transform.scale(
+                                  scale: 2.2 - 1.2 * stamp,
+                                  child: const FittedBox(fit: BoxFit.scaleDown, child: _Stamp()),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
@@ -266,9 +306,13 @@ class _CaseFile extends StatelessWidget {
                 const _Rule(),
                 Row(
                   children: [
-                    Transform.scale(
-                      scale: badgePop.clamp(0.0, 1.2),
-                      child: BadgeMedal(badge: top, size: 70, showLabel: false),
+                    // The medal is pinned on: a short fade and settle, no spring.
+                    Opacity(
+                      opacity: badgePop.clamp(0.0, 1.0),
+                      child: Transform.scale(
+                        scale: 0.85 + 0.15 * badgePop.clamp(0.0, 1.0),
+                        child: BadgeMedal(badge: top, size: 70, showLabel: false),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -312,21 +356,6 @@ class _CaseFile extends StatelessWidget {
             ],
           ),
         ),
-        // The red stamp slams down onto the file.
-        if (stamp > 0)
-          Positioned(
-            top: 180,
-            right: 30,
-            child: IgnorePointer(
-              child: Opacity(
-                opacity: stamp.clamp(0, 1),
-                child: Transform.rotate(
-                  angle: -0.25,
-                  child: Transform.scale(scale: 2.2 - 1.2 * stamp, child: const _Stamp()),
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }
@@ -347,7 +376,7 @@ class _Stamp extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('SOLVED', style: AppText.logo(size: 22, color: AppColors.waxRed.withValues(alpha: 0.9))),
-          Text('★ ★ ★', style: AppText.button(size: 11, color: AppColors.waxRed.withValues(alpha: 0.9))),
+          Text('★ ★ ★', style: AppText.button(size: 13, color: AppColors.waxRed.withValues(alpha: 0.9))),
         ],
       ),
     );
@@ -369,9 +398,9 @@ class _Photo extends StatelessWidget {
         height: 96,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.paperLight,
           boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(1, 3))],
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(2),
         ),
         child: LandmarkArt(scene, borderRadius: 2, solved: 1),
       ),
@@ -416,7 +445,15 @@ class _Field extends StatelessWidget {
       children: [
         Text(label.toUpperCase(), style: AppText.eyebrow(color: AppColors.inkBrown)),
         const SizedBox(height: 2),
-        Text(value, style: AppText.title(size: big ? 28 : 20)),
+        // A name is one word: it shrinks to fit rather than breaking
+        // mid-word ("MINYOUN / G") on a narrow phone.
+        big
+            ? FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(value, maxLines: 1, style: AppText.title(size: 28)),
+              )
+            : Text(value, style: AppText.title(size: 20)),
       ],
     );
   }

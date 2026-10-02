@@ -11,7 +11,11 @@ import 'paper_background.dart';
 
 /// [navy] is the primary action on paper, [gold] the primary action on the
 /// dark night screens, [outline] a secondary action. One primary per screen.
-enum GameButtonStyle { navy, gold, outline }
+/// - [navy]: primary on paper. [gold]: primary on the night page.
+/// - [outline]: secondary (paper ink, or gold ink on the night page).
+/// - [glass]: primary over a full-screen painting (the season cover): dark
+///   translucent navy with a thin gold edge, so the picture stays first.
+enum GameButtonStyle { navy, gold, outline, glass }
 
 /// Large, flat, kid-friendly button ("INVESTIGATE →").
 class GameButton extends ConsumerStatefulWidget {
@@ -19,6 +23,7 @@ class GameButton extends ConsumerStatefulWidget {
     super.key,
     required this.label,
     required this.onPressed,
+    this.semanticLabel,
     this.style = GameButtonStyle.navy,
     this.glyph,
     this.arrow = false,
@@ -29,6 +34,10 @@ class GameButton extends ConsumerStatefulWidget {
 
   final String label;
   final VoidCallback? onPressed;
+
+  /// What a screen reader says when the short [label] needs its context
+  /// ("GO" on the map is "GO TO KING'S CROSS"). Defaults to [label].
+  final String? semanticLabel;
   final GameButtonStyle style;
   final InkGlyph? glyph;
 
@@ -55,34 +64,80 @@ class _GameButtonState extends ConsumerState<GameButton> {
     if (_enabled && _pressed != value) setState(() => _pressed = value);
   }
 
+  /// Labels are set in the title capitals (Cinzel), like the words on a
+  /// case file, rather than in the body face.
+  TextStyle _label(Color color) =>
+      AppText.style(AppText.display, size: 16.5, weight: FontWeight.w700, color: color, letterSpacing: 1.6, height: 1.2);
+
   @override
   Widget build(BuildContext context) {
-    var (bg, fg, border) = switch (widget.style) {
-      GameButtonStyle.navy => (AppColors.navy, AppColors.paperLight, AppColors.navy),
-      GameButtonStyle.gold => (AppColors.goldLight, AppColors.navyDeep, AppColors.goldLight),
+    // Fill, ink, outer edge, the printed inner rule, and the pressed-in
+    // edge underneath (null: flat, it does not stand off the page).
+    var (bg, fg, border, rule, depth) = switch (widget.style) {
+      GameButtonStyle.navy => (
+          AppColors.navy,
+          AppColors.paperLight,
+          AppColors.navyDeep,
+          AppColors.goldLight.withValues(alpha: 0.35),
+          AppColors.navyDeep as Color?,
+        ),
+      GameButtonStyle.gold => (
+          AppColors.goldLight,
+          AppColors.navyDeep,
+          AppColors.goldDeep,
+          AppColors.navyDeep.withValues(alpha: 0.28),
+          AppColors.goldDeep as Color?,
+        ),
+      GameButtonStyle.glass => (
+          AppColors.navyDeep.withValues(alpha: 0.48),
+          // A touch brighter than the painting's lights, so it reads as a
+          // button at first glance (no glow, no extra shadow).
+          Color.lerp(AppColors.goldLight, AppColors.paperLight, 0.2)!,
+          AppColors.goldLight.withValues(alpha: 0.92),
+          AppColors.goldLight.withValues(alpha: 0.32),
+          null,
+        ),
       // Ink on paper; gold ink on the navy night background, where dark
       // ink would disappear (e.g. "OPEN MY NOTEBOOK" in the final case).
       GameButtonStyle.outline =>
         InkSurface.isNight(context)
-            ? (Colors.transparent, AppColors.goldLight, AppColors.goldLight.withValues(alpha: 0.7))
-            : (Colors.transparent, AppColors.ink, AppLine.faint(0.45)),
+            ? (
+                Colors.transparent,
+                AppColors.goldLight,
+                AppColors.goldLight.withValues(alpha: 0.7),
+                AppColors.goldLight.withValues(alpha: 0.3),
+                null,
+              )
+            : (
+                AppColors.paperLight.withValues(alpha: 0.55),
+                AppColors.ink,
+                AppLine.faint(0.45),
+                AppLine.faint(0.22),
+                null,
+              ),
     };
     // Not ready yet (e.g. no answer chosen): a faint pencilled outline
     // instead of a grey block, so it does not draw the eye.
     if (!_enabled && widget.style == GameButtonStyle.navy) {
-      (bg, fg, border) = (Colors.transparent, AppColors.navy, AppLine.faint(0.35));
+      (bg, fg, border, rule, depth) = (Colors.transparent, AppColors.navy, AppLine.faint(0.35), AppLine.faint(0.15), null);
     }
+    const depthPx = 3.0;
+    final raised = depth != null;
 
     const arrowBox = AppIconSize.medium + AppSpace.md;
     final content = widget.singleLine
         ? Row(
             children: [
               // Balances the arrow so the label stays centred.
-              if (widget.arrow) const SizedBox(width: arrowBox),
+              if (widget.arrow && widget.glyph == null) const SizedBox(width: arrowBox),
+              if (widget.glyph != null) ...[
+                InkIcon(widget.glyph!, size: AppIconSize.medium, color: fg),
+                const SizedBox(width: AppSpace.md),
+              ],
               Expanded(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(widget.label, maxLines: 1, style: AppText.button(color: fg).copyWith(letterSpacing: 0.8)),
+                  child: Text(widget.label, maxLines: 1, style: _label(fg).copyWith(letterSpacing: 1.2)),
                 ),
               ),
               if (widget.arrow) ...[
@@ -103,7 +158,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
                 child: Text(
                   widget.label,
                   textAlign: TextAlign.center,
-                  style: AppText.button(color: fg),
+                  style: _label(fg),
                 ),
               ),
               if (widget.arrow) ...[
@@ -116,7 +171,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
     return Semantics(
       button: true,
       enabled: _enabled,
-      label: widget.label,
+      label: widget.semanticLabel ?? widget.label,
       excludeSemantics: true,
       child: GestureDetector(
         onTapDown: (_) => _setPressed(true),
@@ -130,24 +185,41 @@ class _GameButtonState extends ConsumerState<GameButton> {
             : null,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 150),
-          opacity: !_enabled ? 0.5 : (_pressed ? 0.82 : 1),
-          child: AnimatedScale(
-            duration: const Duration(milliseconds: 90),
-            scale: _pressed ? 0.98 : 1,
-            child: Container(
-              constraints: widget.singleLine
-                  ? const BoxConstraints.tightFor(height: 56)
-                  : const BoxConstraints(minHeight: 56),
-              padding: EdgeInsets.symmetric(
-                horizontal: widget.singleLine ? AppSpace.lg : AppSpace.xl,
-                vertical: widget.singleLine ? 0 : AppSpace.lg,
+          opacity: !_enabled ? 0.5 : 1,
+          // A raised button stands on a darker edge and presses down into
+          // it; the box keeps the same size, so nothing around it moves.
+          child: Container(
+            constraints: widget.singleLine
+                ? const BoxConstraints.tightFor(height: 56)
+                : const BoxConstraints(minHeight: 56),
+            decoration: raised
+                ? BoxDecoration(
+                    color: depth,
+                    borderRadius: BorderRadius.circular(AppRadius.button),
+                    boxShadow: _pressed ? null : const [BoxShadow(color: Color(0x332A2622), blurRadius: 8, offset: Offset(0, 4))],
+                  )
+                : null,
+            child: AnimatedPadding(
+              duration: const Duration(milliseconds: 70),
+              padding: EdgeInsets.only(
+                top: raised && _pressed ? depthPx : 0,
+                bottom: raised && !_pressed ? depthPx : 0,
               ),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: BorderRadius.circular(AppRadius.button),
-                border: Border.all(color: border, width: AppLine.rule),
+              child: Container(
+                constraints: widget.singleLine ? const BoxConstraints.expand() : const BoxConstraints(minHeight: 56 - depthPx),
+                padding: EdgeInsets.symmetric(
+                  horizontal: widget.singleLine ? AppSpace.lg : AppSpace.xl,
+                  vertical: widget.singleLine ? 0 : AppSpace.md + 2,
+                ),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(AppRadius.button),
+                  border: Border.all(color: border, width: AppLine.hairline),
+                ),
+                // The printed inner rule: an engraved ticket, not a web button.
+                foregroundDecoration: _InnerRule(rule),
+                child: content,
               ),
-              child: content,
             ),
           ),
         ),
@@ -156,7 +228,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
   }
 }
 
-/// A quiet ink text action with an optional glyph ("Letter", "Need a tip?").
+/// A quiet ink text action with an optional glyph ("Letter", "Get a tip").
 class InkTextButton extends StatelessWidget {
   const InkTextButton({
     super.key,
@@ -200,6 +272,34 @@ class InkTextButton extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The hairline printed just inside a [GameButton]'s edge.
+class _InnerRule extends Decoration {
+  const _InnerRule(this.color);
+
+  final Color color;
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _InnerRulePainter(color);
+}
+
+class _InnerRulePainter extends BoxPainter {
+  _InnerRulePainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final r = RRect.fromRectAndRadius((offset & configuration.size!).deflate(4), const Radius.circular(AppRadius.button - 3));
+    canvas.drawRRect(
+      r,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = AppLine.hairline,
     );
   }
 }

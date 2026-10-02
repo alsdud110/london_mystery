@@ -15,17 +15,107 @@ import '../../../widgets/landmark_art.dart';
 import '../../game/game_providers.dart';
 import 'qr_question.dart';
 
-/// Paper answer surface shared by the puzzle types: faint ink border,
-/// navy when chosen.
-BoxDecoration _answerPaper({bool selected = false, double radius = 8}) =>
-    BoxDecoration(
-      color: selected ? AppColors.royalBlueSoft : AppColors.paperLight,
-      borderRadius: BorderRadius.circular(radius),
-      border: Border.all(
-        color: selected ? AppColors.navy : AppLine.faint(0.3),
-        width: selected ? AppLine.ink : AppLine.rule,
+/// The one look of an answer card, whatever the puzzle type, so a child
+/// learns a single rule: the card I chose is filled in navy ink.
+enum AnswerState {
+  /// Lying on the desk, ready to be chosen.
+  idle,
+
+  /// Chosen: navy fill, gold letter mark and tick.
+  selected,
+
+  /// Confirmed right / wrong (success / try-again ink). The result itself is
+  /// announced by the success overlay and the try-again sheet; these keep a
+  /// card in the same family wherever a puzzle shows its result.
+  correct,
+  wrong,
+
+  /// Used up (a sequence step already placed, an empty line): flat, faded.
+  disabled,
+}
+
+/// Paper answer surface shared by the puzzle types.
+BoxDecoration _answerPaper(AnswerState state) {
+  final (fill, edge, width) = switch (state) {
+    AnswerState.idle || AnswerState.disabled => (AppColors.paperLight, AppLine.faint(0.22), AppLine.hairline),
+    AnswerState.selected => (AppColors.navy, AppColors.navyDeep, AppLine.hairline),
+    AnswerState.correct => (AppColors.successSoft, AppColors.success, AppLine.ink),
+    AnswerState.wrong => (AppColors.tryAgainSoft, AppColors.tryAgain, AppLine.ink),
+  };
+  return BoxDecoration(
+    color: fill,
+    borderRadius: BorderRadius.circular(AppRadius.paper),
+    border: Border.all(color: edge, width: width),
+    boxShadow: state == AnswerState.disabled ? null : AppShadow.paperLift,
+  );
+}
+
+/// Ink on an answer surface in [state].
+Color _answerInk(AnswerState state) => state == AnswerState.selected ? AppColors.paperLight : AppColors.ink;
+
+/// A tappable answer surface: it presses in slightly (scale and a little
+/// fade) while the finger is down. The same short feedback for every puzzle
+/// type and the keypad, instead of a Material ripple.
+class _Pressable extends StatefulWidget {
+  const _Pressable({required this.onTap, required this.child});
+
+  final VoidCallback? onTap;
+  final Widget child;
+
+  @override
+  State<_Pressable> createState() => _PressableState();
+}
+
+class _PressableState extends State<_Pressable> {
+  bool _down = false;
+
+  void _set(bool v) {
+    if (widget.onTap != null && _down != v) setState(() => _down = v);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final duration = still ? Duration.zero : const Duration(milliseconds: 90);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => _set(true),
+      onTapUp: (_) => _set(false),
+      onTapCancel: () => _set(false),
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        scale: _down ? 0.97 : 1,
+        duration: duration,
+        curve: Curves.easeOut,
+        child: AnimatedOpacity(opacity: _down ? 0.85 : 1, duration: duration, child: widget.child),
       ),
     );
+  }
+}
+
+/// A round letter mark ("A", "B", "1") printed beside an answer.
+class _LetterMark extends StatelessWidget {
+  const _LetterMark(this.letter, {this.inverse = false});
+
+  final String letter;
+  final bool inverse;
+
+  @override
+  Widget build(BuildContext context) {
+    final ink = inverse ? AppColors.goldLight : AppColors.navy;
+    return Container(
+      width: 32,
+      height: 32,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: inverse ? Colors.transparent : AppColors.paper,
+        border: Border.all(color: ink.withValues(alpha: inverse ? 0.9 : 0.45), width: AppLine.rule),
+      ),
+      child: Text(letter, style: AppText.style(AppText.display, size: 15, weight: FontWeight.w700, color: ink)),
+    );
+  }
+}
 
 typedef AnswerCallback = void Function(String answer);
 
@@ -142,6 +232,8 @@ class _ChoiceTile extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
+  AnswerState get state => selected ? AnswerState.selected : AnswerState.idle;
+
   @override
   Widget build(BuildContext context) {
     return Semantics(
@@ -149,32 +241,32 @@ class _ChoiceTile extends StatelessWidget {
       selected: selected,
       label: '$letter. $label',
       excludeSemantics: true,
-      child: GestureDetector(
+      child: _Pressable(
         onTap: onTap,
+        // A card on the desk; the chosen one is filled in navy ink.
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          constraints: const BoxConstraints(minHeight: 60),
+          constraints: const BoxConstraints(minHeight: 62),
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpace.lg,
+            horizontal: AppSpace.md,
             vertical: AppSpace.md,
           ),
-          decoration: _answerPaper(selected: selected),
+          decoration: _answerPaper(state),
           child: Row(
             children: [
-              SizedBox(
-                width: 28,
+              _LetterMark(letter, inverse: selected),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
                 child: Text(
-                  '$letter.',
-                  style: AppText.title(size: 18, color: AppColors.navy),
+                  label,
+                  style: AppText.subtitle(color: _answerInk(state)),
                 ),
               ),
-              const SizedBox(width: AppSpace.sm),
-              Expanded(child: Text(label, style: AppText.subtitle())),
               if (selected)
                 const InkIcon(
                   InkGlyph.check,
                   size: AppIconSize.medium,
-                  color: AppColors.navy,
+                  color: AppColors.goldLight,
                 ),
             ],
           ),
@@ -236,7 +328,7 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
               vertical: AppSpace.lg,
               horizontal: AppSpace.md,
             ),
-            decoration: _answerPaper(radius: AppRadius.paper),
+            decoration: _answerPaper(AnswerState.idle),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
@@ -323,21 +415,27 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // The lock's number wheels: the next one to fill is marked in navy.
+            // The lock's number wheels: the next one to fill is ringed in gold.
             for (var i = 0; i < _length; i++)
               AnimatedContainer(
                 duration: const Duration(milliseconds: 120),
-                margin: const EdgeInsets.symmetric(horizontal: 6),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
                 width: 60,
-                height: 72,
+                height: 74,
                 alignment: Alignment.center,
-                decoration: _answerPaper(
-                  selected: i == _code.length,
-                  radius: AppRadius.paper,
+                decoration: BoxDecoration(
+                  color: AppColors.navy,
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: i == _code.length ? AppColors.goldLight : AppColors.gold.withValues(alpha: 0.45),
+                    width: i == _code.length ? AppLine.ink + 0.5 : AppLine.hairline,
+                  ),
+                  boxShadow: const [BoxShadow(color: Color(0x332A2622), blurRadius: 6, offset: Offset(0, 3))],
                 ),
+                foregroundDecoration: const _WheelShade(),
                 child: Text(
                   i < _code.length ? _code[i] : '',
-                  style: AppText.title(size: 34),
+                  style: AppText.title(size: 34, color: AppColors.goldLight),
                 ),
               ),
           ],
@@ -360,6 +458,7 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
                 onTap: _delete,
                 subtle: true,
                 semantic: 'Delete',
+                caption: 'Delete',
               ),
               _Key(label: '0', onTap: () => _press('0')),
               _Key(
@@ -367,6 +466,7 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
                 onTap: () => setState(() => _code = ''),
                 subtle: true,
                 semantic: 'Clear',
+                caption: 'Clear',
               ),
             ],
           ),
@@ -393,6 +493,7 @@ class _Key extends StatelessWidget {
     required this.onTap,
     this.subtle = false,
     this.semantic,
+    this.caption,
   });
 
   final String? label;
@@ -401,31 +502,40 @@ class _Key extends StatelessWidget {
   final bool subtle;
   final String? semantic;
 
+  /// A short word under a glyph key ("Delete", "Clear").
+  final String? caption;
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: subtle ? AppColors.parchment : AppColors.paperLight,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: onTap,
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppLine.faint(0.25), width: AppLine.rule),
-          ),
-          child: label != null
-              ? Text(
-                  label!,
-                  style: AppText.title(size: 26, color: AppColors.ink),
-                )
-              : InkIcon(
-                  glyph!,
-                  color: AppColors.inkBrown,
-                  semanticLabel: semantic,
-                ),
+    // A typewriter key: a paper cap on a darker edge. It presses in like the
+    // answer cards, instead of a Material ripple.
+    return _Pressable(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: subtle ? AppColors.parchment : AppColors.paperLight,
+          borderRadius: BorderRadius.circular(AppRadius.button),
+          border: Border.all(color: AppLine.faint(0.2), width: AppLine.hairline),
+          boxShadow: const [BoxShadow(color: AppColors.parchmentDark, offset: Offset(0, 3))],
         ),
+        child: label != null
+            ? Text(
+                label!,
+                style: AppText.title(size: 26, color: AppColors.ink),
+              )
+            // The two erasers look alike as glyphs: name them under the icon.
+            : FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkIcon(glyph!, color: AppColors.inkBrown, semanticLabel: semantic),
+                    if (caption != null)
+                      ExcludeSemantics(child: Text(caption!, style: AppText.caption(color: AppColors.inkBrown))),
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -511,24 +621,18 @@ class _ImageTile extends StatelessWidget {
       selected: selected,
       label: 'Picture $letter',
       excludeSemantics: true,
-      child: GestureDetector(
+      child: _Pressable(
         onTap: onTap,
-        // A small photograph: white border, letter written in the corner.
+        // A small photograph in a paper mount, letter written in the corner;
+        // chosen, the mount is filled in navy ink like a chosen answer card.
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(6),
-          decoration: _answerPaper(selected: selected, radius: AppRadius.paper),
+          padding: const EdgeInsets.all(AppSpace.sm),
+          decoration: _answerPaper(selected ? AnswerState.selected : AnswerState.idle),
           child: Stack(
             children: [
               Positioned.fill(child: LandmarkArt(artwork, borderRadius: 2, showName: false)),
-              Positioned(
-                left: 6,
-                top: 4,
-                child: Text(
-                  letter,
-                  style: AppText.title(size: 20, color: AppColors.navy),
-                ),
-              ),
+              Positioned(left: 6, top: 6, child: _LetterMark(letter)),
               if (selected)
                 Positioned(
                   right: 6,
@@ -537,14 +641,15 @@ class _ImageTile extends StatelessWidget {
                     width: 30,
                     height: 30,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: AppColors.navy,
                       shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.goldLight, width: AppLine.rule),
                     ),
                     child: const InkIcon(
                       InkGlyph.check,
                       size: AppIconSize.small,
-                      color: AppColors.paperLight,
+                      color: AppColors.goldLight,
                     ),
                   ),
                 ),
@@ -615,17 +720,17 @@ class _SequenceQuestionState extends ConsumerState<SequenceQuestion> {
                 horizontal: AppSpace.lg,
                 vertical: AppSpace.sm,
               ),
-              decoration: _answerPaper(selected: i == _picked.length),
+              // Written steps sit on paper; the next empty line is ringed in
+              // gold ("write here next"), never filled like a chosen answer.
+              decoration: i == _picked.length
+                  ? _answerPaper(AnswerState.idle).copyWith(
+                      border: Border.all(color: AppColors.gold, width: AppLine.ink),
+                    )
+                  : _answerPaper(i < _picked.length ? AnswerState.idle : AnswerState.disabled),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 28,
-                    child: Text(
-                      '${i + 1}.',
-                      style: AppText.title(size: 18, color: AppColors.navy),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpace.sm),
+                  _LetterMark('${i + 1}'),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Text(
                       i < _picked.length ? _label(_picked[i]) : '',
@@ -654,8 +759,9 @@ class _SequenceQuestionState extends ConsumerState<SequenceQuestion> {
           ],
         ),
         const SizedBox(height: AppSpace.md),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        // Wraps rather than overflows inside a narrow paper sheet (final case).
+        Wrap(
+          alignment: WrapAlignment.center,
           children: [
             InkTextButton(
               label: 'Undo',
@@ -701,18 +807,18 @@ class _SequenceTile extends StatelessWidget {
       enabled: !used,
       label: label,
       excludeSemantics: true,
-      child: GestureDetector(
+      child: _Pressable(
         onTap: used ? null : onTap,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 150),
-          opacity: used ? 0.35 : 1,
+          opacity: used ? 0.4 : 1,
           child: Container(
             constraints: const BoxConstraints(minHeight: 52, minWidth: 96),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpace.lg,
               vertical: AppSpace.md,
             ),
-            decoration: _answerPaper(),
+            decoration: _answerPaper(used ? AnswerState.disabled : AnswerState.idle),
             child: Text(
               label,
               textAlign: TextAlign.center,
@@ -750,3 +856,31 @@ Widget questionFor(Mission mission, AnswerCallback onSubmit) =>
         onSubmit: onSubmit,
       ),
     };
+
+/// The curve of a number wheel: darker towards its top and bottom edges.
+class _WheelShade extends Decoration {
+  const _WheelShade();
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _WheelShadePainter();
+}
+
+class _WheelShadePainter extends BoxPainter {
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final r = offset & configuration.size!;
+    canvas.save();
+    canvas.clipRRect(RRect.fromRectAndRadius(r, const Radius.circular(6)));
+    canvas.drawRect(
+      r,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.black.withValues(alpha: 0.35), Colors.transparent, Colors.transparent, Colors.black.withValues(alpha: 0.35)],
+          stops: const [0, 0.3, 0.7, 1],
+        ).createShader(r),
+    );
+    canvas.restore();
+  }
+}

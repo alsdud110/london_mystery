@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
+import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/features/game/game_providers.dart' show sharedPreferencesProvider;
 
@@ -37,13 +38,15 @@ Future<void> tapText(WidgetTester t, String text, {Duration after = const Durati
 const goToTime = Duration(milliseconds: 2800);
 
 Future<void> openMission(WidgetTester t, String goLabel) async {
-  await tapText(t, goLabel, after: goToTime);
+  // The place is named over the button; the button ("GO") carries it for a screen reader.
+  await t.tap(find.bySemanticsLabel(goLabel));
+  await wait(t, goToTime);
   expect(find.text('INVESTIGATE'), findsOneWidget, reason: 'step 1: the place');
   await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
   expect(find.text('TAP TO OPEN'), findsOneWidget, reason: 'step 2: the sealed letter');
   await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
   await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
-  expect(find.text('Need a tip?'), findsOneWidget, reason: 'step 3: the puzzle');
+  expect(find.text('Get a tip'), findsOneWidget, reason: 'step 3: the puzzle');
 }
 
 /// Success overlay → story scene → back on the map (unlock ceremony).
@@ -83,7 +86,13 @@ void main() {
     expect(find.text('Become a Detective.'), findsOneWidget);
     await tapText(t, 'START ADVENTURE');
     await t.enterText(find.byType(TextField), 'minyoung');
-    await tapText(t, 'START MISSION');
+    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 2400));
+
+    // The season's casebook comes first (its BEGIN SEASON ONE path is in
+    // season_screen_test); this run starts the case from the case files.
+    expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
+    appRef.read(routerProvider).go(Routes.episodes);
+    await wait(t);
 
     // Case files: only the cases at first; open one, choose its episode, begin.
     expect(find.text('THE MISSING CROWN'), findsOneWidget);
@@ -97,7 +106,8 @@ void main() {
     await tapText(t, "I'M READY", after: const Duration(milliseconds: 1500));
 
     // Map: one way forward; the case status lives in the menu.
-    expect(find.text("GO TO KING'S CROSS"), findsOneWidget);
+    expect(find.bySemanticsLabel("GO TO KING'S CROSS"), findsOneWidget);
+    expect(find.byKey(const ValueKey('next-place')), findsOneWidget, reason: 'the next place is named over GO');
     expect(find.text("YOU'RE HERE"), findsOneWidget, reason: 'only the current place is marked');
     expect(find.text('BRITISH MUSEUM'), findsNothing, reason: 'locked places stay a mystery');
     await t.tap(find.byTooltip('Menu'));
@@ -139,15 +149,14 @@ void main() {
     expect(find.text('UNLOCKED'), findsOneWidget, reason: 'pin ceremony');
     await wait(t, const Duration(milliseconds: 3000));
     expect(audio.played, contains(GameSound.unlock));
-    expect(find.text('BRITISH MUSEUM'), findsOneWidget, reason: 'the new place is named on the map');
+    expect(find.descendant(of: find.byKey(const ValueKey('pin-m02')), matching: find.text('BRITISH MUSEUM')), findsOneWidget, reason: 'the new place is named on the map');
 
     // ── Mission 02: word input, using both tips.
     await openMission(t, 'GO TO BRITISH MUSEUM');
-    await tapText(t, 'Need a tip?', after: const Duration(milliseconds: 500));
-    await tapText(t, 'One more tip', after: const Duration(milliseconds: 500));
+    await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
+    await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
     expect(find.text('DETECTIVE TIP 2'), findsOneWidget);
-    expect(find.text('Need a tip?'), findsNothing);
-    expect(find.text('One more tip'), findsNothing, reason: 'at most two tips');
+    expect(find.text('Get a tip'), findsNothing, reason: 'at most two tips');
     await reveal(t, find.byType(TextField));
     await t.enterText(find.byType(TextField), 'stone');
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);

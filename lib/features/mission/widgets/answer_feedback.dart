@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -8,6 +6,8 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
+import '../../../widgets/detective_tips.dart';
+import '../../../widgets/paper.dart';
 import '../../game/scoring.dart';
 
 /// Full-screen celebration after a correct answer.
@@ -64,8 +64,34 @@ class _SuccessOverlay extends StatefulWidget {
 }
 
 class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))
-    ..forward();
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
+  bool _closing = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_c.isDismissed) {
+      // Reduced motion: show the finished page at once (no slam, no count-up).
+      if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+        _c.value = 1;
+      } else {
+        _c.forward();
+      }
+    }
+  }
+
+  /// A tap anywhere while the stamp is still coming down finishes the
+  /// moment at once, so a child never has to wait for the button.
+  void _finishNow() {
+    if (_c.isAnimating) _c.value = 1;
+  }
+
+  /// Continue exactly once, however many times the button is tapped.
+  void _close() {
+    if (_closing) return;
+    _closing = true;
+    Navigator.of(context).pop();
+  }
 
   Animation<double> _iv(double begin, double end, [Curve curve = Curves.easeOut]) =>
       CurvedAnimation(parent: _c, curve: Interval(begin, end, curve: curve));
@@ -91,9 +117,13 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
     final clue = widget.clue;
     return Material(
       type: MaterialType.transparency,
-      child: Stack(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _finishNow,
+        child: Stack(
         children: [
-          Positioned.fill(child: IgnorePointer(child: _Confetti(animation: _c))),
+          // A pool of lamplight on the dark desk, where the stamp comes down.
+          const Positioned.fill(child: IgnorePointer(child: CustomPaint(painter: _LampLightPainter()))),
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -115,11 +145,33 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
                           child: Column(
                             children: [
                               Text(widget.message,
-                                  textAlign: TextAlign.center, style: AppText.subtitle(color: AppColors.paperLight)),
+                                  textAlign: TextAlign.center,
+                                  style: AppText.title(size: 21, color: AppColors.paperLight).copyWith(height: 1.35)),
                               if (clue != null) ...[
-                                const SizedBox(height: AppSpace.sm),
-                                Text('New clue: "${clue.title}"',
-                                    textAlign: TextAlign.center, style: AppText.bodyText(size: 16, color: AppColors.goldLight)),
+                                const SizedBox(height: AppSpace.lg),
+                                // The clue, pinned to the desk on a slip of paper.
+                                Transform.rotate(
+                                  angle: -0.02,
+                                  child: Container(
+                                    padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.paperLight,
+                                      borderRadius: BorderRadius.circular(AppRadius.paper),
+                                      boxShadow: AppShadow.onNight,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const InkIcon(InkGlyph.search, size: AppIconSize.medium, color: AppColors.burgundy),
+                                        const SizedBox(width: AppSpace.sm),
+                                        Flexible(
+                                          child: Text('New clue: "${clue.title}"',
+                                              textAlign: TextAlign.center, style: AppText.letter(size: 18)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             ],
                           ),
@@ -129,7 +181,7 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
                           opacity: _o(_xp),
                           child: Text(
                             '+${(widget.xp.total * _xp.value).round()} XP',
-                            style: AppText.caption(color: AppColors.goldLight)
+                            style: AppText.style(AppText.display, size: 20, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
                                 .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
                           ),
                         ),
@@ -154,7 +206,7 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
                               label: widget.buttonLabel,
                               arrow: true,
                               style: GameButtonStyle.gold,
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: _close,
                             ),
                           ),
                         ),
@@ -166,6 +218,7 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -197,44 +250,6 @@ class _WellDoneStamp extends StatelessWidget {
   }
 }
 
-class _Confetti extends StatelessWidget {
-  const _Confetti({required this.animation});
-
-  final Animation<double> animation;
-
-  @override
-  Widget build(BuildContext context) => CustomPaint(painter: _ConfettiPainter(animation));
-}
-
-class _ConfettiPainter extends CustomPainter {
-  _ConfettiPainter(this.animation) : super(repaint: animation);
-
-  final Animation<double> animation;
-  static const _colors = [AppColors.gold, AppColors.goldLight, AppColors.royalBlue, AppColors.paperLight, AppColors.burgundy];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final t = animation.value;
-    if (t >= 1) return;
-    final rnd = math.Random(3);
-    for (var i = 0; i < 60; i++) {
-      final x = rnd.nextDouble() * size.width;
-      final speed = 0.6 + rnd.nextDouble() * 0.8;
-      final y = -20 + (size.height + 40) * (t * speed);
-      final sway = math.sin(t * 10 + i) * 18;
-      final paint = Paint()..color = _colors[i % _colors.length].withValues(alpha: (1 - t).clamp(0, 1));
-      canvas.save();
-      canvas.translate(x + sway, y);
-      canvas.rotate(t * 8 + i);
-      canvas.drawRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(-4, -7, 8, 14), const Radius.circular(2)), paint);
-      canvas.restore();
-    }
-  }
-
-  @override
-  bool shouldRepaint(_ConfettiPainter old) => false;
-}
-
 enum TryAgainChoice { retry, hint }
 
 /// Gentle, encouraging feedback for a wrong answer.
@@ -254,13 +269,23 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
             Container(
               width: 84,
               height: 84,
-              decoration: const BoxDecoration(color: AppColors.tryAgainSoft, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.paper,
+                border: Border.all(color: AppColors.tryAgain.withValues(alpha: 0.6), width: AppLine.ink),
+              ),
+              foregroundDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.tryAgain.withValues(alpha: 0.25), width: AppLine.hairline),
+              ),
               // "Good detectives look again": the magnifier.
-              child: const InkIcon(InkGlyph.search, size: AppIconSize.hero, color: AppColors.tryAgain),
+              child: const InkIcon(InkGlyph.search, size: AppIconSize.hero - 8, color: AppColors.tryAgain),
             ),
             const SizedBox(height: 14),
             Text('Not quite!', style: AppText.title(size: 30, color: AppColors.tryAgain)),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
+            const OrnamentRule(color: AppColors.tryAgain),
+            const SizedBox(height: AppSpace.sm),
             Text(
               'Good detectives look again.\nRead the clue one more time!',
               textAlign: TextAlign.center,
@@ -275,7 +300,7 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
             if (hintAvailable) ...[
               const SizedBox(height: 12),
               GameButton(
-                label: 'GET A TIP',
+                label: tipButtonLabel,
                 glyph: InkGlyph.hint,
                 style: GameButtonStyle.outline,
                 onPressed: () => Navigator.of(context).pop(TryAgainChoice.hint),
@@ -302,35 +327,29 @@ class TipsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final canReveal = revealed < hints.length;
-    final label = revealed == 0 ? 'NEED A TIP?' : 'ONE MORE TIP';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (var i = 0; i < revealed && i < hints.length; i++)
           Padding(
-            padding: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(bottom: AppSpace.md),
             child: _TipNote(number: i + 1, text: hints[i]),
           ),
+        // The same secondary button and words as the try-again sheet.
         if (canReveal)
-          Center(
-            child: TextButton.icon(
-              onPressed: onReveal,
-              style: TextButton.styleFrom(
-                minimumSize: const Size(200, 54),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                backgroundColor: dark ? Colors.white.withValues(alpha: 0.08) : AppColors.goldLight.withValues(alpha: 0.35),
-              ),
-              icon: InkIcon(InkGlyph.hint, size: AppIconSize.medium, color: dark ? AppColors.goldLight : AppColors.goldDeep),
-              label: Text(label, style: AppText.button(size: 16, color: dark ? AppColors.goldLight : AppColors.goldDeep)),
-            ),
+          GameButton(
+            label: tipButtonLabel,
+            glyph: InkGlyph.hint,
+            style: GameButtonStyle.outline,
+            onPressed: onReveal,
           ),
         if (canReveal)
           Padding(
-            padding: const EdgeInsets.only(top: 4),
+            padding: const EdgeInsets.only(top: AppSpace.xs),
             child: Text(
               revealed == 0 ? 'A tip uses a little of your bonus XP.' : 'Tip ${revealed + 1} of ${hints.length}',
               textAlign: TextAlign.center,
-              style: AppText.caption(color: dark ? Colors.white60 : AppColors.muted),
+              style: AppText.caption(color: dark ? AppColors.paperLight.withValues(alpha: 0.8) : AppColors.muted),
             ),
           ),
       ],
@@ -349,34 +368,43 @@ class _TipNote extends StatelessWidget {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
       duration: const Duration(milliseconds: 450),
-      curve: Curves.easeOutBack,
-      builder: (context, t, child) =>
-          Transform.scale(scale: 0.8 + 0.2 * t, child: Opacity(opacity: t.clamp(0, 1), child: child)),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF1B8),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.gold, width: 2),
-        ),
-        child: Row(
+      curve: Curves.easeOut,
+      builder: (context, t, child) => Opacity(opacity: t.clamp(0, 1), child: child),
+      // A handwritten note, the same as the tips of every mission.
+      child: PaperSheet(
+        tilt: number.isOdd ? -0.008 : 0.008,
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.lg),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const InkIcon(InkGlyph.hint, size: AppIconSize.large, color: AppColors.goldDeep),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('DETECTIVE TIP $number', style: AppText.eyebrow()),
-                  const SizedBox(height: 4),
-                  Text(text, style: AppText.bodyText(size: 17, weight: FontWeight.w700, color: AppColors.inkBrown)),
-                ],
-              ),
-            ),
+            Text('DETECTIVE TIP $number', style: AppText.eyebrow()),
+            const SizedBox(height: AppSpace.xs),
+            Text(text, style: AppText.letter(size: 17)),
           ],
         ),
       ),
     );
   }
+}
+
+/// Warm light falling on the dark desk behind the "WELL DONE" stamp.
+class _LampLightPainter extends CustomPainter {
+  const _LampLightPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final pool = Rect.fromCircle(center: Offset(size.width / 2, size.height * 0.36), radius: size.longestSide * 0.55);
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = RadialGradient(
+          colors: [AppColors.royalBlue.withValues(alpha: 0.30), AppColors.navy.withValues(alpha: 0.30), Colors.transparent],
+          stops: const [0, 0.5, 1],
+        ).createShader(pool),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -19,14 +19,16 @@ class ClueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // An index card: a red rule along the top, pale blue lines below.
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: highlight ? AppColors.gold : AppColors.parchmentDark, width: highlight ? 3 : 1.5),
-        boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 3))],
+        color: AppColors.paperLight,
+        borderRadius: BorderRadius.circular(AppRadius.paper),
+        border: Border.all(color: highlight ? AppColors.gold : AppLine.faint(0.2), width: highlight ? 2.5 : AppLine.hairline),
+        boxShadow: AppShadow.paperLift,
       ),
+      foregroundDecoration: const _IndexCardRules(),
       child: Row(
         children: [
           SizedBox(
@@ -41,8 +43,8 @@ class ClueCard extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: AppColors.navy,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.gold, width: 2),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: AppColors.gold.withValues(alpha: 0.7), width: AppLine.rule),
                   ),
                   child: FittedBox(
                     child: Padding(
@@ -82,6 +84,28 @@ class ClueCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The printed lines of an index card, over the card's paper.
+class _IndexCardRules extends Decoration {
+  const _IndexCardRules();
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _IndexCardRulesPainter();
+}
+
+class _IndexCardRulesPainter extends BoxPainter {
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final r = offset & configuration.size!;
+    canvas.drawLine(
+      Offset(r.left, r.top + 8),
+      Offset(r.right, r.top + 8),
+      Paint()
+        ..color = AppColors.burgundy.withValues(alpha: 0.45)
+        ..strokeWidth = AppLine.hairline,
     );
   }
 }

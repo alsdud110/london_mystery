@@ -6,7 +6,7 @@ import '../core/theme/app_tokens.dart';
 import 'paper.dart';
 
 /// Detective tips that were opened, as small handwritten notes.
-/// (The "Need a tip?" link that opens them sits with the puzzle's actions.)
+/// (The "Get a tip" link that opens them sits with the puzzle's actions.)
 class DetectiveTipNotes extends StatelessWidget {
   const DetectiveTipNotes({super.key, required this.hints, required this.revealed});
 
@@ -46,9 +46,14 @@ class DetectiveTipNotes extends StatelessWidget {
   }
 }
 
+/// One name for asking for a tip, wherever it is offered: the quiet link
+/// under a puzzle ([nextTipLabel]) and the buttons of the try-again sheet
+/// and the final case ([tipButtonLabel]). Only the letter case follows the
+/// component (link vs. engraved button).
+const tipButtonLabel = 'GET A TIP';
+
 /// Label for the link that opens the next tip, or null when none are left.
-String? nextTipLabel(List<String> hints, int revealed) =>
-    revealed >= hints.length ? null : (revealed == 0 ? 'Need a tip?' : 'One more tip');
+String? nextTipLabel(List<String> hints, int revealed) => revealed >= hints.length ? null : 'Get a tip';
 
 /// Colour of the tip link (gold ink, so it reads as a helper, not an answer).
 const tipLinkColor = AppColors.goldDeep;

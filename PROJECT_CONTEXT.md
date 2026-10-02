@@ -4,8 +4,8 @@
 > README.md(사용자/운영자용 안내)와 달리, 이 파일은 **다음 개발 세션이 현재 상태를 정확히 파악하기 위한 문서**다.
 > 새 세션은 반드시 이 파일을 먼저 읽고, 아래 *Session Continuity Protocol*을 따른다.
 >
-> 최종 검증일: 2026-09-29 (`flutter analyze` 0 issues + `flutter test` **253개** 통과 + Android 에뮬레이터 실기 QA)
-> 마지막 작업: **Phase 4 — 실제 플레이 테스트 준비 + Visual Polish** (아래 *Phase 4* 및 Change Log 참고)
+> 최종 검증일: 2026-10-02 (`flutter analyze` 0 issues + `flutter test` **424개** 통과, 360×640·390×844 Season 화면 스크린샷 확인. 실기기 확인은 2026-09-29가 마지막)
+> 마지막 작업: **Season Opening Sequence (Briefing → 5장면 Prologue + Case 01 파일)**, 그 전 Season One 재설계, **Season One Experience** (2026-10-02, Change Log 참고). 그 전: Mission 화면 Android Back 버그, UI/UX 감사 1차 수정, 전체 UI 리디자인 "Victorian Casebook"
 
 ---
 
@@ -131,7 +131,7 @@ lib/
 │   └── utils/                         # answer_checker, formatters, audio_service
 ├── data/
 │   ├── models/                        # episode.dart, mission.dart(Mission/Clue/Evidence/ChoiceOption/enum), game_progress.dart
-│   ├── mock/episode01_mock.dart       # EP01 콘텐츠 (백엔드 JSON과 같은 형태의 const Map)
+│   ├── mock/season1/episode01_mock.dart # EP01 콘텐츠 (백엔드 JSON과 같은 형태의 const Map)
 │   └── repositories/                  # EpisodeRepository(+Mock), ProgressRepository(+SharedPrefs, InMemory)
 ├── features/
 │   ├── onboarding/    # start, register, episode_select, story_intro
@@ -167,7 +167,9 @@ tool/gen_sounds.js     # 효과음 WAV 생성 스크립트 (node)
 |---|---|---|
 | `/` | StartScreen | 항상 |
 | `/register` | RegisterScreen | 항상 |
-| `/episodes` (`?case=epNN`) | EpisodeSelectScreen (`case`: 그 사건 폴더를 열고 선택한 채 스크롤. 봉인/모르는 id는 무시) | 탐정 등록 필요 |
+| `/season` | SeasonScreen (시즌 시작 전 = Casebook, 이후 = Investigation Board. Back → `/`) | 탐정 등록 필요 |
+| `/season/prologue` | SeasonPrologueScreen (Casebook → 5장면 오프닝 → Case 01 파일 → Case 01 인트로. Back = 이전 장면, 첫 장면에서 `/season`) | 탐정 등록 필요 |
+| `/episodes` (`?case=epNN`) | EpisodeSelectScreen (`case`: 그 사건 폴더를 열고 선택한 채 스크롤. 봉인/모르는 id는 무시. Back → `/season`) | 탐정 등록 필요 |
 | `/intro` | StoryIntroScreen | 탐정 등록 필요 |
 | `/map`, `/notebook`, `/scan` | 지도 / 노트북 / QR 스캐너 | + introSeen |
 | `/mission/:id` | MissionScreen | + 해금된 일반 미션만 (final 불가) |
@@ -514,6 +516,11 @@ node tool/gen_sounds.js  # 효과음 재생성
 - [x] ~~(경미) Case 02 Final 해결 후에도 시계가 8:17~~ — 2026-09-29 해결 애니메이션과 함께 9:17로 돌아감 (`LandmarkArt.solved`)
 - [x] ~~(경미) 시퀀스 퍼즐의 Undo/Start again 비활성 구분 없음~~ — 2026-09-29 공통 `InkTextButton`이 비활성일 때 `locked` 회색
 - [ ] (경미) **CONTINUE ADVENTURE로 Case Files에 들어오면 인트로를 아직 안 본 사건은 선택되지 않음** — 기존 동작(인트로를 본 사건만 선택 유지). `OPEN CASE NN`과 플레이 테스트 도구(`CASE NN부터`)로 들어오면 선택되어 있음
+- [ ] (UI 감사 후 남은 것, 2026-10-02) Game Master 화면은 아직 Material 기본 위젯(흰 Card·ExpansionTile·기본 BackButton 아이콘). 다이얼로그·OutlinedButton·초기화 버튼만 정리함
+- [ ] (UI 감사 후 남은 것) ParentGate 문제(6~9 × 6~9)는 8~12세가 풀 수 있는 수준. 오답이면 안내 없이 닫힘 (테스트가 이 동작을 고정하고 있어 이번에 바꾸지 않음)
+- [ ] (UI 감사 후 남은 것) 지도 메뉴 시트는 기본 ListTile/SwitchListTile, Parent Report는 영어·한국어 혼용과 3열 지표(360폭에서 좁음)
+- [ ] (UI 감사 후 남은 것) Final Case는 처음 들어오면 아트→이야기→편지→자물쇠 순서로 스크롤해서 읽음(다시 들어오면 자물쇠로 바로 이동). 360×640 첫 화면에는 자물쇠가 보이지 않음
+- [ ] (UI 감사 후 남은 것) 버튼 라벨 Cinzel 대문자는 그대로(영어가 외국어인 아이의 가독성은 실제 플레이 테스트로 판단 필요)
 - [ ] (경미) `StorySceneScreen.build()` 안에서 `lines.isEmpty`일 때 `_done = true`를 대입 (build 중 상태 변경). 현재 모든 일반 미션에 transition이 있어 실제로 발생하지 않음
 
 ---
@@ -702,6 +709,131 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 ---
 
 ## Change Log
+
+### 2026-10-02 — Title Screen: 탐정 사무실 artwork
+
+- 파일: `assets/images/title/title_detective_office.png`(941×1672), pubspec `assets/images/title/`, `ArtAssets.titleDetectiveOffice` + `…Pixels`. 타이틀 화면 전용(Season Cover 파노라마 재사용 안 함)
+- 이 화면에서 제거(공용 위젯·asset은 유지): `PaperBackground(night)`의 밤하늘·별·하단 스카이라인, 큰 `BrassEmblem` 로고(그림의 책상 위 돋보기와 중복), 밝은 gold 버튼, 스카이라인 자리 여백. 그림이 없을 때만 기존 밤 페이지로 폴백
+- 구성: 그림 full-bleed(`BoxFit.cover`, 좁은 폰 `Alignment(0.55, 0)` → 창문·Big Ben 온전, 램프는 일부). 제목은 **왼쪽 위 책장/커튼의 어두운 영역**(창문의 달·Big Ben 비움): THE CASEBOOK OF / LONDON / MYSTERY / ◆ / Become a Detective.(+ 저장 있으면 Welcome back). 열 폭 ≤ 화면 68%, 제목 단어는 한 줄 고정(넘치면 축소), 글자 확대는 1.15배까지. 그늘은 제목 뒤 radial + 화면 아래 20%만(책상 소품은 그대로)
+- CTA: Season Cover와 같은 `GameButtonStyle.glass`. 새 플레이어는 아래 여백 16 + 화면 높이 3.8%(20~28), 저장 있으면 그 아래 `Start a new case`
+- 후속(같은 날): 부제 한 줄만 — 새 플레이어 `Become a Detective.` / 저장 있으면 `Welcome back, Detective {이름}!`(같은 aside 스타일·좌측선). 보조 버튼 `Start a new case` → **`NEW ADVENTURE`**(동작·확인 창 그대로, 확인 창 제목은 여전히 "Start a new case?"). 저장 있을 때 버튼 그룹 아래 여백 8 → 8 + 화면 높이 1.9%(10~14)
+- Ambient(같은 날, 그림 레이어에만, 글자·버튼은 고정): 카메라 1.0 ↔ 1.022(14s 왕복 easeInOut, 창문 쪽 Alignment(0.6, -0.3)), 창문 유리 4칸에만 clip된 빗줄기 34개(가늘고 옅게, 9s 루프·끊김 없음, CustomPainter), 램프 주변 따뜻한 빛 0.88 ↔ 1.0(4.2s 왕복). 셋 다 **진입 2.4s 뒤** 2s fade-in으로 시작, 다이얼로그(Parent Gate·새 모험 확인) 동안 정지, 다른 페이지가 덮으면 TickerMode로 정지, 앱 백그라운드는 프레임 없음, dispose 확인. 첫 진입 시 1회만 제목→장식선→부제→버튼 0~1s fade + 6px 상승(버튼은 처음부터 눌림). 모션 줄이기 = 전부 정적
+- 수정(같은 날, 실기기 보고: 진입 직후 글자·버튼이 그림 뒤로 사라짐): 위젯 트리 순서는 원래 정상(테스트 렌더러에서 재현 안 됨). 원인 추정 = 램프 빛의 `BlendMode.screen`(Impeller의 advanced blend — 배경을 다시 읽어 합성) — 이 painter가 그리기 시작하는 2.4s와 증상 시점, 그 사각형 영역과 "Welcome back"의 보이는 부분이 일치. → source-over로 변경(같은 세기). 구조도 정리: camera push는 그림에만, 비·램프 빛은 각자 같은 push를 따르는 형제 레이어 + `IgnorePointer`, 그 위 그라데이션, 맨 위 UI. 같이 찾은 버그: 등장 구간 계산으로 NEW ADVENTURE가 영원히 불투명도 0.98에서 멈춤 → 각 구간이 1에서 끝나게. 비 미세 조정: 속도 +25%(루프 9s → 7.2s), 굵기 0.8 → 0.98, 길이 약 +8%, 투명도·개수 그대로. 테스트 +2(360·390, 0.1/1.2/5/12s에 UI가 그림·비·램프보다 나중에 그려지고 불투명도 1). **실기기 재확인 필요**
+- **Game Master 길게 누르기**: 로고 대신 제목 블록에(동작·Parent Gate 동일)
+- 로직 변경 없음(START/CONTINUE 분기, 새 게임 확인, 라우팅). 모션 없음(그림만으로 충분)
+- Tests: 424 → 430 (`title_screen_test`: 360×640·390×844·1.3배 × 새/저장 — 그림이 화면 전체, 제목이 창문 왼쪽(폭 72% 안), 제목 단어가 줄바꿈되지 않음, 버튼이 아래 끝에서 떨어지고 책상 아래쪽, Welcome back·Start a new case. `LM_SCREENSHOTS`로 PNG)
+
+### 2026-10-02 — Season Cover: 런던 파노라마 (사건철 제거)
+
+- 파일: `assets/images/season1/season1_cover_london_panorama.png`(941×1672, 폴더는 이미 등록됨). `ArtAssets.season1CoverLondonPanorama` + `…Pixels`. **Cover 전용** — Scene 1 그림(`season1LondonNight`)과 서로 대체·반복하지 않음
+- 제거: 가죽 사건철(`season_casebook.dart` 삭제), 종이 라벨, 책상 배경·지도(Cover에서), 밝은 gold 대형 버튼, 갈색 앱바 띠
+- 구성: 그림 full-bleed(`BoxFit.cover`, 좁은 폰은 `Alignment(0.55, 0)` — Big Ben 쪽으로, 탐정 아이도 화면 안). 하늘에 LONDON MYSTERY / SEASON ONE / SHADOWS·OVER LONDON(항상 두 줄, 넓은 줄은 폭에 맞춰 축소) / 장식선 / 12 CASES • ONE MYSTERY. 위·아래에만 navy 그라데이션(도시 가운데는 맑게), 글자 그림자 최소. 제목 글자 확대는 1.15배까지(1.3배 설정에서도 도시를 덮지 않게)
+- CTA: 새 `GameButtonStyle.glass`(반투명 navyDeep + 얇은 gold 테두리 + gold 글자, 깊이 없음) — 지붕 위, 아이와 겹치지 않음. Back: 그림 위 반투명 원형 배경
+- 애니메이션: 제목·버튼 순서대로 등장 + 1.0 → 1.025 아주 느린 push(1.5s, 탭 = 즉시). BEGIN SEASON ONE → 0.52s 동안 Westminster 쪽으로 카메라가 들어가며(+0.14) 어둠으로 → 오프닝 Scene 1(밤 런던, 더 가까이)이 어둠에서 나옴. 모션 줄이기 = 바로 이동
+- 미세 조정(같은 날): 제목 크기 약 18% 축소(폭 × 0.082, 26~36), 제목 ↔ 문구 사이 `OrnamentRule` 150폭 + 간격 확대, 문구는 goldLight→paperLight 35% + 진한 그림자, 문구 최대 폭 = 화면 62%(1.3배 글자에서도 Big Ben 시계에 닿지 않음), glass 버튼 배경 0.62 → 0.48(배경은 이 값으로 확정; 이후 버튼 인지성만 보강: 글자·화살표 goldLight→paperLight 20%, 테두리 0.75 → 0.92, 안쪽 선 0.25 → 0.32, glow·그림자 없음. Cover 구성은 확정), 버튼 아래 여백 16 + 화면 높이 3.8%(20~28) → 지붕이 버튼 아래로 보임, 탐정 아이와 간격 유지
+- 360×640: 그림 비율과 같아 잘림 없음. 390×844: 좌우 일부 잘림, Big Ben·아이 모두 화면 안. 1.3배 글자 OK. 테스트 424개 그대로 통과(문구 `SHADOWS\nOVER LONDON`, `12 CASES • ONE MYSTERY`, `BEGIN SEASON ONE` 유지)
+
+### 2026-10-02 — Season Opening Scene 1: 밤 런던 hero artwork 적용
+
+- 파일: `assets/images/season1/season1_london_night.png`(941×1672, 9:16, 텍스트 없음). pubspec에 `assets/images/season1/` 등록. `ArtAssets.season1LondonNight` + `season1LondonNightPixels`(위젯에 경로 하드코딩 없음). **오프닝 1장면 전용** — 다른 화면에는 쓰지 않음
+- `LondonNightHero`(`prologue_art.dart`): full-bleed `BoxFit.cover`, `focus = Alignment(0.75, -0.2)`(폰이 그림보다 좁으면 Big Ben 쪽으로 기울여 자름), 표시 폭 기준 디코딩(원본 이하). 파일 오류 시 기존 코드 그림 `NightLondon`으로 폴백
+- 구도: 위쪽 옅은 navy 그늘(Back/SKIP 대비), 아래쪽 투명 → navy 그라데이션(0.52~1, 불투명 패널 없음) 위에 LONDON(부드러운 그림자) + 문장 + NEXT. 색 필터 없음
+- Camera push: 기존 그대로 1.0 → 1.04, Big Ben 쪽(Alignment(0.7, -0.25))으로, 장면 애니메이션(1.4s)에 묶여 탭하면 즉시 완료
+- 전환: 장면 사이 Scaffold 배경 = `nightBottom` → 밤 런던 → 어둠 → 책상 (420ms crossfade, 기존). 장면 2~5·파일·로직 변경 없음
+- 확인: 360×640 = 그림 비율과 같아 잘림 없음(Big Ben·의사당·템스·가스등 전부), 390×844 = 좌우 약 18% 잘림, Big Ben 온전 + 여백, 가스등 일부만. 1.3배 글자 overflow 없음. 테스트 424개 그대로 통과
+
+### 2026-10-02 — Season Opening Sequence (Briefing 문서 폐기 → 5장면 Prologue + Case 01 파일)
+
+- **진단**: Briefing은 한 장의 종이에 정보를 배치한 화면이라 worksheet/onboarding처럼 보였음(teaser가 UI 라벨, 빈 지도 사각형, 12 CASES와 CTA 충돌). Cover의 폴라로이드는 이야기 없는 장식(scrapbook)
+- **흐름**: Cover `BEGIN SEASON ONE` → `/season/prologue`(`season_prologue_screen.dart`, Briefing 화면·`SeasonBriefing` 모델 삭제) → ① LONDON(밤 런던) ② 책상 위에 사건 자료 4장이 하나씩(문장도 한 줄씩) ③ 지도에 따로 꽂힌 4장 "They look like separate cases." → "But a great detective looks closer." ④ 같은 지도에 붉은 실 2가닥이 교차 "What if they're connected?" ⑤ SEASON ONE / 12 CASES ◆ ONE MYSTERY + 3줄 → `ACCEPT THE CASE` → ⑥ Case 01 사건 파일(CASE 01 탭, THE MISSING CROWN, 왕관 사진, Case 01 synopsis 첫 줄, "Your first investigation begins tonight.", ASSIGNED 도장) → `START CASE 01` → 기존 Story Intro
+- **조작**: 탭 = 장면 애니메이션 즉시 완료 → 다음 탭 = 다음 장면, NEXT ›, SKIP ›(→ ⑤). ⑤·⑥은 버튼으로만. Back(앱바·시스템 동일, 장면 단위 `BackTo`) = 이전 장면(완성 상태), ①에서 Cover. 모션 줄이기 = 즉시. 장면 등장 1.1~2.6s
+- **저장**: 없음. Cover가 시즌 시작 전에만 나오므로 오프닝도 그때만(새 플래그 없음). START CASE 01 전에는 아무 사건도 시작되지 않음
+- **데이터**: `season1InfoJson.prologue`(장면 문구, `\n` 줄바꿈, firstCase 그림 키 `crown`) + `SeasonPrologue` 모델. Case 파일 문장은 Episode synopsis(하드코딩 없음)
+- **그림**: `prologue_art.dart` — `NightLondon`(기존 `LondonSkylinePainter`를 크게 + 템스강 반사광·안개·가스등, 카메라 push), `TroublePrint`(crown.png / letter.png / 잠긴 문 코드 그림 / 안개 속 실루엣 코드 그림), `TroubleMap`(Season 보드와 같은 호두나무 액자·세피아 지도·압정·붉은 실 → 보드는 이 지도가 완성되어 가는 것). `season_props.dart`에 `PrintFrame`
+- **Cover**: 폴라로이드 제거, 지도는 어둡게(책상 그림자 속), 사건철만 초점
+- **Custom Asset Required**: 밤 런던 파노라마(현재 코드 실루엣이라 단순), "mysterious stranger" 사진(현재 코드 실루엣). `clockmaker_master.png`는 스포일러라 사용 안 함
+- **Tests**: 422 → 424. Briefing 테스트 → 오프닝 테스트(신규 플레이 Cover → ①~⑤ 문구·화면 안·글이 버튼 위·스포일러/학습 용어 없음 → 파일 → 인트로, 360×640 / 390×844 / 1.3배 글자, 탭·SKIP, Back 장면 단위·Cover 복귀·파일→⑤)
+
+### 2026-10-02 — Season One 재설계: Season Briefing + 책상/보드 물성 (같은 날 Season One Experience 위에)
+
+- **흐름**: Casebook `BEGIN SEASON ONE` → **새 `/season/briefing`**(`season_briefing_screen.dart`) → `BEGIN THE INVESTIGATION`(기존 BEGIN/CONTINUE INVESTIGATION 문체) → Case 01 Story Intro(그대로). Briefing은 사건을 열거나 저장하지 않음. Casebook은 시즌 시작 전(`begun` false)에만 나오므로 Briefing도 그때만 — **새 저장 플래그 없음**. Briefing Back → Casebook. 케이스 열기는 `SeasonActions.investigate` 하나(Season·Briefing 공용, `openEpisode` + 인트로/지도)
+- **데이터**: `season1InfoJson.intro` → `briefing`(opening, teasers 4개 + ink glyph 이름, turn, connected, closing). `SeasonBriefing` 모델. Teaser는 분위기만(Missing treasures / Secret letters / Locked rooms / Mysterious strangers)
+- **물성**: 새 토큰 `AppColors.walnut/walnutDeep` + `widgets/desk_background.dart`(호두나무 책상 + 결 + 램프 빛, InkSurface night). Season 세 화면 모두 navy 대신 책상 위. 공용 소품 `season/widgets/season_props.dart`: `MapPrint`(기존 지도, 세피아), `PhotoPrint`(기존 장면 그림 인화), `PushPin`, `PaperTag`
+- **Cover**: 책상 위 지도 한 장 + Big Ben·Tower Bridge 사진(런던만, 사건 정보 없음) 위에 사건철. 사건철 = 가죽 결, 페이지 단면, 황동 모서리, 가죽 끈 + 황동 징, 약간 기울임. 문장 3줄 제거(Briefing으로), 책 ↔ CTA 간격 축소
+- **Briefing**: CONFIDENTIAL 도장의 종이 dossier. 지도 위에 teaser 쪽지 4개(핀), 12 CASES / ONE MYSTERY, EVERY CLUE MAY BE CONNECTED. 순서대로 1.5s 등장(터치 = 즉시), 하단 고정 CTA, 문서 끝은 CTA 위로 페이드(이어짐 표시)
+- **Board**: 호두나무 액자, 진한 세피아 지도 + 가장자리 그림자, 큰 사진(겹침 허용)·빨간 압정·번호 PaperTag, 봉인 사건 = 봉랍 봉투(작고 흐리게), 현재 = 빨간 핀 `?` 쪽지, 빈 메모 2장·LONDON 소인(정보 없음), 실에 그림자. 해결 연출 1.4s: 사진 → 핀 → 실 → 번호 태그 → 다음 사건 → figure, 터치 = 즉시
+- **Main 하단**: 진행·현재 사건·CTA(navy, 종이 위 Primary)·View all case files를 종이 dossier 하나로 → 보드가 화면 대부분(360×640에서 약 330dp)
+- **유지**: 스포일러 규칙(이전 항목 그대로), 저장·라우팅·Case Files·Notebook·Archive·Operator Mode
+- **Tests**: 419 → 422 (+Briefing 390×844·1.3배 글자·Back, Cover 390×844, 시작된 시즌은 Briefing/Cover 없음 + 0/12 보드). 신규 플레이 테스트는 Cover → Briefing(문구·스포일러·학습 용어 없음) → Case 01 인트로로 변경. 스크린샷 헬퍼는 큰 지도 디코딩을 기다린 뒤 촬영
+
+### 2026-10-02 — Season One Experience (LONDON MYSTERY → SEASON ONE → CASE → MISSION)
+
+- **선행 수정**: `test/helpers.dart`·`lib/data/repositories/episode_repository.dart`의 import 줄이 깨져 있었음(`episode01_mock.dart'void ck.dart'…`, 파일을 `season1/`로 옮기며 생긴 편집 사고) → `season1/episode01_mock.dart`로 복구. 이 상태에서는 analyze 45 issues·테스트 컴파일 불가였고, 복구 후 기준선 392개 통과
+- **데이터**: `data/models/season.dart`(`Season`, `SeasonFigure`, 관대한 fromJson) + `season1_mock.dart`의 `season1InfoJson`(제목 Shadows over London, tagline, intro/outro 문장, figures). **새 저장 키 없음**
+- **상태 계산**: `features/season/season_overview.dart` `SeasonOverview.of` — 시즌 기록 + 사건 세이브 + 카탈로그에서 계산. 사건 표시(solved/current/open/sealed), 현재 사건(진행 중인 열린 사건 → 아니면 한 번도 해결 안 한 첫 해금 사건), `begun`(해결 기록 또는 인트로를 본 사건이 있음 = 첫 진입 판별, 플래그 없음), figure, 실(chain/lead/spoke). 잠금 규칙은 `SeasonNotifier.unlockRule`(기존 `isUnlocked`가 이를 호출 — 규칙 한 곳)
+- **스포일러 규칙**(figure는 해당 사건 *해결 후*에만): 0~1 해결 `?`/ONE MYSTERY → Case 02 `WHO ARE THE RAVENS?`(Case 02 hook) → Case 04 `THE RAVEN SOCIETY`(Final 정답 RAVEN) → Case 05 `THE CLOCKMAKER` + `?`(Case 05 hook) → Case 12 Clockmaker의 회중시계(`pocket_watch.png`) + CLOSED. Grey·Rose·Robin·Shadow·PARIS는 시즌 화면에 전혀 없음. 봉인 사건은 번호만(스크린리더도 제목 없음). Operator Mode는 열기만 하고 공개하지 않음
+- **화면** `features/season/season_screen.dart` (`/season`):
+  - 시즌 시작 전: 가죽 Casebook(`widgets/season_casebook.dart`, 기존 leather/RuledFrame/BrassEmblem/PaperSheet/WaxSeal) → 문장 3줄 → `BEGIN SEASON ONE` → `openEpisode` → Case 01 Story Intro. 1.6s 등장(책 fade/scale → 라벨 → 봉랍), 탭하면 즉시 완료, 모션 줄이기 = 즉시
+  - 이후: Investigation Board(`widgets/investigation_board.dart`) + CASES SOLVED n/12 + 사건별 점 + CURRENT CASE(번호 태그·제목, 탭 → 그 사건 Case File) + `CONTINUE/BEGIN INVESTIGATION`(Case Files와 같은 규칙·`openEpisode` 재사용: 인트로 / 지도) + `View all case files`. 완료: SEASON ONE COMPLETED + outro + `VIEW ALL CASE FILES`
+  - Board: 흐린 세피아 런던 지도(`ArtAssets.londonMap`, BlendMode.color + 투명도) 위에 12개 사건을 위에서 시계 방향 링(superellipse, 길이 기준 등간격 → 어떤 비율에도 균등)으로 배치, Case 12가 맨 위에서 링을 닫음. 해결 = 그 사건 Final 장면 사진(Case Closed 사진과 같은 그림) + 황동 핀, 현재 = 빨간 핀 `?` 메모 + 점선 lead, 봉인 = 작고 흐린 자물쇠 메모. 붉은 실은 CustomPainter(처짐 곡선). 사건 탭 → `/episodes?case=`(봉인은 "Solve Case NN to open this file.")
+  - 새로 해결한 사건 연출: `recentSolveProvider`(세션 전용, `recentUnlockProvider`와 같은 패턴, 처음 해결할 때만 컨트롤러가 추가) → 다음 Season 진입 시 1.8s: 사진 fade/settle → 실 그리기 → 다음 사건 열림 → figure 교체 → (완료 시) CLOSED 도장. 한 번만 재생, 모션 줄이기 = 즉시
+  - 작은 화면: Board가 남는 공간을 쓰고 최소 220dp, 부족하면 페이지 스크롤(`_MinHeight` + IntrinsicHeight). 360×640·1.3배 글자에서도 스크롤 없이 CTA 보임(스크린샷 확인)
+- **진입/라우팅**: Register `TO THE CASE FILES` → **`OPEN THE CASEBOOK`** → `/season`. Start `CONTINUE ADVENTURE`: 진행 중 사건 → 지도, 해결된 사건 → Case Closed(**기존 그대로**), 진행 중 사건 없음 → `/season`(이전 `/episodes`). Case Files Back(앱바·시스템) → `/season`(이전 `/register`). 지도 메뉴 `Season board`. 마지막 사건 Case Closed의 주 버튼 `CASE FILES` → **`INVESTIGATION BOARD`**(→ 완성된 보드, 거기서 VIEW ALL CASE FILES). Case 12 엔딩·PARIS 훅은 Case Closed에 그대로. Story Intro Back → Case Files(그대로)
+- **유지**: 게임 로직·정답·저장 키·잠금 규칙·Case Files/Notebook/Archive·라우터 가드(`/season`은 탐정 등록 필요)·Operator Mode·Play again(시즌 해결 기록 유지)
+- **Tests**: 392 → 419 (`season_screen_test` 27: overview 단위 9(0/12, 시작 판별, 중간, 12/12, 스포일러 표, 다시하기, Operator, 직전 상태) + 화면 18(신규 플레이 → Casebook → BEGIN → Case 01 인트로, 탭 스킵·Back, 기존 세이브 resume → 지도, 진행 없음 → 보드, 360×640·390×844 중간/완료 레이아웃·CTA 화면 안, 1.3배 글자, CONTINUE → 지도, Case Files ↔ Season(앱바·시스템 Back), 사건 탭·봉인 토스트·봉인 시맨틱, 화면 스포일러 단계, 해결 직후 reveal 1회, Case 12 → INVESTIGATION BOARD, 지도 메뉴, resetAll, Operator, URL 가드). `LM_SCREENSHOTS=폴더`로 PNG). 기존 테스트 수정: Register 버튼 라벨(`full_playthrough`·`ui_tour`·`small_screen` — Case Files 검사 항목은 라우터로 이동해 그대로 유지), 마지막 사건 버튼(`season_archive`: INVESTIGATION BOARD → VIEW ALL CASE FILES → `/episodes`)
+- **Asset**: 사용 = `london_mystery.png`(흐린 지도), `raven_mark.png`(Raven Society·봉랍), `pocket_watch.png`(완료 figure = Case 12 증거 The Clockmaker's Watch), 기존 장면 그림/코드 그림(사건 사진). 새 파일 없음. 사용 안 함 = `clockmaker_master.png`(Clockmaker는 시즌 내내 직접 나오지 않음), 참고 이미지의 까마귀 문장 표지(첫 화면에서 까마귀 노출 = 스포일러 → 황동 돋보기 엠블럼), 핀·실·쪽지 PNG(코드로 충분)
+- **남은 것**: 실기기 확인 안 함. 8~12세가 보드의 사진(작은 크기)을 사건으로 알아보는지, `BEGIN`/`CONTINUE` 구분을 이해하는지 플레이 테스트 필요
+
+### 2026-10-02 — Mission 화면 Android Back 버그 (실기기 보고)
+
+- **증상**: 장소(INVESTIGATE) 단계에서 Android 시스템 Back을 눌러도 Mission Map으로 돌아가지 않음 (실기기)
+- **원인**: Mission의 `BackTo`(PopScope)가 장소 단계에서만 `canPop: true`라 시스템 Back을 라우트 스택과 플랫폼에 맡김 (AppBar 화살표는 `_back()`으로 다른 경로). Mission 아래에 지도가 없으면 Flutter가 Android에 `setFrameworkHandlesBack(false)`를 보내고, target SDK 36 + Android 16(predictive back)은 Back을 앱에 주지 않고 앱을 백그라운드로 보냄. 위젯 테스트로 확인(아래 테스트가 이전 코드에서 실패). 지도 위에 push된 일반 경로는 테스트 환경에서 정상이었으므로 실기기에서 어떤 경로로 스택이 비었는지는 확인하지 못함
+- **수정** (`mission_screen.dart` 한 줄): `BackTo`를 모든 단계에서 켬 → 시스템 Back = AppBar Back = `_back()` (퍼즐→편지→장소→`pop`, 아래에 아무것도 없으면 `go(map)`). 라우팅 구조·UI 변경 없음
+- **Tests**: 381 → 392. `back_navigation_test`를 다시 씀: 시스템 Back(popRoute) / Android 16 back gesture 채널 / AppBar 세 경로 × (지도←장소, 장소←편지, 편지←퍼즐), 다시 들어온 미션(퍼즐부터), 아래에 페이지가 없는 미션, 여러 번 Back(지도에서는 질문, 앱 종료 없음, `setFrameworkHandlesBack` 항상 true)
+
+### 2026-10-02 — UI/UX 감사 1차 수정 (디자인 방향 유지, 접근성·조작·일관성)
+
+- **대비**: `muted` #7C7466→#6A6254(종이 5.1:1), `goldDeep` #8A6A35→#7E5F2C(5.0:1), `locked` #A39C8C→#857D6D(큰 글씨·아이콘용 3:1+). 작은 잠금 글씨(Case Files·Notebook·Archive)는 `muted`로. 밤 화면의 `gold` 제목은 `goldLight`
+- **GameDialog** (`widgets/game_dialog.dart`): 종이 문서 다이얼로그. `confirm`(아이용: 주 버튼 + 잉크 링크) / `confirmPlain`(보호자·운영자용: 장식 없음, Material 테마 버튼, `destructive`). Start·Case Closed·ParentGate·Game Master의 AlertDialog 대체. 버튼 라벨은 그대로
+- **퍼즐 선택 상태** (`question_widgets.dart`): `AnswerState`(idle/selected/correct/wrong/disabled) + `_answerPaper` 하나로 통일. 선택 = navy 채움 + 금색 표시(객관식·그림 선택 동일). 시퀀스의 "다음 칸"은 금색 테두리(선택과 구분). 눌림 = `_Pressable`(0.97 축소 + 살짝 흐림, 90ms, 키패드 포함, Material ripple 제거). 키패드 지우기 키에 Delete/Clear 글자
+- **정답 오버레이**: 화면을 탭하면 연출 즉시 완료, CONTINUE는 한 번만 동작, 모션 줄이기 설정이면 바로 완성 상태. 컨페티 제거(램프 빛·도장 유지). 팁 문구 통일: 링크 "Get a tip", 버튼 "GET A TIP"(`tipButtonLabel`). Final의 TipsPanel도 GameButton outline
+- **뒤로가기**: `widgets/back_to.dart`(PopScope 래퍼). 지도 = "Leave the case?" 확인 후 타이틀(이동 중에는 무시). 미션 = 퍼즐→편지(열린 채)→장소→지도(앱바 화살표도 같음). Register→Start, Case Files→Register(앱바와 같음), Story Intro→Case Files, Story Scene·Case Closed→지도 (라우터의 pageBuilder에서 감쌈, 경로 구조는 그대로)
+- **Mission Map**: 장소 이름을 NEXT LEAD 줄로 옮김(제목 20pt, 전체 폭), CTA는 "GO →"(스크린리더 라벨 `GO TO {장소}` = `GameButton.semanticLabel`). `_LeadNote` 고정 높이 52 제거(지도는 Flexible). 지도 글자 소폭 확대: YOU'RE HERE 9.5→11, 핀 이름 12.5→13.5, 랜드마크 11.5→12.5. YOU'RE HERE 화살표는 모션 줄이기면 멈춤
+- **Register**: 키보드가 올라오면 기관명·엠블럼을 접고 제목 축소 → 입력줄·버튼이 키보드 위에 보임. 버튼 "START MISSION"→"TO THE CASE FILES"(실제 동작). 힌트 'MINYOUNG'→'SHERLOCK'. 오류는 GameToast. `AppText.style`에 한글 시스템 폰트 fallback
+- **작은 화면**: Story Intro 새 줄 자동 스크롤 / Final 아트 높이 = 화면 30%(160~250), 중복 eyebrow 제거, 다시 들어오면 자물쇠로 스크롤, 자물쇠 아래 "Letter" 다시 보기 시트, 해결 배너 전환 AnimatedSize / Notebook 탭 라벨 잘림("EVIDENC") 수정, 표지 이름 축소 표시, 증거 그리드 = `evidenceGridDelegate`(고정 높이, Notebook·Archive·Final 공용), 순차 등장 최대 670ms / 미션 해결 화면 증거 타일 `evidenceTileHeight` / Case Closed 도장은 사진에 고정(이름과 겹침 해결), 이름은 한 줄 축소 / CONTINUE ADVENTURE·BEGIN INVESTIGATION·리포트 버튼 한 줄 고정(`singleLine`, glyph 지원 추가) / 시퀀스 Undo·Start again은 Wrap
+- **Case Closed 행동 순서**: 다음 사건(OPEN CASE NN / CASE FILES)이 금색 주 버튼, VIEW MY DETECTIVE REPORT는 자물쇠 아이콘의 outline 보조 버튼
+- **Motion**: easeOutBack·elasticOut 제거(Story Scene 해금 카드, Final 배너·뚜껑, Case Closed 종이·배지) → easeOutCubic. 모션 줄이기: 타자기 줄 즉시 표시, Case Closed 즉시 완성, 해금 카드 즉시
+- **Game Master**: OutlinedButton 테마(잉크), 기기 초기화 버튼은 구분선 아래 tryAgain 색
+- **Tests**: 374 → 381 (+`back_navigation_test` 3, `answer_feedback_test` 3, `small_screen_test` 1). 지도 CTA 변경으로 `GO TO …` 텍스트 탐색을 `find.bySemanticsLabel`로, 팁 라벨, Register 버튼 라벨 갱신. `ui_tour_test`: `LM_TOUR_SMALL=1`이면 360×640, 나가기 다이얼로그·선택 상태·자물쇠·다시하기 다이얼로그·Archive·운영자 게이트·Game Master 스크린샷 추가
+- **유지**: 색 방향·폰트·아트·사건 파일 콘셉트, 게임 로직·데이터·정답·저장·라우팅 경로
+
+### 2026-10-02 — 전체 UI 리디자인 "Victorian Casebook" (사용자 요청: "밤티 안 나게")
+
+- **진단**: 색·폰트 방향(종이 + 네이비 + 세리프)은 맞았지만 ① 화면이 평평한 베이지 + 빈 공간에 요소가 떠 있음 ② 버튼·선택지가 기본 폼 컨트롤 같음 ③ 노트북·리포트·Case Closed·팁이 옛 스타일(흰 카드·굵은 금테·큰 라운드·컬러 원)이라 두 가지 디자인이 섞여 있었음 ④ 밤 화면의 클립아트 달 ⑤ 실제 그림(세피아 수채화)과 UI 톤 불일치
+- **공통 시스템** (게임 로직·정답·저장·라우팅·텍스트 라벨 변경 없음):
+  - `PaperBackground`: 종이 = 섬유 결 + 옅은 foxing + 램프 비네트. 밤 = 하늘 그라데이션 + 달빛 haze + 별 + **런던 스카이라인 실루엣**(불 켜진 창, 강 안개). 클립아트 달 제거. `skyline:` 옵션
+  - `LondonSkyline`: 선화 → 밤 실루엣(`LondonSkylinePainter`, 빅벤·국회의사당·런던아이·타워브리지·세인트폴)
+  - `GameButton`: 각인된 티켓 스타일 — 안쪽 hairline 테두리, 아래 3px 두께(눌리면 내려감, 크기 불변), 라벨 Cinzel. radius 12 → 8
+  - `paper.dart` 추가: `RuledFrame`(문서 이중 테두리), `PaperSheet(ruled:)`, 밤 위 종이 그림자 `AppShadow.onNight`, `OrnamentRule`(◆ 장식선), `PageHeading`(eyebrow + 제목 + 장식선 + 부제), `BrassEmblem`(황동 메달 + 돋보기, 그려서 표현)
+  - `InkStar`: 글자 ★ → 그린 별(기기마다 같은 모양)
+  - 테마: 다이얼로그·FilledButton·TextButton·Switch·ListTile을 게임 색으로(Material 보라 제거)
+  - 새 색: `nightTop/nightBottom/nightSkyline`, `leather/leatherDeep`
+- **화면**:
+  - Start: 밤 런던 타이틀 페이지(황동 엠블럼, THE CASEBOOK OF, 금색 CTA). 작은 화면/큰 글씨는 스크롤. 엠블럼 길게 누르기 = Game Master 그대로
+  - Register: 탐정 ID 카드(이중 테두리 종이, 서명줄 입력)
+  - Map: 헤더 `CASE 01` + 제목, 지도 아래 **NEXT LEAD** 줄(미션 번호·제목 + 장소별 진행 표시)로 빈 띠 제거. 지도 액자 그림자
+  - Mission: `PageHeading`(MISSION 01 / 장소 / 미션 제목), 퍼즐 상단 `MISSION 01 · THE PUZZLE`
+  - 퍼즐: 선택지 = 들린 카드 + 원형 글자 표시, 선택 시 네이비로 채움 / 숫자 암호 = 네이비·금 휠 / 키패드 = 타자기 키 / 시퀀스 번호도 원형 표시
+  - 성공 오버레이: 푸른 램프 빛, 단서는 종이 쪽지, XP Cinzel / 오답 시트: 분홍 원 → 잉크 링 + 장식선
+  - Story Scene: 해금 카드 = 이중 테두리 종이 카드
+  - Notebook: 가죽 커버(금박 테두리·황동 엠블럼), 탭 = 잉크 밑줄(버건디), 단서 = 인덱스 카드, 증거 = 증거 태그(이중 테두리), 빈 칸 = 연필 윤곽, 확대 화면 = 종이 문서 + 금색 CLOSE
+  - Badge: 평평한 원 → 가리비 테두리 황동 로제트(미획득 = 연필 윤곽)
+  - Final: 앱바까지 밤 배경(위쪽 종이 띠 제거), THE FINAL CASE + 장식선, 자물쇠 = 황동 판
+  - Case Closed·Parent Report: 흰 카드 → 종이 문서/네이비 커버 + 이중 테두리
+  - 단어 카드·토스트: 같은 버튼/테두리 언어
+- **유지**: 모든 버튼·탭 라벨 텍스트, 키, 툴팁, Semantics, 지도 카메라 규칙(뷰포트 비율·핀 위치), 애니메이션 타이밍
+- **Tests**: 373 → 374 (+`test/ui_tour_test.dart`: Episode 01 전체 플레이를 하며 화면마다 PNG 저장. `LM_TOUR=<폴더> flutter test test/ui_tour_test.dart`, 변수가 없으면 일반 플레이스루로만 동작). `flutter analyze` 0 issues, `flutter test` 374 통과, 360×640 전 사건 화면 렌더(`season_screens_test`) 통과
+- **남은 것**: 실기기 확인 안 함(폰트 렌더·그림자 성능·스카이라인 크기), Royal Box 상자 그림은 코드 그림 그대로, QR 스캐너·Game Master 화면은 손대지 않음, Fredoka 등록 정리 미완
 
 ### 2026-10-01 — Season 1 Art Asset Integration (characters / objects / symbols / special)
 

@@ -41,6 +41,15 @@ class _TypewriterTextState extends State<TypewriterText> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reduced motion: the line appears whole (the story still goes line by line).
+    if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _finish());
+    }
+  }
+
+  @override
   void didUpdateWidget(TypewriterText oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.text != widget.text) {

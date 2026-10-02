@@ -17,13 +17,17 @@ abstract final class AppSpace {
 /// Corner radii. Paper documents are nearly square; nothing is a pill.
 abstract final class AppRadius {
   static const paper = 4.0;
-  static const button = 12.0;
+  static const button = 8.0;
   static const sheet = 20.0;
 }
 
-/// The only shadow in the game: a sheet of paper lifted off the desk.
+/// Shadows: paper lifted off the desk, and a document laid on the night desk.
 abstract final class AppShadow {
-  static const paperLift = [BoxShadow(color: Color(0x1F2A2622), blurRadius: 6, offset: Offset(0, 2))];
+  static const paperLift = [
+    BoxShadow(color: Color(0x142A2622), blurRadius: 1, offset: Offset(0, 1)),
+    BoxShadow(color: Color(0x1A2A2622), blurRadius: 10, offset: Offset(0, 4)),
+  ];
+  static const onNight = [BoxShadow(color: Color(0x73000000), blurRadius: 28, offset: Offset(0, 14))];
 }
 
 /// Icon sizes for [InkIcon] (logical px). Picture-sized art such as the

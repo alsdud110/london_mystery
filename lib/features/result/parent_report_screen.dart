@@ -9,6 +9,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/ink_icon.dart';
+import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
@@ -130,18 +131,24 @@ class _ReportHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The report folder's leather cover, gold-tooled at the edge.
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.navy,
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: AppColors.gold, width: 3),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.navy, AppColors.navyDeep],
+        ),
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: AppShadow.paperLift,
       ),
+      foregroundDecoration: const RuledFrame(color: AppColors.goldLight, inset: 7),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('LONDON MYSTERY', style: AppText.eyebrow(color: AppColors.goldLight)),
-          Text('Episode ${report.episode.numberLabel} Result', style: AppText.title(size: 24, color: Colors.white)),
+          Text('Episode ${report.episode.numberLabel} Result', style: AppText.title(size: 24, color: AppColors.paperLight)),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -149,17 +156,18 @@ class _ReportHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Detective', style: AppText.caption(color: Colors.white60)),
-                    Text(report.detectiveName, style: AppText.title(size: 26, color: AppColors.gold)),
+                    Text('Detective', style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.62))),
+                    Text(report.detectiveName,
+                        style: AppText.title(size: 26, color: AppColors.goldLight), maxLines: 1, overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('Mission Completion', style: AppText.caption(color: Colors.white60)),
+                  Text('Mission Completion', style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.62))),
                   Text('${report.missionsCompleted} / ${report.missionsTotal}',
-                      style: AppText.title(size: 26, color: Colors.white)),
+                      style: AppText.title(size: 26, color: AppColors.paperLight)),
                 ],
               ),
             ],
@@ -168,8 +176,7 @@ class _ReportHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(14),
+              border: Border(top: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.35), width: AppLine.hairline)),
             ),
             child: Wrap(
               spacing: 10,
@@ -177,9 +184,9 @@ class _ReportHeader extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text('${report.xp} XP', style: AppText.button(size: 15, color: AppColors.goldLight)),
-                Text('배지 ${report.badges.length}개', style: AppText.button(size: 15, color: Colors.white)),
+                Text('배지 ${report.badges.length}개', style: AppText.button(size: 15, color: AppColors.paperLight)),
                 Text('단서 ${report.cluesFound}/${report.cluesTotal} · 증거 ${report.evidenceFound}/${report.evidenceTotal}',
-                    style: AppText.button(size: 15, color: Colors.white)),
+                    style: AppText.button(size: 15, color: AppColors.paperLight)),
               ],
             ),
           ),
@@ -198,19 +205,16 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.parchmentDark, width: 1.5),
-      ),
+    // One page of the report.
+    return PaperSheet(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppText.title(size: 20)),
           Text(subtitle, style: AppText.caption()),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.sm),
+          Divider(height: AppSpace.lg, color: AppLine.faint()),
           child,
         ],
       ),
@@ -268,7 +272,7 @@ class _Metric extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          Text(value, style: AppText.title(size: 24, color: AppColors.royalBlue)),
+          Text(value, style: AppText.title(size: 24, color: AppColors.navy)),
           const SizedBox(height: 2),
           Text(label, style: AppText.caption(color: AppColors.charcoal), textAlign: TextAlign.center),
           Text(labelKo, style: AppText.caption(), textAlign: TextAlign.center),

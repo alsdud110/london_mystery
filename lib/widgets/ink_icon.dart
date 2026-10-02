@@ -155,19 +155,44 @@ class InkStar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = color ?? IconTheme.of(context).color ?? AppColors.gold;
+    // Drawn, not a font character: the same five points on every device.
     return ExcludeSemantics(
-      child: SizedBox.square(
-        dimension: size,
-        child: Center(
-          child: Text(
-            filled ? '★' : '☆',
-            textScaler: TextScaler.noScaling,
-            style: TextStyle(fontSize: size * 0.9, height: 1, color: c),
-          ),
-        ),
-      ),
+      child: SizedBox.square(dimension: size, child: CustomPaint(painter: _StarPainter(filled, c))),
     );
   }
+}
+
+class _StarPainter extends CustomPainter {
+  _StarPainter(this.filled, this.color);
+
+  final bool filled;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset(0, size.height * 0.03));
+    final outer = size.shortestSide * 0.46;
+    final inner = outer * 0.45;
+    final star = Path();
+    for (var i = 0; i < 10; i++) {
+      final r = i.isEven ? outer : inner;
+      final a = -math.pi / 2 + i * math.pi / 5;
+      final p = c + Offset(math.cos(a) * r, math.sin(a) * r);
+      i == 0 ? star.moveTo(p.dx, p.dy) : star.lineTo(p.dx, p.dy);
+    }
+    star.close();
+    canvas.drawPath(
+      star,
+      Paint()
+        ..color = color
+        ..style = filled ? PaintingStyle.fill : PaintingStyle.stroke
+        ..strokeWidth = size.shortestSide / 14
+        ..strokeJoin = StrokeJoin.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_StarPainter old) => old.filled != filled || old.color != color;
 }
 
 /// Glyphs are drawn on a 24 × 24 grid.

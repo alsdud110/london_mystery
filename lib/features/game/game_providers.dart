@@ -4,7 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/mock/season1/season1_mock.dart';
 import '../../data/models/episode.dart';
+import '../../data/models/season.dart';
 import '../../data/models/season_progress.dart';
 import '../../data/repositories/episode_repository.dart';
 import '../../data/repositories/progress_repository.dart';
@@ -24,6 +26,10 @@ final progressRepositoryProvider = Provider<ProgressRepository>(
 /// Every case of the season in case order (pre-loaded before the app starts;
 /// defaults to the bundled content).
 final episodeCatalogProvider = Provider<List<Episode>>((ref) => MockEpisodeRepository.bundled());
+
+/// The season the catalog's cases belong to (its title, casebook lines and
+/// who is behind it).
+final seasonInfoProvider = Provider<Season>((ref) => Season.fromJson(season1InfoJson));
 
 /// Which case file is open and which cases are solved. Persisted.
 class SeasonNotifier extends Notifier<SeasonProgress> {
@@ -60,12 +66,16 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
   /// has been solved. With operator access on (test builds only), every case
   /// of the season opens. This is the one place that decides it: the case
   /// files, the case-file link and [GameController.openEpisode] all ask here.
-  bool isUnlocked(String episodeId) {
-    final catalog = ref.read(episodeCatalogProvider);
+  bool isUnlocked(String episodeId) =>
+      unlockRule(ref.read(episodeCatalogProvider), state, episodeId, operator: ref.read(operatorAccessProvider));
+
+  /// [isUnlocked] for any season record (the season board also asks it of
+  /// the season as it was a moment ago, to animate what just opened).
+  static bool unlockRule(List<Episode> catalog, SeasonProgress season, String episodeId, {required bool operator}) {
     final i = catalog.indexWhere((e) => e.id == episodeId);
     if (i < 0) return false;
-    if (ref.read(operatorAccessProvider)) return true;
-    return i == 0 || state.isSolved(catalog[i - 1].id);
+    if (operator) return true;
+    return i == 0 || season.isSolved(catalog[i - 1].id);
   }
 }
 
@@ -106,6 +116,20 @@ class RecentUnlockNotifier extends Notifier<String?> {
 }
 
 final recentUnlockProvider = NotifierProvider<RecentUnlockNotifier, String?>(RecentUnlockNotifier.new);
+
+/// Cases solved for the first time that the season board has not shown yet:
+/// it plays their photo, pin and thread when it next opens, then clears
+/// them. Transient UI state, like [recentUnlockProvider] — not persisted.
+class RecentSolveNotifier extends Notifier<List<String>> {
+  @override
+  List<String> build() => const [];
+
+  void add(String episodeId) => state = [...state.where((id) => id != episodeId), episodeId];
+
+  void clear() => state = const [];
+}
+
+final recentSolveProvider = NotifierProvider<RecentSolveNotifier, List<String>>(RecentSolveNotifier.new);
 
 /// Set once a grown-up passes the parent gate; required by the router to
 /// open operator tools. Session-only by design.

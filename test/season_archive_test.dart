@@ -287,7 +287,10 @@ void main() {
     await wait(t, const Duration(milliseconds: 1000));
     expect(pathOf(ref), Routes.solved);
     expect(find.textContaining('OPEN CASE'), findsNothing, reason: 'there is no Case 13');
-    await tapText(t, 'CASE FILES', after: const Duration(milliseconds: 1000));
+    // After the last case, the season's completed board (the case files are one tap on).
+    await tapText(t, 'INVESTIGATION BOARD', after: const Duration(milliseconds: 2600));
+    expect(pathOf(ref), Routes.season);
+    await tapText(t, 'VIEW ALL CASE FILES', after: const Duration(milliseconds: 1000));
     expect(pathOf(ref), Routes.episodes);
     await wait(t, const Duration(seconds: 3));
   });

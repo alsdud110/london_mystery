@@ -154,7 +154,7 @@ class _ArchiveCase extends StatelessWidget {
                             style: AppText.title(size: 18, color: muted ? AppColors.locked : AppColors.ink),
                           ),
                           if (entry.status == ArchiveStatus.notOpened)
-                            Text('Not opened yet.', style: AppText.caption(color: AppColors.locked)),
+                            Text('Not opened yet.', style: AppText.caption(color: AppColors.muted)),
                         ],
                       ),
                     ),
@@ -219,14 +219,7 @@ class _CaseRecord extends StatelessWidget {
             GridView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              // A fixed height, not a ratio: tiles in a case folder are narrow,
-              // and a two-line name at large text sizes must still fit.
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                mainAxisExtent: 196 * MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 1.3),
-              ),
+              gridDelegate: evidenceGridDelegate(context),
               children: [
                 for (final v in entry.evidence)
                   EvidenceTile(evidence: v, location: _placeOf((m) => m.evidence?.id == v.id)),
