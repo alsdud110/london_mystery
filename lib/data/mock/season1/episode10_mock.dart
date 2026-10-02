@@ -13,6 +13,8 @@ const Map<String, dynamic> episode10Json = {
     'Put the words together. Someone is sending you a message.',
   ],
   'objectives': ['Find the raven that brings the words.', 'Read the hidden message.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'towerOfLondon',
   'intro': [
     'Tower of London, 7:00 AM...',
     'For four mornings, a raven has come to your window.',

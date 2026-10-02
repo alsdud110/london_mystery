@@ -710,6 +710,14 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 
 ## Change Log
 
+### 2026-10-02 — Story Intro: 사건의 장소 위에서 narration (배경·CTA만)
+
+- 배경: `PaperBackground(night)`(밤하늘·별·스카이라인) → 사건 데이터의 새 선택 필드 `Episode.introScene`(Artwork 키, JSON `introScene`, 왕복 직렬화)의 장면 그림을 화면 전체(`LandmarkArt(showName: false)` — 종이 테두리·이름표 없이 cover), 가벼운 blur 1.5 + navy 그늘(가운데 0.6 → 가장자리 0.82, 아래 조금 더). 필드가 없거나 그림이 없으면 **London 지도**(`ArtAssets.londonMap`, "trail of clues all over London")
+- 사건별: 01 지도(Royal Archive 그림 없음) / 02 Big Ben / 03 British Museum / 04 King's Cross / 05 Tower of London / 06 Covent Garden / 07 Hyde Park / 08 King's Cross / 09 Buckingham Palace / 10 Tower of London / 11 Covent Garden / 12 Big Ben. Season 그림 2장(Cover·Opening)은 쓰지 않음(테스트로 고정)
+- CTA `I'M READY` = 공통 `GameButtonStyle.glass`, 아래 여백 = 화면 높이 3.8%(20~28). 문구·순서·타이핑 속도·SKIP·Are you ready?·정렬·이동은 그대로
+- Custom Asset Required: Case 01 **Royal Archive**(밤, 왕관이 사라진 보관실). 랜드마크 그림은 약 400px 인쇄본이라 전체 화면에서는 부드러움(어둠·blur로 장면처럼 보임) — 고해상도 세로 장면이 있으면 더 좋음
+- Tests 445 → 471 (`story_intro_scene_test`: 사건별 장면 표, Case 01 파일 → START CASE 01 → 인트로 → I'M READY → 지도, 12사건 × 360·390 렌더·첫 줄·장면·버튼 위치)
+
 ### 2026-10-02 — Detective Registration · NEW ADVENTURE 확인: 같은 탐정 사무실 안의 문서
 
 - 원칙: 세계 = 어두운 cinematic 런던 / 문서 = 밝은 ivory 종이 / 주 행동 = navy + antique gold

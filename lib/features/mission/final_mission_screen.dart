@@ -18,7 +18,8 @@ import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper.dart';
-import '../../widgets/paper_background.dart';
+import '../../widgets/art_assets.dart';
+import '../../widgets/desk_background.dart';
 import '../../widgets/symbol_icon.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
@@ -138,10 +139,29 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      // Paper, not an app sheet (this sheet only; the others keep the app's
+      // sheet theme): nearly square corners, and a thin ink-brown tab in
+      // place of the grey handle (it still drags to close).
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.paper))),
+      showDragHandle: false,
       builder: (context) => DraggableScrollableSheet(
         expand: false,
         initialChildSize: 0.8,
-        builder: (context, scroll) => ListView(
+        builder: (context, scroll) => Column(
+          children: [
+            // The tab, in the handle's own 48 dp slot, fixed above the
+            // scrolling notebook as the handle was.
+            Container(
+              width: 32,
+              height: 3,
+              margin: const EdgeInsets.only(top: 22, bottom: 23),
+              decoration: BoxDecoration(
+                color: AppColors.inkBrown.withValues(alpha: 0.35),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Expanded(
+              child: ListView(
           controller: scroll,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
           children: [
@@ -179,6 +199,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
             ],
           ],
         ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -203,8 +226,8 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
           onPressed: () => context.go(Routes.map),
         ),
       ),
-      body: PaperBackground(
-        night: true,
+      // The last evidence and papers, examined on the detective's desk.
+      body: DeskBackground(
         child: SafeArea(
           child: Center(
             child: ConstrainedBox(
@@ -312,7 +335,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       // Custom Asset Required: an open-lock glyph for this button.
       GameButton(
         label: m.scene == Artwork.royalBox ? 'OPEN THE BOX' : 'UNLOCK',
-        style: GameButtonStyle.gold,
+        style: GameButtonStyle.glass,
         onPressed: _tryOpen,
       ),
       // The letter again, without scrolling back up (as on every puzzle).
@@ -342,7 +365,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     child: GameButton(
       label: 'SEE MY CASE REPORT',
       glyph: InkGlyph.folder,
-      style: GameButtonStyle.gold,
+      style: GameButtonStyle.glass,
       onPressed: () => context.go(Routes.solved),
     ),
   );
@@ -499,12 +522,17 @@ class _SceneReveal extends StatelessWidget {
 
 /// The Royal Box: closed → lid lifts → light rays → crown rises.
 class RoyalBoxAnimation extends StatelessWidget {
-  const RoyalBoxAnimation({super.key, required this.animation});
+  const RoyalBoxAnimation({super.key, required this.animation, this.art = ArtAssets.royalBox});
 
+  /// 0 = shut (the puzzle), 1 = open with the Crown (solved, or a revisit).
   final Animation<double> animation;
+
+  /// The box's two pictures, or null to draw it in code (see [ArtAssets.royalBox]).
+  final RoyalBoxArt? art;
 
   @override
   Widget build(BuildContext context) {
+    final pictures = art;
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
@@ -513,11 +541,36 @@ class RoyalBoxAnimation extends StatelessWidget {
         // The heavy lid swings open and settles (no spring back).
         final lid = Curves.easeOutCubic.transform(((t - 0.2) / 0.3).clamp(0, 1));
         final crown = Curves.easeOutCubic.transform(((t - 0.4) / 0.45).clamp(0, 1));
+        final drawn = CustomPaint(
+          painter: _RoyalBoxPainter(lid: lid, crown: crown, rays: t),
+          child: const SizedBox.expand(),
+        );
+        if (pictures == null) return Transform.translate(offset: Offset(shake, 0), child: drawn);
+        // The painted box: the same timing — it shakes, the light comes
+        // out as it opens (drawn behind it), the open picture (Crown in it)
+        // takes over from the shut one as the lid would swing.
+        Widget picture(String file, double opacity) => Opacity(
+              opacity: opacity,
+              child: Image.asset(
+                file,
+                fit: BoxFit.contain,
+                alignment: Alignment.bottomCenter,
+                width: double.infinity,
+                height: double.infinity,
+                excludeFromSemantics: true,
+                // A missing or broken picture: the box drawn in code.
+                errorBuilder: (context, error, stack) => drawn,
+              ),
+            );
         return Transform.translate(
           offset: Offset(shake, 0),
-          child: CustomPaint(
-            painter: _RoyalBoxPainter(lid: lid, crown: crown, rays: t),
-            child: const SizedBox.expand(),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CustomPaint(painter: _RoyalBoxPainter(lid: lid, crown: 0, rays: t, raysOnly: true)),
+              if (lid < 1) picture(pictures.closed, 1 - lid),
+              if (lid > 0) picture(pictures.open, lid),
+            ],
           ),
         );
       },
@@ -526,7 +579,10 @@ class RoyalBoxAnimation extends StatelessWidget {
 }
 
 class _RoyalBoxPainter extends CustomPainter {
-  _RoyalBoxPainter({required this.lid, required this.crown, required this.rays});
+  _RoyalBoxPainter({required this.lid, required this.crown, required this.rays, this.raysOnly = false});
+
+  /// Only the light from the opening box (behind a painted box).
+  final bool raysOnly;
 
   final double lid;
   final double crown;
@@ -559,6 +615,8 @@ class _RoyalBoxPainter extends CustomPainter {
       }
       canvas.drawCircle(center, 90 * lid, Paint()..color = AppColors.goldLight.withValues(alpha: 0.25 * lid));
     }
+
+    if (raysOnly) return;
 
     // Paint order: an opening lid goes behind the crown; a closed lid sits
     // in front of the body.
@@ -650,5 +708,6 @@ class _RoyalBoxPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_RoyalBoxPainter old) => old.lid != lid || old.crown != crown || old.rays != rays;
+  bool shouldRepaint(_RoyalBoxPainter old) =>
+      old.lid != lid || old.crown != crown || old.rays != rays || old.raysOnly != raysOnly;
 }

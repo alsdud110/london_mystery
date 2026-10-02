@@ -80,12 +80,27 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
 Future<void> showWordMeaning(BuildContext context, String word, String meaning) {
   return showModalBottomSheet<void>(
     context: context,
+    // A small reference card from the casebook (this sheet only; the others
+    // keep the app's sheet theme): nearly square corners, and a thin
+    // ink-brown tab in place of the grey handle (it still drags to close).
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.paper))),
+    showDragHandle: false,
     builder: (context) => SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(28, 0, 28, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // The tab, in the handle's own 48 dp slot (the card keeps its height).
+            Container(
+              width: 32,
+              height: 3,
+              margin: const EdgeInsets.only(top: 22, bottom: 23),
+              decoration: BoxDecoration(
+                color: AppColors.inkBrown.withValues(alpha: 0.35),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
             Text('WORD CARD', style: AppText.eyebrow()),
             const SizedBox(height: 10),
             // A dictionary entry: the word, a rule, its meaning.

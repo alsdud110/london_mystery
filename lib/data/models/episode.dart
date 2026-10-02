@@ -17,6 +17,7 @@ class Episode {
     this.caseSummary,
     this.keyWords = const [],
     this.hook,
+    this.introScene,
   });
 
   final String id;
@@ -43,6 +44,10 @@ class Episode {
 
   /// Season story hook shown after the case is closed ("what happens next?").
   final String? hook;
+
+  /// The place the story intro opens on, shown behind its lines (the
+  /// picture of that place, or the London map while it has none).
+  final Artwork? introScene;
 
   List<Mission> get allMissions => [...missions, finalMission];
 
@@ -83,6 +88,7 @@ class Episode {
         caseSummary: json['caseSummary'] as String?,
         keyWords: (json['keyWords'] as List? ?? const []).cast<String>(),
         hook: json['hook'] as String?,
+        introScene: json['introScene'] is String ? Artwork.fromJson(json['introScene'] as String) : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -98,5 +104,6 @@ class Episode {
         if (caseSummary != null) 'caseSummary': caseSummary,
         if (keyWords.isNotEmpty) 'keyWords': keyWords,
         if (hook != null) 'hook': hook,
+        if (introScene != null) 'introScene': introScene!.name,
       };
 }

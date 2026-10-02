@@ -127,7 +127,14 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
         ? 'CONTINUE INVESTIGATION'
         : 'BEGIN INVESTIGATION';
 
+    // Clear of the button resting at the bottom of the page: the last folder
+    // can always be scrolled up above it.
+    const actionRoom = 56 + 3 + AppSpace.md + AppSpace.lg + AppSpace.lg;
+
     return Scaffold(
+      // One sheet of paper from the top edge to the bottom: the heading and
+      // the back mark are printed on it, not on a bar of their own.
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('CASE FILES'),
         leading: IconButton(
@@ -147,50 +154,72 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
       ),
       body: PaperBackground(
         child: SafeArea(
-          top: false,
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 560),
-              child: Column(
-                children: [
-                  Expanded(
-                    // Twelve folders at most: all built at once, so the one
-                    // to focus can be scrolled to even when far down.
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.xl),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          for (final c in shelf) ...[
-                            _CaseFolderTile(
-                              key: c.episode.id == widget.focusCase ? _focusKey : null,
-                              entry: c,
-                              open: _openCase == c.episode.id,
-                              chosen: _chosen == c.episode.id,
-                              onToggle: () => _toggle(c.episode.id),
-                              onChoose: () => setState(() => _chosen = c.episode.id),
-                            ),
-                            const SizedBox(height: AppSpace.xl),
+              child: Padding(
+                // The folders start under the heading, never behind it.
+                padding: const EdgeInsets.only(top: kToolbarHeight),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      // Twelve folders at most: all built at once, so the one
+                      // to focus can be scrolled to even when far down.
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, actionRoom),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (final c in shelf) ...[
+                              _CaseFolderTile(
+                                key: c.episode.id == widget.focusCase ? _focusKey : null,
+                                entry: c,
+                                open: _openCase == c.episode.id,
+                                chosen: _chosen == c.episode.id,
+                                onToggle: () => _toggle(c.episode.id),
+                                onChoose: () => setState(() => _chosen = c.episode.id),
+                              ),
+                              const SizedBox(height: AppSpace.xl),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                  // The one action, always at the bottom of the page.
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.md, AppSpace.screen, AppSpace.lg),
-                    decoration: BoxDecoration(
-                      color: AppColors.paper,
-                      border: Border(
-                        top: BorderSide(color: AppLine.faint(), width: AppLine.hairline),
+                    // The one action, resting at the bottom of the page. The
+                    // folders scrolling under it fade into the paper first.
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: IgnorePointer(
+                        child: Container(
+                          height: actionRoom,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [AppColors.paper.withValues(alpha: 0), AppColors.paper.withValues(alpha: 0.92)],
+                              stops: const [0, 0.45],
+                            ),
+                          ),
+                        ),
                       ),
-                      boxShadow: const [BoxShadow(color: Color(0x142A2622), blurRadius: 12, offset: Offset(0, -4))],
                     ),
-                    // One line at a steady size ("BEGIN INVESTIGATION" wrapped to two
-                    // lines on a 360-wide phone).
-                    child: GameButton(label: label, arrow: true, singleLine: true, onPressed: chosen == null ? null : () => _go(chosen)),
-                  ),
-                ],
+                    Positioned(
+                      left: AppSpace.screen,
+                      right: AppSpace.screen,
+                      bottom: AppSpace.lg,
+                      // One line at a steady size ("BEGIN INVESTIGATION" wrapped to two
+                      // lines on a 360-wide phone).
+                      child: GameButton(
+                        label: label,
+                        arrow: true,
+                        singleLine: true,
+                        onPressed: chosen == null ? null : () => _go(chosen),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

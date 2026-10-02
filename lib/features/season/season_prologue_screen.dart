@@ -37,11 +37,18 @@ class SeasonPrologueScreen extends ConsumerStatefulWidget {
   const SeasonPrologueScreen({super.key});
 
   @override
-  ConsumerState<SeasonPrologueScreen> createState() => _SeasonPrologueScreenState();
+  ConsumerState<SeasonPrologueScreen> createState() =>
+      _SeasonPrologueScreenState();
 }
 
-class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> with SingleTickerProviderStateMixin {
-  static const _city = 0, _cases = 1, _separate = 2, _connection = 3, _promise = 4, _file = 5;
+class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
+    with SingleTickerProviderStateMixin {
+  static const _city = 0,
+      _cases = 1,
+      _separate = 2,
+      _connection = 3,
+      _promise = 4,
+      _file = 5;
 
   /// How long each scene takes to come in (a tap finishes it at once).
   static const _durations = [1400, 2600, 1900, 2200, 1200, 1100];
@@ -107,13 +114,25 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
         appBar: AppBar(
           foregroundColor: AppColors.goldLight,
           iconTheme: const IconThemeData(color: AppColors.goldLight),
-          leading: IconButton(tooltip: 'Back', icon: const InkIcon(InkGlyph.back), onPressed: _back),
+          leading: IconButton(
+            tooltip: 'Back',
+            icon: const InkIcon(InkGlyph.back),
+            onPressed: _back,
+          ),
           actions: [
             if (_step < _promise)
               TextButton(
                 onPressed: () => _show(_promise),
-                style: TextButton.styleFrom(foregroundColor: AppColors.goldLight, minimumSize: const Size(64, 48)),
-                child: Text('SKIP ›', style: AppText.eyebrow(color: AppColors.goldLight.withValues(alpha: 0.85))),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.goldLight,
+                  minimumSize: const Size(64, 48),
+                ),
+                child: Text(
+                  'SKIP ›',
+                  style: AppText.eyebrow(
+                    color: AppColors.goldLight.withValues(alpha: 0.85),
+                  ),
+                ),
               ),
           ],
         ),
@@ -139,7 +158,8 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
   }
 
   /// Part [a]..[b] of this scene's animation, eased.
-  double _iv(double a, double b) => Curves.easeOutCubic.transform(((_c.value - a) / (b - a)).clamp(0.0, 1.0));
+  double _iv(double a, double b) =>
+      Curves.easeOutCubic.transform(((_c.value - a) / (b - a)).clamp(0.0, 1.0));
 
   Widget _scene(Season season, SeasonOverview overview, Episode first) {
     final p = season.prologue;
@@ -159,7 +179,8 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      for (final a in const [0.6, 0.0, 0.0, 0.74, 0.92]) AppColors.navyDeep.withValues(alpha: a),
+                      for (final a in const [0.6, 0.0, 0.0, 0.74, 0.92])
+                        AppColors.navyDeep.withValues(alpha: a),
                     ],
                     stops: const [0, 0.16, 0.52, 0.76, 1],
                   ),
@@ -174,11 +195,17 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
                 opacity: _iv(0.2, 0.55),
                 child: Text(
                   'LONDON',
-                  style: AppText.logo(size: 34, color: AppColors.goldLight).copyWith(
-                    letterSpacing: 10,
-                    // Lifted off the lit river behind it.
-                    shadows: [Shadow(color: AppColors.navyDeep.withValues(alpha: 0.8), blurRadius: 14)],
-                  ),
+                  style: AppText.logo(size: 34, color: AppColors.goldLight)
+                      .copyWith(
+                        letterSpacing: 10,
+                        // Lifted off the lit river behind it.
+                        shadows: [
+                          Shadow(
+                            color: AppColors.navyDeep.withValues(alpha: 0.8),
+                            blurRadius: 14,
+                          ),
+                        ],
+                      ),
                 ),
               ),
               const SizedBox(height: AppSpace.md),
@@ -227,18 +254,27 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
                         child: Text(
                           p.question,
                           textAlign: TextAlign.center,
-                          style: AppText.title(size: 25, color: AppColors.goldLight),
+                          style: AppText.title(
+                            size: 25,
+                            color: AppColors.goldLight,
+                          ),
                         ),
                       ),
                       const SizedBox(height: AppSpace.md),
-                      Opacity(opacity: _iv(0.7, 0.95), child: _Line(p.bigger, size: 17)),
+                      Opacity(
+                        opacity: _iv(0.7, 0.95),
+                        child: _Line(p.bigger, size: 17),
+                      ),
                     ],
                   )
                 : _Words(
                     key: const ValueKey('separate'),
                     children: [
                       for (final (i, line) in p.separate.indexed) ...[
-                        Opacity(opacity: i == 0 ? _iv(0.2, 0.45) : _iv(0.62, 0.9), child: _Line(line, size: 19)),
+                        Opacity(
+                          opacity: i == 0 ? _iv(0.2, 0.45) : _iv(0.62, 0.9),
+                          child: _Line(line, size: 19),
+                        ),
                         if (i == 0) const SizedBox(height: AppSpace.md),
                       ],
                     ],
@@ -254,13 +290,18 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
               // The map from before, in the dark behind the promise.
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                child: Opacity(opacity: 0.22, child: TroubleMap(threads: 2, push: 1)),
+                child: Opacity(
+                  opacity: 0.22,
+                  child: TroubleMap(threads: 2, push: 1),
+                ),
               ),
               Center(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpace.xl,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -268,11 +309,19 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
                           opacity: _iv(0, 0.4),
                           child: Column(
                             children: [
-                              Text(season.label, style: AppText.eyebrow(color: AppColors.goldLight)),
+                              Text(
+                                season.label,
+                                style: AppText.eyebrow(
+                                  color: AppColors.goldLight,
+                                ),
+                              ),
                               const SizedBox(height: AppSpace.xs),
                               Text(
                                 season.title.toUpperCase(),
-                                style: AppText.logo(size: 20, color: AppColors.paperLight).copyWith(letterSpacing: 2),
+                                style: AppText.logo(
+                                  size: 20,
+                                  color: AppColors.paperLight,
+                                ).copyWith(letterSpacing: 2),
                               ),
                             ],
                           ),
@@ -282,11 +331,26 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
                           opacity: _iv(0.2, 0.6),
                           child: Column(
                             children: [
-                              Text('${overview.total} CASES', style: AppText.logo(size: 38, color: AppColors.goldLight)),
+                              Text(
+                                '${overview.total} CASES',
+                                style: AppText.logo(
+                                  size: 38,
+                                  color: AppColors.goldLight,
+                                ),
+                              ),
                               const SizedBox(height: AppSpace.sm),
-                              const OrnamentRule(color: AppColors.goldLight, width: 150),
+                              const OrnamentRule(
+                                color: AppColors.goldLight,
+                                width: 150,
+                              ),
                               const SizedBox(height: AppSpace.sm),
-                              Text(season.tagline, style: AppText.logo(size: 38, color: AppColors.paperLight)),
+                              Text(
+                                season.tagline,
+                                style: AppText.logo(
+                                  size: 38,
+                                  color: AppColors.paperLight,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -300,31 +364,45 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
           words: _Words(
             children: [
               for (final (i, line) in p.promise.indexed)
-                Opacity(opacity: _iv(0.45 + 0.12 * i, 0.75 + 0.08 * i), child: _Line(line, size: 17)),
+                Opacity(
+                  opacity: _iv(0.45 + 0.12 * i, 0.75 + 0.08 * i),
+                  child: _Line(line, size: 17),
+                ),
             ],
           ),
           footer: _Footer(
+            raised: true,
             child: GameButton(
               label: 'ACCEPT THE CASE',
               arrow: true,
               singleLine: true,
-              style: GameButtonStyle.gold,
+              style: GameButtonStyle.glass,
               onPressed: () => _show(_file),
             ),
           ),
         );
       default:
         return _SceneLayout(
-          art: _CaseFile(episode: first, picture: p.firstCasePicture, line: p.firstCaseLine, t: _c.value),
+          art: _CaseFile(
+            episode: first,
+            picture: p.firstCasePicture,
+            line: p.firstCaseLine,
+            t: _c.value,
+          ),
           footer: _Footer(
+            raised: true,
             child: Opacity(
               opacity: 0.3 + 0.7 * _iv(0.5, 1),
               child: GameButton(
                 label: 'START CASE ${first.numberLabel}',
                 arrow: true,
                 singleLine: true,
-                style: GameButtonStyle.gold,
-                onPressed: () => SeasonActions.investigate(context, ref, overview.cases.indexOf(first)),
+                style: GameButtonStyle.glass,
+                onPressed: () => SeasonActions.investigate(
+                  context,
+                  ref,
+                  overview.cases.indexOf(first),
+                ),
               ),
             ),
           ),
@@ -336,7 +414,13 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen> wit
 /// One scene: its background, the picture (most of the screen), the words
 /// under it, and the way on. Fits a 360×640 phone without scrolling.
 class _SceneLayout extends StatelessWidget {
-  const _SceneLayout({this.background, this.art, this.words, required this.footer, this.night = false});
+  const _SceneLayout({
+    this.background,
+    this.art,
+    this.words,
+    required this.footer,
+    this.night = false,
+  });
 
   /// Full screen behind everything (default: the desk).
   final Widget? background;
@@ -382,7 +466,12 @@ class _Words extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.sm),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpace.xl,
+        AppSpace.lg,
+        AppSpace.xl,
+        AppSpace.sm,
+      ),
       child: Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
@@ -397,20 +486,37 @@ class _Line extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        textAlign: TextAlign.center,
-        style: AppText.aside(size: size, color: AppColors.paperLight.withValues(alpha: 0.92)),
-      );
+    text,
+    textAlign: TextAlign.center,
+    style: AppText.aside(
+      size: size,
+      color: AppColors.paperLight.withValues(alpha: 0.92),
+    ),
+  );
 }
 
 class _Footer extends StatelessWidget {
-  const _Footer({required this.child});
+  const _Footer({required this.child, this.raised = false});
 
   final Widget child;
 
+  /// Off the bottom edge like the title page's and the cover's button
+  /// (a little more room under it on taller phones).
+  final bool raised;
+
   @override
-  Widget build(BuildContext context) =>
-      Padding(padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.md), child: child);
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.fromLTRB(
+      AppSpace.lg,
+      AppSpace.sm,
+      AppSpace.lg,
+      raised
+          ? AppSpace.sm +
+                (MediaQuery.sizeOf(context).height * 0.038).clamp(20.0, 28.0)
+          : AppSpace.md,
+    ),
+    child: child,
+  );
 }
 
 /// Where the sequence is (five scenes before the file), and NEXT.
@@ -423,7 +529,12 @@ class _NextBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.sm, AppSpace.xs),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpace.xl,
+        0,
+        AppSpace.sm,
+        AppSpace.xs,
+      ),
       child: Row(
         children: [
           Semantics(
@@ -437,7 +548,9 @@ class _NextBar extends StatelessWidget {
                     height: 6,
                     margin: const EdgeInsets.only(right: AppSpace.xs),
                     decoration: BoxDecoration(
-                      color: AppColors.goldLight.withValues(alpha: i == step ? 0.9 : 0.3),
+                      color: AppColors.goldLight.withValues(
+                        alpha: i == step ? 0.9 : 0.3,
+                      ),
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
@@ -445,7 +558,11 @@ class _NextBar extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          InkTextButton(label: 'NEXT ›', color: AppColors.goldLight, onPressed: onNext),
+          InkTextButton(
+            label: 'NEXT ›',
+            color: AppColors.goldLight,
+            onPressed: onNext,
+          ),
         ],
       ),
     );
@@ -459,13 +576,21 @@ class _TroubleDesk extends StatelessWidget {
   /// How far piece [i] has been laid down (0..1).
   final double Function(int i) appear;
 
-  static const _spots = [Alignment(-0.95, -0.9), Alignment(0.95, -0.62), Alignment(-0.9, 0.68), Alignment(0.95, 0.95)];
+  static const _spots = [
+    Alignment(-0.95, -0.9),
+    Alignment(0.95, -0.62),
+    Alignment(-0.9, 0.68),
+    Alignment(0.95, 0.95),
+  ];
   static const _tilts = [-0.09, 0.07, 0.06, -0.05];
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpace.lg,
+        vertical: AppSpace.sm,
+      ),
       child: LayoutBuilder(
         builder: (context, box) {
           // Each piece on its own part of the desk, barely touching.
@@ -486,7 +611,11 @@ class _TroubleDesk extends StatelessWidget {
                           angle: _tilts[i] * (2 - p),
                           child: Transform.scale(
                             scale: 1.06 - 0.06 * p,
-                            child: SizedBox(width: size, height: size * 0.9, child: TroublePrint(piece, border: 5)),
+                            child: SizedBox(
+                              width: size,
+                              height: size * 0.9,
+                              child: TroublePrint(piece, border: 5),
+                            ),
                           ),
                         ),
                       ),
@@ -503,22 +632,35 @@ class _TroubleDesk extends StatelessWidget {
 
 /// The first case's file, slid onto the desk and stamped ASSIGNED.
 class _CaseFile extends StatelessWidget {
-  const _CaseFile({required this.episode, required this.picture, required this.line, required this.t});
+  const _CaseFile({
+    required this.episode,
+    required this.picture,
+    required this.line,
+    required this.t,
+  });
 
   final Episode episode;
   final String picture;
   final String line;
   final double t;
 
-  double _iv(double a, double b) => Curves.easeOutCubic.transform(((t - a) / (b - a)).clamp(0.0, 1.0));
+  double _iv(double a, double b) =>
+      Curves.easeOutCubic.transform(((t - a) / (b - a)).clamp(0.0, 1.0));
 
   @override
   Widget build(BuildContext context) {
     final slide = _iv(0, 0.5);
-    final stamp = Curves.easeInCubic.transform(((t - 0.55) / 0.25).clamp(0.0, 1.0));
+    final stamp = Curves.easeInCubic.transform(
+      ((t - 0.55) / 0.25).clamp(0.0, 1.0),
+    );
     final file = ArtAssets.objects[picture];
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpace.lg,
+        AppSpace.sm,
+        AppSpace.lg,
+        AppSpace.sm,
+      ),
       child: Center(
         child: FittedBox(
           fit: BoxFit.scaleDown,
@@ -536,26 +678,58 @@ class _CaseFile extends StatelessWidget {
                       CaseFolder(
                         tab: 'CASE ${episode.numberLabel}',
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.xl),
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpace.lg,
+                            AppSpace.lg,
+                            AppSpace.lg,
+                            AppSpace.xl,
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('CASE FILE', style: AppText.eyebrow(color: AppColors.burgundy)),
+                              Text(
+                                'CASE FILE',
+                                style: AppText.eyebrow(
+                                  color: AppColors.burgundy,
+                                ),
+                              ),
                               const SizedBox(height: AppSpace.xs),
-                              Text(episode.title.toUpperCase(), style: AppText.logo(size: 24, color: AppColors.navy)),
+                              Text(
+                                episode.title.toUpperCase(),
+                                style: AppText.logo(
+                                  size: 24,
+                                  color: AppColors.navy,
+                                ),
+                              ),
                               const SizedBox(height: AppSpace.md),
                               if (file != null)
                                 Align(
                                   child: Transform.rotate(
                                     angle: 0.03,
-                                    child: SizedBox(width: 200, height: 150, child: PrintFrame.file(file, border: 5)),
+                                    child: SizedBox(
+                                      width: 200,
+                                      height: 150,
+                                      child: PrintFrame.file(file, border: 5),
+                                    ),
                                   ),
                                 ),
                               const SizedBox(height: AppSpace.lg),
                               if (episode.synopsis.isNotEmpty)
-                                Text(episode.synopsis.first, style: AppText.bodyText(size: 17, weight: FontWeight.w700)),
+                                Text(
+                                  episode.synopsis.first,
+                                  style: AppText.bodyText(
+                                    size: 17,
+                                    weight: FontWeight.w700,
+                                  ),
+                                ),
                               const SizedBox(height: AppSpace.md),
-                              Text(line, style: AppText.aside(size: 16, color: AppColors.inkBrown)),
+                              Text(
+                                line,
+                                style: AppText.aside(
+                                  size: 16,
+                                  color: AppColors.inkBrown,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -567,7 +741,10 @@ class _CaseFile extends StatelessWidget {
                           bottom: AppSpace.xl,
                           child: Opacity(
                             opacity: stamp,
-                            child: Transform.scale(scale: 1.6 - 0.6 * stamp, child: const InkStamp('ASSIGNED', size: 13)),
+                            child: Transform.scale(
+                              scale: 1.6 - 0.6 * stamp,
+                              child: const InkStamp('ASSIGNED', size: 13),
+                            ),
                           ),
                         ),
                     ],

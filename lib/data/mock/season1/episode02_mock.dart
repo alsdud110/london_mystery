@@ -14,6 +14,8 @@ const Map<String, dynamic> episode02Json = {
     'Why did it stop at that minute? The answer is hidden in the tower.',
   ],
   'objectives': ['Find out why the clock stopped.', 'Start Big Ben again.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'bigBen',
   'intro': [
     'London, early in the morning...',
     'The Crown is safe again. But this morning, London is too quiet.',

@@ -3,6 +3,9 @@ import 'dart:ui' show Size;
 import '../data/models/mission.dart';
 import '../features/game/scoring.dart';
 
+/// The two pictures of the Royal Box: shut, and open with the Crown inside.
+typedef RoyalBoxArt = ({String closed, String open});
+
 /// The one place where finished artwork files are plugged in.
 ///
 /// Every picture in the game is drawn in code today: scenes by `LandmarkArt`,
@@ -108,6 +111,18 @@ abstract final class ArtAssets {
 
   /// The Raven Society mark (full colour, not a tinted [symbols] glyph).
   static const ravenMark = '${_art}symbols/raven_mark.png';
+
+  /// Case 01's Royal Box (the final mission's golden box with the Crown
+  /// inside), as two pictures on transparency: shut, and open with the
+  /// Crown in it — the same box on near-identical canvases (the same empty
+  /// band under it), so fitted into the same space from the bottom they
+  /// stay in register. The opening animation crossfades the two over the
+  /// code-drawn light rays; a missing picture falls back to the box drawn in
+  /// code (`RoyalBoxAnimation`).
+  static const RoyalBoxArt royalBox = (
+    closed: '${_art}special/royal_box_closed.png',
+    open: '${_art}special/royal_box_open.png',
+  );
 
   /// Special pictures. The theatre royal box: listed, not shown yet — the
   /// game's Royal Box (Case 01) is a golden box with the Crown inside.

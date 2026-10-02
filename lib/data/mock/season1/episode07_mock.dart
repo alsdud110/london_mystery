@@ -15,6 +15,8 @@ const Map<String, dynamic> episode07Json = {
     'Follow the directions and put the map together again.',
   ],
   'objectives': ['Follow the directions.', 'Find the lost map.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'hydePark',
   'intro': [
     'Hyde Park, 7:00 AM...',
     'Inspector Grey was right.',

@@ -31,6 +31,15 @@ abstract final class PlaceArt {
   /// such as the suitcase stays), or the room it happens in.
   static Artwork sceneOf(Mission m) => missionScenes[m.id] ?? m.scene;
 
+  /// Places that stand on the map at a landmark whose picture is not them:
+  /// the Royal Archive (Case 01's final) is pinned at Buckingham Palace.
+  /// Their landmark picture is fine as a small marker, not as the scene.
+  static const _mapStandIns = {'final'};
+
+  /// The picture to fill a screen with for [m]'s place, or null when the
+  /// place has no picture of its own (see [_mapStandIns]).
+  static Artwork? sceneryOf(Mission m) => _mapStandIns.contains(m.id) ? null : placeOf(m);
+
   /// The place [m] happens at, as the detective arrives there: the room
   /// inside a landmark if it has one, else the landmark itself (King's
   /// Cross, not the suitcase found there), else its scene.

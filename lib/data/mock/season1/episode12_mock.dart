@@ -18,6 +18,8 @@ const Map<String, dynamic> episode12Json = {
     'Use everything you learned to stop the Raven Society.',
   ],
   'objectives': ["Stop the Clockmaker's plan.", "Open the Clockmaker's door."],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'bigBen',
   'intro': [
     'London, 11:00 PM...',
     'The Shadow told you everything.',

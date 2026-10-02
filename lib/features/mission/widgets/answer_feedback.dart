@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../data/models/mission.dart';
+import '../../../widgets/desk_background.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/detective_tips.dart';
@@ -25,7 +26,8 @@ Future<void> showSuccessOverlay(
     context: context,
     barrierDismissible: false,
     // Opaque once faded in: the page behind must not compete with the moment.
-    barrierColor: AppColors.navyDeep,
+    // It fades to the dark of the detective's desk, where the clue is laid.
+    barrierColor: AppColors.walnutDeep,
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (context, _, _) => _SuccessOverlay(
       detectiveName: detectiveName,
@@ -122,7 +124,9 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
         onTap: _finishNow,
         child: Stack(
         children: [
-          // A pool of lamplight on the dark desk, where the stamp comes down.
+          // The detective's desk (the season board's walnut), and a pool of warm
+          // lamplight on it where the stamp comes down and the clue is laid.
+          const Positioned.fill(child: IgnorePointer(child: DeskBackground(child: SizedBox.expand()))),
           const Positioned.fill(child: IgnorePointer(child: CustomPaint(painter: _LampLightPainter()))),
           SafeArea(
             child: Center(
@@ -205,7 +209,7 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
                             child: GameButton(
                               label: widget.buttonLabel,
                               arrow: true,
-                              style: GameButtonStyle.gold,
+                              style: GameButtonStyle.glass,
                               onPressed: _close,
                             ),
                           ),
@@ -260,12 +264,27 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
     // must fit on small phones) and scroll if it still does not fit.
     isScrollControlled: true,
     useSafeArea: true,
+    // A paper slip on the casebook (this sheet only; the others keep the
+    // app's sheet theme): nearly square corners, and a thin ink-brown tab
+    // in place of the grey handle (the whole sheet still drags to close).
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.paper))),
+    showDragHandle: false,
     builder: (context) => SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // The tab, in the handle's own 48 dp slot (the slip keeps its height).
+            Container(
+              width: 32,
+              height: 3,
+              margin: const EdgeInsets.only(top: 22, bottom: 23),
+              decoration: BoxDecoration(
+                color: AppColors.inkBrown.withValues(alpha: 0.35),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
             Container(
               width: 84,
               height: 84,
@@ -399,7 +418,7 @@ class _LampLightPainter extends CustomPainter {
       rect,
       Paint()
         ..shader = RadialGradient(
-          colors: [AppColors.royalBlue.withValues(alpha: 0.30), AppColors.navy.withValues(alpha: 0.30), Colors.transparent],
+          colors: [AppColors.goldLight.withValues(alpha: 0.10), AppColors.goldLight.withValues(alpha: 0.04), Colors.transparent],
           stops: const [0, 0.5, 1],
         ).createShader(pool),
     );

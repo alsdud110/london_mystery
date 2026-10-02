@@ -14,6 +14,8 @@ const Map<String, dynamic> episode09Json = {
     'Find out whose things hide the secret.',
   ],
   'objectives': ['Find out who opened the jewel box.', 'Find where the jewel is hidden.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'buckinghamPalace',
   'intro': [
     'Buckingham Palace, 10:00 AM...',
     'The jewel box from Mrs Robin\'s suitcase came from here.',

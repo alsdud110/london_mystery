@@ -13,6 +13,8 @@ const Map<String, dynamic> episode06Json = {
     'Compare what they saw, and find out who he is.',
   ],
   'objectives': ['Compare what the witnesses saw.', 'Find out who the stranger is.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'coventGarden',
   'intro': [
     'Covent Garden, 11:55 PM...',
     'Every night at this time, a stranger appears in the market.',

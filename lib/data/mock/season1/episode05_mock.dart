@@ -15,6 +15,8 @@ const Map<String, dynamic> episode05Json = {
     'There is no keyhole — only a dial and a note.',
   ],
   'objectives': ['Find the locked room.', 'Open the last lock.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'towerOfLondon',
   'intro': [
     'Tower of London, 5:00 PM...',
     'The Raven Society sent its letter from here.',

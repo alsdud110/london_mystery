@@ -14,6 +14,8 @@ const Map<String, dynamic> episode04Json = {
     'Read it carefully. It is written for you.',
   ],
   'objectives': ['Follow the secret letter.', 'Find out who wrote it.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'kingsCross',
   'intro': [
     "King's Cross, 11:00 AM...",
     'Miss Rose came here with the painting.',

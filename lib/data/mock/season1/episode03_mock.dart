@@ -15,6 +15,8 @@ const Map<String, dynamic> episode03Json = {
     'Read every clue and find the way she went.',
   ],
   'objectives': ['Find out who took the painting.', 'Find the way the thief went.'],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'britishMuseum',
   'intro': [
     'British Museum, 9:18 AM...',
     'Big Ben rang, and the guards ran to Gallery 8.',

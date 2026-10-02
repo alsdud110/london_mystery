@@ -12,6 +12,8 @@ const Map<String, dynamic> episode08Json = {
     'Ask the right questions and find its owner.',
   ],
   'objectives': ['Ask the passengers the right questions.', "Find the suitcase's owner."],
+  // The place the intro opens on (its picture behind the story lines).
+  'introScene': 'kingsCross',
   'intro': [
     "King's Cross, 9:00 PM...",
     'The old map led you here: nine ravens around Platform 9.',

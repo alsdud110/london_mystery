@@ -14,7 +14,7 @@ import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper.dart';
-import '../../widgets/paper_background.dart';
+import '../../widgets/desk_background.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/game_dialog.dart';
 import '../game/game_controller.dart';
@@ -97,8 +97,9 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     final footer = _iv(0.8, 1);
 
     return Scaffold(
-      body: PaperBackground(
-        night: true,
+      // The closed case file on the detective's desk (the same walnut desk as
+      // the WELL DONE moment and the season board), not the night sky.
+      body: DeskBackground(
         child: SafeArea(
           child: Center(
             child: ConstrainedBox(
@@ -148,7 +149,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                             glyph: nextCase != null ? InkGlyph.folder : InkGlyph.pin,
                             arrow: true,
                             singleLine: true,
-                            style: GameButtonStyle.gold,
+                            style: GameButtonStyle.glass,
                             onPressed: () => context.go(nextCase != null ? Routes.caseFile(nextCase.id) : Routes.season),
                           ),
                           const SizedBox(height: AppSpace.md),
