@@ -157,11 +157,20 @@ class _ReportHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Detective', style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.62))),
-                    Text(report.detectiveName,
-                        style: AppText.title(size: 26, color: AppColors.goldLight), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    // A name is one word: shrunk to fit, never cut ("MINYO…").
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        report.detectiveName,
+                        maxLines: 1,
+                        style: AppText.title(size: 26, color: AppColors.goldLight),
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -272,7 +281,11 @@ class _Metric extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          Text(value, style: AppText.title(size: 24, color: AppColors.navy)),
+          // Three to a row on a narrow phone: the figure fits its column.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(value, maxLines: 1, style: AppText.title(size: 24, color: AppColors.navy)),
+          ),
           const SizedBox(height: 2),
           Text(label, style: AppText.caption(color: AppColors.charcoal), textAlign: TextAlign.center),
           Text(labelKo, style: AppText.caption(), textAlign: TextAlign.center),

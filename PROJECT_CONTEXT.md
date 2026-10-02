@@ -710,6 +710,19 @@ PROJECT_CONTEXT.md is the persistent development context for this project.
 
 ## Change Log
 
+### 2026-10-02 — UI audit 마무리: 남은 legacy 화면 전부 정리
+
+(같은 날 audit의 MAIN FLOW 항목들 — WELL DONE·Story Scene·Case Solved·Final Mission(+Royal Box 그림 2장)·Case Files·종이 하단 시트 6개 — 은 각각 별도 요청으로 먼저 정리됨)
+- 원칙: 세계 = 어두운 cinematic(그림/DeskBackground) / 문서 = 종이 + navy 주 행동 / 어두운 바탕 위 주 행동 = `GameButtonStyle.glass`
+- 증거 확대 `CLOSE`: gold → glass(0.85 navy 장막 위)
+- QR Scanner: 흰 글자·아이콘 → goldLight/paperLight 토큰, GO BACK gold → glass. 카메라 Material 아이콘 3개는 기기 기능이라 유지(gold로 tint)
+- Parent Gate: 기본 검은 장막 → navyDeep 0.55(장면이 보임). 어른용 plain 다이얼로그·Material 버튼은 의도대로 유지(ProviderScope 밖에서도 동작해야 함)
+- Parent Report: 탐정 이름 말줄임(…) → 한 줄 축소(FittedBox), 3열 지표 숫자도 칸 안에 한 줄
+- Game Master: PaperBackground, Material BackButton → 잉크 back(canPop ? pop : 타이틀), QR 흰 Card → 줄 친 PaperSheet(QR 자체는 흰 바탕 유지), ExpansionTile 테두리 제거·잉크 아이콘, 리스트에 투명 Material(종이 위에서 ListTile 터치 표시가 가려지는 Flutter 경고 해결). 기능·문구 그대로
+- 공용화: 종이 하단 시트 6곳(지도 메뉴·Not quite!·WORD CARD·미션 편지·Final 편지·Final 노트북)의 모서리·잉크 탭 → `paperSheetShape` + `PaperSheetTab`(`widgets/paper.dart`), 값 동일. 전역 `bottomSheetTheme`은 그대로
+- Mission 화면: 확인 결과 종이 페이지 + 투명 앱바로 문서 원칙에 맞음 → 변경 없음(실기기에서 밝기 전환 체감 확인 권장)
+- Tests 506 → 514 (`remaining_screens_test`: 증거 확대·QR(카메라 없음)·Parent Gate 장막→Report·Game Master, 360·390)
+
 ### 2026-10-02 — Story Intro: 사건의 장소 위에서 narration (배경·CTA만)
 
 - 배경: `PaperBackground(night)`(밤하늘·별·스카이라인) → 사건 데이터의 새 선택 필드 `Episode.introScene`(Artwork 키, JSON `introScene`, 왕복 직렬화)의 장면 그림을 화면 전체(`LandmarkArt(showName: false)` — 종이 테두리·이름표 없이 cover), 가벼운 blur 1.5 + navy 그늘(가운데 0.6 → 가장자리 0.82, 아래 조금 더). 필드가 없거나 그림이 없으면 **London 지도**(`ArtAssets.londonMap`, "trail of clues all over London")

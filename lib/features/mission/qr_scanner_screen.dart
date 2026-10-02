@@ -64,7 +64,8 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     return Scaffold(
       backgroundColor: AppColors.navyDeep,
       appBar: AppBar(
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.goldLight,
+        iconTheme: const IconThemeData(color: AppColors.goldLight),
         title: Text('SCAN THE SECRET CODE', style: AppText.eyebrow(color: AppColors.goldLight)),
         leading: IconButton(
           tooltip: 'Close',
@@ -112,7 +113,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                   child: Text(
                     'Point the camera at the QR code',
                     textAlign: TextAlign.center,
-                    style: AppText.subtitle(color: Colors.white),
+                    style: AppText.subtitle(color: AppColors.paperLight),
                   ),
                 ),
               ],
@@ -138,13 +139,17 @@ class _ScannerMessage extends StatelessWidget {
           children: [
             Icon(icon, size: 72, color: AppColors.goldLight),
             const SizedBox(height: 16),
-            Text(title, style: AppText.title(color: Colors.white), textAlign: TextAlign.center),
+            Text(title, style: AppText.title(color: AppColors.paperLight), textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Text(message, style: AppText.bodyText(size: 16, color: Colors.white70), textAlign: TextAlign.center),
+            Text(
+              message,
+              style: AppText.bodyText(size: 16, color: AppColors.paperLight.withValues(alpha: 0.75)),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 24),
             GameButton(
               label: 'GO BACK',
-              style: GameButtonStyle.gold,
+              style: GameButtonStyle.glass,
               expand: false,
               onPressed: () => context.pop(),
             ),

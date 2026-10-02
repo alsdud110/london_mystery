@@ -50,6 +50,36 @@ class PaperSheet extends StatelessWidget {
   }
 }
 
+/// A bottom sheet as a sheet of paper (the map menu, a letter, the word card,
+/// "Not quite!", the final case's notebook): nearly square top corners. Set
+/// per sheet with `showDragHandle: false`, [PaperSheetTab] at its top — the
+/// app's sheet theme is left as it is.
+const paperSheetShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.paper)),
+);
+
+/// The thin ink tab at the top of a [paperSheetShape] sheet, in place of the
+/// grey Material handle, in the handle's own 48 dp slot (so a sheet keeps
+/// its height). The whole sheet still drags to close.
+class PaperSheetTab extends StatelessWidget {
+  const PaperSheetTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 32,
+        height: 3,
+        margin: const EdgeInsets.only(top: 22, bottom: 23),
+        decoration: BoxDecoration(
+          color: AppColors.inkBrown.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
+    );
+  }
+}
+
 /// A manila case folder: a labelled tab on top of a paper body.
 class CaseFolder extends StatelessWidget {
   const CaseFolder({super.key, required this.tab, required this.child});

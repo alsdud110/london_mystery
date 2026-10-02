@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../widgets/game_dialog.dart';
 
@@ -15,6 +16,9 @@ abstract final class ParentGate {
     final b = 6 + rnd.nextInt(4);
     final ok = await showDialog<bool>(
       context: context,
+      // The scene stays in view under a night shade (as the game's other
+      // questions over a scene), not a plain black dim.
+      barrierColor: AppColors.navyDeep.withValues(alpha: 0.55),
       builder: (context) => _ParentGateDialog(a: a, b: b),
     );
     return ok ?? false;

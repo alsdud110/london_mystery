@@ -164,7 +164,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
       // nearly square corners, a thin ink-brown tab printed on it (the
       // theme's grey handle is off; the whole sheet still drags to close).
       backgroundColor: AppColors.paper,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.paper))),
+      shape: paperSheetShape,
       showDragHandle: false,
       builder: (sheetContext) => Consumer(
         builder: (context, ref, _) {
@@ -192,17 +192,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Center(
-                    child: Container(
-                      width: 32,
-                      height: 3,
-                      margin: const EdgeInsets.only(top: 22, bottom: 23),
-                      decoration: BoxDecoration(
-                        color: AppColors.inkBrown.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
+                  const PaperSheetTab(),
                   // Case status: shown here, on request, instead of on the map.
                   Padding(
                     padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.sm),

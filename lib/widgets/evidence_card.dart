@@ -183,7 +183,7 @@ class _EvidenceZoom extends StatelessWidget {
                     width: 200,
                     child: GameButton(
                       label: 'CLOSE',
-                      style: GameButtonStyle.gold,
+                      style: GameButtonStyle.glass, // on the dark shade, as the game's other buttons
                       playTapSound: false,
                       onPressed: () => Navigator.of(context).pop(),
                     ),
