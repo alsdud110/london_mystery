@@ -104,6 +104,46 @@ void main() {
       await closesThreeWays(t, open, find.byType(LetterCard));
     });
 
+    testWidgets('final letter $tag: the paper sheet, the letter as before, a word, BACK TO THE LOCKS', (t) async {
+      final go = await pumpApp(t, size, GameProgress(
+        detectiveName: 'MINYOUNG',
+        introSeen: true,
+        completedMissionIds: [for (final m in episode01.missions) m.id],
+        startedAt: DateTime(2026, 9, 29, 10),
+        playMillis: 0,
+      ));
+      go.go(Routes.finalMission);
+      await wait(t, const Duration(milliseconds: 1200));
+
+      Future<void> open() async {
+        final button = find.text('Letter');
+        await t.scrollUntilVisible(button, 300, scrollable: find.byType(Scrollable).first);
+        await wait(t, const Duration(milliseconds: 300));
+        await t.tap(button);
+        await wait(t, const Duration(milliseconds: 700));
+        expect(find.text('BACK TO THE LOCKS'), findsOneWidget);
+      }
+
+      await open();
+      expect(t.takeException(), isNull);
+      expectPaperShell(t);
+      await capture(t, 'final_letter_$tag');
+      // A word in the letter still opens its card, over the letter.
+      final sheetLetter = find.descendant(of: find.byType(BottomSheet), matching: find.byType(LetterCard));
+      await t.tapOnText(find.textRange.ofSubstring('locks').last);
+      await wait(t, const Duration(milliseconds: 600));
+      expect(find.text('WORD CARD'), findsOneWidget);
+      await t.tap(find.text('GOT IT!'));
+      await wait(t, const Duration(milliseconds: 600));
+      expect(sheetLetter, findsOneWidget, reason: 'back on the letter');
+      await t.tap(find.text('BACK TO THE LOCKS'));
+      await wait(t, const Duration(milliseconds: 700));
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.text('OPEN THE BOX'), findsOneWidget, reason: 'back at the locks');
+
+      await closesThreeWays(t, open, find.text('BACK TO THE LOCKS'));
+    });
+
     testWidgets('final notebook $tag: the paper sheet, evidence and clues as before, scrolling, closing', (t) async {
       final go = await pumpApp(t, size, GameProgress(
         detectiveName: 'MINYOUNG',

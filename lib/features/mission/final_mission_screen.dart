@@ -112,11 +112,26 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      // Paper, not an app sheet (this sheet only; the others keep the app's
+      // sheet theme): nearly square corners, and a thin ink-brown tab in
+      // place of the grey handle (it still drags to close).
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.paper))),
+      showDragHandle: false,
       builder: (context) => SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.xl),
           child: Column(
             children: [
+              // The tab, in the handle's own 48 dp slot (the sheet keeps its height).
+              Container(
+                width: 32,
+                height: 3,
+                margin: const EdgeInsets.only(top: 22, bottom: 23),
+                decoration: BoxDecoration(
+                  color: AppColors.inkBrown.withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
               LetterCard(text: _mission.letter),
               const SizedBox(height: AppSpace.xl),
               GameButton(label: 'BACK TO THE LOCKS', onPressed: () => Navigator.of(context).pop()),
