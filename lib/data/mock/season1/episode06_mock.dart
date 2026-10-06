@@ -220,6 +220,15 @@ const Map<String, dynamic> episode06Json = {
       'inscription': '"Blow it if you need help."',
     },
     'successMessage': 'The Midnight Detective is a friend!',
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'Inspector Grey is on your side.',
+      'He gives you a silver whistle.',
+      '"Blow it if you need help."',
+      'Then he tells you one more thing.',
+      '"Find the other half\nin Hyde Park."',
+      'The mystery is getting bigger.',
+    ],
     'skills': ['reading', 'problemSolving'],
     'mapX': 0.72,
     'mapY': 0.84,

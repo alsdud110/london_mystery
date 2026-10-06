@@ -216,6 +216,17 @@ const Map<String, dynamic> episode11Json = {
       'inscription': 'P.S. I still love trains!',
     },
     'successMessage': 'It is the Shadow!',
+    // After the case is closed: the post-case story scene (existing facts
+    // only — never where the door is: Case 12's riddle asks that).
+    'transition': [
+      'The mask is off.',
+      'It is the Shadow.',
+      'But this time,\nhe is helping you.',
+      'He has left the Raven Society.',
+      'And he knows\nwhat the Clockmaker is planning.',
+      'Midnight is getting closer.',
+      'Big Ben is waiting.',
+    ],
     'skills': ['reading', 'problemSolving'],
     'mapX': 0.74,
     'mapY': 0.84,

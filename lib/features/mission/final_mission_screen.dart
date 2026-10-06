@@ -359,12 +359,21 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   Widget _solvedActions() => AnimatedBuilder(
     animation: _open,
     builder: (context, child) => Opacity(opacity: ((_open.value - 0.8) / 0.2).clamp(0, 1), child: child),
-    child: GameButton(
-      label: 'SEE MY CASE REPORT',
-      glyph: InkGlyph.folder,
-      style: GameButtonStyle.glass,
-      onPressed: () => context.go(Routes.solved),
-    ),
+    // The story goes on after the case (its post-case scene, which ends on
+    // SEE MY CASE REPORT); a case without one goes straight to the report.
+    child: _mission.transition.isEmpty
+        ? GameButton(
+            label: 'SEE MY CASE REPORT',
+            glyph: InkGlyph.folder,
+            style: GameButtonStyle.glass,
+            onPressed: () => context.go(Routes.solved),
+          )
+        : GameButton(
+            label: 'CONTINUE',
+            arrow: true,
+            style: GameButtonStyle.glass,
+            onPressed: () => context.go(Routes.story(_mission.id)),
+          ),
   );
 }
 

@@ -231,6 +231,16 @@ const Map<String, dynamic> episode04Json = {
       'inscription': 'We are the Raven Society. We are watching.',
     },
     'successMessage': 'The Raven Society!',
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'The message is finally clear.',
+      'THE RAVEN SOCIETY.',
+      'The raven was not just a picture.',
+      'It was on every seal.',
+      'You turn the envelope over.',
+      'The postmark says:',
+      'TOWER OF LONDON.',
+    ],
     'skills': ['reading', 'vocabulary'],
     'mapX': 0.74,
     'mapY': 0.8,

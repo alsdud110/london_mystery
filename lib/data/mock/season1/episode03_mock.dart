@@ -230,6 +230,15 @@ const Map<String, dynamic> episode03Json = {
       'inscription': "KING'S CROSS — LOST PROPERTY",
     },
     'successMessage': "Miss Rose went to King's Cross!",
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'Miss Rose is gone.',
+      'But something fell out of her taxi.',
+      'A luggage tag.',
+      "KING'S CROSS\nLOST PROPERTY",
+      'And the missing painting?',
+      'It shows a tower\nfull of ravens.',
+    ],
     'skills': ['reading', 'problemSolving'],
     'mapX': 0.76,
     'mapY': 0.84,

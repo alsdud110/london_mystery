@@ -33,6 +33,18 @@ Future<void> tapText(WidgetTester t, String text, {Duration after = const Durati
   await wait(t, after);
 }
 
+/// The final case is solved: CONTINUE → the post-case scene (a tap shows
+/// all of it) with the case's last evidence → SEE MY CASE REPORT.
+Future<void> throughPostCase(WidgetTester t, {required String caseNumber, required String evidence}) async {
+  await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 1000));
+  expect(find.text('CASE $caseNumber COMPLETE'), findsOneWidget, reason: 'the post-case scene');
+  await t.tapAt(t.getCenter(find.byType(Scaffold).last));
+  await wait(t, const Duration(milliseconds: 1200));
+  expect(find.text(evidence), findsOneWidget, reason: "the case's last evidence");
+  expect(find.text('TO THE MAP'), findsNothing);
+  await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 3200));
+}
+
 /// Map → mission: investigate the place, open the letter, go to the puzzle.
 /// GO TO a place: the map zooms in, the place appears, the mission opens.
 const goToTime = Duration(milliseconds: 2800);
@@ -221,8 +233,8 @@ void main() {
     expect(find.text('Brilliant work, Detective MINYOUNG!'), findsOneWidget);
     expect(audio.played, contains(GameSound.finale));
 
-    // Result: the case file, then the parent report.
-    await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 3200));
+    // The story after the case, then the case file and the parent report.
+    await throughPostCase(t, caseNumber: '01', evidence: 'The Missing Crown');
     expect(find.text('CASE CLOSED'), findsOneWidget);
     expect(find.text('MINYOUNG'), findsOneWidget);
     expect(find.text('THE MISSING CROWN'), findsOneWidget);

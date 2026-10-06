@@ -227,6 +227,14 @@ const Map<String, dynamic> episode07Json = {
       'inscription': 'Nine small ravens are drawn around Platform 9.',
     },
     'successMessage': 'You found the lost map!',
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'The map is complete.',
+      'Nine small ravens\ncircle one place.',
+      'PLATFORM 9.',
+      'You have seen those words before.',
+      "King's Cross is waiting.",
+    ],
     'skills': ['reading', 'problemSolving'],
     'mapX': 0.7,
     'mapY': 0.12,

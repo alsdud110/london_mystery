@@ -226,6 +226,16 @@ const Map<String, dynamic> episode02Json = {
       'inscription': 'A black feather. The same raven as on the gear.',
     },
     'successMessage': 'Big Ben rings again!',
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'Big Ben rings again.',
+      'In your hand is a black feather.',
+      'A raven.',
+      'The same raven was stamped on the gear.',
+      'And the time was not just a time.',
+      'It was a message.',
+      'At the museum,\nthe guards hear the bell.',
+    ],
     'skills': ['problemSolving', 'reading'],
     'mapX': 0.36,
     'mapY': 0.12,

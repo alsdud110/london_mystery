@@ -221,6 +221,17 @@ const Map<String, dynamic> episode05Json = {
       'inscription': 'Hyde Park. A small raven is drawn by a bridge.',
     },
     'successMessage': 'The iron chest is open!',
+    // After the case is closed: the post-case story scene (existing facts
+    // only — no reason to go to Covent Garden: Case 06's intro begins that).
+    'transition': [
+      'The iron chest is open.',
+      'Inside is an old map fragment.',
+      'A small raven is drawn\nby a bridge in Hyde Park.',
+      'Then you remember the words\non the wall:',
+      '"At midnight,\nthe Clockmaker will stop London."',
+      'And there is still the brass key.',
+      "FOR THE CLOCKMAKER'S DOOR.",
+    ],
     'skills': ['problemSolving', 'reading'],
     'mapX': 0.78,
     'mapY': 0.8,

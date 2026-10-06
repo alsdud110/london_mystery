@@ -79,7 +79,9 @@ void main() {
         expect(button.style, GameButtonStyle.glass);
         expect(find.text('VIEW MY DETECTIVE REPORT'), findsOneWidget, reason: 'the grown-ups\' report, as before');
         expect(find.text('Play again'), findsOneWidget);
-        if (id == 'ep12') expect(find.textContaining('PARIS'), findsOneWidget, reason: 'the Season 2 hook stays');
+        // The hook is told by the post-case scene before the report, not here.
+        if (e.hook != null) expect(find.text(e.hook!), findsNothing, reason: 'no hook on the report');
+        if (id == 'ep12') expect(find.textContaining('PARIS'), findsNothing, reason: 'PARIS is the post-case scene\'s');
         await capture(t, 'case_closed_${tag}_actions');
 
         await t.tap(find.text(next));

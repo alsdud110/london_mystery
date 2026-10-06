@@ -8,7 +8,7 @@ import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 
-import 'full_playthrough_test.dart' show finishMission, goToTime, openMission, reveal, tapText, wait;
+import 'full_playthrough_test.dart' show finishMission, goToTime, openMission, reveal, tapText, throughPostCase, wait;
 import 'helpers.dart';
 
 void main() {
@@ -108,7 +108,7 @@ void main() {
     expect(find.text('CASE SOLVED'), findsOneWidget);
     expect(find.text('Big Ben rings again!'), findsOneWidget);
 
-    await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 3200));
+    await throughPostCase(t, caseNumber: '02', evidence: 'Raven Feather');
     expect(find.text('THE SILENT CLOCK'), findsOneWidget);
     expect(find.text('CLOCK WATCHER'), findsOneWidget, reason: "the case's own badge");
     await reveal(t, find.text('Evidence'));

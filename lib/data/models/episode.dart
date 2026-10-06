@@ -42,7 +42,9 @@ class Episode {
   /// A few key English words of the case, named in the parent report.
   final List<String> keyWords;
 
-  /// Season story hook shown after the case is closed ("what happens next?").
+  /// Season story hook: what the case leaves unanswered ("what happens
+  /// next?"). The final case's post-case scene tells it on screen; the case
+  /// report does not repeat it.
   final String? hook;
 
   /// The place the story intro opens on, shown behind its lines (the

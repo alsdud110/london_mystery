@@ -231,7 +231,8 @@ class Mission {
   final Evidence? evidence;
   final String successMessage;
 
-  /// Short story scene played after the mission is solved.
+  /// Short story scene played after the mission is solved. On the final
+  /// case: the post-case scene, before the case report.
   final List<String> transition;
   final String? nextMissionId;
   final List<Skill> skills;

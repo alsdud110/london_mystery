@@ -230,6 +230,16 @@ const Map<String, dynamic> episode10Json = {
       'inscription': 'THE CLOCKMAKER WILL STOP BIG BEN AT MIDNIGHT.',
     },
     'successMessage': 'You read the warning!',
+    // After the case is closed: the post-case story scene (existing facts
+    // only — the Shadow is not named: Case 11 unmasks him).
+    'transition': [
+      'The warning is clear.',
+      'THE CLOCKMAKER WILL STOP\nBIG BEN AT MIDNIGHT.',
+      'The Ravenmaster whispers:\n"The Clockmaker is watching me."',
+      'There is not much time.',
+      'Then you remember an old ticket:',
+      'ROW R\nSEAT 17.',
+    ],
     'skills': ['reading', 'vocabulary'],
     'mapX': 0.74,
     'mapY': 0.82,

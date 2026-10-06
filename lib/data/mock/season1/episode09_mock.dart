@@ -215,6 +215,14 @@ const Map<String, dynamic> episode09Json = {
       'inscription': 'Found inside a guard\'s tall black hat.',
     },
     'successMessage': 'The Blue Star was in the hat!',
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'The Blue Star is safe.',
+      "But on the back of Anna's name tag,\na raven is drawn.",
+      'And the card inside the hat\nleft a warning:',
+      '"The jewel was never the prize."',
+      '"Watch the ravens."',
+    ],
     'skills': ['problemSolving', 'reading'],
     'mapX': 0.74,
     'mapY': 0.82,

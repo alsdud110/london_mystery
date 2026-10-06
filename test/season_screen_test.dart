@@ -643,8 +643,8 @@ void main() {
     appRef.read(recentSolveProvider.notifier).add('ep12');
     appRef.read(routerProvider).go(Routes.solved);
     await wait(t, const Duration(milliseconds: 3200));
-    await t.scrollUntilVisible(find.textContaining('PARIS'), 300, scrollable: find.byType(Scrollable).first);
-    expect(find.textContaining('PARIS'), findsOneWidget, reason: "Case 12's own ending and Season 2 hook stay");
+    // The Season 2 hook (PARIS) is told by the post-case scene, not the report.
+    expect(find.textContaining('PARIS'), findsNothing);
     await tapText(t, 'INVESTIGATION BOARD', after: const Duration(milliseconds: 3000));
     expect(path(), Routes.season);
     expect(find.text('COMPLETED'), findsOneWidget);

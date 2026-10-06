@@ -18,7 +18,7 @@ import 'helpers.dart';
 import 'title_screen_test.dart' show capture;
 
 /// Case 01's final mission on the detective's desk: the Royal Box, the four
-/// locks as before, OPEN THE BOX and SEE MY CASE REPORT as glass buttons.
+/// locks as before, OPEN THE BOX and CONTINUE (to the post-case scene) as glass buttons.
 void main() {
   setUpAll(() async {
     for (final (family, files) in [
@@ -36,7 +36,7 @@ void main() {
 
   for (final size in const [Size(360, 640), Size(390, 844)]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}';
-    testWidgets('final mission $tag: desk, locks, OPEN THE BOX → open → SEE MY CASE REPORT, and a revisit', (t) async {
+    testWidgets('final mission $tag: desk, locks, OPEN THE BOX → open → CONTINUE, and a revisit', (t) async {
       t.view.physicalSize = size * 3;
       t.view.devicePixelRatio = 3;
       addTearDown(t.view.reset);
@@ -101,11 +101,12 @@ void main() {
       await capture(t, "final_opening_$tag");
       await wait(t, const Duration(milliseconds: 2300));
 
-      // D–E. Open, solved, SEE MY CASE REPORT as the glass button.
-      final report = find.text('SEE MY CASE REPORT');
-      await t.scrollUntilVisible(report, 300, scrollable: find.byType(Scrollable).first);
+      // D–E. Open, solved, CONTINUE (to the post-case scene) as the glass button.
+      final onward = find.text('CONTINUE');
+      await t.scrollUntilVisible(onward, 300, scrollable: find.byType(Scrollable).first);
       await wait(t, const Duration(milliseconds: 300));
-      expect(t.widget<GameButton>(find.ancestor(of: report, matching: find.byType(GameButton))).style, GameButtonStyle.glass);
+      expect(t.widget<GameButton>(find.ancestor(of: onward, matching: find.byType(GameButton))).style, GameButtonStyle.glass);
+      expect(find.text('SEE MY CASE REPORT'), findsNothing, reason: 'the report comes after the post-case scene');
       expect(find.text('CASE SOLVED'), findsOneWidget);
       expect(showing(ArtAssets.royalBox.open), isTrue, reason: 'open, the Crown inside');
       expect(showing(ArtAssets.royalBox.closed), isFalse);
@@ -124,9 +125,14 @@ void main() {
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
       await t.pump();
       await capture(t, 'final_revisit_$tag');
-      await t.scrollUntilVisible(report, 300, scrollable: find.byType(Scrollable).first);
+      await t.scrollUntilVisible(onward, 300, scrollable: find.byType(Scrollable).first);
       await wait(t, const Duration(milliseconds: 300));
-      await t.tap(report);
+      await t.tap(onward);
+      await wait(t, const Duration(milliseconds: 1500));
+      expect(router.routerDelegate.currentConfiguration.uri.path, Routes.story('final'));
+      await t.tapAt(Offset(size.width / 2, size.height / 2)); // the whole story at once
+      await wait(t, const Duration(milliseconds: 1200));
+      await t.tap(find.text('SEE MY CASE REPORT'));
       await wait(t, const Duration(milliseconds: 1500));
       expect(router.routerDelegate.currentConfiguration.uri.path, Routes.solved);
       await wait(t, const Duration(seconds: 3));

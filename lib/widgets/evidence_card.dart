@@ -270,11 +270,15 @@ class _EvidenceArt extends StatelessWidget {
   }
 }
 
-/// Small evidence chip used in celebrations.
+/// Small evidence chip used in celebrations (and after a case is closed,
+/// with what is written on the evidence).
 class EvidenceChip extends StatelessWidget {
-  const EvidenceChip({super.key, required this.evidence});
+  const EvidenceChip({super.key, required this.evidence, this.note});
 
   final Evidence evidence;
+
+  /// A line under the name (e.g. the evidence's inscription).
+  final String? note;
 
   @override
   Widget build(BuildContext context) {
@@ -288,6 +292,10 @@ class EvidenceChip extends StatelessWidget {
             children: [
               Text('EVIDENCE', style: AppText.eyebrow()),
               Text(evidence.name, style: AppText.title(size: 20)),
+              if (note != null) ...[
+                const SizedBox(height: 2),
+                Text(note!, style: AppText.letter(size: 15)),
+              ],
             ],
           ),
         ),

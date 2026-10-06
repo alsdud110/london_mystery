@@ -223,6 +223,23 @@ const Map<String, dynamic> episode12Json = {
       'inscription': 'Still ticking. On the back: PARIS.',
     },
     'successMessage': 'London is safe at midnight!',
+    // After the case is closed: the season's ending scene (existing facts
+    // only — who the Clockmaker is stays untold; the watch is the Season 2 hook).
+    'transition': [
+      'Midnight.',
+      'Big Ben rings.',
+      'London is safe.',
+      'But the Clockmaker is gone.',
+      'For a moment,\neverything is quiet.',
+      'Then you hear it.',
+      'Tick.',
+      'Tick.',
+      'Tick.',
+      'A pocket watch is still ticking.',
+      'You turn it over.',
+      'One word is written\non the back.',
+      'PARIS.',
+    ],
     'skills': ['problemSolving', 'reading'],
     'mapX': 0.76,
     'mapY': 0.46,

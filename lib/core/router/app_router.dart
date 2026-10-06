@@ -148,8 +148,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/story/:id',
-        // The mission is solved: back is the same as TO THE MAP.
-        pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.map, StorySceneScreen(missionId: s.pathParameters['id']!))),
+        // The mission is solved: back is the same as TO THE MAP. After the
+        // final case, the same as SEE MY CASE REPORT.
+        pageBuilder: (c, s) {
+          final id = s.pathParameters['id']!;
+          final afterCase = ref.read(currentEpisodeProvider).missionById(id)?.isFinal ?? false;
+          return _fade(s, _backTo(c, afterCase ? Routes.solved : Routes.map, StorySceneScreen(missionId: id)));
+        },
       ),
       GoRoute(path: Routes.qrScanner, pageBuilder: (c, s) => _fade(s, const QrScannerScreen())),
       GoRoute(path: Routes.finalMission, pageBuilder: (c, s) => _fade(s, const FinalMissionScreen())),

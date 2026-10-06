@@ -13,6 +13,7 @@ import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/art_assets.dart';
+import '../../widgets/evidence_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
@@ -26,6 +27,10 @@ import '../game/game_providers.dart';
 
 /// Short cinematic scene between missions: what happened next, and which
 /// place just opened up.
+///
+/// After the final case (its [Mission.transition] is the post-case scene)
+/// the same scene closes the case instead: its own place behind the words,
+/// its last evidence, and SEE MY CASE REPORT.
 class StorySceneScreen extends ConsumerStatefulWidget {
   const StorySceneScreen({super.key, required this.missionId});
 
@@ -41,10 +46,28 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
   bool _done = false;
   Timer? _pause;
 
+  /// The post-case story is longer than a small phone: it keeps the newest
+  /// line in view.
+  final _scroll = ScrollController();
+
   @override
   void dispose() {
     _pause?.cancel();
+    _scroll.dispose();
     super.dispose();
+  }
+
+  void _followNewestLine() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scroll.hasClients) return;
+      final end = _scroll.position.maxScrollExtent;
+      if (_scroll.offset >= end) return;
+      if (MediaQuery.disableAnimationsOf(context)) {
+        _scroll.jumpTo(end);
+      } else {
+        _scroll.animateTo(end, duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
+      }
+    });
   }
 
   List<String> get _lines => ref.read(currentEpisodeProvider).missionById(widget.missionId)?.transition ?? const [];
@@ -82,17 +105,26 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
     final name = ref.watch(gameControllerProvider).detectiveName ?? '';
     final m = episode.missionById(widget.missionId)!;
     final next = m.nextMissionId == null ? null : episode.missionById(m.nextMissionId!);
+    // The final case: the scene after the case is closed.
+    final afterCase = m.isFinal;
     final lines = _lines;
     if (lines.isEmpty) _done = true;
 
     return Scaffold(
       backgroundColor: AppColors.nightBottom,
       // The story goes on at the place the clue points to: its picture fills
-      // the screen, in the dark, under the words.
+      // the screen, in the dark, under the words. After the case: the place
+      // the case was closed at.
       body: Stack(
         fit: StackFit.expand,
         children: [
-          _PlaceScenery(next == null ? null : PlaceArt.sceneryOf(next)),
+          _PlaceScenery(
+            afterCase
+                ? PlaceArt.sceneryOf(m)
+                : next == null
+                ? null
+                : PlaceArt.sceneryOf(next),
+          ),
           InkSurface(
             night: true,
             child: SafeArea(
@@ -106,7 +138,10 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                       padding: const EdgeInsets.fromLTRB(28, 20, 28, 20),
                       child: Column(
                         children: [
-                          Text('MISSION ${m.numberLabel} COMPLETE', style: AppText.eyebrow(color: AppColors.goldLight)),
+                          Text(
+                            afterCase ? 'CASE ${episode.numberLabel} COMPLETE' : 'MISSION ${m.numberLabel} COMPLETE',
+                            style: AppText.eyebrow(color: AppColors.goldLight),
+                          ),
                           const SizedBox(height: AppSpace.sm),
                           const OrnamentRule(color: AppColors.goldLight),
                           const SizedBox(height: AppSpace.sm),
@@ -115,29 +150,44 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                             textAlign: TextAlign.center,
                             style: AppText.bodyText(size: 16, color: AppColors.paperLight.withValues(alpha: 0.72)),
                           ),
+                          // The longer story scrolls: a breath between the greeting and its faded edge.
+                          if (afterCase) const SizedBox(height: AppSpace.md),
                           Expanded(
                             child: Center(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    for (var i = 0; i <= _line && i < lines.length; i++)
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 20),
-                                        child: i < _line || _done
-                                            ? GlossaryText(
-                                                lines[i],
-                                                textAlign: TextAlign.center,
-                                                style: _lineStyle(i == lines.length - 1),
-                                              )
-                                            : TypewriterText(
-                                                lines[i],
-                                                key: ValueKey('scene-$i'),
-                                                skip: _skip,
-                                                style: _lineStyle(i == lines.length - 1),
-                                                onFinished: _lineFinished,
-                                              ),
-                                      ),
-                                  ],
+                              child: NotificationListener<ScrollMetricsNotification>(
+                                // A new line made the story taller (after the case only).
+                                onNotification: (_) {
+                                  if (afterCase) _followNewestLine();
+                                  return false;
+                                },
+                                child: _StoryEdges(
+                                  fade: afterCase,
+                                  child: SingleChildScrollView(
+                                    controller: _scroll,
+                                    // Room to scroll the first and last lines clear of the faded edges.
+                                    padding: afterCase ? const EdgeInsets.symmetric(vertical: AppSpace.xl) : null,
+                                    child: Column(
+                                      children: [
+                                        for (var i = 0; i <= _line && i < lines.length; i++)
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: i < _line || _done
+                                                ? GlossaryText(
+                                                    lines[i],
+                                                    textAlign: TextAlign.center,
+                                                    style: _lineStyle(i == lines.length - 1),
+                                                  )
+                                                : TypewriterText(
+                                                    lines[i],
+                                                    key: ValueKey('scene-$i'),
+                                                    skip: _skip,
+                                                    style: _lineStyle(i == lines.length - 1),
+                                                    onFinished: _lineFinished,
+                                                  ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -148,19 +198,30 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                 ? Column(
                                     key: const ValueKey('done'),
                                     children: [
-                                      if (next != null)
+                                      // After the case: its last evidence, held up once more.
+                                      if (afterCase && m.evidence != null)
+                                        _EvidenceCard(evidence: m.evidence!, location: m.location)
+                                      else if (next != null)
                                         _UnlockedCard(
                                           nextLocation: next.location,
                                           isFinal: next.isFinal,
                                           art: PlaceArt.placeOf(next),
                                         ),
                                       const SizedBox(height: 18),
-                                      GameButton(
-                                        label: 'TO THE MAP',
-                                        arrow: true,
-                                        style: GameButtonStyle.glass,
-                                        onPressed: () => context.go(Routes.map),
-                                      ),
+                                      if (afterCase)
+                                        GameButton(
+                                          label: 'SEE MY CASE REPORT',
+                                          glyph: InkGlyph.folder,
+                                          style: GameButtonStyle.glass,
+                                          onPressed: () => context.go(Routes.solved),
+                                        )
+                                      else
+                                        GameButton(
+                                          label: 'TO THE MAP',
+                                          arrow: true,
+                                          style: GameButtonStyle.glass,
+                                          onPressed: () => context.go(Routes.map),
+                                        ),
                                     ],
                                   )
                                 : Padding(
@@ -203,17 +264,7 @@ class _UnlockedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      // Settles in without overshoot: a card laid down, not bounced.
-      duration: (MediaQuery.maybeDisableAnimationsOf(context) ?? false)
-          ? Duration.zero
-          : const Duration(milliseconds: 600),
-      curve: Curves.easeOutCubic,
-      builder: (context, t, child) => Transform.scale(
-        scale: 0.94 + 0.06 * t,
-        child: Opacity(opacity: t.clamp(0, 1), child: child),
-      ),
+    return _LaidDown(
       // A paper card handed across the night desk.
       child: PaperSheet(
         ruled: true,
@@ -252,6 +303,84 @@ class _UnlockedCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The case's last evidence after the case is closed: the same paper card,
+/// with what is written on it. Tap to look closer (as in the notebook).
+class _EvidenceCard extends StatelessWidget {
+  const _EvidenceCard({required this.evidence, required this.location});
+
+  final Evidence evidence;
+  final String location;
+
+  @override
+  Widget build(BuildContext context) {
+    final note = evidence.inscription;
+    return _LaidDown(
+      child: Semantics(
+        button: true,
+        label: '${evidence.name}. ${note ?? ''} Tap to look closer.',
+        excludeSemantics: true,
+        child: GestureDetector(
+          onTap: () => showEvidenceZoom(context, evidence, location: location),
+          child: PaperSheet(
+            ruled: true,
+            tilt: -0.012,
+            padding: const EdgeInsets.all(AppSpace.lg),
+            child: EvidenceChip(evidence: evidence, note: note),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The longer post-case story scrolls: its lines fade out at the top and
+/// bottom edges instead of being cut off under the greeting.
+class _StoryEdges extends StatelessWidget {
+  const _StoryEdges({required this.fade, required this.child});
+
+  final bool fade;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!fade) return child;
+    return ShaderMask(
+      blendMode: BlendMode.dstIn,
+      shaderCallback: (rect) => const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Colors.transparent, Colors.white, Colors.white, Colors.transparent],
+        stops: [0, 0.1, 0.92, 1],
+      ).createShader(rect),
+      child: child,
+    );
+  }
+}
+
+/// A card laid down on the night desk: it settles in without overshoot, not
+/// bounced (at once with reduced motion).
+class _LaidDown extends StatelessWidget {
+  const _LaidDown({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: (MediaQuery.maybeDisableAnimationsOf(context) ?? false)
+          ? Duration.zero
+          : const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      builder: (context, t, child) => Transform.scale(
+        scale: 0.94 + 0.06 * t,
+        child: Opacity(opacity: t.clamp(0, 1), child: child),
+      ),
+      child: child,
     );
   }
 }

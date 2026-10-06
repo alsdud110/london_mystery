@@ -126,15 +126,9 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                       opacity: footer.value,
                       child: Column(
                         children: [
-                          // The season goes on: what the case left unanswered.
-                          if (report.episode.hook != null) ...[
-                            Text(
-                              report.episode.hook!,
-                              style: AppText.aside(color: AppColors.paperLight.withValues(alpha: 0.75)),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                          ],
+                          // What the case left unanswered is told by the post-case
+                          // scene before this report (Episode.hook is not repeated
+                          // here: it would echo that scene, or spoil the next case).
                           Text(
                             'London needs you again.',
                             style: AppText.subtitle(color: AppColors.goldLight),

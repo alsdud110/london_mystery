@@ -220,6 +220,16 @@ const Map<String, dynamic> episode08Json = {
       'inscription': 'BUCKINGHAM PALACE — it is empty.',
     },
     'successMessage': 'Mrs Robin cannot say no!',
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'Mrs Robin cannot say no.',
+      'Miss Rose and Mrs Robin\nare the same person.',
+      'Before you leave,\nyou look inside her suitcase.',
+      'At the bottom is an empty jewel box.',
+      'BUCKINGHAM PALACE.',
+      'Then Mrs Robin whispers:',
+      '"The Clockmaker gives the orders."',
+    ],
     'skills': ['reading', 'problemSolving'],
     'mapX': 0.74,
     'mapY': 0.84,

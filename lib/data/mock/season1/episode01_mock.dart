@@ -315,6 +315,17 @@ const Map<String, dynamic> episode01Json = {
       'inscription': 'Returned by a great detective.',
     },
     'successMessage': 'The Crown has been found!',
+    // After the case is closed: the post-case story scene (existing facts only).
+    'transition': [
+      'The Crown is safe again.',
+      'The Royal Box is open.',
+      'But the Shadow is gone.',
+      'The note at Big Ben said:\n"I left London at SEVEN o\'clock."',
+      'And his letter ended:',
+      '"P.S. I love trains!"',
+      'London is quiet tonight.',
+      'For now.',
+    ],
     'skills': ['problemSolving', 'reading'],
     'mapX': 0.84,
     'mapY': 0.45,
