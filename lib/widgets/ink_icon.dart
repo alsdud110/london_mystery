@@ -62,6 +62,15 @@ enum InkGlyph {
   frame,
   whistle,
   train,
+  museum,
+  park,
+  crown,
+
+  // Badges
+  eye,
+  stopwatch,
+  puzzle,
+  deerstalker,
 }
 
 class InkIcon extends StatelessWidget {
@@ -487,6 +496,78 @@ class _InkGlyphPainter extends CustomPainter {
         line(16.5, 8.5, 19, 8.5);
         canvas.drawCircle(const Offset(7.5, 19), 2, p);
         canvas.drawCircle(const Offset(17, 19), 2, p);
+      case InkGlyph.museum:
+        // A classical front: pediment, four columns, the steps.
+        poly(const [Offset(3, 9), Offset(12, 3.5), Offset(21, 9)], close: true);
+        for (final x in [6.0, 10.0, 14.0, 18.0]) {
+          line(x, 11.5, x, 17.5);
+        }
+        line(3, 20.5, 21, 20.5);
+      case InkGlyph.park:
+        // A park tree: a leafy crown, trunk, the grass line.
+        canvas.drawPath(
+          Path()
+            ..moveTo(9, 15.5)
+            ..arcToPoint(const Offset(5.5, 9.5), radius: const Radius.circular(3.5))
+            ..arcToPoint(const Offset(12, 3.5), radius: const Radius.circular(5))
+            ..arcToPoint(const Offset(18.5, 9.5), radius: const Radius.circular(5))
+            ..arcToPoint(const Offset(15, 15.5), radius: const Radius.circular(3.5))
+            ..close(),
+          p,
+        );
+        line(12, 15.5, 12, 20.5);
+        line(6.5, 20.5, 17.5, 20.5);
+      case InkGlyph.crown:
+        poly(
+          const [Offset(4, 17), Offset(4, 8), Offset(8.5, 12), Offset(12, 5.5), Offset(15.5, 12), Offset(20, 8), Offset(20, 17)],
+          close: true,
+        );
+        line(4, 20.5, 20, 20.5);
+      case InkGlyph.eye:
+        canvas.drawPath(
+          Path()
+            ..moveTo(2.5, 12)
+            ..quadraticBezierTo(12, 3.5, 21.5, 12)
+            ..quadraticBezierTo(12, 20.5, 2.5, 12)
+            ..close(),
+          p,
+        );
+        canvas.drawCircle(const Offset(12, 12), 3.2, p);
+        canvas.drawCircle(const Offset(12, 12), 0.4, p);
+      case InkGlyph.stopwatch:
+        canvas.drawCircle(const Offset(12, 13.5), 7.5, p);
+        line(12, 6, 12, 3.5);
+        line(10, 3.5, 14, 3.5);
+        line(17.5, 7.5, 19, 6);
+        line(12, 13.5, 12, 9.5);
+        line(12, 13.5, 14.5, 15);
+      case InkGlyph.puzzle:
+        // One piece: a knob on top and on the right.
+        canvas.drawPath(
+          Path()
+            ..moveTo(5, 8)
+            ..lineTo(9.5, 8)
+            ..arcToPoint(const Offset(14.5, 8), radius: const Radius.circular(2.5))
+            ..lineTo(19, 8)
+            ..lineTo(19, 11.5)
+            ..arcToPoint(const Offset(19, 16.5), radius: const Radius.circular(2.5))
+            ..lineTo(19, 20)
+            ..lineTo(5, 20)
+            ..close(),
+          p,
+        );
+      case InkGlyph.deerstalker:
+        // The detective's cap: a round crown, a peak front and back, the button.
+        canvas.drawPath(
+          Path()
+            ..moveTo(5.5, 15)
+            ..quadraticBezierTo(6, 7, 12, 7)
+            ..quadraticBezierTo(18, 7, 18.5, 15),
+          p,
+        );
+        poly(const [Offset(2, 18), Offset(5.5, 15), Offset(18.5, 15), Offset(22, 18)]);
+        line(12, 7, 12, 15);
+        canvas.drawCircle(const Offset(12, 5.2), 1, p);
     }
   }
 

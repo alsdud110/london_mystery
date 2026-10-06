@@ -69,10 +69,30 @@ abstract final class ArtAssets {
   };
 
   /// Scenes shown by a character or object picture: the Tower raven (Poppy)
-  /// for the raven scenes, the old brown suitcase where the story finds one.
+  /// for the raven scenes, the old brown suitcase where the story finds one,
+  /// and the Royal Box as it is once found: open, the Crown inside (the case
+  /// photo; the final case itself animates [royalBox]). Never `special/
+  /// royal_box.png`: that is a theatre's royal box. Mrs Robin's black
+  /// suitcase (Case 08, its name tag washed blank). Case 09's open glass
+  /// case, its cushion empty and a card left on it. The two doors, each for
+  /// its own case: the White Tower's, a dial and the four gears the final
+  /// lock asks about (Case 05), and the small iron door under Big Ben
+  /// (Case 12).
+  ///
+  /// Not here, on purpose: `objects/jewel_case.png` (a full red box with a
+  /// tiara: Case 09's glass case is empty, the Blue Star is a blue jewel) and
+  /// `objects/locked_door.png` (a plain arched wooden door, neither case's).
+  /// That door is the Season opening's "doors found locked" print only.
   static const objectScenes = <Artwork, String>{
     Artwork.raven: '${_art}characters/raven_master.png',
     Artwork.oldSuitcase: '${_art}objects/suitcase.png',
+    Artwork.royalBox: '${_art}special/royal_box_open.png',
+    Artwork.blackSuitcase: '${_art}objects/suitcase_black.png',
+    Artwork.jewelCase: '${_art}objects/empty_glass_jewel_case.png',
+    Artwork.gearDoor: '${_art}objects/locked_door_gears.png',
+    Artwork.ironDoor: '${_art}objects/small_iron_door.png',
+    // The iron chest behind the White Tower's door (Case 05's final).
+    Artwork.ironChest: '${_art}objects/iron_chest.png',
   };
 
   /// Width / height of each scene picture that is not printed like the
@@ -80,6 +100,7 @@ abstract final class ArtAssets {
   static const sceneAspects = <Artwork, double>{
     Artwork.raven: 1,
     Artwork.oldSuitcase: 1,
+    Artwork.royalBox: 885 / 868,
     Artwork.greatCourt: 1264 / 848,
     Artwork.egyptRoom: 1264 / 848,
     Artwork.boathouse: 1288 / 816,
@@ -88,6 +109,15 @@ abstract final class ArtAssets {
     Artwork.courtyard: 1288 / 816,
     Artwork.dressingRoom: 1290 / 816,
     Artwork.waitingRoom: 1273 / 832,
+    Artwork.gallery: 1536 / 1024,
+    Artwork.auditorium: 1536 / 1024,
+    Artwork.blackSuitcase: 1377 / 1142,
+    Artwork.jewelCase: 1536 / 1024,
+    Artwork.gearDoor: 1536 / 1024,
+    Artwork.ironDoor: 1536 / 1024,
+    Artwork.theatreDoor: 1536 / 1024,
+    Artwork.ironChest: 1536 / 1024,
+    Artwork.royalArchive: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).
@@ -108,6 +138,12 @@ abstract final class ArtAssets {
     'pocketWatch': '${_art}objects/pocket_watch.png',
     'suitcase': '${_art}objects/suitcase.png',
   };
+
+  /// The Season opening's prints of trouble, cut out on transparency: a
+  /// stranger hiding his face (no one in particular: never the Clockmaker
+  /// or the Ravenmaster) and a locked old door (mood only, no case's door).
+  static const mysteriousStranger = '${_art}characters/mysterious_stranger.png';
+  static const lockedDoor = '${_art}objects/locked_door.png';
 
   /// The Raven Society mark (full colour, not a tinted [symbols] glyph).
   static const ravenMark = '${_art}symbols/raven_mark.png';
@@ -170,6 +206,14 @@ abstract final class ArtAssets {
     Artwork.courtyard: '$_scenes/buckingham_palace/buckingham_palace_palace_courtyard.png',
     Artwork.dressingRoom: '$_scenes/covent_garden/covent_garden_dressing_room.png',
     Artwork.waitingRoom: '$_scenes/kings_cross/kings_cross_waiting_hall.png',
+    // Gallery 8 (Case 03) and the theatre's auditorium (Case 11).
+    Artwork.gallery: '$_scenes/british_museum/british_museum_gallery.png',
+    Artwork.auditorium: '$_scenes/covent_garden/covent_garden_theatre.png',
+    // The theatre's door at night (Case 06; the file keeps its delivered name).
+    Artwork.theatreDoor: '$_scenes/covent_garden/theatre_door_dark.png',
+    // The Royal Archive, down the secret stairs of Buckingham Palace (its own
+    // folder: it is no landmark of the map).
+    Artwork.royalArchive: '$_scenes/royal_archive/royal_archive.png',
   };
 
   static const _scenes = 'assets/art/scenes';

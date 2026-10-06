@@ -125,57 +125,63 @@ class _EvidenceZoom extends StatelessWidget {
       type: MaterialType.transparency,
       child: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
+          child: Padding(
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 440),
+              // CLOSE always stays on screen: on a small phone only the
+              // evidence card scrolls (e.g. the Crown Symbol and its locks).
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('EVIDENCE', style: AppText.eyebrow(color: AppColors.goldLight)),
                   const SizedBox(height: 12),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-                    decoration: BoxDecoration(
-                      color: AppColors.paperLight,
-                      borderRadius: BorderRadius.circular(AppRadius.paper),
-                      boxShadow: AppShadow.onNight,
-                    ),
-                    foregroundDecoration: const RuledFrame(inset: 8),
-                    child: Column(
-                      children: [
-                        Hero(
-                          tag: 'evidence-${evidence.id}',
-                          child: _EvidenceArt(evidence: evidence, size: 150),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+                        decoration: BoxDecoration(
+                          color: AppColors.paperLight,
+                          borderRadius: BorderRadius.circular(AppRadius.paper),
+                          boxShadow: AppShadow.onNight,
                         ),
-                        const SizedBox(height: 18),
-                        Text(evidence.name, style: AppText.title(size: 28), textAlign: TextAlign.center),
-                        if (location != null) Text(location!, style: AppText.eyebrow(color: AppColors.royalBlue)),
-                        const SizedBox(height: 10),
-                        Text(evidence.description, style: AppText.bodyText(size: 17), textAlign: TextAlign.center),
-                        if (evidence.inscription != null) ...[
-                          const SizedBox(height: 16),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AppColors.parchment.withValues(alpha: 0.6),
-                              borderRadius: BorderRadius.circular(AppRadius.paper),
-                              border: Border.all(color: AppColors.parchmentDark, width: AppLine.hairline),
+                        foregroundDecoration: const RuledFrame(inset: 8),
+                        child: Column(
+                          children: [
+                            Hero(
+                              tag: 'evidence-${evidence.id}',
+                              child: _EvidenceArt(evidence: evidence, size: 150),
                             ),
-                            child: Text(
-                              evidence.inscription!,
-                              textAlign: TextAlign.center,
-                              style: AppText.letter(size: 18),
-                            ),
-                          ),
-                        ],
-                        if (evidence.symbols.isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          SymbolSequence(symbols: evidence.symbols),
-                        ],
-                      ],
+                            const SizedBox(height: 18),
+                            Text(evidence.name, style: AppText.title(size: 28), textAlign: TextAlign.center),
+                            if (location != null) Text(location!, style: AppText.eyebrow(color: AppColors.royalBlue)),
+                            const SizedBox(height: 10),
+                            Text(evidence.description, style: AppText.bodyText(size: 17), textAlign: TextAlign.center),
+                            if (evidence.inscription != null) ...[
+                              const SizedBox(height: 16),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: AppColors.parchment.withValues(alpha: 0.6),
+                                  borderRadius: BorderRadius.circular(AppRadius.paper),
+                                  border: Border.all(color: AppColors.parchmentDark, width: AppLine.hairline),
+                                ),
+                                child: Text(
+                                  evidence.inscription!,
+                                  textAlign: TextAlign.center,
+                                  style: AppText.letter(size: 18),
+                                ),
+                              ),
+                            ],
+                            if (evidence.symbols.isNotEmpty) ...[
+                              const SizedBox(height: 16),
+                              SymbolSequence(symbols: evidence.symbols),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),

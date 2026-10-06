@@ -18,6 +18,7 @@ import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper.dart';
+import '../../widgets/place_art.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/desk_background.dart';
 import '../../widgets/symbol_icon.dart';
@@ -252,7 +253,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
                     child: ClipRect(
                       child: m.scene == Artwork.royalBox
                           ? RoyalBoxAnimation(animation: _open)
-                          : _SceneReveal(scene: m.scene, animation: _open),
+                          : _SceneReveal(scene: PlaceArt.sceneOf(m), animation: _open),
                     ),
                   ),
                   const SizedBox(height: 12),

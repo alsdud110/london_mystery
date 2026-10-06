@@ -43,6 +43,7 @@ flutter:
     - assets/art/scenes/buckingham_palace/
     - assets/art/scenes/covent_garden/
     - assets/art/scenes/kings_cross/
+    - assets/art/scenes/royal_archive/
     # Characters, story objects, the Raven Society mark, special pictures.
     - assets/art/characters/
     - assets/art/objects/

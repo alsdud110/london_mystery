@@ -10,6 +10,7 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/mock/season1/season1_mock.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
+import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
@@ -175,16 +176,13 @@ void main() {
         expect(find.text('TO THE MAP'), findsNothing);
         expect(find.text('NEW PLACE UNLOCKED'), findsNothing);
 
-        // The place the case was closed at fills the screen (Case 01's Royal
-        // Archive has no picture of its own: the London map).
+        // The place the case was closed at fills the screen (Case 01: the
+        // Royal Archive, not the London map).
         final scenery = PlaceArt.sceneryOf(f);
-        if (e.id == 'ep01') {
-          expect(scenery, isNull);
-        } else {
-          expect(LandmarkArt.hasPicture(scenery!), isTrue, reason: '${f.id} → $scenery');
-          final full = find.byWidgetPredicate((w) => w is LandmarkArt && w.artwork == scenery && !w.showName);
-          expect(t.getRect(full), Offset.zero & size, reason: 'the place fills the screen');
-        }
+        if (e.id == 'ep01') expect(scenery, Artwork.royalArchive);
+        expect(LandmarkArt.hasPicture(scenery!), isTrue, reason: '${f.id} → $scenery');
+        final full = find.byWidgetPredicate((w) => w is LandmarkArt && w.artwork == scenery && !w.showName);
+        expect(t.getRect(full), Offset.zero & size, reason: 'the place fills the screen');
 
         // The case's last evidence, on screen, with what is written on it.
         final ev = f.evidence!;

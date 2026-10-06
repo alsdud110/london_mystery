@@ -14,6 +14,7 @@ import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper.dart';
+import '../../widgets/place_art.dart';
 import '../../widgets/desk_background.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/game_dialog.dart';
@@ -247,7 +248,7 @@ class _CaseFile extends StatelessWidget {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      _Photo(scene: report.episode.finalMission.scene),
+                      _Photo(scene: PlaceArt.sceneOf(report.episode.finalMission)),
                       if (stamp > 0)
                         Positioned(
                           left: -AppSpace.md,

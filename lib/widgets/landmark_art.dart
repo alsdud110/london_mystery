@@ -60,6 +60,13 @@ class LandmarkArt extends StatelessWidget {
     Artwork.staffRoom: Artwork.buckinghamPalace,
     Artwork.courtyard: Artwork.buckinghamPalace,
     Artwork.dressingRoom: Artwork.theatre,
+    Artwork.auditorium: Artwork.theatre,
+    Artwork.blackSuitcase: Artwork.suitcase,
+    Artwork.gearDoor: Artwork.lockedDoor,
+    Artwork.ironDoor: Artwork.lockedDoor,
+    Artwork.theatreDoor: Artwork.theatre,
+    Artwork.ironChest: Artwork.lockedDoor,
+    Artwork.royalArchive: Artwork.buckinghamPalace,
   };
 
   /// Whether [artwork] shows a picture file (not the code drawing).
@@ -264,7 +271,14 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.waitingRoom ||
           Artwork.staffRoom ||
           Artwork.courtyard ||
-          Artwork.dressingRoom:
+          Artwork.dressingRoom ||
+          Artwork.auditorium ||
+          Artwork.blackSuitcase ||
+          Artwork.gearDoor ||
+          Artwork.ironDoor ||
+          Artwork.theatreDoor ||
+          Artwork.ironChest ||
+          Artwork.royalArchive:
         break;
       // X beside the right bench / beside the left bench / under the tree /
       // at the old gate (see `_parkMap`).

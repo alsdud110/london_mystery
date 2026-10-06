@@ -41,15 +41,15 @@ class XpBreakdown {
 
 /// Achievements shown in the notebook and on the case report.
 ///
-/// [glyph] is null while the badge's drawing is a Custom Asset Required
-/// (the medal shows the title's initial until then).
+/// Each badge's [glyph] is drawn by the Ink Icon System (a badge without
+/// one would show the title's initial as a stand-in).
 enum GameBadge {
   firstClue('First Clue', '첫 단서 발견', InkGlyph.search, AppColors.royalBlue),
-  sharpEyes('Sharp Eyes', '힌트 없이 미션 해결', null, AppColors.success), // eye
-  quickThinker('Quick Thinker', '미션을 빠르게 해결', null, AppColors.burgundy), // stopwatch
-  puzzleSolver('Puzzle Solver', '퍼즐 3개 해결', null, AppColors.navy), // puzzle piece
+  sharpEyes('Sharp Eyes', '힌트 없이 미션 해결', InkGlyph.eye, AppColors.success),
+  quickThinker('Quick Thinker', '미션을 빠르게 해결', InkGlyph.stopwatch, AppColors.burgundy),
+  puzzleSolver('Puzzle Solver', '퍼즐 3개 해결', InkGlyph.puzzle, AppColors.navy),
   londonExplorer('London Explorer', '모든 장소 방문', InkGlyph.pin, AppColors.inkBrown),
-  masterDetective('Master Detective', '에피소드 완료', null, AppColors.goldDeep), // deerstalker
+  masterDetective('Master Detective', '에피소드 완료', InkGlyph.deerstalker, AppColors.goldDeep),
 
   // Case badges: earned by closing one case of the season. Each is shown
   // only in its own case, next to the six badges above.

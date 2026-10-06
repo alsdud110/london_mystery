@@ -22,7 +22,7 @@ import 'title_screen_test.dart' show capture;
 /// The story scene after each mission shows the place it unlocks: its own
 /// picture, or the London map for a place pinned at another landmark.
 void main() {
-  test('every story scene has the picture of the place it unlocks (the Royal Archive: none yet)', () {
+  test('every story scene has the picture of the place it unlocks', () {
     var scenes = 0;
     for (final e in MockEpisodeRepository.bundled()) {
       for (final m in e.missions) {
@@ -31,8 +31,7 @@ void main() {
         scenes++;
         final scenery = PlaceArt.sceneryOf(next);
         if (next.id == 'final') {
-          expect(scenery, isNull, reason: 'the Royal Archive is pinned at Buckingham Palace: not its picture');
-          continue;
+          expect(scenery, Artwork.royalArchive, reason: 'the Royal Archive, not the palace it is pinned at');
         }
         expect(scenery, PlaceArt.placeOf(next), reason: '${m.id}: the same place as its unlocked card');
         expect(LandmarkArt.hasPicture(scenery!), isTrue, reason: '${m.id} → ${next.location} has a picture');

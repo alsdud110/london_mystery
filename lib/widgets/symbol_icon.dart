@@ -29,11 +29,11 @@ class GameSymbol {
   static const _symbols = {
     // World symbols (Royal Box locks).
     'train': GameSymbol('Train', AppColors.burgundy, glyph: InkGlyph.train), // King's Cross
-    'museum': GameSymbol('Museum', AppColors.navy), // British Museum
+    'museum': GameSymbol('Museum', AppColors.navy, glyph: InkGlyph.museum), // British Museum
     'clock': GameSymbol('Clock', AppColors.royalBlue, glyph: InkGlyph.clock), // Big Ben
-    'park': GameSymbol('Park', AppColors.success), // Hyde Park — tree
+    'park': GameSymbol('Park', AppColors.success, glyph: InkGlyph.park), // Hyde Park — tree
     'palace': GameSymbol('Palace', AppColors.burgundy), // Buckingham Palace
-    'crown': GameSymbol('Crown', AppColors.goldDeep), // The Royal Box
+    'crown': GameSymbol('Crown', AppColors.goldDeep, glyph: InkGlyph.crown), // The Royal Box
     'raven': GameSymbol('Raven', AppColors.ink, glyph: InkGlyph.raven), // The Raven Society
     'gear': GameSymbol(
       'Gear',

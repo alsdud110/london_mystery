@@ -257,17 +257,50 @@ class TroublePrint extends StatelessWidget {
     return switch (piece) {
       TroublePiece.treasure => PrintFrame.file(ArtAssets.objects['crown']!, border: border),
       TroublePiece.letter => PrintFrame.file(ArtAssets.objects['letter']!, border: border),
-      TroublePiece.door => PrintFrame(border: border, child: const LandmarkArt(Artwork.lockedDoor, borderRadius: 0)),
+      TroublePiece.door => PrintFrame(
+          border: border,
+          child: const _Cutout(ArtAssets.lockedDoor, fallback: LandmarkArt(Artwork.lockedDoor, borderRadius: 0)),
+        ),
       TroublePiece.stranger => PrintFrame(
           border: border,
-          child: const CustomPaint(painter: _StrangerPainter(), child: SizedBox.expand()),
+          child: const _Cutout(
+            ArtAssets.mysteriousStranger,
+            fallback: CustomPaint(painter: _StrangerPainter(), child: SizedBox.expand()),
+          ),
         ),
     };
   }
 }
 
+/// A picture cut out on transparency, laid on the same parchment as the
+/// crown and letter prints. A missing file shows [fallback] instead.
+class _Cutout extends StatelessWidget {
+  const _Cutout(this.file, {required this.fallback});
+
+  final String file;
+  final Widget fallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: AppColors.parchment,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpace.xs),
+        child: Image.asset(
+          file,
+          fit: BoxFit.contain,
+          width: double.infinity,
+          height: double.infinity,
+          excludeFromSemantics: true,
+          errorBuilder: (context, error, stack) => fallback,
+        ),
+      ),
+    );
+  }
+}
+
 /// A figure in a top hat and long coat under a street lamp, in the fog.
-/// Custom Asset Required: a painted "mysterious stranger" photograph.
+/// LEGACY FALLBACK: shown only when the stranger picture cannot be loaded.
 class _StrangerPainter extends CustomPainter {
   const _StrangerPainter();
 

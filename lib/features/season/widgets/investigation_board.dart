@@ -10,6 +10,7 @@ import '../../../data/models/episode.dart';
 import '../../../widgets/art_assets.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/paper.dart';
+import '../../../widgets/place_art.dart';
 import '../season_overview.dart';
 import 'season_props.dart';
 
@@ -339,7 +340,7 @@ class _CasePhoto extends StatelessWidget {
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
       children: [
-        SizedBox.fromSize(size: size, child: PhotoPrint(episode.finalMission.scene, border: math.max(2.5, size.height * 0.05))),
+        SizedBox.fromSize(size: size, child: PhotoPrint(PlaceArt.sceneOf(episode.finalMission), border: math.max(2.5, size.height * 0.05))),
         if (tag > 0)
           Positioned(
             left: -size.width * 0.08,

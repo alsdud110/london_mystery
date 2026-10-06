@@ -66,6 +66,27 @@ enum Artwork {
   staffRoom,
   courtyard,
   dressingRoom,
+  // The Covent Garden theatre's auditorium (Case 11: red seats, gold lamps,
+  // the stage): its picture, else drawn as the theatre. `theatre` stays the
+  // drawn theatre door (Case 06). Named by the presentation.
+  auditorium,
+  // Mrs Robin's black suitcase (Case 08): its picture, else drawn as the
+  // suitcase scene. Named by the presentation (`PlaceArt.missionScenes`).
+  blackSuitcase,
+  // The doors the data calls `lockedDoor`, each its own: the White Tower's
+  // door with a dial and four gears (Case 05) and the small iron door under
+  // Big Ben (Case 12). Their pictures, else drawn as the locked door.
+  gearDoor,
+  ironDoor,
+  // The Covent Garden theatre's door at night, the stage lit inside
+  // (Case 06): its picture, else drawn as the theatre.
+  theatreDoor,
+  // The iron chest in the White Tower's locked room (Case 05's final): its
+  // picture, else drawn as the locked door. Named by the presentation.
+  ironChest,
+  // The Royal Archive under Buckingham Palace (Case 01's final place, as the
+  // story arrives there): its picture, else drawn as the palace.
+  royalArchive,
 
   // Hyde Park paths (Case 07): the same park, a different spot marked X.
   parkMapA,
