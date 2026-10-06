@@ -17,7 +17,7 @@ import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/landmark_art.dart';
 import 'package:london_mystery/widgets/place_art.dart';
 
-import 'full_playthrough_test.dart' show reveal, wait;
+import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
 import 'title_screen_test.dart' show capture;
 
@@ -98,8 +98,10 @@ void main() {
     test('earlier choices hold: Big Ben, the open Royal Box, the clock; no Clockmaker, map or theatre box', () {
       expect(fileOf('ep12_m1'), 'assets/art/scenes/landmarks/big_ben.png');
       expect(ArtAssets.scene(Artwork.royalBox), 'assets/art/special/royal_box_open.png');
-      expect(PlaceArt.sceneOf(mission('ep02_m1')), Artwork.clockFace);
-      expect(LandmarkArt.hasPicture(Artwork.clockFace), isFalse);
+      expect(PlaceArt.sceneOf(mission('ep02_m1')), Artwork.bigBen);
+      expect(PlaceArt.sceneOf(mission('ep02_m2')), Artwork.clockMechanism);
+      expect(PlaceArt.sceneOf(mission('ep02_m3')), Artwork.clockFace);
+      expect(PlaceArt.sceneOf(mission('ep02_final')), Artwork.clockFace);
       final used = {...ArtAssets.scenes.values, ArtAssets.mysteriousStranger, ArtAssets.lockedDoor};
       for (final never in [
         'assets/art/characters/clockmaker_master.png',
@@ -110,6 +112,22 @@ void main() {
       }
       expect(byId('ep12').finalMission.scene, Artwork.lockedDoor);
     });
+  });
+
+  testWidgets('Case 02 clock: with reduced motion the hour hand is simply at 9:17', (t) async {
+    final art = ArtAssets.clockHands[Artwork.clockFace]!;
+    Future<ClockHandsPainter> at(double solved, {required bool still}) async {
+      await t.pumpWidget(MediaQuery(
+        data: MediaQueryData(disableAnimations: still),
+        child: SizedBox(width: 200, height: 200, child: ClockHands(art, solved: solved, aspect: 1)),
+      ));
+      return t.widget<CustomPaint>(find.byType(CustomPaint)).painter! as ClockHandsPainter;
+    }
+
+    expect((await at(0.3, still: false)).hourDegrees, inExclusiveRange(248.5, 278.5), reason: 'turning');
+    expect((await at(0.3, still: true)).hourDegrees, 278.5, reason: 'no turn: already set');
+    expect((await at(0, still: true)).hourDegrees, 248.5);
+    expect((await at(0.3, still: true)).minuteDegrees, 102);
   });
 
   setUpAll(() async {
@@ -318,6 +336,116 @@ void main() {
       await settle(t, const Duration(milliseconds: 2500));
       expect(picture(royalBoxOpen), findsOneWidget);
       expect(picture(archive), findsNothing);
+    });
+
+    testWidgets('picture choices $tag: landmarks are named under the picture; park maps are not', (t) async {
+      Future<void> toPuzzle(String id) async {
+        await openMission(t, size, id);
+        await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
+        await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
+        await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
+        expect(t.takeException(), isNull);
+      }
+
+      await toPuzzle('m04');
+      final m = mission('m04');
+      for (final o in m.options) {
+        await reveal(t, find.text(o.label));
+        expect(find.text(o.label), findsOneWidget, reason: o.label);
+        expect(t.getRect(find.text(o.label)).bottom, lessThan(size.height));
+      }
+      await reveal(t, find.text('Buckingham Palace'));
+      await capture(t, 'choice_case01_m04_$tag');
+
+      await toPuzzle('ep07_m1');
+      for (final o in mission('ep07_m1').options) {
+        expect(find.text(o.label), findsNothing, reason: '${o.label} would tell the answer');
+      }
+    });
+
+    testWidgets('Case 02 $tag: Big Ben, the clock room, then 8:17, then 9:17 once the clock is set', (t) async {
+      const mechanism = 'assets/art/scenes/big_ben/clock_mechanism.png';
+      const face = 'assets/art/scenes/big_ben/clock_face.png';
+      // The hands drawn over the face, clockwise from 12.
+      Finder hands() => find.byWidgetPredicate((w) => w is CustomPaint && w.painter is ClockHandsPainter);
+      ClockHandsPainter painter() => t.widget<CustomPaint>(hands()).painter! as ClockHandsPainter;
+      const at817 = 248.5; // the hour hand at 8:17: past VIII, toward IX
+      const at917 = 278.5; // at 9:17: past IX, toward X
+      // m1: from Westminster Bridge, the tower; the stopped time is its puzzle.
+      await openMission(t, size, 'ep02_m1');
+      expect(picture('assets/art/scenes/landmarks/big_ben.png'), findsOneWidget);
+      expect(picture(mechanism), findsNothing);
+      expect(picture(face), findsNothing, reason: 'm1 must not show the answer');
+      expect(hands(), findsNothing);
+      await capture(t, 'clock_m1_$tag');
+      // m2: the clock room, "big wheels and gears".
+      await openMission(t, size, 'ep02_m2');
+      expect(picture(mechanism), findsOneWidget);
+      expect(picture(face), findsNothing);
+      expect(hands(), findsNothing);
+      await capture(t, 'clock_m2_$tag');
+      // m3: 8:17 is known by now (m1's clue).
+      await openMission(t, size, 'ep02_m3');
+      expect(picture(face), findsOneWidget);
+      expect(painter().hourDegrees, at817);
+      await capture(t, 'clock_m3_$tag');
+      // The final: 8:17 until the clock is set.
+      await openMission(t, size, 'ep02_final');
+      expect(picture(face), findsOneWidget);
+      expect(painter().hourDegrees, at817, reason: 'not 9:17 before the answer');
+      expect(painter().hourDegrees, closeTo(248.5, 1e-9));
+      expect(painter().minuteDegrees, closeTo(102, 1e-9));
+      await capture(t, 'clock_final_unsolved_$tag');
+      for (final (i, digit) in [9, 1, 7].indexed) {
+        final up = find.byTooltip('Lock ${i + 1} up');
+        await reveal(t, up);
+        for (var n = 0; n < digit; n++) {
+          await t.tap(up);
+          await t.pump(const Duration(milliseconds: 20));
+        }
+      }
+      await tapText(t, 'UNLOCK', after: const Duration(milliseconds: 100));
+      // The page scrolls up (~0.5 s), then the 2.4 s reveal: the hour hand turns at 15-48 % of it.
+      await wait(t, const Duration(milliseconds: 1300)); // mid-turn
+      expect(picture(face), findsOneWidget, reason: 'the same face, never another picture');
+      expect(painter().hourDegrees, inExclusiveRange(at817, at917), reason: 'the hand is on its way');
+      expect(painter().minuteDegrees, 102, reason: 'the minute hand does not move');
+      expect(find.text('Big Ben rings again!'), findsNothing, reason: 'the clock turns before the banner');
+      await capture(t, 'clock_final_turning_$tag');
+      await wait(t, const Duration(milliseconds: 3000));
+      await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
+      await wait(t, const Duration(milliseconds: 300));
+      expect(t.takeException(), isNull);
+      expect(find.text('Big Ben rings again!'), findsOneWidget);
+      expect(picture(face), findsOneWidget);
+      expect(painter().hourDegrees, at917);
+      expect(painter().hourDegrees, closeTo(278.5, 1e-9), reason: 'past IX, not on it');
+      expect(painter().minuteDegrees, closeTo(102, 1e-9));
+      await Scrollable.ensureVisible(t.element(picture(face)));
+      await t.pump();
+      await capture(t, 'clock_final_solved_$tag');
+    });
+
+    testWidgets('Case 02 $tag: the report and the board show the face at 9:17', (t) async {
+      const face = 'assets/art/scenes/big_ben/clock_face.png';
+      List<double> times() => [
+            for (final w in t.widgetList<CustomPaint>(
+              find.byWidgetPredicate((w) => w is CustomPaint && w.painter is ClockHandsPainter),
+            ))
+              (w.painter! as ClockHandsPainter).hourDegrees,
+          ];
+      var router = await start(t, size, await prefsFor('ep02', solved: true));
+      router.go(Routes.solved);
+      await settle(t, const Duration(milliseconds: 3200));
+      expect(picture(face), findsOneWidget);
+      expect(times(), [278.5]);
+      await capture(t, 'clock_report_$tag');
+      router = await start(t, size, await prefsFor('ep12', solved: true));
+      router.go(Routes.season);
+      await settle(t, const Duration(milliseconds: 2500));
+      expect(picture(face), findsOneWidget);
+      expect(times(), [278.5]);
+      await capture(t, 'clock_board_$tag');
     });
 
     testWidgets('Case 05 $tag: the gear door at m2, the iron chest at the final', (t) async {

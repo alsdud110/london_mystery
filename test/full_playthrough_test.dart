@@ -184,7 +184,7 @@ void main() {
 
     // ── Mission 04: image choice (picture C = Buckingham Palace).
     await openMission(t, 'GO TO HYDE PARK');
-    final pictureC = find.bySemanticsLabel('Picture C');
+    final pictureC = find.bySemanticsLabel('Picture C, Buckingham Palace');
     await reveal(t, pictureC);
     await t.tap(pictureC);
     await wait(t, const Duration(milliseconds: 300));

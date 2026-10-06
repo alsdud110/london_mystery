@@ -1,10 +1,22 @@
-import 'dart:ui' show Size;
+import 'dart:ui' show Offset, Size;
 
 import '../data/models/mission.dart';
 import '../features/game/scoring.dart';
 
 /// The two pictures of the Royal Box: shut, and open with the Crown inside.
 typedef RoyalBoxArt = ({String closed, String open});
+
+/// A clock face picture with no hands, and the hands drawn over it: where
+/// its pivot is and how long its hands are (fractions of the picture's
+/// width / height), and the time it shows before and after its case is
+/// solved (hours, minutes).
+typedef ClockHandsArt = ({
+  Offset pivot,
+  double hourLength,
+  double minuteLength,
+  ({int hour, int minute}) before,
+  ({int hour, int minute}) after,
+});
 
 /// The one place where finished artwork files are plugged in.
 ///
@@ -93,6 +105,10 @@ abstract final class ArtAssets {
     Artwork.ironDoor: '${_art}objects/small_iron_door.png',
     // The iron chest behind the White Tower's door (Case 05's final).
     Artwork.ironChest: '${_art}objects/iron_chest.png',
+    // Big Ben's clock (Case 02): its face with no hands (the hands are drawn
+    // over it: [clockHands]), and the wheels behind it, no time to read.
+    Artwork.clockFace: '$_scenes/big_ben/clock_face.png',
+    Artwork.clockMechanism: '$_scenes/big_ben/clock_mechanism.png',
   };
 
   /// Width / height of each scene picture that is not printed like the
@@ -118,6 +134,8 @@ abstract final class ArtAssets {
     Artwork.theatreDoor: 1536 / 1024,
     Artwork.ironChest: 1536 / 1024,
     Artwork.royalArchive: 1536 / 1024,
+    Artwork.clockFace: 1,
+    Artwork.clockMechanism: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).
@@ -226,10 +244,23 @@ abstract final class ArtAssets {
   /// Fractions of the picture's width / height.
   static const scenePrint = (size: Size(400, 256), frame: 0.045, nameTop: 0.68);
 
-  /// A scene after its case is solved (only scenes that change, e.g. the
-  /// Case 02 clock at 9:17). Without one, the solved scene stays drawn in
-  /// code so its change still shows.
+  /// A scene after its case is solved, when it is another picture (none
+  /// today: Case 02's clock keeps its face and turns its drawn hands).
   static const Map<Artwork, String> solvedScenes = {};
+
+  /// Clock faces whose hands are drawn over the picture. Case 02: Big Ben
+  /// stopped at 8:17, set to 9:17 when the case is solved. The pivot and the
+  /// hands are measured on `big_ben/clock_face.png` (1254 × 1254: the pivot
+  /// at 627, 548; the numerals' ring about 337 px out).
+  static const Map<Artwork, ClockHandsArt> clockHands = {
+    Artwork.clockFace: (
+      pivot: Offset(0.5, 0.437),
+      hourLength: 0.185,
+      minuteLength: 0.30,
+      before: (hour: 8, minute: 17),
+      after: (hour: 9, minute: 17),
+    ),
+  };
 
   /// Symbol pictures (clue stamps, evidence, lock dials), keyed like
   /// `GameSymbol`, e.g. `'park': 'assets/art/symbols/park.png'`.
@@ -241,12 +272,13 @@ abstract final class ArtAssets {
   /// One-colour on transparency, tinted like the glyph it replaces.
   static const Map<GameBadge, String> badges = {};
 
-  /// The file for [artwork], or null to keep the drawing. While a scene that
-  /// changes when solved is being solved (or after), only its solved picture
-  /// is used; without one, the drawing shows the change.
+  /// The file for [artwork], or null to keep the drawing. Once a scene that
+  /// changes when solved is being solved (or after), its solved picture if
+  /// it has one, else its own picture (its change is drawn over it).
   static String? scene(Artwork artwork, {double solved = 0}) =>
-      solved > 0 && changesWhenSolved.contains(artwork) ? solvedScenes[artwork] : scenes[artwork];
+      solved > 0 && changesWhenSolved.contains(artwork) ? solvedScenes[artwork] ?? scenes[artwork] : scenes[artwork];
 
-  /// Scenes that are drawn differently once their case is solved.
+  /// Scenes that show differently once their case is solved (the clock's
+  /// drawn hands; drawn in code, its hands turn too).
   static const changesWhenSolved = {Artwork.clockFace};
 }

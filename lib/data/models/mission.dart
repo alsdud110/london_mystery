@@ -87,6 +87,10 @@ enum Artwork {
   // The Royal Archive under Buckingham Palace (Case 01's final place, as the
   // story arrives there): its picture, else drawn as the palace.
   royalArchive,
+  // Inside Big Ben: the great wheels behind the clock face, no time to read
+  // (Case 02's first mission: the stopped time is its puzzle). Its picture,
+  // else drawn as Big Ben.
+  clockMechanism,
 
   // Hyde Park paths (Case 07): the same park, a different spot marked X.
   parkMapA,

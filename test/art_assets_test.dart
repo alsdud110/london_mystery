@@ -41,7 +41,7 @@ void main() {
   // picture (the Boathouse is not Hyde Park).
   testWidgets('a place inside a landmark is drawn like its landmark when its picture is missing', (t) async {
     // Gallery 8 keeps its own drawing (the empty frame) as its fallback.
-    expect(LandmarkArt.standIns.keys.toSet(), {...PlaceArt.inside.difference({Artwork.gallery}), Artwork.oldSuitcase, Artwork.blackSuitcase});
+    expect(LandmarkArt.standIns.keys.toSet(), {...PlaceArt.inside.difference({Artwork.gallery}), Artwork.oldSuitcase, Artwork.blackSuitcase, Artwork.clockMechanism});
     for (final MapEntry(key: place, value: standIn) in LandmarkArt.standIns.entries) {
       expect(await draw(t, place, drawingOnly: true), await draw(t, standIn, drawingOnly: true), reason: '$place');
       expect(ArtAssets.scene(place), isNot(ArtAssets.scene(standIn)), reason: '$place does not borrow the $standIn picture');
@@ -89,6 +89,9 @@ void main() {
       Artwork.gearDoor: 'assets/art/objects/locked_door_gears.png',
       Artwork.ironDoor: 'assets/art/objects/small_iron_door.png',
       Artwork.ironChest: 'assets/art/objects/iron_chest.png',
+      // Case 02: Big Ben's clock stopped at 8:17, and the wheels behind it.
+      Artwork.clockFace: 'assets/art/scenes/big_ben/clock_face.png',
+      Artwork.clockMechanism: 'assets/art/scenes/big_ben/clock_mechanism.png',
     };
     expect(ArtAssets.objectScenes, objectScenes);
     expect(ArtAssets.scenes, {...landmarks, ...inside, ...objectScenes});
@@ -111,7 +114,7 @@ void main() {
   });
 
   testWidgets('every scene picture is in the app bundle', (t) async {
-    expect(ArtAssets.scenes, hasLength(29));
+    expect(ArtAssets.scenes, hasLength(31));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,
@@ -138,13 +141,13 @@ void main() {
       expect(t.widget<Image>(find.byType(Image)).fit, BoxFit.contain, reason: '$place');
       expect(LandmarkArt.aspectOf(place), closeTo(aspect, 1e-9), reason: 'frames take the picture ratio');
     }
-    for (final (scene, aspect) in [(Artwork.raven, 1.0), (Artwork.oldSuitcase, 1.0), (Artwork.royalBox, 885 / 868), (Artwork.greatCourt, 1264 / 848)]) {
+    for (final (scene, aspect) in [(Artwork.raven, 1.0), (Artwork.oldSuitcase, 1.0), (Artwork.royalBox, 885 / 868), (Artwork.clockFace, 1.0), (Artwork.greatCourt, 1264 / 848)]) {
       await show(LandmarkArt(scene));
       expect(t.widget<Image>(find.byType(Image)).fit, BoxFit.contain, reason: '$scene');
       expect(LandmarkArt.aspectOf(scene), closeTo(aspect, 1e-9), reason: '$scene frame takes its own ratio');
     }
-    // Case 08's black suitcase and the puzzle scenes stay drawn.
-    for (final scene in [Artwork.clockFace, Artwork.suitcase, Artwork.theatre]) {
+    // Case 01's suitcase (recalled in Case 11) and the plain theatre stay drawn.
+    for (final scene in [Artwork.suitcase, Artwork.theatre]) {
       await show(LandmarkArt(scene));
       expect(find.byType(Image), findsNothing, reason: '$scene keeps its drawing');
       expect(LandmarkArt.aspectOf(scene), 4 / 3, reason: '$scene frame unchanged');
@@ -230,8 +233,10 @@ void main() {
       expect(ArtAssets.scene(a), ArtAssets.scenes[a]);
     }
     expect(GameSymbol.of('park').asset, ArtAssets.symbols['park']);
-    // The solved clock keeps its drawn change unless a solved picture exists.
-    expect(ArtAssets.scene(Artwork.clockFace, solved: 1), ArtAssets.solvedScenes[Artwork.clockFace]);
+    // The solved clock: its own picture (9:17).
+    expect(ArtAssets.scene(Artwork.clockFace, solved: 1), ArtAssets.scene(Artwork.clockFace),
+        reason: 'the same face before and after: only its drawn hands turn');
+    expect(ArtAssets.solvedScenes, isEmpty);
   });
 
   testWidgets('a listed file that is missing falls back to the drawing', (t) async {

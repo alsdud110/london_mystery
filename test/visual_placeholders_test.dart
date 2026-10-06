@@ -97,13 +97,12 @@ void main() {
       expect(mission('final').scene, Artwork.royalBox);
     });
 
-    test("Case 12's first mission is Big Ben; Case 02's clock is unchanged", () {
+    test("Case 12's first mission is Big Ben, not Case 02's stopped clock", () {
       expect(PlaceArt.sceneOf(mission('ep12_m1')), Artwork.bigBen);
-      for (final id in ['ep02_m1', 'ep02_m3', 'ep02_final']) {
+      for (final id in ['ep02_m3', 'ep02_final']) {
         expect(PlaceArt.sceneOf(mission(id)), Artwork.clockFace, reason: id);
       }
       expect(ArtAssets.changesWhenSolved, {Artwork.clockFace});
-      expect(LandmarkArt.hasPicture(Artwork.clockFace), isFalse, reason: 'the 8:17 → 9:17 clock stays drawn');
     });
   });
 
@@ -258,7 +257,7 @@ void main() {
       await capture(t, 'fix_board_$tag');
     });
 
-    testWidgets("Case 12 $tag: the first mission shows Big Ben; Case 02's clock is still drawn", (t) async {
+    testWidgets("Case 12 $tag: the first mission shows Big Ben, not Case 02's clock", (t) async {
       final router = await start(t, size, await prefsFor('ep12', done: 0));
       router.go(Routes.mission('ep12_m1'));
       await settle(t);
@@ -266,10 +265,7 @@ void main() {
       expect(find.byWidgetPredicate((w) => w is LandmarkArt && w.artwork == Artwork.clockFace), findsNothing);
       await capture(t, 'fix_case12_m1_$tag');
 
-      final r2 = await start(t, size, await prefsFor('ep02', done: 0));
-      r2.go(Routes.mission('ep02_m1'));
-      await settle(t);
-      expect(find.byWidgetPredicate((w) => w is LandmarkArt && w.artwork == Artwork.clockFace), findsOneWidget);
+      expect(picture('assets/art/scenes/big_ben/clock_face.png'), findsNothing);
     });
   }
 }

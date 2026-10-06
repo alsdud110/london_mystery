@@ -516,8 +516,9 @@ class _SceneReveal extends StatelessWidget {
               child: PaperSheet(
                 padding: const EdgeInsets.all(AppSpace.sm),
                 tilt: -0.01,
-                // The picture changes with the solve (the Case 02 clock starts again).
-                child: LandmarkArt(scene, borderRadius: 2, solved: t),
+                // The picture changes with the solve (the Case 02 clock starts
+                // again): it times its own change over the reveal's progress.
+                child: LandmarkArt(scene, borderRadius: 2, solved: animation.value),
               ),
             ),
           ),

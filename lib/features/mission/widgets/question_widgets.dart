@@ -11,6 +11,7 @@ import '../../../core/utils/audio_service.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
+import '../../../widgets/art_assets.dart';
 import '../../../widgets/landmark_art.dart';
 import '../../game/game_providers.dart';
 import 'qr_question.dart';
@@ -542,7 +543,10 @@ class _Key extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// TYPE 4 — Image choice (names are hidden: kids must match the description)
+// TYPE 4 — Image choice. A landmark picture is named under it (the child
+// matches the description to a named place: not every child knows each
+// building by sight). Other pictures (Case 07's park maps) stay unnamed:
+// their label is the answer itself ("Beside the right bench").
 // ---------------------------------------------------------------------------
 
 class ImageChoiceQuestion extends ConsumerStatefulWidget {
@@ -566,6 +570,9 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
   @override
   Widget build(BuildContext context) {
     final options = widget.mission.options;
+    String? nameOf(ChoiceOption o) =>
+        ArtAssets.landmarkScenes.containsKey(o.artwork) ? o.label : null;
+    final named = options.any((o) => nameOf(o) != null);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -575,11 +582,13 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childAspectRatio: 0.95,
+          // Named tiles are a little taller: the name sits under the picture.
+          childAspectRatio: named ? 0.78 : 0.95,
           children: [
             for (var i = 0; i < options.length; i++)
               _ImageTile(
                 letter: String.fromCharCode(65 + i),
+                name: nameOf(options[i]),
                 artwork: options[i].artwork ?? Artwork.bigBen,
                 selected: _selected == options[i].id,
                 onTap: () {
@@ -607,10 +616,14 @@ class _ImageTile extends StatelessWidget {
     required this.artwork,
     required this.selected,
     required this.onTap,
+    this.name,
   });
 
   final String letter;
   final Artwork artwork;
+
+  /// The place's name under the picture, or null (unnamed).
+  final String? name;
   final bool selected;
   final VoidCallback onTap;
 
@@ -619,7 +632,7 @@ class _ImageTile extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: 'Picture $letter',
+      label: name == null ? 'Picture $letter' : 'Picture $letter, $name',
       excludeSemantics: true,
       child: _Pressable(
         onTap: onTap,
@@ -629,7 +642,35 @@ class _ImageTile extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.all(AppSpace.sm),
           decoration: _answerPaper(selected ? AnswerState.selected : AnswerState.idle),
-          child: Stack(
+          child: Column(
+            children: [
+              Expanded(child: _tile()),
+              if (name != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpace.xs),
+                  child: SizedBox(
+                    height: 40,
+                    child: Center(
+                      child: Text(
+                        name!,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.15),
+                        style: AppText.title(size: 15, color: selected ? AppColors.paperLight : AppColors.navy)
+                            .copyWith(height: 1.15),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _tile() => Stack(
             children: [
               Positioned.fill(child: LandmarkArt(artwork, borderRadius: 2, showName: false)),
               Positioned(left: 6, top: 6, child: _LetterMark(letter)),
@@ -654,11 +695,7 @@ class _ImageTile extends StatelessWidget {
                   ),
                 ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
+          );
 }
 
 // ---------------------------------------------------------------------------

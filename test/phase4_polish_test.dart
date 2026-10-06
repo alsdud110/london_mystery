@@ -14,6 +14,7 @@ import 'package:london_mystery/data/models/season_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
+import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/landmark_art.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -106,7 +107,22 @@ void main() {
         }))!;
       }
 
-      expect(await draw(Artwork.clockFace, 1), isNot(await draw(Artwork.clockFace, 0)));
+      // Its picture is the same face before and after (its drawn hands turn);
+      // drawn in code (a missing file), its hands turn too.
+      expect(ArtAssets.scene(Artwork.clockFace, solved: 1), ArtAssets.scene(Artwork.clockFace));
+      expect(ArtAssets.clockHands[Artwork.clockFace], isNotNull);
+      Future<List<int>> drawing(double solved) async {
+        await t.pumpWidget(RepaintBoundary(
+          key: const ValueKey('art'),
+          child: SizedBox(width: 120, height: 90, child: LandmarkArt.drawing(Artwork.clockFace, solved: solved)),
+        ));
+        return (await t.runAsync(() async {
+          final image = await t.renderObject<RenderRepaintBoundary>(find.byKey(const ValueKey('art'))).toImage();
+          return (await image.toByteData())!.buffer.asUint8List().toList();
+        }))!;
+      }
+
+      expect(await drawing(1), isNot(await drawing(0)));
       expect(await draw(Artwork.gallery, 1), await draw(Artwork.gallery, 0));
     });
 

@@ -49,8 +49,14 @@ abstract final class PlaceArt {
     // (the drawn suitcase is Platform 9's).
     'ep04_m3': Artwork.oldSuitcase, // PLATFORM 4
     'ep04_final': Artwork.oldSuitcase, // THE LAST TRAIN
-    // Big Ben itself: its clock is not stopped in Case 12 (the drawn clock
-    // face is Case 02's, stopped at 8:17).
+    // Case 02: no clock face to read before the stopped time is found (m1's
+    // puzzle). m1 looks up at the tower from the bridge; m2 is the clock
+    // room, "big wheels and gears". (m3 and the final show the clock at
+    // 8:17, once the detective knows it.)
+    'ep02_m1': Artwork.bigBen, // WESTMINSTER BRIDGE
+    'ep02_m2': Artwork.clockMechanism, // THE CLOCK ROOM
+    // Big Ben itself: its clock is not stopped in Case 12 (the clock face is
+    // Case 02's, stopped at 8:17).
     'ep12_m1': Artwork.bigBen, // BIG BEN
   };
 

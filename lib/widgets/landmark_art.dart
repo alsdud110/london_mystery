@@ -67,7 +67,9 @@ class LandmarkArt extends StatelessWidget {
     Artwork.theatreDoor: Artwork.theatre,
     Artwork.ironChest: Artwork.lockedDoor,
     Artwork.royalArchive: Artwork.buckinghamPalace,
+    Artwork.clockMechanism: Artwork.bigBen,
   };
+
 
   /// Whether [artwork] shows a picture file (not the code drawing).
   static bool hasPicture(Artwork artwork, {double solved = 0}) => ArtAssets.scene(artwork, solved: solved) != null;
@@ -84,9 +86,18 @@ class LandmarkArt extends StatelessWidget {
       child: const SizedBox.expand(),
     );
     final file = _picture ? ArtAssets.scene(artwork, solved: solved) : null;
+    // A clock face picture: its hands drawn over it (Case 02).
+    final hands = ArtAssets.clockHands[artwork];
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: file == null ? drawn : _ScenePicture(file, showName: showName, fallback: drawn),
+      child: file == null
+          ? drawn
+          : _ScenePicture(
+              file,
+              showName: showName,
+              fallback: drawn,
+              overlay: hands == null ? null : ClockHands(hands, solved: solved, aspect: ArtAssets.sceneAspect(artwork)),
+            ),
     );
   }
 }
@@ -95,11 +106,15 @@ class LandmarkArt extends StatelessWidget {
 /// Without the name plate ([showName] false), the part above it fills the
 /// frame instead.
 class _ScenePicture extends StatelessWidget {
-  const _ScenePicture(this.file, {required this.showName, required this.fallback});
+  const _ScenePicture(this.file, {required this.showName, required this.fallback, this.overlay});
 
   final String file;
   final bool showName;
   final Widget fallback;
+
+  /// Drawn over the whole picture once it is on screen (never over the
+  /// [fallback] drawing). Shown whole ([showName]) only: a clock face.
+  final Widget? overlay;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +129,10 @@ class _ScenePicture extends StatelessWidget {
           // enlarged beyond the file.
           cacheWidth: box.maxWidth.isFinite ? (box.maxWidth * MediaQuery.devicePixelRatioOf(context)).ceil() : null,
           excludeFromSemantics: true,
+          frameBuilder: overlay == null
+              ? null
+              : (context, child, frame, sync) =>
+                    frame == null && !sync ? child : Stack(fit: StackFit.expand, children: [child, overlay!]),
           errorBuilder: (context, error, stack) => fallback,
         ),
       );
@@ -278,7 +297,8 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.ironDoor ||
           Artwork.theatreDoor ||
           Artwork.ironChest ||
-          Artwork.royalArchive:
+          Artwork.royalArchive ||
+          Artwork.clockMechanism:
         break;
       // X beside the right bench / beside the left bench / under the tree /
       // at the old gate (see `_parkMap`).
@@ -975,4 +995,126 @@ class _LandmarkPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_LandmarkPainter old) => old.artwork != artwork || old.showSky != showSky || old.solved != solved;
+}
+
+/// A clock's hands, drawn over its face picture ([ArtAssets.clockHands]):
+/// the time before its case is solved, then after. While the case is being
+/// solved ([solved] 0 → 1, the final case's 2.4 s reveal) the hour hand
+/// moves on once, over [turnFrom]..[turnTo] (0.8 s of it, ending just before
+/// the CASE SOLVED banner); with reduced motion it is simply there.
+class ClockHands extends StatelessWidget {
+  const ClockHands(this.art, {super.key, required this.solved, required this.aspect});
+
+  final ClockHandsArt art;
+  final double solved;
+
+  /// Width / height of the face picture (it shows whole, centred: contain).
+  final double aspect;
+
+  static const turnFrom = 0.15;
+  static const turnTo = 0.48;
+
+  @override
+  Widget build(BuildContext context) {
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final turned = still
+        ? (solved > 0 ? 1.0 : 0.0)
+        : Curves.easeInOutCubic.transform(((solved - turnFrom) / (turnTo - turnFrom)).clamp(0.0, 1.0));
+    // Only the hour hand moves: forward, by the hours between the two times
+    // (8:17 → 9:17: 248.5° → 278.5°). The minute hand stays where it is.
+    final from = hourDegreesAt(art.before.hour, art.before.minute);
+    final to = hourDegreesAt(art.after.hour, art.after.minute);
+    return IgnorePointer(
+      child: CustomPaint(
+        painter: ClockHandsPainter(
+          art,
+          hourDegrees: from + (to - from) * turned,
+          minuteDegrees: minuteDegreesAt(turned < 1 ? art.before.minute : art.after.minute),
+          aspect: aspect,
+        ),
+        child: const SizedBox.expand(),
+      ),
+    );
+  }
+
+  /// Clockwise from 12: the hour hand moves on with the minutes (half a
+  /// degree a minute); the minute hand six degrees a minute.
+  static double hourDegreesAt(int hour, int minute) => (hour % 12) * 30 + minute * 0.5;
+  static double minuteDegreesAt(int minute) => minute * 6.0;
+}
+
+/// Victorian clock hands: dark iron blades with a spade tip and a thin
+/// brass edge, and a brass pivot cap, at [hourDegrees] and [minuteDegrees]
+/// (clockwise from 12).
+class ClockHandsPainter extends CustomPainter {
+  ClockHandsPainter(this.art, {required this.hourDegrees, required this.minuteDegrees, required this.aspect});
+
+  final ClockHandsArt art;
+  final double hourDegrees;
+  final double minuteDegrees;
+  final double aspect;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // The picture's own rectangle inside the box (contain, centred).
+    final w = math.min(size.width, size.height * aspect);
+    final h = w / aspect;
+    final picture = Offset((size.width - w) / 2, (size.height - h) / 2) & Size(w, h);
+    final pivot = picture.topLeft + Offset(art.pivot.dx * w, art.pivot.dy * h);
+
+    _hand(canvas, pivot, minuteDegrees, length: art.minuteLength * w, width: w * 0.013, tip: 1.1);
+    _hand(canvas, pivot, hourDegrees, length: art.hourLength * w, width: w * 0.021, tip: 1.6);
+    canvas.drawCircle(pivot, w * 0.022, Paint()..color = AppColors.goldDeep);
+    canvas.drawCircle(
+      pivot,
+      w * 0.022,
+      Paint()
+        ..color = AppColors.ink
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.004,
+    );
+    canvas.drawCircle(pivot, w * 0.007, Paint()..color = AppColors.ink);
+  }
+
+  /// One hand, pointing up and turned [degrees] clockwise about [pivot]: a
+  /// short tail, a slim blade and a spade tip [tip] times the blade's width.
+  void _hand(
+    Canvas canvas,
+    Offset pivot,
+    double degrees, {
+    required double length,
+    required double width,
+    required double tip,
+  }) {
+    final half = width / 2;
+    final blade = Path()
+      ..moveTo(-half, length * 0.16)
+      ..lineTo(-half * 0.7, -length * 0.66)
+      ..lineTo(-half * tip * 2, -length * 0.76)
+      ..lineTo(0, -length)
+      ..lineTo(half * tip * 2, -length * 0.76)
+      ..lineTo(half * 0.7, -length * 0.66)
+      ..lineTo(half, length * 0.16)
+      ..close();
+    canvas
+      ..save()
+      ..translate(pivot.dx, pivot.dy)
+      ..rotate(degrees * math.pi / 180);
+    // A faint shadow, so the hand stands off the bright glass.
+    canvas.drawPath(blade.shift(Offset(width * 0.25, width * 0.35)), Paint()..color = AppColors.ink.withValues(alpha: 0.35));
+    canvas.drawPath(blade, Paint()..color = AppColors.ink);
+    canvas.drawPath(
+      blade,
+      Paint()
+        ..color = AppColors.gold.withValues(alpha: 0.75)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = width * 0.16
+        ..strokeJoin = StrokeJoin.round,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(ClockHandsPainter old) =>
+      old.hourDegrees != hourDegrees || old.minuteDegrees != minuteDegrees || old.aspect != aspect || old.art != art;
 }
