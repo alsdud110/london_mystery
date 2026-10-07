@@ -45,7 +45,7 @@ abstract final class AppTheme {
         scrolledUnderElevation: 0,
         foregroundColor: AppColors.ink,
         centerTitle: true,
-        titleTextStyle: AppText.eyebrow(color: AppColors.ink),
+        titleTextStyle: AppText.mark(color: AppColors.ink, size: 17),
       ),
       dividerTheme: DividerThemeData(color: AppLine.faint(), thickness: AppLine.hairline, space: AppSpace.xl),
       snackBarTheme: SnackBarThemeData(
@@ -76,7 +76,7 @@ abstract final class AppTheme {
           backgroundColor: AppColors.navy,
           foregroundColor: AppColors.paperLight,
           minimumSize: const Size(64, 48),
-          textStyle: AppText.style(AppText.display, size: 15, weight: FontWeight.w700, letterSpacing: 1.2),
+          textStyle: AppText.style(AppText.body, size: 15, weight: FontWeight.w600, letterSpacing: 1.2),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
         ),
       ),

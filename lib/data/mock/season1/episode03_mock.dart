@@ -97,8 +97,9 @@ const Map<String, dynamic> episode03Json = {
       'letter':
           'Mr Green wore a brown coat and a green hat.\n\n'
           'Miss Rose wore a red coat and a blue scarf.\n\n'
-          'Mr Grey wore a black coat and a red scarf.\n\n'
-          'Remember: the button is red. The cloth is blue.',
+          'Mr Grey wore a black coat and a red scarf.',
+      // The button's colour comes from Mission 01 (the guard's report, the
+      // Red Button in the notebook); the cloth's from the scene above.
       'type': 'multipleChoice',
       'question': 'Who took the painting?',
       'options': [
@@ -109,7 +110,7 @@ const Map<String, dynamic> episode03Json = {
       'answer': 'b',
       'hints': [
         'A button comes from a coat. A piece of cloth can come from a scarf.',
-        'Look for a red coat and a blue scarf on the same person.',
+        'What colour was the button you found in Gallery 8? Check your notebook.',
       ],
       'clue': {
         'id': 'ep03_c2',
@@ -183,9 +184,10 @@ const Map<String, dynamic> episode03Json = {
       },
       'successMessage': 'She left by the north door!',
       'transition': [
+        // Where she went is the final's question: the driver does not say.
         'Outside the north door, a taxi driver is waiting.',
-        '"A lady in a red coat?" he says. "I took her to the station."',
-        'Which station?',
+        '"A lady in a red coat?" he says. "Yes, I drove her away."',
+        'But where did she go?',
       ],
       'nextMissionId': 'ep03_final',
       'skills': ['reading', 'problemSolving'],
@@ -205,10 +207,11 @@ const Map<String, dynamic> episode03Json = {
     ],
     'letterIntro': 'He writes it down for you.',
     'letter':
-        'The lady said: "Take me north, to the station."\n\n'
-        'It is a big station.\n'
-        'It has two big arches and a clock tower.\n'
-        'Trains to the north leave from there.',
+        'The lady said: "Take me north!"\n\n'
+        'I stopped at a big building with a tall clock tower.\n'
+        'She ran inside with her parcel.',
+    // Two pictures have a clock tower (Big Ben, King's Cross): the boot she
+    // left (Mission 03, "smells of trains and smoke") tells which one.
     'type': 'imageChoice',
     'question': 'Which picture shows where Miss Rose went?',
     'options': [
@@ -219,8 +222,8 @@ const Map<String, dynamic> episode03Json = {
     ],
     'answer': 'd',
     'hints': [
-      'Big Ben has a clock too. But is it a station with arches?',
-      'Look for two big round arches where trains come in.',
+      'Two pictures have a clock tower. Look at the evidence you found today, too.',
+      'Open your notebook and look closer at the footprint from the Great Court. What did the boot smell of?',
     ],
     'evidence': {
       'id': 'ep03_e4',

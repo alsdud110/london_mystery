@@ -131,7 +131,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(m.location, style: AppText.title(size: 24))),
+                  Expanded(child: Text(m.location, style: AppText.placeTitle(size: 24))),
                   const InkStamp('SOLVED', color: AppColors.success, size: 13),
                 ],
               ),
@@ -301,7 +301,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                               const SizedBox(height: 2),
                               Text(
                                 episode.title,
-                                style: AppText.title(size: 21),
+                                style: AppText.placeTitle(size: 21),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -799,7 +799,7 @@ class _LeadNote extends StatelessWidget {
               m.location,
               key: const ValueKey('next-place'),
               maxLines: 1,
-              style: AppText.title(size: 20).copyWith(letterSpacing: 0.8),
+              style: AppText.placeTitle(size: 20),
             ),
           ),
         Row(

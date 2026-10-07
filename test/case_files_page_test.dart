@@ -20,8 +20,8 @@ import 'title_screen_test.dart' show capture;
 void main() {
   setUpAll(() async {
     for (final (family, files) in [
-      ('Nunito', ['Nunito.ttf']),
-      ('Cinzel', ['Cinzel.ttf']),
+      ('Sentient', ['Sentient-Variable.ttf']),
+      ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
       ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
     ]) {
       final loader = FontLoader(family);
@@ -59,7 +59,8 @@ void main() {
       expect(t.takeException(), isNull);
       expect(find.text('SOLVED'), findsOneWidget, reason: 'Case 01');
       expect(find.text('SEALED'), findsWidgets, reason: 'Cases 03 on');
-      expect(find.text('The Silent Clock'), findsOneWidget, reason: 'Case 02 open');
+      expect(find.text('Big Ben has stopped. Its hands do not move.'), findsOneWidget, reason: 'Case 02 open');
+      expect(find.textContaining('EPISODE'), findsNothing, reason: 'the folder already names the case');
 
       // No bar: the app bar is see-through and lies on the page itself.
       final bar = t.widget<AppBar>(find.byType(AppBar));

@@ -185,7 +185,7 @@ class _SuccessOverlayState extends State<_SuccessOverlay> with SingleTickerProvi
                           opacity: _o(_xp),
                           child: Text(
                             '+${(widget.xp.total * _xp.value).round()} XP',
-                            style: AppText.style(AppText.display, size: 20, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
+                            style: AppText.style(AppText.body, size: 20, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
                                 .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
                           ),
                         ),

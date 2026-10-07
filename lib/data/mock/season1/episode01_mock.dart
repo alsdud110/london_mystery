@@ -160,13 +160,15 @@ const Map<String, dynamic> episode01Json = {
         'id': 'e03',
         'name': 'Pocket Watch',
         'icon': 'watch',
-        'description': 'The thief dropped this watch!',
+        'description': 'The thief left this watch in the box.',
         'inscription': "It stopped at 7 o'clock.",
       },
       'successMessage': 'Click! The box opens.',
+      // The box holds both: the watch (the evidence, kept) and the photo
+      // that sends the detective on (the story).
       'transition': [
-        'Inside the box, there is a photo.',
-        'It shows a big green park with a lake.',
+        'Inside the box, there is a pocket watch and a photo.',
+        'The photo shows a big green park with a lake.',
         "Let's go to Hyde Park!",
       ],
       'nextMissionId': 'm04',
@@ -305,7 +307,7 @@ const Map<String, dynamic> episode01Json = {
     'answer': '7924',
     'hints': [
       "Each picture is a place. The train is King's Cross!",
-      "King's Cross gave you 9. Find the numbers for the clock, the park and the museum.",
+      "Open your notebook and find the clue from King's Cross. Then find the clues for the clock, the park and the museum.",
     ],
     'evidence': {
       'id': 'e06',

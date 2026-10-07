@@ -158,11 +158,11 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                             skip: i < _line || (i == _line && _skipCurrent),
                                             style: i == 0
                                                 ? AppText.style(
-                                                    AppText.display,
+                                                    AppText.body,
                                                     size: 22,
-                                                    weight: FontWeight.w700,
+                                                    weight: FontWeight.w600,
                                                     color: AppColors.goldLight,
-                                                    letterSpacing: 1.5,
+                                                    letterSpacing: 1,
                                                   )
                                                 : AppText.style(
                                                     AppText.heading,
@@ -193,7 +193,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                     children: [
                                       Text(
                                         'Are you ready?',
-                                        style: AppText.title(size: 32, color: AppColors.goldLight),
+                                        style: AppText.cinematicPrompt(size: 32),
                                       ),
                                       const SizedBox(height: 20),
                                       GameButton(

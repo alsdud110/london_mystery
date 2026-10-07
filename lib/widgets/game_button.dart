@@ -64,10 +64,10 @@ class _GameButtonState extends ConsumerState<GameButton> {
     if (_enabled && _pressed != value) setState(() => _pressed = value);
   }
 
-  /// Labels are set in the title capitals (Cinzel), like the words on a
-  /// case file, rather than in the body face.
+  /// Labels are actions: set in the reading face (Sentient), never in the
+  /// display face that names the world.
   TextStyle _label(Color color) =>
-      AppText.style(AppText.display, size: 16.5, weight: FontWeight.w700, color: color, letterSpacing: 1.6, height: 1.2);
+      AppText.style(AppText.body, size: 16.5, weight: FontWeight.w600, color: color, letterSpacing: 1.6, height: 1.2);
 
   @override
   Widget build(BuildContext context) {

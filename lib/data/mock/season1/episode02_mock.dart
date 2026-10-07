@@ -1,9 +1,13 @@
 /// Case 02 — The Silent Clock (Westminster / Big Ben). Theme: time.
 ///
-/// Final case design: Big Ben must be restarted at the exact time the thief
-/// plans to strike. That time is only written on the Time Card (Mission 03),
-/// and reading it needs the "before / after / then" words of its note.
-/// 8:17 itself turns out to be a message: Gallery 8, Picture 17 (→ Case 03).
+/// Reasoning chain: Mission 01 finds the stopped time, 8:17 (the source clue).
+/// Mission 02 finds the gear that stopped it (evidence, the Raven stamp; no
+/// number). Mission 03's plan hides its gallery and picture in the stopped
+/// clock: the detective works out Gallery 8, Picture 17 from 8:17 (on the
+/// clock in the scene, or in the notebook). The plan never writes the time:
+/// the thief strikes "one hour after the clock stops".
+/// Final case: 8:17 + one hour = 9:17, worked out by the detective (no
+/// screen before it shows 9:17); the clock's hour hand then turns 8 → 9.
 const Map<String, dynamic> episode02Json = {
   'id': 'ep02',
   'number': 2,
@@ -148,44 +152,52 @@ const Map<String, dynamic> episode02Json = {
       'letterIntro': 'On the back of the card, the thief wrote a plan.',
       'letter':
           'MY PLAN\n\n'
-          'After I stop the clock, I walk to the museum.\n'
-          'Before the doors open, I hide in Gallery 8.\n'
-          'Then, at 9:17, I take Picture 17.\n\n'
-          'But first of all, I stop Big Ben.\n'
+          'First, I stop Big Ben.\n'
+          'Before the museum opens, I hide in a gallery.\n'
+          'One hour after the clock stops, I take a picture.\n\n'
+          'Which gallery? Which picture?\n'
+          'Look at my stopped clock.\n'
+          'The hour is the gallery. The minutes are the picture.\n\n'
           '— R.',
-      'type': 'sequence',
-      'question': 'Put the plan in the right order.',
+      // The deduction: the stopped time (Mission 01) read as the plan says.
+      // Each wrong card is one slip a child can make: the hour read as nine
+      // (the hand is between 8 and 9), hour and minutes swapped, and the
+      // three and two marks of Mrs Bell's note taken as the numbers.
+      'type': 'multipleChoice',
+      'question': 'Which picture will the thief take?',
       'options': [
-        {'id': 'hide', 'label': 'Hide in Gallery 8'},
-        {'id': 'stop', 'label': 'Stop Big Ben'},
-        {'id': 'take', 'label': 'Take Picture 17'},
-        {'id': 'walk', 'label': 'Walk to the museum'},
+        {'id': 'a', 'label': 'Gallery 9 · Picture 17'},
+        {'id': 'b', 'label': 'Gallery 8 · Picture 17'},
+        {'id': 'c', 'label': 'Gallery 17 · Picture 8'},
+        {'id': 'd', 'label': 'Gallery 3 · Picture 2'},
       ],
-      'codeLength': 4,
-      'answer': 'stop,walk,hide,take',
+      'answer': 'b',
       'hints': [
-        'Look for the words "first of all", "after", "before" and "then".',
-        '"First of all" is the start. "Then" comes at the end.',
+        'The thief hid the numbers in the stopped clock. What time did it stop?',
+        'Your first clue has the stopped time. The hour goes with GALLERY. The minutes go with PICTURE.',
       ],
+      // Saved once worked out: the deduction, never the final's time.
       'clue': {
         'id': 'ep02_c3',
-        'title': 'Picture 17',
-        'value': '9:17',
-        'symbol': 'ticket',
-        'note': 'The thief will take Picture 17 at 9:17.',
+        'title': 'Gallery 8 · Picture 17',
+        'value': '8 · 17',
+        'symbol': 'frame',
+        'note': 'The stopped clock was a message. The hour is the gallery, the minutes are the picture.',
       },
       'evidence': {
         'id': 'ep02_e3',
         'name': 'Time Card',
         'icon': 'ticket',
         'description': "The thief's plan.",
-        'inscription': 'GALLERY 8 · PICTURE 17 · 9:17',
+        'inscription': 'GALLERY 8 · PICTURE 17\nOne hour after the clock stops.',
       },
-      'successMessage': 'You read the whole plan!',
+      'successMessage': 'Gallery 8, Picture 17!',
+      // The detective worked the message out: the scene reacts, then sends
+      // them to the clock (the final).
       'transition': [
-        'Gallery 8. Picture 17.',
-        '8... 17... The clock stopped at 8:17!',
-        'The time was a message. Quick — start the clock!',
+        'The time was a message.',
+        'Mrs Bell looks up at the frozen hands.',
+        'Quick — start the clock!',
       ],
       'nextMissionId': 'ep02_final',
       'skills': ['reading', 'problemSolving'],
@@ -209,14 +221,17 @@ const Map<String, dynamic> episode02Json = {
         'Set the hands to the time the thief will take the picture.\n'
         'When Big Ben rings at that time, the museum guards will hear it\n'
         'and they will be ready.\n\n'
-        'Look at the Time Card in your notebook.',
+        'Your notebook knows when the clock stopped,\n'
+        "and the Time Card has the thief's plan.",
     'type': 'finalCode',
     'question': 'Set the time on the Great Clock.',
     'codeLength': 3,
+    // 8:17 (Mission 01) + one hour (Mission 03's plan): worked out, never
+    // shown as a time before this lock.
     'answer': '917',
     'hints': [
-      'The Time Card says when the thief takes Picture 17.',
-      'It is one hour after the clock stopped. The minutes are the same.',
+      'You need two clues: the time the clock stopped, and when the plan says the thief takes the picture.',
+      'Start from the stopped time in your first clue. The plan says one hour after it: the hour goes up by one, the minutes stay the same.',
     ],
     'evidence': {
       'id': 'ep02_e4',
@@ -246,6 +261,8 @@ const Map<String, dynamic> episode02Json = {
     'clockkeeper': '시계 관리인',
     'hour': '시간(시)',
     'minute': '분',
+    'minutes': '분',
+    'stopped': '멈춘',
     'hand': '(시계) 바늘',
     'hands': '(시계) 바늘들',
     'between': '~사이에',

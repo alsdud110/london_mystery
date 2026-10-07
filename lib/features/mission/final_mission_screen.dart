@@ -163,7 +163,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
           controller: scroll,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
           children: [
-            Text('DETECTIVE NOTEBOOK', style: AppText.eyebrow(), textAlign: TextAlign.center),
+            Text('DETECTIVE NOTEBOOK', style: AppText.mark(), textAlign: TextAlign.center),
             const SizedBox(height: 12),
             Text('Evidence', style: AppText.title(size: 20)),
             const SizedBox(height: 8),
@@ -216,7 +216,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       appBar: AppBar(
         foregroundColor: AppColors.goldLight,
         iconTheme: const IconThemeData(color: AppColors.goldLight),
-        titleTextStyle: AppText.eyebrow(color: AppColors.goldLight),
+        titleTextStyle: AppText.mark(color: AppColors.goldLight, size: 17),
         title: const Text('FINAL MISSION'),
         leading: IconButton(
           tooltip: 'Back to map',

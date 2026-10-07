@@ -235,7 +235,7 @@ class PageHeading extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: AppText.title(size: titleSize, color: night ? AppColors.paperLight : AppColors.navy).copyWith(letterSpacing: 1),
+          style: AppText.placeTitle(size: titleSize, color: night ? AppColors.paperLight : AppColors.navy),
         ),
         const SizedBox(height: AppSpace.sm),
         OrnamentRule(color: night ? AppColors.goldLight : AppColors.gold),

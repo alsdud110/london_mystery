@@ -189,10 +189,12 @@ const Map<String, dynamic> episode11Json = {
       'The stranger smiles and bows.',
       '"Hello again, Detective," he says. "Do you remember me?"',
     ],
-    'letterIntro': 'He gives you a small card. It is signed.',
+    'letterIntro': 'He gives you a small card.',
+    // Case 01's Old Letter ("Signed: The Shadow / P.S. I love trains!", in
+    // the Case Archive) names him: the card only points back to it.
     'letter':
         'We met at the very start.\n'
-        'I took the Crown and left you a letter in a suitcase.\n'
+        'I left you a letter in a suitcase.\n'
         'I still love trains.\n\n'
         'I left the Raven Society. I want to help you now.',
     'type': 'multipleChoice',
@@ -201,12 +203,12 @@ const Map<String, dynamic> episode11Json = {
       {'id': 'a', 'label': 'Inspector Grey'},
       {'id': 'b', 'label': 'Mrs Robin'},
       {'id': 'c', 'label': 'The Ravenmaster'},
-      {'id': 'd', 'label': 'The Shadow, the thief from Case 01'},
+      {'id': 'd', 'label': 'The Shadow'},
     ],
     'answer': 'd',
     'hints': [
-      'Think about your very first case. Who took the Crown?',
-      'Open Case 01 in your Case Archive. Who signed the Old Letter?',
+      '"The very start" means your first case. What did you find in a suitcase there?',
+      'Open Case 01 in your Case Archive. Look closer at the letter from the suitcase. Who signed it?',
     ],
     'evidence': {
       'id': 'ep11_e4',

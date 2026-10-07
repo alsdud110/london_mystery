@@ -132,7 +132,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                           // here: it would echo that scene, or spoil the next case).
                           Text(
                             'London needs you again.',
-                            style: AppText.subtitle(color: AppColors.goldLight),
+                            style: AppText.cinematicPrompt(size: 22),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 16),
@@ -272,7 +272,7 @@ class _CaseFile extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              _Field(label: 'Case', value: report.episode.title.toUpperCase()),
+              _Field(label: 'Case', value: report.episode.title.toUpperCase(), name: true),
               const _Rule(),
               _Row(
                 label: 'Missions',
@@ -292,7 +292,7 @@ class _CaseFile extends StatelessWidget {
                 label: 'XP',
                 child: Text(
                   '$xpShown',
-                  style: AppText.logo(
+                  style: AppText.title(
                     size: 26,
                     color: AppColors.goldDeep,
                   ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
@@ -337,7 +337,7 @@ class _CaseFile extends StatelessWidget {
                 ),
               ],
               const _Rule(),
-              Text('CASE REPORT', style: AppText.eyebrow(color: AppColors.inkBrown)),
+              Text('CASE REPORT', style: AppText.mark(color: AppColors.inkBrown)),
               const SizedBox(height: 8),
               Text('"${report.caseSummary}"', style: AppText.letter(size: 18)),
               const SizedBox(height: 14),
@@ -428,11 +428,14 @@ class _Rule extends StatelessWidget {
 }
 
 class _Field extends StatelessWidget {
-  const _Field({required this.label, required this.value, this.big = false});
+  const _Field({required this.label, required this.value, this.big = false, this.name = false});
 
   final String label;
   final String value;
   final bool big;
+
+  /// A name of the world (the case): the display face.
+  final bool name;
 
   @override
   Widget build(BuildContext context) {
@@ -449,7 +452,7 @@ class _Field extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(value, maxLines: 1, style: AppText.title(size: 28)),
               )
-            : Text(value, style: AppText.title(size: 20)),
+            : Text(value, style: name ? AppText.placeTitle(size: 21) : AppText.title(size: 20)),
       ],
     );
   }

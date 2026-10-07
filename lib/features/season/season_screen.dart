@@ -459,7 +459,7 @@ class _Dossier extends StatelessWidget {
                     Expanded(child: Text('CASES SOLVED', style: AppText.eyebrow(color: AppColors.inkBrown))),
                     Text(
                       '${overview.solvedCount} / ${overview.total}',
-                      style: AppText.logo(size: 22, color: AppColors.navy)
+                      style: AppText.title(size: 22, color: AppColors.navy)
                           .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
                     ),
                   ],
@@ -574,7 +574,7 @@ class _CurrentCase extends StatelessWidget {
                   child: Column(
                     children: [
                       Text('CASE', style: AppText.eyebrow(color: AppColors.inkBrown).copyWith(fontSize: 10, letterSpacing: 1.5)),
-                      Text(e.numberLabel, style: AppText.logo(size: 20, color: AppColors.navy)),
+                      Text(e.numberLabel, style: AppText.title(size: 20, color: AppColors.navy)),
                     ],
                   ),
                 ),
@@ -590,7 +590,7 @@ class _CurrentCase extends StatelessWidget {
                       e.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: AppText.title(size: 19, color: AppColors.ink),
+                      style: AppText.placeTitle(size: 19, color: AppColors.ink),
                     ),
                   ],
                 ),

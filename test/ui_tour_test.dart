@@ -69,7 +69,7 @@ void main() {
     // LM_TOUR_SMALL=1: the smallest supported phone (360×640) instead of 390×844.
     final small = Platform.environment['LM_TOUR_SMALL'] != null;
     t.view.physicalSize = small ? const Size(1080, 1920) : const Size(1170, 2532);
-    for (final (family, files) in [('Nunito', ['Nunito.ttf']), ('Cinzel', ['Cinzel.ttf']), ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']), ('Fredoka', ['Fredoka.ttf'])]) {
+    for (final (family, files) in [('Sentient', ['Sentient-Variable.ttf']), ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']), ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf'])]) {
       final l = FontLoader(family);
       for (final f in files) {
         l.addFont(rootBundle.load('assets/fonts/$f'));
@@ -112,11 +112,11 @@ void main() {
 
     // Case files: only the cases at first; open one, choose its episode, begin.
     expect(find.text('THE MISSING CROWN'), findsOneWidget);
-    expect(find.text('The Missing Crown'), findsNothing, reason: 'episodes stay folded away');
+    expect(find.text('The Crown has disappeared from the Royal Archive in London!'), findsNothing, reason: 'cases stay folded away');
     await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 400));
     expect(find.text('CASE FILES'), findsOneWidget, reason: 'nothing chosen yet');
     await tapText(t, 'THE MISSING CROWN', after: const Duration(milliseconds: 400));
-    await tapText(t, 'The Missing Crown', after: const Duration(milliseconds: 400));
+    await tapText(t, 'The Crown has disappeared from the Royal Archive in London!', after: const Duration(milliseconds: 400));
     await shot('episodes_open');
     await tapText(t, 'BEGIN INVESTIGATION');
     await wait(t, const Duration(seconds: 3));
@@ -195,7 +195,7 @@ void main() {
       await tapText(t, d, after: const Duration(milliseconds: 150));
     }
     await tapText(t, 'UNLOCK', after: Duration.zero);
-    await finishMission(t, sceneLine: 'Inside the box, there is a photo.');
+    await finishMission(t, sceneLine: 'Inside the box, there is a pocket watch and a photo.');
 
     // ── Mission 04: image choice (picture C = Buckingham Palace).
     await openMission(t, 'GO TO HYDE PARK');

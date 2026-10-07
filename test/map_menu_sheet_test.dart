@@ -19,8 +19,8 @@ import 'title_screen_test.dart' show capture;
 void main() {
   setUpAll(() async {
     for (final (family, files) in [
-      ('Nunito', ['Nunito.ttf']),
-      ('Cinzel', ['Cinzel.ttf']),
+      ('Sentient', ['Sentient-Variable.ttf']),
+      ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
       ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
     ]) {
       final loader = FontLoader(family);

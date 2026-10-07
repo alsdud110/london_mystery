@@ -51,7 +51,7 @@ void main() {
     await tapText(t, 'THE VANISHING PAINTING', after: const Duration(milliseconds: 400));
     expect(find.text('Solve Case 02 to open this file.'), findsOneWidget);
     await tapText(t, 'THE SILENT CLOCK', after: const Duration(milliseconds: 400));
-    await tapText(t, 'The Silent Clock', after: const Duration(milliseconds: 400));
+    await tapText(t, 'Big Ben has stopped. Its hands do not move.', after: const Duration(milliseconds: 400));
     await tapText(t, 'BEGIN INVESTIGATION');
     await tapText(t, 'SKIP ›');
     await tapText(t, "I'M READY", after: const Duration(milliseconds: 1500));
@@ -76,25 +76,32 @@ void main() {
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await finishMission(t, sceneLine: 'You hold the brass gear up to the light.');
 
-    // ── Mission 3: the plan in order (sequence), with one undo.
+    // ── Mission 3: the plan hides its gallery and picture in the stopped
+    // clock. The detective checks the notebook (8:17, the first clue) and
+    // works out Gallery 8 · Picture 17; swapping hour and minutes is wrong.
     await t.tap(find.bySemanticsLabel('GO TO THE BELFRY'));
     await wait(t, goToTime);
     await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
     await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
+    expect(find.textContaining('9:17'), findsNothing, reason: "the plan never writes the final's time");
     await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
-    await reveal(t, find.text('Get a tip')); // a taller puzzle: the tip link is further down
-    expect(find.text('Get a tip'), findsOneWidget);
-    await tapText(t, 'Walk to the museum', after: const Duration(milliseconds: 150));
-    await tapText(t, 'Undo', after: const Duration(milliseconds: 150));
-    for (final step in ['Stop Big Ben', 'Walk to the museum', 'Hide in Gallery 8', 'Take Picture 17']) {
-      await tapText(t, step, after: const Duration(milliseconds: 150));
-    }
+    await t.tap(find.byTooltip('Detective notebook'));
+    await wait(t, const Duration(milliseconds: 900));
+    expect(find.text('8:17'), findsOneWidget, reason: 'the stopped time, kept in the notebook');
+    await t.tap(find.byTooltip('Close'));
+    await wait(t, const Duration(milliseconds: 900));
+    await tapText(t, 'Gallery 17 · Picture 8', after: const Duration(milliseconds: 200));
+    await tapText(t, 'CHECK ANSWER');
+    expect(find.text('Not quite!'), findsOneWidget);
+    await tapText(t, 'TRY AGAIN', after: const Duration(milliseconds: 400));
+    await tapText(t, 'Gallery 8 · Picture 17', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
-    await finishMission(t, sceneLine: 'Gallery 8. Picture 17.');
+    await finishMission(t, sceneLine: 'The time was a message.');
 
-    // ── Final case: set the Great Clock to 9:17 on the dials.
+    // ── Final case: 8:17 + one hour — set the Great Clock to 9:17 on the dials.
     await tapText(t, 'OPEN THE FINAL CASE', after: goToTime);
     expect(find.text('INSIDE BIG BEN'), findsOneWidget);
+    expect(find.textContaining('9:17'), findsNothing, reason: 'the detective works the time out');
     for (final (i, digit) in [9, 1, 7].indexed) {
       final up = find.byTooltip('Lock ${i + 1} up');
       await reveal(t, up);
@@ -121,7 +128,7 @@ void main() {
     // OPEN CASE 03 lands on Case 03 with its folder already open and chosen.
     await tapText(t, 'OPEN CASE 03', after: const Duration(milliseconds: 800));
     expect(find.text('Solve Case 02 to open this file.'), findsNothing);
-    expect(find.text('The Vanishing Painting'), findsOneWidget);
+    expect(find.text('A painting has vanished from Gallery 8.'), findsOneWidget);
     expect(find.text('BEGIN INVESTIGATION'), findsOneWidget);
     await wait(t, const Duration(seconds: 3));
   });

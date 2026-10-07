@@ -179,14 +179,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   ),
                                   Text(
                                     'DETECTIVE REGISTRATION',
-                                    style: AppText.eyebrow(
+                                    style: AppText.mark(
                                       color: AppColors.burgundy,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: AppSpace.sm),
                                   Text(
-                                    'What should we call you,\nDetective?',
+                                    'What should we\ncall you, Detective?',
                                     style: AppText.title(
                                       size: typing ? 21 : 24,
                                     ),

@@ -26,8 +26,8 @@ void main() {
 
   setUpAll(() async {
     for (final (family, files) in [
-      ('Nunito', ['Nunito.ttf']),
-      ('Cinzel', ['Cinzel.ttf']),
+      ('Sentient', ['Sentient-Variable.ttf']),
+      ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
       ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
     ]) {
       final loader = FontLoader(family);
@@ -133,6 +133,9 @@ void main() {
         if (size.width == 360 || e.id == 'ep01') await capture(t, 'intro_${tag}_reading');
         await tapText(t, 'SKIP ›', after: const Duration(milliseconds: 900));
         expect(find.text('Are you ready?'), findsOneWidget);
+        // Story (Sentient) → the cinematic prompt (IM Fell) → the action (Sentient).
+        expect(t.widget<Text>(find.text('Are you ready?')).style?.fontFamily, 'IMFellEnglishSC');
+        expect(t.widget<Text>(find.text('Are you ready?')).style?.fontWeight, FontWeight.w400);
         final ready = t.getRect(find.text("I'M READY"));
         expect(ready.bottom, lessThan(size.height - 20), reason: 'off the bottom edge');
         if (size.width == 360 || e.id == 'ep01') await capture(t, 'intro_${tag}_ready');

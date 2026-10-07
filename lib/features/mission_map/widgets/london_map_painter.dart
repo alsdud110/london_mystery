@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text.dart';
 
 /// An old paper map of London on which the detective marks the route in ink.
 /// Pins are laid over it as widgets.
@@ -146,7 +147,7 @@ class LondonMapPainter extends CustomPainter {
       text: TextSpan(
         text: 'RIVER THAMES',
         style: TextStyle(
-          fontFamily: 'Cinzel',
+          fontFamily: AppText.body,
           fontSize: math.max(9, s.width * 0.024),
           fontWeight: FontWeight.w700,
           fontVariations: const [FontVariation('wght', 700)],
@@ -226,7 +227,7 @@ class LondonMapPainter extends CustomPainter {
     final tp = TextPainter(
       text: TextSpan(
         text: 'N',
-        style: TextStyle(fontFamily: 'Cinzel', fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.ink.withValues(alpha: 0.7)),
+        style: TextStyle(fontFamily: AppText.body, fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.ink.withValues(alpha: 0.7)),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

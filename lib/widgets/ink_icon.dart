@@ -133,7 +133,7 @@ class InkMark extends StatelessWidget {
                   monogram,
                   maxLines: 1,
                   textScaler: TextScaler.noScaling,
-                  style: AppText.style(AppText.display, size: size * 0.8, weight: FontWeight.w700, color: c, height: 1),
+                  style: AppText.style(AppText.body, size: size * 0.8, weight: FontWeight.w700, color: c, height: 1),
                 ),
               ),
             ),

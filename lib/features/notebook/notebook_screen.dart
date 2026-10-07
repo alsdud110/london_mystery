@@ -62,8 +62,8 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               // Three equal tabs on a 360-wide phone: a narrow side padding so
               // "EVIDENCE" is not clipped.
               labelPadding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
-              labelStyle: AppText.style(AppText.display, size: 13, weight: FontWeight.w700, letterSpacing: 0.8),
-              unselectedLabelStyle: AppText.style(AppText.display, size: 13, weight: FontWeight.w700, letterSpacing: 0.8),
+              labelStyle: AppText.style(AppText.body, size: 13, weight: FontWeight.w600, letterSpacing: 0.8),
+              unselectedLabelStyle: AppText.style(AppText.body, size: 13, weight: FontWeight.w600, letterSpacing: 0.8),
               overlayColor: WidgetStateProperty.all(Colors.transparent),
               // Lettered tabs until the evidence and badge glyphs
               // exist (Custom Asset Required) — all three match.

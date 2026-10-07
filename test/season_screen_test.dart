@@ -34,8 +34,8 @@ void main() {
   setUpAll(() async {
     // Real fonts, so text sizes (and any overflow) match the device.
     for (final (family, files) in [
-      ('Nunito', ['Nunito.ttf']),
-      ('Cinzel', ['Cinzel.ttf']),
+      ('Sentient', ['Sentient-Variable.ttf']),
+      ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
       ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
     ]) {
       final loader = FontLoader(family);
@@ -567,7 +567,7 @@ void main() {
     await t.tap(find.byKey(const ValueKey('board-ep02')));
     await wait(t, const Duration(milliseconds: 900));
     expect(path(), Routes.caseFile('ep02'));
-    expect(find.text('The Silent Clock'), findsOneWidget, reason: 'its folder is open');
+    expect(find.text('Big Ben has stopped. Its hands do not move.'), findsOneWidget, reason: 'its folder is open');
     await wait(t, const Duration(seconds: 3));
   });
 

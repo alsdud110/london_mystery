@@ -254,10 +254,8 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
                         child: Text(
                           p.question,
                           textAlign: TextAlign.center,
-                          style: AppText.title(
-                            size: 25,
-                            color: AppColors.goldLight,
-                          ),
+                          // The season's turn: a cinematic prompt, not a question to answer.
+                          style: AppText.cinematicPrompt(size: 25),
                         ),
                       ),
                       const SizedBox(height: AppSpace.md),
@@ -689,7 +687,7 @@ class _CaseFile extends StatelessWidget {
                             children: [
                               Text(
                                 'CASE FILE',
-                                style: AppText.eyebrow(
+                                style: AppText.mark(
                                   color: AppColors.burgundy,
                                 ),
                               ),

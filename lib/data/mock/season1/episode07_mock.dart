@@ -180,8 +180,11 @@ const Map<String, dynamic> episode07Json = {
       },
       'successMessage': 'The pieces fit!',
       'transition': [
-        'The joined map has an arrow and a message:',
-        '"The last piece waits by the old gate."',
+        // The arrow's spot is the final's answer: the scene gives its
+        // direction only (north, the top of the park); the Joined Map in the
+        // notebook names it.
+        'The joined map has an arrow. It points north, to the top of the park.',
+        '"The last piece waits where my arrow points."',
         'But a man in a dark coat is walking there fast!',
       ],
       'nextMissionId': 'ep07_final',
@@ -193,8 +196,10 @@ const Map<String, dynamic> episode07Json = {
   'finalMission': {
     'id': 'ep07_final',
     'number': 4,
-    'title': 'The Old Gate',
-    'location': 'THE OLD GATE',
+    // Named for the chase, not the spot: the spot is the answer, and this
+    // name shows before it (the unlocked card, the final's page).
+    'title': 'The Last Piece',
+    'location': 'THE PARK PATHS',
     'scene': 'hydePark',
     'story': [
       'There is no time to lose!',
@@ -203,9 +208,11 @@ const Map<String, dynamic> episode07Json = {
     'letterIntro': 'Inspector Grey shouts:',
     'letter':
         'Go past the tree.\n'
-        'Cross the bridge and turn left.\n'
-        'Walk past the bench.\n'
-        'Stop at the old gate!',
+        'Cross the bridge and turn left!\n'
+        'Then follow your joined map!',
+    // Grey gives the way (left after the bridge: the left bench or the old
+    // gate); the Joined Map (Mission 03) gives the end (its arrow: north, the
+    // old gate). Only both together pick one map.
     'type': 'imageChoice',
     'question': 'Which map shows where to stop?',
     'options': [
@@ -216,8 +223,8 @@ const Map<String, dynamic> episode07Json = {
     ],
     'answer': 'b',
     'hints': [
-      'This time you turn the other way after the bridge.',
-      'Do not stop at the bench. Walk past it, to the end of the path.',
+      'Inspector Grey tells you which way to turn, but not where to stop.',
+      'Open your notebook and look closer at the joined map. Where does its arrow point?',
     ],
     'evidence': {
       'id': 'ep07_e4',

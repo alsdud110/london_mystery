@@ -2,8 +2,11 @@
 /// ("whose", "'s", "has", "is not") and logic.
 ///
 /// The thief never took the jewel out of the palace: she hid it in
-/// something that belongs to someone else. Final case: a small logic puzzle
-/// (three helpers, three things) — only one thing can hide the jewel.
+/// something that belongs to someone else. Final case: R.'s note says to hide
+/// it in the thing of "the one whose key you used". Anna used the key, but it
+/// is the guard's (Mission 01: only the guard's big gold key opens the case;
+/// the guard lent it to her) — "whose" is not "who had it". The guard is
+/// Carl; the detective's notes on the three things leave Carl the hat.
 const Map<String, dynamic> episode09Json = {
   'id': 'ep09',
   'number': 9,
@@ -184,28 +187,34 @@ const Map<String, dynamic> episode09Json = {
   'finalMission': {
     'id': 'ep09_final',
     'number': 4,
-    'title': "The Guard's Hat",
+    // The title shows on the map before the answer: it names neither the
+    // owner nor the thing.
+    'title': 'The Three Things',
     'location': 'THE PALACE GATE',
     'scene': 'buckinghamPalace',
     'story': [
-      'Anna, Ben and Carl stand at the palace gate.',
+      'Anna, Ben the gardener and Carl the guard stand at the palace gate.',
       'One of their things is hiding the Blue Star.',
     ],
-    'letterIntro': 'You write down what you know.',
+    'letterIntro': 'A small note falls out of Anna\'s pocket. It is signed R.',
+    // R.'s note gives the rule; which key it was is Mission 01's (the
+    // guard's, lent to Anna); the detective's notes give whose thing is
+    // whose. Typing Anna's thing (she used the key) is the slip to avoid.
     'letter':
-        'There are three things:\n'
-        'a red umbrella, a green bag and a tall black hat.\n\n'
+        'Hide it in the thing of the one whose key you used.\n'
+        '— R.\n\n'
+        'Your notes:\n'
+        'Three things: a red umbrella, a green bag and a tall black hat.\n'
         'Ben has the green bag.\n'
-        "Anna's thing is not black.\n"
-        "Anna put the jewel inside Carl's thing.",
+        "Anna's thing is not black.",
     'type': 'wordInput',
     'question': 'Where is the jewel? Type the thing.',
-    'prompt': "IN CARL'S ___",
+    'prompt': 'IN THE ___',
     'answer': 'HAT',
     'acceptedAnswers': ['BLACK HAT', 'TALL BLACK HAT', 'THE HAT', 'THE BLACK HAT', 'CARLS HAT'],
     'hints': [
-      'Ben has the bag. So Anna and Carl have the other two things.',
-      "Anna's thing is not black. So which thing is Anna's, and which is Carl's?",
+      'Anna used the key. But whose key was it? Think back to the Jewel Room.',
+      'Open your notebook: whose key opened the jewel case? Find the owner here, then use your notes to find the owner\'s thing.',
     ],
     'evidence': {
       'id': 'ep09_e4',

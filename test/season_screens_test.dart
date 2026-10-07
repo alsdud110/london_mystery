@@ -33,10 +33,9 @@ void main() {
   setUpAll(() async {
     // Real fonts, so text sizes (and any overflow) match the device.
     for (final (family, files) in [
-      ('Nunito', ['Nunito.ttf']),
-      ('Cinzel', ['Cinzel.ttf']),
+      ('Sentient', ['Sentient-Variable.ttf']),
+      ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
       ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
-      ('Fredoka', ['Fredoka.ttf']),
     ]) {
       final loader = FontLoader(family);
       for (final f in files) {

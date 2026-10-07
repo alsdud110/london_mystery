@@ -187,7 +187,9 @@ const Map<String, dynamic> episode04Json = {
       'successMessage': 'It came from the Tower of London!',
       'transition': [
         'There is one more letter in the envelope.',
-        'It is sealed with the same black raven.',
+        // The same seal as the first letter (Mission 01): the bird is the
+        // final's answer, so the scene does not name it.
+        'It is sealed with the same black seal as the first letter.',
         'This time, the writer tells you who they are... almost.',
       ],
       'nextMissionId': 'ep04_final',
@@ -211,8 +213,9 @@ const Map<String, dynamic> episode04Json = {
         'Dear Detective,\n\n'
         'You read very well. Now read one more time.\n\n'
         'My friends and I have a secret name.\n'
-        'We are named after a big black bird.\n'
-        'The bird lives at the Tower. It is on every seal.\n\n'
+        'We are named after a bird.\n'
+        'It lives at the Tower.\n'
+        'It is pressed into every seal we send.\n\n'
         'We are the _____ Society.',
     'type': 'wordInput',
     'question': 'What is the secret name?',
@@ -220,8 +223,10 @@ const Map<String, dynamic> episode04Json = {
     'answer': 'RAVEN',
     'acceptedAnswers': ['RAVENS', 'THE RAVEN SOCIETY'],
     'hints': [
-      'Look at the Black Wax Seal in your notebook. What is pressed into it?',
-      'The letter signs every page with the first letter of the bird: R.',
+      // The seal (Mission 01) and the Tower's birds (Mission 03) give the
+      // name: the tips point there, never to the word.
+      'Every letter came with the same seal. What picture was pressed into it?',
+      'Open your notebook and look closer at the seal from the first letter.',
     ],
     'evidence': {
       'id': 'ep04_e4',

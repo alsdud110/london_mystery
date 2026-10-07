@@ -14,6 +14,7 @@ import 'package:london_mystery/data/models/season_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
+import 'package:london_mystery/features/mission/widgets/question_widgets.dart';
 import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/landmark_art.dart';
 
@@ -136,10 +137,18 @@ void main() {
   });
 
   testWidgets('sequence puzzle: Undo is greyed out until there is something to undo', (t) async {
-    final m = ep02.missionById('ep02_m3')!;
-    final ref = await pumpApp(t, case02(['ep02_m1', 'ep02_m2'], opened: m.id));
-    ref.read(routerProvider).go(Routes.mission(m.id));
-    await wait(t, const Duration(milliseconds: 1200));
+    // The season's first sequence puzzle (Case 02's plan became a deduction).
+    final m = season.expand((e) => e.missions).firstWhere((m) => m.type == MissionType.sequence);
+    t.view.physicalSize = const Size(1170, 2532);
+    t.view.devicePixelRatio = 3;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(
+      overrides: await testOverrides(),
+      child: MaterialApp(
+        home: Scaffold(body: SingleChildScrollView(child: SequenceQuestion(mission: m, onSubmit: (_) {}))),
+      ),
+    ));
+    await wait(t, const Duration(milliseconds: 300));
     Color undoInk() => t.widget<Text>(find.text('Undo')).style!.color!;
 
     expect(undoInk(), AppColors.locked);
@@ -164,7 +173,7 @@ void main() {
       await tapText(t, 'OPEN CASE 02', after: const Duration(milliseconds: 1200));
 
       expect(pathOf(ref), Routes.caseFile('ep02'));
-      expect(find.text(ep02.title), findsOneWidget, reason: 'the Case 02 folder is open');
+      expect(find.text(ep02.title.toUpperCase()), findsOneWidget, reason: 'the Case 02 folder is open');
       expect(find.text(ep02.synopsis.first), findsOneWidget, reason: 'Case 02 is the chosen case');
       expect(find.text('BEGIN INVESTIGATION'), findsOneWidget);
       await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 1200));
@@ -186,7 +195,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 3200));
         await tapText(t, 'OPEN CASE 07', after: const Duration(milliseconds: 1500));
         expect(pathOf(ref), Routes.caseFile(ep07.id));
-        expect(find.text(ep07.title).hitTestable(), findsOneWidget, reason: 'the chosen episode is on screen');
+        expect(find.text(ep07.synopsis.first).hitTestable(), findsOneWidget, reason: 'the chosen case is on screen');
         expect(find.text(ep07.title.toUpperCase()).hitTestable(), findsOneWidget, reason: 'its folder too');
         await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 1200));
         expect(ref.read(currentEpisodeProvider).id, ep07.id);

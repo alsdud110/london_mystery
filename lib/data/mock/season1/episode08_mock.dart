@@ -199,18 +199,23 @@ const Map<String, dynamic> episode08Json = {
         'Mrs Robin wears a long red coat.\n'
         'It has four shiny red buttons.\n'
         'No — three. One button is missing.',
+    // A detective answers a lie with evidence: which piece the detective
+    // already holds matches her coat? The Red Button (Case 03, "From a
+    // coat"), in the Case Archive. The other cards are real evidence too:
+    // two from this case and the other thing Miss Rose left in Case 03.
+    // Not the Blue Cloth: her blue scarf would make it a second answer.
     'type': 'multipleChoice',
-    'question': 'What do you say to Mrs Robin?',
+    'question': 'Which evidence matches her coat?',
     'options': [
-      {'id': 'a', 'label': '"You look tired. Have a good trip."'},
-      {'id': 'b', 'label': '"Your coat is missing a button. I found it in Gallery 8."'},
-      {'id': 'c', 'label': '"Is Edinburgh a nice city?"'},
-      {'id': 'd', 'label': '"I like your blue scarf."'},
+      {'id': 'a', 'label': 'Name Tag'},
+      {'id': 'b', 'label': 'Wet Footprint'},
+      {'id': 'c', 'label': 'Red Button'},
+      {'id': 'd', 'label': 'The Raven Tower'},
     ],
-    'answer': 'b',
+    'answer': 'c',
     'hints': [
-      'A detective answers a lie with evidence.',
-      'Open the Case Archive in your notebook. Which evidence from Case 03 matches her coat?',
+      'Look at her coat again. What is missing from it?',
+      'In an earlier case, you found something that came off a coat. Open the Case Archive in your notebook.',
     ],
     'evidence': {
       'id': 'ep08_e4',

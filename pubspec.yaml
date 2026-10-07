@@ -53,16 +53,15 @@ flutter:
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:
-    - family: Cinzel
+    # The app's reading and action face (variable: wght 200-700).
+    - family: Sentient
       fonts:
-        - asset: assets/fonts/Cinzel.ttf
-    - family: Fredoka
+        - asset: assets/fonts/Sentient-Variable.ttf
+    # The names of the world: season, cases, places, documents (Regular only).
+    - family: IMFellEnglishSC
       fonts:
-        - asset: assets/fonts/Fredoka.ttf
-    - family: Nunito
-      fonts:
-        - asset: assets/fonts/Nunito.ttf
-    # Storybook titles (license: assets/fonts/OFL-LibreBaskerville.txt).
+        - asset: assets/fonts/IMFellEnglishSC-Regular.ttf
+    # The storybook italic under titles (license: assets/fonts/OFL-LibreBaskerville.txt).
     - family: LibreBaskerville
       fonts:
         - asset: assets/fonts/LibreBaskerville.ttf

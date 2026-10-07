@@ -134,7 +134,7 @@ class _EvidenceZoom extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('EVIDENCE', style: AppText.eyebrow(color: AppColors.goldLight)),
+                  Text('EVIDENCE', style: AppText.mark(color: AppColors.goldLight)),
                   const SizedBox(height: 12),
                   Flexible(
                     child: SingleChildScrollView(
@@ -154,7 +154,7 @@ class _EvidenceZoom extends StatelessWidget {
                               child: _EvidenceArt(evidence: evidence, size: 150),
                             ),
                             const SizedBox(height: 18),
-                            Text(evidence.name, style: AppText.title(size: 28), textAlign: TextAlign.center),
+                            Text(evidence.name, style: AppText.placeTitle(size: 28), textAlign: TextAlign.center),
                             if (location != null) Text(location!, style: AppText.eyebrow(color: AppColors.royalBlue)),
                             const SizedBox(height: 10),
                             Text(evidence.description, style: AppText.bodyText(size: 17), textAlign: TextAlign.center),
@@ -296,7 +296,7 @@ class EvidenceChip extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('EVIDENCE', style: AppText.eyebrow()),
+              Text('EVIDENCE', style: AppText.mark()),
               Text(evidence.name, style: AppText.title(size: 20)),
               if (note != null) ...[
                 const SizedBox(height: 2),

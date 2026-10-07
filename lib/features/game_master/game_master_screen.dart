@@ -74,7 +74,7 @@ class GameMasterScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GAME MASTER'),
+        title: Text('GAME MASTER', style: AppText.eyebrow(color: AppColors.ink)),
         leading: IconButton(
           tooltip: 'Back',
           icon: const InkIcon(InkGlyph.back),

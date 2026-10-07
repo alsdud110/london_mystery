@@ -151,7 +151,7 @@ class _ArchiveCase extends StatelessWidget {
                         children: [
                           Text(
                             e.title.toUpperCase(),
-                            style: AppText.title(size: 18, color: muted ? AppColors.locked : AppColors.ink),
+                            style: AppText.placeTitle(size: 18, color: muted ? AppColors.locked : AppColors.ink),
                           ),
                           if (entry.status == ArchiveStatus.notOpened)
                             Text('Not opened yet.', style: AppText.caption(color: AppColors.muted)),

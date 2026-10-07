@@ -108,11 +108,11 @@ void main() {
 
     // Case files: only the cases at first; open one, choose its episode, begin.
     expect(find.text('THE MISSING CROWN'), findsOneWidget);
-    expect(find.text('The Missing Crown'), findsNothing, reason: 'episodes stay folded away');
+    expect(find.text('The Crown has disappeared from the Royal Archive in London!'), findsNothing, reason: 'cases stay folded away');
     await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 400));
     expect(find.text('CASE FILES'), findsOneWidget, reason: 'nothing chosen yet');
     await tapText(t, 'THE MISSING CROWN', after: const Duration(milliseconds: 400));
-    await tapText(t, 'The Missing Crown', after: const Duration(milliseconds: 400));
+    await tapText(t, 'The Crown has disappeared from the Royal Archive in London!', after: const Duration(milliseconds: 400));
     await tapText(t, 'BEGIN INVESTIGATION');
     await tapText(t, 'SKIP ›');
     await tapText(t, "I'M READY", after: const Duration(milliseconds: 1500));
@@ -180,7 +180,7 @@ void main() {
       await tapText(t, d, after: const Duration(milliseconds: 150));
     }
     await tapText(t, 'UNLOCK', after: Duration.zero);
-    await finishMission(t, sceneLine: 'Inside the box, there is a photo.');
+    await finishMission(t, sceneLine: 'Inside the box, there is a pocket watch and a photo.');
 
     // ── Mission 04: image choice (picture C = Buckingham Palace).
     await openMission(t, 'GO TO HYDE PARK');

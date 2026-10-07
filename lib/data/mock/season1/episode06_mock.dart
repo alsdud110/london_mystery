@@ -174,7 +174,8 @@ const Map<String, dynamic> episode06Json = {
       'transition': [
         'Row R, seat 17. R for Raven. 17, like 8:17.',
         'The woman in the red hat is with the Raven Society!',
-        'And the man in the grey hat is watching her.',
+        // Who the man is, is the final's question: the scene only asks it.
+        'But who is the man in the grey hat?',
       ],
       'nextMissionId': 'ep06_final',
       'skills': ['reading', 'problemSolving'],
@@ -195,22 +196,23 @@ const Map<String, dynamic> episode06Json = {
     'letterIntro': 'He hands you a note before he speaks.',
     'letter':
         'Detective,\n\n'
-        'I lost my card. I think you found it.\n'
-        'I come here every night to watch a woman in a red hat.\n'
-        'She carries a big bag. She works for the Raven Society.\n'
-        'I am on your side.',
+        'I lost my card by the fountain.\n'
+        'I think you found it.\n\n'
+        'Look at it, and you will know who I am.',
+    // The card (Mission 02) names him: the note only points to it. That he
+    // is on your side is the post-case scene's to tell.
     'type': 'multipleChoice',
-    'question': 'Who is the Midnight Detective?',
+    'question': 'Who is the man in the grey hat?',
     'options': [
-      {'id': 'a', 'label': 'A thief from the Raven Society'},
-      {'id': 'b', 'label': 'The juggler in a costume'},
-      {'id': 'c', 'label': 'Inspector Grey, who is watching the Raven Society'},
-      {'id': 'd', 'label': 'The woman in the red hat'},
+      {'id': 'a', 'label': 'A Raven Society thief'},
+      {'id': 'b', 'label': 'The theatre guard'},
+      {'id': 'c', 'label': 'Inspector Grey'},
+      {'id': 'd', 'label': 'The juggler'},
     ],
     'answer': 'c',
     'hints': [
-      'Look at the Detective Card in your notebook. Whose card was it?',
-      '"I am on your side" means he is a friend, not a thief.',
+      'He says you found his card. Which card did you find by the fountain?',
+      'Open your notebook and look closer at the card from the fountain. Whose name is on it?',
     ],
     'evidence': {
       'id': 'ep06_e4',

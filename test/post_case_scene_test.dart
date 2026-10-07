@@ -68,9 +68,11 @@ void main() {
       // Case 05: an iron chest.
       expect(story('ep05'), contains('The iron chest is open.'));
       expect(story('ep05'), isNot(contains('iron box')));
-      // Case 06: "I am on your side."
-      expect(story('ep06'), contains('on your side'));
-      expect(byId('ep06').finalMission.letter, contains('I am on your side.'));
+      // Case 06: the post-case scene tells that he is on your side; the final
+      // only points to his card (the detective names him from it).
+      expect(story('ep06'), contains('Inspector Grey is on your side.'));
+      expect(byId('ep06').finalMission.letter, isNot(contains('on your side')));
+      expect(byId('ep06').missionById('ep06_m2')!.evidence!.inscription, contains('INSPECTOR GREY'));
       // Case 12: the watch is still ticking (the hook's and the evidence's words).
       expect(story('ep12'), contains('A pocket watch is still ticking.'));
     });
@@ -100,8 +102,8 @@ void main() {
 
   setUpAll(() async {
     for (final (family, files) in [
-      ('Nunito', ['Nunito.ttf']),
-      ('Cinzel', ['Cinzel.ttf']),
+      ('Sentient', ['Sentient-Variable.ttf']),
+      ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
       ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
     ]) {
       final loader = FontLoader(family);

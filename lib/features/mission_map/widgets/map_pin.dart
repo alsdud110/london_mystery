@@ -285,7 +285,7 @@ class _YouAreHere extends StatelessWidget {
         MapLettering(
           "YOU'RE HERE",
           maxLines: 1,
-          style: AppText.style(AppText.display, size: 11, weight: FontWeight.w800, color: AppColors.burgundy, letterSpacing: 1.2),
+          style: AppText.style(AppText.body, size: 11, weight: FontWeight.w700, color: AppColors.burgundy, letterSpacing: 1.2),
         ),
         const InkIcon(InkGlyph.down, size: AppIconSize.tiny, color: AppColors.burgundy),
       ],

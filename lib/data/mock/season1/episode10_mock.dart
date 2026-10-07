@@ -127,8 +127,10 @@ const Map<String, dynamic> episode10Json = {
       },
       'successMessage': 'NORTH · TOWER · BRIDGE · THREE',
       'transition': [
-        'North tower... bridge... three...',
-        'A bridge with towers? Near the Tower of London?',
+        // The detective reads the place out of the words (Mission 03): the
+        // scene only says they point somewhere.
+        'North... tower... bridge... three...',
+        'The words must point to a place.',
         'You look out over the river.',
       ],
       'nextMissionId': 'ep10_m3',
@@ -146,12 +148,13 @@ const Map<String, dynamic> episode10Json = {
         'From the Tower wall, you can see the river Thames.',
         'Boats go under the bridges.',
       ],
-      'letterIntro': 'The Ravenmaster points and says:',
+      // He cannot speak here (the scene after: "I could not speak"): he
+      // writes. The words themselves are Mission 02's Raven Papers.
+      'letterIntro': 'The Ravenmaster cannot speak here. He writes you a note:',
       'letter':
-          'Look for a BRIDGE with two tall TOWERS.\n'
-          'It is next to the Tower of London.\n'
-          'Its road can open in the middle to let big ships through.\n\n'
-          'Meet me at the NORTH tower at THREE o\'clock.',
+          "Poppy's four words are a place and a time.\n\n"
+          'Two of them, put together, are the name of a place in London.\n'
+          'The other two tell you where and when to meet me.',
       'type': 'imageChoice',
       'question': 'Which place is the message about?',
       'options': [
@@ -162,8 +165,8 @@ const Map<String, dynamic> episode10Json = {
       ],
       'answer': 'c',
       'hints': [
-        'The place is a bridge. Look for water under it.',
-        'Count the towers. You need two.',
+        "Look at Poppy's four words again. They are in your notebook.",
+        'Find two of the words that make the name of a place. Then find its picture.',
       ],
       'clue': {
         'id': 'ep10_c3',

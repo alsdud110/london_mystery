@@ -113,7 +113,7 @@ class _LetterMark extends StatelessWidget {
         color: inverse ? Colors.transparent : AppColors.paper,
         border: Border.all(color: ink.withValues(alpha: inverse ? 0.9 : 0.45), width: AppLine.rule),
       ),
-      child: Text(letter, style: AppText.style(AppText.display, size: 15, weight: FontWeight.w700, color: ink)),
+      child: Text(letter, style: AppText.style(AppText.body, size: 15, weight: FontWeight.w700, color: ink)),
     );
   }
 }

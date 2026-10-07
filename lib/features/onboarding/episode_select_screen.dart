@@ -273,7 +273,8 @@ class _CaseFolderTile extends StatelessWidget {
                     Expanded(
                       child: Text(
                         e.title.toUpperCase(),
-                        style: AppText.title(size: 20, color: sealed ? AppColors.locked : AppColors.ink),
+                        // Tightened a touch: the longest names keep two lines beside the stamp at 360 wide.
+                        style: AppText.placeTitle(size: 20, color: sealed ? AppColors.locked : AppColors.ink).copyWith(letterSpacing: -0.5),
                       ),
                     ),
                     if (sealed || entry.everSolved) ...[
@@ -328,7 +329,8 @@ class _EpisodeRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final e = entry.episode;
     final playable = entry.unlocked;
-    final label = 'EPISODE ${e.numberLabel}';
+    // The case's number and name are on its folder above: only what is in it.
+    final label = 'Case ${e.numberLabel}';
     final previous = entry.previous;
     final row = Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
@@ -346,27 +348,10 @@ class _EpisodeRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: AppText.caption(color: playable ? AppColors.inkBrown : AppColors.muted)),
-                const SizedBox(height: 2),
-                Text(
-                  e.title,
-                  style: playable ? AppText.subtitle(color: AppColors.navy) : AppText.aside(color: AppColors.muted),
-                ),
-                if (!playable && previous != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpace.xs),
-                    child: Text('Solve Case ${previous.numberLabel} to open this file.', style: AppText.caption()),
-                  ),
-                AnimatedSize(
-                  duration: const Duration(milliseconds: 200),
-                  alignment: Alignment.topLeft,
-                  child: chosen
-                      ? Padding(
-                          padding: const EdgeInsets.only(top: AppSpace.xs),
-                          child: Text(e.synopsis.first, style: AppText.caption()),
-                        )
-                      : const SizedBox(width: double.infinity),
-                ),
+                if (playable)
+                  Text(e.synopsis.first, style: AppText.caption(color: chosen ? AppColors.ink : AppColors.muted))
+                else if (previous != null)
+                  Text('Solve Case ${previous.numberLabel} to open this file.', style: AppText.caption()),
               ],
             ),
           ),

@@ -303,7 +303,7 @@ void main() {
     await wait(t);
     await tapText(t, 'THE MIDNIGHT CASE', after: const Duration(milliseconds: 600));
     expect(find.text('Solve Case 11 to open this file.'), findsOneWidget);
-    await tapText(t, 'The Midnight Case', after: const Duration(milliseconds: 400));
+    await tapText(t, 'Solve Case 11 to open this file.', after: const Duration(milliseconds: 400));
     expect(ref.read(currentEpisodeProvider).id, 'ep01', reason: 'nothing chosen, nothing opened');
     // A typed URL to a sealed case mission lands on the map of the open case.
     ref.read(routerProvider).go(Routes.mission('ep12_m1'));

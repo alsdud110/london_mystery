@@ -24,8 +24,8 @@ import 'helpers.dart';
 void main() {
   setUpAll(() async {
     for (final (family, files) in [
-      ('Nunito', ['Nunito.ttf']),
-      ('Cinzel', ['Cinzel.ttf']),
+      ('Sentient', ['Sentient-Variable.ttf']),
+      ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
       ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
     ]) {
       final loader = FontLoader(family);
@@ -219,7 +219,7 @@ void main() {
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // decode the office
       await wait(t);
       expect(t.takeException(), isNull, reason: 'no overflow');
-      for (final s in ['LONDON DETECTIVE AGENCY', 'DETECTIVE REGISTRATION', 'What should we call you,\nDetective?', 'Detective Name']) {
+      for (final s in ['LONDON DETECTIVE AGENCY', 'DETECTIVE REGISTRATION', 'What should we\ncall you, Detective?', 'Detective Name']) {
         expect(find.text(s), findsOneWidget, reason: s);
       }
       // The office is behind the form, not a plain page.
@@ -292,7 +292,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 500));
       await t.tap(find.text('START NEW ADVENTURE'));
       await wait(t, const Duration(milliseconds: 1500));
-      expect(find.text('What should we call you,\nDetective?'), findsOneWidget, reason: 'the reset leads to registration, as before');
+      expect(find.text('What should we\ncall you, Detective?'), findsOneWidget, reason: 'the reset leads to registration, as before');
       await wait(t, const Duration(seconds: 3));
     });
   }

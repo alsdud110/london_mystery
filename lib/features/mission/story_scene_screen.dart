@@ -296,7 +296,7 @@ class _UnlockedCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 2),
-                  Text(nextLocation, style: AppText.title(size: 21)),
+                  Text(nextLocation, style: AppText.placeTitle(size: 21)),
                 ],
               ),
             ),

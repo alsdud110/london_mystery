@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
+import '../core/theme/app_text.dart';
 import '../data/models/mission.dart';
 import 'art_assets.dart';
 
@@ -981,7 +982,7 @@ class _LandmarkPainter extends CustomPainter {
       text: TextSpan(
         text: text,
         style: TextStyle(
-          fontFamily: 'Nunito',
+          fontFamily: AppText.body,
           fontSize: size,
           fontWeight: FontWeight.w700,
           fontVariations: const [FontVariation('wght', 700)],
