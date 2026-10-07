@@ -44,6 +44,10 @@ void main() {
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 3200));
     expect(find.text('CASE CLOSED'), findsOneWidget);
     await tapText(t, 'OPEN CASE 02', after: const Duration(milliseconds: 800));
+    // The investigation board: Case 02 is the current case.
+    expect(find.text('CURRENT CASE'), findsOneWidget);
+    expect(find.text('The Silent Clock'), findsOneWidget);
+    await tapText(t, 'View all case files', after: const Duration(milliseconds: 800));
 
     // Case files: Case 02 is open, the ones after it are sealed.
     expect(find.text('CASE FILES'), findsOneWidget);
@@ -125,10 +129,9 @@ void main() {
     // Case 01 is untouched, and Case 03 is open now.
     final prefs = appRef.read(sharedPreferencesProvider);
     expect(prefs.getString(AppConstants.progressStorageKey), saved);
-    // OPEN CASE 03 lands on Case 03 with its folder already open and chosen.
+    // OPEN CASE 03 lands on the board, Case 03 its current case, ready to begin.
     await tapText(t, 'OPEN CASE 03', after: const Duration(milliseconds: 800));
-    expect(find.text('Solve Case 02 to open this file.'), findsNothing);
-    expect(find.text('A painting has vanished from Gallery 8.'), findsOneWidget);
+    expect(find.text('The Vanishing Painting'), findsOneWidget);
     expect(find.text('BEGIN INVESTIGATION'), findsOneWidget);
     await wait(t, const Duration(seconds: 3));
   });

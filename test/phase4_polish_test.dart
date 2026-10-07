@@ -161,7 +161,7 @@ void main() {
   });
 
   group('OPEN CASE NN', () {
-    testWidgets('after solving Case 01, OPEN CASE 02 lands on Case 02, chosen and open', (t) async {
+    testWidgets('after solving Case 01, OPEN CASE 02 → the board, Case 02 current → BEGIN', (t) async {
       final ref = await pumpApp(t, {
         AppConstants.progressStorageKey: progress(done: [for (final m in ep01.allMissions) m.id], solved: true),
         AppConstants.seasonStorageKey: jsonEncode(
@@ -172,16 +172,15 @@ void main() {
       await wait(t, const Duration(milliseconds: 3200));
       await tapText(t, 'OPEN CASE 02', after: const Duration(milliseconds: 1200));
 
-      expect(pathOf(ref), Routes.caseFile('ep02'));
-      expect(find.text(ep02.title.toUpperCase()), findsOneWidget, reason: 'the Case 02 folder is open');
-      expect(find.text(ep02.synopsis.first), findsOneWidget, reason: 'Case 02 is the chosen case');
+      expect(pathOf(ref), Routes.season, reason: 'the investigation board');
+      expect(find.text(ep02.title), findsOneWidget, reason: 'Case 02 is the current case');
       expect(find.text('BEGIN INVESTIGATION'), findsOneWidget);
       await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 1200));
       expect(ref.read(currentEpisodeProvider).id, 'ep02');
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('on a small phone, OPEN CASE 07 scrolls the Case 07 folder into view', (t) async {
+    testWidgets('on a small phone, a case file link scrolls the Case 07 folder into view', (t) async {
       final ep06 = season[5], ep07 = season[6];
       final solved = [for (final e in season.take(6)) e.id];
       await pumpApp(t, {
@@ -191,9 +190,10 @@ void main() {
             jsonEncode(SeasonProgress(activeEpisodeId: ep06.id, solvedEpisodeIds: solved).toJson()),
       }).then((ref) async {
         t.view.physicalSize = const Size(1080, 1920); // 360 × 640
-        ref.read(routerProvider).go(Routes.solved);
-        await wait(t, const Duration(milliseconds: 3200));
-        await tapText(t, 'OPEN CASE 07', after: const Duration(milliseconds: 1500));
+        // OPEN CASE now goes to the board; the case file link (a case
+        // played again, the board's case taps) still opens Case 07's file.
+        ref.read(routerProvider).go(Routes.caseFile(ep07.id));
+        await wait(t, const Duration(milliseconds: 1500));
         expect(pathOf(ref), Routes.caseFile(ep07.id));
         expect(find.text(ep07.synopsis.first).hitTestable(), findsOneWidget, reason: 'the chosen case is on screen');
         expect(find.text(ep07.title.toUpperCase()).hitTestable(), findsOneWidget, reason: 'its folder too');

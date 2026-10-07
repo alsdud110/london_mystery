@@ -8,6 +8,7 @@ import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
+import '../../data/mock/season1/season1_discoveries.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/detective_tips.dart';
 import '../../widgets/evidence_card.dart';
@@ -125,15 +126,12 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       case SubmitResult.correct:
         audio.play(GameSound.success);
         final progress = ref.read(gameControllerProvider);
-        await showSuccessOverlay(
+        await showDiscoveryMoment(
           context,
-          detectiveName: progress.detectiveName ?? '',
-          message: m.successMessage,
+          mission: m,
+          discovery: discoveryOf(m),
           xp: XpBreakdown.of(m, progress),
-          clue: m.clue,
-          evidence: m.evidence,
           newBadges: outcome.newBadges,
-          buttonLabel: 'CONTINUE',
         );
         if (mounted) context.go(Routes.story(m.id));
     }

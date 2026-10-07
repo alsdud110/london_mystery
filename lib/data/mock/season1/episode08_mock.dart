@@ -1,7 +1,11 @@
 /// Case 08 — The Mystery on Platform 9 (King's Cross). Theme: questions and
 /// answers. The player chooses what to ask, reads the passengers' answers
-/// against the name tag, and finally answers a lie with evidence — the red
-/// button from Case 03 is missing from the owner's coat.
+/// against the name tag, and finally answers a lie with evidence.
+/// Final case: Mrs Robin says she was never in Gallery 8. Only one thing of
+/// Case 03 can tie her to that room: the Red Button (from a coat, found in
+/// Gallery 8; in the Case Archive) and her long red coat (Mission 02). The
+/// final page names neither the button nor the coat; that she is Miss Rose
+/// is the detective's to see, and the post-case scene only confirms it.
 const Map<String, dynamic> episode08Json = {
   'id': 'ep08',
   'number': 8,
@@ -95,7 +99,7 @@ const Map<String, dynamic> episode08Json = {
           'Mrs Patel: "I am going to York to see my sister."\n\n'
           'Mr Brown: "Edinburgh? No, no. I am going to Cambridge."\n\n'
           'Lily: "My dad and I are going to Edinburgh!"\n\n'
-          'Mrs Robin: "I am going to Edinburgh. I am travelling alone."',
+          'Mrs Robin, in a long red coat: "I am going to Edinburgh. I am travelling alone."',
       'type': 'wordInput',
       'question': 'Who is the owner of the suitcase? Write the name.',
       'prompt': 'MRS _____',
@@ -110,7 +114,9 @@ const Map<String, dynamic> episode08Json = {
         'title': 'Travelling Alone',
         'value': 'Mrs Robin',
         'symbol': 'bag',
-        'note': 'Only one passenger goes to Edinburgh alone.',
+        // Her coat is noted here too, so the final can be checked in the
+        // notebook (the final page does not say it).
+        'note': 'Only Mrs Robin goes to Edinburgh alone. She wears a long red coat.',
       },
       'evidence': {
         'id': 'ep08_e2',
@@ -194,28 +200,31 @@ const Map<String, dynamic> episode08Json = {
       'Mrs Robin stops at the train door.',
       '"That is not my suitcase!" she says. "I have never seen it."',
     ],
-    'letterIntro': 'You look at her coat. Then you open your notebook.',
+    'letterIntro': 'She looks at you and says:',
+    // Her lie, and nothing about her coat: the detective brings the coat
+    // (Mission 02) and the Red Button (Case 03: from a coat, found in
+    // Gallery 8) together. The Wet Footprint is Case 03's too, but it was
+    // found in the Great Court and nothing ties it to her; the two cards of
+    // this case say nothing about Gallery 8. Not the Blue Cloth (her blue
+    // scarf: a second answer) nor The Raven Tower (from Gallery 8, but she
+    // says the suitcase is not hers).
     'letter':
-        'Mrs Robin wears a long red coat.\n'
-        'It has four shiny red buttons.\n'
-        'No — three. One button is missing.',
-    // A detective answers a lie with evidence: which piece the detective
-    // already holds matches her coat? The Red Button (Case 03, "From a
-    // coat"), in the Case Archive. The other cards are real evidence too:
-    // two from this case and the other thing Miss Rose left in Case 03.
-    // Not the Blue Cloth: her blue scarf would make it a second answer.
+        '"My name is Mrs Robin.\n'
+        'I have never been to the British Museum.\n'
+        'I was never in Gallery 8.\n\n'
+        'You cannot prove it, Detective!"',
     'type': 'multipleChoice',
-    'question': 'Which evidence matches her coat?',
+    'question': 'Which evidence shows that she was in Gallery 8?',
     'options': [
       {'id': 'a', 'label': 'Name Tag'},
       {'id': 'b', 'label': 'Wet Footprint'},
       {'id': 'c', 'label': 'Red Button'},
-      {'id': 'd', 'label': 'The Raven Tower'},
+      {'id': 'd', 'label': 'Passenger Notes'},
     ],
     'answer': 'c',
     'hints': [
-      'Look at her coat again. What is missing from it?',
-      'In an earlier case, you found something that came off a coat. Open the Case Archive in your notebook.',
+      'Think back to an earlier case. The thief left small things in Gallery 8. Which one could have come from Mrs Robin?',
+      'Open your notebook, then the Case Archive, then Case 03. Look closer at each thing: where was it found? Then think about what Mrs Robin is wearing.',
     ],
     'evidence': {
       'id': 'ep08_e4',
@@ -228,7 +237,9 @@ const Map<String, dynamic> episode08Json = {
     // After the case is closed: the post-case story scene (existing facts only).
     'transition': [
       'Mrs Robin cannot say no.',
-      'Miss Rose and Mrs Robin\nare the same person.',
+      // Confirmation of what the detective proved, not a new deduction.
+      'The button fits the empty place\non her long red coat.',
+      'You were right.\nMiss Rose was Mrs Robin all along.',
       'Before you leave,\nyou look inside her suitcase.',
       'At the bottom is an empty jewel box.',
       'BUCKINGHAM PALACE.',

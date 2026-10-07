@@ -129,7 +129,7 @@ const Map<String, dynamic> episode10Json = {
       'transition': [
         // The detective reads the place out of the words (Mission 03): the
         // scene only says they point somewhere.
-        'North... tower... bridge... three...',
+        'You read the four papers once more, slowly.',
         'The words must point to a place.',
         'You look out over the river.',
       ],

@@ -21,6 +21,7 @@ import '../../widgets/game_dialog.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
+import '../season/season_overview.dart';
 import 'detective_report.dart';
 
 /// Kid-facing result, designed as a detective's case file rather than a
@@ -91,6 +92,11 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     final catalog = ref.watch(episodeCatalogProvider);
     final at = catalog.indexWhere((e) => e.id == report.episode.id);
     final nextCase = at >= 0 && at + 1 < catalog.length ? catalog[at + 1] : null;
+    // On to the investigation board, where the solved case lands and the
+    // next case waits under BEGIN INVESTIGATION (the same taps as through
+    // the case files). Only when the board's current case is the next case:
+    // a case played again keeps OPEN CASE NN opening case NN's file.
+    final toBoard = nextCase == null || ref.watch(seasonOverviewProvider).currentCase?.id == nextCase.id;
     final paper = _iv(0, 0.25);
     final stamp = _iv(0.3, 0.45, Curves.easeInCubic);
     final xp = _iv(0.4, 0.75);
@@ -145,7 +151,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                             arrow: true,
                             singleLine: true,
                             style: GameButtonStyle.glass,
-                            onPressed: () => context.go(nextCase != null ? Routes.caseFile(nextCase.id) : Routes.season),
+                            onPressed: () => context.go(toBoard ? Routes.season : Routes.caseFile(nextCase.id)),
                           ),
                           const SizedBox(height: AppSpace.md),
                           // For grown-ups (behind the parent gate): secondary, and

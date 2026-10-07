@@ -147,8 +147,10 @@ void main() {
     test('the Detective Card still says who he is; the note points to it', () {
       expect(card.name, 'Detective Card');
       expect(card.inscription, 'INSPECTOR GREY — LONDON DETECTIVE AGENCY');
-      expect(fin.letter, contains('I lost my card'));
-      expect(fin.letter, contains('I think you found it'));
+      // Final small pass: the page says what he is like (tall, a small bag,
+      // looking for something lost by the water), never his name.
+      expect(fin.letter, allOf(contains('tall man'), contains('small bag'), contains('lost something')));
+      expect(card.description, contains('fountain'));
     });
 
     test('before the answer, no line says what the man in the grey hat is', () {
@@ -172,7 +174,7 @@ void main() {
 
     test('the theatre ticket and the post-case payoff stay', () {
       expect(e.missionById('ep06_m3')!.evidence!.inscription, 'ROW R · SEAT 17');
-      expect(e.missionById('ep06_m3')!.transition.first, 'Row R, seat 17. R for Raven. 17, like 8:17.');
+      expect(e.missionById('ep06_m3')!.transition, contains('Row R, seat 17. R for Raven. 17, like 8:17.'));
       expect(fin.transition.first, 'Inspector Grey is on your side.');
       expect(byId('ep10').finalMission.transition, contains('ROW R\nSEAT 17.'));
       expect(byId('ep11').synopsis.first, contains('Row R, Seat 17'));
@@ -201,13 +203,13 @@ void main() {
       expect(fin.options.map((o) => o.label), isNot(contains('Blue Cloth')), reason: 'her blue scarf: a second answer');
     });
 
-    test('the page shows the empty button place; no card or line explains the answer', () {
-      expect(fin.letter, contains('One button is missing'));
+    test('the page is her lie; no card or line explains the answer', () {
+      expect(fin.letter, contains('I was never in Gallery 8.'));
       for (final o in fin.options) {
         expect(o.label, isNot(contains('Gallery')), reason: o.label);
       }
       final page = [...fin.story, fin.letterIntro, fin.letter, fin.question, ...fin.hints].join(' ');
-      expect(page, isNot(contains('Gallery 8')));
+      expect(page.toLowerCase(), isNot(contains('button')));
       for (final h in fin.hints) {
         expect(h, isNot(contains('Red Button')), reason: h);
       }
@@ -217,7 +219,7 @@ void main() {
     test('Mrs Robin carries on into Case 09', () {
       expect(fin.successMessage, 'Mrs Robin cannot say no!');
       expect(fin.transition, containsAll(['Mrs Robin cannot say no.', 'BUCKINGHAM PALACE.', '"The Clockmaker gives the orders."']));
-      expect(fin.transition.join(' '), contains('are the same person'));
+      expect(fin.transition.join(' '), contains('Miss Rose was Mrs Robin all along'));
       expect(fin.evidence!.inscription, contains('BUCKINGHAM PALACE'));
       expect(redButton.name, 'Red Button');
     });
@@ -353,10 +355,15 @@ void main() {
       if (archiveCase != null) {
         final archive = find.text('OPEN THE CASE ARCHIVE');
         await t.scrollUntilVisible(archive, 300, scrollable: scroller());
+        // Built is not on screen: the list builds a little past its edge.
+        await t.ensureVisible(archive);
+        await wait(t, const Duration(milliseconds: 300));
         await t.tap(archive);
         await wait(t, const Duration(milliseconds: 900));
         final folder = find.text(archiveCase);
         await t.scrollUntilVisible(folder, 300, scrollable: scroller());
+        await t.ensureVisible(folder);
+        await wait(t, const Duration(milliseconds: 300));
         await t.tap(folder);
         await wait(t, const Duration(milliseconds: 600));
       }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/mock/season1/season1_discoveries.dart';
+import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/scoring.dart';
 import 'package:london_mystery/features/mission/widgets/answer_feedback.dart';
 import 'package:london_mystery/widgets/game_button.dart';
 
 import 'helpers.dart';
 
-/// The "WELL DONE" moment never makes a child wait, and continues once.
+/// The Discovery Moment never makes a child wait, and continues once.
 void main() {
   Future<({Future<void> closed, int Function() pops})> open(WidgetTester t, {bool reduceMotion = false}) async {
     late BuildContext context;
@@ -26,11 +28,11 @@ void main() {
         }),
       ),
     ));
-    final closed = showSuccessOverlay(
+    final m01 = MockEpisodeRepository.bundled().first.missions.first;
+    final closed = showDiscoveryMoment(
       context,
-      detectiveName: 'KIM',
-      message: 'The thief is going to the British Museum.',
-      buttonLabel: 'CONTINUE',
+      mission: m01,
+      discovery: discoveryOf(m01),
       xp: const XpBreakdown(base: 100, noHintBonus: 30, speedBonus: 15),
     );
     await t.pump(); // the overlay route

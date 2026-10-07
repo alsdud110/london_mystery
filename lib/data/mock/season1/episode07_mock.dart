@@ -180,10 +180,10 @@ const Map<String, dynamic> episode07Json = {
       },
       'successMessage': 'The pieces fit!',
       'transition': [
-        // The arrow's spot is the final's answer: the scene gives its
-        // direction only (north, the top of the park); the Joined Map in the
-        // notebook names it.
-        'The joined map has an arrow. It points north, to the top of the park.',
+        // The arrow's spot is the final's answer: the Discovery Moment tells
+        // its direction only (north, the top of the park) and the scene
+        // follows it; only the Joined Map in the notebook names the spot.
+        'You hurry north along the park paths, the joined map in your hand.',
         '"The last piece waits where my arrow points."',
         'But a man in a dark coat is walking there fast!',
       ],

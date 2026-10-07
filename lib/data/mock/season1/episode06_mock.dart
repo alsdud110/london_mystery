@@ -3,6 +3,10 @@
 /// player compares what they agree on, reads a smudged card, and finds out
 /// there are two people in dark coats. Final case: who the stranger really
 /// is — a detective watching the Raven Society (an ally, not a new enemy).
+/// The final page never says his name or his hat: the detective matches
+/// what he carries (Mission 01's small bag, the tall man of Mission 03, not
+/// the short woman of the Raven Society) to the one who dropped the card by
+/// the fountain, and the card (Mission 02) names him.
 const Map<String, dynamic> episode06Json = {
   'id': 'ep06',
   'number': 6,
@@ -172,10 +176,13 @@ const Map<String, dynamic> episode06Json = {
       },
       'successMessage': 'Four things are different. There are two dark coats!',
       'transition': [
+        // Where the ticket comes from: the guard hands it over.
+        'The guard gives you a theatre ticket. "The woman in the red hat dropped it."',
         'Row R, seat 17. R for Raven. 17, like 8:17.',
         'The woman in the red hat is with the Raven Society!',
-        // Who the man is, is the final's question: the scene only asks it.
-        'But who is the man in the grey hat?',
+        // Who the man is, is the final's question: the scene only asks it
+        // (not by his hat: "grey" would hand over the name).
+        'But who is the tall man?',
       ],
       'nextMissionId': 'ep06_final',
       'skills': ['reading', 'problemSolving'],
@@ -191,18 +198,22 @@ const Map<String, dynamic> episode06Json = {
     'scene': 'coventGarden',
     'story': [
       'The church clock rings twelve times.',
-      'The man in the grey hat is standing by the fountain again.',
+      'A stranger in a dark coat is standing by the fountain again.',
     ],
-    'letterIntro': 'He hands you a note before he speaks.',
+    'letterIntro': 'You write down what you see.',
+    // What he is like, never his name or his hat. The small bag and "tall"
+    // match the man of Missions 01 and 03 (not the short woman with the big
+    // bag); that man dropped his card by the fountain, and the card
+    // (Mission 02) names him. That he is on your side is the post-case
+    // scene's to tell.
     'letter':
-        'Detective,\n\n'
-        'I lost my card by the fountain.\n'
-        'I think you found it.\n\n'
-        'Look at it, and you will know who I am.',
-    // The card (Mission 02) names him: the note only points to it. That he
-    // is on your side is the post-case scene's to tell.
+        'MIDNIGHT, BY THE FOUNTAIN\n\n'
+        'A tall man. A dark coat.\n'
+        'He carries a small bag.\n\n'
+        'He looks down into the water,\n'
+        'as if he lost something there.',
     'type': 'multipleChoice',
-    'question': 'Who is the man in the grey hat?',
+    'question': 'Who is the man by the fountain?',
     'options': [
       {'id': 'a', 'label': 'A Raven Society thief'},
       {'id': 'b', 'label': 'The theatre guard'},
@@ -211,8 +222,8 @@ const Map<String, dynamic> episode06Json = {
     ],
     'answer': 'c',
     'hints': [
-      'He says you found his card. Which card did you find by the fountain?',
-      'Open your notebook and look closer at the card from the fountain. Whose name is on it?',
+      'Is he tall or short? Is his bag big or small? Find the person in your notes who matches him.',
+      'The stranger with the small bag dropped something by the fountain. Open your notebook and look closer at it.',
     ],
     'evidence': {
       'id': 'ep06_e4',

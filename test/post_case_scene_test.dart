@@ -219,7 +219,7 @@ void main() {
         expect(find.text('London needs you again.'), findsOneWidget);
         await t.tap(find.text(next));
         await wait(t, const Duration(milliseconds: 1500));
-        expect(app.location, last ? Routes.season : Routes.caseFile(catalog[catalog.indexOf(e) + 1].id));
+        expect(app.location, Routes.season, reason: 'the investigation board (completed after the last case)');
         await wait(t, const Duration(seconds: 3));
       });
     }
@@ -314,8 +314,9 @@ void main() {
     await t.pump();
     await t.tap(find.text('OPEN CASE 06'));
     await wait(t, const Duration(milliseconds: 1500));
-    expect(app.location, Routes.caseFile('ep06'));
-    expect(find.text('Solve Case 05 to open this file.'), findsNothing);
+    expect(app.location, Routes.season, reason: 'the board, Case 06 its current case');
+    expect(find.text('The Midnight Detective'), findsOneWidget);
+    expect(find.text('BEGIN INVESTIGATION'), findsOneWidget);
     await wait(t, const Duration(seconds: 2));
   });
 }

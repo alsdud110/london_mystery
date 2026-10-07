@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/data/models/discovery.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/features/game/game_providers.dart' show sharedPreferencesProvider;
 
@@ -64,8 +65,9 @@ Future<void> openMission(WidgetTester t, String goLabel) async {
 /// Success overlay → story scene → back on the map (unlock ceremony).
 Future<void> finishMission(WidgetTester t, {required String sceneLine}) async {
   await wait(t, const Duration(milliseconds: 2800));
-  expect(find.text('WELL DONE'), findsOneWidget);
-  expect(find.textContaining('New clue'), findsOneWidget);
+  // The Discovery Moment: what was found, in words (no WELL DONE stamp).
+  expect(find.byWidgetPredicate((w) => w is Text && DiscoveryType.values.any((d) => d.label == w.data)), findsOneWidget);
+  expect(find.text('WELL DONE'), findsNothing);
   await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
   expect(find.text(sceneLine), findsOneWidget, reason: 'story transition');
   await t.tapAt(const Offset(200, 400)); // skip typing

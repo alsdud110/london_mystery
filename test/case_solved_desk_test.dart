@@ -90,7 +90,7 @@ void main() {
         if (id == 'ep12') {
           expect(path, Routes.season, reason: 'to the completed season board');
         } else {
-          expect(path, Routes.caseFile(catalog[upTo + 1].id), reason: 'to the next case file');
+          expect(path, Routes.season, reason: 'to the investigation board, the next case current on it');
         }
         await wait(t, const Duration(seconds: 3));
       });

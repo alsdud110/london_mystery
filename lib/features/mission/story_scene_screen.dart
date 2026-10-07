@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'dart:async';
 
@@ -11,14 +9,15 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../data/mock/season1/season1_discoveries.dart';
 import '../../data/models/mission.dart';
-import '../../widgets/art_assets.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/place_art.dart';
+import '../../widgets/place_scenery.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/typewriter_text.dart';
@@ -107,6 +106,8 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
     final next = m.nextMissionId == null ? null : episode.missionById(m.nextMissionId!);
     // The final case: the scene after the case is closed.
     final afterCase = m.isFinal;
+    // Evidence this scene hands over (not the puzzle): laid down after its lines.
+    final handed = afterCase ? null : storyEvidenceOf(m);
     final lines = _lines;
     if (lines.isEmpty) _done = true;
 
@@ -118,7 +119,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          _PlaceScenery(
+          PlaceScenery(
             afterCase
                 ? PlaceArt.sceneryOf(m)
                 : next == null
@@ -155,9 +156,10 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                           Expanded(
                             child: Center(
                               child: NotificationListener<ScrollMetricsNotification>(
-                                // A new line made the story taller (after the case only).
+                                // A new line (or the evidence handed over) made the
+                                // story taller: keep the newest in view.
                                 onNotification: (_) {
-                                  if (afterCase) _followNewestLine();
+                                  if (afterCase || handed != null) _followNewestLine();
                                   return false;
                                 },
                                 child: _StoryEdges(
@@ -184,6 +186,12 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                                     style: _lineStyle(i == lines.length - 1),
                                                     onFinished: _lineFinished,
                                                   ),
+                                          ),
+                                        // Once the lines are read: what was handed over.
+                                        if (handed != null && _done)
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                                            child: _EvidenceCard(evidence: handed, location: m.location),
                                           ),
                                       ],
                                     ),
@@ -307,7 +315,8 @@ class _UnlockedCard extends StatelessWidget {
   }
 }
 
-/// The case's last evidence after the case is closed: the same paper card,
+/// The case's last evidence after the case is closed (or, after a mission,
+/// the evidence its scene hands over): the same paper card,
 /// with what is written on it. Tap to look closer (as in the notebook).
 class _EvidenceCard extends StatelessWidget {
   const _EvidenceCard({required this.evidence, required this.location});
@@ -385,64 +394,3 @@ class _LaidDown extends StatelessWidget {
   }
 }
 
-/// The unlocked place filling the screen in the dark under the story (the
-/// same treatment as the story intro): its picture without its paper edge
-/// and name plate, softened a touch and dimmed so the words lead. A place
-/// with no picture of its own shows the London map instead.
-class _PlaceScenery extends StatelessWidget {
-  const _PlaceScenery(this.place);
-
-  final Artwork? place;
-
-  @override
-  Widget build(BuildContext context) {
-    final scene = place;
-    final picture = scene != null && LandmarkArt.hasPicture(scene)
-        ? LandmarkArt(scene, showName: false, borderRadius: 0)
-        : LayoutBuilder(
-            builder: (context, box) => Image.asset(
-              ArtAssets.londonMap,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              cacheWidth: math.min(
-                (math.max(box.maxWidth, box.maxHeight * ArtAssets.londonMapAspect) *
-                        MediaQuery.devicePixelRatioOf(context))
-                    .ceil(),
-                ArtAssets.londonMapPixels.width.toInt(),
-              ),
-              excludeFromSemantics: true,
-              errorBuilder: (context, error, stack) => const SizedBox.expand(),
-            ),
-          );
-    const shade = AppColors.navyDeep;
-    return RepaintBoundary(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ImageFiltered(imageFilter: ui.ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5), child: picture),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                radius: 1.0,
-                colors: [shade.withValues(alpha: 0.6), shade.withValues(alpha: 0.82)],
-              ),
-            ),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  for (final a in const [0.25, 0.0, 0.0, 0.45]) shade.withValues(alpha: a),
-                ],
-                stops: const [0, 0.2, 0.7, 1],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
