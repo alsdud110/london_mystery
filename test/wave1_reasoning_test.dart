@@ -132,7 +132,9 @@ void main() {
 
     test('Platform 4 stays, for Case 12', () {
       final m2 = e.missionById('ep04_m2')!;
-      expect(m2.answerLabel, 'Under the red clock on Platform 4');
+      // TYPE B Phase 2: the option names only the platform (the porter's lines are read).
+      expect(m2.answerLabel, 'Platform 4');
+      expect(m2.letter, contains('Platform 4 has a small red clock.'), reason: 'Case 12 reads this line again');
       expect(m2.clue!.value, '4');
       expect(byId('ep12').missionById('ep12_m2')!.letter, contains('small red clock'));
       expect(byId('ep12').missionById('ep12_m2')!.hints.first, contains('Case 04'));
@@ -372,7 +374,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 300));
       await t.tap(tile);
       await wait(t, const Duration(milliseconds: 700));
-      expect(find.text(text), findsOneWidget, reason: '$evidence: $text');
+      expect(findReadable(text), findsOneWidget, reason: '$evidence: $text');
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 400)));
       await t.pump();
       await capture(t, shot);

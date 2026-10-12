@@ -12,6 +12,7 @@ import 'package:london_mystery/features/game/scoring.dart';
 import 'package:london_mystery/widgets/evidence_card.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
+import 'helpers.dart' show findReadable;
 import 'mission_play.dart';
 import 'title_screen_test.dart' show capture;
 
@@ -220,11 +221,11 @@ void main() {
             // 11 / 15. Tap: it opens large, as in the notebook.
             await t.tap(find.text(name));
             await wait(t, const Duration(milliseconds: 700));
-            expect(find.text(description), findsOneWidget);
+            expect(findReadable(description), findsOneWidget);
             expect(find.text(name), findsNWidgets(2), reason: 'the zoom over the scene');
             await capture(t, '${shot}_zoom');
             await tapText(t, 'CLOSE', after: const Duration(milliseconds: 600));
-            expect(find.text(description), findsNothing);
+            expect(findReadable(description), findsNothing);
             await tapText(t, 'TO THE MAP', after: const Duration(milliseconds: 1400));
             expect(play.path(), Routes.map);
             await wait(t, const Duration(seconds: 3));

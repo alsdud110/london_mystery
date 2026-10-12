@@ -11,6 +11,40 @@ abstract final class AnswerChecker {
 
   static String normalize(String input) => input.toUpperCase().replaceAll(_nonAlphaNumeric, '');
 
+  /// The short line for a wrong [submission]: what the child probably
+  /// misread, never the answer. Null when there is none (or the submission
+  /// is right): the try-again sheet then shows its general line.
+  static String? feedbackFor(Mission mission, String submission) {
+    if (isCorrect(mission, submission)) return null;
+    switch (mission.type) {
+      case MissionType.multipleChoice:
+      case MissionType.imageChoice:
+        for (final o in mission.options) {
+          if (o.id == submission) return o.feedback;
+        }
+        return null;
+      case MissionType.sequence:
+        final given = Mission.sequenceIds(submission);
+        final known = mission.feedback.entries.where((e) => listEquals(Mission.sequenceIds(e.key), given));
+        if (known.isNotEmpty) return known.first.value;
+        return _sameItems(given, Mission.sequenceIds(mission.answer)) ? mission.orderFeedback : null;
+      case MissionType.wordInput:
+      case MissionType.numberCode:
+      case MissionType.qrScan:
+      case MissionType.finalCode:
+        final given = normalize(submission);
+        if (given.isEmpty) return null;
+        for (final e in mission.feedback.entries) {
+          if (normalize(e.key) == given) return e.value;
+        }
+        return _sameItems(given.split(''), normalize(mission.answer).split('')) ? mission.orderFeedback : null;
+    }
+  }
+
+  /// The same items, in any order (the caller knows they are not in order).
+  static bool _sameItems(List<String> a, List<String> b) =>
+      a.length == b.length && listEquals([...a]..sort(), [...b]..sort());
+
   static bool isCorrect(Mission mission, String submission) {
     switch (mission.type) {
       case MissionType.multipleChoice:

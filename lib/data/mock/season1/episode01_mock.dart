@@ -42,16 +42,32 @@ const Map<String, dynamic> episode01Json = {
           '— The Shadow',
       'type': 'multipleChoice',
       'question': 'Where is the thief going next?',
+      // TYPE B: four real London museums, each with what it holds, so the
+      // letter's "old mummies from Egypt and a famous stone" has to be read
+      // (no option repeats those words). The transport museum is the trap
+      // of a thief who loves trains.
       'options': [
-        {'id': 'a', 'label': 'Tower Bridge'},
-        {'id': 'b', 'label': 'The British Museum'},
-        {'id': 'c', 'label': 'Big Ben'},
-        {'id': 'd', 'label': 'Hyde Park'},
+        {
+          'id': 'a',
+          'label': 'The Natural History Museum (dinosaur bones)',
+          'feedback': 'Dinosaur bones are very old, too. But what did the letter say is inside the next museum?',
+        },
+        {'id': 'b', 'label': 'The British Museum (treasures from long ago)'},
+        {
+          'id': 'c',
+          'label': 'The London Transport Museum (old buses and trains)',
+          'feedback': 'Trains! The thief would like that. But read the letter again: what is inside the next museum?',
+        },
+        {
+          'id': 'd',
+          'label': 'The Science Museum (rockets and machines)',
+          'feedback': 'Rockets and machines? The letter names two things the museum has. Find them.',
+        },
       ],
       'answer': 'b',
       'hints': [
-        "Read the letter again. Look for the word 'museum'.",
-        'The answer is a museum in London. It starts with B.',
+        'Read the letter again. What two things does the next museum have?',
+        'Mummies and a famous stone are not dinosaurs, trains or rockets. They are very old treasures.',
       ],
       'clue': {
         'id': 'c01',
@@ -80,25 +96,32 @@ const Map<String, dynamic> episode01Json = {
     {
       'id': 'm02',
       'number': 2,
-      'title': 'The Famous Stone',
+      // The answer (STONE) is not named on this mission's screens: the note's
+      // meaning ("a hard piece of rock") or the first letter ("a famous
+      // stone") gives it.
+      'title': 'The Strange Writing',
       'location': 'BRITISH MUSEUM',
       'scene': 'britishMuseum',
       'story': [
         'The British Museum is full of old treasures.',
-        'In Room 4, you see a big grey stone with strange writing.',
+        'In Room 4, you see something big and grey, covered in strange writing.',
       ],
-      'letterIntro': 'Someone left a note next to the stone!',
+      'letterIntro': 'Someone left a note next to it!',
       'letter':
-          'This stone helped people read old Egyptian writing.\n'
+          'It helped people read old Egyptian writing.\n'
           'Its name has two words.\n'
           'The first word is ROSETTA.\n'
           'The second word means a hard piece of rock.',
       'type': 'wordInput',
-      'question': 'Complete the name of the famous stone.',
+      'question': 'Complete its name.',
       'prompt': 'ROSETTA _____',
       'answer': 'STONE',
       'acceptedAnswers': ['ROSETTA STONE'],
-      'hints': ['It is another word for rock.', 'It has 5 letters: S _ _ _ E'],
+      'hints': [
+        'It is another word for rock.',
+        "Rock and ____ mean almost the same. The thief's first letter said: 'a famous ____'.",
+      ],
+      'feedback': {'ROCK': 'Very close! The note asks for another word that means a hard piece of rock.'},
       'clue': {
         'id': 'c02',
         'title': 'Room 4',
@@ -147,8 +170,9 @@ const Map<String, dynamic> episode01Json = {
       'answer': '417',
       'hints': [
         'Look for the number words in BIG letters.',
-        'FOUR, ONE, SEVEN. Change them into numbers.',
+        'Each word in BIG letters is a number word. FOUR is 4. Now do the other two.',
       ],
+      'orderFeedback': 'The numbers are right, but not the order. Read the sentences from 1 to 3.',
       'clue': {
         'id': 'c03',
         'title': "7 o'clock",
@@ -194,20 +218,42 @@ const Map<String, dynamic> episode01Json = {
           'The King lives there!',
       'type': 'imageChoice',
       'question': "Which picture shows the thief's last stop?",
+      // No names under the pictures: the note's description (a palace, a
+      // gate, soldiers in red coats) picks the picture.
+      'hideOptionNames': true,
       'options': [
-        {'id': 'a', 'label': 'Tower Bridge', 'artwork': 'towerBridge'},
-        {'id': 'b', 'label': 'London Eye', 'artwork': 'londonEye'},
+        {
+          'id': 'a',
+          'label': 'Tower Bridge',
+          'artwork': 'towerBridge',
+          'altText': 'two tall towers joined by a road across a river, with boats below',
+          'feedback': 'That is a bridge over a river. The note talks about a gate and soldiers.',
+        },
+        {
+          'id': 'b',
+          'label': 'London Eye',
+          'artwork': 'londonEye',
+          'altText': 'a giant wheel with little cabins, beside a river',
+          'feedback': 'A big wheel! Does the note say anything about a wheel?',
+        },
         {
           'id': 'c',
           'label': 'Buckingham Palace',
           'artwork': 'buckinghamPalace',
+          'altText': 'a wide grand building with a flag on top and a fountain in front',
         },
-        {'id': 'd', 'label': 'Big Ben', 'artwork': 'bigBen'},
+        {
+          'id': 'd',
+          'label': 'Big Ben',
+          'artwork': 'bigBen',
+          'altText': 'a very tall clock tower beside a long building with many pointed towers',
+          'feedback': 'A tall clock tower. Read the note again: who lives at the last stop?',
+        },
       ],
       'answer': 'c',
       'hints': [
-        'Think about the place where the King and Queen live.',
         'Look for a big building with a gate and guards in red coats.',
+        'The King lives in a palace. Soldiers stand at its gate.',
       ],
       'clue': {
         'id': 'c04',
@@ -377,5 +423,14 @@ const Map<String, dynamic> episode01Json = {
     'missing': '사라진',
     'visited': '방문했던',
     'notebook': '수첩',
+    'dinosaur': '공룡',
+    'bones': '뼈들',
+    'transport': '교통, 운송',
+    'buses': '버스들',
+    'trains': '기차들',
+    'science': '과학',
+    'rockets': '로켓들',
+    'machines': '기계들',
+    'covered': '덮인',
   },
 };

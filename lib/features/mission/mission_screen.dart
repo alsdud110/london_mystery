@@ -6,6 +6,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
 import '../../data/mock/season1/season1_discoveries.dart';
@@ -91,6 +92,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   }
 
   void _rereadLetter(Mission m) {
+    ref.read(gameControllerProvider.notifier).recordRecheck(m);
     ref.read(audioServiceProvider).play(GameSound.paperRustle);
     showModalBottomSheet<void>(
       context: context,
@@ -129,7 +131,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         audio.play(GameSound.puzzleWrong);
         setState(() => _wrongPulse++);
         final canHint = ref.read(gameControllerProvider).hintsFor(m.id) < m.hints.length;
-        final choice = await showTryAgainSheet(context, hintAvailable: canHint);
+        final choice = await showTryAgainSheet(
+          context,
+          hintAvailable: canHint,
+          message: AnswerChecker.feedbackFor(m, answer),
+        );
         if (choice == TryAgainChoice.hint && mounted) _showHint(m);
       case SubmitResult.correct:
         // A real lock on the scene opens (a heavy one, a padlock); anything

@@ -184,7 +184,7 @@ void main() {
       await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 600));
       expect(audio.played, [GameSound.uiTap, GameSound.envelopeOpen, GameSound.uiTap]);
       audio.played.clear();
-      await tapText(t, 'Tower Bridge', after: const Duration(milliseconds: 200));
+      await tapText(t, 'The Natural History Museum (dinosaur bones)', after: const Duration(milliseconds: 200));
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 600));
       expect(audio.played, [GameSound.puzzleWrong], reason: 'CHECK ANSWER: its result alone');
       expect(count(audio, GameSound.uiTap), 0);

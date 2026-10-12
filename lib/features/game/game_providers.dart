@@ -27,6 +27,23 @@ final progressRepositoryProvider = Provider<ProgressRepository>(
 /// defaults to the bundled content).
 final episodeCatalogProvider = Provider<List<Episode>>((ref) => MockEpisodeRepository.bundled());
 
+/// The case [evidenceId] was found in (its glossary explains its words), or
+/// null when no case has it.
+Episode? caseOfEvidence(List<Episode> catalog, String evidenceId) {
+  for (final e in catalog) {
+    if (e.allEvidence.any((v) => v.id == evidenceId)) return e;
+  }
+  return null;
+}
+
+/// The case [clueId] was found in, or null when no case has it.
+Episode? caseOfClue(List<Episode> catalog, String clueId) {
+  for (final e in catalog) {
+    if (e.allClues.any((c) => c.id == clueId)) return e;
+  }
+  return null;
+}
+
 /// The season the catalog's cases belong to (its title, casebook lines and
 /// who is behind it).
 final seasonInfoProvider = Provider<Season>((ref) => Season.fromJson(season1InfoJson));

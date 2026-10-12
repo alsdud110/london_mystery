@@ -304,8 +304,8 @@ class _CaseFile extends StatelessWidget {
               ),
               _Row(label: 'Clues Found', value: '${report.cluesFound} / ${report.cluesTotal}'),
               _Row(label: 'Evidence', value: '${report.evidenceFound} / ${report.evidenceTotal}'),
-              _Row(label: 'Hints', value: '${report.hintsUsed}'),
-              _Row(label: 'Time', value: Formatters.clock(report.elapsed)),
+              _Row(label: 'Hints', value: report.hasPlayRecord ? '${report.hintsUsed}' : '—'),
+              _Row(label: 'Time', value: report.elapsed == null ? '—' : Formatters.clock(report.elapsed!)),
               _Row(
                 label: 'XP',
                 child: Text(

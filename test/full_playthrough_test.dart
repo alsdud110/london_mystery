@@ -59,6 +59,8 @@ Future<void> openMission(WidgetTester t, String goLabel) async {
   expect(find.text('TAP TO OPEN'), findsOneWidget, reason: 'step 2: the sealed letter');
   await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
   await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
+  // On a small screen the tip link can sit below the options: it is reachable.
+  await reveal(t, find.text('Get a tip'));
   expect(find.text('Get a tip'), findsOneWidget, reason: 'step 3: the puzzle');
 }
 
@@ -143,13 +145,15 @@ void main() {
     await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
     await tapText(t, 'BACK TO THE PUZZLE', after: const Duration(milliseconds: 500));
 
-    await tapText(t, 'Hyde Park', after: const Duration(milliseconds: 200));
+    await tapText(t, 'The Science Museum (rockets and machines)', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER');
     expect(find.text('Not quite!'), findsOneWidget);
+    // TYPE B: the wrong option says what was misread, not the answer.
+    expect(find.textContaining('Rockets and machines?'), findsOneWidget);
     expect(audio.played, contains(GameSound.puzzleWrong));
     await tapText(t, 'GET A TIP');
     expect(find.text('DETECTIVE TIP 1'), findsOneWidget);
-    await tapText(t, 'The British Museum', after: const Duration(milliseconds: 200));
+    await tapText(t, 'The British Museum (treasures from long ago)', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await wait(t, const Duration(milliseconds: 2800));
     expect(find.textContaining('New badge:'), findsOneWidget);
@@ -184,9 +188,9 @@ void main() {
     await tapText(t, 'UNLOCK', after: Duration.zero);
     await finishMission(t, sceneLine: 'Inside the box, there is a pocket watch and a photo.');
 
-    // ── Mission 04: image choice (picture C = Buckingham Palace).
+    // ── Mission 04: image choice (picture C = Buckingham Palace, unnamed: TYPE B).
     await openMission(t, 'GO TO HYDE PARK');
-    final pictureC = find.bySemanticsLabel('Picture C, Buckingham Palace');
+    final pictureC = find.bySemanticsLabel(RegExp(r'^Picture C:')); // TYPE B: described, never named
     await reveal(t, pictureC);
     await t.tap(pictureC);
     await wait(t, const Duration(milliseconds: 300));

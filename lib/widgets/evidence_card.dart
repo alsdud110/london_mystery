@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
 import '../data/models/mission.dart';
+import '../features/game/game_providers.dart';
 import 'art_assets.dart';
 import 'game_button.dart';
+import 'glossary_text.dart';
 import 'ink_icon.dart';
 import 'paper.dart';
 import 'symbol_icon.dart';
@@ -26,10 +29,15 @@ double evidenceTileHeight(BuildContext context) => 196 * MediaQuery.textScalerOf
 
 /// A square evidence tile for the notebook grid. Tap to zoom in.
 class EvidenceTile extends StatelessWidget {
-  const EvidenceTile({super.key, required this.evidence, this.location});
+  const EvidenceTile({super.key, required this.evidence, this.location, this.onOpened});
 
   final Evidence evidence;
   final String? location;
+
+  /// Called when the detective opens it for a closer look. The notebook, the
+  /// Case Archive and the final case's notebook pass one (a recorded
+  /// detective action); other places do not.
+  final VoidCallback? onOpened;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,10 @@ class EvidenceTile extends StatelessWidget {
       label: '${evidence.name}. Tap to look closer.',
       excludeSemantics: true,
       child: GestureDetector(
-        onTap: () => showEvidenceZoom(context, evidence, location: location),
+        onTap: () {
+          onOpened?.call();
+          showEvidenceZoom(context, evidence, location: location);
+        },
         // An evidence tag: paper, a printed frame, the object in the middle.
         child: Container(
           padding: const EdgeInsets.all(12),
@@ -157,7 +168,8 @@ class _EvidenceZoom extends StatelessWidget {
                             Text(evidence.name, style: AppText.placeTitle(size: 28), textAlign: TextAlign.center),
                             if (location != null) Text(location!, style: AppText.eyebrow(color: AppColors.royalBlue)),
                             const SizedBox(height: 10),
-                            Text(evidence.description, style: AppText.bodyText(size: 17), textAlign: TextAlign.center),
+                            // The evidence's own case explains its words (also in the archive).
+                            _Words(evidence.description, evidenceId: evidence.id, style: AppText.bodyText(size: 17)),
                             if (evidence.inscription != null) ...[
                               const SizedBox(height: 16),
                               Container(
@@ -168,11 +180,7 @@ class _EvidenceZoom extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(AppRadius.paper),
                                   border: Border.all(color: AppColors.parchmentDark, width: AppLine.hairline),
                                 ),
-                                child: Text(
-                                  evidence.inscription!,
-                                  textAlign: TextAlign.center,
-                                  style: AppText.letter(size: 18),
-                                ),
+                                child: _Words(evidence.inscription!, evidenceId: evidence.id, style: AppText.letter(size: 18)),
                               ),
                             ],
                             if (evidence.symbols.isNotEmpty) ...[
@@ -307,4 +315,22 @@ class EvidenceChip extends StatelessWidget {
       ],
     );
   }
+}
+
+/// English on a piece of evidence, its harder words explained by the
+/// glossary of the case the evidence was found in.
+class _Words extends ConsumerWidget {
+  const _Words(this.text, {required this.evidenceId, required this.style});
+
+  final String text;
+  final String evidenceId;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => GlossaryText(
+        text,
+        style: style,
+        textAlign: TextAlign.center,
+        episode: caseOfEvidence(ref.watch(episodeCatalogProvider), evidenceId),
+      );
 }

@@ -25,6 +25,12 @@ abstract final class AppConstants {
   // XP rules (see XpBreakdown).
   static const missionBaseXp = 100;
   static const finalBaseXp = 200;
+
+  // Rule 2: tips are free; a careful answer (first or second try) earns more.
+  static const firstTryBonusXp = 50;
+  static const secondTryBonusXp = 25;
+
+  // Rule 1 (kept for missions solved under it).
   static const noHintBonusXp = 50;
   static const oneHintBonusXp = 25; // one hint halves the bonus, two remove it
   static const speedBonusXp = 20;

@@ -48,15 +48,15 @@ const Map<String, dynamic> episode06Json = {
       'type': 'multipleChoice',
       'question': 'Two witnesses agree. What did the stranger carry?',
       'options': [
-        {'id': 'a', 'label': 'A big red umbrella'},
+        {'id': 'a', 'label': 'A big red umbrella', 'feedback': 'Only the baker saw an umbrella. Which thing do TWO witnesses agree on?'},
         {'id': 'b', 'label': 'A small bag'},
-        {'id': 'c', 'label': 'A bunch of flowers'},
-        {'id': 'd', 'label': 'A grey hat'},
+        {'id': 'c', 'label': 'A bunch of flowers', 'feedback': 'The flower seller sells flowers. Did any witness say he carried flowers?'},
+        {'id': 'd', 'label': 'A grey hat', 'feedback': 'A hat is worn on the head, not carried. What did he hold?'},
       ],
       'answer': 'b',
       'hints': [
-        '"Carried" is what he held in his hand. A hat is worn, not carried.',
-        'One thing is said by two people. The other thing only by one.',
+        'Read what each witness says he carried. Which thing do two of them say?',
+        "'Carried' is what he held in his hand. A hat is worn, not carried. 'Agree' means two people say the same thing.",
       ],
       'clue': {
         'id': 'ep06_c1',
@@ -99,15 +99,23 @@ const Map<String, dynamic> episode06Json = {
           'London Detective Agency\n\n'
           'On the back, in small writing:\n'
           '"My name is a colour.\n'
-          'It is the colour of rain clouds and old stones."',
+          'It is the colour of my hat,\n'
+          'and of rain clouds and old stones."',
       'type': 'wordInput',
       'question': 'What is the name on the card?',
       'prompt': 'INSPECTOR ____',
       'answer': 'GREY',
+      'feedback': {
+        'RED': "The red thing was the baker's umbrella. What colour was the hat of the man who dropped the card?",
+        'BLACK': 'Black is close to the colour of his coat. The card talks about his hat.',
+        'DARK': 'Dark is the colour of his coat. The card talks about his hat.',
+        'WHITE': 'Are rain clouds white? Read the back of the card again.',
+        'BLUE': 'Is a rain cloud blue? Check the witness notes: what colour was his hat?',
+      },
       'acceptedAnswers': ['GRAY', 'INSPECTOR GREY', 'INSPECTOR GRAY'],
       'hints': [
-        'Look up at the sky on a rainy day. What colour are the clouds?',
-        'It is not black and not white. It is in between. It has four letters.',
+        'Who dropped the card? Look at the witness notes in your notebook.',
+        "'The colour of my hat' means his name is the same colour as the hat he wore. Rain clouds are that colour too.",
       ],
       'clue': {
         'id': 'ep06_c2',
@@ -156,6 +164,11 @@ const Map<String, dynamic> episode06Json = {
       'question': 'Compare Monday and Tuesday. How many things are different?',
       'codeLength': 1,
       'answer': '4',
+      'feedback': {
+        '3': 'Check every part: tall or short, man or woman, the hat, the bag.',
+        '5': 'The coat is the same on both days: a dark coat. Count only what changes.',
+        '6': 'Read again: some parts are the same on both days.',
+      },
       'hints': [
         'Check every part, one by one: tall or short? man or woman? the coat? the hat? the bag?',
         'The coat is the same on both days. Count only the parts that change.',
@@ -215,10 +228,10 @@ const Map<String, dynamic> episode06Json = {
     'type': 'multipleChoice',
     'question': 'Who is the man by the fountain?',
     'options': [
-      {'id': 'a', 'label': 'A Raven Society thief'},
-      {'id': 'b', 'label': 'The theatre guard'},
+      {'id': 'a', 'label': 'A Raven Society thief', 'feedback': 'The Raven Society person was the short woman with a big bag. Is this man short?'},
+      {'id': 'b', 'label': 'The theatre guard', 'feedback': 'The theatre guard was writing in his notebook at the theatre door. Did he drop anything by the fountain?'},
       {'id': 'c', 'label': 'Inspector Grey'},
-      {'id': 'd', 'label': 'The juggler'},
+      {'id': 'd', 'label': 'The juggler', 'feedback': 'The juggler was a witness: he saw the stranger. Is he the stranger?'},
     ],
     'answer': 'c',
     'hints': [

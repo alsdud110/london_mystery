@@ -14,7 +14,7 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 
 /// How far the detective got in one case, as the archive shows it.
-enum ArchiveStatus { solved, current, started, notOpened, sealed }
+enum ArchiveStatus { solved, current, started, notOpened, sealed, reference }
 
 /// One case of the season in the archive, with what the detective found.
 ///
@@ -29,6 +29,9 @@ class ArchiveEntry {
   final List<Clue> clues;
 
   bool get canOpen => status != ArchiveStatus.sealed && status != ArchiveStatus.notOpened;
+
+  /// Shown for reference only (operator mode): nothing here was found.
+  bool get isReference => status == ArchiveStatus.reference;
 }
 
 /// Every case of the season, in case order.
@@ -41,7 +44,11 @@ final seasonArchiveProvider = Provider<List<ArchiveEntry>>((ref) {
   final season = ref.watch(seasonProvider);
   final active = ref.watch(currentEpisodeProvider);
   final activeProgress = ref.watch(gameControllerProvider);
-  ref.watch(operatorAccessProvider); // which files are sealed
+  // Operator mode opens every file; a case not solved on this device is
+  // then shown in full for reference (to check an earlier case's evidence
+  // in a demo or playtest), never marked solved. The open case still shows
+  // only what has been found, so its answers are not given away.
+  final operator = ref.watch(operatorAccessProvider);
   final unlocks = ref.read(seasonProvider.notifier);
   final repo = ref.read(progressRepositoryProvider);
 
@@ -51,6 +58,8 @@ final seasonArchiveProvider = Provider<List<ArchiveEntry>>((ref) {
         ArchiveEntry(episode: e, status: ArchiveStatus.solved, evidence: e.allEvidence, clues: e.allClues)
       else if (!unlocks.isUnlocked(e.id))
         ArchiveEntry(episode: e, status: ArchiveStatus.sealed)
+      else if (operator && e.id != active.id)
+        ArchiveEntry(episode: e, status: ArchiveStatus.reference, evidence: e.allEvidence, clues: e.allClues)
       else
         () {
           final p = e.id == active.id ? activeProgress : repo.load(e.id);
@@ -120,6 +129,7 @@ class _ArchiveCase extends StatelessWidget {
       ArchiveStatus.started => ('OPEN', AppColors.inkBrown),
       ArchiveStatus.notOpened => (null, AppColors.locked),
       ArchiveStatus.sealed => ('SEALED', AppColors.locked),
+      ArchiveStatus.reference => ('REFERENCE', AppColors.royalBlue),
     };
     final status = switch (entry.status) {
       ArchiveStatus.solved => 'solved',
@@ -127,6 +137,7 @@ class _ArchiveCase extends StatelessWidget {
       ArchiveStatus.started => 'open',
       ArchiveStatus.notOpened => 'not opened yet',
       ArchiveStatus.sealed => 'sealed',
+      ArchiveStatus.reference => 'for reference',
     };
 
     return CaseFolder(
@@ -222,7 +233,17 @@ class _CaseRecord extends StatelessWidget {
               gridDelegate: evidenceGridDelegate(context),
               children: [
                 for (final v in entry.evidence)
-                  EvidenceTile(evidence: v, location: _placeOf((m) => m.evidence?.id == v.id)),
+                  Consumer(
+                    builder: (context, ref, _) => EvidenceTile(
+                      evidence: v,
+                      location: _placeOf((m) => m.evidence?.id == v.id),
+                      // A reference file was not found by this detective:
+                      // looking at it is no detective action (no badge).
+                      onOpened: entry.isReference
+                          ? null
+                          : () => ref.read(gameControllerProvider.notifier).recordEvidenceViewed(v.id),
+                    ),
+                  ),
               ],
             ),
           if (entry.clues.isNotEmpty) ...[

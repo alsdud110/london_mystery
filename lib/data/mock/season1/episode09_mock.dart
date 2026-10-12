@@ -50,15 +50,15 @@ const Map<String, dynamic> episode09Json = {
       'type': 'multipleChoice',
       'question': 'Whose key opened the jewel case?',
       'options': [
-        {'id': 'a', 'label': "The maid's key"},
-        {'id': 'b', 'label': "The cook's key"},
+        {'id': 'a', 'label': "The maid's key", 'feedback': "The maid's key is small and silver. Which key is big and gold?"},
+        {'id': 'b', 'label': "The cook's key", 'feedback': "The cook's key is old and iron. Read the last line again."},
         {'id': 'c', 'label': "The guard's key"},
-        {'id': 'd', 'label': "The King's key"},
+        {'id': 'd', 'label': "The King's key", 'feedback': "The butler names three keys. Is the King's key one of them?"},
       ],
       'answer': 'c',
       'hints': [
-        "\"The maid's key\" means the key that belongs to the maid.",
-        'Read the last line. Then find the key that is big and gold.',
+        'Read the last line: what kind of key opens the jewel case?',
+        "'The maid's key' means the key that belongs to the maid. Whose key is big and gold?",
       ],
       'clue': {
         'id': 'ep09_c1',
@@ -105,6 +105,10 @@ const Map<String, dynamic> episode09Json = {
       'question': "What is the new helper's name?",
       'prompt': 'NAME: ____',
       'answer': 'ANNA',
+      'feedback': {
+        'AMMA': 'Say the alphabet: which letter comes AFTER M?',
+        'ALLA': 'L comes before M. Which letter comes after it?',
+      },
       'hints': [
         'Say the alphabet: ... K, L, M, and then?',
         'Put that letter two times between the two As.',
@@ -154,9 +158,15 @@ const Map<String, dynamic> episode09Json = {
       'question': 'At what hour was Anna seen?',
       'codeLength': 2,
       'answer': '12',
+      'feedback': {
+        '3': "'The third change' asks for a time, not how many.",
+        '6': "'Every two hours': add two hours each time.",
+        '10': 'That is the second change. Count three: the first is at eight.',
+        '14': "Count again: the first change is at eight o'clock.",
+      },
       'hints': [
-        'Write down the first change. Then add two hours for the next one.',
-        'First, second, third: count three changes.',
+        'Read the timetable: when is the first change? How often do the guards change?',
+        "'Every two hours' means add two hours each time. 'The third change' counts the first one too.",
       ],
       'clue': {
         'id': 'ep09_c3',
@@ -211,6 +221,13 @@ const Map<String, dynamic> episode09Json = {
     'question': 'Where is the jewel? Type the thing.',
     'prompt': 'IN THE ___',
     'answer': 'HAT',
+    'feedback': {
+      'UMBRELLA': "This is Anna's thing. The note says the one WHOSE key you used: was it Anna's key?",
+      'RED UMBRELLA': "Anna's thing is red. But the note says the one WHOSE key you used: was it Anna's key?",
+      'BAG': "The green bag is Ben's. Did Ben's key open the jewel case?",
+      'GREEN BAG': "This is Ben's bag. Whose key opened the jewel case?",
+      'ANNA': 'The note asks for a thing, not a person.',
+    },
     'acceptedAnswers': ['BLACK HAT', 'TALL BLACK HAT', 'THE HAT', 'THE BLACK HAT', 'CARLS HAT'],
     'hints': [
       'Anna used the key. But whose key was it? Think back to the Jewel Room.',

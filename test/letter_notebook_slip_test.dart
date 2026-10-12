@@ -10,7 +10,7 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/widgets/letter_card.dart';
 
-import 'full_playthrough_test.dart' show wait;
+import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
 import 'title_screen_test.dart' show capture;
 
@@ -77,6 +77,9 @@ void main() {
       ));
       go.go(Routes.mission('m01'));
       await wait(t, const Duration(milliseconds: 1200));
+      // Case 01 M1 has longer options (TYPE B): on a small phone the tip
+      // link sits below them, a scroll away.
+      await reveal(t, find.text('Get a tip'));
       expect(find.text('Get a tip'), findsOneWidget, reason: 'on the puzzle');
 
       Future<void> open() async {
@@ -99,6 +102,7 @@ void main() {
       await t.tap(find.text('BACK TO THE PUZZLE'));
       await wait(t, const Duration(milliseconds: 700));
       expect(find.byType(BottomSheet), findsNothing);
+      await reveal(t, find.text('Get a tip'));
       expect(find.text('Get a tip'), findsOneWidget, reason: 'back on the puzzle');
 
       await closesThreeWays(t, open, find.byType(LetterCard));

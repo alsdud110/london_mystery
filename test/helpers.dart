@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/data/mock/season1/episode01_mock.dart';
@@ -16,3 +18,12 @@ Future<List<Override>> testOverrides({Map<String, Object> prefs = const {}, Audi
     audioServiceProvider.overrideWithValue(audio ?? MockAudioService()),
   ];
 }
+
+/// Text as a reader sees it, in a plain or a rich [Text]. Notebook and
+/// evidence English is rich text (harder words open their meaning), and
+/// `find.text` reads the screen-reader labels of those words ("… (tap for
+/// meaning)") instead of the words themselves.
+Finder findReadable(String text) => find.byWidgetPredicate(
+      (w) => w is Text && (w.data ?? w.textSpan?.toPlainText(includeSemanticsLabels: false)) == text,
+      description: 'text "$text" (as read)',
+    );

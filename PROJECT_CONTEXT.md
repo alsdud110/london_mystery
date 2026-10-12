@@ -5,8 +5,8 @@
 > 새 세션은 반드시 이 파일을 먼저 읽고, 아래 *Session Continuity Protocol*을 따른다.
 > 코드와 이 문서가 다르면 **코드가 source of truth**다.
 >
-> 최종 검증일: 2026-10-07 — `flutter analyze` 0 issues, `flutter test` **779개** 통과.
-> 마지막 작업: **Investigation Board Flow Fix**(Audit의 유일한 P1 해결 — Case Closed → Board). 그 전: Final Player Experience Audit(판정 B) → Post-Discovery Small Pass → Discovery Moment → Final Small Pass(Case 06·08) → Detective Reasoning Pass(Wave 1~3).
+> 최종 검증일: 2026-10-12 — `flutter analyze` 0 issues, `flutter test` **904개** 통과.
+> 마지막 작업: **Phase 4 P1-3·P1-4 — 사건 간 영어 재사용**(12-M2 after, 12-F whose, 11-M3 never sleeps). 그 전: Phase 4 P1-1·P1-2(Notebook 단어 뜻, Operator Archive 참고 공개), TYPE B Phase 3B — Season 1 전 사건 TYPE B 적용.
 
 ---
 
@@ -40,6 +40,15 @@
 - **Post-Discovery Small Pass COMPLETE** (Case 07 M3 카드 숨김, Story Evidence Card 2곳, 중복 transition 2줄)
 - **Final Player Experience Audit (2026-10-07): 판정 B — SMALL EXPERIENCE PASS.** 구조 변경 불필요 (*Final UX Audit Result* 참고)
 - **Investigation Board Flow Fix COMPLETE** (Audit P1): Case 01~11 Case Closed → Investigation Board → BEGIN INVESTIGATION. **PLAYTEST READY** — 다음은 실제 아이 플레이테스트 + 출시 polish
+- **제품 방향 결정 (2026-10-12): TYPE B — Educational Detective Adventure** (English → Evidence → Deduction → Action). 설계: `LONDON_MYSTERY_TYPE_B_DESIGN.md`, 근거: `LONDON_MYSTERY_PRODUCT_AUDIT.md`, 구현 기록: `LONDON_MYSTERY_TYPE_B_IMPLEMENTATION.md`
+- **TYPE B P0 COMPLETE** (2026-10-12): 부모 보고서 정직화, XP 규칙 2(힌트 무료·찍기 불리·소급 불변), 50개 미션 학습 설계 데이터. 정답 변경 없음.
+- **Phase 4 Notebook & Cross-Case — P1-1·P1-2 COMPLETE** (2026-10-12, 사용자 승인): 증거 상세·단서 카드의 영어에 단어 뜻 보기(그 증거·단서가 발견된 **원래 사건의 glossary**, 미션과 같은 WORD CARD, `lookedUpWords`·Word Collector 연동), Operator Mode에서 열려 있는 사건 외 모든 사건 파일을 `REFERENCE`로 전체 열람(해결·XP·Evidence·Badge·행동 기록 없음, 일반 플레이 잠금 불변). P1-3·P1-4도 **구현 완료**(아래). P2 보류
+- **Phase 4 P1-3·P1-4 COMPLETE** (2026-10-12, 사용자 승인): 12-M2 도착판 York 열차를 Platform 4로 + Grey "…small red clock, after the train from Edinburgh"(Case 04 승강장 + Case 02 after가 함께 필요), 12-F 첫 자물쇠 "the number of the platform whose clock is small and red"(Case 09 whose), 11-M3 Tip 1이 경비원의 "the station that never sleeps"를 Case 04 "where trains never sleep"과 연결. **정답(1140·487·King's Cross)·Evidence·결말 불변.** Archive 없이도 Tip으로 진행 가능
+- **TYPE B Phase 3B (Case 09~11) COMPLETE** (2026-10-12, 사용자 승인): 12개 미션 오답 피드백 + Hint, 09-F 우산 함정에 whose 피드백, 10-M3 보기 Big Ben → Tower of London(단어 하나만 맞는 함정, **이름 표시는 유지 — 두 단어로 이름을 만드는 것이 퍼즐**), 11-M3 그림 이름 숨김, `ChoiceOption.altText`로 이름 없는 그림을 화면 읽기에 묘사(01-M4·04-M3 소급). **정답·결말·사건 간 연결 불변.** Essential 40 → 41. **Season 1 전체 적용 완료**
+- **TYPE B Phase 3A (Case 06~08) COMPLETE** (2026-10-12, 사용자 승인): 12개 미션 오답 피드백 + Hint 정리(06-F·07-F·08-F의 보호 Hint는 그대로), 06-M2 카드 뒷면 "It is the colour of my hat"(앞 증언의 grey hat을 다시 읽어야 함). **정답·결말·Case 03 → 08 연결 불변.** 보호 규칙(Case 06 grey/hat/card, 07 gate, 08 button/coat/red/miss rose)을 오답 피드백에도 적용하는 테스트 추가. Essential 39 → 40. Case 09~11 미적용
+- **TYPE B Phase 2 (Case 02~04) COMPLETE** (2026-10-12, 사용자 승인): 12개 미션 오답 피드백 + Hint 1 = 볼 곳 / Hint 2 = 핵심 영어 의미, 04-M2 보기 "Platform 1/4/7/9"(짐꾼 문장·"but no clock"을 읽어야 함), 04-M3 그림 이름 숨김. **정답 불변.** Essential 시즌 37 → 39. 03-F Hint는 Case 03 보호 규칙(Tip에 train/station 금지, 마지막 Tip = Notebook footprint)에 맞춤. 남은 사건(06~11)은 미적용
+- **XP 규칙 3 + 탐정 행동 배지 COMPLETE** (2026-10-12, 사용자 승인): 규칙 2의 첫 시도 보너스가 운 좋은 찍기와 이해를 구분하지 못하고 오독 후 정정을 덜 보상하던 문제를 감사로 확인 → 모든 해결 동일 XP. 행동 배지는 UI 이벤트로만 기록, XP 없음
+- **TYPE B 대표 Case COMPLETE** (2026-10-12, 사용자 승인): Case 01·05·12 — 보기별/입력별/순서 오답 피드백, 01-M1 박물관 보기·01-M2 STONE 노출 제거·01-M4 그림 이름 숨김, 05·12 Final 자물쇠 그림 제거(질문을 읽어야 함). **50개 정답 전부 불변.** 나머지 9개 사건은 미적용. 플레이테스트 미실시(계획: `LONDON_MYSTERY_LEARNING_PLAYTEST.md`)
 
 ### Current Quality Baseline
 - `flutter analyze` → **0 issues**
@@ -59,7 +68,7 @@ Map → GO(카메라 줌 ~1.4s) → Mission: 장소(INVESTIGATE) → 봉투(TAP 
   → 정답 → DISCOVERY MOMENT → CONTINUE(사용자만) → Story Scene(transition, 타자기) → TO THE MAP → Map(새 장소로 카메라 이동 + 해금 연출)
 ```
 - **정답 순간에 저장 완료**(완료·Clue·Evidence·배지). Discovery·Story는 보여주기만 한다.
-- 오답 → "Not quite!" 시트(TRY AGAIN / GET A TIP). 횟수 제한·감점 없음.
+- 오답 → "Not quite!" 시트(TRY AGAIN / GET A TIP). 횟수 제한·감점 없음. 미션 데이터에 그 오답의 한 줄(`ChoiceOption.feedback` / `Mission.feedback` / `Mission.orderFeedback`, `AnswerChecker.feedbackFor`)이 있으면 일반 문구 대신 표시(무엇을 잘못 읽었는지, 정답은 말하지 않음 — `type_b_cases_test`가 강제). 현재 **Season 1 전 사건(01~12)**. **오답 피드백도 사건의 추리 보호 규칙(금지어)을 지킨다** — `type_b_phase3a_test`
 
 ### Final Mission (12개, Discovery 없음)
 ```
@@ -133,19 +142,22 @@ Map(OPEN THE FINAL CASE) → Final(/final: 장면·이야기·편지·퍼즐, OP
 | 02 | M1 **8:17** → M3 Gallery 8 · Picture 17 → plan "one hour after the clock stops" → Final **9:17** (9:17은 Final 전 어디에도 없음) |
 | 03 | M3 Wet Footprint "The boot smells of **trains and smoke**" + 택시 "north, clock tower" → 시계탑 2개 중 **King's Cross** |
 | 04 | M1 Black Wax Seal(까마귀) + M3 "Black birds live there(Tower)" → **RAVEN** Society |
-| 05 | M1 5시 · M2 기어 4개 · M3 까마귀 7 → 순서를 바꾼 질문 → **745** |
-| 06 | Final 관찰(tall man, small bag, 물가에서 잃어버린 것) + M1 작은 가방·카드를 떨어뜨림 + M3 키 큰 남자 vs 키 작은 여자(Raven Society) + M2 Detective Card → **Inspector Grey** (Final 화면에 grey/hat/card 없음) |
+| 05 | M1 5시 · M2 기어 4개 · M3 까마귀 7 → 순서를 바꾼 질문 → **745**. 자물쇠에 그림 없음(TYPE B): 뚜껑 질문을 읽어야 순서를 앎. 찾은 순서 547 → 순서 피드백 |
+| 06 | Final 관찰(tall man, small bag, 물가에서 잃어버린 것) + M1 작은 가방·카드를 떨어뜨림 + M3 키 큰 남자 vs 키 작은 여자(Raven Society) + M2 Detective Card → **Inspector Grey** (Final 화면에 grey/hat/card 없음). M2(TYPE B): 카드 뒷면 "the colour of my hat" → M1 증언의 grey hat을 다시 읽어 GREY |
 | 07 | Grey 경로(다리 건너 **왼쪽**) + M3 Joined Map 화살표 **north** → old gate 지도(B). Final 보기는 A~D 글자만. **Discovery에서 "old gate" 노출 금지** |
 | 08 | Mrs Robin "Gallery 8에 간 적 없다" + M2 긴 빨간 코트(Clue note에도) + **Case 03 Red Button**(From a coat, GALLERY 8) → Red Button → Post-Case가 Miss Rose = Mrs Robin 확인. Final 화면에 button/coat/red 없음 |
 | 09 | M1 **guard's** key → 쪽지 "the one **whose** key you used"(쓴 사람 Anna가 아님) → Carl → 소거(Ben = 가방, Anna ≠ 검정) → **HAT** |
-| 10 | M2 NORTH · TOWER · BRIDGE · THREE → M3 TOWER + BRIDGE = **Tower Bridge**(Story에 Tower Bridge·north tower·3시 미리 쓰지 않음). Final은 문장 순서(독립 ORDER 퍼즐 — 다양성 예외로 유지) |
-| 11 | Case 01 Old Letter "Signed: The Shadow / P.S. I love trains!" → **The Shadow** |
-| 12 | M2 Case 04 Platform 4(작은 빨간 시계) → 11:40, M1 톱니 8, (Case 05) 까마귀 7 → **487** |
+| 10 | M2 NORTH · TOWER · BRIDGE · THREE → M3 TOWER + BRIDGE = **Tower Bridge**(Story에 Tower Bridge·north tower·3시 미리 쓰지 않음). Final은 문장 순서(독립 ORDER 퍼즐 — 다양성 예외로 유지). M3(TYPE B): 보기에 Tower of London(TOWER 하나만 맞는 함정), 이름 표시 유지 |
+| 11 | Case 01 Old Letter "Signed: The Shadow / P.S. I love trains!" → **The Shadow**. M3(TYPE B): 그림 이름 숨김 — 택시 기사의 묘사(two big arches, clock tower)로 선택. M3 Tip 1: "never sleeps" → Case 04 |
+| 12 | M2 Case 04 Platform 4(작은 빨간 시계) → 11:40, M1 톱니 8, (Case 05) 까마귀 7 → **487**. 자물쇠에 그림 없음(TYPE B): 문에 새긴 질문 순서. 찾은 순서 847 → 순서 피드백. M2(Phase 4): 4번 승강장 열차가 둘(10:15·11:40) — "after the train from Edinburgh"가 11:40을 고름. Final 첫 줄: "the platform whose clock is small and red" |
 
 ### Cross-case callbacks
 | From → To | 내용 | 등급 |
 |---|---|---|
 | 04 → 12 | Platform 4 = small red clock → 12-M2 도착 시각, Final 기차 자물쇠 | **R3** (Archive 3탭) |
+| 02 → 12 | before/after → 12-M2 "after the train from Edinburgh"(4번 승강장 두 열차 중 하나) | **R3**(표현) |
+| 09 → 12 | whose → 12-F "the platform whose clock is small and red" | **R3**(표현, 답은 이번 사건 단서로도 확인) |
+| 04 → 11 | "where trains never sleep" → 11-M2 "the station that never sleeps" → 11-M3 Tip 1 | **R2~R3**(표현, Tip이 연결) |
 | 03 → 08 | Red Button(코트 단추, GALLERY 8) → 08 Final | **R3** (Archive 4탭) |
 | 01 → 11 | Old Letter(The Shadow, P.S. I love trains!) → 11 Final | **R3**(약: 소거로도 근접) (Archive 4탭) |
 | 05 → 12 | Seven Ravens → 12 Final 까마귀 자물쇠 | R2 (12-M3 Clue가 값을 줌) |
@@ -188,7 +200,7 @@ Map(OPEN THE FINAL CASE) → Final(/final: 장면·이야기·편지·퍼즐, OP
   - Case 05 Final: `objects/iron_chest.png` / Case 12 Final: `objects/small_iron_door.png`
   - Case 07 지도 퍼즐: parkMapA~D(코드 그림). Final 보기 이름은 화면에 표시하지 않음(A~D)
   - Case 08: 검은 가방(blackSuitcase), Case 01·04: 갈색 가방(oldSuitcase)
-  - 이미지 선택 퀴즈 타일은 이름표를 숨김(정답 노출 방지)
+  - 이미지 선택 퀴즈 타일: 랜드마크는 그림 아래 이름 표시, **공원 지도(Case 07)와 `hideOptionNames` 미션(01-M4, 04-M3, 11-M3)은 이름 숨김** — 이 셋은 화면 읽기가 이름 대신 그림 묘사(`ChoiceOption.altText`, "Picture C: …")를 읽음. 랜드마크 PNG 속 이름 두루마리는 타일에서 잘림(스크린샷 확인). 10-M3는 이름이 퍼즐이라 표시(화면 읽기 라벨도 `Picture C`). (이전 문서의 "이름표를 숨김"은 사실과 달랐음 — 2026-10-12 감사에서 확인)
 
 ---
 
@@ -236,20 +248,21 @@ lib/
 
 ### Persistence
 - 키: `lm.progress.v1`(Case 01, 구버전 호환) / `lm.progress.v1.epNN` / `lm.season.v1`(`activeEpisodeId`, `solvedEpisodeIds`) / `lm.settings.sound`
-- `GameProgress`: detectiveName, introSeen, completedMissionIds(해결 순서), attempts, wrongAnswers, hintsUsed, missionStartedAt, missionStartPlayMillis, solveSeconds, badgeIds, lookedUpWords, startedAt, completedAt, playMillis. 관대한 fromJson, 손상 시 새 게임
+- `GameProgress`: detectiveName, introSeen, completedMissionIds(해결 순서), attempts, wrongAnswers, hintsUsed, missionStartedAt, missionStartPlayMillis, solveSeconds, badgeIds, lookedUpWords, **lookupsRecorded**(단어 목록이 없던 세이브 = false, 저장 후에도 유지), **xpRules**(미션 → XP 규칙 번호 1·2·3, 비어 있으면 JSON에 안 씀), **behavior**(`BehaviorLog`: rechecked·evidenceViewed·words, 키가 없으면 "기록 없음" — 새 실행은 항상 기록), startedAt, completedAt, playMillis. 관대한 fromJson, 손상 시 새 게임
 - Play again = 현재 사건만 초기화(시즌 해결 기록 유지 → 다음 사건 잠기지 않음). Reset all = 전체 삭제(Start NEW ADVENTURE, Game Master)
 
 ---
 
 ## Game Systems
 
-- **XP** (`scoring.dart`, 저장 안 함·매번 계산): 일반 +100 / Final +200, 노힌트 +50(1개 +25), 스피드(활성 시간 ≤120s, Final ≤180s) +20. 표시: Discovery(작게), 지도 메뉴, Case Closed. **XP로 열리는 것은 없음**(등급/칭호 미구현)
-- **Hint**: 미션당 최대 2개(약 → 직접), 비용 = 보너스 XP만. 오답 횟수 무제한·감점 없음 → 아이 혼자 진행 가능
-- **Badge**: 공통 6개(First Clue, Sharp Eyes, Quick Thinker, Puzzle Solver, London Explorer, Master Detective)가 **사건마다 다시** 수여 + Case Badge 6개(02 Clock Watcher, 03 Evidence Hunter, 04 Letter Reader, 05 Code Breaker, 07 Map Master, 12 London Legend). Discovery에 "New badge:" 한 줄
+- **XP** (`scoring.dart`, 저장 안 함·매번 계산 — 단 미션별 **규칙 번호**는 정답 순간 `GameProgress.xpRules`에 기록): **규칙 3**(현재) = 정답에 도달하면 일반 100 / Final 200, 오답·힌트·시간 무관(보너스 없음). **규칙 2**(기록된 미션만) = 기본 + 첫 시도 +50 / 두 번째 +25. **규칙 1**(기록 없는 미션 = TYPE B 이전 세이브) = 기본 + 노힌트 +50(1개 +25) + 스피드 +20. 기존 XP 소급 변경 금지. 표시: Discovery(작게), 지도 메뉴, Case Closed. **XP로 열리는 것은 없음**. 사건별 저장 하나뿐이라 재플레이는 누적되지 않음
+- **Hint**: 미션당 최대 2개(약 → 직접), **무료**("Tips are free. Good detectives use them."). 오답 횟수 무제한·감점 없음 → 아이 혼자 진행 가능
+- **Badge** (`GameBadge`, 저장은 이름 문자열 — id 변경·삭제 금지): 진행 배지 4개(First Clue, Puzzle Solver, London Explorer, Master Detective) + **탐정 행동 배지 3개**(아래) + Case Badge 6개(02 Clock Watcher, 03 Evidence Hunter, 04 Letter Reader, 05 Code Breaker, 07 Map Master, 12 London Legend), 사건마다 수여. **Sharp Eyes·Quick Thinker는 retired**: 신규 지급 없음, 이미 받은 세이브에서만 표시(`GameBadge.shownFor`), 설명은 "이전 버전에서 …받은 배지". 행동 배지(XP 없음, 사건당 1회): **Second Look** = 오답 후 · 해결 전에 편지 다시 읽기(Letter) 또는 수첩/Archive/Final 수첩의 증거 열기 → 같은 미션 정답 / **Notebook Explorer** = 사건 해결 중 수첩·Case Archive·Final 수첩에서 증거 1개 이상 자세히 보기(진입만으로는 아님) / **Word Collector** = 이번 실행에서 서로 다른 단어 3개 뜻 보기. 기록은 `GameProgress.behavior`(`BehaviorLog`); 키가 없는 옛 세이브는 기록 없음 → 그 실행에서는 행동 배지 없음(추정 소급 금지), Play again부터 기록. Discovery에 "New badge:" 한 줄
+- **Learning design** (`season1_learning.dart` + `models/learning.dart`): 50개 미션 전부 학습 설계(dependency essential 41 / helpful 6 / low 3 (Season 1 전체 개선 후), level, objective, expressions, recallFrom) + 사건별 언어 주제. **콘텐츠이며 저장되지 않고 성취가 아님**. Case JSON은 건드리지 않는 별도 매핑. 규칙은 `learning_objectives_test`가 강제(표현이 실제 콘텐츠에 있음, essential만 exposure 초과 수준)
 - **Evidence/Clue**: 미션 데이터, `completedMissionIds`에서 파생. 노트북 확대(`showEvidenceZoom`: 이름·장소·설명·글귀)
-- **Notebook**: THIS CASE(CLUES / EVIDENCE / BADGES) + CASE ARCHIVE(12 사건 폴더, SOLVED 사건은 전체 Evidence·Clue). 경로: 미션 앱바 노트북 / Final `OPEN MY NOTEBOOK` → `OPEN THE CASE ARCHIVE`(이전 해결 사건이 있을 때). 이전 사건 Evidence 글귀까지 Final에서 4탭
+- **Notebook**: THIS CASE(CLUES / EVIDENCE / BADGES) + CASE ARCHIVE(12 사건 폴더, SOLVED 사건은 전체 Evidence·Clue; **Operator Mode면 열린 사건 외 전부 `REFERENCE`로 전체 공개 — 기록 없음**). 증거 상세·단서 메모의 영어는 **원래 사건 glossary**로 단어 뜻 보기(`GlossaryText(episode:)`, `caseOfEvidence`/`caseOfClue`). 경로: 미션 앱바 노트북 / Final `OPEN MY NOTEBOOK` → `OPEN THE CASE ARCHIVE`(이전 해결 사건이 있을 때). 이전 사건 Evidence 글귀까지 Final에서 4탭
 - **Play Time**: foreground 활성 시간만(`playMillis`), Story Intro 종료부터 Final 해결까지
-- **Parent Report**: Case Closed → Parent Gate(곱셈) → 1회용 통과권
+- **Parent Report**: Case Closed → Parent Gate(곱셈) → 1회용 통과권. **측정된 사실만**(TYPE B P0): English in This Case(사건 언어 주제 + 미션별 학습 설계, "측정 결과 아님" 명시) → Words Checked(실제 찾아본 단어 + 뜻) → **Detective Actions**(새 기록: 막혔을 때 다시 확인한 미션 수, 수첩에서 살펴본 증거 수 — 옛 세이브는 "기록 없음") → Play Record(해결 미션, 열어 본 힌트, 첫 시도 n/기록 m, 플레이 시간) → Game Master's Note(관찰 사실). 영어 별점·정답률·능력 단정 문구 없음. 시도 기록 없는 미션/사건(플레이테스트 도구 seed, 옛 세이브)·단어 기록 없는 세이브 → "기록 없음"
 - **Game Master / Playtest tools**(debug 또는 `--dart-define=LM_PLAYTEST=true`): CASE NN부터, 지금 사건 처음부터, OPERATOR MODE(모든 사건 열기, 해결 기록 없음). QR은 Case 01 M5뿐(`LM-EP01-PALACE`, 수동 입력 폴백 — 집에서는 운영자 카드 필요)
 
 ---
@@ -260,6 +273,8 @@ lib/
 - 추리/Discovery 회귀 테스트 (문구를 바꾸면 반드시 확인):
   - `case02_reasoning_test.dart`, `wave1_reasoning_test.dart`(01·04·06·08·11), `wave2_reasoning_test.dart`(03·07·10), `case09_reasoning_test.dart`, `final_small_pass_test.dart`(06·08 + **다른 사건 JSON 해시** — 다른 사건을 일부러 바꾸면 그 해시를 갱신)
   - `discovery_moment_test.dart`(38 매핑, timing, 시점 예외, 표시·흐름·XP·배지·모션·Back, 38개 × 2 크기 렌더), `post_discovery_pass_test.dart`(Case 07 노출, 중복 줄, Story 카드·확대·재시작), `investigation_board_flow_test.dart`(Case 01~11 OPEN CASE → Board·figure·현재 사건, BEGIN, Back, 다시 플레이 예외, 재시작, Case 12 불변, 실제 Case 04 흐름)
+  - Phase 4: `cross_case_language_test.dart`(12-M2 도착판 논리·after, 12-F whose·숫자 미노출, 11-M3 never sleeps ↔ Case 04, Archive 없는 경로, 2 크기), `notebook_cross_case_test.dart`(증거·단서 → 사건 매핑, Archive에서 원래 사건 glossary, Word Collector 연동, Operator 참고 공개·기록 없음·잠금 유지, 2 크기). Notebook/증거 글자는 rich text라 테스트는 `findReadable`(`helpers.dart`)로 찾는다(`find.text`는 "(tap for meaning)" 라벨까지 읽음)
+  - TYPE B: `learning_objectives_test.dart`(50 매핑·표현 실재·정직성·분포), `type_b_p0_test.dart`(옛 세이브 XP 불변, 기록 없음, 힌트 무료, 읽기 > 찍기, 재플레이 비누적, 보고서 단정 문구 없음, 2 크기 렌더), `type_b_phase3b_test.dart`(Case 09~11 정답 불변·피드백·보호 규칙 피드백 확장·사건 간 연결·이름 없는 그림의 대체 텍스트·11-M3 화면 2 크기·XP), `type_b_phase3a_test.dart`(Case 06~08 정답 불변·피드백·보호 규칙의 피드백 확장·Case 03 → 08·06-M2 카드 경로·XP·화면 2 크기), `type_b_phase2_test.dart`(Case 02~04 정답 불변·오답 보기 피드백·미션별 오독·학습 설계·XP 규칙 3·화면 2 크기), `type_b_rewards_test.dart`(XP 규칙 3 시나리오 1~7, 규칙 1·2 보존, 옛 세이브 로드, retired 배지, Second Look·Notebook Explorer·Word Collector 조건과 실제 UI 이벤트, 재플레이, 사건 문구, 부모 보고서), `type_b_cases_test.dart`(피드백이 정답에 붙지 않음·정답을 말하지 않음, Case 01·05·12 동작, 오답 시트 2 크기). 콘텐츠를 바꾸면 `final_small_pass_test`의 사건 해시도 갱신(이번에 ep01·05·12)
   - 공용 헬퍼: `test/mission_play.dart`(`MissionPlay.openPuzzle / solve / restart`), `helpers.dart`(`testOverrides`), `full_playthrough_test.dart`(`reveal / tapText / wait`)
 - 콘텐츠 규칙: `season_content_test.dart`(힌트·장면이 정답을 말하지 않음 등), 흐름: `season_flow_test`, `season_playthrough_test`, `post_case_scene_test`, `back_navigation_test`
 - UI 변경 시 기본 확인: **360×640, 390×844**(+ 글자 1.3배) — overflow, CTA 접근, 스크롤, Evidence 확대, Back, 모션 줄이기
@@ -330,6 +345,14 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-12 — **Phase 4 P1-3·P1-4**(승인): 12-M2 after, 12-F whose, 11-M3 never sleeps. 정답 불변. 기대값 갱신은 `type_b_cases_test` 2단정(새 문구)·ep11/12 해시만. Tests 889 → 904
+- 2026-10-12 — **Phase 4 P1-1·P1-2**(승인): Notebook 단어 뜻 보기(원래 사건 glossary), Operator Mode Archive 참고 공개, 부모 보고서 단어 뜻 대체 조회. 기존 테스트 7개 파일의 텍스트 찾기를 `findReadable`로(기대 문구 불변). Tests 878 → 889. P1-3·P1-4 제안만
+- 2026-10-12 — **TYPE B Phase 3B (Case 09~11)**(승인): 피드백·Hint, 10-M3 Tower of London, 11-M3 이름 숨김, 화면 읽기 대체 텍스트(코드: `ChoiceOption.altText`, 그림 타일 라벨), 학습 설계 41/6/3. 보호 테스트 기대값 변경 없음; 해시·화면 읽기 라벨·예시 미션 갱신. Tests 865 → 878
+- 2026-10-12 — **TYPE B Phase 3A (Case 06~08)**(승인): 오답 피드백·Hint, 06-M2 카드 문장, 학습 설계 40/7/3, 보호 규칙 피드백 확장. 기존 보호 테스트 기대값 변경 없음(ep07 해시·분포만 갱신). Tests 850 → 865
+- 2026-10-12 — **TYPE B Phase 2 (Case 02~04)**(승인): 오답 피드백·Hint 정리, 04-M2 라벨, 04-M3 이름 숨김, 학습 설계 39/8/3. 03-F Hint는 보호 규칙에 맞게 제안에서 수정. 기존 테스트 4개 파일 갱신(해시·라벨·이름 예시·분포). Tests 838 → 850
+- 2026-10-12 — **XP 규칙 3 + 탐정 행동 배지**(승인): 모든 해결 동일 XP, Sharp Eyes·Quick Thinker retired, Second Look·Notebook Explorer·Word Collector(`BehaviorLog`), Case Closed 요약은 행동 기반 문구(첫 시도 칭찬 제거), 부모 보고서 Detective Actions·첫 시도 주석·XP 안내. 규칙 2 전제 테스트 갱신. Tests 815 → 838
+- 2026-10-12 — **TYPE B 대표 Case**(승인): Case 01·05·12 오답 피드백, 01-M1·M2·M4 개선, 05·12 Final 기호 제거, 학습 설계 37/10/3. 기존 테스트 6개 파일 갱신(라벨·해시·스크롤). Tests 799 → 815
+- 2026-10-12 — **TYPE B P0**: Parent Report 정직화(별점·정답률 제거, 학습 설계/플레이 기록 분리, 기록 없음 처리), XP 규칙 2 + 미션별 규칙 기록, Sharp Eyes·Quick Thinker 첫 시도 조건, 학습 설계 데이터(`season1_learning.dart`). 의도된 동작 변경으로 기존 테스트 3개 파일 기대값 갱신. Tests 779 → 799
 - 2026-10-07 — **Investigation Board Flow Fix**(Audit P1): Case Closed OPEN CASE NN → Board(보드의 현재 사건이 NN일 때). 기존 테스트 4개 파일의 목적지 단언 갱신. Tests 757 → 779
 - 2026-10-07 — **Final Player Experience Audit**(판정 B, 코드 변경 없음), PROJECT_CONTEXT 전면 정리
 - 2026-10-07 — **Post-Discovery Small Pass**: Case 07 M3 Discovery 카드 숨김, Story Evidence Card(06-M3 티켓, 10-M3 편지), 07-M3·10-M2 transition 중복 1줄씩. Tests 732 → 757

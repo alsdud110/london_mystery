@@ -62,7 +62,8 @@ void main() {
     expect(container.read(recentUnlockProvider), 'm02');
   });
 
-  test('hints open one at a time, at most two, and reduce the bonus', () {
+  // XP rule 3: tips are help, not failure, so they cost nothing.
+  test('hints open one at a time, at most two, and are free', () {
     ctrl().registerDetective('Kim');
     ctrl().startInvestigation();
     expect(ctrl().useHint(m['m01']!), 1);
@@ -71,27 +72,35 @@ void main() {
     expect(state().totalHints, 2);
 
     ctrl().submitAnswer(m['m01']!, 'b');
-    expect(XpBreakdown.of(m['m01']!, state()).noHintBonus, 0);
+    expect(XpBreakdown.of(m['m01']!, state()).total, 100, reason: 'two tips: the same XP as any solve');
     expect(ctrl().useHint(m['m01']!), 2, reason: 'no hints after solving');
   });
 
-  test('XP: +100 base, +50 without hints, +20 when fast', () {
+  test('XP rule 3: +100 for everyone who solves, whatever the tries, tips or time', () {
     ctrl().registerDetective('Kim');
     ctrl().startInvestigation();
 
     ctrl().markMissionStarted('m01');
     clock = clock.add(const Duration(seconds: 40));
     ctrl().submitAnswer(m['m01']!, 'b');
-    final fast = XpBreakdown.of(m['m01']!, state());
-    expect((fast.base, fast.noHintBonus, fast.speedBonus, fast.total), (100, 50, 20, 170));
+    final first = XpBreakdown.of(m['m01']!, state());
+    expect((first.base, first.carefulBonus, first.speedBonus, first.total), (100, 0, 0, 100));
+    expect(state().xpRules['m01'], XpBreakdown.currentRule);
 
     ctrl().markMissionStarted('m02');
     ctrl().useHint(m['m02']!);
     clock = clock.add(const Duration(minutes: 5));
+    ctrl().submitAnswer(m['m02']!, 'rock');
     ctrl().submitAnswer(m['m02']!, 'stone');
-    final slow = XpBreakdown.of(m['m02']!, state());
-    expect((slow.base, slow.noHintBonus, slow.speedBonus), (100, 25, 0));
+    final second = XpBreakdown.of(m['m02']!, state());
+    expect((second.base, second.carefulBonus, second.total), (100, 0, 100));
     expect(state().solveSeconds['m02'], 300);
+
+    for (final guess in ['000', '111']) {
+      ctrl().submitAnswer(m['m03']!, guess);
+    }
+    ctrl().submitAnswer(m['m03']!, '417');
+    expect(XpBreakdown.of(m['m03']!, state()).total, 100, reason: 'the base is never lost');
   });
 
   test('records wrong answers, clues, evidence and looked-up words', () {
@@ -114,7 +123,9 @@ void main() {
     ctrl().startInvestigation();
     ctrl().markMissionStarted('m01');
     final first = ctrl().submitAnswer(m['m01']!, 'b');
-    expect(first.newBadges, containsAll([GameBadge.firstClue, GameBadge.sharpEyes, GameBadge.quickThinker]));
+    expect(first.newBadges, [
+      GameBadge.firstClue,
+    ], reason: 'a fast first-try answer earns nothing more (Sharp Eyes and Quick Thinker are retired)');
 
     for (final (id, answer) in fullRun.skip(1)) {
       final out = ctrl().submitAnswer(m[id]!, answer);
@@ -123,8 +134,10 @@ void main() {
     }
     final last = ctrl().submitAnswer(m['final']!, '7924');
     expect(last.newBadges, [GameBadge.masterDetective]);
-    expect(state().badgeIds.toSet(), {for (final b in GameBadge.forEpisode(episode01)) b.name});
-    expect(GameBadge.forEpisode(episode01), hasLength(6), reason: 'Episode 01 keeps its six badges');
+    // A run with no recorded detective actions earns the four progress
+    // badges; the three action badges are optional (see type_b_rewards_test).
+    expect(state().badgeIds.toSet(), {'firstClue', 'puzzleSolver', 'londonExplorer', 'masterDetective'});
+    expect(GameBadge.forEpisode(episode01), hasLength(7), reason: 'four progress badges + three action badges');
   });
 
   test('full run solves the case and survives an app restart', () async {
@@ -259,7 +272,6 @@ void main() {
       advance(const Duration(seconds: 30));
       ctrl().submitAnswer(m['m01']!, 'b');
       expect(state().solveSeconds['m01'], 90);
-      expect(XpBreakdown.of(m['m01']!, state()).speedBonus, AppConstants.speedBonusXp);
     });
 
     test('the clock stops when the case is solved', () {

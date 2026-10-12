@@ -346,7 +346,7 @@ void main() {
       final play = MissionPlay(audio: audio);
       await play.openPuzzle(t, phone, 'm01');
       audio.played.clear();
-      await tapText(t, 'Tower Bridge', after: const Duration(milliseconds: 200));
+      await tapText(t, 'The Natural History Museum (dinosaur bones)', after: const Duration(milliseconds: 200));
       expect(audio.played, isEmpty, reason: 'choosing a card is quiet');
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 100));
       expect(audio.played, [GameSound.puzzleWrong]);
@@ -578,7 +578,7 @@ void main() {
       await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 600));
       await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1200));
       await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 600));
-      await tapText(t, 'Tower Bridge', after: const Duration(milliseconds: 200));
+      await tapText(t, 'The Natural History Museum (dinosaur bones)', after: const Duration(milliseconds: 200));
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 600));
       expect(find.text('Not quite!'), findsOneWidget);
       expect(audio.played, isEmpty);

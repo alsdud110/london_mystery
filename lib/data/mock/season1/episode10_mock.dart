@@ -46,15 +46,15 @@ const Map<String, dynamic> episode10Json = {
       'type': 'multipleChoice',
       'question': 'Which raven brings the words?',
       'options': [
-        {'id': 'a', 'label': 'Jubilee'},
-        {'id': 'b', 'label': 'Merlin'},
+        {'id': 'a', 'label': 'Jubilee', 'feedback': 'Jubilee is the biggest raven. Your raven is small.'},
+        {'id': 'b', 'label': 'Merlin', 'feedback': 'Merlin has a white feather. Does the note say she has a gold ring?'},
         {'id': 'c', 'label': 'Poppy'},
-        {'id': 'd', 'label': 'Harris'},
+        {'id': 'd', 'label': 'Harris', 'feedback': 'Harris is very noisy. Your raven is quiet.'},
       ],
       'answer': 'c',
       'hints': [
         'Match each thing you know: small, quiet, a gold ring.',
-        'Which raven is the smallest? Does she have a ring?',
+        "'The smallest' means smaller than all the others. Find the raven that is small, quiet AND has a ring.",
       ],
       'clue': {
         'id': 'ep10_c1',
@@ -107,9 +107,14 @@ const Map<String, dynamic> episode10Json = {
       ],
       'codeLength': 4,
       'answer': 'north,tower,bridge,three',
+      'feedback': {
+        'bridge,north,three,tower': 'That is the order of your notes, not the order of the days. Which day comes first?',
+        'bridge,three,north,tower': 'That is the order of the papers on the wall. Which word came on Monday?',
+      },
+      'orderFeedback': 'Start with Monday. Which day comes after Monday?',
       'hints': [
-        'The days of the week go: Monday, Tuesday, Wednesday, Thursday...',
-        'Find the Monday word first. Then find the word for the next day.',
+        'Find the Monday word first.',
+        'The days of the week go: Monday, Tuesday, Wednesday, Thursday. Put each word on its day.',
       ],
       'clue': {
         'id': 'ep10_c2',
@@ -158,15 +163,15 @@ const Map<String, dynamic> episode10Json = {
       'type': 'imageChoice',
       'question': 'Which place is the message about?',
       'options': [
-        {'id': 'a', 'label': 'London Eye', 'artwork': 'londonEye'},
-        {'id': 'b', 'label': 'Big Ben', 'artwork': 'bigBen'},
+        {'id': 'a', 'label': 'London Eye', 'artwork': 'londonEye', 'feedback': "Is 'London' or 'Eye' one of Poppy's words? Check your notebook."},
+        {'id': 'b', 'label': 'Tower of London', 'artwork': 'towerOfLondon', 'feedback': "Only one of Poppy's words is in this name. The note says TWO, put together."},
         {'id': 'c', 'label': 'Tower Bridge', 'artwork': 'towerBridge'},
-        {'id': 'd', 'label': "King's Cross", 'artwork': 'kingsCross'},
+        {'id': 'd', 'label': "King's Cross", 'artwork': 'kingsCross', 'feedback': "Is 'King's' or 'Cross' one of Poppy's words?"},
       ],
       'answer': 'c',
       'hints': [
         "Look at Poppy's four words again. They are in your notebook.",
-        'Find two of the words that make the name of a place. Then find its picture.',
+        "'Put together' means two words side by side make one name. One word alone is not enough.",
       ],
       'clue': {
         'id': 'ep10_c3',
@@ -221,9 +226,15 @@ const Map<String, dynamic> episode10Json = {
     ],
     'codeLength': 4,
     'answer': 'clockmaker,stop,bigben,midnight',
+    'feedback': {
+      'midnight,clockmaker,stop,bigben': "'At midnight' is WHEN. The note says WHEN comes last.",
+      'clockmaker,bigben,stop,midnight': 'After WHO comes what they WILL do.',
+      'bigben,stop,clockmaker,midnight': 'Big Ben is not a person. The note starts with WHO.',
+    },
+    'orderFeedback': 'Read the note: WHO, then WILL do, then to WHAT, then WHEN.',
     'hints': [
-      '"Who?" is a person. "When?" is a time.',
-      'Start with the person. End with the time.',
+      'The note asks four questions in order. Match one paper to each question.',
+      "'Who' is a person. 'Will stop' is what they will do. 'When' is a time.",
     ],
     'evidence': {
       'id': 'ep10_e4',
