@@ -56,7 +56,7 @@ const Map<String, Discovery> season1Discoveries = {
     type: DiscoveryType.newLead,
     timing: DiscoveryTiming.fromPuzzle,
     title: 'BUCKINGHAM PALACE',
-    detail: "Soldiers in red coats, and the King lives there: the thief's last stop.",
+    detail: "A red flag, a fountain, and the King lives there: the thief's last stop.",
     note: 'Two white swans were swimming on the lake.',
   ),
   'm05': Discovery(

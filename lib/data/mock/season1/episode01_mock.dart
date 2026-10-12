@@ -213,13 +213,14 @@ const Map<String, dynamic> episode01Json = {
       'letterIntro': 'Under a bench, you find a note from the thief.',
       'letter':
           'My last stop is a big palace.\n'
-          'Soldiers stand at the gate.\n'
-          'They wear red coats and tall black hats.\n'
+          'A red flag flies on top.\n'
+          'There is a fountain in front.\n'
           'The King lives there!',
       'type': 'imageChoice',
       'question': "Which picture shows the thief's last stop?",
       // No names under the pictures: the note's description (a palace, a
-      // gate, soldiers in red coats) picks the picture.
+      // red flag on top, a fountain in front) picks the picture. Only what
+      // the artwork actually shows: it has no gate or guards.
       'hideOptionNames': true,
       'options': [
         {
@@ -227,7 +228,7 @@ const Map<String, dynamic> episode01Json = {
           'label': 'Tower Bridge',
           'artwork': 'towerBridge',
           'altText': 'two tall towers joined by a road across a river, with boats below',
-          'feedback': 'That is a bridge over a river. The note talks about a gate and soldiers.',
+          'feedback': 'That is a bridge over a river. The note talks about a palace and a fountain.',
         },
         {
           'id': 'b',
@@ -252,8 +253,8 @@ const Map<String, dynamic> episode01Json = {
       ],
       'answer': 'c',
       'hints': [
-        'Look for a big building with a gate and guards in red coats.',
-        'The King lives in a palace. Soldiers stand at its gate.',
+        'Look for a big building with a red flag and a fountain.',
+        'The King lives in a palace. Find the fountain in front of it.',
       ],
       'clue': {
         'id': 'c04',

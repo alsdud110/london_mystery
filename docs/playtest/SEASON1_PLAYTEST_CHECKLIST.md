@@ -89,7 +89,7 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 - QR 미션: 카드를 찾는 과정이 재미있는지, 카메라가 없을 때 아래 수동 코드로 입력할 수 있는지
 - Mission 1 (TYPE B): 보기가 박물관 네 곳(공룡·옛 보물·버스와 기차·로켓). 편지의 "mummies from Egypt"로 고르는가, 기차 박물관(The Shadow의 "I love trains")에 끌리는가. 오답 시 나오는 한 줄을 읽는가
 - Mission 2 (TYPE B): 화면에 STONE이 없습니다. 뜻풀이(a hard piece of rock)나 첫 편지("a famous stone")로 떠올리는가
-- Mission 4 (TYPE B): 그림 아래 이름이 없습니다. 묘사(gate, soldiers in red coats)로 궁전을 고르는가
+- Mission 4 (TYPE B): 그림 아래 이름이 없습니다. 묘사(red flag, fountain)로 궁전을 고르는가
 - Final: 그림 → 숫자 연결. 잠금 네 개 중 시계·기차는 그림이지만 park·museum은 아직 **머리글자**("P", "M")로 보입니다. 어느 장소인지 알아보는지 보세요. 마지막 증거인 왕관도 "C"로 보입니다.
 
 | 체크 | 1 목표 | 2 영어 | 3 시간 | 4 힌트 충분 | 5 답 노출 | 6 증거 | 7 다음 행동 | 8 이야기 | 9 재미 | 10 결말 |

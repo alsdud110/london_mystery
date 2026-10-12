@@ -61,8 +61,8 @@ const Map<String, LearningObjective> season1Learning = {
     dependency: LanguageDependency.essential,
     level: LearningLevel.comprehension,
     skill: LanguageSkill.vocabulary,
-    objective: '그림에 이름이 없다. 편지의 묘사(a big palace, soldiers in red coats)를 읽고 그림을 고른다.',
-    expressions: ['a big palace', 'They wear red coats and tall black hats'],
+    objective: '그림에 이름이 없다. 편지의 묘사(a big palace, a red flag, a fountain)를 읽고 그림을 고른다.',
+    expressions: ['a big palace', 'There is a fountain in front'],
   ),
   'm05': LearningObjective(
     dependency: LanguageDependency.low,
