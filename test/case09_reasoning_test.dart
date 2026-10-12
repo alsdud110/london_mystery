@@ -203,6 +203,7 @@ void main() {
           await reveal(t, find.text('GET A TIP'));
           await t.tap(find.text('GET A TIP'));
           await wait(t, const Duration(milliseconds: 700));
+          await takeTipFromSheet(t);
         }
         await reveal(t, findReadable(fin.hints.last));
         await capture(t, 'ep09_final_tips_$tag');

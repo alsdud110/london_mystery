@@ -26,6 +26,7 @@ Future<void> showDiscoveryMoment(
   required Mission mission,
   required Discovery discovery,
   required XpBreakdown xp,
+  int coins = 0,
   String buttonLabel = 'CONTINUE',
   List<GameBadge> newBadges = const [],
   VoidCallback? onEvidenceLaid,
@@ -42,6 +43,7 @@ Future<void> showDiscoveryMoment(
       discovery: discovery,
       buttonLabel: buttonLabel,
       xp: xp,
+      coins: coins,
       newBadges: newBadges,
       onEvidenceLaid: onEvidenceLaid,
     ),
@@ -56,6 +58,7 @@ class _DiscoveryMoment extends StatefulWidget {
     required this.buttonLabel,
     required this.xp,
     required this.newBadges,
+    this.coins = 0,
     this.onEvidenceLaid,
   });
 
@@ -63,6 +66,9 @@ class _DiscoveryMoment extends StatefulWidget {
   final Discovery discovery;
   final String buttonLabel;
   final XpBreakdown xp;
+
+  /// Coins this solve paid (0 for a mission paid before: not shown).
+  final int coins;
   final List<GameBadge> newBadges;
 
   /// The evidence card has just been laid down (only when one is shown).
@@ -221,7 +227,8 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                           Opacity(
                             opacity: _o(_xp),
                             child: Text(
-                              '+${(widget.xp.total * _xp.value).round()} XP',
+                              '+${(widget.xp.total * _xp.value).round()} XP'
+                              '${widget.coins > 0 ? '   ·   +${(widget.coins * _xp.value).round()} COINS' : ''}',
                               style: AppText.style(AppText.body,
                                       size: 16, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
                                   .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
@@ -403,7 +410,8 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
 }
 
 /// "Detective Tips": up to two hints, revealed one at a time. Framed as a
-/// partner's help (not a failure). Tips are free: they never cost XP.
+/// partner's help (not a failure). Tips never cost XP; tip 2 costs coins, or
+/// is given free when the coins are short (see the GET A TIP dialog).
 class TipsPanel extends StatelessWidget {
   const TipsPanel({super.key, required this.hints, required this.revealed, required this.onReveal, this.dark = false});
 
@@ -435,7 +443,7 @@ class TipsPanel extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: AppSpace.xs),
             child: Text(
-              revealed == 0 ? 'Tips are free. Good detectives use them.' : 'Tip ${revealed + 1} of ${hints.length}',
+              revealed == 0 ? 'Tip 1 is free. Good detectives use tips.' : 'Tip ${revealed + 1} of ${hints.length}',
               textAlign: TextAlign.center,
               style: AppText.caption(color: dark ? AppColors.paperLight.withValues(alpha: 0.8) : AppColors.muted),
             ),

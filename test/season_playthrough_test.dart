@@ -75,6 +75,7 @@ void main() {
     await tapText(t, 'CHECK ANSWER');
     expect(find.text('Not quite!'), findsOneWidget);
     await tapText(t, 'GET A TIP');
+    await takeTipFromSheet(t);
     expect(find.text('DETECTIVE TIP 1'), findsOneWidget);
     await tapText(t, 'Under the smallest bell', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);

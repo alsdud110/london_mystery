@@ -116,7 +116,9 @@ void main() {
       }
 
       expect({for (final e in season) e.id: fnv(jsonEncode(e.toJson()..remove('glossary')))}, const {
-        'ep01': 729564364,
+        // Case 01 M4 matches the palace artwork (commit 3ea9964: letter 2
+        // lines, option a feedback, 2 tips). See test/case01_m4_scope_test.dart.
+        'ep01': 3676363318,
         'ep02': 828099214,
         'ep03': 3051645969,
         'ep04': 2214622234,
@@ -187,10 +189,12 @@ void main() {
         await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
         expect(find.text('Not quite!'), findsOneWidget, reason: 'the try-again sheet is still open');
         await tapText(t, 'GET A TIP', after: const Duration(milliseconds: 700));
+        await takeTipFromSheet(t);
 
         final tip = byId('ep05').missionById('ep05_m2')!.hints.last;
         // The first tip opened from the sheet; open the second from the page.
         await tapText(t, 'Get a tip', after: const Duration(milliseconds: 600));
+        await takeTipFromSheet(t);
         await reveal(t, findReadable(tip));
         await t.tapOnText(find.textRange.ofSubstring('opposite'));
         await wait(t, const Duration(milliseconds: 600));

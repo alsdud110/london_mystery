@@ -15,7 +15,7 @@ import 'game_controller_test.dart' show fullRun;
 import 'helpers.dart';
 import 'mission_play.dart';
 
-/// XP rule 3 and the detective action badges: every solve is worth the same,
+/// XP rule 4 (rule 3's flat XP, smaller) and the detective action badges: every solve is worth the same,
 /// a lucky guess is never an achievement, tips and wrong answers cost
 /// nothing, action badges need a recorded action (never inferred), and saves
 /// from before keep their XP and badges.
@@ -23,7 +23,7 @@ void main() {
   final m = {for (final x in episode01.allMissions) x.id: x};
   final ids = episode01.allMissions.map((x) => x.id).toList();
 
-  group('XP rule 3 (controller)', () {
+  group('XP rule 4 (controller)', () {
     late ProviderContainer container;
     late DateTime clock;
     GameController ctrl() => container.read(gameControllerProvider.notifier);
@@ -42,39 +42,39 @@ void main() {
       GameController.now = DateTime.now;
     });
 
-    test('1-2. first try (understood or a lucky guess: the same input) = 100 XP, rule 3 recorded', () {
+    test('1-2. first try (understood or a lucky guess: the same input) = 30 XP, rule 4 recorded', () {
       ctrl().markMissionStarted('m01');
       clock = clock.add(const Duration(seconds: 5)); // fast, too
       ctrl().submitAnswer(m['m01']!, 'b');
-      expect(xpOf('m01'), 100);
-      expect(state().xpRules['m01'], 3);
+      expect(xpOf('m01'), 30);
+      expect(state().xpRules['m01'], 4);
     });
 
-    test('3. one wrong answer, then right = 100 XP', () {
+    test('3. one wrong answer, then right = 30 XP', () {
       ctrl().submitAnswer(m['m01']!, 'a');
       ctrl().submitAnswer(m['m01']!, 'b');
-      expect(xpOf('m01'), 100);
+      expect(xpOf('m01'), 30);
     });
 
-    test('4. three wrong answers, then right = 100 XP', () {
+    test('4. three wrong answers, then right = 30 XP', () {
       for (final w in ['a', 'c', 'd']) {
         ctrl().submitAnswer(m['m01']!, w);
       }
       ctrl().submitAnswer(m['m01']!, 'b');
-      expect(xpOf('m01'), 100);
+      expect(xpOf('m01'), 30);
     });
 
-    test('5-6. tip 1, or tips 1 and 2, then right = 100 XP', () {
+    test('5-6. tip 1, or tips 1 and 2, then right = 30 XP', () {
       ctrl().useHint(m['m01']!);
       ctrl().submitAnswer(m['m01']!, 'b');
-      expect(xpOf('m01'), 100);
+      expect(xpOf('m01'), 30);
       ctrl().useHint(m['m02']!);
       ctrl().useHint(m['m02']!);
       ctrl().submitAnswer(m['m02']!, 'stone');
-      expect(xpOf('m02'), 100);
+      expect(xpOf('m02'), 30);
     });
 
-    test('7. the final case: 200 XP on a first try, after wrong answers, after tips', () {
+    test('7. the final case: 60 XP on a first try, after wrong answers, after tips', () {
       for (final (id, answer) in fullRun) {
         ctrl().submitAnswer(m[id]!, answer);
       }
@@ -82,8 +82,8 @@ void main() {
       ctrl().useHint(m['final']!);
       ctrl().submitAnswer(m['final']!, '9472');
       ctrl().submitAnswer(m['final']!, '7924');
-      expect(xpOf('final'), 200);
-      expect(XpBreakdown.totalFor(episode01, state()), 5 * 100 + 200);
+      expect(xpOf('final'), 60);
+      expect(XpBreakdown.totalFor(episode01, state()), 5 * 30 + 60);
     });
 
     test('9-10. Sharp Eyes and Quick Thinker are never given again, even for a fast first-try case', () {
@@ -103,11 +103,11 @@ void main() {
       ctrl().submitAnswer(m['m01']!, 'b');
       final again = ctrl().submitAnswer(m['m01']!, 'b');
       expect(again.newBadges, isEmpty);
-      expect(XpBreakdown.totalFor(episode01, state()), 100);
+      expect(XpBreakdown.totalFor(episode01, state()), 30);
       ctrl().playAgain();
       ctrl().startInvestigation();
       ctrl().submitAnswer(m['m01']!, 'b');
-      expect(XpBreakdown.totalFor(episode01, state()), 100, reason: 'one run per case, never summed');
+      expect(XpBreakdown.totalFor(episode01, state()), 30, reason: 'one run per case, never summed');
       expect(state().badgeIds.toSet(), hasLength(state().badgeIds.length));
       expect(state().recordsBehavior, isTrue, reason: 'a new run records actions');
     });
@@ -271,7 +271,7 @@ void main() {
       ctrl().recordRecheck(m['m01']!);
       ctrl().submitAnswer(m['m01']!, 'b');
       expect(state().badgeIds, containsAll(['secondLook', 'wordCollector']));
-      expect(XpBreakdown.totalFor(episode01, state()), 100);
+      expect(XpBreakdown.totalFor(episode01, state()), 30);
     });
   });
 
@@ -391,7 +391,7 @@ void main() {
       await tapText(t, 'CHECK ANSWER', after: Duration.zero);
       await wait(t, const Duration(milliseconds: 2800));
       expect(find.textContaining('Second Look'), findsOneWidget, reason: 'the Discovery Moment names the new badge');
-      expect(find.text('+100 XP'), findsOneWidget);
+      expect(find.text('+30 XP   ·   +30 COINS'), findsOneWidget);
       expect(t.takeException(), isNull);
     });
 

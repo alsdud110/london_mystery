@@ -17,9 +17,12 @@ import '../../widgets/ink_icon.dart';
 /// - rule 2: base, and a bonus for answering on the first (+50) or second
 ///   (+25) try. It could not tell a lucky guess from understanding, and paid a
 ///   detective who misread once and corrected it less than a lucky guess;
-/// - rule 3 ([currentRule]): the same XP for everyone who reaches the answer
-///   (mission 100, final 200), whatever the wrong answers, tips or time. XP
-///   rewards solving the case; it is not a measure of English.
+/// - rule 3: the same XP for everyone who reaches the answer (mission 100,
+///   final 200), whatever the wrong answers, tips or time. XP rewards
+///   solving the case; it is not a measure of English;
+/// - rule 4 ([currentRule]): rule 3 with smaller numbers (mission 30, final
+///   60), the same as the coins a solve pays. Tips still never cost XP: they
+///   cost coins (see `Wallet`).
 @immutable
 class XpBreakdown {
   const XpBreakdown({required this.base, this.noHintBonus = 0, this.speedBonus = 0, this.carefulBonus = 0});
@@ -38,12 +41,13 @@ class XpBreakdown {
   int get total => base + noHintBonus + speedBonus + carefulBonus;
 
   /// The rule recorded for missions solved from now on.
-  static const currentRule = 3;
+  static const currentRule = 4;
 
   static XpBreakdown of(Mission m, GameProgress p) {
-    final base = m.isFinal ? AppConstants.finalBaseXp : AppConstants.missionBaseXp;
     final rule = p.xpRules[m.id] ?? 1;
-    if (rule >= 3) return XpBreakdown(base: base);
+    if (rule >= 4) return XpBreakdown(base: m.isFinal ? AppConstants.finalXp : AppConstants.missionXp);
+    final base = m.isFinal ? AppConstants.finalBaseXp : AppConstants.missionBaseXp;
+    if (rule == 3) return XpBreakdown(base: base);
     if (rule == 2) {
       return XpBreakdown(
         base: base,

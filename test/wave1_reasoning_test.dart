@@ -338,6 +338,7 @@ void main() {
         await reveal(t, find.text('GET A TIP'));
         await t.tap(find.text('GET A TIP'));
         await wait(t, const Duration(milliseconds: 600));
+        await takeTipFromSheet(t);
       }
       await reveal(t, findReadable(fin.hints.last));
       await capture(t, '${caseId}_final_tips_$tag');
@@ -391,6 +392,7 @@ void main() {
           await reveal(t, find.text('GET A TIP'));
           await t.tap(find.text('GET A TIP'));
           await wait(t, const Duration(milliseconds: 600));
+          await takeTipFromSheet(t);
         }
         await reveal(t, findReadable(byId('ep01').finalMission.hints.last));
         await capture(t, 'ep01_final_tips_$tag');

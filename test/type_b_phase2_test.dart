@@ -101,7 +101,7 @@ void main() {
     expect(essential, hasLength(10));
   });
 
-  test('XP rule 3 holds: tips and wrong answers in Case 02-04 change nothing', () async {
+  test('XP rule 4 holds: tips and wrong answers in Case 02-04 change nothing', () async {
     final container = ProviderContainer(overrides: await testOverrides());
     addTearDown(container.dispose);
     final ctrl = container.read(gameControllerProvider.notifier);
@@ -123,7 +123,7 @@ void main() {
     c.submitAnswer(m('ep02_final'), '917');
     final p = container.read(gameControllerProvider);
     expect(p.isCaseSolved, isTrue);
-    expect(XpBreakdown.totalFor(cases[0], p), 3 * 100 + 200);
+    expect(XpBreakdown.totalFor(cases[0], p), 3 * 30 + 60);
   });
 
   group('on screen', () {

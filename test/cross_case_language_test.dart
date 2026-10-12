@@ -144,7 +144,7 @@ void main() {
     expect(m3.expressions, containsAll(['the station that never sleeps', 'Meet me where trains never sleep']));
   });
 
-  test('XP rule 3 holds: Case 12 with a "before" slip is 3 × 100 + 200', () async {
+  test('XP rule 4 holds: Case 12 with a "before" slip is 3 × 30 + 60', () async {
     final container = ProviderContainer(overrides: await testOverrides());
     addTearDown(container.dispose);
     container.read(gameControllerProvider.notifier).registerDetective('KIM');
@@ -162,7 +162,7 @@ void main() {
     c.submitAnswer(m('ep12_final'), '487');
     final p = container.read(gameControllerProvider);
     expect(p.isCaseSolved, isTrue);
-    expect(XpBreakdown.totalFor(season.last, p), 3 * 100 + 200);
+    expect(XpBreakdown.totalFor(season.last, p), 3 * 30 + 60);
   });
 
   group('on screen', () {
@@ -191,6 +191,7 @@ void main() {
         final play = MissionPlay();
         await play.openPuzzle(t, size, 'ep11_m3');
         await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
+        await takeTipFromSheet(t);
         expect(find.textContaining('never sleeps'), findsOneWidget);
         expect(t.takeException(), isNull);
         await wait(t, const Duration(milliseconds: 200));

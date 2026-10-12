@@ -9,6 +9,7 @@ import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
+import 'package:london_mystery/features/game/wallet_controller.dart';
 import 'package:london_mystery/widgets/evidence_card.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -246,7 +247,7 @@ void main() {
       await play.solve(t, m);
       await wait(t, const Duration(milliseconds: 2600));
       final state = play.ref.read(gameControllerProvider);
-      expect(find.text('+${XpBreakdown.of(m, state).total} XP'), findsOneWidget);
+      expect(find.text('+${XpBreakdown.of(m, state).total} XP   ·   +${WalletController.coinsFor(m)} COINS'), findsOneWidget);
       expect(state.isCompleted('ep10_m3'), isTrue, reason: 'saved before the moment');
       await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
       await wait(t, const Duration(seconds: 3));

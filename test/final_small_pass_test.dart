@@ -286,6 +286,7 @@ void main() {
         await reveal(t, find.text('GET A TIP'));
         await t.tap(find.text('GET A TIP'));
         await wait(t, const Duration(milliseconds: 600));
+        await takeTipFromSheet(t);
       }
       for (final h in fin.hints) {
         await reveal(t, findReadable(h));
@@ -377,7 +378,10 @@ const _otherCases = <String, int>{
   // other field is unchanged, see test/audit_fix_d4_d5_test.dart.
   // TYPE B representative-case pass (approved 2026-10-12): Case 01, 05, 12.
   // TYPE B Phase 3B (approved 2026-10-12): 09, 10, 11 + alt text for 01-M4, 04-M3.
-  'ep01': 1794640298,
+  // Case 01 M4 matches the palace artwork (commit 3ea9964: letter 2 lines,
+  // option a feedback, 2 tips; was 433367548), and its new words flag, flies,
+  // fountain in the glossary (QA 2026-10-13). See test/case01_m4_scope_test.dart.
+  'ep01': 3818454493,
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
   'ep02': 1070329097,
   'ep03': 2903481512,

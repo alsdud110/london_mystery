@@ -11,6 +11,9 @@ abstract final class AppConstants {
   /// Which case is open and which cases are solved (see `SeasonProgress`).
   static const seasonStorageKey = 'lm.season.v1';
 
+  /// The detective's coins (see `Wallet`): one wallet for the whole device.
+  static const walletStorageKey = 'lm.wallet.v1';
+
   static String progressKeyFor(String episodeId) =>
       episodeId == currentEpisodeId ? progressStorageKey : '$progressStorageKey.$episodeId';
   static const soundEnabledKey = 'lm.settings.sound';
@@ -23,6 +26,11 @@ abstract final class AppConstants {
   static const maxHints = 2;
 
   // XP rules (see XpBreakdown).
+  // Rule 4 (current): the same XP for every solve, smaller numbers.
+  static const missionXp = 30;
+  static const finalXp = 60;
+
+  // Rules 1-3 (kept for missions solved under them).
   static const missionBaseXp = 100;
   static const finalBaseXp = 200;
 
@@ -36,4 +44,17 @@ abstract final class AppConstants {
   static const speedBonusXp = 20;
   static const fastMissionSeconds = 120;
   static const fastFinalSeconds = 180;
+
+  // Coins (see `Wallet`): earned by solving, spent on Detective Tips. Every
+  // price and reward lives here.
+  /// Each mission pays once, ever (a case played again pays nothing more).
+  static const missionCoins = 30;
+  static const finalCoins = 60;
+
+  /// Given once, when the wallet is made, so the first paid tip is in reach.
+  static const startCoins = 20;
+
+  /// Price of tip 1 and tip 2 of a mission. Tip 1 is always free; a tip the
+  /// detective cannot pay for is given free too, so no one is ever stuck.
+  static const tipPrices = [0, 20];
 }

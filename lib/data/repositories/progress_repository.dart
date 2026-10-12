@@ -6,9 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
 import '../models/game_progress.dart';
 import '../models/season_progress.dart';
+import '../models/wallet.dart';
 
 /// Persists the player's runs so they survive app restarts: one
-/// [GameProgress] per case, plus the [SeasonProgress] record.
+/// [GameProgress] per case, the [SeasonProgress] record and the [Wallet].
 abstract interface class ProgressRepository {
   GameProgress load([String episodeId = AppConstants.currentEpisodeId]);
 
@@ -18,7 +19,13 @@ abstract interface class ProgressRepository {
 
   Future<void> saveSeason(SeasonProgress season);
 
-  /// Removes every case save and the season record.
+  /// The coins, or null when no wallet was ever saved (a new player, or a
+  /// save from before coins existed).
+  Wallet? loadWallet();
+
+  Future<void> saveWallet(Wallet wallet);
+
+  /// Removes every case save, the season record and the wallet.
   Future<void> clear();
 }
 
@@ -61,6 +68,16 @@ class SharedPrefsProgressRepository implements ProgressRepository {
       _prefs.setString(AppConstants.seasonStorageKey, jsonEncode(season.toJson()));
 
   @override
+  Wallet? loadWallet() {
+    final json = _read(AppConstants.walletStorageKey);
+    return json == null ? null : Wallet.fromJson(json);
+  }
+
+  @override
+  Future<void> saveWallet(Wallet wallet) =>
+      _prefs.setString(AppConstants.walletStorageKey, jsonEncode(wallet.toJson()));
+
+  @override
   Future<void> clear() async {
     final keys = _prefs
         .getKeys()
@@ -70,6 +87,7 @@ class SharedPrefsProgressRepository implements ProgressRepository {
       await _prefs.remove(k);
     }
     await _prefs.remove(AppConstants.seasonStorageKey);
+    await _prefs.remove(AppConstants.walletStorageKey);
   }
 }
 
@@ -80,6 +98,7 @@ class InMemoryProgressRepository implements ProgressRepository {
 
   final Map<String, GameProgress> _progress;
   SeasonProgress _season = SeasonProgress.empty;
+  Wallet? _wallet;
 
   @override
   GameProgress load([String episodeId = AppConstants.currentEpisodeId]) => _progress[episodeId] ?? GameProgress.empty;
@@ -95,8 +114,15 @@ class InMemoryProgressRepository implements ProgressRepository {
   Future<void> saveSeason(SeasonProgress season) async => _season = season;
 
   @override
+  Wallet? loadWallet() => _wallet;
+
+  @override
+  Future<void> saveWallet(Wallet wallet) async => _wallet = wallet;
+
+  @override
   Future<void> clear() async {
     _progress.clear();
     _season = SeasonProgress.empty;
+    _wallet = null;
   }
 }

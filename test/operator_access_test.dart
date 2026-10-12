@@ -205,6 +205,13 @@ void main() {
       await wait(t);
       final label = find.text('전체 사건 열기 (OPERATOR MODE)');
       await t.dragUntilVisible(label, find.byType(ListView).last, const Offset(0, -200));
+      // What it does, as it really does it (plan A, 2026-10-13).
+      expect(
+        find.text('Operator Mode lets you open cases for testing. '
+            'If you solve missions, your progress and rewards will be saved.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('바뀌지 않습니다'), findsNothing);
       await t.tap(label);
       await wait(t);
       expect(appRef.read(operatorAccessProvider), isTrue);

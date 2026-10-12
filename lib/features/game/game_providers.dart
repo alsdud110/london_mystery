@@ -170,9 +170,9 @@ final operatorToolsAvailableProvider = Provider<bool>((ref) => operatorToolsInBu
 /// Operator full case access, for QA: every case file of the season opens,
 /// out of order (see [SeasonNotifier.isUnlocked]). Switched on in the Game
 /// Master tools, behind the parent gate; never on in a build without
-/// operator tools. Access only: it marks no case solved and gives no XP,
-/// badges or evidence — those still come from playing. Session-only, never
-/// saved, so a restart turns it off.
+/// operator tools. Turning it on marks no case solved and gives nothing; a
+/// mission solved while it is on is saved (progress, XP, coins) as in normal
+/// play. Session-only, never saved, so a restart turns it off.
 class OperatorAccessNotifier extends Notifier<bool> {
   @override
   bool build() => false;

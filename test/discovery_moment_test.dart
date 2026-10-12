@@ -12,6 +12,7 @@ import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/scoring.dart';
+import 'package:london_mystery/features/game/wallet_controller.dart';
 import 'package:london_mystery/features/mission/widgets/answer_feedback.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -215,7 +216,8 @@ void main() {
         }
         final state = play.ref.read(gameControllerProvider);
         expect(state.isCompleted(id), isTrue, reason: 'saved before the moment opens');
-        expect(find.text('+${XpBreakdown.of(m, state).total} XP'), findsOneWidget, reason: 'the XP stays');
+        expect(find.text('+${XpBreakdown.of(m, state).total} XP   ·   +${WalletController.coinsFor(m)} COINS'), findsOneWidget,
+            reason: 'the XP and coins stay');
         // Nothing moves on by itself.
         await wait(t, const Duration(seconds: 4));
         expect(path(), Routes.mission(id));

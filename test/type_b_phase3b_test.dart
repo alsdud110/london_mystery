@@ -189,7 +189,7 @@ void main() {
     expect(all.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential), hasLength(41));
   });
 
-  test('XP rule 3 holds: Case 10 with tips and wrong orders is 3 × 100 + 200', () async {
+  test('XP rule 4 holds: Case 10 with tips and wrong orders is 3 × 30 + 60', () async {
     final container = ProviderContainer(overrides: await testOverrides());
     addTearDown(container.dispose);
     container.read(gameControllerProvider.notifier).registerDetective('KIM');
@@ -210,6 +210,6 @@ void main() {
     c.submitAnswer(m('ep10_final'), 'clockmaker,stop,bigben,midnight');
     final p = container.read(gameControllerProvider);
     expect(p.isCaseSolved, isTrue);
-    expect(XpBreakdown.totalFor(cases[1], p), 3 * 100 + 200);
+    expect(XpBreakdown.totalFor(cases[1], p), 3 * 30 + 60);
   });
 }

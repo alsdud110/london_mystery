@@ -173,8 +173,8 @@ class GameMasterScreen extends ConsumerWidget {
                   contentPadding: EdgeInsets.zero,
                   title: Text('전체 사건 열기 (OPERATOR MODE)', style: AppText.subtitle()),
                   subtitle: Text(
-                    'CASE 01~${catalog.last.numberLabel}을 순서와 상관없이 열 수 있습니다. 해결 기록·XP·배지·증거는 '
-                    '바뀌지 않습니다(위의 "CASE NN부터"와 달리 이전 사건을 해결로 표시하지 않음). 앱을 다시 시작하면 꺼집니다.',
+                    'Operator Mode lets you open cases for testing. '
+                    'If you solve missions, your progress and rewards will be saved.',
                     style: AppText.caption(),
                   ),
                   value: operatorOn,

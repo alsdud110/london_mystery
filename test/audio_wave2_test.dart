@@ -406,6 +406,7 @@ void main() {
       audio.played.clear();
       for (var i = 0; i < m.hints.length; i++) {
         await tapText(t, 'GET A TIP', after: const Duration(milliseconds: 400));
+        await takeTipFromSheet(t);
       }
       expect(audio.played, List.filled(m.hints.length, GameSound.pencilNote));
       expect(ref.read(gameControllerProvider).hintsFor(m.id), m.hints.length);

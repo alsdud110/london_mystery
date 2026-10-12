@@ -62,7 +62,7 @@ void main() {
     expect(container.read(recentUnlockProvider), 'm02');
   });
 
-  // XP rule 3: tips are help, not failure, so they cost nothing.
+  // XP rule 4 (as rule 3): tips are help, not failure, so they cost no XP.
   test('hints open one at a time, at most two, and are free', () {
     ctrl().registerDetective('Kim');
     ctrl().startInvestigation();
@@ -72,11 +72,11 @@ void main() {
     expect(state().totalHints, 2);
 
     ctrl().submitAnswer(m['m01']!, 'b');
-    expect(XpBreakdown.of(m['m01']!, state()).total, 100, reason: 'two tips: the same XP as any solve');
+    expect(XpBreakdown.of(m['m01']!, state()).total, 30, reason: 'two tips: the same XP as any solve');
     expect(ctrl().useHint(m['m01']!), 2, reason: 'no hints after solving');
   });
 
-  test('XP rule 3: +100 for everyone who solves, whatever the tries, tips or time', () {
+  test('XP rule 4: +30 for everyone who solves, whatever the tries, tips or time', () {
     ctrl().registerDetective('Kim');
     ctrl().startInvestigation();
 
@@ -84,7 +84,7 @@ void main() {
     clock = clock.add(const Duration(seconds: 40));
     ctrl().submitAnswer(m['m01']!, 'b');
     final first = XpBreakdown.of(m['m01']!, state());
-    expect((first.base, first.carefulBonus, first.speedBonus, first.total), (100, 0, 0, 100));
+    expect((first.base, first.carefulBonus, first.speedBonus, first.total), (30, 0, 0, 30));
     expect(state().xpRules['m01'], XpBreakdown.currentRule);
 
     ctrl().markMissionStarted('m02');
@@ -93,14 +93,14 @@ void main() {
     ctrl().submitAnswer(m['m02']!, 'rock');
     ctrl().submitAnswer(m['m02']!, 'stone');
     final second = XpBreakdown.of(m['m02']!, state());
-    expect((second.base, second.carefulBonus, second.total), (100, 0, 100));
+    expect((second.base, second.carefulBonus, second.total), (30, 0, 30));
     expect(state().solveSeconds['m02'], 300);
 
     for (final guess in ['000', '111']) {
       ctrl().submitAnswer(m['m03']!, guess);
     }
     ctrl().submitAnswer(m['m03']!, '417');
-    expect(XpBreakdown.of(m['m03']!, state()).total, 100, reason: 'the base is never lost');
+    expect(XpBreakdown.of(m['m03']!, state()).total, 30, reason: 'the base is never lost');
   });
 
   test('records wrong answers, clues, evidence and looked-up words', () {

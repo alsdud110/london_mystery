@@ -31,6 +31,7 @@ enum InkGlyph {
   hint,
 
   // Game
+  coin,
   check,
   qr,
   pen,
@@ -475,6 +476,12 @@ class _InkGlyphPainter extends CustomPainter {
             ..arcToPoint(const Offset(15, 18.5), radius: const Radius.circular(1.5), clockwise: false),
           p,
         );
+      case InkGlyph.coin:
+        // A detective's coin: the rim, an inner ring, a small star struck in.
+        canvas.drawCircle(const Offset(12, 12), 8.5, p);
+        canvas.drawCircle(const Offset(12, 12), 6, p);
+        poly(const [Offset(12, 9), Offset(13, 11.4), Offset(15.2, 11.4), Offset(13.4, 12.9), Offset(14.1, 15.2),
+          Offset(12, 13.8), Offset(9.9, 15.2), Offset(10.6, 12.9), Offset(8.8, 11.4), Offset(11, 11.4)], close: true);
       case InkGlyph.seal:
         canvas.drawCircle(const Offset(12, 12), 8.5, p);
         canvas.drawCircle(const Offset(12, 12), 5, p);

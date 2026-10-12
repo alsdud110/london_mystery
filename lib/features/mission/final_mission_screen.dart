@@ -26,8 +26,10 @@ import '../../widgets/desk_background.dart';
 import '../../widgets/symbol_icon.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
+import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/question_widgets.dart';
+import 'widgets/tip_shop.dart';
 
 /// The final case: four picture locks. The player must combine what they
 /// collected — the lock order (Crown Symbol evidence) and the number each
@@ -82,6 +84,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   bool _solvedNow = false;
   bool _rung = false;
 
+  /// What this solve paid, shown above CONTINUE: its XP and the coins
+  /// actually added (0 when the case was paid before, e.g. played again).
+  int _xpEarned = 0;
+  int _coinsEarned = 0;
+
   /// Big Ben rings as the news comes up ("Big Ben rings again!", at 0.55 of
   /// the opening), after the clock has caught: once.
   void _ringBell() {
@@ -96,10 +103,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   }
 
   /// A tip asked for: written into the notebook, with the pencil.
-  void _showHint() {
+  /// GET A TIP: the small confirm dialog (coins, price). A tip revealed
+  /// from it is written onto the page, with the pencil.
+  Future<void> _showHint() async {
     if (ref.read(gameControllerProvider).hintsFor(_mission.id) >= _mission.hints.length) return;
-    ref.read(gameControllerProvider.notifier).useHint(_mission);
-    ref.read(audioServiceProvider).play(GameSound.pencilNote);
+    if (await showTipShop(context, _mission) && mounted) ref.read(audioServiceProvider).play(GameSound.pencilNote);
   }
 
   Future<void> _tryOpen() => _submit(_digits.join());
@@ -123,6 +131,8 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         if (choice == TryAgainChoice.hint && mounted) _showHint();
       case SubmitResult.correct:
         _solvedNow = true;
+        _xpEarned = XpBreakdown.of(_mission, ref.read(gameControllerProvider)).total;
+        _coinsEarned = outcome.coins;
         // A thing of the story (the Royal Box, the Great Clock, a heavy
         // lock) sounds as it opens on screen; otherwise the final's cue now.
         final sound = solveSoundOf(_mission);
@@ -406,23 +416,43 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   Widget _solvedActions() => AnimatedBuilder(
     animation: _open,
     builder: (context, child) => Opacity(opacity: ((_open.value - 0.8) / 0.2).clamp(0, 1), child: child),
-    // The story goes on after the case (its post-case scene, which ends on
-    // SEE MY CASE REPORT); a case without one goes straight to the report.
-    child: _mission.transition.isEmpty
-        ? GameButton(
-            label: 'SEE MY CASE REPORT',
-            glyph: InkGlyph.folder,
-            style: GameButtonStyle.glass,
-            onPressed: () => context.go(Routes.solved),
-          )
-        : GameButton(
-            label: 'CONTINUE',
-            arrow: true,
-            style: GameButtonStyle.glass,
-            tap: TapRole.primary,
-            onPressed: () => context.go(Routes.story(_mission.id)),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Only for the solve just made (not a revisit): what it paid, as the
+        // Discovery Moment shows it. No coins when none were added.
+        if (_solvedNow && _xpEarned > 0) ...[
+          Text(
+            '+$_xpEarned XP${_coinsEarned > 0 ? '   ·   +$_coinsEarned COINS' : ''}',
+            key: const ValueKey('final-reward'),
+            textAlign: TextAlign.center,
+            style: AppText.style(AppText.body, size: 16, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
+                .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
           ),
+          const SizedBox(height: AppSpace.md),
+        ],
+        _nextButton(),
+      ],
+    ),
   );
+
+  // The story goes on after the case (its post-case scene, which ends on
+  // SEE MY CASE REPORT); a case without one goes straight to the report.
+  Widget _nextButton() => _mission.transition.isEmpty
+      ? GameButton(
+          label: 'SEE MY CASE REPORT',
+          glyph: InkGlyph.folder,
+          style: GameButtonStyle.glass,
+          onPressed: () => context.go(Routes.solved),
+        )
+      : GameButton(
+          label: 'CONTINUE',
+          arrow: true,
+          style: GameButtonStyle.glass,
+          tap: TapRole.primary,
+          onPressed: () => context.go(Routes.story(_mission.id)),
+        );
 }
 
 /// One lock: a picture on top and a number wheel below.

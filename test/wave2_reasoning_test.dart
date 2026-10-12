@@ -282,6 +282,7 @@ void main() {
         await reveal(t, find.text(label));
         await t.tap(find.text(label));
         await wait(t, const Duration(milliseconds: 700));
+        await takeTipFromSheet(t);
         // A mission page asks again in the try-again sheet only on a wrong answer: none here.
       }
       await reveal(t, findReadable(m.hints.last));

@@ -146,7 +146,7 @@ void main() {
     expect(learningOf(m('ep06_final'))!.dependency, LanguageDependency.helpful);
   });
 
-  test('XP rule 3 holds: Case 06 with tips and wrong answers is 3 × 100 + 200', () async {
+  test('XP rule 4 holds: Case 06 with tips and wrong answers is 3 × 30 + 60', () async {
     final container = ProviderContainer(overrides: await testOverrides());
     addTearDown(container.dispose);
     container.read(gameControllerProvider.notifier).registerDetective('KIM');
@@ -168,7 +168,7 @@ void main() {
     c.submitAnswer(m('ep06_final'), 'c');
     final p = container.read(gameControllerProvider);
     expect(p.isCaseSolved, isTrue);
-    expect(XpBreakdown.totalFor(cases[0], p), 3 * 100 + 200);
+    expect(XpBreakdown.totalFor(cases[0], p), 3 * 30 + 60);
   });
 
   group('on screen', () {

@@ -6,17 +6,21 @@ import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import 'game_providers.dart';
 import 'scoring.dart';
+import 'wallet_controller.dart';
 
 /// Result of submitting an answer.
 enum SubmitResult { correct, tryAgain, locked }
 
 class SubmitOutcome {
-  const SubmitOutcome(this.result, {this.newBadges = const []});
+  const SubmitOutcome(this.result, {this.newBadges = const [], this.coins = 0});
 
   final SubmitResult result;
 
   /// Badges earned by this answer (shown in the success celebration).
   final List<GameBadge> newBadges;
+
+  /// Coins this answer paid (0 for a mission paid before).
+  final int coins;
 }
 
 /// Owns the player's run. Every change is persisted immediately so the game
@@ -219,6 +223,9 @@ class GameController extends Notifier<GameProgress> {
       return const SubmitOutcome(SubmitResult.tryAgain);
     }
 
+    // Paid before the solve is saved: a wallet made right now (a save from
+    // before coins) then pays it as this solve, not as an old one.
+    final coins = ref.read(walletProvider.notifier).rewardMission(mission);
     final solvedAt = now();
     final seconds = _solveSeconds(mission.id, solvedAt);
     var next = state.copyWith(
@@ -248,7 +255,7 @@ class GameController extends Notifier<GameProgress> {
     if (mission.nextMissionId != null) {
       ref.read(recentUnlockProvider.notifier).set(mission.nextMissionId);
     }
-    return SubmitOutcome(SubmitResult.correct, newBadges: newBadges);
+    return SubmitOutcome(SubmitResult.correct, newBadges: newBadges, coins: coins);
   }
 
   /// Clears the case but keeps the detective name.
@@ -263,6 +270,7 @@ class GameController extends Notifier<GameProgress> {
     ref.read(recentSolveProvider.notifier).clear();
     state = GameProgress.empty;
     await ref.read(progressRepositoryProvider).clear();
+    ref.read(walletProvider.notifier).startFresh();
     ref.read(seasonProvider.notifier).reset(); // back to Case 01
   }
 }

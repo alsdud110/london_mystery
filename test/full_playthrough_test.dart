@@ -152,6 +152,7 @@ void main() {
     expect(findReadableContaining('Rockets and machines?'), findsOneWidget);
     expect(audio.played, contains(GameSound.puzzleWrong));
     await tapText(t, 'GET A TIP');
+    await takeTipFromSheet(t);
     expect(find.text('DETECTIVE TIP 1'), findsOneWidget);
     await tapText(t, 'The British Museum (treasures from long ago)', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
@@ -172,7 +173,9 @@ void main() {
     // ── Mission 02: word input, using both tips.
     await openMission(t, 'GO TO BRITISH MUSEUM');
     await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
+    await takeTipFromSheet(t);
     await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
+    await takeTipFromSheet(t);
     expect(find.text('DETECTIVE TIP 2'), findsOneWidget);
     expect(find.text('Get a tip'), findsNothing, reason: 'at most two tips');
     await reveal(t, find.byType(TextField));

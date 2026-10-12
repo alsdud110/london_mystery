@@ -90,8 +90,8 @@ void main() {
       ctrl().submitAnswer(m['m02']!, 'stone');
       final read = XpBreakdown.of(m['m02']!, state()).total;
 
-      expect(guessed, AppConstants.missionBaseXp);
-      expect(read, AppConstants.missionBaseXp);
+      expect(guessed, AppConstants.missionXp);
+      expect(read, AppConstants.missionXp);
       expect(GameBadge.sharpEyes.isEarned(episode01, state()), isFalse, reason: 'retired');
       expect(GameBadge.quickThinker.isEarned(episode01, state()), isFalse, reason: 'retired');
     });

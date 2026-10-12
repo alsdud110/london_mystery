@@ -28,6 +28,7 @@ import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/question_widgets.dart';
+import 'widgets/tip_shop.dart';
 
 /// The three steps of a mission. Each screen offers one main action.
 enum MissionStage { story, letter, puzzle }
@@ -84,11 +85,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
 
   void _onLetterOpened() => setState(() => _letterOpened = true);
 
-  /// A tip asked for: written into the notebook, with the pencil.
-  void _showHint(Mission m) {
+  /// GET A TIP: the small confirm dialog (coins, price). A tip revealed
+  /// from it is written onto the page, with the pencil.
+  Future<void> _showHint(Mission m) async {
     if (ref.read(gameControllerProvider).hintsFor(m.id) >= m.hints.length) return;
-    ref.read(gameControllerProvider.notifier).useHint(m);
-    ref.read(audioServiceProvider).play(GameSound.pencilNote);
+    if (await showTipShop(context, m) && mounted) ref.read(audioServiceProvider).play(GameSound.pencilNote);
   }
 
   void _rereadLetter(Mission m) {
@@ -147,6 +148,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           mission: m,
           discovery: discoveryOf(m),
           xp: XpBreakdown.of(m, progress),
+          coins: outcome.coins,
           newBadges: outcome.newBadges,
           onEvidenceLaid: () => audio.play(GameSound.paperPlace),
         );
