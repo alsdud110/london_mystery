@@ -289,5 +289,7 @@ const Map<String, dynamic> episode10Json = {
     'speak': '말하다',
     'watching': '지켜보는',
     'message': '메시지',
+    'together': '함께, 합쳐서',
+    'enough': '충분한',
   },
 };

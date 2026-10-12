@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +14,7 @@ import '../../../data/models/mission.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/art_assets.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/landmark_art.dart';
 import '../../game/game_providers.dart';
 import 'qr_question.dart';
@@ -219,7 +221,7 @@ class _MultipleChoiceQuestionState
   }
 }
 
-class _ChoiceTile extends StatelessWidget {
+class _ChoiceTile extends ConsumerWidget {
   const _ChoiceTile({
     required this.letter,
     required this.label,
@@ -235,12 +237,21 @@ class _ChoiceTile extends StatelessWidget {
   AnswerState get state => selected ? AnswerState.selected : AnswerState.idle;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Choosing always comes first: a card's words are dotted (tap: meaning,
+    // the card stays chosen) only once it is chosen, so a tap on a card not
+    // yet chosen always chooses it. Screen readers hear the card as one
+    // answer, so its words come as actions instead.
+    final words = glossaryWordsOf(ref.watch(currentEpisodeProvider), label);
     return Semantics(
       button: true,
       selected: selected,
       label: '$letter. $label',
       excludeSemantics: true,
+      customSemanticsActions: {
+        for (final w in words)
+          CustomSemanticsAction(label: 'Meaning of ${w.word}'): () => lookUpAndShowWord(context, ref, w.word, w.meaning),
+      },
       child: _Pressable(
         onTap: onTap,
         // A card on the desk; the chosen one is filled in navy ink.
@@ -257,9 +268,12 @@ class _ChoiceTile extends StatelessWidget {
               _LetterMark(letter, inverse: selected),
               const SizedBox(width: AppSpace.md),
               Expanded(
-                child: Text(
+                child: GlossaryText(
                   label,
                   style: AppText.subtitle(color: _answerInk(state)),
+                  linkColor: AppColors.goldLight,
+                  interactive: selected,
+                  wordSemantics: false,
                 ),
               ),
               if (selected)

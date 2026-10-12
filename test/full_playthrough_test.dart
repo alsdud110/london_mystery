@@ -149,7 +149,7 @@ void main() {
     await tapText(t, 'CHECK ANSWER');
     expect(find.text('Not quite!'), findsOneWidget);
     // TYPE B: the wrong option says what was misread, not the answer.
-    expect(find.textContaining('Rockets and machines?'), findsOneWidget);
+    expect(findReadableContaining('Rockets and machines?'), findsOneWidget);
     expect(audio.played, contains(GameSound.puzzleWrong));
     await tapText(t, 'GET A TIP');
     expect(find.text('DETECTIVE TIP 1'), findsOneWidget);

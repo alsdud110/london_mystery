@@ -27,3 +27,9 @@ Finder findReadable(String text) => find.byWidgetPredicate(
       (w) => w is Text && (w.data ?? w.textSpan?.toPlainText(includeSemanticsLabels: false)) == text,
       description: 'text "$text" (as read)',
     );
+
+/// Like [findReadable], for a part of the text.
+Finder findReadableContaining(String part) => find.byWidgetPredicate(
+      (w) => w is Text && (w.data ?? w.textSpan?.toPlainText(includeSemanticsLabels: false) ?? '').contains(part),
+      description: 'text containing "$part" (as read)',
+    );

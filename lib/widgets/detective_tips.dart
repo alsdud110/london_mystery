@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
+import 'glossary_text.dart';
 import 'paper.dart';
 
 /// Detective tips that were opened, as small handwritten notes.
@@ -35,7 +36,7 @@ class DetectiveTipNotes extends StatelessWidget {
                   children: [
                     Text('DETECTIVE TIP ${i + 1}', style: AppText.eyebrow()),
                     const SizedBox(height: AppSpace.xs),
-                    Text(hints[i], style: AppText.letter(size: 17)),
+                    GlossaryText(hints[i], style: AppText.letter(size: 17)),
                   ],
                 ),
               ),

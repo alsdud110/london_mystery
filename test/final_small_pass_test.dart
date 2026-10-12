@@ -270,7 +270,7 @@ void main() {
     /// The letter, the question, every card (whole, inside the screen, tall
     /// enough to tap) and both tips.
     Future<void> checkPage(WidgetTester t, Size size, Mission fin, String tag) async {
-      await reveal(t, find.text(fin.question));
+      await reveal(t, findReadable(fin.question));
       await capture(t, '${fin.id}_small_pass_question_$tag');
       for (final o in fin.options) {
         final card = find.text(o.label);
@@ -288,7 +288,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 600));
       }
       for (final h in fin.hints) {
-        await reveal(t, find.text(h));
+        await reveal(t, findReadable(h));
       }
       await capture(t, '${fin.id}_small_pass_tips_$tag');
       expect(t.takeException(), isNull);
@@ -373,23 +373,26 @@ void main() {
 
 /// See test 17.
 const _otherCases = <String, int>{
+  // Audit fix D4·D5 (2026-10-12): glossary entries only (Case 01-11); every
+  // other field is unchanged, see test/audit_fix_d4_d5_test.dart.
   // TYPE B representative-case pass (approved 2026-10-12): Case 01, 05, 12.
   // TYPE B Phase 3B (approved 2026-10-12): 09, 10, 11 + alt text for 01-M4, 04-M3.
-  'ep01': 3464222970,
+  'ep01': 1794640298,
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
-  'ep02': 3180717624,
-  'ep03': 783372977,
+  'ep02': 1070329097,
+  'ep03': 2903481512,
   // Audit fix D3 (2026-10-12): the postmark keeps only its picture.
-  'ep04': 1501817808,
+  'ep04': 1168042718,
   // Audit fix D2 (2026-10-12): 05-M3 shows the warning on the wall.
-  'ep05': 3758344530,
+  'ep05': 1744860961,
   // Post-discovery small pass: one transition line each (07 M3, 10 M2).
   // TYPE B Phase 3A (approved 2026-10-12): Case 07 feedback lines (06, 08: guarded above).
-  'ep07': 3109320776,
-  'ep09': 606397943,
-  'ep10': 3529211738,
+  // Audit follow-up (2026-10-12): Case 07 glossary 'right' also means 맞는.
+  'ep07': 3755420405,
+  'ep09': 1605147981,
+  'ep10': 1810398867,
   // Phase 4 (approved 2026-10-12): 11-M3 tip 1 (never sleeps), 12-M2 board + after, 12-F whose.
   // Audit fix N1 (2026-10-12): 11-M2 tip 1 reads from the last letter, M.
-  'ep11': 3210604168,
+  'ep11': 913478642,
   'ep12': 3787923803,
 };

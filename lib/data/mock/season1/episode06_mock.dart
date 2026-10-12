@@ -294,5 +294,7 @@ const Map<String, dynamic> episode06Json = {
     'ticket': '표',
     'row': '줄, 열',
     'seat': '좌석',
+    'compare': '비교하다',
+    'matches': '~와 맞다, 일치하다',
   },
 };

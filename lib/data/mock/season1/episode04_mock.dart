@@ -273,7 +273,7 @@ const Map<String, dynamic> episode04Json = {
     'guide': '안내',
     'ticket': '표',
     'office': '사무실',
-    'open': '열려 있는',
+    'open': '열려 있는, 열다',
     'never': '결코 ~않다',
     'sleep': '자다',
     'postmark': '우편 소인',
@@ -289,5 +289,6 @@ const Map<String, dynamic> episode04Json = {
     'neat': '깔끔한',
     'pressed': '눌러 찍힌',
     'watching': '지켜보고 있는',
+    'describes': '묘사하다, 설명하다',
   },
 };

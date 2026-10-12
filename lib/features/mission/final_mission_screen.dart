@@ -347,11 +347,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   );
 
   List<Widget> _puzzle(Mission m, int hintsShown) => [
-    Text(
+    GlossaryText(
       key: _locksKey,
       m.question,
       textAlign: TextAlign.center,
       style: AppText.title(size: 24, color: AppColors.goldLight),
+      linkColor: AppColors.paperLight,
     ),
     const SizedBox(height: 16),
     if (m.type == MissionType.finalCode) ...[

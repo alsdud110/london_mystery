@@ -287,5 +287,11 @@ const Map<String, dynamic> episode03Json = {
     'sewn': '바느질된',
     'taxi': '택시',
     'museum': '박물관',
+    'smells': '냄새가 나다',
+    'smoke': '연기',
+    'wettest': '가장 젖은',
+    'driest': '가장 마른',
+    'luggage': '여행 짐',
+    'property': '물건',
   },
 };

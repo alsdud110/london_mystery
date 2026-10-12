@@ -324,7 +324,7 @@ void main() {
     /// both tips.
     Future<void> checkPuzzle(WidgetTester t, Size size, String caseId, String tag) async {
       final fin = byId(caseId).finalMission;
-      await reveal(t, find.text(fin.question));
+      await reveal(t, findReadable(fin.question));
       await capture(t, '${caseId}_final_question_$tag');
       for (final o in fin.options) {
         final card = find.text(o.label);
@@ -339,7 +339,7 @@ void main() {
         await t.tap(find.text('GET A TIP'));
         await wait(t, const Duration(milliseconds: 600));
       }
-      await reveal(t, find.text(fin.hints.last));
+      await reveal(t, findReadable(fin.hints.last));
       await capture(t, '${caseId}_final_tips_$tag');
       expect(t.takeException(), isNull);
     }
@@ -392,7 +392,7 @@ void main() {
           await t.tap(find.text('GET A TIP'));
           await wait(t, const Duration(milliseconds: 600));
         }
-        await reveal(t, find.text(byId('ep01').finalMission.hints.last));
+        await reveal(t, findReadable(byId('ep01').finalMission.hints.last));
         await capture(t, 'ep01_final_tips_$tag');
         expect(t.takeException(), isNull);
         await wait(t, const Duration(seconds: 2));

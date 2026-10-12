@@ -264,5 +264,7 @@ const Map<String, dynamic> episode11Json = {
     'theatre': '극장',
     'seat': '좌석',
     'row': '줄',
+    'shapes': '모양들',
+    'tunnel': '터널',
   },
 };

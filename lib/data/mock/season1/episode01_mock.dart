@@ -413,7 +413,7 @@ const Map<String, dynamic> episode01Json = {
     'heavy': '무거운',
     'locks': '자물쇠들',
     'carved': '새겨진',
-    'king': '왕',
+    'king': "왕 (King's Cross: 런던의 기차역 이름)",
     'queen': '여왕',
     'strange': '이상한',
     'symbol': '기호, 표시',
@@ -432,5 +432,7 @@ const Map<String, dynamic> episode01Json = {
     'rockets': '로켓들',
     'machines': '기계들',
     'covered': '덮인',
+    'complete': '완성하다',
+    'sentences': '문장들',
   },
 };

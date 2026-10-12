@@ -8,6 +8,7 @@ import '../../../data/models/discovery.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/evidence_card.dart';
 import '../../../widgets/game_button.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/detective_tips.dart';
 import '../../../widgets/paper.dart';
@@ -373,7 +374,7 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
             const SizedBox(height: AppSpace.sm),
             const OrnamentRule(color: AppColors.tryAgain),
             const SizedBox(height: AppSpace.sm),
-            Text(
+            GlossaryText(
               message ?? 'Good detectives look again.\nRead the clue one more time!',
               textAlign: TextAlign.center,
               style: AppText.bodyText(size: 17),
@@ -466,7 +467,7 @@ class _TipNote extends StatelessWidget {
           children: [
             Text('DETECTIVE TIP $number', style: AppText.eyebrow()),
             const SizedBox(height: AppSpace.xs),
-            Text(text, style: AppText.letter(size: 17)),
+            GlossaryText(text, style: AppText.letter(size: 17)),
           ],
         ),
       ),

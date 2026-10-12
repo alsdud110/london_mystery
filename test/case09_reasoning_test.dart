@@ -204,7 +204,7 @@ void main() {
           await t.tap(find.text('GET A TIP'));
           await wait(t, const Duration(milliseconds: 700));
         }
-        await reveal(t, find.text(fin.hints.last));
+        await reveal(t, findReadable(fin.hints.last));
         await capture(t, 'ep09_final_tips_$tag');
         expect(t.takeException(), isNull);
 

@@ -254,7 +254,7 @@ const Map<String, dynamic> episode07Json = {
     'directions': '길 안내',
     'past': '~을 지나서',
     'turn': '돌다',
-    'right': '오른쪽',
+    'right': '오른쪽 (또는: 맞는, 옳은)',
     'left': '왼쪽',
     'bridge': '다리',
     'beside': '~옆에',
@@ -282,5 +282,6 @@ const Map<String, dynamic> episode07Json = {
     'lodge': '관리소',
     'worried': '걱정하는',
     'shouts': '외친다',
+    'upside': '위쪽 (upside down: 거꾸로)',
   },
 };

@@ -271,7 +271,7 @@ const Map<String, dynamic> episode05Json = {
     'dial': '다이얼',
     'turn': '돌리다',
     'left': '왼쪽',
-    'right': '오른쪽',
+    'right': '오른쪽 (또는: 맞는, 옳은)',
     'other': '다른',
     'same': '같은',
     'first': '처음, 첫 번째',
@@ -302,5 +302,6 @@ const Map<String, dynamic> episode05Json = {
     'painted': '칠해진',
     'hurry': '서두르다',
     'clockmaker': '시계공',
+    'opposite': '반대(의)',
   },
 };

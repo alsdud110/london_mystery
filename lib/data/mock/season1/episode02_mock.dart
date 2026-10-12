@@ -283,7 +283,7 @@ const Map<String, dynamic> episode02Json = {
     'wheels': '바퀴들',
     'biggest': '가장 큰',
     'smallest': '가장 작은',
-    'bell': '종',
+    'bell': '종 (Mrs Bell: 사람 이름)',
     'bells': '종들',
     'belfry': '종탑',
     'stamped': '찍힌, 새겨진',
@@ -300,5 +300,7 @@ const Map<String, dynamic> episode02Json = {
     'accident': '사고, 우연',
     'feather': '깃털',
     'stairs': '계단',
+    'opposites': '반대말들',
+    'moment': '순간',
   },
 };

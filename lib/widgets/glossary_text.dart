@@ -15,11 +15,32 @@ import 'paper.dart';
 /// underline. Tapping one shows its meaning — the translation is never shown
 /// up front, so children still read the English first.
 class GlossaryText extends ConsumerStatefulWidget {
-  const GlossaryText(this.text, {super.key, required this.style, this.textAlign = TextAlign.start, this.episode});
+  const GlossaryText(
+    this.text, {
+    super.key,
+    required this.style,
+    this.textAlign = TextAlign.start,
+    this.episode,
+    this.linkColor = AppColors.royalBlue,
+    this.interactive = true,
+    this.wordSemantics = true,
+  });
 
   final String text;
   final TextStyle style;
   final TextAlign textAlign;
+
+  /// The dotted underline's ink: royal blue on paper; a light ink on a dark
+  /// surface (a chosen answer card, the final case's desk).
+  final Color linkColor;
+
+  /// False: plain text, no dotted words (e.g. an answer card not yet chosen,
+  /// where a tap must always choose the card).
+  final bool interactive;
+
+  /// False inside a control that speaks for itself (an answer card gives its
+  /// words to screen readers as actions, see [glossaryWordsOf]).
+  final bool wordSemantics;
 
   /// The case whose glossary explains the words (e.g. a piece of evidence
   /// from an earlier case, read in the Case Archive). Null: the open case.
@@ -30,7 +51,9 @@ class GlossaryText extends ConsumerStatefulWidget {
 }
 
 class _GlossaryTextState extends ConsumerState<GlossaryText> {
-  static final _tokens = RegExp(r"[A-Za-z']+|[^A-Za-z']+");
+  // A word keeps its inner apostrophe (King's, o'clock); quotes around it
+  // ('Smells of …') are not part of it.
+  static final _tokens = RegExp(r"[A-Za-z]+(?:'[A-Za-z]+)*|[^A-Za-z]+");
   final List<TapGestureRecognizer> _recognizers = [];
 
   @override
@@ -46,10 +69,7 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
     _recognizers.clear();
   }
 
-  void _show(String word, String meaning) {
-    ref.read(gameControllerProvider.notifier).lookUpWord(word.replaceAll(RegExp(r"'s$"), ''));
-    showWordMeaning(context, word, meaning);
-  }
+  void _show(String word, String meaning) => lookUpAndShowWord(context, ref, word, meaning);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +78,7 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
     final spans = <InlineSpan>[];
     for (final match in _tokens.allMatches(widget.text)) {
       final token = match.group(0)!;
-      final meaning = episode.meaningOf(token);
+      final meaning = widget.interactive ? episode.meaningOf(token) : null;
       if (meaning == null) {
         spans.add(TextSpan(text: token));
         continue;
@@ -68,17 +88,36 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
       spans.add(TextSpan(
         text: token,
         recognizer: recognizer,
-        semanticsLabel: '$token (tap for meaning)',
+        semanticsLabel: widget.wordSemantics ? '$token (tap for meaning)' : null,
         style: TextStyle(
           decoration: TextDecoration.underline,
           decorationStyle: TextDecorationStyle.dotted,
-          decorationColor: AppColors.royalBlue,
+          decorationColor: widget.linkColor,
           decorationThickness: 2.2,
         ),
       ));
     }
     return Text.rich(TextSpan(children: spans), style: widget.style, textAlign: widget.textAlign);
   }
+}
+
+/// The words of [text] that [episode]'s glossary explains, in reading order,
+/// each once. For a surface that shows [text] inside one tappable control
+/// (an answer card): it hands these to screen readers as actions, since the
+/// words themselves are not separate targets there.
+List<({String word, String meaning})> glossaryWordsOf(Episode episode, String text) {
+  final seen = <String>{};
+  return [
+    for (final match in RegExp(r"[A-Za-z]+(?:'[A-Za-z]+)*").allMatches(text))
+      if (episode.meaningOf(match.group(0)!) case final meaning?)
+        if (seen.add(match.group(0)!.toLowerCase())) (word: match.group(0)!, meaning: meaning),
+  ];
+}
+
+/// Records [word] for the parent report and shows its word card.
+Future<void> lookUpAndShowWord(BuildContext context, WidgetRef ref, String word, String meaning) {
+  ref.read(gameControllerProvider.notifier).lookUpWord(word.replaceAll(RegExp(r"'s$"), ''));
+  return showWordMeaning(context, word, meaning);
 }
 
 /// A small, friendly word card: "Queen = 여왕".

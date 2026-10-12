@@ -284,7 +284,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 700));
         // A mission page asks again in the try-again sheet only on a wrong answer: none here.
       }
-      await reveal(t, find.text(m.hints.last, findRichText: true));
+      await reveal(t, findReadable(m.hints.last));
     }
 
     /// The final's notebook sheet → [evidence] → look closer → [text].

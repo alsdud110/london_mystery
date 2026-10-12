@@ -288,5 +288,6 @@ const Map<String, dynamic> episode09Json = {
     'umbrella': '우산',
     'hiding': '숨기고 있는',
     'prize': '상, 목표물',
+    'counts': '세다, 포함하다',
   },
 };

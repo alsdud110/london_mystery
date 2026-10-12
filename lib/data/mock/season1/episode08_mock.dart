@@ -295,5 +295,8 @@ const Map<String, dynamic> episode08Json = {
     'scarf': '목도리',
     'suitcase': '여행 가방',
     'platform': '승강장',
+    'prove': '증명하다',
+    'evidence': '증거',
+    'earlier': '더 이전의',
   },
 };
