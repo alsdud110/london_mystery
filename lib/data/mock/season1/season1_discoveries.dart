@@ -223,7 +223,7 @@ const Map<String, Discovery> season1Discoveries = {
     type: DiscoveryType.evidenceFound,
     timing: DiscoveryTiming.fromPuzzle,
     title: 'THE RAVEN TOWER',
-    detail: "Seat forty-two, the nine o'clock train: the lock opens on the missing painting.",
+    detail: 'Seat forty-two, then nine from the 9:30 train: the lock opens on the missing painting.',
     showEvidence: true,
   ),
 

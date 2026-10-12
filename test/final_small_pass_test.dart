@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
@@ -114,21 +115,21 @@ void main() {
     final m2 = e.missionById('ep08_m2')!;
     final c03 = byId('ep03');
     final redButton = c03.missionById('ep03_m1')!.evidence!;
-    final footprint = c03.missionById('ep03_m3')!.evidence!;
+    final luggageTag = c03.finalMission.evidence!;
 
     test('10. the answer is the Red Button; only Case 03 tells which card came from Gallery 8', () {
       expect(fin.answerLabel, 'Red Button');
       expect(fin.answerLabel, redButton.name);
       expect(fin.question, contains('Gallery 8'));
-      // The Red Button: from a coat, found in Gallery 8. The Wet Footprint: a
-      // boot, found in the Great Court. The two cards of this case say nothing
-      // about Gallery 8.
+      // The Red Button: from a coat, found in Gallery 8. The Luggage Tag: from
+      // her taxi, found on Museum Street. The two cards of this case say
+      // nothing about Gallery 8.
       expect(redButton.description, contains('coat'));
       expect(c03.missionById('ep03_m1')!.location, 'GALLERY 8');
-      expect(c03.missionById('ep03_m3')!.location, isNot('GALLERY 8'));
-      expect(footprint.description, isNot(contains('coat')));
+      expect(c03.finalMission.location, isNot('GALLERY 8'));
+      expect(luggageTag.description, isNot(contains('coat')));
       final labels = fin.options.map((o) => o.label).toList();
-      expect(labels, containsAll(['Red Button', 'Wet Footprint']));
+      expect(labels, containsAll(['Red Button', 'Luggage Tag']));
       for (final x in [e.missionById('ep08_m1')!.evidence!, m2.evidence!]) {
         expect(labels, contains(x.name));
         expect('${x.description} ${x.inscription}', isNot(contains('Gallery')));
@@ -136,6 +137,25 @@ void main() {
       // Her coat: seen in Mission 02 and kept in its clue (not on the final page).
       expect(m2.letter, contains('long red coat'));
       expect(m2.clue!.note, contains('long red coat'));
+    });
+
+    test('10b. no wrong card has a Case 03 namesake found in Gallery 8', () {
+      // The archive shows Case 03's clues and evidence, each with the place
+      // of its mission. A wrong card that shares a name with anything found in
+      // Gallery 8 (the Wet Footprint clue) would be proof too.
+      final inGallery8 = {
+        for (final x in c03.allMissions)
+          if (x.location == 'GALLERY 8') ...[?x.clue?.title, ?x.evidence?.name],
+      };
+      expect(inGallery8, contains('Red Button'));
+      expect(inGallery8, contains('Wet Footprint'), reason: "the guard's report");
+      for (final o in fin.options) {
+        if (o.id == fin.answer) continue;
+        expect(inGallery8, isNot(contains(o.label)), reason: o.label);
+      }
+      // The near miss stays: Case 03's own evidence, found elsewhere.
+      expect(fin.options.map((o) => o.label), contains(luggageTag.name));
+      expect(AnswerChecker.feedbackFor(fin, 'b'), allOf(contains('luggage tag'), contains('where was it found')));
     });
 
     test('11. the final page names neither the button nor her coat', () {
@@ -341,9 +361,9 @@ void main() {
         await wait(t, const Duration(seconds: 2));
       });
 
-      testWidgets('Case 08 final $tag: the Wet Footprint is from the Great Court', (t) async {
+      testWidgets('Case 08 final $tag: the Luggage Tag is from Museum Street', (t) async {
         await openFinal(t, size, 'ep08');
-        await lookCloser(t, 'Wet Footprint', ['THE GREAT COURT'], 'ep08_small_pass_footprint_$tag',
+        await lookCloser(t, 'Luggage Tag', ['MUSEUM STREET'], 'ep08_small_pass_tag_$tag',
             archiveCase: 'THE VANISHING PAINTING');
         await wait(t, const Duration(seconds: 2));
       });
@@ -359,14 +379,17 @@ const _otherCases = <String, int>{
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
   'ep02': 3180717624,
   'ep03': 783372977,
-  'ep04': 2744236273,
-  'ep05': 2035252570,
+  // Audit fix D3 (2026-10-12): the postmark keeps only its picture.
+  'ep04': 1501817808,
+  // Audit fix D2 (2026-10-12): 05-M3 shows the warning on the wall.
+  'ep05': 3758344530,
   // Post-discovery small pass: one transition line each (07 M3, 10 M2).
   // TYPE B Phase 3A (approved 2026-10-12): Case 07 feedback lines (06, 08: guarded above).
   'ep07': 3109320776,
   'ep09': 606397943,
   'ep10': 3529211738,
   // Phase 4 (approved 2026-10-12): 11-M3 tip 1 (never sleeps), 12-M2 board + after, 12-F whose.
-  'ep11': 3034810312,
+  // Audit fix N1 (2026-10-12): 11-M2 tip 1 reads from the last letter, M.
+  'ep11': 3210604168,
   'ep12': 3787923803,
 };

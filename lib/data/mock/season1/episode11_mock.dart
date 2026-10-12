@@ -100,7 +100,7 @@ const Map<String, dynamic> episode11Json = {
         'THGINDIM': 'That is the word as it is written. Read it from right to left.',
       },
       'hints': [
-        'Start with the last letter, T. Then go left: H, G, I...',
+        'Start with the last letter, M. Then go left: I, D, N...',
         'It is a time: twelve o\'clock at night.',
       ],
       'clue': {

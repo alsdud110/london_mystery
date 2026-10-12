@@ -153,6 +153,24 @@ void main() {
     }
   });
 
+  test('Case 11 Mission 02: the first tip walks the written word from right to left', () {
+    final m2 = m('ep11_m2');
+    final written = m2.letter.split('\n').first;
+    expect(written, 'THGINDIM');
+    expect(m2.letter, contains('Read me from right to left.'));
+    final reversed = written.split('').reversed.join();
+    expect(reversed, m2.answer);
+    // "Start with the last letter, M. Then go left: I, D, N..." — the letters
+    // the tip names are the first letters of the word read right to left.
+    final tip = m2.hints.first;
+    final named = RegExp(r'\b([A-Z])\b').allMatches(tip).map((x) => x.group(1)!).toList();
+    expect(named, isNotEmpty);
+    expect(named.first, written[written.length - 1], reason: 'the last letter of $written');
+    expect(named.join(), reversed.substring(0, named.length), reason: tip);
+    expect(AnswerChecker.isCorrect(m2, reversed), isTrue);
+    expect(AnswerChecker.isCorrect(m2, written), isFalse);
+  });
+
   test('the slips of Case 09-11', () {
     expect(AnswerChecker.feedbackFor(m('ep09_m1'), 'a'), contains('small and silver'));
     expect(AnswerChecker.feedbackFor(m('ep09_m2'), 'amma'), contains('AFTER M'));

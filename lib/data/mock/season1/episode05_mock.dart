@@ -202,6 +202,9 @@ const Map<String, dynamic> episode05Json = {
       'transition': [
         'Behind the food box, there is an iron chest.',
         'It has three locks. Words are painted on the lid.',
+        // Seen here, so the post-case scene can remember it.
+        'On the wall above the chest, someone wrote:',
+        '"At midnight, the Clockmaker will stop London."',
         'The Clockmaker... who is that?',
       ],
       'nextMissionId': 'ep05_final',

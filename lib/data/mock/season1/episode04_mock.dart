@@ -25,7 +25,7 @@ const Map<String, dynamic> episode04Json = {
   ],
   'caseSummary': 'You read every letter, followed the words across the station and found out who is behind it.',
   'keyWords': ['platform', 'letter', 'seal'],
-  'hook': 'The postmark says the next letter came from the Tower of London.',
+  'hook': 'The picture on the postmark shows the Tower of London.',
   'missions': [
     {
       'id': 'ep04_m1',
@@ -184,7 +184,7 @@ const Map<String, dynamic> episode04Json = {
         'name': 'Postmark',
         'icon': 'letter',
         'description': 'From the second envelope.',
-        'inscription': 'TOWER OF LONDON',
+        'inscription': 'A small picture of the Tower of London.',
       },
       'successMessage': 'It came from the Tower of London!',
       'transition': [
@@ -251,8 +251,8 @@ const Map<String, dynamic> episode04Json = {
       'The raven was not just a picture.',
       'It was on every seal.',
       'You turn the envelope over.',
-      'The postmark says:',
-      'TOWER OF LONDON.',
+      'The little picture on the postmark',
+      'is the Tower of London.',
     ],
     'skills': ['reading', 'vocabulary'],
     'mapX': 0.74,

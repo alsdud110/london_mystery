@@ -212,11 +212,12 @@ const Map<String, dynamic> episode08Json = {
     'letterIntro': 'She looks at you and says:',
     // Her lie, and nothing about her coat: the detective brings the coat
     // (Mission 02) and the Red Button (Case 03: from a coat, found in
-    // Gallery 8) together. The Wet Footprint is Case 03's too, but it was
-    // found in the Great Court and nothing ties it to her; the two cards of
-    // this case say nothing about Gallery 8. Not the Blue Cloth (her blue
-    // scarf: a second answer) nor The Raven Tower (from Gallery 8, but she
-    // says the suitcase is not hers).
+    // Gallery 8) together. The Luggage Tag is Case 03's too, but it fell out
+    // of her taxi on Museum Street; the two cards of this case say nothing
+    // about Gallery 8. Not the Wet Footprint (Case 03 has one in Gallery 8 —
+    // a clue — and one in the Great Court — the evidence — under one name),
+    // the Blue Cloth (her blue scarf: a second answer) nor The Raven Tower
+    // (from Gallery 8, but she says the suitcase is not hers).
     'letter':
         '"My name is Mrs Robin.\n'
         'I have never been to the British Museum.\n'
@@ -226,7 +227,7 @@ const Map<String, dynamic> episode08Json = {
     'question': 'Which evidence shows that she was in Gallery 8?',
     'options': [
       {'id': 'a', 'label': 'Name Tag', 'feedback': 'The name tag is from this case. Does it say anything about Gallery 8?'},
-      {'id': 'b', 'label': 'Wet Footprint', 'feedback': 'Look closer at the footprint in the Case Archive: where was it found?'},
+      {'id': 'b', 'label': 'Luggage Tag', 'feedback': 'Look closer at the luggage tag in the Case Archive: where was it found?'},
       {'id': 'c', 'label': 'Red Button'},
       {'id': 'd', 'label': 'Passenger Notes', 'feedback': 'Your passenger notes say where people are going. Do they show who was in Gallery 8?'},
     ],
