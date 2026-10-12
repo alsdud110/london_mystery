@@ -46,3 +46,21 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# OpenRig agent runtime files
+AGENTS.md
+.agents/
+.codex/
+.openrig/
+
+# Local tool settings
+.mcp.json
+devtools_options.yaml
+
+# Local Claude skills and plugins (not yet tracked)
+.claude/plugins/
+.claude/skills/development-team/
+.claude/skills/systematic-debugging/
+.claude/skills/verification-before-completion/
+.claude/skills/impeccable/reference/mode-*.md
+skills-lock.json
