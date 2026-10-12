@@ -30,11 +30,60 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/sounds/
-    # Sound prototype takes (ElevenLabs), played by `GameSound` / `GameAmbience`.
-    - assets/sounds/generated/
-    # App copies of some takes, trimmed / levelled from generated/ (see `GameSound`).
-    - assets/sounds/processed/
+    # Sounds: only the takes the game plays (`GameSound`, `ambienceLoops`,
+    # `accentLoops` in lib/core/utils/audio_service.dart), file by file.
+    # The other takes stay on disk, out of the app: the ElevenLabs originals
+    # in generated/ and the candidates kept for listening. Playing another
+    # take means naming it in audio_service.dart and listing it here
+    # (test/audio_assets_test.dart checks the two agree).
+    # The first synthesised sound still played (the finale).
+    - assets/sounds/final.wav
+    # Takes played as ElevenLabs made them.
+    - assets/sounds/generated/padlock_open_01.wav
+    - assets/sounds/generated/padlock_open_02.wav
+    - assets/sounds/generated/paper_place_02.wav
+    - assets/sounds/generated/puzzle_correct_v2_01.wav
+    - assets/sounds/generated/puzzle_correct_v2_02.wav
+    - assets/sounds/generated/puzzle_correct_v2_03.wav
+    - assets/sounds/generated/puzzle_wrong_01.wav
+    # App copies, trimmed / levelled from generated/.
+    - assets/sounds/processed/acc_clock_mechanism_01.wav
+    - assets/sounds/processed/acc_fountain_01.wav
+    - assets/sounds/processed/acc_guard_march_02.wav
+    - assets/sounds/processed/acc_raven_calls_01.wav
+    - assets/sounds/processed/amb_grand_interior_01.wav
+    - assets/sounds/processed/amb_london_night_01.wav
+    - assets/sounds/processed/amb_park_01.wav
+    - assets/sounds/processed/amb_river_01.wav
+    - assets/sounds/processed/amb_station_02.wav
+    - assets/sounds/processed/amb_tower_grounds_01.wav
+    - assets/sounds/processed/amb_tower_interior_01.wav
+    - assets/sounds/processed/amb_train_carriage_02.wav
+    - assets/sounds/processed/big_ben_bell_01.wav
+    - assets/sounds/processed/case_stamp_01.wav
+    - assets/sounds/processed/case_stamp_02.wav
+    - assets/sounds/processed/clock_restart_02.wav
+    - assets/sounds/processed/envelope_open_v2_01.wav
+    - assets/sounds/processed/envelope_open_v2_02.wav
+    - assets/sounds/processed/envelope_open_v2_03.wav
+    - assets/sounds/processed/lock_dial_click_01.wav
+    - assets/sounds/processed/lock_dial_click_02.wav
+    - assets/sounds/processed/lock_dial_click_03.wav
+    - assets/sounds/processed/lock_dial_click_04.wav
+    - assets/sounds/processed/lock_open_heavy_02.wav
+    - assets/sounds/processed/notebook_open_01.wav
+    - assets/sounds/processed/office_night_rain_v2_01.wav
+    - assets/sounds/processed/paper_rustle_01.wav
+    - assets/sounds/processed/pencil_note_01.wav
+    - assets/sounds/processed/pin_push_02.wav
+    - assets/sounds/processed/royal_box_open_02.wav
+    - assets/sounds/processed/typewriter_key_v4_01.wav
+    - assets/sounds/processed/typewriter_key_v4_02.wav
+    - assets/sounds/processed/typewriter_key_v4_03.wav
+    - assets/sounds/processed/typewriter_key_v4_04.wav
+    - assets/sounds/processed/ui_tap_01.wav
+    - assets/sounds/processed/ui_tap_02.wav
+    - assets/sounds/processed/ui_tap_03.wav
     - assets/images/london_mystery.png
     # The title screen (the detective's office).
     - assets/images/title/

@@ -45,24 +45,11 @@ function writeWav(file, samples) {
 
 const dir = path.join(__dirname, '..', 'assets', 'sounds');
 fs.mkdirSync(dir, { recursive: true });
-const C5 = 523.25, E5 = 659.25, G5 = 783.99, C6 = 1046.5, A4 = 440, F4 = 349.23, D5 = 587.33;
+const C5 = 523.25, E5 = 659.25, G5 = 783.99, C6 = 1046.5;
 
-writeWav(path.join(dir, 'tap.wav'), tone(880, 0.06, { vol: 0.25, release: 0.04 }));
-writeWav(path.join(dir, 'success.wav'), mix([
-  { at: 0, buf: tone(C5, 0.25) }, { at: 0.1, buf: tone(E5, 0.25) },
-  { at: 0.2, buf: tone(G5, 0.3) }, { at: 0.3, buf: tone(C6, 0.6) },
-]));
-writeWav(path.join(dir, 'wrong.wav'), mix([
-  { at: 0, buf: tone(A4, 0.18, { type: 'triangle', vol: 0.3 }) },
-  { at: 0.16, buf: tone(F4, 0.3, { type: 'triangle', vol: 0.3 }) },
-]));
-writeWav(path.join(dir, 'clue.wav'), mix([
-  { at: 0, buf: tone(G5, 0.15, { vol: 0.3 }) }, { at: 0.07, buf: tone(C6, 0.15, { vol: 0.3 }) },
-  { at: 0.14, buf: tone(1318.5, 0.4, { vol: 0.25 }) },
-]));
-writeWav(path.join(dir, 'unlock.wav'), mix([
-  { at: 0, buf: tone(D5, 0.12, { vol: 0.3 }) }, { at: 0.08, buf: tone(G5, 0.35, { vol: 0.3 }) },
-]));
+// The first synthesised sounds (tap, success, wrong, clue, unlock) were
+// replaced by recorded takes (see `GameSound`); only the finale is still
+// this placeholder.
 writeWav(path.join(dir, 'final.wav'), mix([
   { at: 0, buf: tone(C5, 0.2) }, { at: 0.15, buf: tone(C5, 0.2) }, { at: 0.3, buf: tone(C5, 0.2) },
   { at: 0.45, buf: tone(E5, 0.35) }, { at: 0.7, buf: tone(G5, 0.3) }, { at: 0.9, buf: tone(C6, 0.9) },

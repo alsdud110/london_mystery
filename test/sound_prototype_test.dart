@@ -63,7 +63,10 @@ void main() {
         expect(File('assets/${f.assetPath}').existsSync(), isTrue, reason: f.file);
         expect(f.volume, inInclusiveRange(0, 1), reason: f.file);
       }
-      expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/sounds/generated/'));
+      final pubspec = File('pubspec.yaml').readAsStringSync();
+      for (final f in files) {
+        expect(pubspec, contains('- assets/${f.assetPath}\n'), reason: '${f.file}: listed for the app');
+      }
     });
 
     test('sound off: no sound and no ambience; on again: the ambience starts', () {
