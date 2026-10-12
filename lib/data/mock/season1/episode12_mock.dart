@@ -51,9 +51,21 @@ const Map<String, dynamic> episode12Json = {
       'type': 'multipleChoice',
       'question': 'Which gear is the real one?',
       'options': [
-        {'id': 'a', 'label': 'Silver, eight teeth, a raven stamp'},
-        {'id': 'b', 'label': 'Brass, six teeth, a raven stamp'},
-        {'id': 'c', 'label': 'Brass, eight teeth, no stamp'},
+        {
+          'id': 'a',
+          'label': 'Silver, eight teeth, a raven stamp',
+          'feedback': 'Check the metal first. What did Mrs Bell say the real gear is made of?',
+        },
+        {
+          'id': 'b',
+          'label': 'Brass, six teeth, a raven stamp',
+          'feedback': 'Count again: how many teeth does the real gear have?',
+        },
+        {
+          'id': 'c',
+          'label': 'Brass, eight teeth, no stamp',
+          'feedback': 'Brass and eight teeth, yes! But one thing is missing. Read the last line.',
+        },
         {'id': 'd', 'label': 'Brass, eight teeth, a raven stamp'},
       ],
       'answer': 'd',
@@ -99,20 +111,27 @@ const Map<String, dynamic> episode12Json = {
       'letterIntro': 'The board says:',
       'letter':
           'ARRIVALS\n'
-          '10:15  from York — Platform 2\n'
+          '10:15  from York — Platform 4\n'
           '11:04  from Edinburgh — Platform 9\n'
           '11:40  from Paris — Platform 4\n'
           '11:55  from Oxford — Platform 7\n\n'
           'Inspector Grey: "The Clockmaker always arrives\n'
-          'on the platform with the small red clock."',
+          'on the platform with the small red clock,\n'
+          'after the train from Edinburgh."',
       'type': 'numberCode',
       'question': "What time does the Clockmaker's train arrive?",
       'codeLength': 4,
       'answer': '1140',
       'hints': [
         'Open Case 04 in your Case Archive. Which platform had the small red clock?',
-        'Find that platform on the board. Type its time as four numbers.',
+        "The small red clock was on Platform 4 in Case 04. Two trains come in there: 'after the train from Edinburgh' means the later one.",
       ],
+      // Every other time on the board: a train on the wrong platform.
+      'feedback': {
+        '1015': 'That train comes in on Platform 4 too, but before the Edinburgh train. Grey says after.',
+        '1104': 'That is the Edinburgh train itself. The Clockmaker comes after it, on another platform.',
+        '1155': 'That train comes after Edinburgh, but on another platform. Which one has the small red clock?',
+      },
       'clue': {
         'id': 'ep12_c2',
         'title': 'Platform 4',
@@ -202,19 +221,21 @@ const Map<String, dynamic> episode12Json = {
     'letterIntro': 'Words are carved into the door:',
     'letter':
         'Only a true detective can open me.\n\n'
-        'The first lock is a train: its platform number.\n'
-        'The second lock is a gear: count its teeth.\n'
-        'The third lock is a raven: how many guard the Tower?\n\n'
+        'The first lock: the number of the platform whose clock is small and red.\n'
+        'The second lock: how many teeth on the real gear?\n'
+        'The third lock: how many ravens guard the Tower?\n\n'
         'Your notebook knows.',
     'type': 'finalCode',
     'question': 'Open the three locks before the last bell!',
     'codeLength': 3,
-    'dialSymbols': ['train', 'gear', 'raven'],
+    // TYPE B: no pictures on the locks. Only the door's words say which clue
+    // goes where, in a different order from tonight's (8, 4, 7).
     'answer': '487',
     'hints': [
       'Each lock asks a question. Tonight\'s three clues answer them.',
-      'The train lock is first. Which platform did the Clockmaker arrive on?',
+      "'The platform whose clock is small and red' means the platform that has the small red clock.",
     ],
+    'orderFeedback': 'You put the numbers in the order you found them tonight. Read the door: which lock comes first?',
     'evidence': {
       'id': 'ep12_e4',
       'name': "The Clockmaker's Watch",

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
+import '../data/models/episode.dart';
 import '../features/game/game_controller.dart';
 import '../features/game/game_providers.dart';
 import 'game_button.dart';
@@ -14,11 +15,15 @@ import 'paper.dart';
 /// underline. Tapping one shows its meaning — the translation is never shown
 /// up front, so children still read the English first.
 class GlossaryText extends ConsumerStatefulWidget {
-  const GlossaryText(this.text, {super.key, required this.style, this.textAlign = TextAlign.start});
+  const GlossaryText(this.text, {super.key, required this.style, this.textAlign = TextAlign.start, this.episode});
 
   final String text;
   final TextStyle style;
   final TextAlign textAlign;
+
+  /// The case whose glossary explains the words (e.g. a piece of evidence
+  /// from an earlier case, read in the Case Archive). Null: the open case.
+  final Episode? episode;
 
   @override
   ConsumerState<GlossaryText> createState() => _GlossaryTextState();
@@ -49,7 +54,7 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
   @override
   Widget build(BuildContext context) {
     _disposeRecognizers();
-    final episode = ref.watch(currentEpisodeProvider);
+    final Episode episode = widget.episode ?? ref.watch(currentEpisodeProvider);
     final spans = <InlineSpan>[];
     for (final match in _tokens.allMatches(widget.text)) {
       final token = match.group(0)!;

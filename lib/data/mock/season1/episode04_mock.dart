@@ -50,15 +50,15 @@ const Map<String, dynamic> episode04Json = {
       'type': 'multipleChoice',
       'question': 'Where should you go to meet the writer?',
       'options': [
-        {'id': 'a', 'label': 'The ticket office'},
-        {'id': 'b', 'label': 'The café'},
+        {'id': 'a', 'label': 'The ticket office', 'feedback': "At 10 PM the ticket office closes. Does it 'never sleep'?"},
+        {'id': 'b', 'label': 'The café', 'feedback': 'The café closes at 8 PM: it sleeps at night!'},
         {'id': 'c', 'label': 'The platforms'},
-        {'id': 'd', 'label': 'The shop'},
+        {'id': 'd', 'label': 'The shop', 'feedback': 'The shop closes at 9 PM. Which place is open day AND night?'},
       ],
       'answer': 'c',
       'hints': [
-        'A place that "never sleeps" never closes.',
-        'Look for the place that is open at night too.',
+        'Read the station guide: when does each place close?',
+        "'Never sleeps' means it never closes, not even at night.",
       ],
       'clue': {
         'id': 'ep04_c1',
@@ -105,15 +105,15 @@ const Map<String, dynamic> episode04Json = {
       'type': 'multipleChoice',
       'question': 'Where is the next clue?',
       'options': [
-        {'id': 'a', 'label': 'Under the white clock on Platform 1'},
-        {'id': 'b', 'label': 'Under the red clock on Platform 4'},
-        {'id': 'c', 'label': 'Behind the red door on Platform 7'},
-        {'id': 'd', 'label': 'Under the green clock on Platform 9'},
+        {'id': 'a', 'label': 'Platform 1', 'feedback': "Platform 1's clock is white. Your card says RED."},
+        {'id': 'b', 'label': 'Platform 4'},
+        {'id': 'c', 'label': 'Platform 7', 'feedback': 'Platform 7 has a red door. Read to the end of the line: is there a clock?'},
+        {'id': 'd', 'label': 'Platform 9', 'feedback': "Platform 9's clock is green. Which colour is on your card?"},
       ],
       'answer': 'b',
       'hints': [
-        'Use all four words together, not just one.',
-        'You need a clock that is red, on the right platform number.',
+        'Your card has four words. Check each platform against all four.',
+        "FOUR is a platform number. Read every line to the end: 'a red door, but no clock' has no clock.",
       ],
       'clue': {
         'id': 'ep04_c2',
@@ -159,16 +159,18 @@ const Map<String, dynamic> episode04Json = {
           '— R.',
       'type': 'imageChoice',
       'question': 'Which picture is on the postmark?',
+      // TYPE B: no names under the pictures; the letter's description decides.
+      'hideOptionNames': true,
       'options': [
-        {'id': 'a', 'label': 'Buckingham Palace', 'artwork': 'buckinghamPalace'},
-        {'id': 'b', 'label': 'Tower of London', 'artwork': 'towerOfLondon'},
-        {'id': 'c', 'label': 'British Museum', 'artwork': 'britishMuseum'},
-        {'id': 'd', 'label': 'London Eye', 'artwork': 'londonEye'},
+        {'id': 'a', 'label': 'Buckingham Palace', 'artwork': 'buckinghamPalace', 'altText': 'a wide grand building with a flag on top and a fountain in front', 'feedback': 'A palace, not a castle: where are the four towers and thick walls?'},
+        {'id': 'b', 'label': 'Tower of London', 'artwork': 'towerOfLondon', 'altText': 'an old fortress with many square towers and high walls'},
+        {'id': 'c', 'label': 'British Museum', 'artwork': 'britishMuseum', 'altText': 'a large building with tall columns and a round dome', 'feedback': 'A museum with tall columns. The letter talks about an old castle by the river.'},
+        {'id': 'd', 'label': 'London Eye', 'artwork': 'londonEye', 'altText': 'a giant wheel with little cabins, beside a river', 'feedback': 'A big wheel by the river. Is it an old castle with four towers?'},
       ],
       'answer': 'b',
       'hints': [
-        'A castle is a strong old building with walls and towers.',
-        'Count the towers in each picture.',
+        'The letter describes the place in parts: a castle, a river, four towers, black birds. Look for each one.',
+        'A castle is a strong old building with thick stone walls and towers.',
       ],
       'clue': {
         'id': 'ep04_c3',
@@ -221,12 +223,18 @@ const Map<String, dynamic> episode04Json = {
     'question': 'What is the secret name?',
     'prompt': 'THE _____ SOCIETY',
     'answer': 'RAVEN',
+    'feedback': {
+      'CROW': 'Close! A crow is a black bird too. But which bird is pressed into the seal?',
+      'BIRD': 'Which bird? Look closer at the seal from the first letter.',
+      'BLACK': 'Black is its colour. What is the bird called?',
+      'TOWER': "The bird lives at the Tower. What is the bird's name?",
+    },
     'acceptedAnswers': ['RAVENS', 'THE RAVEN SOCIETY'],
     'hints': [
       // The seal (Mission 01) and the Tower's birds (Mission 03) give the
       // name: the tips point there, never to the word.
-      'Every letter came with the same seal. What picture was pressed into it?',
       'Open your notebook and look closer at the seal from the first letter.',
+      "'Named after a bird' means their name is a bird's name: the bird pressed into every seal.",
     ],
     'evidence': {
       'id': 'ep04_e4',

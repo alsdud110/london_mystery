@@ -164,8 +164,41 @@ class GameController extends Notifier<GameProgress> {
   /// Records a tapped glossary word (for the parent report).
   void lookUpWord(String word) {
     final w = word.toLowerCase();
-    if (state.lookedUpWords.contains(w)) return;
-    _update(state.copyWith(lookedUpWords: [...state.lookedUpWords, w]));
+    final log = state.behavior;
+    final newForLog = log != null && !log.words.contains(w);
+    if (state.lookedUpWords.contains(w) && !newForLog) return;
+    _update(state.copyWith(
+      lookedUpWords: state.lookedUpWords.contains(w) ? null : [...state.lookedUpWords, w],
+      behavior: newForLog ? log.copyWith(words: [...log.words, w]) : null,
+    ));
+  }
+
+  /// The detective re-read [mission]'s letter. Recorded for Second Look only
+  /// after a wrong answer and before the mission is solved.
+  void recordRecheck(Mission mission) {
+    final log = state.behavior;
+    if (log == null || state.isCompleted(mission.id) || state.wrongCount(mission.id) == 0) return;
+    if (log.rechecked.contains(mission.id)) return;
+    _update(state.copyWith(behavior: log.copyWith(rechecked: [...log.rechecked, mission.id])));
+  }
+
+  /// The detective opened [evidenceId] for a closer look from the notebook,
+  /// the Case Archive or the final case's notebook. While the case is being
+  /// solved it counts for Notebook Explorer, and as a recheck of the mission
+  /// being played if that mission already had a wrong answer.
+  void recordEvidenceViewed(String evidenceId) {
+    final log = state.behavior;
+    if (log == null || state.isCaseSolved) return;
+    final current = state.currentMission(ref.read(currentEpisodeProvider));
+    final recheck = current != null && state.wrongCount(current.id) > 0 && !log.rechecked.contains(current.id);
+    final viewed = !log.evidenceViewed.contains(evidenceId);
+    if (!recheck && !viewed) return;
+    _update(state.copyWith(
+      behavior: log.copyWith(
+        rechecked: recheck ? [...log.rechecked, current.id] : null,
+        evidenceViewed: viewed ? [...log.evidenceViewed, evidenceId] : null,
+      ),
+    ));
   }
 
   /// Checks [answer], records the attempt, and on success completes the
@@ -192,6 +225,8 @@ class GameController extends Notifier<GameProgress> {
       attempts: attempts,
       completedMissionIds: [...state.completedMissionIds, mission.id],
       solveSeconds: seconds == null ? null : {...state.solveSeconds, mission.id: seconds},
+      // The XP rule this answer is scored under, kept with it for good.
+      xpRules: {...state.xpRules, mission.id: XpBreakdown.currentRule},
       completedAt: mission.isFinal ? solvedAt : null,
     );
 

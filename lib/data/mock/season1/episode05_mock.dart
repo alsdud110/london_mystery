@@ -48,15 +48,27 @@ const Map<String, dynamic> episode05Json = {
       'type': 'multipleChoice',
       'question': 'Where is the locked room?',
       'options': [
-        {'id': 'a', 'label': 'On the second floor, on the left'},
-        {'id': 'b', 'label': 'On the third floor, on the left'},
+        {
+          'id': 'a',
+          'label': 'On the second floor, on the left',
+          'feedback': 'Count the floors again. Which floor does the card say?',
+        },
+        {
+          'id': 'b',
+          'label': 'On the third floor, on the left',
+          'feedback': 'The third floor, yes! But which side is the door on? Read the last line.',
+        },
         {'id': 'c', 'label': 'On the third floor, on the right'},
-        {'id': 'd', 'label': 'Next to the old cannon'},
+        {
+          'id': 'd',
+          'label': 'Next to the old cannon',
+          'feedback': 'The cannon is where you turn, not where the door is.',
+        },
       ],
       'answer': 'c',
       'hints': [
         'The card has two directions: one outside, one at the top of the stairs.',
-        'Read the last two lines: which floor, and which side?',
+        "'The third floor' is three floors up. 'On the right' is the side of your right hand.",
       ],
       'clue': {
         'id': 'ep05_c1',
@@ -108,9 +120,16 @@ const Map<String, dynamic> episode05Json = {
       'codeLength': 4,
       'answer': 'left,right,left,right',
       'hints': [
-        '"The other way" means the opposite of left.',
-        'The third turn copies the first. The last turn copies the second.',
+        'Each line tells you one turn. The first line already tells you turn 1.',
+        "'The other way' is the opposite way. 'The same way as the first time' copies turn 1.",
       ],
+      // The two slips the note is about: "the other way" read as the same
+      // way, and turn 3 copying the wrong turn.
+      'feedback': {
+        'left,left,left,left': "'The other way' is not the same way. What is the opposite of left?",
+        'left,right,right,left': "Check turn 3: 'the same way as the first time'. What was turn 1?",
+      },
+      'orderFeedback': 'Two lefts and two rights, yes! But the order is not right. Read the note one line at a time.',
       'clue': {
         'id': 'ep05_c2',
         'title': 'Four Gears',
@@ -161,6 +180,10 @@ const Map<String, dynamic> episode05Json = {
         'Read the last two lines again: "six ravens" and "one more".',
         'Six and one more. Write the number as a word.',
       ],
+      'feedback': {
+        'SIX': "Six ravens... and then? Read the last line: 'one more'.",
+        '6': "Six ravens... and then? Read the last line: 'one more'.",
+      },
       'clue': {
         'id': 'ep05_c3',
         'title': 'Seven Ravens',
@@ -178,7 +201,7 @@ const Map<String, dynamic> episode05Json = {
       'successMessage': 'Seven ravens!',
       'transition': [
         'Behind the food box, there is an iron chest.',
-        'It has three locks. Each lock has a picture.',
+        'It has three locks. Words are painted on the lid.',
         'The Clockmaker... who is that?',
       ],
       'nextMissionId': 'ep05_final',
@@ -195,7 +218,7 @@ const Map<String, dynamic> episode05Json = {
     'scene': 'lockedDoor',
     'story': [
       'The iron chest is cold and heavy.',
-      'Three picture locks keep it shut.',
+      'Three number locks keep it shut.',
     ],
     'letterIntro': 'Words are painted on the lid.',
     'letter':
@@ -207,12 +230,15 @@ const Map<String, dynamic> episode05Json = {
     'type': 'finalCode',
     'question': 'Open the three locks.',
     'codeLength': 3,
-    'dialSymbols': ['raven', 'gear', 'clock'],
+    // TYPE B: no pictures on the locks. Only the lid's questions say which
+    // clue goes where, in a different order from the one they were found in
+    // (5, 4, 7).
     'answer': '745',
     'hints': [
       'Each lock asks a question. Your clues answer them.',
-      'The first lock is the raven. The Raven Room clue gave you that number.',
+      'The lid asks about the ravens, then the gears, then the gates. Find each number in your notebook.',
     ],
+    'orderFeedback': 'You put the numbers in the order you found them. Read the lid: which question is first?',
     'evidence': {
       'id': 'ep05_e4',
       'name': 'Old Map Fragment',

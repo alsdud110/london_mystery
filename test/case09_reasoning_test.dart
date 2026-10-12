@@ -212,7 +212,7 @@ void main() {
         await reveal(t, find.text('OPEN MY NOTEBOOK'));
         await t.tap(find.text('OPEN MY NOTEBOOK'));
         await wait(t, const Duration(milliseconds: 900));
-        final key = find.text("Only the guard's big gold key opens the case.");
+        final key = findReadable("Only the guard's big gold key opens the case.");
         await t.scrollUntilVisible(key, 200, scrollable: scroller());
         await wait(t, const Duration(milliseconds: 300));
         expect(key, findsOneWidget);

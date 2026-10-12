@@ -134,10 +134,16 @@ void main() {
       // The name, whole on one line (shrunk if it must), not cut with "…".
       final name = t.renderObject<RenderParagraph>(find.text('ALEXANDRINA'));
       expect(name.didExceedMaxLines, isFalse);
-      // Each figure on one line in its column.
-      for (final s in ['Accuracy', 'Completion Time', 'Words Checked']) {
+      // Each figure on one line in its column (TYPE B: a play record, no
+      // accuracy or skill scores). This case was solved without a play
+      // record, so its figures say so instead of showing zeros.
+      await t.scrollUntilVisible(find.text('Play Time'), 300, scrollable: find.byType(Scrollable).last);
+      for (final s in ['Missions', 'Tips Opened', 'First Try', 'Play Time']) {
         expect(find.text(s), findsOneWidget);
       }
+      expect(find.text('Accuracy'), findsNothing);
+      expect(find.text('기록 없음'), findsWidgets);
+      expect(t.takeException(), isNull);
       await capture(t, 'parent_report_$tag');
     });
 

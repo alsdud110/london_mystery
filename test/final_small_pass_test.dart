@@ -303,7 +303,7 @@ void main() {
       await t.tap(tile);
       await wait(t, const Duration(milliseconds: 700));
       for (final text in texts) {
-        expect(find.text(text), findsWidgets, reason: '$evidence: $text');
+        expect(findReadable(text), findsWidgets, reason: '$evidence: $text');
       }
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 400)));
       await t.pump();
@@ -353,15 +353,20 @@ void main() {
 
 /// See test 17.
 const _otherCases = <String, int>{
-  'ep01': 2405520550,
-  'ep02': 3212340141,
-  'ep03': 257964675,
-  'ep04': 963358578,
-  'ep05': 96539243,
+  // TYPE B representative-case pass (approved 2026-10-12): Case 01, 05, 12.
+  // TYPE B Phase 3B (approved 2026-10-12): 09, 10, 11 + alt text for 01-M4, 04-M3.
+  'ep01': 3464222970,
+  // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
+  'ep02': 3180717624,
+  'ep03': 783372977,
+  'ep04': 2744236273,
+  'ep05': 2035252570,
   // Post-discovery small pass: one transition line each (07 M3, 10 M2).
-  'ep07': 2868419332,
-  'ep09': 4238785963,
-  'ep10': 1767566211,
-  'ep11': 1724552176,
-  'ep12': 2472749342,
+  // TYPE B Phase 3A (approved 2026-10-12): Case 07 feedback lines (06, 08: guarded above).
+  'ep07': 3109320776,
+  'ep09': 606397943,
+  'ep10': 3529211738,
+  // Phase 4 (approved 2026-10-12): 11-M3 tip 1 (never sleeps), 12-M2 board + after, 12-F whose.
+  'ep11': 3034810312,
+  'ep12': 3787923803,
 };

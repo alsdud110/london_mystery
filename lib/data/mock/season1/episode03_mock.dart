@@ -48,15 +48,15 @@ const Map<String, dynamic> episode03Json = {
       'type': 'multipleChoice',
       'question': 'Which clue is next to the door?',
       'options': [
-        {'id': 'a', 'label': 'The red button'},
-        {'id': 'b', 'label': 'The blue cloth'},
+        {'id': 'a', 'label': 'The red button', 'feedback': "Read the button's line again: where is it?"},
+        {'id': 'b', 'label': 'The blue cloth', 'feedback': 'The blue cloth is on the frame. Which thing is next to the door?'},
         {'id': 'c', 'label': 'The wet footprint'},
-        {'id': 'd', 'label': 'The golden frame'},
+        {'id': 'd', 'label': 'The golden frame', 'feedback': "The frame is where the cloth was. Read the line that ends with 'the door'."},
       ],
       'answer': 'c',
       'hints': [
         'Every line of the report says what a thing is like, and where it is.',
-        'Find the line with the word "door".',
+        "Each line names a thing first. Then 'It is...' tells where that thing is. Find 'next to the door' and read which thing that line names.",
       ],
       'clue': {
         'id': 'ep03_c1',
@@ -103,14 +103,14 @@ const Map<String, dynamic> episode03Json = {
       'type': 'multipleChoice',
       'question': 'Who took the painting?',
       'options': [
-        {'id': 'a', 'label': 'Mr Green'},
+        {'id': 'a', 'label': 'Mr Green', 'feedback': 'Mr Green wore brown and green. Which colours did you find in Gallery 8?'},
         {'id': 'b', 'label': 'Miss Rose'},
-        {'id': 'c', 'label': 'Mr Grey'},
+        {'id': 'c', 'label': 'Mr Grey', 'feedback': 'Mr Grey has something red, but it is his scarf. A button comes from a coat.'},
       ],
       'answer': 'b',
       'hints': [
+        'What colour was the button? What colour was the cloth? Check your notebook.',
         'A button comes from a coat. A piece of cloth can come from a scarf.',
-        'What colour was the button you found in Gallery 8? Check your notebook.',
       ],
       'clue': {
         'id': 'ep03_c2',
@@ -164,9 +164,14 @@ const Map<String, dynamic> episode03Json = {
       ],
       'codeLength': 4,
       'answer': 'shop,stairs,cafe,door',
+      'feedback': {
+        'door,cafe,stairs,shop': 'You started with the driest step. Her first step was the wettest.',
+        'shop,cafe,stairs,door': "Check 'wet' and 'a little wet': which one is wetter?",
+      },
+      'orderFeedback': 'Some steps are in the right place. Put them from very wet to almost dry.',
       'hints': [
-        'Her first step is the wettest one. Her last step is the driest one.',
-        'Very wet, wet, a little wet, almost dry.',
+        'Each line says how wet one footprint was. Find the wettest and the driest.',
+        'Wet shoes get drier with every step: very wet, then wet, then a little wet, then almost dry.',
       ],
       'clue': {
         'id': 'ep03_c3',
@@ -215,15 +220,16 @@ const Map<String, dynamic> episode03Json = {
     'type': 'imageChoice',
     'question': 'Which picture shows where Miss Rose went?',
     'options': [
-      {'id': 'a', 'label': 'Big Ben', 'artwork': 'bigBen'},
-      {'id': 'b', 'label': 'Tower Bridge', 'artwork': 'towerBridge'},
-      {'id': 'c', 'label': 'Hyde Park', 'artwork': 'hydePark'},
+      {'id': 'a', 'label': 'Big Ben', 'artwork': 'bigBen', 'feedback': 'Big Ben has a clock tower too. But what did her boot smell of?'},
+      {'id': 'b', 'label': 'Tower Bridge', 'artwork': 'towerBridge', 'feedback': "Read the driver's words: a big building with a tall clock tower. Is this one?"},
+      {'id': 'c', 'label': 'Hyde Park', 'artwork': 'hydePark', 'feedback': "A park has no clock tower. Read the driver's words again."},
       {'id': 'd', 'label': "King's Cross", 'artwork': 'kingsCross'},
     ],
     'answer': 'd',
     'hints': [
+      // Never "train" or "station" in a tip: reading the boot is the deduction.
       'Two pictures have a clock tower. Look at the evidence you found today, too.',
-      'Open your notebook and look closer at the footprint from the Great Court. What did the boot smell of?',
+      "Open your notebook and look closer at the footprint. 'Smells of …' tells you where she had been. Which clock tower fits?",
     ],
     'evidence': {
       'id': 'ep03_e4',

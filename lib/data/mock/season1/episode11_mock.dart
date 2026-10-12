@@ -44,14 +44,14 @@ const Map<String, dynamic> episode11Json = {
       'type': 'multipleChoice',
       'question': 'One witness does not agree with the other two. Who?',
       'options': [
-        {'id': 'a', 'label': 'The usher'},
-        {'id': 'b', 'label': 'The actor'},
+        {'id': 'a', 'label': 'The usher', 'feedback': 'The usher and the actor tell the same story: a white mask, a black cloak.'},
+        {'id': 'b', 'label': 'The actor', 'feedback': 'The actor agrees with the usher. Which story is different?'},
         {'id': 'c', 'label': 'The child'},
       ],
       'answer': 'c',
       'hints': [
         'Compare the colour of the mask in each story.',
-        'Two stories have the same mask and the same cloak.',
+        "'Does not agree' means says something different. Two stories say the same thing; find the other one.",
       ],
       'clue': {
         'id': 'ep11_c1',
@@ -96,6 +96,9 @@ const Map<String, dynamic> episode11Json = {
       'question': 'What is the word inside the mask?',
       'prompt': '________',
       'answer': 'MIDNIGHT',
+      'feedback': {
+        'THGINDIM': 'That is the word as it is written. Read it from right to left.',
+      },
       'hints': [
         'Start with the last letter, T. Then go left: H, G, I...',
         'It is a time: twelve o\'clock at night.',
@@ -142,16 +145,18 @@ const Map<String, dynamic> episode11Json = {
           'He kept saying: I love trains, I love trains!"',
       'type': 'imageChoice',
       'question': 'Where did the stranger go?',
+      // TYPE B: no names under the pictures; the driver's description decides.
+      'hideOptionNames': true,
       'options': [
-        {'id': 'a', 'label': "King's Cross", 'artwork': 'kingsCross'},
-        {'id': 'b', 'label': 'Buckingham Palace', 'artwork': 'buckinghamPalace'},
-        {'id': 'c', 'label': 'Hyde Park', 'artwork': 'hydePark'},
-        {'id': 'd', 'label': 'Big Ben', 'artwork': 'bigBen'},
+        {'id': 'a', 'label': "King's Cross", 'artwork': 'kingsCross', 'altText': 'a long building with a great arched glass roof and a clock tower'},
+        {'id': 'b', 'label': 'Buckingham Palace', 'artwork': 'buckinghamPalace', 'altText': 'a wide grand building with a flag on top and a fountain in front', 'feedback': 'A palace with a flag. Does it have big arches and a clock tower?'},
+        {'id': 'c', 'label': 'Hyde Park', 'artwork': 'hydePark', 'altText': 'a green park with a lake, small boats and trees', 'feedback': "A park has no clock tower. Read the driver's words again."},
+        {'id': 'd', 'label': 'Big Ben', 'artwork': 'bigBen', 'altText': 'a very tall clock tower beside a long building with many pointed towers', 'feedback': 'A tall clock tower, yes. But where are the two big arches?'},
       ],
       'answer': 'a',
       'hints': [
-        'A station is where trains stop. Which picture has room for trains?',
-        'Look for two big round arches.',
+        "The guard said 'the station that never sleeps'. Where did trains 'never sleep' in Case 04?",
+        'A station is where trains stop. Arches are big round shapes, like the top of a tunnel.',
       ],
       'clue': {
         'id': 'ep11_c3',
@@ -200,9 +205,9 @@ const Map<String, dynamic> episode11Json = {
     'type': 'multipleChoice',
     'question': 'Who is behind the mask?',
     'options': [
-      {'id': 'a', 'label': 'Inspector Grey'},
-      {'id': 'b', 'label': 'Mrs Robin'},
-      {'id': 'c', 'label': 'The Ravenmaster'},
+      {'id': 'a', 'label': 'Inspector Grey', 'feedback': 'Inspector Grey helped you in Case 06. Did he leave you a letter at the very start?'},
+      {'id': 'b', 'label': 'Mrs Robin', 'feedback': "Mrs Robin had a suitcase in Case 08. But 'the very start' is your first case."},
+      {'id': 'c', 'label': 'The Ravenmaster', 'feedback': 'The Ravenmaster sent words with Poppy. Who signed the letter in your first case?'},
       {'id': 'd', 'label': 'The Shadow'},
     ],
     'answer': 'd',

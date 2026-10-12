@@ -219,7 +219,7 @@ void main() {
     await tapText(t, 'THE SECRET LETTER', after: const Duration(milliseconds: 600));
     await reveal(t, find.text('Word Card'));
     await tapText(t, 'Word Card', after: const Duration(milliseconds: 800));
-    expect(find.text('RED · FOUR · CLOCK · PLATFORM'), findsWidgets, reason: 'evidence zoom');
+    expect(findReadable('RED · FOUR · CLOCK · PLATFORM'), findsWidgets, reason: 'evidence zoom');
     await tapText(t, 'CLOSE', after: const Duration(milliseconds: 600));
     await reveal(t, find.text('"Platform 4"'));
     expect(find.text('"Platform 4"'), findsOneWidget, reason: 'the clue Case 12 needs');

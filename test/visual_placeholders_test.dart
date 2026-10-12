@@ -201,7 +201,9 @@ void main() {
 
       await t.tap(find.text('BADGES'));
       await settle(t, const Duration(milliseconds: 600));
-      for (final b in [GameBadge.sharpEyes, GameBadge.quickThinker, GameBadge.puzzleSolver, GameBadge.masterDetective]) {
+      // The badges a case gives now (Sharp Eyes and Quick Thinker are retired
+      // and shown only where already earned: see `type_b_rewards_test`).
+      for (final b in [GameBadge.secondLook, GameBadge.wordCollector, GameBadge.puzzleSolver, GameBadge.masterDetective]) {
         await reveal(t, find.text(b.title));
         expect(find.byWidgetPredicate((w) => w is InkIcon && w.glyph == b.glyph), findsOneWidget, reason: b.name);
         expect(monogram, findsNothing, reason: 'badges');

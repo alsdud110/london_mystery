@@ -298,7 +298,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 300));
       await t.tap(tile);
       await wait(t, const Duration(milliseconds: 700));
-      expect(find.text(text), findsOneWidget, reason: '$evidence: $text');
+      expect(findReadable(text), findsOneWidget, reason: '$evidence: $text');
       await capture(t, shot);
       expect(t.takeException(), isNull);
     }
@@ -377,7 +377,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 800));
         await t.tap(find.byTooltip('Detective notebook'));
         await wait(t, const Duration(milliseconds: 900));
-        expect(find.text('NORTH · TOWER · BRIDGE · THREE'), findsOneWidget, reason: "Poppy's words, the second clue");
+        expect(findReadable('NORTH · TOWER · BRIDGE · THREE'), findsOneWidget, reason: "Poppy's words, the second clue");
         await capture(t, 'ep10_m3_notebook_$tag');
         expect(t.takeException(), isNull);
         await wait(t, const Duration(seconds: 2));

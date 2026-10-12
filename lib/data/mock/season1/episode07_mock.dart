@@ -46,15 +46,15 @@ const Map<String, dynamic> episode07Json = {
       'type': 'imageChoice',
       'question': 'Which map shows the right spot?',
       'options': [
-        {'id': 'a', 'label': 'Under the tree', 'artwork': 'parkMapC'},
-        {'id': 'b', 'label': 'Beside the left bench', 'artwork': 'parkMapB'},
+        {'id': 'a', 'label': 'Under the tree', 'artwork': 'parkMapC', 'feedback': 'The note says to go PAST the tree, not to stop at it.'},
+        {'id': 'b', 'label': 'Beside the left bench', 'artwork': 'parkMapB', 'feedback': 'Check the turn at the bridge: which way does the note say?'},
         {'id': 'c', 'label': 'Beside the right bench', 'artwork': 'parkMapA'},
-        {'id': 'd', 'label': 'At the old gate', 'artwork': 'parkMapD'},
+        {'id': 'd', 'label': 'At the old gate', 'artwork': 'parkMapD', 'feedback': 'That spot is far past the bridge. The note says to look beside the bench.'},
       ],
       'answer': 'c',
       'hints': [
         'Start at the bottom of the map. Walk up the path with your finger.',
-        'After the bridge, the path goes two ways. The note says which way to turn.',
+        "'Go past the tree' means go on by it. 'Turn right' and 'beside the bench' tell you where to stop.",
       ],
       'clue': {
         'id': 'ep07_c1',
@@ -100,10 +100,10 @@ const Map<String, dynamic> episode07Json = {
       'type': 'multipleChoice',
       'question': 'Where is the box with the map piece?',
       'options': [
-        {'id': 'a', 'label': 'On the shelf'},
-        {'id': 'b', 'label': 'Under the table, in front of the watering can'},
+        {'id': 'a', 'label': 'On the shelf', 'feedback': 'Read the second line: the box is NOT on the shelf.'},
+        {'id': 'b', 'label': 'Under the table, in front of the watering can', 'feedback': "Under the table, yes! But 'behind' is not 'in front of'."},
         {'id': 'c', 'label': 'Under the table, behind the watering can'},
-        {'id': 'd', 'label': 'On the table, next to the ropes'},
+        {'id': 'd', 'label': 'On the table, next to the ropes', 'feedback': 'Is the box ON the table, or UNDER it?'},
       ],
       'answer': 'c',
       'hints': [
@@ -160,6 +160,10 @@ const Map<String, dynamic> episode07Json = {
       ],
       'codeLength': 3,
       'answer': 'station,park,river',
+      'feedback': {
+        'river,park,station': 'That is upside down. Which piece goes at the TOP?',
+      },
+      'orderFeedback': 'Read the first two lines again: one piece goes at the top, one at the bottom.',
       'hints': [
         'The first line tells you the top. The second line tells you the bottom.',
         '"Above" means higher. "Below" means lower.',
@@ -216,10 +220,10 @@ const Map<String, dynamic> episode07Json = {
     'type': 'imageChoice',
     'question': 'Which map shows where to stop?',
     'options': [
-      {'id': 'a', 'label': 'Beside the left bench', 'artwork': 'parkMapB'},
+      {'id': 'a', 'label': 'Beside the left bench', 'artwork': 'parkMapB', 'feedback': "Left after the bridge, yes. But where does your joined map's arrow point?"},
       {'id': 'b', 'label': 'At the old gate', 'artwork': 'parkMapD'},
-      {'id': 'c', 'label': 'Beside the right bench', 'artwork': 'parkMapA'},
-      {'id': 'd', 'label': 'Under the tree', 'artwork': 'parkMapC'},
+      {'id': 'c', 'label': 'Beside the right bench', 'artwork': 'parkMapA', 'feedback': 'Inspector Grey says turn LEFT after the bridge.'},
+      {'id': 'd', 'label': 'Under the tree', 'artwork': 'parkMapC', 'feedback': 'Inspector Grey says go PAST the tree.'},
     ],
     'answer': 'b',
     'hints': [

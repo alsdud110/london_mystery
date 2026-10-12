@@ -7,6 +7,8 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
+import '../../data/models/episode.dart';
+import '../../data/models/learning.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
@@ -16,12 +18,18 @@ import '../game/game_providers.dart';
 import 'detective_report.dart';
 
 /// Parent-facing summary, styled as a game report rather than a report card.
+///
+/// It keeps two things apart: the English the case was *designed* to offer
+/// (its learning objectives) and what the save *recorded* about the play.
+/// Nothing on it grades the child's English.
 class ParentReportScreen extends ConsumerWidget {
   const ParentReportScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final report = DetectiveReport.from(ref.watch(currentEpisodeProvider), ref.watch(gameControllerProvider));
+    final topic = report.languageTopic;
+    final first = report.hasPlayRecord ? '${report.firstTryCount} / ${report.recordedPerformances.length}' : '기록 없음';
 
     return Scaffold(
       appBar: AppBar(
@@ -44,39 +52,83 @@ class ParentReportScreen extends ConsumerWidget {
                   _ReportHeader(report: report),
                   const SizedBox(height: 16),
                   _Section(
-                    title: 'English Skills',
-                    subtitle: '게임 속에서 사용한 영어 능력',
+                    title: 'English in This Case',
+                    subtitle: '이번 사건에서 다룬 영어 (학습 설계)',
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        for (final s in Skill.values)
-                          _SkillRow(
-                            label: DetectiveReport.skillLabel(s),
-                            labelKo: DetectiveReport.skillLabelKo(s),
-                            stars: report.skillStars[s] ?? 1,
-                          ),
+                        if (topic != null) ...[
+                          Text(topic.titleKo, style: AppText.subtitle(color: AppColors.navy)),
+                          Text(topic.title, style: AppText.aside(size: 15)),
+                          const SizedBox(height: AppSpace.md),
+                        ],
+                        Text('사건 속 미션이 다루도록 만들어진 영어예요. 아이의 이해도를 시험하거나 측정한 결과가 아니에요.', style: AppText.caption()),
+                        const SizedBox(height: AppSpace.sm),
+                        for (final p in report.performances)
+                          if (p.learning != null) _LearningRow(mission: p.mission, learning: p.learning!),
                       ],
                     ),
                   ),
                   const SizedBox(height: 16),
                   _Section(
-                    title: 'Mission Performance',
-                    subtitle: '미션 수행 기록',
+                    title: 'Words Checked',
+                    subtitle: '스스로 눌러 뜻을 확인한 단어 (기록)',
+                    child: _WordsChecked(report: report),
+                  ),
+                  const SizedBox(height: 16),
+                  _Section(
+                    title: 'Detective Actions',
+                    subtitle: '탐정 행동 기록 (새 기록 — 이번 업데이트 이후 플레이부터)',
+                    child: Row(
+                      children: [
+                        _Metric(
+                          label: 'Second Looks',
+                          labelKo: '막혔을 때 다시 확인',
+                          value: report.actionsRecorded ? '${report.secondLooks}' : '기록 없음',
+                        ),
+                        _Metric(
+                          label: 'Evidence Checked',
+                          labelKo: '수첩에서 살펴본 증거',
+                          value: report.actionsRecorded ? '${report.evidenceChecked}' : '기록 없음',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _Section(
+                    title: 'Play Record',
+                    subtitle: '플레이 기록 — 영어 점수가 아니에요',
                     child: Column(
                       children: [
                         Row(
                           children: [
-                            _Metric(label: 'Accuracy', labelKo: '정답률', value: '${report.accuracyPercent}%'),
-                            _Metric(label: 'Hints Used', labelKo: '힌트 사용', value: '${report.hintsUsed}'),
-                            _Metric(label: 'Completion Time', labelKo: '플레이 시간', value: Formatters.minutes(report.elapsed)),
+                            _Metric(
+                              label: 'Missions',
+                              labelKo: '해결한 미션',
+                              value: '${report.missionsCompleted} / ${report.missionsTotal}',
+                            ),
+                            _Metric(
+                              label: 'Tips Opened',
+                              labelKo: '열어 본 힌트',
+                              value: report.hasPlayRecord ? '${report.hintsUsed}' : '기록 없음',
+                            ),
                           ],
                         ),
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            _Metric(label: 'First Try', labelKo: '한 번에 해결', value: '${report.firstTryCount}'),
-                            _Metric(label: 'Words Checked', labelKo: '찾아본 단어', value: '${report.wordsLookedUp}'),
-                            _Metric(label: 'Badges', labelKo: '획득 배지', value: '${report.badges.length}'),
+                            _Metric(label: 'First Try', labelKo: '첫 시도에 해결', value: first),
+                            _Metric(
+                              label: 'Play Time',
+                              labelKo: '플레이 시간',
+                              value: report.elapsed == null ? '기록 없음' : Formatters.minutes(report.elapsed!),
+                            ),
                           ],
+                        ),
+                        const SizedBox(height: AppSpace.sm),
+                        Text(
+                          '"첫 시도에 해결"은 플레이 기록일 뿐이에요. 운 좋게 맞힌 경우와 구분할 수 없어서 영어 이해의 근거가 아니에요.',
+                          style: AppText.caption(),
                         ),
                         const Divider(height: 28, color: AppColors.parchmentDark),
                         for (final p in report.performances) _MissionRow(performance: p),
@@ -110,7 +162,9 @@ class ParentReportScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'London Mystery는 영어를 "공부"가 아닌 "모험의 도구"로 경험하는 에듀테인먼트 미션 게임입니다.',
+                    'London Mystery는 영어를 "공부"가 아닌 "모험의 도구"로 경험하는 에듀테인먼트 미션 게임입니다.\n'
+                    '이 보고서는 플레이 기록과 사건의 학습 설계를 보여 줄 뿐, 영어 실력을 평가하지 않습니다.\n'
+                    'XP와 배지는 사건 해결과 탐정 행동에 대한 게임 보상이며, 영어 점수가 아닙니다.',
                     textAlign: TextAlign.center,
                     style: AppText.caption(),
                   ),
@@ -120,6 +174,94 @@ class ParentReportScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// One solved mission's learning design: the place, what the English does
+/// in it, and the English itself.
+class _LearningRow extends StatelessWidget {
+  const _LearningRow({required this.mission, required this.learning});
+
+  final Mission mission;
+  final LearningObjective learning;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: AppSpace.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(mission.location, style: AppText.button(size: 15, color: AppColors.navy)),
+              Text(learning.dependency.labelKo, style: AppText.caption(color: AppColors.goldDeep)),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(learning.objective, style: AppText.bodyText(size: 15)),
+          for (final e in learning.expressions)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text('“$e”', style: AppText.aside(size: 15, color: AppColors.inkBrown)),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The words the child tapped, with their meanings, or why there are none.
+class _WordsChecked extends ConsumerWidget {
+  const _WordsChecked({required this.report});
+
+  final DetectiveReport report;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final words = report.wordsLookedUp;
+    final Episode episode = report.episode;
+    // A word looked up on earlier evidence (the Case Archive) is explained by
+    // that case's glossary.
+    final catalog = ref.watch(episodeCatalogProvider);
+    String? meaningOf(String w) => episode.meaningOf(w) ?? catalog.map((e) => e.meaningOf(w)).nonNulls.firstOrNull;
+    if (words.isEmpty) {
+      return Text(
+        report.lookupsRecorded ? '이번 사건에서는 단어 뜻 보기를 사용하지 않았어요.' : '기록 없음 (단어 기록 이전에 저장된 데이터)',
+        style: AppText.bodyText(size: 15, color: AppColors.muted),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final w in words)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: w,
+                    style: AppText.button(size: 15, color: AppColors.navy),
+                  ),
+                  if (meaningOf(w) != null)
+                    TextSpan(
+                      text: '  ${meaningOf(w)}',
+                      style: AppText.bodyText(size: 15, color: AppColors.muted),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        if (!report.lookupsRecorded)
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpace.xs),
+            child: Text('그 이전에 찾아본 단어는 기록이 없어요.', style: AppText.caption()),
+          ),
+      ],
     );
   }
 }
@@ -148,7 +290,10 @@ class _ReportHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('LONDON MYSTERY', style: AppText.eyebrow(color: AppColors.goldLight)),
-          Text('Episode ${report.episode.numberLabel} Result', style: AppText.title(size: 24, color: AppColors.paperLight)),
+          Text(
+            'Episode ${report.episode.numberLabel} Result',
+            style: AppText.title(size: 24, color: AppColors.paperLight),
+          ),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -174,9 +319,14 @@ class _ReportHeader extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('Mission Completion', style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.62))),
-                  Text('${report.missionsCompleted} / ${report.missionsTotal}',
-                      style: AppText.title(size: 26, color: AppColors.paperLight)),
+                  Text(
+                    'Mission Completion',
+                    style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.62)),
+                  ),
+                  Text(
+                    '${report.missionsCompleted} / ${report.missionsTotal}',
+                    style: AppText.title(size: 26, color: AppColors.paperLight),
+                  ),
                 ],
               ),
             ],
@@ -185,7 +335,9 @@ class _ReportHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.35), width: AppLine.hairline)),
+              border: Border(
+                top: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.35), width: AppLine.hairline),
+              ),
             ),
             child: Wrap(
               spacing: 10,
@@ -194,8 +346,10 @@ class _ReportHeader extends StatelessWidget {
               children: [
                 Text('${report.xp} XP', style: AppText.button(size: 15, color: AppColors.goldLight)),
                 Text('배지 ${report.badges.length}개', style: AppText.button(size: 15, color: AppColors.paperLight)),
-                Text('단서 ${report.cluesFound}/${report.cluesTotal} · 증거 ${report.evidenceFound}/${report.evidenceTotal}',
-                    style: AppText.button(size: 15, color: AppColors.paperLight)),
+                Text(
+                  '단서 ${report.cluesFound}/${report.cluesTotal} · 증거 ${report.evidenceFound}/${report.evidenceTotal}',
+                  style: AppText.button(size: 15, color: AppColors.paperLight),
+                ),
               ],
             ),
           ),
@@ -231,44 +385,6 @@ class _Section extends StatelessWidget {
   }
 }
 
-class _SkillRow extends StatelessWidget {
-  const _SkillRow({required this.label, required this.labelKo, required this.stars});
-
-  final String label;
-  final String labelKo;
-  final int stars;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: '$label $stars of 5 stars',
-      excludeSemantics: true,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: AppText.subtitle(color: AppColors.navy)),
-                  Text(labelKo, style: AppText.caption()),
-                ],
-              ),
-            ),
-            for (var i = 0; i < 5; i++)
-              InkStar(
-                filled: i < stars,
-                color: i < stars ? AppColors.gold : AppColors.parchmentDark,
-                size: AppIconSize.large,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _Metric extends StatelessWidget {
   const _Metric({required this.label, required this.labelKo, required this.value});
 
@@ -287,7 +403,11 @@ class _Metric extends StatelessWidget {
             child: Text(value, maxLines: 1, style: AppText.title(size: 24, color: AppColors.navy)),
           ),
           const SizedBox(height: 2),
-          Text(label, style: AppText.caption(color: AppColors.charcoal), textAlign: TextAlign.center),
+          Text(
+            label,
+            style: AppText.caption(color: AppColors.charcoal),
+            textAlign: TextAlign.center,
+          ),
           Text(labelKo, style: AppText.caption(), textAlign: TextAlign.center),
         ],
       ),
@@ -302,16 +422,26 @@ class _MissionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final m = performance.mission;
+    final p = performance;
+    final m = p.mission;
     final typeLabel = switch (m.type) {
-      MissionType.multipleChoice => '객관식 읽기',
-      MissionType.wordInput => '단어 완성',
+      MissionType.multipleChoice => '객관식',
+      MissionType.wordInput => '단어 입력',
       MissionType.numberCode => '숫자 암호',
-      MissionType.imageChoice => '그림 추리',
+      MissionType.imageChoice => '그림 선택',
       MissionType.qrScan => 'QR 현장 탐색',
       MissionType.finalCode => '최종 암호',
-      MissionType.sequence => '순서 추리',
+      MissionType.sequence => '순서 맞추기',
     };
+    final role = p.learning?.dependency.labelKo;
+    final String record;
+    if (!p.recorded) {
+      record = '기록 없음';
+    } else if (p.firstTry) {
+      record = '첫 시도에 해결';
+    } else {
+      record = '${p.wrongAnswers + 1}번째 시도에 해결';
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -321,14 +451,14 @@ class _MissionRow extends StatelessWidget {
             height: 36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: performance.firstTry ? AppColors.successSoft : AppColors.royalBlueSoft,
+              color: p.firstTry ? AppColors.successSoft : AppColors.royalBlueSoft,
               shape: BoxShape.circle,
             ),
             // Every row is a solved mission; the colour tells first try apart.
             child: InkIcon(
               InkGlyph.check,
               size: AppIconSize.small,
-              color: performance.firstTry ? AppColors.success : AppColors.royalBlue,
+              color: p.firstTry ? AppColors.success : AppColors.royalBlue,
             ),
           ),
           const SizedBox(width: 12),
@@ -337,24 +467,22 @@ class _MissionRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(m.location, style: AppText.button(size: 15, color: AppColors.navy)),
-                Text(typeLabel, style: AppText.caption()),
+                Text(role == null ? typeLabel : '$typeLabel · $role', style: AppText.caption()),
               ],
             ),
           ),
+          const SizedBox(width: AppSpace.sm),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                performance.firstTry ? '한 번에 해결' : '${performance.wrongAnswers + 1}번째 도전 성공',
-                style: AppText.caption(color: AppColors.charcoal),
-              ),
-              if (performance.usedHint)
+              Text(record, style: AppText.caption(color: AppColors.charcoal)),
+              if (p.recorded && p.usedHint)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const InkIcon(InkGlyph.hint, size: AppIconSize.tiny, color: AppColors.muted),
                     const SizedBox(width: 2),
-                    Text('힌트 ${performance.hints}개 사용', style: AppText.caption()),
+                    Text('힌트 ${p.hints}개 열어 봄', style: AppText.caption()),
                   ],
                 ),
             ],

@@ -233,9 +233,12 @@ class _EvidenceTab extends StatelessWidget {
             for (final (i, e) in found.indexed)
               _Appear(
                 index: i,
-                child: EvidenceTile(
-                  evidence: e,
-                  location: episode.allMissions.firstWhere((m) => m.evidence?.id == e.id).location,
+                child: Consumer(
+                  builder: (context, ref, _) => EvidenceTile(
+                    evidence: e,
+                    location: episode.allMissions.firstWhere((m) => m.evidence?.id == e.id).location,
+                    onOpened: () => ref.read(gameControllerProvider.notifier).recordEvidenceViewed(e.id),
+                  ),
                 ),
               ),
             for (var i = found.length; i < total; i++) const _EmptySlot(label: '?', square: true),
@@ -257,6 +260,8 @@ class _BadgesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final earned = progress.badgeIds.toSet();
+    // Retired badges appear only where they were earned.
+    final shown = GameBadge.shownFor(episode, progress.badgeIds);
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
       children: [
@@ -265,11 +270,11 @@ class _BadgesTab extends StatelessWidget {
           spacing: 12,
           runSpacing: 20,
           children: [
-            for (final b in GameBadge.forEpisode(episode)) BadgeMedal(badge: b, earned: earned.contains(b.name), size: 72),
+            for (final b in shown) BadgeMedal(badge: b, earned: earned.contains(b.name), size: 72),
           ],
         ),
         const SizedBox(height: 16),
-        _Footer(text: '${earned.length} / ${GameBadge.forEpisode(episode).length} badges'),
+        _Footer(text: '${shown.where((b) => earned.contains(b.name)).length} / ${shown.length} badges'),
       ],
     );
   }

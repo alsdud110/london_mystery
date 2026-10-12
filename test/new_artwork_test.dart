@@ -347,19 +347,24 @@ void main() {
         expect(t.takeException(), isNull);
       }
 
-      await toPuzzle('m04');
-      final m = mission('m04');
-      for (final o in m.options) {
+      // A landmark choice keeps its names (Case 10: the name is made of two words).
+      await toPuzzle('ep10_m3');
+      for (final o in mission('ep10_m3').options) {
         await reveal(t, find.text(o.label));
         expect(find.text(o.label), findsOneWidget, reason: o.label);
         expect(t.getRect(find.text(o.label)).bottom, lessThan(size.height));
       }
-      await reveal(t, find.text('Buckingham Palace'));
-      await capture(t, 'choice_case01_m04_$tag');
+      await capture(t, 'choice_case10_m3_$tag');
 
-      await toPuzzle('ep07_m1');
-      for (final o in mission('ep07_m1').options) {
-        expect(find.text(o.label), findsNothing, reason: '${o.label} would tell the answer');
+      // TYPE B: Case 01 M4 is read from the note's description, so its
+      // landmarks are not named (as the park maps never are).
+      for (final id in ['m04', 'ep04_m3', 'ep11_m3', 'ep07_m1']) {
+        await toPuzzle(id);
+        expect(mission(id).hideOptionNames || id == 'ep07_m1', isTrue);
+        for (final o in mission(id).options) {
+          expect(find.text(o.label), findsNothing, reason: '$id: ${o.label} would tell the answer');
+        }
+        if (id == 'm04') await capture(t, 'choice_case01_m04_$tag');
       }
     });
 
@@ -490,7 +495,7 @@ void main() {
       expect(r.top, greaterThanOrEqualTo(0));
       expect(r.bottom, lessThanOrEqualTo(size.height), reason: 'CLOSE on screen at $tag');
       // The whole card is still there (it scrolls on a small phone).
-      expect(find.text('Four pictures for four locks.\nRead them from left to right.'), findsOneWidget);
+      expect(findReadable('Four pictures for four locks.\nRead them from left to right.'), findsOneWidget);
       await capture(t, 'art_crown_zoom_$tag');
       await t.tap(close);
       await settle(t, const Duration(milliseconds: 600));

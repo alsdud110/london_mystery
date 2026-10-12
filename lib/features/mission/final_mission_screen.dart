@@ -8,6 +8,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/clue_card.dart';
@@ -94,7 +95,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         audio.play(GameSound.wrong);
         setState(() => _wrongPulse++);
         final canHint = ref.read(gameControllerProvider).hintsFor(_mission.id) < _mission.hints.length;
-        final choice = await showTryAgainSheet(context, hintAvailable: canHint);
+        final choice = await showTryAgainSheet(
+          context,
+          hintAvailable: canHint,
+          message: AnswerChecker.feedbackFor(_mission, answer),
+        );
         if (choice == TryAgainChoice.hint && mounted) _showHint();
       case SubmitResult.correct:
         audio.play(GameSound.finale);
@@ -110,6 +115,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   }
 
   void _rereadLetter() {
+    ref.read(gameControllerProvider.notifier).recordRecheck(_mission);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -141,7 +147,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     final evidence = progress.collectedEvidence(episode);
     String locationOfClue(Clue c) => episode.allMissions.firstWhere((m) => m.clue?.id == c.id).location;
     String locationOfEvidence(Evidence e) => episode.allMissions.firstWhere((m) => m.evidence?.id == e.id).location;
-    final earlierCases = ref.read(seasonProvider).solvedEpisodeIds.any((id) => id != episode.id);
+    // Operator mode opens earlier files for reference (see the archive).
+    final earlierCases =
+        ref.read(seasonProvider).solvedEpisodeIds.any((id) => id != episode.id) || ref.read(operatorAccessProvider);
 
     showModalBottomSheet<void>(
       context: context,
@@ -171,7 +179,14 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: evidenceGridDelegate(context),
-              children: [for (final e in evidence) EvidenceTile(evidence: e, location: locationOfEvidence(e))],
+              children: [
+                for (final e in evidence)
+                  EvidenceTile(
+                    evidence: e,
+                    location: locationOfEvidence(e),
+                    onOpened: () => ref.read(gameControllerProvider.notifier).recordEvidenceViewed(e.id),
+                  ),
+              ],
             ),
             const SizedBox(height: 16),
             Text('Clues', style: AppText.title(size: 20)),

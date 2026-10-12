@@ -48,12 +48,17 @@ pictures to places.
 
 ### Game systems
 
-- **XP**: +100 per mission (+200 final), +50 with no tips (+25 with one tip),
-  +20 when solved within 2 minutes (3 for the final). Wrong answers cost nothing.
+- **XP**: +100 per mission (+200 final) for everyone who reaches the answer:
+  wrong answers, tips and time change nothing (XP rule 3). Missions solved
+  under an earlier rule keep the XP they earned (`GameProgress.xpRules`).
 - **Detective Tips**: up to two per puzzle, from gentle to direct. They are
-  recorded in the reports.
-- **Badges**: First Clue, Sharp Eyes, Quick Thinker, Puzzle Solver, London
-  Explorer, Master Detective (`features/game/scoring.dart`).
+  free and recorded in the reports. Some wrong answers show a short line
+  about what was misread (never the answer).
+- **Badges**: First Clue, Puzzle Solver, London Explorer, Master Detective,
+  a case badge for six of the cases, and three optional detective-action badges
+  (Second Look, Notebook Explorer, Word Collector) earned only by recorded
+  actions, never by speed or a first try. Sharp Eyes and Quick Thinker are
+  no longer given; saves that hold them keep them (`features/game/scoring.dart`).
 - **Notebook**: Clues / Evidence (tap to zoom in) / Badges.
 - **Word cards**: harder words have a dotted underline. Tapping one shows its
   meaning (`glossary` in the episode data). Translations are never shown up

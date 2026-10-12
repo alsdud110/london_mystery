@@ -20,7 +20,8 @@ enum MissionType {
   );
 }
 
-/// English skills a mission exercises (used by the parent report).
+/// Legacy skill tags of a mission. No longer shown to parents: they were
+/// never measured (see `season1_learning.dart` for the learning design).
 enum Skill {
   vocabulary,
   reading,
@@ -104,19 +105,36 @@ enum Artwork {
 
 @immutable
 class ChoiceOption {
-  const ChoiceOption({required this.id, required this.label, this.artwork});
+  const ChoiceOption({required this.id, required this.label, this.artwork, this.feedback, this.altText});
 
   final String id;
   final String label;
   final Artwork? artwork;
 
+  /// One short line shown when this (wrong) option is chosen: what was
+  /// misread, never the answer. Null: the general "look again" line.
+  final String? feedback;
+
+  /// For a picture shown without its name (`Mission.hideOptionNames`): what
+  /// the picture shows, read by screen readers in place of the name. It
+  /// describes the picture, never names the place.
+  final String? altText;
+
   factory ChoiceOption.fromJson(Map<String, dynamic> json) => ChoiceOption(
     id: json['id'] as String,
     label: json['label'] as String,
     artwork: json['artwork'] == null ? null : Artwork.fromJson(json['artwork'] as String),
+    feedback: json['feedback'] as String?,
+    altText: json['altText'] as String?,
   );
 
-  Map<String, dynamic> toJson() => {'id': id, 'label': label, if (artwork != null) 'artwork': artwork!.name};
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'label': label,
+    if (artwork != null) 'artwork': artwork!.name,
+    if (feedback != null) 'feedback': feedback,
+    if (altText != null) 'altText': altText,
+  };
 }
 
 /// A clue saved to the Detective Notebook when a mission is solved.
@@ -225,6 +243,9 @@ class Mission {
     this.nextMissionId,
     this.skills = const [],
     this.finale = false,
+    this.feedback = const {},
+    this.orderFeedback,
+    this.hideOptionNames = false,
   });
 
   final String id;
@@ -265,6 +286,19 @@ class Mission {
   /// Pin position on the illustrated map, as fractions (0..1) of width/height.
   final double mapX;
   final double mapY;
+
+  /// Typed and ordered answers: one short line for a known wrong answer
+  /// (keyed as the player would enter it; compared like answers are, see
+  /// `AnswerChecker.feedbackFor`). Choice missions use [ChoiceOption.feedback].
+  final Map<String, String> feedback;
+
+  /// Shown when the answer has the right letters, numbers or steps in the
+  /// wrong order (e.g. clues copied in the order they were found).
+  final String? orderFeedback;
+
+  /// Picture choices: hide the landmark names under the pictures, so the
+  /// description has to be read (park maps never show names).
+  final bool hideOptionNames;
 
   /// The episode's final case. Set by `Episode` for its `finalMission`, so a
   /// final case can use any puzzle type (Episode 01 uses the picture locks).
@@ -319,6 +353,11 @@ class Mission {
     skills: [for (final s in (json['skills'] as List? ?? const [])) Skill.fromJson(s as String)],
     mapX: (json['mapX'] as num).toDouble(),
     mapY: (json['mapY'] as num).toDouble(),
+    feedback: {
+      for (final e in (json['feedback'] as Map? ?? const {}).entries) e.key.toString(): e.value.toString(),
+    },
+    orderFeedback: json['orderFeedback'] as String?,
+    hideOptionNames: json['hideOptionNames'] == true,
   );
 
   Map<String, dynamic> toJson() => {
@@ -347,5 +386,8 @@ class Mission {
     'skills': [for (final s in skills) s.name],
     'mapX': mapX,
     'mapY': mapY,
+    if (feedback.isNotEmpty) 'feedback': feedback,
+    if (orderFeedback != null) 'orderFeedback': orderFeedback,
+    if (hideOptionNames) 'hideOptionNames': true,
   };
 }

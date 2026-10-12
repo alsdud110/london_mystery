@@ -570,8 +570,10 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
   @override
   Widget build(BuildContext context) {
     final options = widget.mission.options;
+    // Landmarks are named under their picture unless the mission asks the
+    // child to tell them apart by the description alone.
     String? nameOf(ChoiceOption o) =>
-        ArtAssets.landmarkScenes.containsKey(o.artwork) ? o.label : null;
+        !widget.mission.hideOptionNames && ArtAssets.landmarkScenes.containsKey(o.artwork) ? o.label : null;
     final named = options.any((o) => nameOf(o) != null);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -589,6 +591,8 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
               _ImageTile(
                 letter: String.fromCharCode(65 + i),
                 name: nameOf(options[i]),
+                // Unnamed pictures are described to screen readers instead.
+                description: nameOf(options[i]) == null ? options[i].altText : null,
                 artwork: options[i].artwork ?? Artwork.bigBen,
                 selected: _selected == options[i].id,
                 onTap: () {
@@ -617,10 +621,14 @@ class _ImageTile extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.name,
+    this.description,
   });
 
   final String letter;
   final Artwork artwork;
+
+  /// What an unnamed picture shows, for screen readers (never the name).
+  final String? description;
 
   /// The place's name under the picture, or null (unnamed).
   final String? name;
@@ -632,7 +640,7 @@ class _ImageTile extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: name == null ? 'Picture $letter' : 'Picture $letter, $name',
+      label: 'Picture $letter${name != null ? ', $name' : description != null ? ': $description' : ''}',
       excludeSemantics: true,
       child: _Pressable(
         onTap: onTap,

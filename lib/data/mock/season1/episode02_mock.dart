@@ -53,9 +53,14 @@ const Map<String, dynamic> episode02Json = {
       'question': 'What time did Big Ben stop? Type the hour and the minutes.',
       'codeLength': 3,
       'answer': '817',
+      'feedback': {
+        '815': 'Read the last line: the minute hand moved two more small marks.',
+        '832': 'On a clock, the three means fifteen minutes, not three.',
+        '917': 'Between eight and nine: the hour hand has not reached nine yet.',
+      },
       'hints': [
-        'Every big number on a clock is five minutes. The three means fifteen minutes.',
-        'The hour is the smaller number: eight. Now add two small marks to fifteen minutes.',
+        "Read Mrs Bell's note line by line. Where was the hour hand? Where was the minute hand?",
+        "'Between eight and nine' means the hour is still eight. On the three is fifteen minutes. Each small mark is one more minute.",
       ],
       'clue': {
         'id': 'ep02_c1',
@@ -104,10 +109,10 @@ const Map<String, dynamic> episode02Json = {
       'type': 'multipleChoice',
       'question': 'Where is the missing gear?',
       'options': [
-        {'id': 'a', 'label': 'Under the biggest bell'},
-        {'id': 'b', 'label': 'Behind the clock face'},
+        {'id': 'a', 'label': 'Under the biggest bell', 'feedback': "Look at the word just before 'under the biggest bell'."},
+        {'id': 'b', 'label': 'Behind the clock face', 'feedback': 'The note never talks about the clock face. Which line says where the gear IS?'},
         {'id': 'c', 'label': 'Under the smallest bell'},
-        {'id': 'd', 'label': 'On the stairs'},
+        {'id': 'd', 'label': 'On the stairs', 'feedback': 'The stairs are not in the note. Find the line that says where the gear IS.'},
       ],
       'answer': 'c',
       'hints': [
@@ -166,10 +171,10 @@ const Map<String, dynamic> episode02Json = {
       'type': 'multipleChoice',
       'question': 'Which picture will the thief take?',
       'options': [
-        {'id': 'a', 'label': 'Gallery 9 · Picture 17'},
+        {'id': 'a', 'label': 'Gallery 9 · Picture 17', 'feedback': 'The hour hand was between eight and nine. Which hour had it really reached?'},
         {'id': 'b', 'label': 'Gallery 8 · Picture 17'},
-        {'id': 'c', 'label': 'Gallery 17 · Picture 8'},
-        {'id': 'd', 'label': 'Gallery 3 · Picture 2'},
+        {'id': 'c', 'label': 'Gallery 17 · Picture 8', 'feedback': 'Check the plan: the hour is the GALLERY, the minutes are the PICTURE.'},
+        {'id': 'd', 'label': 'Gallery 3 · Picture 2', 'feedback': "Those are the marks in Mrs Bell's note. The plan says to use the stopped TIME."},
       ],
       'answer': 'b',
       'hints': [
@@ -229,9 +234,14 @@ const Map<String, dynamic> episode02Json = {
     // 8:17 (Mission 01) + one hour (Mission 03's plan): worked out, never
     // shown as a time before this lock.
     'answer': '917',
+    'feedback': {
+      '817': 'That is when the clock stopped. The plan says ONE HOUR AFTER.',
+      '717': 'One hour AFTER, not before. Does the hour go up or down?',
+      '818': 'In one hour, the hour hand moves. Do the minutes change?',
+    },
     'hints': [
       'You need two clues: the time the clock stopped, and when the plan says the thief takes the picture.',
-      'Start from the stopped time in your first clue. The plan says one hour after it: the hour goes up by one, the minutes stay the same.',
+      "'One hour after' means the hour goes up by one. The minutes do not change.",
     ],
     'evidence': {
       'id': 'ep02_e4',

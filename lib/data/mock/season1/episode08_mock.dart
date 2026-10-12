@@ -49,15 +49,15 @@ const Map<String, dynamic> episode08Json = {
       'type': 'multipleChoice',
       'question': 'You can ask the passengers one question. Which question helps most?',
       'options': [
-        {'id': 'a', 'label': '"Do you like trains?"'},
+        {'id': 'a', 'label': '"Do you like trains?"', 'feedback': 'A nice question! But the tag does not say what the owner likes.'},
         {'id': 'b', 'label': '"Where are you going?"'},
-        {'id': 'c', 'label': '"What time is it?"'},
-        {'id': 'd', 'label': '"Is it raining?"'},
+        {'id': 'c', 'label': '"What time is it?"', 'feedback': "A clock can tell you the time. Which part of the tag can a passenger's answer check?"},
+        {'id': 'd', 'label': '"Is it raining?"', 'feedback': "The rain washed the name away, but asking about it won't find the owner. What does the tag still say?"},
       ],
       'answer': 'b',
       'hints': [
         'The name is gone. Which part of the tag can you still check?',
-        'The tag tells you the city the owner is travelling to.',
+        "'TO: Edinburgh' is where the owner is going. Which question gets that answer from every passenger?",
       ],
       'clue': {
         'id': 'ep08_c1',
@@ -104,10 +104,15 @@ const Map<String, dynamic> episode08Json = {
       'question': 'Who is the owner of the suitcase? Write the name.',
       'prompt': 'MRS _____',
       'answer': 'ROBIN',
+      'feedback': {
+        'LILY': 'Lily is going to Edinburgh, but with her dad. The tag says 1 adult, alone.',
+        'PATEL': 'Mrs Patel is going to York. Where is the owner going?',
+        'BROWN': "Mr Brown says 'No, no': he is going to Cambridge.",
+      },
       'acceptedAnswers': ['MRS ROBIN'],
       'hints': [
         'Two passengers are going to Edinburgh. Look at the name tag again.',
-        'The owner travels with nobody else.',
+        "'Alone' means with nobody else. 'My dad and I' means two people.",
       ],
       'clue': {
         'id': 'ep08_c2',
@@ -159,9 +164,13 @@ const Map<String, dynamic> episode08Json = {
       'question': 'Open the silver lock.',
       'codeLength': 3,
       'answer': '429',
+      'feedback': {
+        '930': 'That is the whole train time. The note wants the seat first, then only the hour.',
+      },
+      'orderFeedback': 'Right numbers, wrong order. First the seat, then the hour.',
       'hints': [
-        'Write the seat number with numbers, not words.',
-        'The hour is the first number of the train time. Put it after the seat.',
+        'Read the note on the lock: what comes first, and what comes next?',
+        "'Forty-two' is a number word: write it with numbers. 'The hour of my train' is the hour only, not the minutes.",
       ],
       'clue': {
         'id': 'ep08_c3',
@@ -216,10 +225,10 @@ const Map<String, dynamic> episode08Json = {
     'type': 'multipleChoice',
     'question': 'Which evidence shows that she was in Gallery 8?',
     'options': [
-      {'id': 'a', 'label': 'Name Tag'},
-      {'id': 'b', 'label': 'Wet Footprint'},
+      {'id': 'a', 'label': 'Name Tag', 'feedback': 'The name tag is from this case. Does it say anything about Gallery 8?'},
+      {'id': 'b', 'label': 'Wet Footprint', 'feedback': 'Look closer at the footprint in the Case Archive: where was it found?'},
       {'id': 'c', 'label': 'Red Button'},
-      {'id': 'd', 'label': 'Passenger Notes'},
+      {'id': 'd', 'label': 'Passenger Notes', 'feedback': 'Your passenger notes say where people are going. Do they show who was in Gallery 8?'},
     ],
     'answer': 'c',
     'hints': [

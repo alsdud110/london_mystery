@@ -309,7 +309,10 @@ class _NotebookNote extends StatelessWidget {
 enum TryAgainChoice { retry, hint }
 
 /// Gentle, encouraging feedback for a wrong answer.
-Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hintAvailable}) async {
+///
+/// [message] is the mission's line for this wrong answer (what was probably
+/// misread); without one, the general "look again" line is shown.
+Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hintAvailable, String? message}) async {
   final choice = await showModalBottomSheet<TryAgainChoice>(
     context: context,
     // Let the sheet grow past the default 9/16 of the screen (both buttons
@@ -349,7 +352,7 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
             const OrnamentRule(color: AppColors.tryAgain),
             const SizedBox(height: AppSpace.sm),
             Text(
-              'Good detectives look again.\nRead the clue one more time!',
+              message ?? 'Good detectives look again.\nRead the clue one more time!',
               textAlign: TextAlign.center,
               style: AppText.bodyText(size: 17),
             ),
@@ -377,7 +380,7 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
 }
 
 /// "Detective Tips": up to two hints, revealed one at a time. Framed as a
-/// partner's help (not a failure); the small bonus cost is stated kindly.
+/// partner's help (not a failure). Tips are free: they never cost XP.
 class TipsPanel extends StatelessWidget {
   const TipsPanel({super.key, required this.hints, required this.revealed, required this.onReveal, this.dark = false});
 
@@ -409,7 +412,7 @@ class TipsPanel extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: AppSpace.xs),
             child: Text(
-              revealed == 0 ? 'A tip uses a little of your bonus XP.' : 'Tip ${revealed + 1} of ${hints.length}',
+              revealed == 0 ? 'Tips are free. Good detectives use them.' : 'Tip ${revealed + 1} of ${hints.length}',
               textAlign: TextAlign.center,
               style: AppText.caption(color: dark ? AppColors.paperLight.withValues(alpha: 0.8) : AppColors.muted),
             ),

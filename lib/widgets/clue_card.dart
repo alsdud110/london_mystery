@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
 import '../core/utils/formatters.dart';
 import '../data/models/mission.dart';
+import '../features/game/game_providers.dart';
+import 'glossary_text.dart';
 import 'ink_icon.dart';
 import 'symbol_icon.dart';
 
@@ -68,7 +71,14 @@ class ClueCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text('"${clue.title}"', style: AppText.title(size: 21)),
                 const SizedBox(height: 4),
-                Text(clue.note, style: AppText.bodyText(size: 15, color: AppColors.muted)),
+                // The clue's own case explains its words (also in the archive).
+                Consumer(
+                  builder: (context, ref, _) => GlossaryText(
+                    clue.note,
+                    style: AppText.bodyText(size: 15, color: AppColors.muted),
+                    episode: caseOfClue(ref.watch(episodeCatalogProvider), clue.id),
+                  ),
+                ),
                 if (location != null) ...[
                   const SizedBox(height: 6),
                   Row(

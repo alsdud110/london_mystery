@@ -155,14 +155,14 @@ void main() {
     await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
     await tapText(t, 'BACK TO THE PUZZLE', after: const Duration(milliseconds: 500));
 
-    await tapText(t, 'Hyde Park', after: const Duration(milliseconds: 200));
+    await tapText(t, 'The Science Museum (rockets and machines)', after: const Duration(milliseconds: 200));
     await shot('choice_selected');
     await tapText(t, 'CHECK ANSWER');
     await shot('try_again');
     expect(audio.played, contains(GameSound.wrong));
     await tapText(t, 'GET A TIP');
     await shot('tip');
-    await tapText(t, 'The British Museum', after: const Duration(milliseconds: 200));
+    await tapText(t, 'The British Museum (treasures from long ago)', after: const Duration(milliseconds: 200));
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await wait(t, const Duration(milliseconds: 2800));
     await shot('success_badge');
@@ -197,9 +197,9 @@ void main() {
     await tapText(t, 'UNLOCK', after: Duration.zero);
     await finishMission(t, sceneLine: 'Inside the box, there is a pocket watch and a photo.');
 
-    // ── Mission 04: image choice (picture C = Buckingham Palace).
+    // ── Mission 04: image choice (picture C = Buckingham Palace, unnamed: TYPE B).
     await openMission(t, 'GO TO HYDE PARK');
-    final pictureC = find.bySemanticsLabel('Picture C, Buckingham Palace');
+    final pictureC = find.bySemanticsLabel(RegExp(r'^Picture C:')); // TYPE B: described, never named
     await reveal(t, pictureC);
     await t.tap(pictureC);
     await wait(t, const Duration(milliseconds: 300));

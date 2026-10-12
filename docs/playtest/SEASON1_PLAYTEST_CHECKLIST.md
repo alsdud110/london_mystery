@@ -87,7 +87,9 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 
 관찰 포인트
 - QR 미션: 카드를 찾는 과정이 재미있는지, 카메라가 없을 때 아래 수동 코드로 입력할 수 있는지
-- Mission 2 힌트 2(`S _ _ _ E`)는 답에 가깝습니다. 힌트 2를 본 직후 바로 입력하는지 보세요.
+- Mission 1 (TYPE B): 보기가 박물관 네 곳(공룡·옛 보물·버스와 기차·로켓). 편지의 "mummies from Egypt"로 고르는가, 기차 박물관(The Shadow의 "I love trains")에 끌리는가. 오답 시 나오는 한 줄을 읽는가
+- Mission 2 (TYPE B): 화면에 STONE이 없습니다. 뜻풀이(a hard piece of rock)나 첫 편지("a famous stone")로 떠올리는가
+- Mission 4 (TYPE B): 그림 아래 이름이 없습니다. 묘사(gate, soldiers in red coats)로 궁전을 고르는가
 - Final: 그림 → 숫자 연결. 잠금 네 개 중 시계·기차는 그림이지만 park·museum은 아직 **머리글자**("P", "M")로 보입니다. 어느 장소인지 알아보는지 보세요. 마지막 증거인 왕관도 "C"로 보입니다.
 
 | 체크 | 1 목표 | 2 영어 | 3 시간 | 4 힌트 충분 | 5 답 노출 | 6 증거 | 7 다음 행동 | 8 이야기 | 9 재미 | 10 결말 |
@@ -104,8 +106,8 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 
 관찰 포인트
 - ① 아날로그 시계를 읽을 수 있어야 합니다(8:17). 8세는 시계 읽기 자체가 벽일 수 있습니다. 영어 문제인지 시계 문제인지 구분해 적으세요.
-- ③ 시간 순서 표현(first of all / after / before / then)을 이해하는가
-- Final: "한 시간 뒤, 분은 같다" → 9:17을 계산할 수 있는가. 해결하면 시계 바늘이 9:17로 돌아갑니다. 이걸 알아채는지도 보세요.
+- ③ (TYPE B 정정) ③은 순서 맞추기가 아니라 객관식입니다. "The hour is the gallery. The minutes are the picture."를 멈춘 시각에 적용하는가. 오답 시 나오는 한 줄(시·분 바꿈, 9시로 읽음, 눈금 숫자 사용)을 읽는가
+- Final: "한 시간 뒤, 분은 같다" → 9:17을 계산할 수 있는가. 7:17(before/after 혼동)이나 8:17을 넣으면 피드백 한 줄이 나옵니다 — 읽고 고치는가. 해결하면 시계 바늘이 9:17로 돌아갑니다. 이걸 알아채는지도 보세요.
 
 | 체크 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -122,7 +124,7 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 관찰 포인트
 - ② red coat + blue scarf를 한 사람에게서 찾는 **두 조건 동시 확인**이 되는가
 - ③ 젖은 정도(very wet → almost dry)로 순서를 정하는 발상이 나오는가
-- Final: "두 개의 큰 아치와 시계탑" 설명만으로 King's Cross를 고르는가 (Big Ben과 헷갈리는지)
+- Final: 편지는 "north"와 "a tall clock tower"만 말합니다(아치 설명은 없음). 시계탑이 두 개(Big Ben, King's Cross)라 **Notebook의 부츠 글귀**로 골라야 합니다. 스스로 Notebook을 여는가
 
 | 체크 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -138,7 +140,7 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 
 관찰 포인트
 - ① "never sleeps"(항상 열려 있는 곳)를 비유로 이해하는가
-- ② 네 단어(RED · FOUR · CLOCK · PLATFORM)를 **모두** 조합하는가, 한 단어만 보고 고르는가
+- ② (TYPE B) 보기가 "Platform 1 / 4 / 7 / 9"뿐입니다. 짐꾼의 네 문장을 끝까지 읽는가 — 특히 7번 "a red door, **but no clock**"에 속는가
 - Final: 답(RAVEN)이 Notebook의 Black Wax Seal에 있습니다. **스스로 Notebook을 여는가**가 핵심입니다.
 
 | 체크 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
@@ -156,7 +158,7 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 관찰 포인트
 - ② "the other way"를 "반대쪽"으로 이해하는가
 - ③ 힌트 2("Six and one more. Write the number as a word.")는 답에 가깝습니다. 힌트 1에서 풀리는지 보세요.
-- Final: 잠금마다 앞 미션의 단서를 연결해야 합니다. 어느 단서가 어느 잠금인지 헤매는가
+- Final (TYPE B): 자물쇠에 그림이 없습니다. 뚜껑의 질문 순서(까마귀 → 톱니 → 문 닫는 시각)를 읽는가, 찾은 순서(5·4·7)대로 넣는가(→ 순서 피드백)
 
 | 체크 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -172,7 +174,7 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 
 관찰 포인트
 - ① "두 사람이 같은 말을 한 것"을 찾는 논리가 되는가. carried(들고 있던 것)와 wore(쓰고 있던 것)를 구분하는가
-- ② GREY: 색을 추론하고 철자를 쓸 수 있는가(GRAY로 쓰는지 기록)
+- ② GREY (TYPE B): 카드 뒷면 "It is the colour of my hat"을 읽고 **Notebook의 증언(grey hat)을 다시 찾는가**, 수수께끼(rain clouds)로 푸는가. RED·BLACK 등을 넣으면 나오는 한 줄을 읽는가. 철자(GRAY로 쓰는지)도 기록
 - ③ 다른 점 세기(정답 4). 같은 부분까지 세는 실수가 있는가
 - Final: 선택지 문장이 깁니다. 끝까지 읽는가
 
@@ -228,7 +230,7 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 - ① 소유격('s, belongs to)을 이해하는가
 - ② 힌트 2("Put that letter two times between the two As")는 사실상 답(ANNA)입니다. 힌트 2 직후 바로 입력하면 5번 항목을 X로 적으세요.
 - ③ 두 시간 간격으로 세 번째 교대 시각(12) 계산
-- Final: 세 사람 × 세 물건 소거 논리입니다. **가장 어려울 것으로 예상**합니다. 종이에 적는지, 포기하는지 보세요.
+- Final: 세 사람 × 세 물건 소거 논리입니다. **가장 어려울 것으로 예상**합니다. 종이에 적는지, 포기하는지 보세요. (TYPE B) UMBRELLA(Anna의 물건)를 넣으면 "WHOSE key" 피드백이 나옵니다 — 읽고 열쇠 주인을 다시 찾는가
 - Staff Room·Courtyard는 아직 전용 그림이 없어 궁전 외관 그림이 보입니다.
 
 | 체크 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
@@ -246,7 +248,8 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 관찰 포인트
 - ① 세 가지 특징(small, quiet, gold ring)을 모두 맞추는가
 - ② 요일 영어를 아는가. 모르면 영어 문제로 기록하세요.
-- Final: 누가 → 한다 → 무엇을 → 언제(THE CLOCKMAKER / WILL STOP / BIG BEN / AT MIDNIGHT) 순서로 문장을 만듭니다. 문장 구조 감각이 있는가
+- ③ (TYPE B) 보기에 Tower of London(TOWER만 맞음)이 함정으로 있습니다. 두 단어를 모두 확인하는가
+- Final: 누가 → 한다 → 무엇을 → 언제(THE CLOCKMAKER / WILL STOP / BIG BEN / AT MIDNIGHT) 순서로 문장을 만듭니다. 문장 구조 감각이 있는가. 어순 피드백("WHEN comes last" 등)을 읽고 고치는가
 
 | 체크 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -262,6 +265,7 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 
 관찰 포인트
 - ② THGINDIM → MIDNIGHT: 거꾸로 읽기는 재미 요소이지만 8글자라 깁니다. 힌트 2("twelve o'clock at night")는 답에 가깝습니다.
+- ③ (TYPE B) 그림에 이름이 없습니다. 택시 기사의 묘사(two big arches, a clock tower)로 고르는가, 시계탑만 있는 Big Ben에 끌리는가. Tip 1이 Case 04의 "where trains never sleep"을 떠올리게 합니다 — 기억하는가, Archive를 여는가
 - Final: Case 01의 범인(The Shadow)과 연결됩니다. 힌트 2가 Case Archive의 Old Letter를 가리킵니다(1쪽 주의 참고). 반전에 놀라는지 기록하세요.
 - Behind the Stage(분장실)는 아직 전용 그림이 없어 극장 외관 그림이 보입니다.
 
@@ -280,8 +284,10 @@ flutter build apk --dart-define=LM_PLAYTEST=true
 관찰 포인트
 - ① 금속·톱니 수·도장 세 조건 교차 확인. 하나씩 지워 가는가
 - ② Case 04의 "빨간 작은 시계가 있는 플랫폼"을 Archive에서 찾아 도착 시각 11:40을 네 자리로 입력해야 합니다. **Archive 이동 → 돌아오기**가 자연스러운가
+- ② (Phase 4) 도착판에 4번 승강장 열차가 둘(10:15, 11:40)입니다. "after the train from Edinburgh"로 고르는가, 10:15를 넣으면 나오는 before/after 피드백을 읽는가
+- Final (Phase 4) 첫 자물쇠 문장 "the platform whose clock is small and red" — Case 09의 whose를 기억하는가
 - ③ 답 BIG BEN은 띄어쓰기와 상관없이 정답 처리됩니다(CLOCK TOWER도 정답). 빈칸 6칸(`UNDER ______`) 안내로 충분한지, 철자에서 막히는지 보세요.
-- Final: 세 잠금에 이 사건의 단서를 연결. 시즌 마지막이 납득되는지 꼭 물어보세요.
+- Final (TYPE B): 자물쇠에 그림이 없습니다. 문의 질문(기차 승강장 → 톱니 수 → 까마귀 수)을 읽고 단서를 맞추는가, 찾은 순서(8·4·7)대로 넣는가. 시즌 마지막이 납득되는지 꼭 물어보세요.
 
 | 체크 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|

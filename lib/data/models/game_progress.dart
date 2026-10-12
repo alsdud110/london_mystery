@@ -18,6 +18,9 @@ class GameProgress {
     this.solveSeconds = const {},
     this.badgeIds = const [],
     this.lookedUpWords = const [],
+    this.lookupsRecorded = true,
+    this.xpRules = const {},
+    this.behavior = BehaviorLog.empty,
     this.startedAt,
     this.completedAt,
     this.playMillis,
@@ -51,6 +54,26 @@ class GameProgress {
 
   /// Words the player tapped to see the meaning (unique, lower-case).
   final List<String> lookedUpWords;
+
+  /// False for a save made before looked-up words were recorded: an empty
+  /// [lookedUpWords] then means "no record", not "no words". Words looked up
+  /// later are still added.
+  final bool lookupsRecorded;
+
+  /// The XP rule each mission was solved under (see `XpBreakdown`), recorded
+  /// at the moment of the answer. A solved mission without an entry was
+  /// solved before rules were recorded and keeps the first rule, so a change
+  /// of rules never changes XP already earned.
+  final Map<String, int> xpRules;
+
+  /// Detective actions recorded during this run of the case (see
+  /// [BehaviorLog]). Null for a save made before actions were recorded: its
+  /// past actions are unknown, so nothing is inferred from it and no action
+  /// badge can be earned in that run (a new run, e.g. Play again, records).
+  final BehaviorLog? behavior;
+
+  /// Whether this run records detective actions.
+  bool get recordsBehavior => behavior != null;
   final DateTime? startedAt;
   final DateTime? completedAt;
 
@@ -128,6 +151,9 @@ class GameProgress {
     Map<String, int>? solveSeconds,
     List<String>? badgeIds,
     List<String>? lookedUpWords,
+    bool? lookupsRecorded,
+    Map<String, int>? xpRules,
+    BehaviorLog? behavior,
     DateTime? startedAt,
     DateTime? completedAt,
     int? playMillis,
@@ -144,6 +170,9 @@ class GameProgress {
       solveSeconds: solveSeconds ?? this.solveSeconds,
       badgeIds: badgeIds ?? this.badgeIds,
       lookedUpWords: lookedUpWords ?? this.lookedUpWords,
+      lookupsRecorded: lookupsRecorded ?? this.lookupsRecorded,
+      xpRules: xpRules ?? this.xpRules,
+      behavior: behavior ?? this.behavior,
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
       playMillis: playMillis ?? this.playMillis,
@@ -200,6 +229,12 @@ class GameProgress {
       solveSeconds: intMap(json['solveSeconds']),
       badgeIds: strList(json['badgeIds']),
       lookedUpWords: strList(json['lookedUpWords']),
+      // Saves that never had the list cannot say which words were looked up.
+      lookupsRecorded: json['lookupsRecorded'] is bool
+          ? json['lookupsRecorded'] as bool
+          : json.containsKey('lookedUpWords'),
+      xpRules: intMap(json['xpRules']),
+      behavior: json['behavior'] is Map ? BehaviorLog.fromJson(json['behavior'] as Map) : null,
       startedAt: startedAt,
       completedAt: completedAt,
       playMillis: playMillis,
@@ -218,8 +253,50 @@ class GameProgress {
         'solveSeconds': solveSeconds,
         'badgeIds': badgeIds,
         'lookedUpWords': lookedUpWords,
+        if (!lookupsRecorded) 'lookupsRecorded': false,
+        if (xpRules.isNotEmpty) 'xpRules': xpRules,
+        // Written whenever actions are recorded: an absent key means "not recorded".
+        if (behavior != null) 'behavior': behavior!.toJson(),
         'startedAt': startedAt?.toIso8601String(),
         'completedAt': completedAt?.toIso8601String(),
         if (playMillis != null) 'playMillis': playMillis,
       };
+}
+
+/// Detective actions of one run of a case, each recorded by a real UI event
+/// (never inferred). They can earn optional action badges, never XP.
+@immutable
+class BehaviorLog {
+  const BehaviorLog({this.rechecked = const [], this.evidenceViewed = const [], this.words = const []});
+
+  static const empty = BehaviorLog();
+
+  /// Missions where, after a wrong answer and before solving, the detective
+  /// re-read the letter or opened a piece of evidence (Second Look).
+  final List<String> rechecked;
+
+  /// Evidence opened for a closer look from the notebook, the Case Archive or
+  /// the final case's notebook while the case was unsolved (Notebook Explorer).
+  final List<String> evidenceViewed;
+
+  /// Distinct words whose meaning was looked up in this run (Word Collector).
+  final List<String> words;
+
+  BehaviorLog copyWith({List<String>? rechecked, List<String>? evidenceViewed, List<String>? words}) => BehaviorLog(
+        rechecked: rechecked ?? this.rechecked,
+        evidenceViewed: evidenceViewed ?? this.evidenceViewed,
+        words: words ?? this.words,
+      );
+
+  /// Tolerant decoding: unknown or malformed entries are dropped.
+  factory BehaviorLog.fromJson(Map<dynamic, dynamic> json) {
+    List<String> strList(Object? raw) => raw is List ? raw.whereType<String>().toList() : const [];
+    return BehaviorLog(
+      rechecked: strList(json['rechecked']),
+      evidenceViewed: strList(json['evidenceViewed']),
+      words: strList(json['words']),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'rechecked': rechecked, 'evidenceViewed': evidenceViewed, 'words': words};
 }
