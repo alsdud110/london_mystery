@@ -9,6 +9,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/audio_service.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/game_dialog.dart';
@@ -224,6 +225,7 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                   arrow: true,
                                   singleLine: true, // one line on a 360-wide phone
                                   style: GameButtonStyle.glass,
+                                  tap: TapRole.primary,
                                   onPressed: _continue,
                                 ),
                               ),

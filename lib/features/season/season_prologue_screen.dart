@@ -6,6 +6,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/audio_service.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/season.dart';
 import '../../widgets/art_assets.dart';
@@ -15,6 +16,7 @@ import '../../widgets/game_button.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
+import '../game/game_providers.dart';
 import 'season_actions.dart';
 import 'season_overview.dart';
 import 'widgets/prologue_art.dart';
@@ -53,8 +55,20 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
   /// How long each scene takes to come in (a tap finishes it at once).
   static const _durations = [1400, 2600, 1900, 2200, 1200, 1100];
 
-  late final AnimationController _c = AnimationController(vsync: this);
+  late final AnimationController _c = AnimationController(vsync: this)..addListener(_stampAssigned);
   int _step = _city;
+
+  /// On the first case's file, ASSIGNED comes down over 0.55..0.8 of the
+  /// scene and meets the paper at its end.
+  static const _assignedLands = 0.8;
+  bool _assigned = false;
+
+  /// Once each time the file is handed over, as the stamp meets it.
+  void _stampAssigned() {
+    if (_step != _file || _assigned || _c.value < _assignedLands) return;
+    _assigned = true;
+    ref.read(audioServiceProvider).play(GameSound.caseStamp);
+  }
 
   @override
   void initState() {
@@ -73,6 +87,7 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
   /// Shows scene [step], playing it in (or complete, going back).
   void _show(int step, {bool complete = false}) {
     setState(() => _step = step);
+    _assigned = false;
     _c.duration = Duration(milliseconds: _durations[step]);
     if (complete) {
       _c.value = 1;
@@ -396,6 +411,7 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
                 arrow: true,
                 singleLine: true,
                 style: GameButtonStyle.glass,
+                tap: TapRole.primary,
                 onPressed: () => SeasonActions.investigate(
                   context,
                   ref,

@@ -9,6 +9,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/audio_service.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/desk_background.dart';
 import '../../widgets/game_button.dart';
@@ -51,7 +52,19 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
   late final AnimationController _leave = AnimationController(vsync: this, duration: const Duration(milliseconds: 520));
 
   /// What changed on the board since it was last shown.
-  late final AnimationController _reveal = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
+  late final AnimationController _reveal = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400))
+    ..addListener(_pinPhoto);
+
+  bool _pinned = false;
+
+  /// The photo of a case just solved is pinned to the board: the pin comes
+  /// down over 0.2..0.4 of the reveal and is pushed home at its end. Once,
+  /// and only while a solve is being shown.
+  void _pinPhoto() {
+    if (_before == null || _pinned || _reveal.value < 0.4) return;
+    _pinned = true;
+    ref.read(audioServiceProvider).play(GameSound.pinPush);
+  }
 
   /// Decided once on arrival, so the page does not switch under the player.
   late final bool _casebook;
@@ -118,6 +131,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
       showGameToast(context, 'Solve Case ${overview.cases[index - 1].numberLabel} to open this file.');
       return;
     }
+    playUiTap(context, TapRole.select); // a sealed file only answers with its note
     context.go(Routes.caseFile(overview.cases[index].id));
   }
 
@@ -226,6 +240,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
                               singleLine: true,
                               style: GameButtonStyle.glass,
                               // The season's opening sequence comes before its first case.
+                              tap: TapRole.primary,
                               onPressed: _begin,
                             ),
                           ),
@@ -480,6 +495,7 @@ class _Dossier extends StatelessWidget {
               label: 'VIEW ALL CASE FILES',
               glyph: InkGlyph.folder,
               singleLine: true,
+              tap: TapRole.secondary,
               onPressed: () => context.go(Routes.episodes),
             ),
             const SizedBox(height: AppSpace.md),
@@ -490,6 +506,7 @@ class _Dossier extends StatelessWidget {
               label: overview.currentStarted ? 'CONTINUE INVESTIGATION' : 'BEGIN INVESTIGATION',
               arrow: true,
               singleLine: true,
+              tap: TapRole.primary,
               onPressed: overview.current == null ? null : onInvestigate,
             ),
             Center(

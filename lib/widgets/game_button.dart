@@ -17,8 +17,17 @@ import 'paper_background.dart';
 ///   translucent navy with a thin gold edge, so the picture stays first.
 enum GameButtonStyle { navy, gold, outline, glass }
 
-/// Large, flat, kid-friendly button ("INVESTIGATE →").
-class GameButton extends ConsumerStatefulWidget {
+/// The casebook tap ([GameSound.uiTap]) at [role]'s level, for a tap that
+/// is not a [GameButton] (choosing a case from a list).
+void playUiTap(BuildContext context, TapRole role) =>
+    ProviderScope.containerOf(context, listen: false).read(audioServiceProvider).play(GameSound.uiTap, volume: role.volume);
+
+/// Large, flat, kid-friendly button ("INVESTIGATE →"). Silent unless given
+/// a [tap]: only the buttons that move the investigation on tap the
+/// casebook. A button that does something in the story (CHECK ANSWER,
+/// UNLOCK, a stamp, a letter) plays that thing's sound where it is handled,
+/// and no tap with it; Back, Close and the story's own taps stay quiet.
+class GameButton extends StatefulWidget {
   const GameButton({
     super.key,
     required this.label,
@@ -29,7 +38,7 @@ class GameButton extends ConsumerStatefulWidget {
     this.arrow = false,
     this.singleLine = false,
     this.expand = true,
-    this.playTapSound = true,
+    this.tap,
   });
 
   final String label;
@@ -49,16 +58,24 @@ class GameButton extends ConsumerStatefulWidget {
   /// wrapping (e.g. "GO TO BUCKINGHAM PALACE").
   final bool singleLine;
   final bool expand;
-  final bool playTapSound;
+
+  /// The casebook tap this button makes when pressed (null: silent).
+  final TapRole? tap;
 
   @override
-  ConsumerState<GameButton> createState() => _GameButtonState();
+  State<GameButton> createState() => _GameButtonState();
 }
 
-class _GameButtonState extends ConsumerState<GameButton> {
+class _GameButtonState extends State<GameButton> {
   bool _pressed = false;
 
   bool get _enabled => widget.onPressed != null;
+
+  void _onTap() {
+    final tap = widget.tap;
+    if (tap != null) playUiTap(context, tap);
+    widget.onPressed?.call();
+  }
 
   void _setPressed(bool value) {
     if (_enabled && _pressed != value) setState(() => _pressed = value);
@@ -177,12 +194,7 @@ class _GameButtonState extends ConsumerState<GameButton> {
         onTapDown: (_) => _setPressed(true),
         onTapCancel: () => _setPressed(false),
         onTapUp: (_) => _setPressed(false),
-        onTap: _enabled
-            ? () {
-                if (widget.playTapSound) ref.read(audioServiceProvider).play(GameSound.tap);
-                widget.onPressed!();
-              }
-            : null,
+        onTap: _enabled ? _onTap : null,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 150),
           opacity: !_enabled ? 0.5 : 1,

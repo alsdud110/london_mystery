@@ -31,6 +31,10 @@ flutter:
 
   assets:
     - assets/sounds/
+    # Sound prototype takes (ElevenLabs), played by `GameSound` / `GameAmbience`.
+    - assets/sounds/generated/
+    # App copies of some takes, trimmed / levelled from generated/ (see `GameSound`).
+    - assets/sounds/processed/
     - assets/images/london_mystery.png
     # The title screen (the detective's office).
     - assets/images/title/

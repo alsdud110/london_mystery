@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
@@ -20,6 +21,11 @@ import 'helpers.dart';
 /// puzzle (earlier cases and missions solved) and answers it through its own
 /// puzzle, as a child would.
 class MissionPlay {
+  MissionPlay({this.audio});
+
+  /// The sounds the app plays (a fresh silent one when not given).
+  final MockAudioService? audio;
+
   final season = MockEpisodeRepository.bundled();
   late WidgetRef ref;
 
@@ -50,7 +56,7 @@ class MissionPlay {
           playMillis: 0,
         ).toJson());
     await t.pumpWidget(ProviderScope(
-      overrides: await testOverrides(prefs: {
+      overrides: await testOverrides(audio: audio, prefs: {
         for (final x in earlier)
           AppConstants.progressKeyFor(x.id): progress([for (final m in x.allMissions) m.id], solved: true),
         if (e.id != AppConstants.currentEpisodeId)

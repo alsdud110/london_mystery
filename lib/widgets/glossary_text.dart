@@ -101,7 +101,7 @@ Future<void> showWordMeaning(BuildContext context, String word, String meaning) 
             const SizedBox(height: AppSpace.sm),
             Text('= $meaning', style: AppText.title(size: 22, color: AppColors.royalBlue)),
             const SizedBox(height: 20),
-            GameButton(label: 'GOT IT!', playTapSound: false, onPressed: () => Navigator.of(context).pop()),
+            GameButton(label: 'GOT IT!', onPressed: () => Navigator.of(context).pop()),
           ],
         ),
       ),

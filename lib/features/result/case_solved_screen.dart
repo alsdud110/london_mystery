@@ -34,7 +34,21 @@ class CaseSolvedScreen extends ConsumerStatefulWidget {
 }
 
 class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2800));
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2800))
+    ..addListener(_stampDown);
+
+  /// The stamp comes down over 0.3..0.45 of the page and meets the paper at
+  /// its end (about 1.26 s in).
+  static const _stampLands = 0.45;
+  bool _stamped = false;
+
+  /// Once, as the stamp meets the paper (at once with reduced motion, when
+  /// the closed file is simply there).
+  void _stampDown() {
+    if (_stamped || _c.value < _stampLands) return;
+    _stamped = true;
+    ref.read(audioServiceProvider).play(GameSound.caseStamp);
+  }
 
   @override
   void didChangeDependencies() {
@@ -47,9 +61,6 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
   void initState() {
     super.initState();
     _c.forward();
-    Future<void>.delayed(const Duration(milliseconds: 900), () {
-      if (mounted) ref.read(audioServiceProvider).play(GameSound.success);
-    });
   }
 
   @override
@@ -151,6 +162,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                             arrow: true,
                             singleLine: true,
                             style: GameButtonStyle.glass,
+                            tap: TapRole.primary,
                             onPressed: () => context.go(toBoard ? Routes.season : Routes.caseFile(nextCase.id)),
                           ),
                           const SizedBox(height: AppSpace.md),

@@ -9,6 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/evidence_card.dart';
@@ -38,7 +39,8 @@ class FinalMissionScreen extends ConsumerStatefulWidget {
 }
 
 class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with SingleTickerProviderStateMixin {
-  late final AnimationController _open = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400));
+  late final AnimationController _open = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400))
+    ..addListener(_ringBell);
   final _scroll = ScrollController();
   late List<int> _digits;
   int _wrongPulse = 0;
@@ -75,12 +77,29 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     super.dispose();
   }
 
+  /// Solved just now (not a revisit): the case's bell, if it has one, may ring.
+  bool _solvedNow = false;
+  bool _rung = false;
+
+  /// Big Ben rings as the news comes up ("Big Ben rings again!", at 0.55 of
+  /// the opening), after the clock has caught: once.
+  void _ringBell() {
+    if (!_solvedNow || _rung || _open.value < 0.55 || !ringsBellOnSolve(_mission)) return;
+    _rung = true;
+    ref.read(audioServiceProvider).play(GameSound.bigBenBell);
+  }
+
   void _turn(int index, int delta) {
-    ref.read(audioServiceProvider).play(GameSound.tap);
+    ref.read(audioServiceProvider).play(GameSound.lockDialClick);
     setState(() => _digits[index] = (_digits[index] + delta) % 10);
   }
 
-  void _showHint() => ref.read(gameControllerProvider.notifier).useHint(_mission);
+  /// A tip asked for: written into the notebook, with the pencil.
+  void _showHint() {
+    if (ref.read(gameControllerProvider).hintsFor(_mission.id) >= _mission.hints.length) return;
+    ref.read(gameControllerProvider.notifier).useHint(_mission);
+    ref.read(audioServiceProvider).play(GameSound.pencilNote);
+  }
 
   Future<void> _tryOpen() => _submit(_digits.join());
 
@@ -91,13 +110,18 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       case SubmitResult.locked:
         context.go(Routes.map);
       case SubmitResult.tryAgain:
-        audio.play(GameSound.wrong);
+        // With the shake (it starts on this setState).
+        audio.play(GameSound.puzzleWrong);
         setState(() => _wrongPulse++);
         final canHint = ref.read(gameControllerProvider).hintsFor(_mission.id) < _mission.hints.length;
         final choice = await showTryAgainSheet(context, hintAvailable: canHint);
         if (choice == TryAgainChoice.hint && mounted) _showHint();
       case SubmitResult.correct:
-        audio.play(GameSound.finale);
+        _solvedNow = true;
+        // A thing of the story (the Royal Box, the Great Clock, a heavy
+        // lock) sounds as it opens on screen; otherwise the final's cue now.
+        final sound = solveSoundOf(_mission);
+        if (sound == GameSound.finale) audio.play(sound);
         // Bring the box into view so the child sees it open.
         // (The puzzle is removed now, so wait a frame for the new layout.)
         await WidgetsBinding.instance.endOfFrame;
@@ -105,11 +129,14 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         if (_scroll.hasClients && _scroll.offset > 0) {
           await _scroll.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeOutCubic);
         }
-        if (mounted) await _open.forward();
+        if (!mounted) return;
+        if (sound != GameSound.finale) audio.play(sound);
+        await _open.forward();
     }
   }
 
   void _rereadLetter() {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -135,6 +162,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   }
 
   void _peekNotebook() {
+    ref.read(audioServiceProvider).play(GameSound.notebookOpen);
     final episode = ref.read(currentEpisodeProvider);
     final progress = ref.read(gameControllerProvider);
     final clues = progress.collectedClues(episode);
@@ -189,6 +217,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
                 label: 'OPEN THE CASE ARCHIVE',
                 glyph: InkGlyph.folder,
                 style: GameButtonStyle.outline,
+                // The notebook opens on its archive: its own sound, no tap.
                 onPressed: () {
                   Navigator.of(context).pop();
                   this.context.push(Routes.archive);
@@ -351,6 +380,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       label: 'OPEN MY NOTEBOOK',
       glyph: InkGlyph.notebook,
       style: GameButtonStyle.outline,
+      // The notebook's own sound as it opens, no casebook tap with it.
       onPressed: _peekNotebook,
     ),
     const SizedBox(height: 18),
@@ -373,6 +403,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
             label: 'CONTINUE',
             arrow: true,
             style: GameButtonStyle.glass,
+            tap: TapRole.primary,
             onPressed: () => context.go(Routes.story(_mission.id)),
           ),
   );

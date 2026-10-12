@@ -166,10 +166,14 @@ class WaxSeal extends StatelessWidget {
 /// The envelope is drawn by separate painters (pocket, flap, seal) so each
 /// can later be swapped for a PNG/SVG illustration.
 class EnvelopeReveal extends StatefulWidget {
-  const EnvelopeReveal({super.key, required this.letterText, this.initiallyOpen = false, this.onOpened});
+  const EnvelopeReveal({super.key, required this.letterText, this.initiallyOpen = false, this.onOpen, this.onOpened});
 
   final String letterText;
   final bool initiallyOpen;
+  /// The envelope was tapped: the opening starts now (play its sound here).
+  final VoidCallback? onOpen;
+
+  /// The letter lies open (the opening has finished).
   final VoidCallback? onOpened;
 
   @override
@@ -198,6 +202,7 @@ class _EnvelopeRevealState extends State<EnvelopeReveal> with SingleTickerProvid
 
   Future<void> _openEnvelope() async {
     if (_c.isAnimating || _open) return;
+    widget.onOpen?.call();
     await _c.forward();
     if (!mounted) return;
     setState(() => _open = true);

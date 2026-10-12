@@ -6,6 +6,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/audio_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
@@ -37,6 +38,14 @@ class NotebookScreen extends ConsumerStatefulWidget {
 
 class _NotebookScreenState extends ConsumerState<NotebookScreen> {
   late bool _archive = widget.startInArchive;
+
+  /// The leather cover opens once as the notebook is opened; turning to
+  /// another tab or the archive inside it is quiet.
+  @override
+  void initState() {
+    super.initState();
+    ref.read(audioServiceProvider).play(GameSound.notebookOpen);
+  }
 
   @override
   Widget build(BuildContext context) {

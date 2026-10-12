@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
+import '../../../data/mock/season1/season1_sounds.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
@@ -202,10 +203,8 @@ class _MultipleChoiceQuestionState
               letter: String.fromCharCode(65 + i),
               label: options[i].label,
               selected: _selected == options[i].id,
-              onTap: () {
-                ref.read(audioServiceProvider).play(GameSound.tap);
-                setState(() => _selected = options[i].id);
-              },
+              // Choosing is quiet: the card fills with ink.
+              onTap: () => setState(() => _selected = options[i].id),
             ),
           ),
         const SizedBox(height: AppSpace.sm),
@@ -400,7 +399,8 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
 
   void _press(String digit) {
     if (_code.length >= _length) return;
-    ref.read(audioServiceProvider).play(GameSound.tap);
+    // Each digit turns one of the lock's number wheels.
+    ref.read(audioServiceProvider).play(GameSound.lockDialClick);
     setState(() => _code += digit);
   }
 
@@ -591,10 +591,7 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
                 name: nameOf(options[i]),
                 artwork: options[i].artwork ?? Artwork.bigBen,
                 selected: _selected == options[i].id,
-                onTap: () {
-                  ref.read(audioServiceProvider).play(GameSound.tap);
-                  setState(() => _selected = options[i].id);
-                },
+                onTap: () => setState(() => _selected = options[i].id),
               ),
           ],
         ),
@@ -731,7 +728,14 @@ class _SequenceQuestionState extends ConsumerState<SequenceQuestion> {
 
   void _pick(String id) {
     if (_picked.length >= _length) return;
-    ref.read(audioServiceProvider).play(GameSound.tap);
+    // A step is quiet unless it is a real thing in the scene: a piece of
+    // paper laid down, or a notch of the door's dial.
+    final sound = switch (sequenceTouchOf(widget.mission)) {
+      SequenceTouch.paper => GameSound.paperPlace,
+      SequenceTouch.dial => GameSound.lockDialClick,
+      SequenceTouch.none => null,
+    };
+    if (sound != null) ref.read(audioServiceProvider).play(sound);
     setState(() => _picked.add(id));
   }
 

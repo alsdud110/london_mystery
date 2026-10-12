@@ -159,7 +159,7 @@ void main() {
     await shot('choice_selected');
     await tapText(t, 'CHECK ANSWER');
     await shot('try_again');
-    expect(audio.played, contains(GameSound.wrong));
+    expect(audio.played, contains(GameSound.puzzleWrong));
     await tapText(t, 'GET A TIP');
     await shot('tip');
     await tapText(t, 'The British Museum', after: const Duration(milliseconds: 200));
@@ -175,7 +175,7 @@ void main() {
     await tapText(t, 'TO THE MAP', after: const Duration(milliseconds: 1400));
     await shot('map_unlock');
     await wait(t, const Duration(milliseconds: 3000));
-    expect(audio.played, contains(GameSound.unlock));
+    expect(audio.played, contains(GameSound.padlockOpen));
     expect(find.descendant(of: find.byKey(const ValueKey('pin-m02')), matching: find.text('BRITISH MUSEUM')), findsOneWidget, reason: 'the new place is named on the map');
 
     // ── Mission 02: word input, using both tips.
@@ -252,7 +252,9 @@ void main() {
     await tapText(t, 'OPEN THE BOX', after: const Duration(milliseconds: 3500));
     await shot('case_solved_box');
     expect(find.text('Brilliant work, Detective MINYOUNG!'), findsOneWidget);
-    expect(audio.played, contains(GameSound.finale));
+    // The Royal Box opening is the solve's sound (not the generic final cue).
+    expect(audio.played, contains(GameSound.royalBoxOpen));
+    expect(audio.played, isNot(contains(GameSound.finale)));
 
     // The story after the case, then the case file and the parent report.
     await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 1000));

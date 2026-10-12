@@ -9,6 +9,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/audio_service.dart';
 import '../../data/mock/season1/season1_discoveries.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/evidence_card.dart';
@@ -228,6 +229,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                           label: 'TO THE MAP',
                                           arrow: true,
                                           style: GameButtonStyle.glass,
+                                          tap: TapRole.primary,
                                           onPressed: () => context.go(Routes.map),
                                         ),
                                     ],
@@ -328,6 +330,8 @@ class _EvidenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final note = evidence.inscription;
     return _LaidDown(
+      // Evidence is a real thing put down in front of the detective.
+      sound: GameSound.paperPlace,
       child: Semantics(
         button: true,
         label: '${evidence.name}. ${note ?? ''} Tap to look closer.',
@@ -371,11 +375,24 @@ class _StoryEdges extends StatelessWidget {
 }
 
 /// A card laid down on the night desk: it settles in without overshoot, not
-/// bounced (at once with reduced motion).
-class _LaidDown extends StatelessWidget {
-  const _LaidDown({required this.child});
+/// bounced (at once with reduced motion). [sound] plays once as it lands.
+class _LaidDown extends ConsumerStatefulWidget {
+  const _LaidDown({required this.child, this.sound});
 
   final Widget child;
+  final GameSound? sound;
+
+  @override
+  ConsumerState<_LaidDown> createState() => _LaidDownState();
+}
+
+class _LaidDownState extends ConsumerState<_LaidDown> {
+  @override
+  void initState() {
+    super.initState();
+    final sound = widget.sound;
+    if (sound != null) ref.read(audioServiceProvider).play(sound);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -389,7 +406,7 @@ class _LaidDown extends StatelessWidget {
         scale: 0.94 + 0.06 * t,
         child: Opacity(opacity: t.clamp(0, 1), child: child),
       ),
-      child: child,
+      child: widget.child,
     );
   }
 }

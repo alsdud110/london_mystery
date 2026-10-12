@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/utils/audio_service.dart';
 import '../../data/models/episode.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/game_button.dart';
@@ -200,6 +201,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                         label: "I'M READY",
                                         arrow: true,
                                         style: GameButtonStyle.glass,
+                                        tap: TapRole.primary,
                                         onPressed: _start,
                                       ),
                                     ],

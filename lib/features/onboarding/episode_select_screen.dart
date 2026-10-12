@@ -6,6 +6,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/audio_service.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../widgets/game_button.dart';
@@ -177,7 +178,10 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
                                 open: _openCase == c.episode.id,
                                 chosen: _chosen == c.episode.id,
                                 onToggle: () => _toggle(c.episode.id),
-                                onChoose: () => setState(() => _chosen = c.episode.id),
+                                onChoose: () {
+                                  if (_chosen != c.episode.id) playUiTap(context, TapRole.select);
+                                  setState(() => _chosen = c.episode.id);
+                                },
                               ),
                               const SizedBox(height: AppSpace.xl),
                             ],
@@ -215,6 +219,7 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
                         label: label,
                         arrow: true,
                         singleLine: true,
+                        tap: TapRole.primary,
                         onPressed: chosen == null ? null : () => _go(chosen),
                       ),
                     ),

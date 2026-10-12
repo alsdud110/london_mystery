@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/utils/audio_service.dart';
 import '../../../data/models/discovery.dart';
 import '../../../data/models/mission.dart';
 import '../../../widgets/evidence_card.dart';
@@ -26,6 +27,7 @@ Future<void> showDiscoveryMoment(
   required XpBreakdown xp,
   String buttonLabel = 'CONTINUE',
   List<GameBadge> newBadges = const [],
+  VoidCallback? onEvidenceLaid,
 }) {
   return showGeneralDialog<void>(
     context: context,
@@ -40,6 +42,7 @@ Future<void> showDiscoveryMoment(
       buttonLabel: buttonLabel,
       xp: xp,
       newBadges: newBadges,
+      onEvidenceLaid: onEvidenceLaid,
     ),
     transitionBuilder: (context, anim, _, child) => FadeTransition(opacity: anim, child: child),
   );
@@ -52,6 +55,7 @@ class _DiscoveryMoment extends StatefulWidget {
     required this.buttonLabel,
     required this.xp,
     required this.newBadges,
+    this.onEvidenceLaid,
   });
 
   final Mission mission;
@@ -60,13 +64,30 @@ class _DiscoveryMoment extends StatefulWidget {
   final XpBreakdown xp;
   final List<GameBadge> newBadges;
 
+  /// The evidence card has just been laid down (only when one is shown).
+  final VoidCallback? onEvidenceLaid;
+
   @override
   State<_DiscoveryMoment> createState() => _DiscoveryMomentState();
 }
 
 class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))
+    ..addListener(_layEvidence);
   bool _closing = false;
+
+  /// Where the evidence card, rising into place over 0.3..0.55, lands.
+  static const _evidenceLands = 0.38;
+  bool _evidenceLaid = false;
+
+  /// Once, as the card lands (at once when a tap or reduced motion
+  /// finishes the page).
+  void _layEvidence() {
+    if (_evidenceLaid || _c.value < _evidenceLands) return;
+    if (!widget.discovery.showEvidence || widget.mission.evidence == null) return;
+    _evidenceLaid = true;
+    widget.onEvidenceLaid?.call();
+  }
 
   @override
   void didChangeDependencies() {
@@ -227,6 +248,7 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                                 label: widget.buttonLabel,
                                 arrow: true,
                                 style: GameButtonStyle.glass,
+                                tap: TapRole.primary,
                                 onPressed: _close,
                               ),
                             ),

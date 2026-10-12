@@ -9,6 +9,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
 import '../../data/mock/season1/season1_discoveries.dart';
+import '../../data/mock/season1/season1_sounds.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/detective_tips.dart';
 import '../../widgets/evidence_card.dart';
@@ -77,14 +78,20 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     });
   }
 
-  void _onLetterOpened() {
-    ref.read(audioServiceProvider).play(GameSound.clue);
-    setState(() => _letterOpened = true);
+  /// The envelope was tapped: its sound starts with the seal cracking.
+  void _onLetterOpening() => ref.read(audioServiceProvider).play(GameSound.envelopeOpen);
+
+  void _onLetterOpened() => setState(() => _letterOpened = true);
+
+  /// A tip asked for: written into the notebook, with the pencil.
+  void _showHint(Mission m) {
+    if (ref.read(gameControllerProvider).hintsFor(m.id) >= m.hints.length) return;
+    ref.read(gameControllerProvider.notifier).useHint(m);
+    ref.read(audioServiceProvider).play(GameSound.pencilNote);
   }
 
-  void _showHint(Mission m) => ref.read(gameControllerProvider.notifier).useHint(m);
-
   void _rereadLetter(Mission m) {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -118,13 +125,16 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       case SubmitResult.locked:
         context.go(Routes.map);
       case SubmitResult.tryAgain:
-        audio.play(GameSound.wrong);
+        // With the shake (it starts on this setState).
+        audio.play(GameSound.puzzleWrong);
         setState(() => _wrongPulse++);
         final canHint = ref.read(gameControllerProvider).hintsFor(m.id) < m.hints.length;
         final choice = await showTryAgainSheet(context, hintAvailable: canHint);
         if (choice == TryAgainChoice.hint && mounted) _showHint(m);
       case SubmitResult.correct:
-        audio.play(GameSound.success);
+        // A real lock on the scene opens (a heavy one, a padlock); anything
+        // else is a discovery.
+        audio.play(solveSoundOf(m));
         final progress = ref.read(gameControllerProvider);
         await showDiscoveryMoment(
           context,
@@ -132,6 +142,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           discovery: discoveryOf(m),
           xp: XpBreakdown.of(m, progress),
           newBadges: outcome.newBadges,
+          onEvidenceLaid: () => audio.play(GameSound.paperPlace),
         );
         if (mounted) context.go(Routes.story(m.id));
     }
@@ -156,6 +167,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                 key: const ValueKey('letter'),
                 mission: m,
                 opened: _letterOpened,
+                onOpening: _onLetterOpening,
                 onOpened: _onLetterOpened,
                 onDone: () => _goTo(MissionStage.puzzle),
               ),
@@ -263,7 +275,7 @@ class _StoryStage extends StatelessWidget {
             ),
           ),
         const SizedBox(height: AppSpace.xl),
-        GameButton(label: 'INVESTIGATE', arrow: true, onPressed: onInvestigate),
+        GameButton(label: 'INVESTIGATE', arrow: true, tap: TapRole.primary, onPressed: onInvestigate),
       ],
     );
   }
@@ -275,12 +287,14 @@ class _LetterStage extends StatelessWidget {
     super.key,
     required this.mission,
     required this.opened,
+    required this.onOpening,
     required this.onOpened,
     required this.onDone,
   });
 
   final Mission mission;
   final bool opened;
+  final VoidCallback onOpening;
   final VoidCallback onOpened;
   final VoidCallback onDone;
 
@@ -295,7 +309,7 @@ class _LetterStage extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpace.xl),
-        EnvelopeReveal(letterText: mission.letter, initiallyOpen: opened, onOpened: onOpened),
+        EnvelopeReveal(letterText: mission.letter, initiallyOpen: opened, onOpen: onOpening, onOpened: onOpened),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: !opened
@@ -306,7 +320,7 @@ class _LetterStage extends StatelessWidget {
                     const SizedBox(height: AppSpace.lg),
                     Text('Tap a dotted word to see what it means.', style: AppText.caption(), textAlign: TextAlign.center),
                     const SizedBox(height: AppSpace.xl),
-                    GameButton(label: 'SOLVE THE PUZZLE', arrow: true, onPressed: onDone),
+                    GameButton(label: 'SOLVE THE PUZZLE', arrow: true, tap: TapRole.primary, onPressed: onDone),
                   ],
                 ),
         ),

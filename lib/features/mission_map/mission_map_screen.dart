@@ -142,6 +142,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                 GameButton(
                   label: 'READ THE CASE AGAIN',
                   style: GameButtonStyle.outline,
+                  tap: TapRole.secondary,
                   onPressed: () {
                     Navigator.of(sheetContext).pop();
                     context.push(Routes.mission(m.id));
@@ -359,7 +360,8 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                                           isFinal: m.isFinal,
                                           state: _stateOf(progress, episode, m),
                                           celebrateUnlock: recentUnlock == m.id,
-                                          onUnlockBurst: () => ref.read(audioServiceProvider).play(GameSound.unlock),
+                                          // The place's lock opens: quieter than a real lock in a mission.
+                                          onUnlockBurst: () => ref.read(audioServiceProvider).play(GameSound.padlockOpen, volume: 0.6),
                                           onUnlockShown: () => ref.read(recentUnlockProvider.notifier).set(null),
                                           onTap: () => _openMission(context, ref, m),
                                         ),
@@ -386,6 +388,9 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                             semanticLabel: ctaSemantics,
                             arrow: true,
                             singleLine: true,
+                            // GO taps the casebook; with no place left it opens the
+                            // closed file, whose stamp is its sound.
+                            tap: current == null ? null : TapRole.primary,
                             onPressed: going != null
                                 ? null
                                 : current == null
