@@ -8,6 +8,7 @@ import '../../core/constants/app_constants.dart';
 import '../models/game_progress.dart';
 import '../models/season_progress.dart';
 import '../models/wallet.dart';
+import '../sync/cloud/cloud_sync_meta.dart';
 import '../sync/outbox.dart';
 import '../sync/save_journal.dart';
 
@@ -271,6 +272,16 @@ class SharedPrefsProgressRepository implements ProgressRepository {
 
   /// Changes the outbox (a sender claims, acknowledges or releases events).
   void updateOutbox(Outbox Function(Outbox outbox) change) => _put({_outboxKey: change(outbox).encode()});
+
+  /// The cloud sync bookkeeping (confirmed cloudVersions, back-off), under
+  /// its own key: no game save changes for it. A full wipe ([clear]) drops
+  /// it with the rest (the next sync then merges with the cloud first).
+  CloudSyncMeta get cloudSync => CloudSyncMeta.decode(_get(AppConstants.cloudSyncKey(profileId)));
+
+  /// Changes the bookkeeping; inside [transaction] it commits with the rest
+  /// (e.g. a confirmation together with the events it acknowledges).
+  void updateCloudSync(CloudSyncMeta Function(CloudSyncMeta meta) change) =>
+      _put({AppConstants.cloudSyncKey(profileId): change(cloudSync).encode()});
 
   /// Saves merged with the other side: stored like any save, and queued
   /// only when [queue] (the other side does not have it yet).

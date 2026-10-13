@@ -28,7 +28,16 @@ enum OutboxState {
 
   /// Handed to a sender, not acknowledged yet. Back to pending at the next
   /// start (or when the send fails); removed only by an acknowledgement.
-  inFlight;
+  inFlight,
+
+  /// A permanent conflict (e.g. a coin entry the cloud holds with another
+  /// amount): never sent again automatically and never cleared on its own.
+  /// The conflict itself is kept in the profile's conflict store.
+  conflicted,
+
+  /// Failed too often in a row: not retried automatically until the next
+  /// start, which sends it again after a full resync ([Outbox.resumeStalled]).
+  stalled;
 
   static OutboxState? byName(Object? name) {
     for (final s in values) {
@@ -144,7 +153,9 @@ class OutboxEvent {
       rev: count(json['rev']),
       payload: payload is Map<String, dynamic> ? payload : null,
       playtest: json['playtest'] == true,
-      state: OutboxState.byName(json['state']) ?? OutboxState.pending,
+      // A state this build does not know (a newer app's) is never sent or
+      // resumed automatically: it is held as conflicted.
+      state: json.containsKey('state') ? (OutboxState.byName(json['state']) ?? OutboxState.conflicted) : OutboxState.pending,
       attempts: count(json['attempts']),
       createdAt: (created is String ? DateTime.tryParse(created) : null) ?? DateTime.fromMillisecondsSinceEpoch(0),
     );
@@ -179,12 +190,14 @@ class Outbox {
         if (events.any((e) => e.kind == OutboxKind.walletEntry && e.subject == event.subject)) return this;
         return Outbox([...events, event]);
       case OutboxKind.caseRun || OutboxKind.season:
-        bool supersedes(OutboxEvent e) =>
-            e.kind == event.kind && e.subject == event.subject && e.state == OutboxState.pending;
+        bool same(OutboxEvent e) => e.kind == event.kind && e.subject == event.subject;
+        // A stalled subject stays stalled: its newer state replaces the
+        // stalled event and waits with it for the next start.
+        final stalled = events.any((e) => same(e) && e.state == OutboxState.stalled);
         return Outbox([
           for (final e in events)
-            if (!supersedes(e)) e,
-          event,
+            if (!(same(e) && (e.state == OutboxState.pending || e.state == OutboxState.stalled))) e,
+          stalled ? event.withState(OutboxState.stalled) : event,
         ]);
     }
   }
@@ -216,23 +229,65 @@ class Outbox {
 
   /// At start: whatever was handed to a sender before the app stopped is
   /// waiting again (it is sent again; the server ignores a repeat).
+  /// Conflicted and stalled events stay as they are.
   Outbox recovered() =>
       events.any((e) => e.state == OutboxState.inFlight) ? release([for (final e in events) e.id]) : this;
 
-  String encode() => jsonEncode({'v': 1, 'events': [for (final e in events) e.toJson()]});
+  /// [ids] are permanent conflicts: kept, never sent again automatically.
+  /// Only pending or in-flight events change; an acknowledged one is gone.
+  Outbox markConflicted(Iterable<String> ids) {
+    final set = ids.toSet();
+    return Outbox([
+      for (final e in events)
+        set.contains(e.id) && (e.state == OutboxState.pending || e.state == OutboxState.inFlight)
+            ? e.withState(OutboxState.conflicted)
+            : e,
+    ]);
+  }
+
+  /// Every waiting or in-flight event of [kind] and [subject] stops being
+  /// retried automatically (that subject failed too often).
+  Outbox markStalled(OutboxKind kind, String subject) => Outbox([
+        for (final e in events)
+          e.kind == kind && e.subject == subject && (e.state == OutboxState.pending || e.state == OutboxState.inFlight)
+              ? e.withState(OutboxState.stalled)
+              : e,
+      ]);
+
+  /// At the next start, after the full resync is arranged: stalled events
+  /// wait again (attempts start over). Conflicts are never resumed.
+  Outbox resumeStalled() => events.any((e) => e.state == OutboxState.stalled)
+      ? Outbox([for (final e in events) e.state == OutboxState.stalled ? e.withState(OutboxState.pending, attempts: 0) : e])
+      : this;
+
+  List<OutboxEvent> get conflicted => [for (final e in events) if (e.state == OutboxState.conflicted) e];
+
+  List<OutboxEvent> get stalled => [for (final e in events) if (e.state == OutboxState.stalled) e];
+
+  /// The format this build writes. v1 (Phase 2) knew only pending and
+  /// inFlight; v2 adds conflicted and stalled. No released build has ever
+  /// sent anything, so no older sender can misread v2. Rule for later
+  /// builds: a sender must not send from a format newer than it knows.
+  static const format = 2;
+
+  String encode() => jsonEncode({'v': format, 'events': [for (final e in events) e.toJson()]});
 
   /// Tolerant decoding: unreadable events are dropped, a repeated id keeps
-  /// its first event.
+  /// its first event. A format newer than [format] is kept but never sent
+  /// or resumed automatically: every event of it is held as conflicted.
   static Outbox decode(String? raw) {
     if (raw == null) return empty;
     try {
       final json = jsonDecode(raw);
       final list = json is Map ? json['events'] : null;
       if (list is! List) return empty;
+      final v = (json as Map)['v'];
+      final newer = v is int && v > format;
       final seen = <String>{};
       return Outbox([
         for (final e in list)
-          if (OutboxEvent.fromJson(e) case final event? when seen.add(event.id)) event,
+          if (OutboxEvent.fromJson(e) case final event? when seen.add(event.id))
+            newer ? event.withState(OutboxState.conflicted) : event,
       ]);
     } on FormatException {
       debugPrint('The sync outbox was unreadable');

@@ -62,6 +62,10 @@ abstract final class AppConstants {
   /// A profile's reset epoch (see `SharedPrefsProgressRepository.epoch`).
   static String metaKey(String profileId) => '${profilePrefix(profileId)}meta.v1';
 
+  /// A profile's cloud sync bookkeeping: confirmed cloudVersions, failures,
+  /// back-off (see `CloudSyncMeta`). Separate from every game save.
+  static String cloudSyncKey(String profileId) => '${profilePrefix(profileId)}cloud.v1';
+
   /// This installation of the app (see `ProfileStore.installId`).
   static const deviceStorageKey = 'lm.device.v1';
 
