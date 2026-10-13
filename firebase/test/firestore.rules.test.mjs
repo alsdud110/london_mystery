@@ -259,9 +259,14 @@ describe('users/{uid}/profiles/{profileId}', () => {
     await assertFails(deleteDoc(doc(db('alice'), `users/alice/profiles/${PROFILE}`)));
   });
 
-  it('game data under a profile is closed (Phase 4)', async () => {
+  it('under a profile: only the Phase 4.1 sync paths open; anything else stays closed', async () => {
     await aliceReady();
-    for (const p of ['cases/ep01', 'season/current', 'wallet/coins']) {
+    // Sync paths take only their own shapes (see sync.rules.test.mjs).
+    for (const p of ['cases/ep01', 'season/state', 'wallet/coins', 'sync/meta']) {
+      await assertFails(setDoc(doc(db('alice'), `users/alice/profiles/${PROFILE}/${p}`), { x: 1 }));
+    }
+    // Other names and deeper paths: no read, no write.
+    for (const p of ['season/current', 'sync/other', 'notes/a', 'cases/ep01/rounds/r1', 'wallet/summary/x/y']) {
       await assertFails(setDoc(doc(db('alice'), `users/alice/profiles/${PROFILE}/${p}`), { x: 1 }));
       await assertFails(getDoc(doc(db('alice'), `users/alice/profiles/${PROFILE}/${p}`)));
     }

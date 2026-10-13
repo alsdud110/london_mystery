@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/data/models/detective_name.dart';
 import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/features/account/cloud_profile_store.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
+import 'package:london_mystery/features/game/wallet_controller.dart';
+import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/account/consent.dart';
 import 'package:london_mystery/features/account/fake_cloud_profile_store.dart';
 import 'package:london_mystery/features/account/firestore_consent_repository.dart';
@@ -191,6 +194,27 @@ void main() {
       expect(DetectiveName.normalize('  Min   Young '), 'Min Young');
       expect(DetectiveName.isValid(DetectiveName.normalize('  Min   Young ')), isTrue);
       expect(GameController.cleanName('  min  young '), 'MIN YOUNG');
+    });
+
+    test('the wallet rules allow exactly the game\'s coin amounts (no refunds)', () {
+      final rules = File('firebase/firestore.rules').readAsStringSync();
+      expect(rules, contains("d.key == 'start' && d.amount == ${AppConstants.startCoins}"));
+      expect(rules, contains('d.amount == ${AppConstants.missionCoins} || d.amount == ${AppConstants.finalCoins}'));
+      expect(AppConstants.tipPrices, [0, 20], reason: 'tip 1 free, tip 2 20: update the rules if this changes');
+      expect(rules, contains('(d.amount == 0 || d.amount == -${AppConstants.tipPrices[1]})'));
+      expect(rules, isNot(contains('syncRefund')), reason: 'R3: no refund coins (2026-10-14)');
+    });
+
+    test('the rules\' shipped-season lists are the bundled catalog (missions, coins, cases)', () {
+      final rules = File('firebase/firestore.rules').readAsStringSync();
+      final season = MockEpisodeRepository.bundled();
+      String q(String s) => "'$s'";
+      final coins = [for (final e in season) for (final m in e.allMissions) "${q(m.id)}: ${WalletController.coinsFor(m)}"];
+      final cases = [for (final e in season) q(e.id)];
+      final perCase = [for (final e in season) "${q(e.id)}: [${[for (final m in e.allMissions) q(m.id)].join(', ')}]"];
+      expect(rules, contains('return {${coins.join(', ')}};'), reason: 'missionCoins() — regenerate after a content change');
+      expect(rules, contains('return [${cases.join(', ')}];'), reason: 'episodeIds()');
+      expect(rules, contains('return {${perCase.join(', ')}};'), reason: 'caseMissions()');
     });
 
     test('the rules file carries the very same patterns', () {
