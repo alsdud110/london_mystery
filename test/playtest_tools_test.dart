@@ -87,7 +87,7 @@ void main() {
     ctrl.startInvestigation();
     final m = ref.read(currentEpisodeProvider).missions.first;
     expect(ctrl.submitAnswer(m, m.answer).result, SubmitResult.correct);
-    final ep02Before = ref.read(sharedPreferencesProvider).getString(AppConstants.progressKeyFor('ep02'));
+    final ep02Before = savedString(ref.read(sharedPreferencesProvider), AppConstants.progressKeyFor('ep02'));
 
     ref.read(gameMasterAccessProvider.notifier).grant();
     ref.read(routerProvider).go(Routes.gameMaster);
@@ -100,7 +100,7 @@ void main() {
     expect(p.completedMissionIds, isEmpty);
     expect(p.detectiveName, 'MINA');
     expect(ref.read(seasonProvider).isSolved('ep02'), isTrue);
-    expect(ref.read(sharedPreferencesProvider).getString(AppConstants.progressKeyFor('ep02')), ep02Before);
+    expect(savedString(ref.read(sharedPreferencesProvider), AppConstants.progressKeyFor('ep02')), ep02Before);
     expect(pathOf(ref), Routes.caseFile('ep03'));
     await wait(t, const Duration(seconds: 3));
   });

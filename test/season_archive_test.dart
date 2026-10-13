@@ -150,7 +150,7 @@ void main() {
       expect(XpBreakdown.totalFor(episode01, p), XpBreakdown.totalFor(episode01, old));
       expect(p.collectedEvidence(episode01), hasLength(3));
       expect(c.read(seasonArchiveProvider).first.status, ArchiveStatus.current);
-      expect(c.read(sharedPreferencesProvider).getString(AppConstants.progressStorageKey), raw, reason: 'not rewritten');
+      expect(savedString(c.read(sharedPreferencesProvider), AppConstants.progressStorageKey), raw, reason: 'not rewritten');
     });
   });
 

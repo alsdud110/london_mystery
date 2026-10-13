@@ -56,7 +56,7 @@ void main() {
   test('each case keeps its own clues, evidence, XP and badges — no double awards', () {
     ctrl().registerDetective('Kim');
     solveCurrentCase();
-    final ep01Save = container.read(sharedPreferencesProvider).getString(AppConstants.progressStorageKey);
+    final ep01Save = savedString(container.read(sharedPreferencesProvider), AppConstants.progressStorageKey);
     final ep01Xp = XpBreakdown.totalFor(current(), state());
 
     expect(ctrl().openEpisode('ep02'), isTrue);
@@ -79,7 +79,7 @@ void main() {
     expect(state().collectedEvidence(e), hasLength(e.allEvidence.length));
 
     // Case 01 was not touched by playing Case 02.
-    expect(container.read(sharedPreferencesProvider).getString(AppConstants.progressStorageKey), ep01Save);
+    expect(savedString(container.read(sharedPreferencesProvider), AppConstants.progressStorageKey), ep01Save);
     expect(ctrl().openEpisode('ep01'), isTrue);
     expect(XpBreakdown.totalFor(current(), state()), ep01Xp);
     expect(state().badgeIds, isNot(contains(GameBadge.clockWatcher.name)));
@@ -147,6 +147,7 @@ void main() {
     ctrl().registerDetective('Lee');
     expect(ctrl().openEpisode('ep02'), isFalse);
     final prefs = container.read(sharedPreferencesProvider);
-    expect(prefs.getKeys().where((k) => k.startsWith(AppConstants.progressStorageKey)), [AppConstants.progressStorageKey]);
+    final case01 = savedKey(prefs, AppConstants.progressStorageKey);
+    expect(prefs.getKeys().where((k) => k.startsWith(case01)), [case01]);
   });
 }

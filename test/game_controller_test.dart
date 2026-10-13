@@ -180,7 +180,7 @@ void main() {
 
     await ctrl().resetAll();
     expect(state().hasDetective, isFalse);
-    expect(container.read(sharedPreferencesProvider).getString(AppConstants.progressStorageKey), isNull);
+    expect(savedString(container.read(sharedPreferencesProvider), AppConstants.progressStorageKey), isNull);
   });
 
   test('corrupted storage falls back to a fresh game', () async {

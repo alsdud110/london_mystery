@@ -24,6 +24,10 @@ class GameProgress {
     this.startedAt,
     this.completedAt,
     this.playMillis,
+    this.runId,
+    this.runSeq = 0,
+    this.rev = 0,
+    this.playtest = false,
   });
 
   final String? detectiveName;
@@ -81,6 +85,23 @@ class GameProgress {
   /// foreground (see `GameController`). Null for saves made before play time
   /// was tracked; those fall back to the wall-clock span.
   final int? playMillis;
+
+  /// Which run of the case this is: a new id for every run (a new case, or
+  /// Play again). Null for a save made before runs were recorded; it gets
+  /// one the next time it is saved.
+  final String? runId;
+
+  /// How many times the case was started again (Play again) before this run;
+  /// 0 for the first run and for saves made before runs were recorded.
+  final int runSeq;
+
+  /// How many times this run's save changed (only real changes count).
+  final int rev;
+
+  /// Operator (playtest) data: this run was set up by the operator tools, or
+  /// a mission was solved in it that only operator access had opened. Never
+  /// to be synced to a live cloud. A new run (Play again) starts as normal.
+  final bool playtest;
 
   static const empty = GameProgress();
 
@@ -157,6 +178,10 @@ class GameProgress {
     DateTime? startedAt,
     DateTime? completedAt,
     int? playMillis,
+    String? runId,
+    int? runSeq,
+    int? rev,
+    bool? playtest,
   }) {
     return GameProgress(
       detectiveName: detectiveName ?? this.detectiveName,
@@ -176,6 +201,10 @@ class GameProgress {
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
       playMillis: playMillis ?? this.playMillis,
+      runId: runId ?? this.runId,
+      runSeq: runSeq ?? this.runSeq,
+      rev: rev ?? this.rev,
+      playtest: playtest ?? this.playtest,
     );
   }
 
@@ -199,6 +228,7 @@ class GameProgress {
         : const {};
     List<String> strList(Object? raw) => raw is List ? raw.whereType<String>().toList() : const [];
     DateTime? date(Object? raw) => raw is String ? DateTime.tryParse(raw) : null;
+    int count(Object? raw) => raw is num && raw >= 0 ? raw.toInt() : 0;
     final name = json['detectiveName'];
 
     // v1 saves stored a list of missions where "the" hint was opened.
@@ -238,6 +268,13 @@ class GameProgress {
       startedAt: startedAt,
       completedAt: completedAt,
       playMillis: playMillis,
+      runId: switch (json['runId']) {
+        final String id when id.isNotEmpty => id,
+        _ => null,
+      },
+      runSeq: count(json['runSeq']),
+      rev: count(json['rev']),
+      playtest: json['playtest'] == true,
     );
   }
 
@@ -260,6 +297,11 @@ class GameProgress {
         'startedAt': startedAt?.toIso8601String(),
         'completedAt': completedAt?.toIso8601String(),
         if (playMillis != null) 'playMillis': playMillis,
+        // Written only once there is a run, so older saves keep their shape.
+        if (runId != null) 'runId': runId,
+        if (runSeq > 0) 'runSeq': runSeq,
+        if (rev > 0) 'rev': rev,
+        if (playtest) 'playtest': true,
       };
 }
 

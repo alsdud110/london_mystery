@@ -221,7 +221,7 @@ void main() {
 
     // Progress is persisted after every step.
     final prefs = appRef.read(sharedPreferencesProvider);
-    expect(prefs.getString(AppConstants.progressStorageKey), contains('"m05"'));
+    expect(savedString(prefs, AppConstants.progressStorageKey), contains('"m05"'));
 
     // Notebook: evidence can be zoomed; the Crown Symbol shows the lock order.
     await t.tap(find.byTooltip('Detective notebook'));

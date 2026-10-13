@@ -2,7 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/widgets/game_button.dart';
 import 'package:flutter_riverpod/misc.dart';
+import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:london_mystery/data/repositories/profile_store.dart';
 import 'package:london_mystery/data/mock/season1/episode01_mock.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
@@ -11,14 +13,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 final episode01 = Episode.fromJson(episode01Json);
 
 /// Overrides that make the app run without platform plugins.
+///
+/// [prefs] may hold saves under the keys used before profiles: on the first
+/// read the game copies them to the device's guest profile, as an updated
+/// app does.
 Future<List<Override>> testOverrides({Map<String, Object> prefs = const {}, AudioService? audio}) async {
   SharedPreferences.setMockInitialValues(prefs);
-  final instance = await SharedPreferences.getInstance();
-  return [
-    sharedPreferencesProvider.overrideWithValue(instance),
-    audioServiceProvider.overrideWithValue(audio ?? MockAudioService()),
-  ];
+  return testOverridesFor(await SharedPreferences.getInstance(), audio: audio);
 }
+
+/// [testOverrides] for storage that already exists (an app restart).
+Future<List<Override>> testOverridesFor(SharedPreferences prefs, {AudioService? audio}) async => [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      audioServiceProvider.overrideWithValue(audio ?? MockAudioService()),
+    ];
+
+/// The active profile's key for a save kept under [legacyKey] before
+/// profiles (e.g. `AppConstants.progressStorageKey`).
+String savedKey(SharedPreferences prefs, String legacyKey) =>
+    AppConstants.profileKey(ProfileStore(prefs).read()!.activeProfileId, legacyKey);
+
+/// The active profile's saved JSON under [legacyKey], or null.
+String? savedString(SharedPreferences prefs, String legacyKey) => prefs.getString(savedKey(prefs, legacyKey));
 
 /// Text as a reader sees it, in a plain or a rich [Text]. Notebook and
 /// evidence English is rich text (harder words open their meaning), and

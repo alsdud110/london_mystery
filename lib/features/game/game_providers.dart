@@ -6,9 +6,11 @@ import '../../core/constants/app_constants.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/mock/season1/season1_mock.dart';
 import '../../data/models/episode.dart';
+import '../../data/models/profile.dart';
 import '../../data/models/season.dart';
 import '../../data/models/season_progress.dart';
 import '../../data/repositories/episode_repository.dart';
+import '../../data/repositories/profile_store.dart';
 import '../../data/repositories/progress_repository.dart';
 
 // These are overridden in main() once async setup (prefs, content) is done.
@@ -19,9 +21,30 @@ final sharedPreferencesProvider = Provider<SharedPreferences>(
 
 final episodeRepositoryProvider = Provider<EpisodeRepository>((ref) => const MockEpisodeRepository());
 
-final progressRepositoryProvider = Provider<ProgressRepository>(
-  (ref) => SharedPrefsProgressRepository(ref.watch(sharedPreferencesProvider)),
-);
+/// The detectives of this device (see [ProfileStore]).
+final profileStoreProvider = Provider<ProfileStore>((ref) => ProfileStore(ref.watch(sharedPreferencesProvider)));
+
+/// The detective this game session plays. Each profile runs in a container
+/// of its own (see `ProfileSessionHost`), which overrides this; without one
+/// (tests) the active profile is found, or made, here.
+final profileSessionProvider = Provider<ProfileSession>((ref) => ref.watch(profileStoreProvider).ensureActiveSync());
+
+/// The session's profile as saved now (name, origin, pay-back), or as the
+/// session started when it is not saved (safe mode).
+DetectiveProfile sessionProfile(Ref ref) {
+  final session = ref.read(profileSessionProvider);
+  return ref.read(profileStoreProvider).profile(session.profileId) ?? session.profile;
+}
+
+/// The session profile's saves.
+final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
+  final session = ref.watch(profileSessionProvider);
+  return SharedPrefsProgressRepository(
+    ref.watch(sharedPreferencesProvider),
+    profileId: session.profileId,
+    legacyFallback: session.legacyFallback,
+  );
+});
 
 /// Every case of the season in case order (pre-loaded before the app starts;
 /// defaults to the bundled content).
@@ -72,8 +95,10 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
 
   void open(String episodeId) => _set(state.copyWith(activeEpisodeId: episodeId));
 
-  void markSolved(String episodeId) {
-    if (!state.isSolved(episodeId)) _set(state.markSolved(episodeId));
+  /// [episodeId] solved; a [playtest] solve is recorded as operator data.
+  void markSolved(String episodeId, {bool playtest = false}) {
+    final next = state.markSolved(episodeId, playtest: playtest);
+    if (!identical(next, state)) _set(next);
   }
 
   /// Forgets the season in memory (storage is cleared by the repository).
@@ -172,12 +197,29 @@ final operatorToolsAvailableProvider = Provider<bool>((ref) => operatorToolsInBu
 /// Master tools, behind the parent gate; never on in a build without
 /// operator tools. Turning it on marks no case solved and gives nothing; a
 /// mission solved while it is on is saved (progress, XP, coins) as in normal
-/// play. Session-only, never saved, so a restart turns it off.
+/// play. Turning it on marks nothing: what is played in a case only it
+/// opened is recorded as operator data, record by record (see
+/// [openedOnlyByOperator]). Session-only, never saved, so a restart turns it
+/// off.
 class OperatorAccessNotifier extends Notifier<bool> {
   @override
   bool build() => false;
 
   void set(bool on) => state = on && ref.read(operatorToolsAvailableProvider);
+}
+
+/// Whether [episodeId] is open only through operator access: still sealed
+/// under the normal rules, counting only cases solved in normal play (a case
+/// the operator tools marked solved opens nothing for real). What is played
+/// in it — the case run, its coin entries, its solve in the season record —
+/// is operator (playtest) data, never synced to a live cloud.
+bool openedOnlyByOperator(Ref ref, String episodeId) {
+  final season = ref.read(seasonProvider);
+  final normal = season.copyWith(solvedEpisodeIds: [
+    for (final id in season.solvedEpisodeIds)
+      if (!season.playtestEpisodeIds.contains(id)) id,
+  ]);
+  return !SeasonNotifier.unlockRule(ref.read(episodeCatalogProvider), normal, episodeId, operator: false);
 }
 
 /// The operator access switch (see [operatorAccessProvider] for the effect).

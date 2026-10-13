@@ -20,14 +20,24 @@ dependencies:
   qr_flutter: ^4.1.0
   # Sound effects
   audioplayers: ^6.8.1
+  firebase_core: ^4.15.0
+  firebase_auth: ^6.7.0
+  cloud_firestore: ^6.10.0
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  # On-device checks against the DEV Firebase project (integration_test/).
+  integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
+  # Android flavors: dev (com.londonmystery.app.dev → Firebase london-mystery-dev)
+  # and prod (com.londonmystery.app → london-mystery-prod). A plain
+  # `flutter run` builds dev, never prod.
+  default-flavor: dev
 
   assets:
     # Sounds: only the takes the game plays (`GameSound`, `ambienceLoops`,

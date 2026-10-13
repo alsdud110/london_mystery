@@ -129,7 +129,7 @@ void main() {
 
     // Case 01 is untouched, and Case 03 is open now.
     final prefs = appRef.read(sharedPreferencesProvider);
-    expect(prefs.getString(AppConstants.progressStorageKey), saved);
+    expect(savedString(prefs, AppConstants.progressStorageKey), saved);
     // OPEN CASE 03 lands on the board, Case 03 its current case, ready to begin.
     await tapText(t, 'OPEN CASE 03', after: const Duration(milliseconds: 800));
     expect(find.text('The Vanishing Painting'), findsOneWidget);

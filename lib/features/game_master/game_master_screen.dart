@@ -8,7 +8,6 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/mission.dart';
-import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../../widgets/game_dialog.dart';
 import '../../widgets/ink_icon.dart';
@@ -25,15 +24,29 @@ class GameMasterScreen extends ConsumerWidget {
     final ok = await GameDialog.confirmPlain(
       context,
       title: '다음 플레이어를 위해 초기화할까요?',
-      message: '탐정 이름과 진행 기록이 모두 삭제됩니다.',
+      message: '탐정 이름과 진행 기록(사건·코인·힌트)이 모두 삭제됩니다.\n'
+          '이 기기에 보관 중인 이전 버전 저장 원본도 함께 삭제됩니다.',
       confirmLabel: '초기화',
       cancelLabel: '취소',
       destructive: true,
     );
-    if (ok) {
-      await ref.read(gameControllerProvider.notifier).resetAll();
-      if (context.mounted) context.go(Routes.start);
+    if (!ok) return;
+    var complete = await resetForNextPlayer(ref);
+    // Something could not be removed: say so, and offer to finish it (the
+    // reset is safe to repeat; the old progress cannot come back meanwhile).
+    while (!complete) {
+      if (!context.mounted) return;
+      final retry = await GameDialog.confirmPlain(
+        context,
+        title: '일부 기록을 지우지 못했습니다',
+        message: '이전 버전 저장 원본 중 일부가 남아 있습니다. 다시 시도할까요?',
+        confirmLabel: '다시 시도',
+        cancelLabel: '닫기',
+      );
+      if (!retry) break;
+      complete = await ref.read(profileStoreProvider).wipeLegacy();
     }
+    if (context.mounted) context.go(Routes.start);
   }
 
   Future<bool> _confirm(BuildContext context, String title, String body, String action) async {

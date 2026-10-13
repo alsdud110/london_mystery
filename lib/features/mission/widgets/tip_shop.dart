@@ -83,8 +83,7 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
     if (_opening) return;
     _opening = true;
     final m = widget.mission;
-    ref.read(walletProvider.notifier).unlockTip(m, tip);
-    ref.read(gameControllerProvider.notifier).useHint(m);
+    ref.read(gameControllerProvider.notifier).revealTip(m, tip);
     Navigator.of(context).pop(true);
   }
 

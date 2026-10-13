@@ -63,7 +63,8 @@ void main() {
         expect(File('assets/${f.assetPath}').existsSync(), isTrue, reason: f.file);
         expect(f.volume, inInclusiveRange(0, 1), reason: f.file);
       }
-      final pubspec = File('pubspec.yaml').readAsStringSync();
+      // Line ends as committed (a Windows checkout may have CRLF).
+      final pubspec = File('pubspec.yaml').readAsStringSync().replaceAll('\r\n', '\n');
       for (final f in files) {
         expect(pubspec, contains('- assets/${f.assetPath}\n'), reason: '${f.file}: listed for the app');
       }

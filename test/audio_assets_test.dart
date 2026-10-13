@@ -36,9 +36,10 @@ void main() {
   });
 
   test('the takes kept for listening stay on disk', () {
+    // Paths as the pubspec writes them ('/'), also on Windows ('\').
     final onDisk = {
       for (final f in Directory('assets/sounds').listSync(recursive: true).whereType<File>())
-        if (f.path.endsWith('.wav')) f.path,
+        if (f.path.endsWith('.wav')) f.path.replaceAll(r'\', '/'),
     };
     expect(onDisk.containsAll(playedPaths), isTrue);
     expect(onDisk.difference(playedPaths), isNotEmpty, reason: 'originals and candidates are kept, only not carried');

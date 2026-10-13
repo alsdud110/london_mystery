@@ -31,7 +31,7 @@ enum CoinSource {
 /// so a reward is never paid twice and a tip is never charged twice.
 @immutable
 class CoinEntry {
-  const CoinEntry({required this.key, required this.amount, required this.source, this.at});
+  const CoinEntry({required this.key, required this.amount, required this.source, this.at, this.playtest = false});
 
   final String key;
 
@@ -40,11 +40,18 @@ class CoinEntry {
   final CoinSource source;
   final DateTime? at;
 
+  /// Operator (playtest) data: paid or spent in a case only operator access
+  /// had opened. Counts in the balance like any entry; never synced to a
+  /// live cloud.
+  final bool playtest;
+
+  /// Written only for operator data, so older entries keep their shape.
   Map<String, dynamic> toJson() => {
         'key': key,
         'amount': amount,
         'source': source.name,
         if (at != null) 'at': at!.toIso8601String(),
+        if (playtest) 'playtest': true,
       };
 
   /// Null for an entry that cannot be read (it is then left out).
@@ -55,7 +62,13 @@ class CoinEntry {
     final source = CoinSource.byName(json['source']);
     if (key is! String || amount is! num || source == null) return null;
     final at = json['at'];
-    return CoinEntry(key: key, amount: amount.toInt(), source: source, at: at is String ? DateTime.tryParse(at) : null);
+    return CoinEntry(
+      key: key,
+      amount: amount.toInt(),
+      source: source,
+      at: at is String ? DateTime.tryParse(at) : null,
+      playtest: json['playtest'] == true,
+    );
   }
 }
 
