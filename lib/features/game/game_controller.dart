@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/answer_checker.dart';
+import '../../data/models/detective_name.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/profile.dart';
@@ -145,9 +146,8 @@ class GameController extends Notifier<GameProgress> {
     return null;
   }
 
-  static final _allowedName = RegExp(r'^[A-Za-z0-9가-힣 .\-]+$');
-
-  static String cleanName(String raw) => raw.trim().replaceAll(RegExp(r'\s+'), ' ').toUpperCase();
+  /// The name as the game writes it: [DetectiveName.normalize]d, in capitals.
+  static String cleanName(String raw) => DetectiveName.normalize(raw).toUpperCase();
 
   static String? validateName(String? raw) {
     final name = cleanName(raw ?? '');
@@ -155,7 +155,7 @@ class GameController extends Notifier<GameProgress> {
     if (name.length > AppConstants.nameMaxLength) {
       return 'Use ${AppConstants.nameMaxLength} letters or fewer.';
     }
-    if (!_allowedName.hasMatch(name)) return 'Use letters and numbers only.';
+    if (!DetectiveName.isValid(name)) return 'Use letters and numbers only.';
     return null;
   }
 

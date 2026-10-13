@@ -97,7 +97,10 @@ class DetectiveProfile {
   /// nobody): the guest always; an account's profile only for that account.
   bool mayOpen(String? signedInUid) => ownerUid == null || ownerUid == signedInUid;
 
-  static final _validId = RegExp(r'^[0-9a-f]{8,64}$');
+  /// A profile id: lowercase hex, 8 to 64 digits (new ones are 32). The
+  /// same pattern is the cloud document id rule (`firebase/firestore.rules`).
+  static const idPattern = r'^[0-9a-f]{8,64}$';
+  static final _validId = RegExp(idPattern);
 
   static bool isValidId(Object? id) => id is String && _validId.hasMatch(id);
 
