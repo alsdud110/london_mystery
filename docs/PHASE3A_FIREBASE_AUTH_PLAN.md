@@ -418,3 +418,13 @@ dev-review 설계 검토 완료(`qitem-20261013121555-3fe7845d`): A1 권장, 데
 - 이름: `lib/data/models/detective_name.dart`의 `DetectiveName.pattern`(대·소문자, 한글 음절, 숫자, 공백·`.`·`-`, 앞뒤 공백 없음) + 연속 공백 금지 + 1–12. 규칙 `validName`에 같은 정규식. 게임 입력은 기존처럼 정리(`normalize`) 후 대문자로 저장(`GameController.cleanName`), 저장된 이름은 바꾸지 않음.
 - 대·소문자: 앱은 대문자로 저장하지만, 규칙·Dart 계약은 소문자도 유효한 저장 형식으로 허용한다(사용자 승인 규칙. dev-review P3 → 문서로 확정).
 - `test/cloud_profile_store_test.dart`가 규칙 파일에 같은 패턴 문자열이 있는지 확인하고, 에뮬레이터 테스트와 같은 허용/거부 목록을 Dart에서도 검사한다.
+
+## 15. iOS Firebase (DEV 연결, 2026-10-14, 커밋 전)
+
+| 항목 | 내용 |
+|---|---|
+| Firebase iOS 앱 | DEV `london-mystery-dev`에 **`com.londonmystery.app.dev` 신규 등록**(`1:332839632440:ios:d5f9b8424ac7d924a0f0cd`, 사용자 승인). 기존 DEV `com.londonmystery.app` iOS 앱은 그대로(사용 안 함). PROD는 기존 `com.londonmystery.app`(`1:784365257039:ios:af3ac3a6032b276752053a`) 재사용, 변경 없음 |
+| Xcode | `ios/scripts/setup_flavors.rb`: Debug/Release/Profile-dev·prod, 공유 Scheme `dev`/`prod`, 번들 ID·표시 이름, `LM_FLAVOR` |
+| 설정 파일 | `ios/config/{dev,prod}/GoogleService-Info.plist`(git 제외, `firebase apps:sdkconfig`로 받음). 빌드 단계 "Firebase config (flavor)"가 그 flavor 파일만 앱에 넣고, **BUNDLE_ID가 빌드와 다르면 빌드 실패**, 파일이 없으면 Firebase 없이 게스트 |
+| 앱 코드 | `CloudEnvironment.iosAppId`·`appIdFor(platform)`, `CloudDecision`이 iOS 허용(Operator 빌드 + PROD 차단 규칙 동일), 시작 후 플랫폼별 앱 ID 대조 |
+| 검증 | iPhone 17 Pro 시뮬레이터: DEV 인증 E2E 2종 통과, 앱 타이틀에 Sign in(= DEV Firebase 준비), PROD 빌드엔 PROD 설정만, 설정 바꿔치기 차단 확인. 테스트 계정 0 |
