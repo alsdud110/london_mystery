@@ -1,0 +1,113 @@
+rules_version = '2';
+
+// London Mystery — Firestore rules (Phase 3A-3).
+// See docs/PHASE3A_FIREBASE_AUTH_PLAN.md §13.
+//
+//   users/{uid}                        the account (uid = Firebase Auth uid)
+//   users/{uid}/profiles/{profileId}   its detective profiles
+//   consents/{uid}                     the account's privacy consent record
+//
+// - The path is the ownership: only the signed-in user {uid} reaches it.
+// - consents/{uid} is written only by a trusted backend (Admin SDK, which
+//   these rules do not apply to). The client may read its own record and
+//   nothing else; it can never create, change or delete one.
+// - Without a confirmed consent record, the account writes nothing to the
+//   cloud, its users document included.
+// - Game data (cases, season, wallet) is not open yet (Phase 4).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // The trusted consent record says 'confirmed'. Read from the stored
+    // record (never from the request), so a client cannot vouch for itself.
+    function consentConfirmed(uid) {
+      let record = /databases/$(database)/documents/consents/$(uid);
+      return exists(record) && get(record).data.get('status', '') == 'confirmed';
+    }
+
+    function canWrite(uid) {
+      return isOwner(uid) && consentConfirmed(uid);
+    }
+
+    function hasExactly(keys) {
+      return request.resource.data.keys().hasAll(keys) && request.resource.data.keys().hasOnly(keys);
+    }
+
+    function changesOnly(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // The detective name rule (lib/data/models/detective_name.dart, same
+    // pattern): letters, Hangul syllables, digits, single inner spaces, "."
+    // and "-"; 1 to 12 characters (size() counts UTF-16 units, as Dart).
+    function validName(n) {
+      return n is string && n.size() >= 1 && n.size() <= 12
+        && n.matches('^[A-Za-z0-9가-힣.-]([A-Za-z0-9가-힣 .-]*[A-Za-z0-9가-힣.-])?$')
+        && !n.matches('.*  .*');
+    }
+
+    // A profile document id is the local profile id (lib/data/models/profile.dart).
+    function validProfileId(id) {
+      return id.matches('^[0-9a-f]{8,64}$');
+    }
+
+    function validLocale(d) {
+      return d.locale is string && d.locale.matches('^[a-z]{2}$')
+        && d.region is string && d.region.matches('^[A-Z]{2}$');
+    }
+
+    match /consents/{uid} {
+      allow get: if isOwner(uid);
+      allow list: if false;
+      allow create, update, delete: if false;
+    }
+
+    match /users/{uid} {
+      allow get: if isOwner(uid);
+      allow list: if false;
+      allow create: if canWrite(uid)
+        && hasExactly(['schema', 'createdAt', 'locale', 'region'])
+        && request.resource.data.schema == 1
+        && request.resource.data.createdAt == request.time
+        && validLocale(request.resource.data);
+      allow update: if canWrite(uid)
+        && changesOnly(['locale', 'region'])
+        && validLocale(request.resource.data);
+      allow delete: if false; // account deletion: a trusted path, later
+
+      match /profiles/{profileId} {
+        allow read: if isOwner(uid);
+        // existsAfter: the account doc may be made in the same batch or
+        // transaction as its first profile.
+        allow create: if canWrite(uid)
+          && existsAfter(/databases/$(database)/documents/users/$(uid))
+          && validProfileId(profileId)
+          && hasExactly(['schema', 'detectiveName', 'createdAt'])
+          && request.resource.data.schema == 1
+          && validName(request.resource.data.detectiveName)
+          && request.resource.data.createdAt == request.time;
+        allow update: if canWrite(uid)
+          && changesOnly(['detectiveName'])
+          && validName(request.resource.data.detectiveName);
+        allow delete: if false; // until the deletion policy is decided
+
+        // Game data under a profile (Phase 4): closed.
+        match /{document=**} {
+          allow read, write: if false;
+        }
+      }
+    }
+
+    // Anything else: closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

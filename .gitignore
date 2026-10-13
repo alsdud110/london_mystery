@@ -79,3 +79,8 @@ skills-lock.json
 /android/key.properties
 *service-account*.json
 *-firebase-adminsdk-*.json
+# Firestore rules tests (firebase/): dependencies and emulator logs.
+/firebase/node_modules/
+/firebase/functions/node_modules/
+firebase-debug.log
+firestore-debug.log
