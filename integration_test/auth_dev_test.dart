@@ -1,5 +1,5 @@
 // Real user sign-in against the DEV Firebase project, on an Android
-// emulator or device:
+// emulator or an iOS simulator / device:
 //   flutter test integration_test/auth_dev_test.dart --flavor dev -d <device>
 // It makes one throw-away account in london-mystery-dev and deletes it at
 // the end. It refuses to run against any other project. It sends no emails.
@@ -7,6 +7,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -21,7 +22,11 @@ void main() {
     expect(appFlavor, 'dev', reason: 'only the dev flavor');
     final app = await Firebase.initializeApp();
     expect(app.options.projectId, CloudEnvironment.dev.projectId, reason: 'never another project');
-    expect(app.options.appId, CloudEnvironment.dev.androidAppId);
+    expect(
+      app.options.appId,
+      CloudEnvironment.dev.appIdFor(defaultTargetPlatform == TargetPlatform.iOS ? CloudPlatform.ios : CloudPlatform.android),
+      reason: "this platform's DEV app",
+    );
 
     final auth = FirebaseAuthService();
     await FirebaseAuth.instance.signOut();

@@ -63,7 +63,7 @@ class CloudBootstrap extends ValueNotifier<CloudStatus> {
     }
     try {
       final identity = await _initialize().timeout(timeout);
-      if (identity.projectId != env.projectId || identity.appId != env.androidAppId) {
+      if (identity.projectId != env.projectId || identity.appId != env.appIdFor(decision.platform!)) {
         // Settings of another project or app: never used.
         _fail('settings do not match ${env.name}');
         return;
@@ -92,7 +92,8 @@ class CloudBootstrap extends ValueNotifier<CloudStatus> {
   }
 
   static Future<FirebaseIdentity> _initializeFirebase() async {
-    // Android reads the flavor's google-services.json (built into the app).
+    // Android reads the flavor's google-services.json, iOS the flavor's
+    // GoogleService-Info.plist (each copied into the app by its build).
     final app = await Firebase.initializeApp();
     return (projectId: app.options.projectId, appId: app.options.appId);
   }

@@ -9,7 +9,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>The camera is used to scan secret QR codes during detective missions.</string>
 	<key>CFBundleDisplayName</key>
-	<string>London Mystery</string>
+	<string>$(APP_DISPLAY_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

@@ -16,8 +16,8 @@ FirebaseIdentity identityOf(CloudEnvironment env) => (projectId: env.projectId, 
 
 void main() {
   group('which builds may start Firebase, and with which project', () {
-    CloudDecision decide(String? flavor, {bool android = true, bool operator = false}) =>
-        CloudDecision.of(flavor: flavor, androidApp: android, operatorToolsInBuild: operator);
+    CloudDecision decide(String? flavor, {bool android = true, bool ios = false, bool operator = false}) =>
+        CloudDecision.of(flavor: flavor, androidApp: android, iosApp: ios, operatorToolsInBuild: operator);
 
     test('the dev flavor uses the DEV project; the prod flavor the PROD project', () {
       expect(decide('dev').environment, CloudEnvironment.dev);
@@ -29,6 +29,22 @@ void main() {
     test('a build with operator tools never reaches PROD (it may use DEV)', () {
       expect(decide('prod', operator: true).block, CloudBlock.operatorBuildOnProduction);
       expect(decide('dev', operator: true).environment, CloudEnvironment.dev);
+    });
+
+    test('iOS: the same flavors and projects, checked against its own app ids', () {
+      final dev = decide('dev', android: false, ios: true);
+      expect(dev.environment, CloudEnvironment.dev);
+      expect(dev.platform, CloudPlatform.ios);
+      expect(decide('prod', android: false, ios: true).environment, CloudEnvironment.prod);
+      expect(decide('prod', android: false, ios: true, operator: true).block, CloudBlock.operatorBuildOnProduction);
+      expect(decide('dev').platform, CloudPlatform.android);
+      expect(CloudEnvironment.dev.appIdFor(CloudPlatform.ios), '1:332839632440:ios:d5f9b8424ac7d924a0f0cd');
+      expect(CloudEnvironment.prod.appIdFor(CloudPlatform.ios), '1:784365257039:ios:af3ac3a6032b276752053a');
+      for (final env in CloudEnvironment.values) {
+        expect(env.iosAppId, isNot(env.androidAppId));
+        expect(env.iosAppId.split(':')[1], env.androidAppId.split(':')[1], reason: '${env.name}: the same project');
+      }
+      expect(CloudEnvironment.dev.iosAppId.split(':')[1], isNot(CloudEnvironment.prod.iosAppId.split(':')[1]));
     });
 
     test('no flavor, an unknown flavor, or a platform not set up: no Firebase at all', () {
@@ -55,6 +71,21 @@ void main() {
       expect(cloud.value, CloudStatus.ready);
       expect(calls, 1, reason: 'started once');
       cloud.requireReady();
+    });
+
+    test('iOS: started with the iOS app of its project, ready; the Android app id or the other project, never', () async {
+      for (final (identity, expected) in [
+        ((projectId: CloudEnvironment.dev.projectId, appId: CloudEnvironment.dev.iosAppId), CloudStatus.ready),
+        ((projectId: CloudEnvironment.dev.projectId, appId: CloudEnvironment.dev.androidAppId), CloudStatus.unavailable),
+        ((projectId: CloudEnvironment.prod.projectId, appId: CloudEnvironment.prod.iosAppId), CloudStatus.unavailable),
+      ]) {
+        final cloud = CloudBootstrap(
+          decision: const CloudDecision.start(CloudEnvironment.dev, CloudPlatform.ios),
+          initialize: () async => identity,
+        );
+        await cloud.start();
+        expect(cloud.value, expected, reason: '$identity');
+      }
     });
 
     test('settings of the other project are never used', () async {
@@ -165,6 +196,41 @@ void main() {
             (c['client_info']['android_client_info']['package_name'] as String): c['client_info']['mobilesdk_app_id'],
         };
         expect(clients[package], env.androidAppId, reason: '$flavor: the app this build uses');
+      }
+    });
+
+    test("each iOS flavor's GoogleService-Info.plist is the expected project, app and bundle (when present)", () {
+      for (final (flavor, env, bundle) in [
+        ('dev', CloudEnvironment.dev, 'com.londonmystery.app.dev'),
+        ('prod', CloudEnvironment.prod, 'com.londonmystery.app'),
+      ]) {
+        final file = File('ios/config/$flavor/GoogleService-Info.plist');
+        if (!file.existsSync()) {
+          markTestSkipped('iOS $flavor config not on this checkout (git-ignored)');
+          continue;
+        }
+        String value(String key) =>
+            RegExp('<key>$key</key>\\s*<string>([^<]*)</string>').firstMatch(file.readAsStringSync())!.group(1)!;
+        expect(value('PROJECT_ID'), env.projectId, reason: flavor);
+        expect(value('GOOGLE_APP_ID'), env.iosAppId, reason: flavor);
+        expect(value('BUNDLE_ID'), bundle, reason: flavor);
+      }
+    });
+
+    test('the iOS build gives each flavor its own bundle id and config folder', () {
+      final pbx = File('ios/Runner.xcodeproj/project.pbxproj').readAsStringSync();
+      expect(pbx, contains('LM_FLAVOR = dev;'));
+      expect(pbx, contains('LM_FLAVOR = prod;'));
+      expect(pbx, contains('PRODUCT_BUNDLE_IDENTIFIER = com.londonmystery.app.dev;'));
+      expect(pbx, contains(r'config/${LM_FLAVOR}/GoogleService-Info.plist'));
+      expect(pbx, contains('BUNDLE_ID'), reason: 'the copy refuses a config made for another bundle id');
+      for (final flavor in ['dev', 'prod']) {
+        final scheme = File('ios/Runner.xcodeproj/xcshareddata/xcschemes/$flavor.xcscheme').readAsStringSync();
+        for (final c in ['Debug', 'Release', 'Profile']) {
+          if (scheme.contains('buildConfiguration = "$c"')) fail('$flavor scheme uses plain $c');
+        }
+        expect(scheme, contains('buildConfiguration = "Debug-$flavor"'));
+        expect(scheme, contains('buildConfiguration = "Release-$flavor"'));
       }
     });
 

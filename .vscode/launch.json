@@ -1,0 +1,35 @@
+{
+  // London Mystery: Android and iOS share the same flavors.
+  //   dev  → com.londonmystery.app.dev  (Firebase london-mystery-dev)
+  //   prod → com.londonmystery.app      (Firebase london-mystery-prod)
+  // Pick the device in the status bar (an Android emulator or an iOS
+  // simulator such as iPhone 17 Pro). iOS needs the shared Xcode schemes
+  // "dev" / "prod" (ios/scripts/setup_flavors.rb).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "London Mystery DEV (debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "debug",
+      "args": ["--flavor", "dev"]
+    },
+    {
+      "name": "London Mystery DEV (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "args": ["--flavor", "dev"]
+    },
+    {
+      "name": "London Mystery PROD (release, no operator tools)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "prod"]
+    }
+  ]
+}

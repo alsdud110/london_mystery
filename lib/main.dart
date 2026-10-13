@@ -34,6 +34,7 @@ Future<void> main() async {
     decision: CloudDecision.of(
       flavor: appFlavor,
       androidApp: !kIsWeb && defaultTargetPlatform == TargetPlatform.android,
+      iosApp: !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS,
       operatorToolsInBuild: operatorToolsInBuild,
     ),
   );

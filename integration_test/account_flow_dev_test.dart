@@ -1,5 +1,5 @@
 // The account screens against the real DEV Firebase project, as a player
-// uses them, on an Android emulator or device:
+// uses them, on an Android emulator or device, or an iOS simulator:
 //   flutter test integration_test/account_flow_dev_test.dart --flavor dev -d <device>
 // Starts the real app (main), makes one throw-away account in
 // london-mystery-dev through the Account Desk, signs out and in again, and
