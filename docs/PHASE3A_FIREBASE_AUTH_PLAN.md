@@ -136,6 +136,8 @@ abstract interface class AuthService {
 
 ## 5. 데이터 구조 (Phase 3A 최소)
 
+> **3A-3에서 대체됨:** `parents/{uid}` → `users/{uid}`, 동의는 `consents/{uid}`로 분리. 최종 구조·규칙은 §13.
+
 ```text
 parents/{uid}                         ← uid = Firebase Auth UID (경로가 소유권)
   schema: 1
@@ -154,6 +156,8 @@ parents/{uid}/profiles/{profileId}    ← profileId = 기존 로컬 프로필 ID
 **연결 방식:** 로컬 `DetectiveProfile`에 `ownerUid`를 추가(Phase 3A 모델만, 선택 필드) → 클라우드 문서 경로 `parents/{ownerUid}/profiles/{id}`와 1:1. 프로필 ID는 기기에서 오프라인으로 생성 가능(충돌 확률 무시 가능). `installId`는 연결 기록용 메타데이터일 뿐 소유권 판단에 쓰지 않는다.
 
 ## 6. Firestore Security Rules 초안
+
+> **3A-3에서 대체됨:** 실제 규칙은 `firebase/firestore.rules`, 테스트는 `firebase/test/firestore.rules.test.mjs`(§13).
 
 ```
 rules_version = '2';
@@ -311,3 +315,106 @@ service cloud.firestore {
 
 유지: 회원가입·로그인·로그아웃·세션 복원·비밀번호 재설정·재인증·이메일 인증, Firebase 준비 전 차단, 계정별 프로필 잠금, 게스트·로컬 세이브·Journal·Outbox·Epoch·Wallet. `android/.gitignore`에 `/build/` 추가.
 **미결:** 만 14세 미만 연령 확인·법정대리인 동의 절차(법률 검토) → 확정 전 `confirmed` 없음, 클라우드 업로드 차단.
+
+## 13. Phase 3A-3 결과 — Firestore 구조·규칙 (2026-10-13, 커밋 전)
+
+### 13.1 설계 결정 (사용자 승인)
+
+1. 컬렉션 이름 `parents` → **`users/{uid}`**.
+2. 동의 기록은 **`consents/{uid}`** 별도 컬렉션.
+3. 클라이언트는 자기 동의 기록을 **읽기만** 한다. 생성·수정·삭제 불가(신뢰 백엔드 = Admin SDK/Functions만 기록, 규칙은 Admin SDK에 적용되지 않음).
+4. 동의가 `confirmed`가 아닌 계정은 `users` 문서를 포함한 **모든 클라우드 쓰기 차단**.
+5. 동의를 `confirmed`로 만드는 기능은 없다(3B에서 법률 검토 후 결정).
+
+### 13.2 데이터 구조
+
+```text
+consents/{uid}                       ← 신뢰 백엔드만 기록. 클라이언트: 본인 get만
+  status: 'confirmed' | (그 외 모든 값 = 미확인)
+  schema: 1                          (그 밖의 필드는 3B에서 결정: 방법·시각·근거 등)
+
+users/{uid}                          ← uid = Firebase Auth UID (경로 = 소유권)
+  schema: 1
+  createdAt: serverTimestamp         (request.time과 같아야 함)
+  locale: 'ko'   (^[a-z]{2}$)
+  region: 'KR'   (^[A-Z]{2}$)
+  (이메일·동의 필드 없음)
+
+users/{uid}/profiles/{profileId}     ← profileId = 로컬 프로필 ID(32자리 소문자 hex)
+  schema: 1
+  detectiveName: string 1–12
+  createdAt: serverTimestamp
+  └ 하위 경로(cases·season·wallet 등): Phase 4 전까지 전부 거부
+```
+
+### 13.3 규칙 요약 (`firebase/firestore.rules`)
+
+| 경로 | 읽기 | 생성 | 수정 | 삭제 |
+|---|---|---|---|---|
+| `consents/{uid}` | 본인 get만 (list 불가) | 불가 | 불가 | 불가 |
+| `users/{uid}` | 본인 get만 (list 불가) | 본인 + 동의 확인 + 필드 정확히 4개 + `createdAt == request.time` | 본인 + 동의 확인 + `locale`·`region`만 | 불가 |
+| `users/{uid}/profiles/{id}` | 본인 | 본인 + 동의 확인 + `users/{uid}` 존재(`existsAfter`: 같은 batch에서 함께 생성 가능) + ID 형식 + 필드 정확히 3개 + 이름 1–12 + 서버 시각 | 본인 + 동의 확인 + `detectiveName`만 | 불가 |
+| 그 밖의 모든 경로 (`parents/*` 포함) | 불가 | 불가 | 불가 | 불가 |
+
+동의 확인 = `exists(consents/{uid}) && get(consents/{uid}).data.get('status','') == 'confirmed'`. 요청 데이터가 아니라 저장된 기록만 본다.
+
+### 13.4 앱 코드
+
+| 파일 | 내용 |
+|---|---|
+| `lib/features/account/cloud_profile_store.dart` | `CloudPaths`(경로·검증 규칙 한곳), `CloudProfile`, `CloudWriteResult`, `CloudProfileStore` 인터페이스(`ensureAccount`, `createProfile`, `renameProfile`, `profilesOf` — 동의 쓰기·삭제 메서드 없음) |
+| `lib/features/account/fake_cloud_profile_store.dart` | 규칙과 같은 판단을 하는 메모리 구현(테스트·미리보기) |
+| `lib/features/account/firestore_consent_repository.dart` | `consents/{uid}` 읽기 → 정확히 `'confirmed'`일 때만 확인. 기록 없음·다른 값·거부·오프라인·오류 = 미확인(fail closed). 로그는 오류 코드만 |
+
+- **연결하지 않음:** `main.dart`는 여전히 `UndecidedConsent`를 쓴다(모두 미확인). Firestore 구현의 `CloudProfileStore`와 실제 업로드·동기화는 없다.
+- 게임 화면·로컬 저장·경제 규칙 변경 없음.
+
+### 13.5 검증
+
+| 항목 | 결과 |
+|---|---|
+| 규칙 테스트 | `cd firebase && npm test` — Firestore 에뮬레이터(`demo-london-mystery`, 실제 프로젝트 접속 없음), JDK 21 필요(`scripts/with-jdk21.sh`가 찾음, 기본 Java는 바꾸지 않음). 31개 통과 |
+| Dart | `test/cloud_profile_store_test.dart` — 동의 판정·fail closed·계정 격리(Fake)·경로가 규칙 파일과 같은지 |
+| 배포 | **안 함.** DEV/PROD 규칙 배포는 별도 승인 후: `firebase deploy --only firestore:rules --project london-mystery-dev` |
+
+### 13.6 Phase 3B로 넘기는 것
+
+- 동의 기록 경로(Cloud Functions/Admin SDK), `consents/{uid}`의 나머지 필드(방법·시각·근거·철회), 연령 확인 절차 `[LEGAL]`.
+- `main.dart`에서 `FirestoreConsentRepository` 연결(로그인 후 읽기), 동의 상태 변경 시 다시 읽기(현재는 로그인 시 한 번).
+- `CloudProfileStore`의 Firestore 구현(배치/트랜잭션으로 `users` + 첫 프로필), 로그인·회원가입 화면(Parent Gate 뒤).
+- 프로필 수 제한(카운터 + 트랜잭션 또는 Functions).
+- DEV 규칙 배포 후 실제 DEV에서 규칙 확인.
+
+
+## 14. 프로필 ID · 탐정 이름 호환 (2026-10-13 — 3B에서 구현: A1 + 이름 규칙, 사용자 승인으로 대·소문자 모두 허용)
+
+### 14.1 조사 결과
+
+| 항목 | 로컬 | 클라우드(3A-3) | 실제 차이 |
+|---|---|---|---|
+| 프로필 ID 생성 | `ProfileStore.newId()` = 항상 32자리 hex (추가·게스트·레거시 이전 모두) | — | 없음 |
+| 프로필 ID 허용 | `^[0-9a-f]{8,64}$` (읽기 관용, 저장 키에서 복구한 ID 보존) | `^[0-9a-f]{32}$` | 현재 코드가 만드는 ID는 모두 통과. 8–31/33–64자 ID는 저장소 복구 경로에서만 이론상 가능 |
+| 동기화 대상 | `kind == account`만(`syncable`), 게스트는 업로드 안 함 | — | — |
+| 이름 | `cleanName`(앞뒤 공백 제거·연속 공백 1개·대문자) + `[A-Za-z0-9가-힣 .-]` + 1–12 (Dart UTF-16) | 1–12, 문자 집합 검사 없음 | 규칙이 문자 집합·정규형을 검사하지 않음 |
+| 길이 계산 | Dart `String.length` = UTF-16 | 에뮬레이터 확인: 규칙 `size()`도 UTF-16 (한글 12 허용·13 거부, 이모지 6개 허용·12개 거부) | 같음. 허용 문자는 모두 1 UTF-16 단위라 입력창(글자 수)과도 같음 |
+
+### 14.2 제안 (로컬 ID·이름·세이브 변경 없음, 마이그레이션 없음)
+
+- **A1 (권장, dev-review 동의):** 클라우드 문서 ID = 로컬 프로필 ID 그대로. 규칙과 `CloudPaths.profileId`를 로컬과 같은 `^[0-9a-f]{8,64}$`로 맞추고, Dart에서는 `DetectiveProfile.isValidId` 하나만 쓴다. 매핑 필드 불필요. (사용자별 하위 컬렉션이라 짧은 ID의 충돌 범위도 계정 안으로 한정.)
+- **이름 계약 하나:** `DetectiveName` 규칙 = `cleanName` 결과가 `[A-Z0-9가-힣 .-]`, 1–12자, 앞뒤 공백 없음, 연속 공백 없음.
+  - Dart: 입력 검증·`CloudProfileStore`가 같은 함수를 쓰고, 보내기 전 정규화.
+  - 규칙(정규형까지 강제, dev-review P2 반영):
+    `n is string && n.size() >= 1 && n.size() <= 12 && n.matches('^[A-Z0-9가-힣.-]([A-Z0-9가-힣 .-]*[A-Z0-9가-힣.-])?$') && !n.matches('.*  .*')` (하이픈은 문자 집합 맨 끝)
+  - 규칙 테스트 추가: 소문자, 앞뒤·연속 공백, 이모지, 13자, 허용 기호.
+- **계약을 통과하지 못하는 기존 이름:** 로컬 이름·세이브는 그대로 두고, 계정 연결 시 클라우드용 이름만 새로 입력받는다.
+
+### 14.3 검토
+
+dev-review 설계 검토 완료(`qitem-20261013121555-3fe7845d`): A1 권장, 데이터 보존 방식 적절, 이름 정규형 P2 1건 → 위 규칙에 반영. 코드 변경·런타임 테스트는 아직 없음(승인 후).
+
+### 14.4 구현 (Phase 3B)
+
+- 프로필 ID: `DetectiveProfile.idPattern = ^[0-9a-f]{8,64}$` 하나를 Dart(`isValidId`, `CloudPaths.validProfileId`)와 규칙(`validProfileId`)이 같이 쓴다. 로컬 ID 변경 없음.
+- 이름: `lib/data/models/detective_name.dart`의 `DetectiveName.pattern`(대·소문자, 한글 음절, 숫자, 공백·`.`·`-`, 앞뒤 공백 없음) + 연속 공백 금지 + 1–12. 규칙 `validName`에 같은 정규식. 게임 입력은 기존처럼 정리(`normalize`) 후 대문자로 저장(`GameController.cleanName`), 저장된 이름은 바꾸지 않음.
+- 대·소문자: 앱은 대문자로 저장하지만, 규칙·Dart 계약은 소문자도 유효한 저장 형식으로 허용한다(사용자 승인 규칙. dev-review P3 → 문서로 확정).
+- `test/cloud_profile_store_test.dart`가 규칙 파일에 같은 패턴 문자열이 있는지 확인하고, 에뮬레이터 테스트와 같은 허용/거부 목록을 Dart에서도 검사한다.
