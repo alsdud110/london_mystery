@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/cloud/cloud_bootstrap.dart';
+import '../../core/cloud/cloud_environment.dart';
 import 'auth_service.dart';
 import 'consent.dart';
 
@@ -92,6 +93,7 @@ class AccountController extends ValueNotifier<AccountState> {
   }
 
   Future<void> _onSession(UserSession? s) async {
+    if (s?.uid != _sendFailureUid) _setSendFailure(null);
     if (s == null) {
       value = const AccountState(AccountStatus.signedOut);
       return;
@@ -108,8 +110,57 @@ class AccountController extends ValueNotifier<AccountState> {
     return action(auth);
   }
 
-  Future<AuthResult> signUp({required String email, required String password}) =>
-      _use((a) => a.signUp(email: email, password: password));
+  /// Whether this build takes new accounts (DEV only, see
+  /// [CloudEnvironment.signUpOpen]). The screen hides sign-up when not, and
+  /// [signUp] refuses it all the same.
+  bool get signUpOpen => cloud.decision.environment?.signUpOpen ?? false;
+
+  /// Whether the account can be deleted from the app (not yet: see
+  /// [CloudEnvironment.accountDeletionAvailable]).
+  bool get deletionAvailable => cloud.decision.environment?.accountDeletionAvailable ?? false;
+
+  /// Whether this build offers the account pages (see
+  /// [CloudEnvironment.accountsShown]).
+  bool get accountsShown => cloud.decision.environment?.accountsShown ?? false;
+
+  /// A test build on the DEV project (shows what is still to come there).
+  bool get devBuild => cloud.decision.environment == CloudEnvironment.dev;
+
+  /// The signed-in user's email address, partly hidden.
+  String? get maskedEmail => _auth?.maskedEmail;
+
+  /// Why the email address check could not be sent right after sign-up
+  /// (null: it was sent, or there was no sign-up). The check page says so
+  /// and offers to send it again.
+  /// Only for the account it happened to: signing out or another account
+  /// signing in clears it.
+  AuthFailure? get verificationSendFailure => _sendFailureUid == value.uid ? _verificationSendFailure : null;
+  AuthFailure? _verificationSendFailure;
+  String? _sendFailureUid;
+
+  void _setSendFailure(AuthFailure? f) {
+    _verificationSendFailure = f;
+    _sendFailureUid = f == null ? null : value.uid;
+  }
+
+  /// Makes an account and signs it in, then sends the email address check.
+  /// Nothing else happens: no profile changes owner, nothing is uploaded.
+  /// The account is made even if the check cannot be sent (see
+  /// [verificationSendFailure]).
+  Future<AuthResult> signUp({required String email, required String password}) async {
+    if (!signUpOpen) return const AuthResult.failed(AuthFailure.signUpClosed);
+    final r = await _use((a) => a.signUp(email: email, password: password));
+    _setSendFailure(null);
+    if (r.ok) _setSendFailure((await _use((a) => a.sendEmailVerification())).failure);
+    return r;
+  }
+
+  /// Sends the email address check (again).
+  Future<AuthResult> sendEmailVerification() async {
+    final r = await _use((a) => a.sendEmailVerification());
+    _setSendFailure(r.failure);
+    return r;
+  }
 
   Future<AuthResult> signIn({required String email, required String password}) =>
       _use((a) => a.signIn(email: email, password: password));
@@ -119,7 +170,6 @@ class AccountController extends ValueNotifier<AccountState> {
   /// Before a sensitive action: the password again.
   Future<AuthResult> reauthenticate(String password) => _use((a) => a.reauthenticate(password));
 
-  Future<AuthResult> sendEmailVerification() => _use((a) => a.sendEmailVerification());
 
   Future<AuthResult> refreshEmailVerified() => _use((a) => a.refreshEmailVerified());
 

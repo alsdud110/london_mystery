@@ -86,6 +86,12 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
+  String? get maskedEmail => switch (_auth.currentUser?.email) {
+        final String e => AuthCredentials.mask(e),
+        _ => null,
+      };
+
+  @override
   Future<void> signOut() => _auth.signOut();
 
   Future<AuthResult> _run(Future<AuthResult> Function() action) async {

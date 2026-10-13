@@ -15,6 +15,7 @@ import '../../widgets/art_assets.dart';
 import '../../widgets/game_dialog.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
+import '../account/account_controller.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
@@ -150,6 +151,14 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     // desk front under the button — and nowhere else: the window, the lamp
     // and the things on the desk stay as painted.
     const shade = AppColors.navyDeep;
+    final accountsShown = ref.watch(accountControllerProvider).accountsShown;
+    final accountLink = !accountsShown
+        ? null
+        : switch (ref.watch(accountStateProvider.select((a) => a.status))) {
+            AccountStatus.signedOut => ('Sign in', Routes.account),
+            AccountStatus.signedIn => ('My account', Routes.accountSettings),
+            AccountStatus.starting || AccountStatus.unavailable => null,
+          };
 
     return Scaffold(
       backgroundColor: AppColors.nightBottom,
@@ -241,6 +250,23 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                         label: 'NEW ADVENTURE',
                                         color: AppColors.paperLight.withValues(alpha: 0.75),
                                         onPressed: _confirmNewGame,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              // The user account, small and quiet: playing never
+                              // needs it (only when this build has accounts).
+                              if (accountLink case (final label, final route))
+                                _RiseIn(
+                                  intro: _intro,
+                                  from: 0.75,
+                                  child: SizedBox(
+                                    height: 44,
+                                    child: Center(
+                                      child: InkTextButton(
+                                        label: label,
+                                        color: AppColors.paperLight.withValues(alpha: 0.6),
+                                        onPressed: () => context.go(route),
                                       ),
                                     ),
                                   ),

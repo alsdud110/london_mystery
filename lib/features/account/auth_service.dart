@@ -57,22 +57,27 @@ enum AuthFailure {
   /// this build, or not started).
   cloudUnavailable,
 
+  /// New accounts cannot be made in this build (see
+  /// `CloudEnvironment.signUpOpen`).
+  signUpClosed,
+
   /// Anything else.
   unknown;
 
-  /// For the player (Korean, calm, no internal detail).
+  /// For the player (English, as the game speaks; calm, no internal detail).
   String get message => switch (this) {
-        invalidEmail => '이메일 주소를 다시 확인해 주세요.',
-        wrongCredentials => '이메일 또는 비밀번호가 올바르지 않습니다.',
-        emailInUse => '이미 가입된 이메일입니다. 로그인하거나 비밀번호를 재설정해 주세요.',
-        weakPassword => '비밀번호는 8자 이상으로, 영문과 숫자를 섞어 만들어 주세요.',
-        tooManyRequests => '시도가 너무 많았습니다. 잠시 후 다시 시도해 주세요.',
-        network => '인터넷 연결을 확인한 뒤 다시 시도해 주세요.',
-        requiresRecentLogin => '안전을 위해 비밀번호를 한 번 더 입력해 주세요.',
-        userDisabled => '사용할 수 없는 계정입니다. 고객 지원에 문의해 주세요.',
-        notSignedIn => '먼저 로그인해 주세요.',
-        cloudUnavailable => '지금은 계정 기능을 사용할 수 없습니다. 게임은 계속할 수 있어요.',
-        unknown => '잠시 문제가 생겼습니다. 다시 시도해 주세요.',
+        invalidEmail => 'Please check your email address.',
+        wrongCredentials => 'That email or password is not right.',
+        emailInUse => 'This email already has an account. Sign in, or reset the password.',
+        weakPassword => 'Use at least 8 characters, with letters and numbers.',
+        tooManyRequests => 'Too many tries. Please wait a little and try again.',
+        network => 'No internet connection. Check it and try again.',
+        requiresRecentLogin => 'For safety, please type your password again.',
+        userDisabled => 'This account cannot be used. Please contact support.',
+        notSignedIn => 'Please sign in first.',
+        cloudUnavailable => 'Accounts are not available right now. You can keep playing.',
+        signUpClosed => 'New accounts are not open yet. You can play as a guest.',
+        unknown => 'Something went wrong. Please try again.',
       };
 }
 
@@ -120,6 +125,10 @@ abstract interface class AuthService {
   /// Asks the provider again whether the email address is checked.
   Future<AuthResult> refreshEmailVerified();
 
+  /// The signed-in user's email address, partly hidden (for the account
+  /// page), or null. The full address is never kept by the app.
+  String? get maskedEmail;
+
   Future<void> signOut();
 }
 
@@ -130,6 +139,18 @@ abstract final class AuthCredentials {
   static final _email = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
 
   static String cleanEmail(String raw) => raw.trim();
+
+  /// "detective@example.com" → "de•••@ex•••.com": enough to recognise it.
+  static String mask(String email) {
+    final at = email.lastIndexOf('@');
+    if (at <= 0) return '•••';
+    String keep(String s, int n) => s.length <= n ? s : s.substring(0, n);
+    final domain = email.substring(at + 1);
+    final dot = domain.lastIndexOf('.');
+    final host = dot > 0 ? domain.substring(0, dot) : domain;
+    final tld = dot > 0 ? domain.substring(dot) : '';
+    return '${keep(email.substring(0, at), 2)}•••@${keep(host, 2)}•••$tld';
+  }
 
   static AuthFailure? checkEmail(String raw) {
     final email = cleanEmail(raw);

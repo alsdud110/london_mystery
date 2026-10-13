@@ -16,6 +16,22 @@ enum CloudEnvironment {
   final String projectId;
   final String androidAppId;
 
+  /// Whether new accounts may be made. Signing up collects an email address;
+  /// in Korea a child under 14 needs a legal guardian's consent for that, and
+  /// the procedure is not decided yet: only the DEV project takes sign-ups.
+  bool get signUpOpen => this == dev;
+
+  /// Whether the account pages are offered at all. PROD's email sign-in is
+  /// turned off on the server (2026-10-13) until the consent procedure is
+  /// decided, so its builds show no Sign in / My account and open no account
+  /// page.
+  bool get accountsShown => this == dev;
+
+  /// Whether an account (and its cloud documents) can be deleted from the
+  /// app. Needs a trusted server path that deletes both together (see
+  /// docs/PHASE3B_ACCOUNT_UI_PLAN.md §6); until it exists, never.
+  bool get accountDeletionAvailable => false;
+
   /// The environment of a build flavor (`appFlavor`), or null (no flavor:
   /// tests, web, desktop; or an unknown one).
   static CloudEnvironment? ofFlavor(String? flavor) => switch (flavor) {

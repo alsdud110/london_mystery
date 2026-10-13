@@ -12,6 +12,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/models/detective_name.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/game_toast.dart';
@@ -90,7 +91,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     // light. The office stays put when the keyboard comes up.
     return Stack(
       children: [
-        const Positioned.fill(child: _OfficeBehind()),
+        const Positioned.fill(child: OfficeBehind()),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -226,9 +227,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                                 AppConstants.nameMaxLength,
                                             inputFormatters: [
                                               FilteringTextInputFormatter.allow(
-                                                RegExp(
-                                                  r'[A-Za-z0-9가-힣ㄱ-ㅎㅏ-ㅣ .\-]',
-                                                ),
+                                                DetectiveName.typeable,
                                               ),
                                               LengthLimitingTextInputFormatter(
                                                 AppConstants.nameMaxLength,
@@ -363,8 +362,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
 /// The detective's office from the title page, out of focus and in shadow
 /// around the lamp-lit desk: present, never competing with the form.
-class _OfficeBehind extends StatelessWidget {
-  const _OfficeBehind();
+class OfficeBehind extends StatelessWidget {
+  const OfficeBehind({super.key});
 
   @override
   Widget build(BuildContext context) {

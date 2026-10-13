@@ -37,6 +37,7 @@ void main() {
       expect(uid, isNotEmpty);
       expect(up.session!.emailVerified, isFalse);
       expect(auth.current?.uid, uid);
+      expect(auth.maskedEmail, 'lm•••@ex•••.com', reason: 'the account page never shows the full address');
 
       expect((await auth.signUp(email: email, password: password)).failure, AuthFailure.emailInUse);
 

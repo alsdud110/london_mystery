@@ -17,6 +17,9 @@ class FakeAuthService implements AuthService {
   /// The next call fails with this reason (then it is cleared).
   AuthFailure? failNext;
 
+  /// The next email address check fails to send (then it is cleared).
+  AuthFailure? failNextVerification;
+
   /// Password reset emails "sent", by address (only to existing accounts).
   final resetsSent = <String>[];
   int verificationsSent = 0;
@@ -93,6 +96,10 @@ class FakeAuthService implements AuthService {
   Future<AuthResult> sendEmailVerification() async {
     if (_takeFailure() case final f?) return AuthResult.failed(f);
     if (_current == null) return const AuthResult.failed(AuthFailure.notSignedIn);
+    if (failNextVerification case final f?) {
+      failNextVerification = null;
+      return AuthResult.failed(f);
+    }
     verificationsSent++;
     return AuthResult.ok(_current);
   }
@@ -113,6 +120,12 @@ class FakeAuthService implements AuthService {
     if (s != _current) _set(s, email);
     return AuthResult.ok(s);
   }
+
+  @override
+  String? get maskedEmail => switch (_currentEmail) {
+        final String e => AuthCredentials.mask(e),
+        _ => null,
+      };
 
   @override
   Future<void> signOut() async => _set(null);

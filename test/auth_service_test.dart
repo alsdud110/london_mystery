@@ -102,7 +102,7 @@ void main() {
       auth.failNext = AuthFailure.network;
       final offline = await account.sendPasswordReset(email);
       expect(offline.failure, AuthFailure.network);
-      expect(offline.failure!.message, contains('인터넷'));
+      expect(offline.failure!.message, contains('internet'));
     });
 
     test('re-authentication: the right password passes; a wrong one or nobody signed in does not', () async {
@@ -121,8 +121,9 @@ void main() {
       final account = await readyAccount(auth);
       expect((await account.sendEmailVerification()).failure, AuthFailure.notSignedIn);
       await account.signUp(email: email, password: password);
+      expect(auth.verificationsSent, 1, reason: 'sign-up sends the check once');
       expect((await account.sendEmailVerification()).ok, isTrue);
-      expect(auth.verificationsSent, 1);
+      expect(auth.verificationsSent, 2);
       expect((await account.refreshEmailVerified()).session!.emailVerified, isFalse);
       auth.verifyEmail(email);
       expect((await account.refreshEmailVerified()).session!.emailVerified, isTrue);

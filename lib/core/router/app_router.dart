@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/account/account_controller.dart';
+import '../../features/account/ui/account_desk_screen.dart';
+import '../../features/account/ui/account_screens.dart';
+import '../../features/account/ui/profile_screens.dart';
 import '../../features/game/game_controller.dart';
 import '../../features/game/game_providers.dart';
 import '../../features/game_master/game_master_screen.dart';
@@ -36,6 +40,16 @@ abstract final class Routes {
   static const report = '/report';
   static const qrScanner = '/scan';
   static const gameMaster = '/game-master';
+
+  // The user account (no detective needed; never behind the parent gate).
+  static const account = '/account';
+  static const newAccount = '/account?mode=new';
+  static const accountReset = '/account/reset';
+  static const accountVerify = '/account/verify';
+  static const accountSettings = '/account/settings';
+  static const accountDelete = '/account/delete';
+  static const profiles = '/profiles';
+  static const newProfile = '/profiles/new';
 
   static String mission(String id) => '/mission/$id';
 
@@ -91,6 +105,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
       const open = {Routes.start, Routes.register};
       if (open.contains(path)) return null;
+
+      // Account pages: none in a build that offers no accounts (PROD for now).
+      // Otherwise open to everyone; those about a signed-in account send a
+      // signed-out user to the Account Desk. Deletion is a DEV page.
+      if ((path == Routes.account || path.startsWith('${Routes.account}/') || path.startsWith(Routes.profiles)) &&
+          !ref.read(accountControllerProvider).accountsShown) {
+        return Routes.start;
+      }
+      if (path == Routes.account || path == Routes.accountReset || path == Routes.profiles) return null;
+      if (path.startsWith('${Routes.account}/') || path == Routes.newProfile) {
+        final account = ref.read(accountControllerProvider);
+        if (ref.read(accountStateProvider).uid == null) return Routes.account;
+        if (path == Routes.accountDelete && !account.devBuild) return Routes.accountSettings;
+        return null;
+      }
       if (!progress.hasDetective) return Routes.register;
 
       if (path == Routes.map || path == Routes.notebook || path == Routes.qrScanner) {
@@ -161,6 +190,49 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.solved, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.map, const CaseSolvedScreen()))),
       GoRoute(path: Routes.report, pageBuilder: (c, s) => _fade(s, const ParentReportScreen())),
       GoRoute(path: Routes.gameMaster, pageBuilder: (c, s) => _fade(s, const GameMasterScreen())),
+      GoRoute(
+        path: Routes.account,
+        pageBuilder: (c, s) => _fade(
+          s,
+          // Keyed by mode: SIGN IN and NEW ACCOUNT links open the right tab.
+          _backTo(
+            c,
+            Routes.start,
+            AccountDeskScreen(
+              key: ValueKey(s.uri.queryParameters['mode']),
+              newAccount: s.uri.queryParameters['mode'] == 'new',
+            ),
+          ),
+        ),
+        routes: [
+          GoRoute(
+            path: 'reset',
+            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.account, const PasswordResetScreen())),
+          ),
+          GoRoute(
+            path: 'verify',
+            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.profiles, const EmailCheckScreen())),
+          ),
+          GoRoute(
+            path: 'settings',
+            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const AccountSettingsScreen())),
+          ),
+          GoRoute(
+            path: 'delete',
+            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.accountSettings, const AccountDeleteScreen())),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: Routes.profiles,
+        pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const ProfileSelectScreen())),
+        routes: [
+          GoRoute(
+            path: 'new',
+            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.profiles, const NewProfileScreen())),
+          ),
+        ],
+      ),
     ],
   );
 });
