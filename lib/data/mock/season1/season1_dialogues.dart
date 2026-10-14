@@ -20,10 +20,10 @@ const Map<String, DialogueScene> season1Dialogues = {
   'ep06_m1': DialogueScene(
     place: 'MARKET HALL',
     background: 'assets/art/scenes/covent_garden/covent_garden_market_hall.png',
-    // Wave 2.2: the mission said first — what to find out and how — so the
-    // questions are asked for a reason (never the answer: a small bag).
+    // The mission said first — what to find out, and why the witnesses
+    // (never the answer: a small bag).
     goal: 'Find out what the stranger carried.',
-    how: 'Ask the witnesses. Look for two matching stories.',
+    how: 'Two witnesses may have seen the same thing.',
     guide: 'Choose a witness to begin.',
     // The mission's question first (the same three questions and answers).
     questions: [
@@ -83,31 +83,21 @@ const Map<String, DialogueScene> season1Dialogues = {
       DialogueStatement(id: 'baker.wearing', speakerId: 'baker', about: 'wearing', text: 'He had a dark coat.'),
       DialogueStatement(id: 'baker.carry', speakerId: 'baker', about: 'carry', text: 'He had a big red umbrella.'),
     ],
+    // Wave 2.3: one next thing at a time — ask one witness, ask another,
+    // then say whether two stories match (yes / no). Being wrong is a look
+    // again, never a recorded answer, and never says which way.
     deduction: DialogueDeduction(
       topic: 'carry',
-      question: 'Which two witnesses saw the same thing?',
-      prompt: 'Choose two statements that match.',
-      askLine: 'Ask two witnesses what the stranger carried.',
-      askMoreLine: 'Good! Ask another witness what they saw him carry.',
-      readyLine: 'Compare what the witnesses said he carried.',
       pair: {'flowerSeller.carry', 'juggler.carry'},
-      conclusion: 'He carried a small bag.',
       answer: 'b',
-      // The mission's own wrong-answer lines where they fit (the hat, the
-      // umbrella), and the coat: two who agree, on what he wore.
-      rules: [
-        DialoguePairRule(
-          all: {'flowerSeller.wearing', 'baker.wearing'},
-          line: 'They agree — but a coat is worn, not carried.',
-        ),
-        DialoguePairRule(any: {'juggler.wearing'}, line: 'A hat is worn on the head, not carried. What did he hold?'),
-        DialoguePairRule(
-          any: {'baker.carry'},
-          line: 'Only the baker saw an umbrella. Which thing do TWO witnesses agree on?',
-        ),
-      ],
-      differentLine: 'These two say different things. Find two that say the same.',
-      missingLine: 'Try another witness.',
+      question: 'Do their stories match?',
+      choose: 'Choose two witnesses to compare.',
+      foundLine: 'One witness has spoken. Ask another witness.',
+      readyLine: 'Do the witnesses agree?',
+      matchLine: 'They both saw the same thing.',
+      differentLine: 'These stories are different. Ask another witness.',
+      otherPairLine: 'These stories are different. Try another pair.',
+      lookAgainLine: 'Look again. Are they carrying the same thing?',
     ),
   ),
 };

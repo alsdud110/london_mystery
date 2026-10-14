@@ -79,46 +79,24 @@ class DialogueStatement {
   final String text;
 }
 
-/// What a pair of statements tells the detective when they are put side by
-/// side and are not the answer: one line, the first rule that fits. A rule
-/// fits when the pair holds [all] of its statements, or any of [any].
-@immutable
-class DialoguePairRule {
-  const DialoguePairRule({this.all = const {}, this.any = const {}, required this.line});
-
-  final Set<String> all;
-  final Set<String> any;
-  final String line;
-
-  bool fits(Set<String> pair) =>
-      (all.isNotEmpty && pair.containsAll(all)) || (any.isNotEmpty && pair.any(any.contains));
-}
-
-/// The deduction that ends the talk: two statements put side by side.
+/// The deduction that ends the talk: two witnesses' stories about its
+/// [topic] put side by side, and the detective saying whether they match.
 @immutable
 class DialogueDeduction {
   const DialogueDeduction({
-    required this.question,
-    required this.pair,
-    required this.conclusion,
-    required this.answer,
-    required this.rules,
-    required this.differentLine,
-    required this.missingLine,
     required this.topic,
-    required this.prompt,
-    required this.askLine,
-    required this.askMoreLine,
+    required this.pair,
+    required this.answer,
+    required this.question,
+    required this.choose,
+    required this.foundLine,
     required this.readyLine,
+    required this.matchLine,
+    required this.differentLine,
+    required this.otherPairLine,
+    required this.lookAgainLine,
     this.witnesses = 2,
   });
-
-  /// What the detective works out, as the comparing page asks it ("Which
-  /// two witnesses saw the same thing?").
-  final String question;
-
-  /// How to answer it there ("Choose two statements that match.").
-  final String prompt;
 
   /// The question the deduction is about ("carry"): only statements about
   /// it are compared, and asking it is what opens comparing.
@@ -128,42 +106,36 @@ class DialogueDeduction {
   /// any of them, matching or not (comparing is the detective's to do).
   final int witnesses;
 
-  /// What to do next, said under the questions while comparing is not open
-  /// yet: none about [topic] heard ([askLine]), one ([askMoreLine]); and
-  /// once it is open ([readyLine]).
-  final String askLine;
-  final String askMoreLine;
-  final String readyLine;
-
-  /// The two statements that answer it.
+  /// The two statements that match (the answer).
   final Set<String> pair;
-
-  /// What they show, said once the pair is linked.
-  final String conclusion;
 
   /// The mission's puzzle answer the deduction gives (submitted once).
   final String answer;
 
-  /// What a wrong pair shows, in order (the first that fits).
-  final List<DialoguePairRule> rules;
+  /// What the comparing page asks of two stories ("Do their stories
+  /// match?"), and, with more stories than two, how to begin ("Choose two
+  /// witnesses to compare.").
+  final String question;
+  final String choose;
 
-  /// A wrong pair no rule fits: two statements that say different things.
+  /// What to do next, said in the talk: one witness heard on [topic]
+  /// ([foundLine]); enough to compare ([readyLine]).
+  final String foundLine;
+  final String readyLine;
+
+  /// Said when the detective is right: the stories match ([matchLine]);
+  /// they differ and someone else is still to be asked ([differentLine]), or
+  /// every witness was heard and another pair is to be compared
+  /// ([otherPairLine]).
+  final String matchLine;
   final String differentLine;
+  final String otherPairLine;
 
-  /// Added to a wrong link's line when no two of the statements compared
-  /// match: there is someone else to ask (never who).
-  final String missingLine;
+  /// Said when the detective is wrong about two stories (never which way).
+  final String lookAgainLine;
 
-  /// What linking statements [a] and [b] shows: null when they answer the
-  /// deduction, else the line that says why not.
-  String? judge(String a, String b) {
-    final picked = {a, b};
-    if (picked.length == 2 && picked.containsAll(pair)) return null;
-    for (final r in rules) {
-      if (r.fits(picked)) return r.line;
-    }
-    return differentLine;
-  }
+  /// Whether statements [a] and [b] say the same thing (they answer it).
+  bool matches(String a, String b) => a != b && {a, b}.containsAll(pair);
 }
 
 /// A mission played by talking to the people at its place (presentation
@@ -192,8 +164,8 @@ class DialogueScene {
   final String background;
 
   /// What the detective is here to find out ("Find out what the stranger
-  /// carried."), shown as the mission, and how ("Ask the witnesses. Look
-  /// for two matching stories."). Never the answer.
+  /// carried."), shown as the mission, and how ("Two witnesses may have
+  /// seen the same thing."). Never the answer.
   final String goal;
   final String how;
 
@@ -240,6 +212,15 @@ class DialogueProgress {
   String? fresh;
 
   bool introSeen = false;
+
+  /// The questions besides the mission's are shown (the detective opened
+  /// them; they stay open from witness to witness until closed).
+  bool othersOpen = false;
+
+  /// How many statements on the topic had been heard when two were rightly
+  /// found different and there was no one else to compare them with: until
+  /// another is heard, the next thing to do is ask another witness.
+  int? differentAt;
 
   bool hasAsked(String speakerId, String questionId) => asked.contains('$speakerId/$questionId');
 
