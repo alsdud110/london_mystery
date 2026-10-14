@@ -7,6 +7,7 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
 import 'package:london_mystery/data/mock/season1/season1_investigations.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
@@ -81,7 +82,8 @@ class MissionPlay {
     expect(
         find.text('CHECK ANSWER').evaluate().isNotEmpty ||
             find.text('UNLOCK').evaluate().isNotEmpty ||
-            find.byKey(const ValueKey('investigation-picture')).evaluate().isNotEmpty,
+            find.byKey(const ValueKey('investigation-picture')).evaluate().isNotEmpty ||
+            find.byKey(const ValueKey('talk-panel')).evaluate().isNotEmpty,
         isTrue,
         reason: '$missionId: at its puzzle');
     return e.missionById(missionId)!;
@@ -90,6 +92,27 @@ class MissionPlay {
   /// Answers [m] through its own puzzle, as a child would; stops as the
   /// Discovery Moment opens.
   Future<void> solve(WidgetTester t, Mission m) async {
+    // A talk: hear the statements, then link the two that answer it.
+    final talk = dialogueOf(m);
+    if (talk != null) {
+      final heard = <String>{};
+      String speakerOf(String statement) => talk.statement(statement).speakerId;
+      String questionOf(String statement) =>
+          talk.speaker(speakerOf(statement)).answers.entries.firstWhere((e) => e.value.statementId == statement).key;
+      // Only the two that answer it: no other question is needed (Wave 2.2).
+      for (final s in talk.deduction.pair) {
+        await tapKey(t, 'speaker-${speakerOf(s)}');
+        await tapKey(t, 'question-${questionOf(s)}');
+        heard.add(s);
+      }
+      await tapKey(t, 'compare-statements', after: const Duration(milliseconds: 600));
+      for (final s in talk.deduction.pair) {
+        await tapKey(t, 'pick-$s');
+      }
+      await tapKey(t, 'link-statements', after: const Duration(milliseconds: 2600));
+      await wait(t, const Duration(milliseconds: 800));
+      return;
+    }
     // A searched place: each thing found where its report line says.
     final scene = investigationOf(m);
     if (scene != null) {
@@ -138,6 +161,14 @@ class MissionPlay {
     final picture = find.byKey(const ValueKey('investigation-picture'));
     final box = t.getRect(find.descendant(of: picture, matching: find.byType(GestureDetector)).first);
     return Offset(box.left + point.dx * box.width, box.top + point.dy * box.height);
+  }
+
+  /// Taps the widget keyed [key] (scrolled into view first).
+  Future<void> tapKey(WidgetTester t, String key, {Duration after = const Duration(milliseconds: 400)}) async {
+    final f = find.byKey(ValueKey(key));
+    await reveal(t, f);
+    await t.tap(f.last);
+    await wait(t, after);
   }
 
   /// Taps the search picture at [point] (fractions of the picture), then

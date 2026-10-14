@@ -11,6 +11,8 @@ import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
 import '../../data/mock/season1/season1_discoveries.dart';
 import '../../data/mock/season1/season1_investigations.dart';
+import '../../data/mock/season1/season1_dialogues.dart';
+import '../../data/models/dialogue.dart';
 import '../../data/models/investigation.dart';
 import '../../data/mock/season1/season1_sounds.dart';
 import '../../widgets/clue_card.dart';
@@ -29,6 +31,7 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
+import 'widgets/dialogue_investigation.dart';
 import 'widgets/investigation_search.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
@@ -61,6 +64,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   bool _arrived = false;
   bool _guideShown = false;
 
+  /// A mission played by talking to its people: who was asked what, and
+  /// the statements heard (kept while the page is open; not saved).
+  final DialogueProgress _talk = DialogueProgress();
+
   @override
   void initState() {
     super.initState();
@@ -87,14 +94,31 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       context.canPop() ? context.pop() : context.go(Routes.map);
       return;
     }
+    // A talk has no letter step: back from it is the place.
+    final talking = _stage == MissionStage.puzzle && dialogueOf(_mission) != null;
     setState(() {
       if (_stage == MissionStage.puzzle) _letterOpened = true;
-      _stage = _stage == MissionStage.puzzle ? MissionStage.letter : MissionStage.story;
+      _stage = _stage == MissionStage.puzzle && !talking ? MissionStage.letter : MissionStage.story;
     });
   }
 
-  /// The bar's title on a searched place: its name, and how far the
-  /// detective has got under it — two short lines that keep their size
+  Mission get _mission => ref.read(currentEpisodeProvider).missionById(widget.missionId)!;
+
+  /// A talked-to place's talk (it answers the mission's puzzle).
+  Widget _talkStage(Mission m, DialogueScene talk, int hintsShown) => DialogueInvestigation(
+        key: const ValueKey('puzzle'),
+        scene: talk,
+        progress: _talk,
+        onChanged: () => setState(() {}),
+        onComplete: (a) => _submit(m, a),
+        hints: m.hints,
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+        onNotes: () => ref.read(gameControllerProvider.notifier).recordRecheck(m),
+      );
+
+  /// The bar's title on a searched or talked-to place: its name, and how far
+  /// the detective has got under it — two short lines that keep their size
   /// (never cut, whatever the text size).
   Widget _barTitle(String place, String count, String spoken, Key key) => MediaQuery.withClampedTextScaling(
         maxScaleFactor: 1.1,
@@ -215,12 +239,18 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     if (m == null) return const SizedBox.shrink(); // router guard prevents this
     final solved = progress.isCompleted(m.id);
     final scene = investigationOf(m);
+    final talk = dialogueOf(m);
 
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)
         : switch (_stage) {
             MissionStage.story =>
-              _StoryStage(key: const ValueKey('story'), mission: m, onInvestigate: () => _goTo(MissionStage.letter)),
+              // A talk starts at once: who is here is told in the talk itself.
+              _StoryStage(
+                key: const ValueKey('story'),
+                mission: m,
+                onInvestigate: () => _goTo(talk != null ? MissionStage.puzzle : MissionStage.letter),
+              ),
             // A searched place: the arrival in the dark, the document handed
             // over (no envelope to open), then the search.
             MissionStage.letter when scene != null => InvestigationArrival(
@@ -240,6 +270,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                 onDone: () => _goTo(MissionStage.puzzle),
               ),
             MissionStage.puzzle when scene != null => _search(m, scene, progress.hintsFor(m.id)),
+            MissionStage.puzzle when talk != null => _talkStage(m, talk, progress.hintsFor(m.id)),
             MissionStage.puzzle => _PuzzleStage(
                 key: const ValueKey('puzzle'),
                 mission: m,
@@ -258,8 +289,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // device (predictive back) sends the app away instead of to the map.
     // A searched place, past its place page: in the dark, the room's picture
     // leading; the search names the place and counts what is found up top.
-    final dark = scene != null && !solved && _stage != MissionStage.story;
-    final searching = dark && _stage == MissionStage.puzzle;
+    final dark = (scene != null || talk != null) && !solved && _stage != MissionStage.story;
+    final searching = dark && scene != null && _stage == MissionStage.puzzle;
+    final talking = dark && talk != null && _stage == MissionStage.puzzle;
     final content = AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
@@ -286,6 +318,13 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                 'Found ${_found.length} of ${scene.finds.length}',
                 const ValueKey('found-count'),
               )
+            // A talk: the place only (Wave 2.2: no "n / 6" — not every
+            // statement is needed; the statements are in the panel).
+            : talking
+            ? MediaQuery.withClampedTextScaling(
+                maxScaleFactor: 1.1,
+                child: Text(talk.place, maxLines: 1, style: AppText.mark(color: AppColors.goldLight, size: 17)),
+              )
             : null,
         actions: [
           IconButton(
@@ -298,7 +337,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       ),
       body: dark
           // The panel under the search keeps clear of the system bar itself.
-          ? InkSurface(night: true, child: SafeArea(top: false, bottom: !searching, child: content))
+          ? InkSurface(night: true, child: SafeArea(top: false, bottom: !searching && !talking, child: content))
           : PaperBackground(
               child: SafeArea(
                 top: false,

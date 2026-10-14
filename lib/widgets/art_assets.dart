@@ -141,11 +141,24 @@ abstract final class ArtAssets {
   /// Width / height of the picture of [a] ([scenePrint] unless listed).
   static double sceneAspect(Artwork a) => sceneAspects[a] ?? scenePrint.size.aspectRatio;
 
-  /// Recurring characters (full colour, on parchment, square).
+  /// Recurring characters (full colour, on parchment, square), and the
+  /// witnesses a mission talks to (Case 06's market hall: printed on
+  /// parchment, 4:5 portraits, see `season1_dialogues.dart`).
   static const characters = <String, String>{
     'raven': '${_art}characters/raven_master.png',
     'clockmaker': '${_art}characters/clockmaker_master.png',
+    'flowerSeller': '${_art}characters/flower_seller.png',
+    'juggler': '${_art}characters/juggler.png',
+    'baker': '${_art}characters/baker.png',
   };
+
+  /// Width / height of a witness portrait ([characters]: flower seller,
+  /// juggler, baker).
+  static const witnessPortraitAspect = 1122 / 1402;
+
+  /// The Covent Garden market hall at closing time, inside (portrait 2:3):
+  /// the room Case 06's witnesses are talked to in.
+  static const marketHall = '$_scenes/covent_garden/covent_garden_market_hall.png';
 
   /// Story objects (full colour, on parchment, square except the map).
   static const objects = <String, String>{

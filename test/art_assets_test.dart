@@ -263,7 +263,12 @@ void main() {
     expect(ArtAssets.characters, {
       'raven': 'assets/art/characters/raven_master.png',
       'clockmaker': 'assets/art/characters/clockmaker_master.png',
+      // Wave 2: Case 06's three witnesses (see test/case06_dialogue_test.dart).
+      'flowerSeller': 'assets/art/characters/flower_seller.png',
+      'juggler': 'assets/art/characters/juggler.png',
+      'baker': 'assets/art/characters/baker.png',
     });
+    expect(ArtAssets.marketHall, 'assets/art/scenes/covent_garden/covent_garden_market_hall.png');
     expect(ArtAssets.objects, {
       'crown': 'assets/art/objects/crown.png',
       'key': 'assets/art/objects/key.png',

@@ -13,14 +13,32 @@ import 'landmark_art.dart';
 /// and name plate, softened a touch and dimmed so the words lead. A place
 /// with no picture of its own shows the London map instead.
 class PlaceScenery extends StatelessWidget {
-  const PlaceScenery(this.place, {super.key});
+  const PlaceScenery(this.place, {super.key}) : file = null;
+
+  /// A place's own picture file that is no scene of the map (a room the
+  /// people of a mission stand in), with the same treatment.
+  const PlaceScenery.file(String this.file, {super.key}) : place = null;
 
   final Artwork? place;
+  final String? file;
 
   @override
   Widget build(BuildContext context) {
     final scene = place;
-    final picture = scene != null && LandmarkArt.hasPicture(scene)
+    final own = file;
+    final picture = own != null
+        ? LayoutBuilder(
+            builder: (context, box) => Image.asset(
+              own,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              cacheWidth: box.maxWidth.isFinite ? (box.maxWidth * MediaQuery.devicePixelRatioOf(context)).ceil() : null,
+              excludeFromSemantics: true,
+              errorBuilder: (context, error, stack) => const SizedBox.expand(),
+            ),
+          )
+        : scene != null && LandmarkArt.hasPicture(scene)
         ? LandmarkArt(scene, showName: false, borderRadius: 0)
         : LayoutBuilder(
             builder: (context, box) => Image.asset(
