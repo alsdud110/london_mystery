@@ -40,10 +40,14 @@ Path _deckledRect(Size s, math.Random rnd, {double amp = 1.6, double step = 12})
 /// A handwritten case letter: a sheet of aged paper with slightly uneven
 /// edges, faint fold creases and a small wax seal, lying on the desk.
 class LetterCard extends StatelessWidget {
-  const LetterCard({super.key, required this.text, this.tilt = -0.01, this.textOpacity = 1});
+  const LetterCard({super.key, required this.text, this.tilt = -0.01, this.textOpacity = 1, this.textSize = 19});
 
   final String text;
   final double tilt;
+
+  /// The handwriting's size (a long document handed over on a small screen
+  /// is written a little smaller, to be read without scrolling).
+  final double textSize;
 
   /// The writing fades in last when the letter has just been unfolded.
   final double textOpacity;
@@ -61,7 +65,7 @@ class LetterCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(28, 30, 28, 40),
               child: SizedBox(
                 width: double.infinity,
-                child: Opacity(opacity: textOpacity, child: GlossaryText(text, style: AppText.letter())),
+                child: Opacity(opacity: textOpacity, child: GlossaryText(text, style: AppText.letter(size: textSize))),
               ),
             ),
           ),

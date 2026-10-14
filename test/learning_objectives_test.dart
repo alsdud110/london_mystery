@@ -104,11 +104,12 @@ void main() {
     }
   });
 
-  // After the representative-case pass (Case 01, 05, 12), Phase 2 (02-04), 3A (06-08) and 3B (09-11).
+  // After the representative-case pass (Case 01, 05, 12), Phase 2 (02-04), 3A (06-08) and 3B (09-11),
+  // and Wave 1 (03-M1 played as a search: helpful → essential).
   test('the distribution matches the TYPE B design document', () {
     int count(LanguageDependency d) => season1Learning.values.where((l) => l.dependency == d).length;
-    expect(count(LanguageDependency.essential), 41);
-    expect(count(LanguageDependency.helpful), 6);
+    expect(count(LanguageDependency.essential), 42);
+    expect(count(LanguageDependency.helpful), 5);
     expect(count(LanguageDependency.low), 3);
     expect(count(LanguageDependency.exposure), 0);
   });

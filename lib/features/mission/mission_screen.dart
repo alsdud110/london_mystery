@@ -10,6 +10,8 @@ import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
 import '../../data/mock/season1/season1_discoveries.dart';
+import '../../data/mock/season1/season1_investigations.dart';
+import '../../data/models/investigation.dart';
 import '../../data/mock/season1/season1_sounds.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/detective_tips.dart';
@@ -27,6 +29,7 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
+import 'widgets/investigation_search.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
 
@@ -47,6 +50,16 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   late MissionStage _stage;
   bool _letterOpened = false;
   int _wrongPulse = 0;
+
+  /// A mission searched in its place: what was found so far (kept while
+  /// the page is open, so reading the report again keeps it; not saved).
+  final List<String> _found = [];
+
+  /// A searched place: its arrival was seen whole (coming back to it shows
+  /// it at once), and the first "tap here" guide was shown (never again on
+  /// this page). Not saved.
+  bool _arrived = false;
+  bool _guideShown = false;
 
   @override
   void initState() {
@@ -80,6 +93,24 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     });
   }
 
+  /// The bar's title on a searched place: its name, and how far the
+  /// detective has got under it — two short lines that keep their size
+  /// (never cut, whatever the text size).
+  Widget _barTitle(String place, String count, String spoken, Key key) => MediaQuery.withClampedTextScaling(
+        maxScaleFactor: 1.1,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(place, maxLines: 1, style: AppText.mark(color: AppColors.goldLight, size: 17)),
+            Semantics(
+              label: spoken,
+              excludeSemantics: true,
+              child: Text(count, key: key, style: AppText.mark(color: AppColors.paperLight, size: 12.5)),
+            ),
+          ],
+        ),
+      );
+
   /// The envelope was tapped: its sound starts with the seal cracking.
   void _onLetterOpening() => ref.read(audioServiceProvider).play(GameSound.envelopeOpen);
 
@@ -87,9 +118,12 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
 
   /// GET A TIP: the small confirm dialog (coins, price). A tip revealed
   /// from it is written onto the page, with the pencil.
-  Future<void> _showHint(Mission m) async {
-    if (ref.read(gameControllerProvider).hintsFor(m.id) >= m.hints.length) return;
-    if (await showTipShop(context, m) && mounted) ref.read(audioServiceProvider).play(GameSound.pencilNote);
+  /// True when a tip was opened.
+  Future<bool> _showHint(Mission m) async {
+    if (ref.read(gameControllerProvider).hintsFor(m.id) >= m.hints.length) return false;
+    final revealed = await showTipShop(context, m);
+    if (revealed && mounted) ref.read(audioServiceProvider).play(GameSound.pencilNote);
+    return revealed;
   }
 
   void _rereadLetter(Mission m) {
@@ -158,6 +192,21 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
 
   Widget _questionFor(Mission m) => questionFor(m, (a) => _submit(m, a));
 
+  /// A searched place's search (it answers the mission's puzzle).
+  Widget _search(Mission m, InvestigationScene scene, int hintsShown) => InvestigationSearch(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        found: _found,
+        onFound: (id) => setState(() => _found.add(id)),
+        onComplete: (a) => _submit(m, a),
+        hints: m.hints,
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+        guideShown: _guideShown,
+        onGuideDone: () => setState(() => _guideShown = true),
+        onReport: () => ref.read(gameControllerProvider.notifier).recordRecheck(m),
+      );
+
   @override
   Widget build(BuildContext context) {
     final episode = ref.watch(currentEpisodeProvider);
@@ -165,12 +214,23 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final m = episode.missionById(widget.missionId);
     if (m == null) return const SizedBox.shrink(); // router guard prevents this
     final solved = progress.isCompleted(m.id);
+    final scene = investigationOf(m);
 
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)
         : switch (_stage) {
             MissionStage.story =>
               _StoryStage(key: const ValueKey('story'), mission: m, onInvestigate: () => _goTo(MissionStage.letter)),
+            // A searched place: the arrival in the dark, the document handed
+            // over (no envelope to open), then the search.
+            MissionStage.letter when scene != null => InvestigationArrival(
+                key: const ValueKey('letter'),
+                scene: scene,
+                letter: m.letter,
+                instant: _arrived,
+                onArrived: () => _arrived = true,
+                onStart: () => _goTo(MissionStage.puzzle),
+              ),
             MissionStage.letter => _LetterStage(
                 key: const ValueKey('letter'),
                 mission: m,
@@ -179,6 +239,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                 onOpened: _onLetterOpened,
                 onDone: () => _goTo(MissionStage.puzzle),
               ),
+            MissionStage.puzzle when scene != null => _search(m, scene, progress.hintsFor(m.id)),
             MissionStage.puzzle => _PuzzleStage(
                 key: const ValueKey('puzzle'),
                 mission: m,
@@ -195,15 +256,37 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // pop by itself on the place step left the answer to the route stack
     // and the platform: with nothing under the mission, an Android 16
     // device (predictive back) sends the app away instead of to the map.
+    // A searched place, past its place page: in the dark, the room's picture
+    // leading; the search names the place and counts what is found up top.
+    final dark = scene != null && !solved && _stage != MissionStage.story;
+    final searching = dark && _stage == MissionStage.puzzle;
+    final content = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
+      child: body,
+    );
     return BackTo(
       onBack: _back,
       child: Scaffold(
+      backgroundColor: dark ? AppColors.navyDeep : null,
       appBar: AppBar(
+        backgroundColor: dark ? AppColors.navyDeep : null,
+        foregroundColor: dark ? AppColors.paperLight : null,
         leading: IconButton(
           tooltip: solved || _stage == MissionStage.story ? 'Back to map' : 'Back',
           icon: const InkIcon(InkGlyph.back),
           onPressed: _back,
         ),
+        // The place, and what is found so far under it: two short lines
+        // that keep their size in the bar (never cut, whatever the text size).
+        title: searching
+            ? _barTitle(
+                m.location,
+                foundCountLabel(_found.length, scene.finds.length),
+                'Found ${_found.length} of ${scene.finds.length}',
+                const ValueKey('found-count'),
+              )
+            : null,
         actions: [
           IconButton(
             tooltip: 'Detective notebook',
@@ -213,21 +296,17 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           const SizedBox(width: AppSpace.xs),
         ],
       ),
-      body: PaperBackground(
-        child: SafeArea(
-          top: false,
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
-                child: body,
+      body: dark
+          // The panel under the search keeps clear of the system bar itself.
+          ? InkSurface(night: true, child: SafeArea(top: false, bottom: !searching, child: content))
+          : PaperBackground(
+              child: SafeArea(
+                top: false,
+                child: Center(
+                  child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 560), child: content),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
       ),
     );
   }
@@ -338,7 +417,8 @@ class _LetterStage extends StatelessWidget {
 }
 
 // STEP 3 — the puzzle. One action: answer. The letter and tips are quiet
-// helpers, opened only when the detective wants them.
+// helpers, opened only when the detective wants them. (A searched place has
+// its own search instead: `InvestigationSearch`.)
 class _PuzzleStage extends StatelessWidget {
   const _PuzzleStage({
     super.key,

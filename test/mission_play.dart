@@ -7,6 +7,7 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:london_mystery/data/mock/season1/season1_investigations.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
@@ -77,7 +78,11 @@ class MissionPlay {
     await wait(t, const Duration(milliseconds: 300));
     ref.read(routerProvider).go(Routes.mission(missionId));
     await wait(t, const Duration(milliseconds: 1200));
-    expect(find.text('CHECK ANSWER').evaluate().isNotEmpty || find.text('UNLOCK').evaluate().isNotEmpty, isTrue,
+    expect(
+        find.text('CHECK ANSWER').evaluate().isNotEmpty ||
+            find.text('UNLOCK').evaluate().isNotEmpty ||
+            find.byKey(const ValueKey('investigation-picture')).evaluate().isNotEmpty,
+        isTrue,
         reason: '$missionId: at its puzzle');
     return e.missionById(missionId)!;
   }
@@ -85,6 +90,16 @@ class MissionPlay {
   /// Answers [m] through its own puzzle, as a child would; stops as the
   /// Discovery Moment opens.
   Future<void> solve(WidgetTester t, Mission m) async {
+    // A searched place: each thing found where its report line says.
+    final scene = investigationOf(m);
+    if (scene != null) {
+      for (final f in scene.finds) {
+        await tapInPicture(t, f.areas.first.center);
+        await closeFindCard(t);
+      }
+      await wait(t, const Duration(milliseconds: 1200));
+      return;
+    }
     switch (m.type) {
       case MissionType.multipleChoice:
         await tapText(t, m.answerLabel, after: const Duration(milliseconds: 200));
@@ -115,6 +130,29 @@ class MissionPlay {
         fail('not used here');
     }
     await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 400));
+  }
+
+  /// Where [point] (fractions of the search picture) is on screen, as the
+  /// picture is shown now (enlarged or moved).
+  Offset pictureAt(WidgetTester t, Offset point) {
+    final picture = find.byKey(const ValueKey('investigation-picture'));
+    final box = t.getRect(find.descendant(of: picture, matching: find.byType(GestureDetector)).first);
+    return Offset(box.left + point.dx * box.width, box.top + point.dy * box.height);
+  }
+
+  /// Taps the search picture at [point] (fractions of the picture), then
+  /// waits out the double-tap window (a single tap counts after it) and
+  /// what the tap shows.
+  Future<void> tapInPicture(WidgetTester t, Offset point) async {
+    await t.tapAt(pictureAt(t, point));
+    await wait(t, const Duration(milliseconds: 700));
+  }
+
+  /// Closes the card of a thing just found (a tap once it has settled).
+  Future<void> closeFindCard(WidgetTester t) async {
+    await wait(t, const Duration(milliseconds: 400));
+    await t.tap(find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('find-card-')));
+    await wait(t, const Duration(milliseconds: 300));
   }
 
   /// The app closed and opened again on the same saved progress.

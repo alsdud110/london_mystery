@@ -108,12 +108,14 @@ const Map<String, LearningObjective> season1Learning = {
   ),
 
   // ── Case 03 — The Vanishing Painting ────────────────────────────────
+  // Played as a search of Gallery 8 (`season1_investigations.dart`): each
+  // place word is acted on in the picture (under ≠ on the bench).
   'ep03_m1': LearningObjective(
-    dependency: LanguageDependency.helpful,
-    level: LearningLevel.exposure,
-    skill: LanguageSkill.vocabulary,
-    objective: '보고서에서 위치를 찾는다. door라는 단어 하나로도 풀린다.',
-    expressions: ['It is next to the door'],
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.grammarInContext,
+    objective: '보고서의 위치 표현(under / on / next to)을 읽고, 그 자리를 갤러리에서 직접 조사해 세 물건을 찾는다.',
+    expressions: ['It is under the bench', 'It is on the frame', 'It is next to the door'],
   ),
   'ep03_m2': LearningObjective(
     dependency: LanguageDependency.essential,

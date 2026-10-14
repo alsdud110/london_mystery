@@ -5,8 +5,8 @@
 > 새 세션은 반드시 이 파일을 먼저 읽고, 아래 *Session Continuity Protocol*을 따른다.
 > 코드와 이 문서가 다르면 **코드가 source of truth**다.
 >
-> 최종 검증일: 2026-10-12 — `flutter analyze` 0 issues, `flutter test` **904개** 통과.
-> 마지막 작업: **Phase 4 P1-3·P1-4 — 사건 간 영어 재사용**(12-M2 after, 12-F whose, 11-M3 never sleeps). 그 전: Phase 4 P1-1·P1-2(Notebook 단어 뜻, Operator Archive 참고 공개), TYPE B Phase 3B — Season 1 전 사건 TYPE B 적용.
+> 최종 검증일: 2026-10-14 — `flutter analyze` 0 issues, `flutter test` **1354개** 통과(1개 skip, 기존).
+> 마지막 작업: **Wave 1.2 — Case 03-M1 화면 마감**. 그 전: Wave 1.1 — Case 03-M1 탐색 UX. 그 전: Wave 1 — Case 03-M1 현장 탐색. 그 전: **Phase 4 P1-3·P1-4 — 사건 간 영어 재사용**(12-M2 after, 12-F whose, 11-M3 never sleeps). 그 전: Phase 4 P1-1·P1-2(Notebook 단어 뜻, Operator Archive 참고 공개), TYPE B Phase 3B — Season 1 전 사건 TYPE B 적용.
 
 ---
 
@@ -94,7 +94,7 @@ Map(OPEN THE FINAL CASE) → Final(/final: 장면·이야기·편지·퍼즐, OP
 - 배경: 현재 미션 장소의 장면(`PlaceScenery(PlaceArt.sceneryOf(m))`, Story Scene과 같은 공용 위젯 `lib/widgets/place_scenery.dart`) — "현장에서 발견"
 - 동작: 2.2s 순차 등장(튀는 효과·컨페티 없음), **탭 = 즉시 완성**, 모션 줄이기 = 즉시 완성, CONTINUE는 한 번만, **자동 이동 없음**. Android Back = 오버레이 닫힘 → Story(이전 WELL DONE과 동일, 정답은 이미 저장)
 - 테스트용 key: `ValueKey('discovery-moment')`(아래 페이지는 해결 상태로 다시 그려져 있으므로 finder는 이 안으로 한정)
-- 분포: DEDUCTION 12 · NEW LEAD 9 · EVIDENCE FOUND 8 · CLUE CONFIRMED 4 · CLUE FOUND 3 · STORY DISCOVERY 2. Evidence 카드 표시 10곳(Case 07 M3 제외 후), notebook note 7곳, season clue 2곳(02-M2 기어, 05-M3 Brass Key)
+- 분포: DEDUCTION 12 · NEW LEAD 9 · EVIDENCE FOUND 9 · CLUE CONFIRMED 3 · CLUE FOUND 3 · STORY DISCOVERY 2. Evidence 카드 표시 11곳(Case 07 M3 제외 후, Wave 1에서 03-M1 추가), notebook note 6곳, season clue 2곳(02-M2 기어, 05-M3 Brass Key)
 
 ### Discovery Timing 원칙 (중요)
 - **Evidence가 있다고 EVIDENCE FOUND가 아니다.** 정보를 처음 가진 시점을 구분한다:
@@ -258,7 +258,7 @@ lib/
 - **XP** (`scoring.dart`, 저장 안 함·매번 계산 — 단 미션별 **규칙 번호**는 정답 순간 `GameProgress.xpRules`에 기록): **규칙 3**(현재) = 정답에 도달하면 일반 100 / Final 200, 오답·힌트·시간 무관(보너스 없음). **규칙 2**(기록된 미션만) = 기본 + 첫 시도 +50 / 두 번째 +25. **규칙 1**(기록 없는 미션 = TYPE B 이전 세이브) = 기본 + 노힌트 +50(1개 +25) + 스피드 +20. 기존 XP 소급 변경 금지. 표시: Discovery(작게), 지도 메뉴, Case Closed. **XP로 열리는 것은 없음**. 사건별 저장 하나뿐이라 재플레이는 누적되지 않음
 - **Hint**: 미션당 최대 2개(약 → 직접), **무료**("Tips are free. Good detectives use them."). 오답 횟수 무제한·감점 없음 → 아이 혼자 진행 가능
 - **Badge** (`GameBadge`, 저장은 이름 문자열 — id 변경·삭제 금지): 진행 배지 4개(First Clue, Puzzle Solver, London Explorer, Master Detective) + **탐정 행동 배지 3개**(아래) + Case Badge 6개(02 Clock Watcher, 03 Evidence Hunter, 04 Letter Reader, 05 Code Breaker, 07 Map Master, 12 London Legend), 사건마다 수여. **Sharp Eyes·Quick Thinker는 retired**: 신규 지급 없음, 이미 받은 세이브에서만 표시(`GameBadge.shownFor`), 설명은 "이전 버전에서 …받은 배지". 행동 배지(XP 없음, 사건당 1회): **Second Look** = 오답 후 · 해결 전에 편지 다시 읽기(Letter) 또는 수첩/Archive/Final 수첩의 증거 열기 → 같은 미션 정답 / **Notebook Explorer** = 사건 해결 중 수첩·Case Archive·Final 수첩에서 증거 1개 이상 자세히 보기(진입만으로는 아님) / **Word Collector** = 이번 실행에서 서로 다른 단어 3개 뜻 보기. 기록은 `GameProgress.behavior`(`BehaviorLog`); 키가 없는 옛 세이브는 기록 없음 → 그 실행에서는 행동 배지 없음(추정 소급 금지), Play again부터 기록. Discovery에 "New badge:" 한 줄
-- **Learning design** (`season1_learning.dart` + `models/learning.dart`): 50개 미션 전부 학습 설계(dependency essential 41 / helpful 6 / low 3 (Season 1 전체 개선 후), level, objective, expressions, recallFrom) + 사건별 언어 주제. **콘텐츠이며 저장되지 않고 성취가 아님**. Case JSON은 건드리지 않는 별도 매핑. 규칙은 `learning_objectives_test`가 강제(표현이 실제 콘텐츠에 있음, essential만 exposure 초과 수준)
+- **Learning design** (`season1_learning.dart` + `models/learning.dart`): 50개 미션 전부 학습 설계(dependency essential 42 / helpful 5 / low 3 (Season 1 전체 개선 + Wave 1 03-M1 탐색 후), level, objective, expressions, recallFrom) + 사건별 언어 주제. **콘텐츠이며 저장되지 않고 성취가 아님**. Case JSON은 건드리지 않는 별도 매핑. 규칙은 `learning_objectives_test`가 강제(표현이 실제 콘텐츠에 있음, essential만 exposure 초과 수준)
 - **Evidence/Clue**: 미션 데이터, `completedMissionIds`에서 파생. 노트북 확대(`showEvidenceZoom`: 이름·장소·설명·글귀)
 - **Notebook**: THIS CASE(CLUES / EVIDENCE / BADGES) + CASE ARCHIVE(12 사건 폴더, SOLVED 사건은 전체 Evidence·Clue; **Operator Mode면 열린 사건 외 전부 `REFERENCE`로 전체 공개 — 기록 없음**). 증거 상세·단서 메모의 영어는 **원래 사건 glossary**로 단어 뜻 보기(`GlossaryText(episode:)`, `caseOfEvidence`/`caseOfClue`). 경로: 미션 앱바 노트북 / Final `OPEN MY NOTEBOOK` → `OPEN THE CASE ARCHIVE`(이전 해결 사건이 있을 때). 이전 사건 Evidence 글귀까지 Final에서 4탭
 - **Play Time**: foreground 활성 시간만(`playMillis`), Story Intro 종료부터 Final 해결까지
@@ -345,6 +345,9 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-14 — **Wave 1.2: Case 03-M1 화면 마감**(레이아웃만): 탐색은 장면의 `opening` 영역(문·벤치·빈 액자)이 화면 너비를 채우는 배율로 시작(세로 폰 약 1.17배, 세 장소 모두 화면 안 — 테스트), 핀치로 1배(방 전체)까지, 더블 탭은 여는 화면 ↔ 2.5배. 그림의 인쇄 종이 테두리는 `inside`로 잘라냄. 그림 위아래 빈 남색 → 같은 방의 흐리고 어두운 배경(`PlaceScenery`). 발견 카드: 최대 320dp, 좌우 24dp 이상, 기울임 없음, 카드 안에서 스크롤. 도착 화면: 상황 문장 17pt·간격 축소, 보고서 17pt(`LetterCard.textSize`, 기본 19 불변) → 360×640에서 보고서 전체가 한 화면, 제목 "GALLERY 8" 줄바꿈 방지(no-break space, ep03 해시 2곳). 에뮬레이터(Android 14, 411dp)에서 확인
+- 2026-10-14 — **Wave 1.1: Case 03-M1 탐색 UX**(사용자 요청, 신규 이미지 없음): INVESTIGATE → 어두운 Gallery 8 위 도착 연출(상황 2줄 페이드 → 보고서가 아래에서 올라옴, 약 1.4s, 탭 = 즉시 완성, 시작 버튼 하단 고정, 다시 오면 즉시). 탐색 화면 재구성: 상단 GALLERY 8 + FOUND n / 3, 중앙 확대·이동(InteractiveViewer, 1~4배, 더블 탭 2.5배 ↔ 원래, 드래그·핀치는 조사 아님), 하단 목표 / **Tap the picture to investigate!** / Pinch 안내 + Report·Tip. 첫 진입 터치 안내(빈 바닥, 1.8s, 첫 터치에 사라짐, 페이지 안에서 반복 없음, 모션 줄이기 시 생략). 보고서는 시트(체크·단어 뜻·열린 Tip). 발견 카드(물건 그림·이름·문장, XP/코인 없음, 탭으로 닫기). 마지막 카드 후 `submitAnswer(c)` 1회; 카드가 열린 채 뒤로 가도 복귀 시 1회 완료. 보고서 첫 줄 "I noticed three things in the gallery." → ep03 해시 2곳 갱신. 저장·클라우드·정답·보상 불변
+- 2026-10-14 — **Wave 1: Case 03-M1 현장 탐색**(사용자 요청, 이미지 4장 사용자 제공): Gallery 8을 직접 조사해 under the bench / on the frame / next to the door의 세 물건을 찾는다. 봉투·객관식 단계 대체(장소 → 보고서(봉투 없음) → 탐색). 마지막 발견이 기존 정답 `c`를 `submitAnswer`로 제출 → **미션 ID·정답·Clue·Evidence·XP·코인·저장·클라우드 규칙 불변**, 탐색 중간 상태는 저장하지 않음(재진입 시 처음부터). 공용: `models/investigation.dart`, `season1_investigations.dart`(미션 → 장면 매핑), `widgets/investigation_search.dart`. 데이터 변경: 03-M1 Tip 2(위치 표현), Discovery(EVIDENCE FOUND·fromPuzzle·Red Button 카드), 학습 설계(essential·application), Artwork.gallery → `british_museum_gallery_8.png`, Red Button 증거 그림 `objects/red_button.png`. 기대값 갱신: ep03 해시 2곳·분포 3곳·그림 경로 2곳·Discovery 목록 1곳
 - 2026-10-12 — **Phase 4 P1-3·P1-4**(승인): 12-M2 after, 12-F whose, 11-M3 never sleeps. 정답 불변. 기대값 갱신은 `type_b_cases_test` 2단정(새 문구)·ep11/12 해시만. Tests 889 → 904
 - 2026-10-12 — **Phase 4 P1-1·P1-2**(승인): Notebook 단어 뜻 보기(원래 사건 glossary), Operator Mode Archive 참고 공개, 부모 보고서 단어 뜻 대체 조회. 기존 테스트 7개 파일의 텍스트 찾기를 `findReadable`로(기대 문구 불변). Tests 878 → 889. P1-3·P1-4 제안만
 - 2026-10-12 — **TYPE B Phase 3B (Case 09~11)**(승인): 피드백·Hint, 10-M3 Tower of London, 11-M3 이름 숨김, 화면 읽기 대체 텍스트(코드: `ChoiceOption.altText`, 그림 타일 라벨), 학습 설계 41/6/3. 보호 테스트 기대값 변경 없음; 해시·화면 읽기 라벨·예시 미션 갱신. Tests 865 → 878

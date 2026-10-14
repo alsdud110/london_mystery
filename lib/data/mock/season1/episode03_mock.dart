@@ -40,8 +40,10 @@ const Map<String, dynamic> episode03Json = {
       ],
       'letterIntro': 'The museum guard shows you his report.',
       'letter':
-          'GUARD REPORT — GALLERY 8\n\n'
-          'I found three things on the floor.\n'
+          // A no-break space: "GALLERY 8" stays on one line.
+          'GUARD REPORT — GALLERY 8\n\n'
+          // Not all on the floor: the cloth is on the frame.
+          'I noticed three things in the gallery.\n'
           'The button is red. It is under the bench.\n'
           'The cloth is blue. It is on the frame.\n'
           'The footprint is wet. It is next to the door.',
@@ -54,9 +56,11 @@ const Map<String, dynamic> episode03Json = {
         {'id': 'd', 'label': 'The golden frame', 'feedback': "The frame is where the cloth was. Read the line that ends with 'the door'."},
       ],
       'answer': 'c',
+      // The mission is played as a search of Gallery 8 (see
+      // `season1_investigations.dart`): the tips read the place words.
       'hints': [
         'Every line of the report says what a thing is like, and where it is.',
-        "Each line names a thing first. Then 'It is...' tells where that thing is. Find 'next to the door' and read which thing that line names.",
+        "'Under the bench' is below it, on the floor. 'On the frame' is touching the frame. 'Next to the door' is just beside the door.",
       ],
       'clue': {
         'id': 'ep03_c1',

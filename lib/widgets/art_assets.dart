@@ -193,6 +193,7 @@ abstract final class ArtAssets {
     'e01': '${_art}objects/letter.png', // Old Letter
     'e02': '${_art}objects/key.png', // Golden Key
     'e06': '${_art}objects/crown.png', // The Missing Crown
+    'ep03_e1': '${_art}objects/red_button.png', // Red Button (Case 03, again in Case 08)
     'ep04_e1': ravenMark, // Black Wax Seal: a raven pressed into the wax
     'ep05_e3': '${_art}objects/key.png', // Brass Key
     'ep10_e3': '${_art}objects/letter.png', // Ravenmaster's Letter
@@ -224,8 +225,10 @@ abstract final class ArtAssets {
     Artwork.courtyard: '$_scenes/buckingham_palace/buckingham_palace_palace_courtyard.png',
     Artwork.dressingRoom: '$_scenes/covent_garden/covent_garden_dressing_room.png',
     Artwork.waitingRoom: '$_scenes/kings_cross/kings_cross_waiting_hall.png',
-    // Gallery 8 (Case 03) and the theatre's auditorium (Case 11).
-    Artwork.gallery: '$_scenes/british_museum/british_museum_gallery.png',
+    // Gallery 8 (Case 03): the room as the theft left it — the empty gold
+    // frame, the bench, the door (its M1 is searched in this picture: see
+    // `season1_investigations.dart`). And the theatre's auditorium (Case 11).
+    Artwork.gallery: '$_scenes/british_museum/british_museum_gallery_8.png',
     Artwork.auditorium: '$_scenes/covent_garden/covent_garden_theatre.png',
     // The theatre's door at night (Case 06; the file keeps its delivered name).
     Artwork.theatreDoor: '$_scenes/covent_garden/theatre_door_dark.png',

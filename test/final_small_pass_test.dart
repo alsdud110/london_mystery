@@ -384,7 +384,10 @@ const _otherCases = <String, int>{
   'ep01': 3818454493,
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
   'ep02': 1070329097,
-  'ep03': 2903481512,
+  // Wave 1 (2026-10-14): 03-M1 tip 2 (the search of Gallery 8); Wave 1.1:
+  // its report's first line (three things in the gallery, not on the floor);
+  // Wave 1.2: a no-break space in its title ('GALLERY 8').
+  'ep03': 4102152038,
   // Audit fix D3 (2026-10-12): the postmark keeps only its picture.
   'ep04': 1168042718,
   // Audit fix D2 (2026-10-12): 05-M3 shows the warning on the wall.

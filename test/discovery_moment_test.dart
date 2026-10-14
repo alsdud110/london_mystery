@@ -74,7 +74,7 @@ void main() {
         }
       }
       // Evidence the detective held before the puzzle is never laid out as new.
-      for (final id in ['m01', 'm02', 'm04', 'ep02_m1', 'ep02_m3', 'ep03_m1', 'ep03_m2', 'ep04_m1', 'ep04_m2', 'ep04_m3',
+      for (final id in ['m01', 'm02', 'm04', 'ep02_m1', 'ep02_m3', 'ep03_m2', 'ep04_m1', 'ep04_m2', 'ep04_m3',
           'ep05_m1', 'ep05_m2', 'ep06_m1', 'ep06_m2', 'ep08_m1', 'ep08_m2', 'ep10_m2', 'ep11_m1', 'ep11_m2', 'ep12_m2']) {
         expect(discoveryOf(mission(id)).showEvidence, isFalse, reason: id);
       }

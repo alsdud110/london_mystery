@@ -120,7 +120,11 @@ void main() {
         // lines, option a feedback, 2 tips). See test/case01_m4_scope_test.dart.
         'ep01': 3676363318,
         'ep02': 828099214,
-        'ep03': 3051645969,
+        // Wave 1 (2026-10-14): 03-M1 is searched; its tip 2 reads the place
+        // words. Wave 1.1: the report says 'I noticed three things in the
+        // gallery' (not all on the floor). Wave 1.2: 'GALLERY 8' in its title
+        // never breaks (a no-break space). See test/case03_investigation_test.dart.
+        'ep03': 2931193291,
         'ep04': 2214622234,
         'ep05': 2839864243,
         'ep06': 2037077153,

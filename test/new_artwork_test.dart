@@ -31,7 +31,7 @@ void main() {
   Mission mission(String id) => catalog.expand((e) => e.allMissions).firstWhere((m) => m.id == id);
   String? fileOf(String id) => ArtAssets.scene(PlaceArt.sceneOf(mission(id)));
 
-  const gallery = 'assets/art/scenes/british_museum/british_museum_gallery.png';
+  const gallery = 'assets/art/scenes/british_museum/british_museum_gallery_8.png';
   const theatre = 'assets/art/scenes/covent_garden/covent_garden_theatre.png';
   const blackSuitcase = 'assets/art/objects/suitcase_black.png';
   const brownSuitcase = 'assets/art/objects/suitcase.png';

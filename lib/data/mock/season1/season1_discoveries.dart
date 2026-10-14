@@ -90,15 +90,16 @@ const Map<String, Discovery> season1Discoveries = {
   ),
 
   // ── Case 03 — The Vanishing Painting ────────────────────────────────
-  // The guard's report named all three things before the puzzle: the
-  // footprint is confirmed, the button noted; both are picked up in the
-  // scene after.
+  // Gallery 8 is searched (see `season1_investigations.dart`): the report
+  // only said where to look; the detective found the button, the cloth and
+  // the footprint. The button is the evidence put in their hands; the
+  // footprint's door is the clue.
   'ep03_m1': Discovery(
-    type: DiscoveryType.clueConfirmed,
-    timing: DiscoveryTiming.beforePuzzle,
-    title: 'A WET FOOTPRINT',
-    detail: 'It is next to the door: the way the thief went out.',
-    note: 'A red button from a coat was under the bench.',
+    type: DiscoveryType.evidenceFound,
+    timing: DiscoveryTiming.fromPuzzle,
+    title: 'A RED BUTTON',
+    detail: 'And by the door, a wet footprint: the way the thief went out.',
+    showEvidence: true,
   ),
   'ep03_m2': Discovery(
     type: DiscoveryType.deduction,

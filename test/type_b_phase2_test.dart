@@ -90,15 +90,17 @@ void main() {
     });
   });
 
-  test('learning design: Case 04 M2 and M3 now need the English; 03-M1 and 04-F stay helpful', () {
-    for (final id in ['ep04_m2', 'ep04_m3']) {
+  // Wave 1 (2026-10-14): 03-M1 is played as a search of Gallery 8, its place
+  // words acted on: essential (was helpful).
+  test('learning design: Case 04 M2 and M3 now need the English, and the 03-M1 search; 04-F stays helpful', () {
+    for (final id in ['ep04_m2', 'ep04_m3', 'ep03_m1']) {
       expect(learningOf(m(id))!.dependency, LanguageDependency.essential, reason: id);
     }
-    for (final id in ['ep03_m1', 'ep04_final']) {
+    for (final id in ['ep04_final']) {
       expect(learningOf(m(id))!.dependency, LanguageDependency.helpful, reason: id);
     }
     final essential = missions.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential);
-    expect(essential, hasLength(10));
+    expect(essential, hasLength(11));
   });
 
   test('XP rule 4 holds: tips and wrong answers in Case 02-04 change nothing', () async {

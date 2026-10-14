@@ -105,6 +105,8 @@
 | low | 5 | **3** (01-M5 QR, 01-F 기호 — 튜토리얼로 유지, 11-M2 역순 철자) | Exposure |
 | exposure | 0 | 0 | (현재 Season 1에는 이 유형으로 분류할 퍼즐 없음) |
 
+> 현재 값(Season 1 전체 개선 + Wave 1 03-M1 탐색 후): essential **42** / helpful **5** / low **3** (`learning_objectives_test`).
+
 > 감사 축(번역 시 성립 여부)으로는 E3 5 / E2 29 / E0·E1 16이었다. 감사의 E2 대부분(오독 시 오답)이 여기서는 essential이고, 감사의 E1 다수가 helpful이다. 01-M3(대문자 숫자 단어)는 감사 E3 → 여기 essential, 09-M2(알파벳)는 감사 E0 → 여기 helpful(지시문 이해 필요)로, 두 축의 판단이 다르다.
 
 ---

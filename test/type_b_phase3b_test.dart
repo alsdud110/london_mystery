@@ -183,10 +183,11 @@ void main() {
     expect(AnswerChecker.feedbackFor(m('ep11_final'), 'b'), contains('the very start'));
   });
 
-  test('Essential: Case 09-11 has 9 of 12; the season 41 of 50', () {
+  // The season count includes Wave 1's 03-M1 (a search: essential).
+  test('Essential: Case 09-11 has 9 of 12; the season 42 of 50', () {
     final essential = missions.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential);
     expect(essential, hasLength(9));
-    expect(all.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential), hasLength(41));
+    expect(all.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential), hasLength(42));
   });
 
   test('XP rule 4 holds: Case 10 with tips and wrong orders is 3 × 30 + 60', () async {
