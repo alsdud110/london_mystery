@@ -67,7 +67,7 @@ const Map<String, dynamic> episode01Json = {
       'answer': 'b',
       'hints': [
         'Read the letter again. What two things does the next museum have?',
-        'Mummies and a famous stone are not dinosaurs, trains or rockets. They are very old treasures.',
+        'Check the two objects in the letter, then compare them with what each museum displays.',
       ],
       'clue': {
         'id': 'c01',

@@ -114,7 +114,7 @@ const Map<String, dynamic> episode10Json = {
       'orderFeedback': 'Start with Monday. Which day comes after Monday?',
       'hints': [
         'Find the Monday word first.',
-        'The days of the week go: Monday, Tuesday, Wednesday, Thursday. Put each word on its day.',
+        'Put the four day names in order first. Then match each word to the day it arrived.',
       ],
       'clue': {
         'id': 'ep10_c2',
@@ -243,7 +243,7 @@ const Map<String, dynamic> episode10Json = {
       'description': 'Poppy\'s last message.',
       'inscription': 'THE CLOCKMAKER WILL STOP BIG BEN AT MIDNIGHT.',
     },
-    'successMessage': 'You read the warning!',
+    'successMessage': 'The four papers form a warning!',
     // After the case is closed: the post-case story scene (existing facts
     // only — the Shadow is not named: Case 11 unmasks him).
     'transition': [

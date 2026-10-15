@@ -127,7 +127,7 @@ const Map<String, dynamic> episode09Json = {
         'description': 'From the hook of the new helper.',
         'inscription': 'A _ _ A — a raven is drawn on the back.',
       },
-      'successMessage': 'The new helper is Anna!',
+      'successMessage': 'The name on the torn tag is Anna!',
       'transition': [
         'Anna is not in the staff room.',
         'The guard says: "The guards change in the courtyard."',
@@ -222,7 +222,7 @@ const Map<String, dynamic> episode09Json = {
     'prompt': 'IN THE ___',
     'answer': 'HAT',
     'feedback': {
-      'UMBRELLA': "This is Anna's thing. The note says the one WHOSE key you used: was it Anna's key?",
+      'UMBRELLA': "Check who owned the key, not just who borrowed it. Does that point to Anna?",
       'RED UMBRELLA': "Anna's thing is red. But the note says the one WHOSE key you used: was it Anna's key?",
       'BAG': "The green bag is Ben's. Did Ben's key open the jewel case?",
       'GREEN BAG': "This is Ben's bag. Whose key opened the jewel case?",

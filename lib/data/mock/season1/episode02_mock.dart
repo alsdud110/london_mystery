@@ -235,13 +235,13 @@ const Map<String, dynamic> episode02Json = {
     // shown as a time before this lock.
     'answer': '917',
     'feedback': {
-      '817': 'That is when the clock stopped. The plan says ONE HOUR AFTER.',
+      '817': 'That is the time the clock stopped. Check how much later the plan says the picture will be taken.',
       '717': 'One hour AFTER, not before. Does the hour go up or down?',
       '818': 'In one hour, the hour hand moves. Do the minutes change?',
     },
     'hints': [
       'You need two clues: the time the clock stopped, and when the plan says the thief takes the picture.',
-      "'One hour after' means the hour goes up by one. The minutes do not change.",
+      "Read the Time Card carefully. Work out how the hour changes, and check whether the minutes change.",
     ],
     'evidence': {
       'id': 'ep02_e4',

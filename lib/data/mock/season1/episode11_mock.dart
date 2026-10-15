@@ -67,9 +67,9 @@ const Map<String, dynamic> episode11Json = {
         'description': 'Two stories agree. One does not.',
         'inscription': 'White mask · long black cloak · a train whistle',
       },
-      'successMessage': 'The child saw a different person!',
+      'successMessage': 'The child described someone who looked different!',
       'transition': [
-        'The child was looking at an actor in a costume, not the stranger.',
+        'The child points towards the stage. An actor in a gold mask and green cloak is there.',
         'Behind the stage, you find a white mask on a chair.',
         'Something is written inside it.',
       ],

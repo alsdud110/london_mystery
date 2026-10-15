@@ -16,7 +16,10 @@ const Map<String, dynamic> episode06Json = {
     'Everyone tells a different story about him.',
     'Compare what they saw, and find out who he is.',
   ],
-  'objectives': ['Compare what the witnesses saw.', 'Find out who the stranger is.'],
+  'objectives': [
+    'Compare what the witnesses saw.',
+    'Find out who the stranger is.',
+  ],
   // The place the intro opens on (its picture behind the story lines).
   'introScene': 'coventGarden',
   'intro': [
@@ -48,10 +51,23 @@ const Map<String, dynamic> episode06Json = {
       'type': 'multipleChoice',
       'question': 'Two witnesses agree. What did the stranger carry?',
       'options': [
-        {'id': 'a', 'label': 'A big red umbrella', 'feedback': 'Only the baker saw an umbrella. Which thing do TWO witnesses agree on?'},
+        {
+          'id': 'a',
+          'label': 'A big red umbrella',
+          'feedback': 'Only the baker saw an umbrella. Which thing do TWO witnesses agree on?',
+        },
         {'id': 'b', 'label': 'A small bag'},
-        {'id': 'c', 'label': 'A bunch of flowers', 'feedback': 'The flower seller sells flowers. Did any witness say he carried flowers?'},
-        {'id': 'd', 'label': 'A grey hat', 'feedback': 'A hat is worn on the head, not carried. What did he hold?'},
+        {
+          'id': 'c',
+          'label': 'A bunch of flowers',
+          'feedback': 'The flower seller sells flowers. Did any witness say he carried flowers?',
+        },
+        {
+          'id': 'd',
+          'label': 'A grey hat',
+          'feedback':
+              'A hat is worn on the head, not carried. What did he hold?',
+        },
       ],
       'answer': 'b',
       'hints': [
@@ -74,7 +90,7 @@ const Map<String, dynamic> episode06Json = {
       },
       'successMessage': 'He carried a small bag!',
       'transition': [
-        'At midnight, you see him — a dark coat, a grey hat, a small bag!',
+        'At midnight, you see a figure in a dark coat carrying a small bag.',
         'He walks to the fountain... and drops a small card.',
         'Then he is gone.',
       ],
@@ -161,17 +177,21 @@ const Map<String, dynamic> episode06Json = {
           'A short woman. A dark coat.\n'
           'A red hat. A big bag.',
       'type': 'numberCode',
-      'question': 'Compare Monday and Tuesday. How many things are different?',
+      'question':
+          'Compare the five details: height, person, coat, hat, and bag. '
+          'How many are different?',
       'codeLength': 1,
       'answer': '4',
       'feedback': {
-        '3': 'Check every part: tall or short, man or woman, the hat, the bag.',
-        '5': 'The coat is the same on both days: a dark coat. Count only what changes.',
-        '6': 'Read again: some parts are the same on both days.',
+        '3': 'You may have missed a difference. Check all five details again.',
+        '5': 'Look again. Are all five details really different?',
+        '6': 'There are only five details to compare. Try counting again.',
       },
       'hints': [
-        'Check every part, one by one: tall or short? man or woman? the coat? the hat? the bag?',
-        'The coat is the same on both days. Count only the parts that change.',
+        'Compare the details one by one. '
+            'Is each one the same or different?',
+        'Make two groups: SAME and DIFFERENT. '
+            'Count only the DIFFERENT details.',
       ],
       'clue': {
         'id': 'ep06_c3',
@@ -187,12 +207,12 @@ const Map<String, dynamic> episode06Json = {
         'description': 'Dropped by the woman in the red hat.',
         'inscription': 'ROW R · SEAT 17',
       },
-      'successMessage': 'Four things are different. There are two dark coats!',
+      'successMessage': 'Four details differ. The coats match, but the people do not!',
       'transition': [
         // Where the ticket comes from: the guard hands it over.
         'The guard gives you a theatre ticket. "The woman in the red hat dropped it."',
-        'Row R, seat 17. R for Raven. 17, like 8:17.',
-        'The woman in the red hat is with the Raven Society!',
+        'Row R, seat 17. The letter R and the number 17 seem familiar.',
+        'The ticket might connect the woman in the red hat to the Raven Society.',
         // Who the man is, is the final's question: the scene only asks it
         // (not by his hat: "grey" would hand over the name).
         'But who is the tall man?',
@@ -228,10 +248,22 @@ const Map<String, dynamic> episode06Json = {
     'type': 'multipleChoice',
     'question': 'Who is the man by the fountain?',
     'options': [
-      {'id': 'a', 'label': 'A Raven Society thief', 'feedback': 'The Raven Society person was the short woman with a big bag. Is this man short?'},
-      {'id': 'b', 'label': 'The theatre guard', 'feedback': 'The theatre guard was writing in his notebook at the theatre door. Did he drop anything by the fountain?'},
+      {
+        'id': 'a',
+        'label': 'A Raven Society thief',
+        'feedback': 'Compare the person by the fountain with the two people in the theatre guard’s notes. Which details match?',
+      },
+      {
+        'id': 'b',
+        'label': 'The theatre guard',
+        'feedback': 'The theatre guard was writing in his notebook at the theatre door. Did he drop anything by the fountain?',
+      },
       {'id': 'c', 'label': 'Inspector Grey'},
-      {'id': 'd', 'label': 'The juggler', 'feedback': 'The juggler was a witness: he saw the stranger. Is he the stranger?'},
+      {
+        'id': 'd',
+        'label': 'The juggler',
+        'feedback': 'The juggler was a witness: he saw the stranger. Is he the stranger?',
+      },
     ],
     'answer': 'c',
     'hints': [
@@ -245,7 +277,7 @@ const Map<String, dynamic> episode06Json = {
       'description': 'A gift from Inspector Grey.',
       'inscription': '"Blow it if you need help."',
     },
-    'successMessage': 'The Midnight Detective is a friend!',
+    'successMessage': 'You identified the man by the fountain!',
     // After the case is closed: the post-case story scene (existing facts only).
     'transition': [
       'Inspector Grey is on your side.',

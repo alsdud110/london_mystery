@@ -129,7 +129,7 @@ const Map<String, dynamic> episode05Json = {
         'left,left,left,left': "'The other way' is not the same way. What is the opposite of left?",
         'left,right,right,left': "Check turn 3: 'the same way as the first time'. What was turn 1?",
       },
-      'orderFeedback': 'Two lefts and two rights, yes! But the order is not right. Read the note one line at a time.',
+      'orderFeedback': 'You have the right number of left and right turns, but check their order against the four lines.',
       'clue': {
         'id': 'ep05_c2',
         'title': 'Four Gears',
@@ -142,7 +142,7 @@ const Map<String, dynamic> episode05Json = {
         'name': 'Direction Note',
         'icon': 'letter',
         'description': 'Carved into the door.',
-        'inscription': 'LEFT · RIGHT · LEFT · RIGHT',
+        'inscription': 'Four turns are described on the door; follow them in order.',
       },
       'successMessage': 'Click, clack! The door opens.',
       'transition': [

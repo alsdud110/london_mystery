@@ -70,7 +70,7 @@ const Map<String, dynamic> episode07Json = {
         'description': 'Found beside the bench.',
         'inscription': 'It shows a river and a small raven.',
       },
-      'successMessage': 'The map piece was beside the bench!',
+      'successMessage': 'The directions led you to the map piece beside the bench!',
       'transition': [
         'Beside the bench, you find a map piece in the grass.',
         'The keeper looks worried.',
@@ -227,7 +227,7 @@ const Map<String, dynamic> episode07Json = {
     ],
     'answer': 'b',
     'hints': [
-      'Inspector Grey tells you which way to turn, but not where to stop.',
+      'Use both clues: Inspector Grey’s directions and the arrow on your joined map.',
       'Open your notebook and look closer at the joined map. Where does its arrow point?',
     ],
     'evidence': {

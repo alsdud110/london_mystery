@@ -113,7 +113,7 @@ const Map<String, dynamic> episode04Json = {
       'answer': 'b',
       'hints': [
         'Your card has four words. Check each platform against all four.',
-        "FOUR is a platform number. Read every line to the end: 'a red door, but no clock' has no clock.",
+        'Match the colour, object and platform number together. A red door is not the same as a red clock.',
       ],
       'clue': {
         'id': 'ep04_c2',
@@ -243,7 +243,7 @@ const Map<String, dynamic> episode04Json = {
       'description': 'Signed by the Raven Society.',
       'inscription': 'We are the Raven Society. We are watching.',
     },
-    'successMessage': 'The Raven Society!',
+    'successMessage': 'The secret name is the Raven Society!',
     // After the case is closed: the post-case story scene (existing facts only).
     'transition': [
       'The message is finally clear.',

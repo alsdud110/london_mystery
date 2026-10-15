@@ -130,7 +130,7 @@ const Map<String, dynamic> episode03Json = {
         'description': 'Torn from a blue scarf.',
         'inscription': 'A small raven is sewn on it.',
       },
-      'successMessage': 'Miss Rose is the thief!',
+      'successMessage': 'The red coat and blue scarf point to Miss Rose!',
       'transition': [
         'Miss Rose is not in the museum any more.',
         'But her wet footprints go across the Great Court.',
@@ -175,7 +175,7 @@ const Map<String, dynamic> episode03Json = {
       'orderFeedback': 'Some steps are in the right place. Put them from very wet to almost dry.',
       'hints': [
         'Each line says how wet one footprint was. Find the wettest and the driest.',
-        'Wet shoes get drier with every step: very wet, then wet, then a little wet, then almost dry.',
+        'Start with the wettest print and compare each next print. Which mark would come last?',
       ],
       'clue': {
         'id': 'ep03_c3',

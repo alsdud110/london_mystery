@@ -232,7 +232,7 @@ const Map<String, dynamic> episode12Json = {
     // goes where, in a different order from tonight's (8, 4, 7).
     'answer': '487',
     'hints': [
-      'Each lock asks a question. Tonight\'s three clues answer them.',
+      'Each lock asks for a different number. Find the three sources in your notebook and match them to the locks.',
       "'The platform whose clock is small and red' means the platform that has the small red clock.",
     ],
     'orderFeedback': 'You put the numbers in the order you found them tonight. Read the door: which lock comes first?',
@@ -243,7 +243,7 @@ const Map<String, dynamic> episode12Json = {
       'description': 'Left on his empty desk.',
       'inscription': 'Still ticking. On the back: PARIS.',
     },
-    'successMessage': 'London is safe at midnight!',
+    'successMessage': 'The final locks open before the last bell!',
     // After the case is closed: the season's ending scene (existing facts
     // only — who the Clockmaker is stays untold; the watch is the Season 2 hook).
     'transition': [

@@ -243,10 +243,10 @@ const Map<String, dynamic> episode08Json = {
       'description': 'At the bottom of the suitcase.',
       'inscription': 'BUCKINGHAM PALACE — it is empty.',
     },
-    'successMessage': 'Mrs Robin cannot say no!',
+    'successMessage': 'The red button connects Mrs Robin to Gallery 8!',
     // After the case is closed: the post-case story scene (existing facts only).
     'transition': [
-      'Mrs Robin cannot say no.',
+      'You show Mrs Robin the red button from Gallery 8.',
       // Confirmation of what the detective proved, not a new deduction.
       'The button fits the empty place\non her long red coat.',
       'You were right.\nMiss Rose was Mrs Robin all along.',
