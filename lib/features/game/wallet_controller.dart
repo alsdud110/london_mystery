@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -78,6 +80,15 @@ class WalletController extends Notifier<Wallet> {
       }
     }
     return wallet;
+  }
+
+  /// The saves changed under the game (a cloud merge): the coins are read
+  /// again. Returns whether they differed.
+  bool reloadFromSaves() {
+    final saved = ref.read(progressRepositoryProvider).loadWallet();
+    if (saved == null || jsonEncode(saved.toJson()) == jsonEncode(state.toJson())) return false;
+    state = saved;
+    return true;
   }
 
   void _set(Wallet next) {

@@ -1,8 +1,9 @@
-import 'dart:convert';
 
+import '../models/game_progress.dart';
 import '../models/season_progress.dart';
 import '../models/wallet.dart';
 import '../repositories/progress_repository.dart';
+import 'case_conflicts.dart';
 import 'merge.dart';
 
 /// Brings saves from another copy of the same profile (later: the cloud)
@@ -32,19 +33,27 @@ class SyncApplier {
     return true;
   }
 
-  MergeOutcome applyCase(String episodeId, CaseSnapshot remote) {
+  /// [remotePreserved]: a run of the other side that already lost to ours
+  /// (in the sender's transaction), to be kept here too.
+  MergeOutcome applyCase(String episodeId, CaseSnapshot remote, {GameProgress? remotePreserved, String? remoteReason}) {
     if (!_catchUp(remote.epoch)) return MergeOutcome.keptLocal;
     final local = CaseSnapshot(epoch: repo.epoch, progress: repo.load(episodeId));
     final m = mergeCase(local, remote);
+    final now = DateTime.now();
     repo.transaction(() {
+      void keep(GameProgress p, FileSide side, String reason) => repo.keepConflict(CaseConflicts.caseRecord(
+            caseId: episodeId,
+            run: p,
+            side: side,
+            epoch: repo.epoch,
+            reason: reason,
+            at: now,
+          ));
       if (m.preserved case final p?) {
-        repo.keepConflict({
-          'id': 'case:$episodeId:${p.runId}:${p.runSeq}:${p.rev}',
-          'kind': 'case',
-          'subject': episodeId,
-          'reason': m.reason,
-          'kept': p.toJson(),
-        });
+        keep(p, identical(p, local.progress) ? FileSide.device : FileSide.account, m.reason);
+      }
+      if (remotePreserved != null && !isBlankRun(remotePreserved)) {
+        keep(remotePreserved, FileSide.account, remoteReason ?? CaseConflicts.reasonSameNumber);
       }
       // Ours unchanged (same, kept, or a conflict we win): nothing to store;
       // our own changes are already queued. Theirs taken: stored, not sent
@@ -52,6 +61,7 @@ class SyncApplier {
       if (!identical(m.merged, local.progress)) {
         repo.saveMerged(episodeId: episodeId, progress: m.merged, queue: m.outcome == MergeOutcome.combined);
       }
+      CaseConflicts.settle(repo, episodeId, now: now);
     });
     return m.outcome;
   }
@@ -86,11 +96,16 @@ class SyncApplier {
           'reason': 'same key, different amount',
           'local': c.local.toJson(),
           'remote': c.remote.toJson(),
+          // Shown and kept only: no balance is changed for it (Phase 4.5).
+          'v': 2,
+          'epoch': repo.epoch,
+          'at': DateTime.now().toUtc().toIso8601String(),
+          'status': 'open',
         });
       }
       // Entries only the other side had are stored; they came from there,
       // so they are not queued back. Ours that it lacks stay queued.
-      if (jsonEncode(m.merged.toJson()) != jsonEncode(local.toJson())) {
+      if (canonicalJson(m.merged.toJson()) != canonicalJson(local.toJson())) {
         repo.saveMerged(wallet: m.merged, queue: false);
       }
     });

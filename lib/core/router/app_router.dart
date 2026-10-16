@@ -23,6 +23,7 @@ import '../../features/result/case_solved_screen.dart';
 import '../../features/result/parent_report_screen.dart';
 import '../../features/season/season_prologue_screen.dart';
 import '../../features/season/season_screen.dart';
+import '../../features/sync/ui/case_files_screen.dart';
 import '../../widgets/back_to.dart';
 
 abstract final class Routes {
@@ -57,6 +58,9 @@ abstract final class Routes {
 
   /// Case Files with one case chosen and its folder open ("OPEN CASE 03").
   static String caseFile(String episodeId) => '$episodes?case=$episodeId';
+
+  /// Two case files of a case, to choose the one to keep playing (Phase 4.5).
+  static String caseFiles(String episodeId) => '/case-files/$episodeId';
 }
 
 CustomTransitionPage<void> _fade(GoRouterState state, Widget child) => CustomTransitionPage<void>(
@@ -164,6 +168,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         // The case files sit under the season: back goes up to it.
         pageBuilder: (c, s) =>
             _fade(s, _backTo(c, Routes.season, EpisodeSelectScreen(focusCase: s.uri.queryParameters['case']))),
+      ),
+      GoRoute(
+        path: '/case-files/:id',
+        pageBuilder: (c, s) {
+          final id = s.pathParameters['id']!;
+          return _fade(s, _backTo(c, Routes.caseFile(id), CaseFilesScreen(caseId: id)));
+        },
       ),
       GoRoute(path: Routes.intro, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.episodes, const StoryIntroScreen()))),
       GoRoute(path: Routes.map, pageBuilder: (c, s) => _fade(s, const MissionMapScreen())),

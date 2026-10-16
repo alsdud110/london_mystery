@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +38,10 @@ DetectiveProfile sessionProfile(Ref ref) {
   return ref.read(profileStoreProvider).profile(session.profileId) ?? session.profile;
 }
 
+/// Told whenever a save queued a change for the cloud sync (the device's
+/// sync scheduler, given by `main()`; nothing without it).
+final syncSaveSignalProvider = Provider<void Function()?>((ref) => null);
+
 /// The session profile's saves.
 final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
   final session = ref.watch(profileSessionProvider);
@@ -43,6 +49,7 @@ final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
     ref.watch(sharedPreferencesProvider),
     profileId: session.profileId,
     legacyFallback: session.legacyFallback,
+    onQueued: ref.watch(syncSaveSignalProvider),
   );
 });
 
@@ -74,7 +81,10 @@ final seasonInfoProvider = Provider<Season>((ref) => Season.fromJson(season1Info
 /// Which case file is open and which cases are solved. Persisted.
 class SeasonNotifier extends Notifier<SeasonProgress> {
   @override
-  SeasonProgress build() {
+  SeasonProgress build() => _fromSaves();
+
+  /// The season as saved (with the fix-ups of older saves).
+  SeasonProgress _fromSaves() {
     final repo = ref.read(progressRepositoryProvider);
     var season = repo.loadSeason();
     // Saves from before the season existed: a solved Episode 01 still opens Case 02.
@@ -91,6 +101,15 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
   void _set(SeasonProgress next) {
     state = next;
     ref.read(progressRepositoryProvider).saveSeason(next);
+  }
+
+  /// The saves changed under the game (a cloud merge): the season is read
+  /// again. Returns whether it differed.
+  bool reloadFromSaves() {
+    final saved = _fromSaves();
+    if (jsonEncode(saved.toJson()) == jsonEncode(state.toJson())) return false;
+    state = saved;
+    return true;
   }
 
   void open(String episodeId) => _set(state.copyWith(activeEpisodeId: episodeId));

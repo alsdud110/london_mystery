@@ -4,7 +4,12 @@
   "description": "Firestore security rules tests (Firestore emulator). Not part of the app.",
   "type": "module",
   "scripts": {
-    "test": "sh scripts/with-jdk21.sh firebase-tools emulators:exec --only firestore --project demo-london-mystery \"mocha --timeout 20000 test/*.test.mjs\""
+    "test": "sh scripts/with-jdk21.sh firebase-tools emulators:exec --only firestore --project demo-london-mystery \"mocha --timeout 20000 test/*.test.mjs\"",
+    "test:sync": "sh scripts/with-jdk21.sh firebase-tools emulators:exec --only firestore --project demo-london-mystery \"cd .. && flutter test --concurrency=1 test/sync_sender_test.dart test/sync_scheduler_test.dart test/sync_restore_test.dart test/case_files_test.dart\"",
+    "test:sync-device": "sh scripts/with-jdk21.sh firebase-tools emulators:exec --only firestore,auth --project london-mystery-dev \"cd .. && flutter test integration_test/sync_adapter_emulator_test.dart --flavor dev ${DEVICE:+-d $DEVICE}\"",
+    "test:sync-app": "sh scripts/with-jdk21.sh firebase-tools emulators:exec --only firestore,auth --project london-mystery-dev \"cd .. && flutter test integration_test/sync_app_e2e_test.dart --flavor dev --dart-define=LM_CLOUD_EMULATOR=${EMULATOR_HOST:-localhost} ${DEVICE:+-d $DEVICE}\"",
+    "test:restore-app": "sh scripts/with-jdk21.sh firebase-tools emulators:exec --only firestore,auth --project london-mystery-dev \"cd .. && flutter test integration_test/sync_restore_e2e_test.dart --flavor dev --dart-define=LM_CLOUD_EMULATOR=${EMULATOR_HOST:-localhost} ${DEVICE:+-d $DEVICE}\"",
+    "test:case-files-app": "sh scripts/with-jdk21.sh firebase-tools emulators:exec --only firestore,auth --project london-mystery-dev \"cd .. && flutter test integration_test/case_files_e2e_test.dart --flavor dev --dart-define=LM_CLOUD_EMULATOR=${EMULATOR_HOST:-localhost} ${DEVICE:+-d $DEVICE}\""
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "6.0.0",

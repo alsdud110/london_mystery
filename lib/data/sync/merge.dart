@@ -69,14 +69,41 @@ bool isBlankRun(GameProgress p) =>
     p.lookedUpWords.isEmpty &&
     p.badgeIds.isEmpty;
 
-String _content(GameProgress p) => jsonEncode(p.copyWith(rev: 0).toJson());
+/// [value] as JSON with every map's keys in sorted order, so two saves that
+/// hold the same data compare equal however their maps were built (a cloud
+/// round trip does not keep key order).
+String canonicalJson(Object? value) {
+  Object? sorted(Object? v) => switch (v) {
+        Map() => {for (final k in (v.keys.map((k) => '$k').toList()..sort())) k: sorted(v[k])},
+        List() => [for (final e in v) sorted(e)],
+        _ => v,
+      };
+  return jsonEncode(sorted(value));
+}
+
+String _content(GameProgress p) => canonicalJson(p.copyWith(rev: 0).toJson());
+
+/// Whether [a] and [b] hold the same play, whichever run they are filed
+/// under (run id, run number, revision and play time aside): keeping one of
+/// them keeps everything the other has.
+bool sameProgress(GameProgress a, GameProgress b) {
+  String play(GameProgress p) {
+    final json = p.toJson()..removeWhere((k, _) => const {'runId', 'runSeq', 'rev', 'playMillis'}.contains(k));
+    return canonicalJson(json);
+  }
+
+  return play(a) == play(b);
+}
 
 /// Merges one case's save.
 ///
 /// 1. Different epochs: the later epoch wins. A losing side with play of its
 ///    own is returned as [CaseMerge.preserved].
-/// 2. Different runs (`runSeq`): the later run wins — Play again started it
-///    on purpose, so the run before it never comes back.
+/// 2. Different runs (`runSeq`): the later run wins — Play again (or a
+///    choice between two case files) started it on purpose, so the run
+///    before it never comes back. The losing run is still returned as
+///    [CaseMerge.preserved] when it holds play the winner does not have, so
+///    a device's unsent play is kept, never silently dropped.
 /// 3. The same run (`runId`): combined. Solved missions, evidence, words and
 ///    badges are kept from both; counts take the larger value; the first
 ///    start and solve times are kept; play time takes the longer.
@@ -84,7 +111,9 @@ String _content(GameProgress p) => jsonEncode(p.copyWith(rev: 0).toJson());
 ///    case, or both played it again from the same run): one side with
 ///    nothing played gives way to the other. Otherwise it is a conflict: the
 ///    side with more solved missions plays on (then the higher revision, then
-///    the longer play, then local), the other is preserved.
+///    the longer play, then the run id, then the save itself), the other is
+///    preserved. Every step compares the two saves only — never which side
+///    is this device or a clock — so every device picks the same winner.
 CaseMerge mergeCase(CaseSnapshot local, CaseSnapshot remote) {
   final l = local.progress;
   final r = remote.progress;
@@ -103,8 +132,10 @@ CaseMerge mergeCase(CaseSnapshot local, CaseSnapshot remote) {
   }
   if (l.runSeq != r.runSeq) {
     final localWins = l.runSeq > r.runSeq;
-    return CaseMerge(localWins ? l : r, localWins ? MergeOutcome.keptLocal : MergeOutcome.tookRemote,
-        reason: 'later run');
+    final winner = localWins ? l : r;
+    final loser = localWins ? r : l;
+    return CaseMerge(winner, localWins ? MergeOutcome.keptLocal : MergeOutcome.tookRemote,
+        preserved: isBlankRun(loser) || sameProgress(loser, winner) ? null : loser, reason: 'later run');
   }
   if (l.runId != null && l.runId == r.runId) return _sameRun(l, r);
   if (isBlankRun(r)) return CaseMerge(l, MergeOutcome.keptLocal, reason: 'other side blank');
@@ -124,10 +155,13 @@ bool _furtherAlong(GameProgress l, GameProgress r) {
     cmp(l.completedMissionIds.length, r.completedMissionIds.length),
     cmp(l.rev, r.rev),
     cmp(l.playMillis ?? 0, r.playMillis ?? 0),
+    // A tie: decided by the saves themselves, the same way on every device.
+    (l.runId ?? '').compareTo(r.runId ?? ''),
+    _content(l).compareTo(_content(r)),
   ]) {
     if (c != 0) return c > 0;
   }
-  return true;
+  return true; // the same save
 }
 
 List<String> _union(List<String> a, List<String> b) => [...a, ...b.where((x) => !a.contains(x))];
@@ -230,7 +264,7 @@ SeasonMerge mergeSeason(SeasonSnapshot local, SeasonSnapshot remote) {
     solvedEpisodeIds: solved,
     playtestEpisodeIds: [for (final id in solved) if (playtestOn(l, id) && playtestOn(r, id)) id],
   );
-  String c(SeasonProgress s) => jsonEncode(s.toJson());
+  String c(SeasonProgress s) => canonicalJson(s.toJson());
   final m = c(merged);
   return SeasonMerge(
     merged,
