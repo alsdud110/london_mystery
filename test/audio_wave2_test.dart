@@ -405,19 +405,21 @@ void main() {
       final m = episode('ep01').finalMission;
       audio.played.clear();
       for (var i = 0; i < m.hints.length; i++) {
-        await tapText(t, 'GET A TIP', after: const Duration(milliseconds: 400));
+        await reveal(t, hintAction(upper: true));
+        await t.tap(hintAction(upper: true));
+        await wait(t, const Duration(milliseconds: 400));
         await takeTipFromSheet(t);
       }
       expect(audio.played, List.filled(m.hints.length, GameSound.pencilNote));
       expect(ref.read(gameControllerProvider).hintsFor(m.id), m.hints.length);
-      expect(find.text('GET A TIP'), findsNothing, reason: 'no tips left to ask for');
+      expect(hintAction(upper: true), findsNothing, reason: 'no hints left to ask for');
     });
 
     testWidgets('the letter read again: the paper, never the envelope', (t) async {
       final audio = MockAudioService();
       await _openFinal(t, audio, season, 'ep01');
       audio.played.clear();
-      await tapText(t, 'Letter', after: const Duration(milliseconds: 600));
+      await tapText(t, 'Reread Letter', after: const Duration(milliseconds: 600));
       expect(audio.played, [GameSound.paperRustle]);
       expect(audio.played, isNot(contains(GameSound.envelopeOpen)));
     });

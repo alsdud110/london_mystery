@@ -36,6 +36,7 @@ class CloudBootstrap extends ValueNotifier<CloudStatus> {
   CloudBootstrap({
     required this.decision,
     Future<FirebaseIdentity> Function()? initialize,
+    this.beforeReady,
     this.timeout = const Duration(seconds: 10),
   })  : _initialize = initialize ?? _initializeFirebase,
         super(decision.allowed ? CloudStatus.starting : CloudStatus.disabled);
@@ -46,6 +47,11 @@ class CloudBootstrap extends ValueNotifier<CloudStatus> {
   final CloudDecision decision;
   final Future<FirebaseIdentity> Function() _initialize;
   final Duration timeout;
+
+  /// Runs after Firebase started with the expected project and before
+  /// anyone sees [CloudStatus.ready] (e.g. pointing Auth and Firestore at the
+  /// local emulators, see `CloudEmulator`). A failure makes it unavailable.
+  final Future<void> Function()? beforeReady;
 
   /// Why it is [CloudStatus.unavailable] (a short code, never secrets).
   String? failure;
@@ -68,6 +74,7 @@ class CloudBootstrap extends ValueNotifier<CloudStatus> {
         _fail('settings do not match ${env.name}');
         return;
       }
+      await beforeReady?.call();
       value = CloudStatus.ready;
       debugPrint('Cloud: ready (${env.name})');
     } on TimeoutException {

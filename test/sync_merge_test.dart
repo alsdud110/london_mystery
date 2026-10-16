@@ -32,7 +32,9 @@ void main() {
         final m = mergeCase(snap(l), snap(r));
         expect(m.merged.runId, 'b');
         expect(m.merged.completedMissionIds, isEmpty, reason: 'the cleared missions stay cleared');
-        expect(m.preserved, isNull, reason: 'replaying was on purpose');
+        // Replaying was on purpose: the run before never plays again. It is
+        // still kept (Phase 4.5): a device may have played it on unsent.
+        expect(m.preserved?.runId, 'a', reason: 'kept, never played again');
         expect(m.reason, 'later run');
       }
     });
@@ -101,6 +103,22 @@ void main() {
         expect(j(mergeCase(snap(once), snap(r)).merged), j(once));
         expect(j(mergeCase(snap(once), snap(once)).merged), j(once));
       }
+    });
+
+    test('the same play with its maps in another key order (a cloud round trip) is the same play', () {
+      Object? reversed(Object? v) => switch (v) {
+            Map() => {for (final k in v.keys.toList().reversed) k: reversed(v[k])},
+            List() => [for (final e in v) reversed(e)],
+            _ => v,
+          };
+      final l = run('a', rev: 3, solved: ['m01', 'm02'], hints: {'m01': 1, 'm02': 2})
+          .copyWith(attempts: {'m01': 2, 'm02': 1}, xpRules: {'m01': 3, 'm02': 4});
+      final r = GameProgress.fromJson(jsonDecode(jsonEncode(reversed(l.toJson()))) as Map<String, dynamic>);
+      expect(jsonEncode(r.hintsUsed), isNot(jsonEncode(l.hintsUsed)), reason: 'the key order really differs');
+      expect(sameProgress(l, r), isTrue);
+      expect(canonicalJson(r.toJson()), canonicalJson(l.toJson()));
+      expect(mergeCase(snap(l), snap(r)).outcome, MergeOutcome.same);
+      expect(mergeCase(snap(r), snap(l)).outcome, MergeOutcome.same);
     });
 
     test('XP rules recorded on both sides are kept; operator data stays marked', () {

@@ -138,7 +138,7 @@ void main() {
       // accuracy or skill scores). This case was solved without a play
       // record, so its figures say so instead of showing zeros.
       await t.scrollUntilVisible(find.text('Play Time'), 300, scrollable: find.byType(Scrollable).last);
-      for (final s in ['Missions', 'Tips Opened', 'First Try', 'Play Time']) {
+      for (final s in ['Missions', 'Hints Opened', 'First Try', 'Play Time']) {
         expect(find.text(s), findsOneWidget);
       }
       expect(find.text('Accuracy'), findsNothing);

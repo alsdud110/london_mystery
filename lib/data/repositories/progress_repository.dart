@@ -8,6 +8,7 @@ import '../../core/constants/app_constants.dart';
 import '../models/game_progress.dart';
 import '../models/season_progress.dart';
 import '../models/wallet.dart';
+import '../sync/case_conflicts.dart';
 import '../sync/cloud/cloud_sync_meta.dart';
 import '../sync/outbox.dart';
 import '../sync/save_journal.dart';
@@ -47,7 +48,7 @@ abstract interface class ProgressRepository {
 /// in the same all-or-nothing save as the change itself (see
 /// [SaveJournal]); a save that changes nothing writes nothing.
 class SharedPrefsProgressRepository implements ProgressRepository {
-  SharedPrefsProgressRepository(this._prefs, {required this.profileId, this.legacyFallback = false})
+  SharedPrefsProgressRepository(this._prefs, {required this.profileId, this.legacyFallback = false, this.onQueued})
       : _journal = SaveJournal(_prefs, profileId) {
     // A save the app stopped in the middle of is finished first; changes
     // handed to a sender before the app stopped wait to be sent again.
@@ -57,6 +58,14 @@ class SharedPrefsProgressRepository implements ProgressRepository {
     if (!identical(recovered, waiting)) _put({_outboxKey: recovered.encode()});
   }
 
+  /// Reads [profileId]'s saves without finishing or releasing anything
+  /// (another detective on a list, while it is not being played). Not for
+  /// saving.
+  SharedPrefsProgressRepository.peek(this._prefs, {required this.profileId})
+      : legacyFallback = false,
+        onQueued = null,
+        _journal = SaveJournal(_prefs, profileId);
+
   final SharedPreferences _prefs;
   final String profileId;
   final SaveJournal _journal;
@@ -64,6 +73,11 @@ class SharedPrefsProgressRepository implements ProgressRepository {
   /// Safe mode (see `ProfileSession.legacyFallback`): a save the profile
   /// does not have yet is read from the original saves, until it starts over.
   final bool legacyFallback;
+
+  /// Told after a change was queued for the sync (a game save, not the
+  /// sender's own bookkeeping), so a sync can be planned. It must only plan:
+  /// it may be called inside a [transaction].
+  final void Function()? onQueued;
 
   static final _random = Random.secure();
 
@@ -197,6 +211,7 @@ class SharedPrefsProgressRepository implements ProgressRepository {
             ))
             .encode(),
     });
+    if (queue) onQueued?.call();
   }
 
   @override
@@ -216,6 +231,7 @@ class SharedPrefsProgressRepository implements ProgressRepository {
     final json = jsonEncode(season.toJson());
     if (_get(key) == json) return;
     _put({key: json, if (queue) _outboxKey: outbox.enqueue(_event(OutboxKind.season, 'season')).encode()});
+    if (queue) onQueued?.call();
   }
 
   @override
@@ -246,21 +262,27 @@ class SharedPrefsProgressRepository implements ProgressRepository {
       }
     }
     _put({key: json, if (queue) _outboxKey: box.encode()});
+    if (queue) onQueued?.call();
   }
 
   /// Removes this profile's saves only, together with its queued changes:
   /// other profiles and the saves made before profiles stay. The profile
   /// moves to the next epoch. In safe mode the originals stop being read.
+  /// The kept case files (sync conflicts) stay, archived: a New Adventure
+  /// never throws away a run the sync kept (Phase 4.5).
   @override
   Future<void> clear() {
     final next = epoch + 1;
     final prefix = AppConstants.profilePrefix(profileId);
     final journal = AppConstants.journalKey(profileId);
+    final conflictsKey = AppConstants.conflictsKey(profileId);
+    final kept = conflicts;
     _put({
       for (final k in {..._prefs.getKeys(), ...?_tx?.keys})
-        if (k.startsWith(prefix) && k != journal) k: null,
+        if (k.startsWith(prefix) && k != journal && k != conflictsKey) k: null,
       AppConstants.metaKey(profileId): jsonEncode({'epoch': next}),
       if (legacyFallback) AppConstants.legacyClearedKey(profileId): 'true',
+      if (kept.isNotEmpty) conflictsKey: _encodeConflicts(CaseConflicts.archiveAll(kept, DateTime.now())),
     });
     return Future.value();
   }
@@ -308,8 +330,20 @@ class SharedPrefsProgressRepository implements ProgressRepository {
   void keepConflict(Map<String, dynamic> conflict) {
     final items = conflicts;
     if (items.any((c) => c['id'] == conflict['id'])) return;
-    _put({AppConstants.conflictsKey(profileId): jsonEncode({'items': [...items, conflict]})});
+    _put({AppConstants.conflictsKey(profileId): _encodeConflicts([...items, conflict])});
   }
+
+  /// Changes kept conflicts (their status, see `CaseConflicts`). [change]
+  /// must keep every record: nothing kept is ever removed.
+  void updateConflicts(List<Map<String, dynamic>> Function(List<Map<String, dynamic>> items) change) {
+    final items = conflicts;
+    final next = change(items);
+    final ids = {for (final c in next) c['id']};
+    if (items.any((c) => !ids.contains(c['id']))) throw StateError('a kept conflict would be removed');
+    _put({AppConstants.conflictsKey(profileId): _encodeConflicts(next)});
+  }
+
+  static String _encodeConflicts(List<Map<String, dynamic>> items) => jsonEncode({'items': items});
 
   /// Moves to [newEpoch] (a reset made on another copy of the profile):
   /// every save of the current epoch is first kept as a conflict, then the
@@ -327,6 +361,9 @@ class SharedPrefsProgressRepository implements ProgressRepository {
       if (kept.isNotEmpty) {
         keepConflict({'id': 'epoch:$old>$newEpoch', 'kind': 'epoch', 'subject': 'profile', 'reason': 'reset elsewhere', 'local': kept});
       }
+      // Choices of the epoch before are not offered any more; kept.
+      final items = conflicts;
+      if (items.isNotEmpty) _put({AppConstants.conflictsKey(profileId): _encodeConflicts(CaseConflicts.archiveAll(items, DateTime.now()))});
       _put({
         for (final k in {..._prefs.getKeys(), ...?_tx?.keys})
           if (k.startsWith(AppConstants.profilePrefix(profileId)) &&

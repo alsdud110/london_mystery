@@ -87,6 +87,25 @@ class CloudSyncMeta {
     return _with(subject, SubjectSync(confirmedVersion: cloudVersion, confirmedEpoch: epoch));
   }
 
+  /// The server's [subject] at [cloudVersion] was merged into the device
+  /// (brought down, Phase 4.4): recorded like [confirmed], but how sending
+  /// it has been going (failures, back-off, stalled) stays as it was — the
+  /// device's own changes still wait for their turn.
+  CloudSyncMeta merged(String subject, {required int cloudVersion, required int epoch}) {
+    assert(cloudVersion >= 1);
+    final s = of(subject);
+    return _with(
+      subject,
+      SubjectSync(
+        confirmedVersion: cloudVersion,
+        confirmedEpoch: epoch,
+        failures: s.failures,
+        nextAttemptAt: s.nextAttemptAt,
+        stalled: s.stalled,
+      ),
+    );
+  }
+
   /// A sync run of [subject] failed at [now]: counted, backed off; stalled
   /// after [SyncRetryPolicy.stallAfter] in a row. The confirmed version stays.
   CloudSyncMeta failed(String subject, DateTime now, {SyncRetryPolicy policy = SyncRetryPolicy.standard, double jitter = 1}) {

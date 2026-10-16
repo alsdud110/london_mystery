@@ -21,6 +21,7 @@ class ProfileSessionHost extends StatefulWidget {
     required this.overrides,
     required this.child,
     this.signedInUid = _nobody,
+    this.onSessionStarted,
   });
 
   /// The profile to start with (from [ProfileStore.bootstrap]).
@@ -36,6 +37,10 @@ class ProfileSessionHost extends StatefulWidget {
 
   static String? _nobody() => null;
 
+  /// Told each time a profile's session starts (the first one included),
+  /// with its container (e.g. for the cloud sync to follow it).
+  final void Function(ProviderContainer container)? onSessionStarted;
+
   static ProfileSessionHostState of(BuildContext context) =>
       context.findAncestorStateOfType<ProfileSessionHostState>()!;
 
@@ -46,6 +51,12 @@ class ProfileSessionHost extends StatefulWidget {
 class ProfileSessionHostState extends State<ProfileSessionHost> {
   late ProfileSession _session = widget.session;
   late ProviderContainer _container = _create(_session);
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onSessionStarted?.call(_container);
+  }
 
   ProviderContainer _create(ProfileSession session) =>
       ProviderContainer(overrides: [...widget.overrides, profileSessionProvider.overrideWithValue(session)]);
@@ -74,6 +85,7 @@ class ProfileSessionHostState extends State<ProfileSessionHost> {
       _session = ProfileSession(profile: next);
       _container = _create(_session);
     });
+    widget.onSessionStarted?.call(_container);
     WidgetsBinding.instance.addPostFrameCallback((_) => old.dispose());
   }
 

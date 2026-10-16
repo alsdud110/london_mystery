@@ -409,9 +409,9 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
   return choice ?? TryAgainChoice.retry;
 }
 
-/// "Detective Tips": up to two hints, revealed one at a time. Framed as a
-/// partner's help (not a failure). Tips never cost XP; tip 2 costs coins, or
-/// is given free when the coins are short (see the GET A TIP dialog).
+/// "Detective Hints": up to two hints, revealed one at a time. Framed as a
+/// partner's help (not a failure). Hints never cost XP; hint 2 costs coins,
+/// or is given free when the coins are short (see tip_shop.dart).
 class TipsPanel extends StatelessWidget {
   const TipsPanel({super.key, required this.hints, required this.revealed, required this.onReveal, this.dark = false});
 
@@ -426,15 +426,12 @@ class TipsPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (var i = 0; i < revealed && i < hints.length; i++)
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppSpace.md),
-            child: _TipNote(number: i + 1, text: hints[i]),
-          ),
+        // The same hint notes as on every puzzle (they fold and unfold).
+        DetectiveTipNotes(hints: hints, revealed: revealed),
         // The same secondary button and words as the try-again sheet.
         if (canReveal)
           GameButton(
-            label: tipButtonLabel,
+            label: nextTipLabel(hints, revealed)!.toUpperCase(),
             glyph: InkGlyph.hint,
             style: GameButtonStyle.outline,
             onPressed: onReveal,
@@ -443,42 +440,12 @@ class TipsPanel extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: AppSpace.xs),
             child: Text(
-              revealed == 0 ? 'Tip 1 is free. Good detectives use tips.' : 'Tip ${revealed + 1} of ${hints.length}',
+              revealed == 0 ? 'Good detectives use hints.' : 'Hint ${revealed + 1} of ${hints.length}',
               textAlign: TextAlign.center,
               style: AppText.caption(color: dark ? AppColors.paperLight.withValues(alpha: 0.8) : AppColors.muted),
             ),
           ),
       ],
-    );
-  }
-}
-
-class _TipNote extends StatelessWidget {
-  const _TipNote({required this.number, required this.text});
-
-  final int number;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 450),
-      curve: Curves.easeOut,
-      builder: (context, t, child) => Opacity(opacity: t.clamp(0, 1), child: child),
-      // A handwritten note, the same as the tips of every mission.
-      child: PaperSheet(
-        tilt: number.isOdd ? -0.008 : 0.008,
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('DETECTIVE TIP $number', style: AppText.eyebrow()),
-            const SizedBox(height: AppSpace.xs),
-            GlossaryText(text, style: AppText.letter(size: 17)),
-          ],
-        ),
-      ),
     );
   }
 }

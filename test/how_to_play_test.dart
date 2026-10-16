@@ -47,7 +47,7 @@ void main() {
     'Talk to People',
     'Solve the Mystery',
     'Discover New Words',
-    'Tips When You Need Them',
+    'Hints When You Need Them',
     'Your Detective Notebook',
     'Your First Case Awaits!',
   ];
@@ -249,32 +249,35 @@ void main() {
     await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
     await next(t);
 
-    // 10. Tips: the first free, the second for practice coins.
-    expect(find.text('Tip 1 is free. Good detectives use tips.'), findsOneWidget);
-    await reveal(t, find.text('GET A TIP'));
-    await t.tap(find.text('GET A TIP'));
+    // 10. Hints, as on a case's page: the first free and at once, the second
+    // for (practice) coins, asked first in the game's own coins dialog.
+    expect(find.text('Good detectives use hints.'), findsOneWidget);
+    const hint1 = 'Read the letter again. What does Pip love?';
+    const hint2 = 'Mrs Moss saw Pip next to the warm chimney. Where are chimneys?';
+    expect(find.text(hint1), findsNothing, reason: 'not before it is asked for');
+    await reveal(t, find.text('GET A FREE HINT'));
+    await t.tap(find.text('GET A FREE HINT'));
     await wait(t, const Duration(milliseconds: 500));
-    // The game's own GET A TIP dialog: the price there, FREE for tip 1.
     final dialog = find.byType(TipShopCard);
-    expect(find.descendant(of: dialog, matching: find.text('Reveal a tip?')), findsOneWidget);
-    expect(find.descendant(of: dialog, matching: find.text('FREE')), findsOneWidget);
-    const tip1 = 'Read the letter again. What does Pip love?';
-    const tip2 = 'Mrs Moss saw Pip next to the warm chimney. Where are chimneys?';
-    expect(find.text(tip1), findsNothing, reason: 'not before it is asked for');
-    await takeTipFromSheet(t);
-    expect(find.text(tip1), findsOneWidget, reason: 'tip 1 written on its card');
-    await reveal(t, find.text('GET A TIP'));
-    await t.tap(find.text('GET A TIP'));
+    expect(dialog, findsNothing, reason: 'a free hint asks nothing');
+    expect(find.text(hint1), findsOneWidget, reason: 'hint 1 written on its card');
+    expect(find.bySemanticsLabel('Practice coins: ${AppConstants.startCoins}'), findsOneWidget);
+    await reveal(t, find.text('GET MORE HINTS'));
+    await t.tap(find.text('GET MORE HINTS'));
     await wait(t, const Duration(milliseconds: 500));
     final price = WalletController.priceOf(2);
-    expect(find.descendant(of: dialog, matching: find.text('$price Coins')), findsOneWidget, reason: "the game's own price");
-    await takeTipFromSheet(t);
-    expect(find.text(tip2), findsOneWidget, reason: 'tip 2 on its card, open');
-    expect(find.text(tip1), findsNothing, reason: 'tip 1 folded shut meanwhile');
+    expect(find.descendant(of: dialog, matching: find.text('Get Another Hint?')), findsOneWidget);
+    expect(find.descendant(of: dialog, matching: find.bySemanticsLabel('$price coins')), findsOneWidget,
+        reason: "the game's own price");
+    await t.tap(find.descendant(of: dialog, matching: find.text('GET HINT')));
+    await wait(t, const Duration(milliseconds: 600));
+    expect(dialog, findsNothing);
+    expect(find.text(hint2), findsOneWidget, reason: 'hint 2 on its card, open');
+    expect(find.text(hint1), findsNothing, reason: 'hint 1 folded shut meanwhile');
     // A card opened before folds open again with a tap.
-    await t.tap(find.text('DETECTIVE TIP 1'));
+    await t.tap(find.text('DETECTIVE HINT 1'));
     await wait(t, const Duration(milliseconds: 400));
-    expect(find.text(tip1), findsOneWidget);
+    expect(find.text(hint1), findsOneWidget);
     expect(find.bySemanticsLabel('Practice coins: ${AppConstants.startCoins - price}'), findsOneWidget);
     await next(t);
 

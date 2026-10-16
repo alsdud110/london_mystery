@@ -90,6 +90,30 @@ class ProfileStore {
     return p;
   }
 
+  /// Adds an account's profile restored from the cloud, under the id it has
+  /// there (not made active). Refused (StateError) when a profile with that
+  /// id is on this device already: nothing is replaced.
+  Future<DetectiveProfile> addRestored({
+    required String id,
+    required String ownerUid,
+    required String detectiveName,
+    DateTime? createdAt,
+  }) async {
+    final registry = read();
+    if (registry == null) throw StateError('no profiles saved');
+    if (!DetectiveProfile.isValidId(id)) throw ArgumentError.value(id, 'id');
+    if (registry.byId(id) != null) throw StateError('this profile is on the device already');
+    final p = DetectiveProfile(
+      id: id,
+      kind: ProfileKind.account,
+      detectiveName: detectiveName,
+      createdAt: createdAt ?? DateTime.now(),
+      ownerUid: ownerUid,
+    );
+    await write(registry.upsert(p));
+    return p;
+  }
+
   /// The profiles that may be opened with [signedInUid] signed in: the guest,
   /// and that account's own. Another account's profiles are not listed.
   List<DetectiveProfile> openableBy(String? signedInUid) =>

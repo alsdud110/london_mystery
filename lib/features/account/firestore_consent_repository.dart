@@ -15,6 +15,10 @@ class FirestoreConsentRepository implements ConsentRepository {
   FirestoreConsentRepository(FirebaseFirestore db)
       : _read = ((uid) async => (await db.doc(CloudPaths.consent(uid)).get()).data());
 
+  /// [db] is asked for at the first read (once Firebase is ready).
+  FirestoreConsentRepository.lazy(FirebaseFirestore Function() db)
+      : _read = ((uid) async => (await db().doc(CloudPaths.consent(uid)).get(const GetOptions(source: Source.server))).data());
+
   /// [read] returns the record's fields (null: no record); for tests.
   @visibleForTesting
   FirestoreConsentRepository.withReader(Future<Map<String, Object?>?> Function(String uid) read) : _read = read;

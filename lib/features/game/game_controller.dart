@@ -51,6 +51,18 @@ class GameController extends Notifier<GameProgress> {
     return ref.read(progressRepositoryProvider).load(_episodeId);
   }
 
+  /// The saves changed under the game (a cloud merge): the open case is
+  /// read again if [episodeId] is it (null: whichever is open). The play
+  /// clock carries on; what is typed on a page is not part of the save and
+  /// stays. Returns whether the case differed.
+  bool reloadFromSaves([String? episodeId]) {
+    if (episodeId != null && episodeId != _episodeId) return false;
+    final saved = ref.read(progressRepositoryProvider).load(_episodeId);
+    if (jsonEncode(saved.toJson()) == jsonEncode(state.toJson())) return false;
+    state = saved;
+    return true;
+  }
+
   /// The case clock runs from the story intro until the case is solved.
   static bool _clockRunning(GameProgress p) => p.startedAt != null && !p.isCaseSolved;
 

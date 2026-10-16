@@ -137,18 +137,22 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
     if (tip > _TipsScene.tips.length) return;
     final price = WalletController.priceOf(tip);
     final state = tipStateOf(tip: tip, revealed: _tips, owns: false, balance: _practiceCoins);
-    final reveal = await showDialog<bool>(
-      context: context,
-      barrierColor: AppColors.navyDeep.withValues(alpha: 0.55),
-      builder: (dialog) => TipShopCard(
-        balance: _practiceCoins,
-        price: price,
-        state: state,
-        onCancel: () => Navigator.of(dialog).pop(false),
-        onReveal: () => Navigator.of(dialog).pop(true),
-      ),
-    );
-    if (reveal != true || !mounted) return;
+    // As on a case's page: a free hint opens at once; one that costs coins
+    // asks first, in the game's own coins dialog.
+    if (state != TipState.free) {
+      final reveal = await showDialog<bool>(
+        context: context,
+        barrierColor: AppColors.navyDeep.withValues(alpha: 0.55),
+        builder: (dialog) => TipShopCard(
+          balance: _practiceCoins,
+          price: price,
+          state: state,
+          onCancel: () => Navigator.of(dialog).pop(false),
+          onReveal: () => Navigator.of(dialog).pop(true),
+        ),
+      );
+      if (reveal != true || !mounted) return;
+    }
     _sound(GameSound.paperRustle);
     setState(() {
       _tips = tip;
@@ -254,10 +258,10 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
         ),
       ),
       5 => paper(
-        title: 'Tips When You Need Them',
-        line: 'Your first tip is free. More tips cost a few coins.',
+        title: 'Hints When You Need Them',
+        line: 'Your first hint is free. More hints cost a few coins.',
         caption: _tips < _TipsScene.tips.length
-            ? 'No coins left? Your partner still helps you, for free.'
+            ? 'Not enough coins? Your partner still gives you the hint, for free.'
             : 'These were practice coins. Your real coins are safe.',
         scene: _TipsScene(
           revealed: _tips,
@@ -1646,8 +1650,8 @@ class _TipsScene extends StatelessWidget {
         ],
         Text(
           revealed == 0
-              ? 'Tip 1 is free. Good detectives use tips.'
-              : 'Tip ${math.min(revealed + 1, tips.length)} of ${tips.length}',
+              ? 'Good detectives use hints.'
+              : 'Hint ${math.min(revealed + 1, tips.length)} of ${tips.length}',
           textAlign: TextAlign.center,
           style: AppText.caption(color: AppColors.inkBrown),
         ),
@@ -1689,7 +1693,7 @@ class _TipCard extends StatelessWidget {
         const SizedBox(width: AppSpace.sm),
         Expanded(
           child: Text(
-            'DETECTIVE TIP $number',
+            'DETECTIVE HINT $number',
             style: AppText.eyebrow(color: sealed ? AppColors.locked : AppColors.goldDeep),
           ),
         ),
@@ -1701,7 +1705,10 @@ class _TipCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               border: Border.all(color: AppColors.goldLight.withValues(alpha: 0.6), width: AppLine.hairline),
             ),
-            child: Text(tipButtonLabel, style: AppText.eyebrow(color: AppColors.creamGold).copyWith(fontSize: 11)),
+            child: Text(
+              price == 0 ? 'GET A FREE HINT' : tipButtonLabel,
+              style: AppText.eyebrow(color: AppColors.creamGold).copyWith(fontSize: 11),
+            ),
           ),
           _Tip.open => const InkIcon(InkGlyph.down, size: AppIconSize.small, color: AppColors.inkBrown),
           _Tip.shut => Transform.rotate(

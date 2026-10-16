@@ -384,7 +384,7 @@ void main() {
         isEmpty,
         reason: 'closing the sheet is not a check',
       );
-      await tapText(t, 'Letter', after: const Duration(milliseconds: 600));
+      await tapText(t, 'Reread Letter', after: const Duration(milliseconds: 600));
       await tapText(t, 'BACK TO THE PUZZLE', after: const Duration(milliseconds: 600));
       expect(play.ref.read(gameControllerProvider).behavior!.rechecked, ['m01']);
       await tapText(t, 'The British Museum (treasures from long ago)', after: const Duration(milliseconds: 200));

@@ -62,9 +62,12 @@ final class CloudAccepted<T> extends CloudRead<T> {
 /// Valid but of an earlier epoch (written before a reset): not applied,
 /// not a conflict.
 final class CloudStale<T> extends CloudRead<T> {
-  const CloudStale(this.epoch);
+  const CloudStale(this.epoch, {this.cloudVersion});
 
   final int epoch;
+
+  /// The document's version (a sender replacing it writes the next one).
+  final int? cloudVersion;
 }
 
 /// Not valid: never applied, never corrected. The sender keeps it as a
@@ -243,7 +246,11 @@ class CloudCodec {
     if (p.isNotEmpty) return CloudRejected(subject, p);
     final epoch = doc['epoch'] as int;
     final stale = _epochCheck(subject, epoch, serverEpoch);
-    if (stale != null) return stale is CloudStale ? CloudStale(epoch) : CloudRejected(subject, const ['epoch ahead of server']);
+    if (stale != null) {
+      return stale is CloudStale
+          ? CloudStale(epoch, cloudVersion: doc['cloudVersion'] as int)
+          : CloudRejected(subject, const ['epoch ahead of server']);
+    }
     return CloudAccepted(
       CaseSnapshot(epoch: epoch, progress: GameProgress.fromJson(Map<String, dynamic>.of(progress! as Map<String, Object?>))),
       cloudVersion: doc['cloudVersion'] as int,
@@ -268,7 +275,11 @@ class CloudCodec {
     if (p.isNotEmpty) return CloudRejected('season', p);
     final epoch = doc['epoch'] as int;
     final stale = _epochCheck('season', epoch, serverEpoch);
-    if (stale != null) return stale is CloudStale ? CloudStale(epoch) : const CloudRejected('season', ['epoch ahead of server']);
+    if (stale != null) {
+      return stale is CloudStale
+          ? CloudStale(epoch, cloudVersion: doc['cloudVersion'] as int)
+          : const CloudRejected('season', ['epoch ahead of server']);
+    }
     return CloudAccepted(
       SeasonSnapshot(epoch: epoch, season: SeasonProgress(solvedEpisodeIds: [for (final id in solved! as List) id as String])),
       cloudVersion: doc['cloudVersion'] as int,
@@ -291,42 +302,17 @@ class CloudCodec {
     var currentBad = false;
     for (final MapEntry(key: id, value: doc) in docs.entries) {
       if (id == 'summary') continue;
-      final subject = 'wallet:$id';
-      final epoch = doc['epoch'];
-      final key = doc['key'];
-      final amount = doc['amount'];
-      final source = doc['source'];
-      final p = <String>[
-        ..._exactFields(doc, _eventFields),
-        if (!_count(epoch)) 'epoch',
-        if (key is! String) 'key',
-        if (amount is! int) 'amount',
-        if (source is! String || CoinSource.byName(source) == null) 'source',
-        if (doc['at'] is! DateTime) 'at',
-      ];
-      if (p.isEmpty) {
-        if (id != eventId(epoch as int, key as String)) p.add('id');
-        if (_eventProblem(key, amount as int, source as String) case final why?) p.add(why);
+      switch (readEvent(id, doc, serverEpoch: serverEpoch)) {
+        case CloudRejected<CoinEntry>(:final subject, :final reasons):
+          rejected.add(CloudRejected(subject, reasons));
+          final epoch = doc['epoch'];
+          if (epoch is! int || epoch >= serverEpoch) currentBad = true;
+        case CloudStale<CoinEntry>():
+          break; // an earlier epoch: not restored
+        case CloudAccepted<CoinEntry>(:final value):
+          currentIds.add(id);
+          wallet = wallet.adding(value);
       }
-      if (p.isNotEmpty) {
-        rejected.add(CloudRejected(subject, p));
-        if (epoch == serverEpoch || epoch is! int) currentBad = true;
-        continue;
-      }
-      if (epoch != serverEpoch) {
-        if ((epoch as int) > serverEpoch) {
-          rejected.add(CloudRejected(subject, const ['epoch ahead of server']));
-          currentBad = true;
-        }
-        continue; // an earlier epoch: not restored
-      }
-      currentIds.add(id);
-      wallet = wallet.adding(CoinEntry(
-        key: key as String,
-        amount: amount as int,
-        source: CoinSource.byName(source)!,
-        at: doc['at'] as DateTime,
-      ));
     }
     int? summaryVersion;
     final s = docs['summary'];
@@ -334,19 +320,10 @@ class CloudCodec {
     if (s == null) {
       if (currentIds.isNotEmpty) p.add('events without a summary');
     } else {
-      p.addAll([
-        ..._exactFields(s, _summaryFields),
-        if (!_count(s['epoch'])) 'epoch',
-        if (!_version(s['cloudVersion'])) 'cloudVersion',
-        if (!_count(s['balance'])) 'balance',
-        if (s['lastEventId'] is! String) 'lastEventId',
-        if (s['updatedAt'] is! DateTime) 'updatedAt',
-      ]);
+      p.addAll(summaryProblems(s, serverEpoch: serverEpoch));
       if (p.isEmpty) {
         final epoch = s['epoch'] as int;
-        if (epoch > serverEpoch) {
-          p.add('epoch ahead of server');
-        } else if (epoch == serverEpoch) {
+        if (epoch == serverEpoch) {
           if (!currentIds.contains(s['lastEventId'])) p.add('lastEventId names no event of this epoch');
           if (s['balance'] != wallet.balance) p.add('balance != events');
         } else if (currentIds.isNotEmpty) {
@@ -364,6 +341,52 @@ class CloudCodec {
       rejected: rejected,
       summaryVersion: summaryVersion,
     );
+  }
+
+  /// One coin event document [id]: valid and of [serverEpoch] (accepted),
+  /// of an earlier epoch (stale), or not valid (rejected; a later epoch too).
+  CloudRead<CoinEntry> readEvent(String id, Map<String, Object?> doc, {required int serverEpoch}) {
+    final subject = 'wallet:$id';
+    final epoch = doc['epoch'];
+    final key = doc['key'];
+    final amount = doc['amount'];
+    final source = doc['source'];
+    final p = <String>[
+      ..._exactFields(doc, _eventFields),
+      if (!_count(epoch)) 'epoch',
+      if (key is! String) 'key',
+      if (amount is! int) 'amount',
+      if (source is! String || CoinSource.byName(source) == null) 'source',
+      if (doc['at'] is! DateTime) 'at',
+    ];
+    if (p.isEmpty) {
+      if (id != eventId(epoch as int, key as String)) p.add('id');
+      if (_eventProblem(key, amount as int, source as String) case final why?) p.add(why);
+    }
+    if (p.isNotEmpty) return CloudRejected(subject, p);
+    if (epoch != serverEpoch) {
+      return (epoch as int) > serverEpoch ? CloudRejected(subject, const ['epoch ahead of server']) : CloudStale(epoch);
+    }
+    return CloudAccepted(
+      CoinEntry(key: key as String, amount: amount as int, source: CoinSource.byName(source)!, at: doc['at'] as DateTime),
+      cloudVersion: 1,
+    );
+  }
+
+  /// What is wrong with a wallet summary document (empty: nothing). Its sum
+  /// against the events is checked by [readWallet]; a sender relies on the
+  /// rules, which let it move by exactly one event per write.
+  List<String> summaryProblems(Map<String, Object?> s, {required int serverEpoch}) {
+    final p = <String>[
+      ..._exactFields(s, _summaryFields),
+      if (!_count(s['epoch'])) 'epoch',
+      if (!_version(s['cloudVersion'])) 'cloudVersion',
+      if (!_count(s['balance'])) 'balance',
+      if (s['lastEventId'] is! String) 'lastEventId',
+      if (s['updatedAt'] is! DateTime) 'updatedAt',
+    ];
+    if (p.isEmpty && (s['epoch'] as int) > serverEpoch) p.add('epoch ahead of server');
+    return p;
   }
 
   // ---- checks --------------------------------------------------------------

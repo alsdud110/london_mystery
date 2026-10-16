@@ -104,6 +104,17 @@ class AccountController extends ValueNotifier<AccountState> {
     if (value.session?.uid == s.uid) value = AccountState(AccountStatus.signedIn, value.session, consent);
   }
 
+  /// Reads the signed-in user's consent again (e.g. it was withdrawn, or
+  /// confirmed since sign-in). Fails closed like the first read: anything
+  /// but a confirmed record leaves it unconfirmed.
+  Future<ConsentStatus> refreshConsent() async {
+    final s = value.session;
+    if (value.uid == null || s == null) return ConsentStatus.unconfirmed;
+    final consent = await consents.statusOf(s.uid);
+    if (value.uid == s.uid && value.consent != consent) value = AccountState(AccountStatus.signedIn, value.session, consent);
+    return value.uid == s.uid ? value.consent : ConsentStatus.unconfirmed;
+  }
+
   Future<AuthResult> _use(Future<AuthResult> Function(AuthService auth) action) async {
     final auth = _auth;
     if (auth == null) return const AuthResult.failed(AuthFailure.cloudUnavailable);

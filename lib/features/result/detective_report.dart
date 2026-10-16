@@ -183,7 +183,7 @@ class DetectiveReport {
     }
 
     comments.add(
-      hintsUsed > 0 ? '막힐 때 Detective Tip을 $hintsUsed번 열어 보고 다시 도전했어요.' : '이번 사건에서는 Detective Tip을 열지 않았어요.',
+      hintsUsed > 0 ? '막힐 때 Detective Hint를 $hintsUsed번 열어 보고 다시 도전했어요.' : '이번 사건에서는 Detective Hint를 열지 않았어요.',
     );
 
     if (!actionsRecorded) {

@@ -16,6 +16,7 @@ import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
+import '../sync/ui/case_files_screen.dart';
 
 /// One case file on the shelf: its episode, and how far the detective got.
 class _CaseEntry {
@@ -25,9 +26,13 @@ class _CaseEntry {
     required this.everSolved,
     required this.progress,
     this.previous,
+    this.twoFiles = false,
   });
 
   final Episode episode;
+
+  /// Played on two devices: two case files wait for a choice (Phase 4.5).
+  final bool twoFiles;
   final bool unlocked;
 
   /// Solved at least once (season record) — stays true when replayed.
@@ -86,7 +91,7 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
     }
   }
 
-  List<_CaseEntry> _shelf() {
+  List<_CaseEntry> _shelf(Set<String> twoFiles) {
     final catalog = ref.watch(episodeCatalogProvider);
     final active = ref.watch(currentEpisodeProvider);
     final activeProgress = ref.watch(gameControllerProvider);
@@ -102,13 +107,17 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
           everSolved: ref.read(seasonProvider).isSolved(e.id),
           progress: e.id == active.id ? activeProgress : repo.load(e.id),
           previous: i > 0 ? catalog[i - 1] : null,
+          twoFiles: twoFiles.contains(e.id),
         ),
     ];
   }
 
   void _toggle(String id) => setState(() => _openCase = _openCase == id ? null : id);
 
-  void _go(_CaseEntry c) {
+  Future<void> _go(_CaseEntry c) async {
+    // Two case files of this case (played on two devices): said once, with
+    // the way to them (Phase 4.5).
+    if (await offerTwoFilesOnce(context, ref, c.episode.id) || !mounted) return;
     if (!ref.read(gameControllerProvider.notifier).openEpisode(c.episode.id)) {
       showGameToast(context, 'This case file is still sealed.');
       return;
@@ -119,7 +128,7 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final shelf = _shelf();
+    final shelf = _shelf(casesWithTwoFiles(ref));
     final chosen = shelf.where((c) => c.episode.id == _chosen && c.unlocked).firstOrNull;
     final status = chosen ?? shelf.firstWhere((c) => c.episode.id == ref.read(currentEpisodeProvider).id);
     final label = status.solved
@@ -178,6 +187,7 @@ class _EpisodeSelectScreenState extends ConsumerState<EpisodeSelectScreen> {
                                 open: _openCase == c.episode.id,
                                 chosen: _chosen == c.episode.id,
                                 onToggle: () => _toggle(c.episode.id),
+                                onTwoFiles: () => context.go(Routes.caseFiles(c.episode.id)),
                                 onChoose: () {
                                   if (_chosen != c.episode.id) playUiTap(context, TapRole.select);
                                   setState(() => _chosen = c.episode.id);
@@ -242,6 +252,7 @@ class _CaseFolderTile extends StatelessWidget {
     required this.chosen,
     required this.onToggle,
     required this.onChoose,
+    required this.onTwoFiles,
   });
 
   final _CaseEntry entry;
@@ -249,6 +260,7 @@ class _CaseFolderTile extends StatelessWidget {
   final bool chosen;
   final VoidCallback onToggle;
   final VoidCallback onChoose;
+  final VoidCallback onTwoFiles;
 
   @override
   Widget build(BuildContext context) {
@@ -312,6 +324,17 @@ class _CaseFolderTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _EpisodeRow(entry: entry, chosen: chosen && !sealed, onChoose: onChoose),
+                      if (entry.twoFiles && !sealed)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                          child: InkTextButton(
+                            key: ValueKey('two-files-${e.id}'),
+                            label: 'TWO CASE FILES · CHOOSE ONE',
+                            glyph: InkGlyph.folder,
+                            color: AppColors.burgundy,
+                            onPressed: onTwoFiles,
+                          ),
+                        ),
                       const SizedBox(height: AppSpace.sm),
                     ],
                   ),

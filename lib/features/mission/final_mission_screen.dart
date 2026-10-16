@@ -13,6 +13,7 @@ import '../../core/utils/audio_service.dart';
 import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/clue_card.dart';
+import '../../widgets/coin_balance.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
@@ -41,9 +42,12 @@ class FinalMissionScreen extends ConsumerStatefulWidget {
   ConsumerState<FinalMissionScreen> createState() => _FinalMissionScreenState();
 }
 
-class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with SingleTickerProviderStateMixin {
-  late final AnimationController _open = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400))
-    ..addListener(_ringBell);
+class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _open = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2400),
+  )..addListener(_ringBell);
   final _scroll = ScrollController();
   late List<int> _digits;
   int _wrongPulse = 0;
@@ -66,9 +70,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       // Back again (the story and the letter were read before): open on the locks.
       final returning = progress.missionStartedAt.containsKey(_mission.id);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(gameControllerProvider.notifier).markMissionStarted(_mission.id);
+        ref
+            .read(gameControllerProvider.notifier)
+            .markMissionStarted(_mission.id);
         final locks = _locksKey.currentContext;
-        if (returning && locks != null && locks.mounted) Scrollable.ensureVisible(locks, alignment: 0.05);
+        if (returning && locks != null && locks.mounted)
+          Scrollable.ensureVisible(locks, alignment: 0.05);
       });
     }
   }
@@ -92,7 +99,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
   /// Big Ben rings as the news comes up ("Big Ben rings again!", at 0.55 of
   /// the opening), after the clock has caught: once.
   void _ringBell() {
-    if (!_solvedNow || _rung || _open.value < 0.55 || !ringsBellOnSolve(_mission)) return;
+    if (!_solvedNow ||
+        _rung ||
+        _open.value < 0.55 ||
+        !ringsBellOnSolve(_mission))
+      return;
     _rung = true;
     ref.read(audioServiceProvider).play(GameSound.bigBenBell);
   }
@@ -102,19 +113,24 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     setState(() => _digits[index] = (_digits[index] + delta) % 10);
   }
 
-  /// A tip asked for: written into the notebook, with the pencil.
-  /// GET A TIP: the small confirm dialog (coins, price). A tip revealed
-  /// from it is written onto the page, with the pencil.
+  /// GET MORE HINTS: a free hint opens at once; one that costs coins asks first
+  /// (see [requestTip]). A hint revealed is written onto the page, with the
+  /// pencil.
   Future<void> _showHint() async {
-    if (ref.read(gameControllerProvider).hintsFor(_mission.id) >= _mission.hints.length) return;
-    if (await showTipShop(context, _mission) && mounted) ref.read(audioServiceProvider).play(GameSound.pencilNote);
+    if (ref.read(gameControllerProvider).hintsFor(_mission.id) >=
+        _mission.hints.length)
+      return;
+    if (await requestTip(context, ref, _mission) && mounted)
+      ref.read(audioServiceProvider).play(GameSound.pencilNote);
   }
 
   Future<void> _tryOpen() => _submit(_digits.join());
 
   Future<void> _submit(String answer) async {
     final audio = ref.read(audioServiceProvider);
-    final outcome = ref.read(gameControllerProvider.notifier).submitAnswer(_mission, answer);
+    final outcome = ref
+        .read(gameControllerProvider.notifier)
+        .submitAnswer(_mission, answer);
     switch (outcome.result) {
       case SubmitResult.locked:
         context.go(Routes.map);
@@ -122,7 +138,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         // With the shake (it starts on this setState).
         audio.play(GameSound.puzzleWrong);
         setState(() => _wrongPulse++);
-        final canHint = ref.read(gameControllerProvider).hintsFor(_mission.id) < _mission.hints.length;
+        final canHint =
+            ref.read(gameControllerProvider).hintsFor(_mission.id) <
+            _mission.hints.length;
         final choice = await showTryAgainSheet(
           context,
           hintAvailable: canHint,
@@ -131,7 +149,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         if (choice == TryAgainChoice.hint && mounted) _showHint();
       case SubmitResult.correct:
         _solvedNow = true;
-        _xpEarned = XpBreakdown.of(_mission, ref.read(gameControllerProvider)).total;
+        _xpEarned = XpBreakdown.of(
+          _mission,
+          ref.read(gameControllerProvider),
+        ).total;
         _coinsEarned = outcome.coins;
         // A thing of the story (the Royal Box, the Great Clock, a heavy
         // lock) sounds as it opens on screen; otherwise the final's cue now.
@@ -142,7 +163,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
         await WidgetsBinding.instance.endOfFrame;
         if (!mounted) return;
         if (_scroll.hasClients && _scroll.offset > 0) {
-          await _scroll.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeOutCubic);
+          await _scroll.animateTo(
+            0,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOutCubic,
+          );
         }
         if (!mounted) return;
         if (sound != GameSound.finale) audio.play(sound);
@@ -163,13 +188,21 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       showDragHandle: false,
       builder: (context) => SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.xl),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpace.screen,
+            0,
+            AppSpace.screen,
+            AppSpace.xl,
+          ),
           child: Column(
             children: [
               const PaperSheetTab(),
               LetterCard(text: _mission.letter),
               const SizedBox(height: AppSpace.xl),
-              GameButton(label: 'BACK TO THE LOCKS', onPressed: () => Navigator.of(context).pop()),
+              GameButton(
+                label: 'BACK TO THE LOCKS',
+                onPressed: () => Navigator.of(context).pop(),
+              ),
             ],
           ),
         ),
@@ -183,11 +216,17 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
     final progress = ref.read(gameControllerProvider);
     final clues = progress.collectedClues(episode);
     final evidence = progress.collectedEvidence(episode);
-    String locationOfClue(Clue c) => episode.allMissions.firstWhere((m) => m.clue?.id == c.id).location;
-    String locationOfEvidence(Evidence e) => episode.allMissions.firstWhere((m) => m.evidence?.id == e.id).location;
+    String locationOfClue(Clue c) =>
+        episode.allMissions.firstWhere((m) => m.clue?.id == c.id).location;
+    String locationOfEvidence(Evidence e) =>
+        episode.allMissions.firstWhere((m) => m.evidence?.id == e.id).location;
     // Operator mode opens earlier files for reference (see the archive).
     final earlierCases =
-        ref.read(seasonProvider).solvedEpisodeIds.any((id) => id != episode.id) || ref.read(operatorAccessProvider);
+        ref
+            .read(seasonProvider)
+            .solvedEpisodeIds
+            .any((id) => id != episode.id) ||
+        ref.read(operatorAccessProvider);
 
     showModalBottomSheet<void>(
       context: context,
@@ -206,51 +245,61 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
             const PaperSheetTab(),
             Expanded(
               child: ListView(
-          controller: scroll,
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-          children: [
-            Text('DETECTIVE NOTEBOOK', style: AppText.mark(), textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            Text('Evidence', style: AppText.title(size: 20)),
-            const SizedBox(height: 8),
-            GridView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: evidenceGridDelegate(context),
-              children: [
-                for (final e in evidence)
-                  EvidenceTile(
-                    evidence: e,
-                    location: locationOfEvidence(e),
-                    onOpened: () => ref.read(gameControllerProvider.notifier).recordEvidenceViewed(e.id),
+                controller: scroll,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                children: [
+                  Text(
+                    'DETECTIVE NOTEBOOK',
+                    style: AppText.mark(),
+                    textAlign: TextAlign.center,
                   ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text('Clues', style: AppText.title(size: 20)),
-            const SizedBox(height: 8),
-            for (final (i, c) in clues.indexed)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: ClueCard(clue: c, index: i, location: locationOfClue(c)),
+                  const SizedBox(height: 12),
+                  Text('Evidence', style: AppText.title(size: 20)),
+                  const SizedBox(height: 8),
+                  GridView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: evidenceGridDelegate(context),
+                    children: [
+                      for (final e in evidence)
+                        EvidenceTile(
+                          evidence: e,
+                          location: locationOfEvidence(e),
+                          onOpened: () => ref
+                              .read(gameControllerProvider.notifier)
+                              .recordEvidenceViewed(e.id),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text('Clues', style: AppText.title(size: 20)),
+                  const SizedBox(height: 8),
+                  for (final (i, c) in clues.indexed)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: ClueCard(
+                        clue: c,
+                        index: i,
+                        location: locationOfClue(c),
+                      ),
+                    ),
+                  // Earlier cases (e.g. Case 12 needs them): their evidence is in
+                  // the archive. Hidden while no other case has been solved.
+                  if (earlierCases) ...[
+                    const SizedBox(height: 8),
+                    GameButton(
+                      label: 'OPEN THE CASE ARCHIVE',
+                      glyph: InkGlyph.folder,
+                      style: GameButtonStyle.outline,
+                      // The notebook opens on its archive: its own sound, no tap.
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        this.context.push(Routes.archive);
+                      },
+                    ),
+                  ],
+                ],
               ),
-            // Earlier cases (e.g. Case 12 needs them): their evidence is in
-            // the archive. Hidden while no other case has been solved.
-            if (earlierCases) ...[
-              const SizedBox(height: 8),
-              GameButton(
-                label: 'OPEN THE CASE ARCHIVE',
-                glyph: InkGlyph.folder,
-                style: GameButtonStyle.outline,
-                // The notebook opens on its archive: its own sound, no tap.
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  this.context.push(Routes.archive);
-                },
-              ),
-            ],
-          ],
-        ),
             ),
           ],
         ),
@@ -277,6 +326,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
           icon: const InkIcon(InkGlyph.back),
           onPressed: () => context.go(Routes.map),
         ),
+        // The coins in hand (to read only): a hint here may cost some.
+        actions: const [
+          CoinBalance(key: ValueKey('coin-balance'), dark: true),
+          SizedBox(width: AppSpace.lg),
+        ],
       ),
       // The last evidence and papers, examined on the detective's desk.
       body: DeskBackground(
@@ -287,51 +341,67 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
               // Built whole (not lazily), so the page can open on the locks.
               child: SingleChildScrollView(
                 controller: _scroll,
-                padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpace.xl,
+                  AppSpace.sm,
+                  AppSpace.xl,
+                  AppSpace.xxxl,
+                ),
                 child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // The app bar already says FINAL MISSION: the page starts on the place.
-                  Text(
-                    m.location,
-                    style: AppText.logo(size: 28, color: AppColors.goldLight),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSpace.sm),
-                  const Center(child: OrnamentRule(color: AppColors.goldLight)),
-                  const SizedBox(height: 12),
-                  // A smaller stage on a small phone, so the story and the locks
-                  // come sooner; the full 250 on taller screens.
-                  SizedBox(
-                    height: (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
-                    child: ClipRect(
-                      child: m.scene == Artwork.royalBox
-                          ? RoyalBoxAnimation(animation: _open)
-                          : _SceneReveal(scene: PlaceArt.sceneOf(m), animation: _open),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // The app bar already says FINAL MISSION: the page starts on the place.
+                    Text(
+                      m.location,
+                      style: AppText.logo(size: 28, color: AppColors.goldLight),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  // The story gives way to the banner: the height eases over
-                  // instead of jumping.
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 350),
-                    curve: Curves.easeInOut,
-                    alignment: Alignment.topCenter,
-                    child: AnimatedBuilder(
-                      animation: _open,
-                      builder: (context, _) => _open.value > 0.55
-                          ? _CaseSolvedBanner(
-                              progress: _open.value,
-                              message: m.successMessage,
-                              detectiveName: progress.detectiveName ?? '',
-                            )
-                          : _intro(m),
+                    const SizedBox(height: AppSpace.sm),
+                    const Center(
+                      child: OrnamentRule(color: AppColors.goldLight),
                     ),
-                  ),
-                  const SizedBox(height: AppSpace.xl),
-                  if (!solved) ..._puzzle(m, progress.hintsFor(m.id)) else _solvedActions(),
-                ],
-              ),
+                    const SizedBox(height: 12),
+                    // A smaller stage on a small phone, so the story and the locks
+                    // come sooner; the full 250 on taller screens.
+                    SizedBox(
+                      height: (MediaQuery.sizeOf(context).height * 0.3).clamp(
+                        160.0,
+                        250.0,
+                      ),
+                      child: ClipRect(
+                        child: m.scene == Artwork.royalBox
+                            ? RoyalBoxAnimation(animation: _open)
+                            : _SceneReveal(
+                                scene: PlaceArt.sceneOf(m),
+                                animation: _open,
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // The story gives way to the banner: the height eases over
+                    // instead of jumping.
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 350),
+                      curve: Curves.easeInOut,
+                      alignment: Alignment.topCenter,
+                      child: AnimatedBuilder(
+                        animation: _open,
+                        builder: (context, _) => _open.value > 0.55
+                            ? _CaseSolvedBanner(
+                                progress: _open.value,
+                                message: m.successMessage,
+                                detectiveName: progress.detectiveName ?? '',
+                              )
+                            : _intro(m),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpace.xl),
+                    if (!solved)
+                      ..._puzzle(m, progress.hintsFor(m.id))
+                    else
+                      _solvedActions(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -393,13 +463,21 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       ),
       // The letter again, without scrolling back up (as on every puzzle).
       Center(
-        child: InkTextButton(label: 'Letter', glyph: InkGlyph.letter, color: AppColors.goldLight, onPressed: _rereadLetter),
+        child: InkTextButton(
+          label: 'Reread Letter',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
+        ),
       ),
     ] else
       // Any other puzzle type: the case's last page, laid on the desk.
       ShakeOnChange(
         trigger: _wrongPulse,
-        child: PaperSheet(padding: const EdgeInsets.all(AppSpace.lg), child: questionFor(m, _submit)),
+        child: PaperSheet(
+          padding: const EdgeInsets.all(AppSpace.lg),
+          child: questionFor(m, _submit),
+        ),
       ),
     const SizedBox(height: 12),
     GameButton(
@@ -410,12 +488,18 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
       onPressed: _peekNotebook,
     ),
     const SizedBox(height: 18),
-    TipsPanel(hints: m.hints, revealed: hintsShown, onReveal: _showHint, dark: true),
+    TipsPanel(
+      hints: m.hints,
+      revealed: hintsShown,
+      onReveal: _showHint,
+      dark: true,
+    ),
   ];
 
   Widget _solvedActions() => AnimatedBuilder(
     animation: _open,
-    builder: (context, child) => Opacity(opacity: ((_open.value - 0.8) / 0.2).clamp(0, 1), child: child),
+    builder: (context, child) =>
+        Opacity(opacity: ((_open.value - 0.8) / 0.2).clamp(0, 1), child: child),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -427,8 +511,13 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen> with Si
             '+$_xpEarned XP${_coinsEarned > 0 ? '   ·   +$_coinsEarned COINS' : ''}',
             key: const ValueKey('final-reward'),
             textAlign: TextAlign.center,
-            style: AppText.style(AppText.body, size: 16, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
-                .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+            style: AppText.style(
+              AppText.body,
+              size: 16,
+              weight: FontWeight.w700,
+              color: AppColors.goldLight,
+              letterSpacing: 2,
+            ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
           ),
           const SizedBox(height: AppSpace.md),
         ],
@@ -488,7 +577,10 @@ class _Dial extends StatelessWidget {
         border: Border.all(color: AppColors.goldDeep, width: AppLine.hairline),
         boxShadow: AppShadow.onNight,
       ),
-      foregroundDecoration: const RuledFrame(color: AppColors.navyDeep, inset: 3),
+      foregroundDecoration: const RuledFrame(
+        color: AppColors.navyDeep,
+        inset: 3,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -498,7 +590,10 @@ class _Dial extends StatelessWidget {
             onPressed: onUp,
             color: AppColors.navy,
             // The ink "down" arrow turned over (no separate up glyph).
-            icon: const RotatedBox(quarterTurns: 2, child: InkIcon(InkGlyph.down, size: AppIconSize.large)),
+            icon: const RotatedBox(
+              quarterTurns: 2,
+              child: InkIcon(InkGlyph.down, size: AppIconSize.large),
+            ),
           ),
           Container(
             width: 58,
@@ -507,12 +602,18 @@ class _Dial extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.navy,
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: AppColors.goldDeep, width: AppLine.rule),
+              border: Border.all(
+                color: AppColors.goldDeep,
+                width: AppLine.rule,
+              ),
             ),
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 160),
               transitionBuilder: (child, anim) => SlideTransition(
-                position: Tween(begin: const Offset(0, 0.4), end: Offset.zero).animate(anim),
+                position: Tween(
+                  begin: const Offset(0, 0.4),
+                  end: Offset.zero,
+                ).animate(anim),
                 child: FadeTransition(opacity: anim, child: child),
               ),
               child: Text(
@@ -536,7 +637,11 @@ class _Dial extends StatelessWidget {
 }
 
 class _CaseSolvedBanner extends StatelessWidget {
-  const _CaseSolvedBanner({required this.progress, required this.message, required this.detectiveName});
+  const _CaseSolvedBanner({
+    required this.progress,
+    required this.message,
+    required this.detectiveName,
+  });
 
   final double progress;
   final String message;
@@ -595,7 +700,11 @@ class _SceneReveal extends StatelessWidget {
                 tilt: -0.01,
                 // The picture changes with the solve (the Case 02 clock starts
                 // again): it times its own change over the reveal's progress.
-                child: LandmarkArt(scene, borderRadius: 2, solved: animation.value),
+                child: LandmarkArt(
+                  scene,
+                  borderRadius: 2,
+                  solved: animation.value,
+                ),
               ),
             ),
           ),
@@ -607,7 +716,11 @@ class _SceneReveal extends StatelessWidget {
 
 /// The Royal Box: closed → lid lifts → light rays → crown rises.
 class RoyalBoxAnimation extends StatelessWidget {
-  const RoyalBoxAnimation({super.key, required this.animation, this.art = ArtAssets.royalBox});
+  const RoyalBoxAnimation({
+    super.key,
+    required this.animation,
+    this.art = ArtAssets.royalBox,
+  });
 
   /// 0 = shut (the puzzle), 1 = open with the Crown (solved, or a revisit).
   final Animation<double> animation;
@@ -624,35 +737,47 @@ class RoyalBoxAnimation extends StatelessWidget {
         final t = animation.value;
         final shake = t < 0.2 ? math.sin(t * 90) * 4 * (1 - t / 0.2) : 0.0;
         // The heavy lid swings open and settles (no spring back).
-        final lid = Curves.easeOutCubic.transform(((t - 0.2) / 0.3).clamp(0, 1));
-        final crown = Curves.easeOutCubic.transform(((t - 0.4) / 0.45).clamp(0, 1));
+        final lid = Curves.easeOutCubic.transform(
+          ((t - 0.2) / 0.3).clamp(0, 1),
+        );
+        final crown = Curves.easeOutCubic.transform(
+          ((t - 0.4) / 0.45).clamp(0, 1),
+        );
         final drawn = CustomPaint(
           painter: _RoyalBoxPainter(lid: lid, crown: crown, rays: t),
           child: const SizedBox.expand(),
         );
-        if (pictures == null) return Transform.translate(offset: Offset(shake, 0), child: drawn);
+        if (pictures == null)
+          return Transform.translate(offset: Offset(shake, 0), child: drawn);
         // The painted box: the same timing — it shakes, the light comes
         // out as it opens (drawn behind it), the open picture (Crown in it)
         // takes over from the shut one as the lid would swing.
         Widget picture(String file, double opacity) => Opacity(
-              opacity: opacity,
-              child: Image.asset(
-                file,
-                fit: BoxFit.contain,
-                alignment: Alignment.bottomCenter,
-                width: double.infinity,
-                height: double.infinity,
-                excludeFromSemantics: true,
-                // A missing or broken picture: the box drawn in code.
-                errorBuilder: (context, error, stack) => drawn,
-              ),
-            );
+          opacity: opacity,
+          child: Image.asset(
+            file,
+            fit: BoxFit.contain,
+            alignment: Alignment.bottomCenter,
+            width: double.infinity,
+            height: double.infinity,
+            excludeFromSemantics: true,
+            // A missing or broken picture: the box drawn in code.
+            errorBuilder: (context, error, stack) => drawn,
+          ),
+        );
         return Transform.translate(
           offset: Offset(shake, 0),
           child: Stack(
             fit: StackFit.expand,
             children: [
-              CustomPaint(painter: _RoyalBoxPainter(lid: lid, crown: 0, rays: t, raysOnly: true)),
+              CustomPaint(
+                painter: _RoyalBoxPainter(
+                  lid: lid,
+                  crown: 0,
+                  rays: t,
+                  raysOnly: true,
+                ),
+              ),
               if (lid < 1) picture(pictures.closed, 1 - lid),
               if (lid > 0) picture(pictures.open, lid),
             ],
@@ -664,7 +789,12 @@ class RoyalBoxAnimation extends StatelessWidget {
 }
 
 class _RoyalBoxPainter extends CustomPainter {
-  _RoyalBoxPainter({required this.lid, required this.crown, required this.rays, this.raysOnly = false});
+  _RoyalBoxPainter({
+    required this.lid,
+    required this.crown,
+    required this.rays,
+    this.raysOnly = false,
+  });
 
   /// Only the light from the opening box (behind a painted box).
   final bool raysOnly;
@@ -690,15 +820,31 @@ class _RoyalBoxPainter extends CustomPainter {
       final center = Offset(cx, boxTop);
       final len = math.min(size.height, size.width / 2) * 0.95;
       for (var i = 0; i < 12; i++) {
-        final a = -math.pi + (i + 0.5) * math.pi / 12 + math.sin(rays * math.pi) * 0.08;
+        final a =
+            -math.pi +
+            (i + 0.5) * math.pi / 12 +
+            math.sin(rays * math.pi) * 0.08;
         final path = Path()
           ..moveTo(center.dx, center.dy)
-          ..lineTo(center.dx + math.cos(a - 0.06) * len, center.dy + math.sin(a - 0.06) * len)
-          ..lineTo(center.dx + math.cos(a + 0.06) * len, center.dy + math.sin(a + 0.06) * len)
+          ..lineTo(
+            center.dx + math.cos(a - 0.06) * len,
+            center.dy + math.sin(a - 0.06) * len,
+          )
+          ..lineTo(
+            center.dx + math.cos(a + 0.06) * len,
+            center.dy + math.sin(a + 0.06) * len,
+          )
           ..close();
-        canvas.drawPath(path, Paint()..color = AppColors.goldLight.withValues(alpha: 0.18 * lid));
+        canvas.drawPath(
+          path,
+          Paint()..color = AppColors.goldLight.withValues(alpha: 0.18 * lid),
+        );
       }
-      canvas.drawCircle(center, 90 * lid, Paint()..color = AppColors.goldLight.withValues(alpha: 0.25 * lid));
+      canvas.drawCircle(
+        center,
+        90 * lid,
+        Paint()..color = AppColors.goldLight.withValues(alpha: 0.25 * lid),
+      );
     }
 
     if (raysOnly) return;
@@ -726,13 +872,28 @@ class _RoyalBoxPainter extends CustomPainter {
     }
     // Lock plate.
     final plate = RRect.fromRectAndRadius(
-      Rect.fromCenter(center: Offset(cx, body.top + body.height * 0.45), width: 44, height: 50),
+      Rect.fromCenter(
+        center: Offset(cx, body.top + body.height * 0.45),
+        width: 44,
+        height: 50,
+      ),
       const Radius.circular(8),
     );
-    canvas.drawRRect(plate, Paint()..color = lid > 0 ? AppColors.success : AppColors.navy);
-    canvas.drawCircle(plate.center.translate(0, -6), 6, Paint()..color = AppColors.goldLight);
+    canvas.drawRRect(
+      plate,
+      Paint()..color = lid > 0 ? AppColors.success : AppColors.navy,
+    );
+    canvas.drawCircle(
+      plate.center.translate(0, -6),
+      6,
+      Paint()..color = AppColors.goldLight,
+    );
     canvas.drawRect(
-      Rect.fromCenter(center: plate.center.translate(0, 6), width: 5, height: 14),
+      Rect.fromCenter(
+        center: plate.center.translate(0, 6),
+        width: 5,
+        height: 14,
+      ),
       Paint()..color = AppColors.goldLight,
     );
 
@@ -745,16 +906,32 @@ class _RoyalBoxPainter extends CustomPainter {
     canvas.translate(body.right, body.top - lid * 6);
     canvas.rotate(lid * 0.55);
     canvas.translate(-body.right, -body.top);
-    final lidRect = Rect.fromLTWH(body.left - 8, body.top - boxH * 0.42, body.width + 16, boxH * 0.44);
+    final lidRect = Rect.fromLTWH(
+      body.left - 8,
+      body.top - boxH * 0.42,
+      body.width + 16,
+      boxH * 0.44,
+    );
     final lidPath = Path()
       ..moveTo(lidRect.left, lidRect.bottom)
       ..lineTo(lidRect.left, lidRect.top + lidRect.height * 0.45)
-      ..quadraticBezierTo(cx, lidRect.top - lidRect.height * 0.45, lidRect.right, lidRect.top + lidRect.height * 0.45)
+      ..quadraticBezierTo(
+        cx,
+        lidRect.top - lidRect.height * 0.45,
+        lidRect.right,
+        lidRect.top + lidRect.height * 0.45,
+      )
       ..lineTo(lidRect.right, lidRect.bottom)
       ..close();
     canvas.drawPath(lidPath, Paint()..color = AppColors.goldDeep);
     canvas.drawPath(lidPath, ink..strokeWidth = 3);
-    if (lid < 0.3) _crown(canvas, Offset(cx, lidRect.top + lidRect.height * 0.35), 26, emblem: true);
+    if (lid < 0.3)
+      _crown(
+        canvas,
+        Offset(cx, lidRect.top + lidRect.height * 0.35),
+        26,
+        emblem: true,
+      );
     canvas.restore();
   }
 
@@ -773,7 +950,10 @@ class _RoyalBoxPainter extends CustomPainter {
       ..lineTo(r, top + h * 0.2)
       ..lineTo(r, bottom)
       ..close();
-    c.drawPath(path, Paint()..color = emblem ? AppColors.goldLight : AppColors.gold);
+    c.drawPath(
+      path,
+      Paint()..color = emblem ? AppColors.goldLight : AppColors.gold,
+    );
     c.drawPath(
       path,
       Paint()
@@ -782,11 +962,26 @@ class _RoyalBoxPainter extends CustomPainter {
         ..strokeWidth = emblem ? 1.5 : 3,
     );
     if (!emblem) {
-      c.drawRect(Rect.fromLTRB(l, bottom - h * 0.22, r, bottom), Paint()..color = AppColors.goldDeep);
-      for (final (fx, color) in [(0.2, AppColors.royalBlue), (0.5, AppColors.waxRed), (0.8, AppColors.royalBlue)]) {
-        c.drawCircle(Offset(l + w * fx, bottom - h * 0.11), w * 0.05, Paint()..color = color);
+      c.drawRect(
+        Rect.fromLTRB(l, bottom - h * 0.22, r, bottom),
+        Paint()..color = AppColors.goldDeep,
+      );
+      for (final (fx, color) in [
+        (0.2, AppColors.royalBlue),
+        (0.5, AppColors.waxRed),
+        (0.8, AppColors.royalBlue),
+      ]) {
+        c.drawCircle(
+          Offset(l + w * fx, bottom - h * 0.11),
+          w * 0.05,
+          Paint()..color = color,
+        );
       }
-      for (final p in [Offset(l, top + h * 0.2), Offset(center.dx, top), Offset(r, top + h * 0.2)]) {
+      for (final p in [
+        Offset(l, top + h * 0.2),
+        Offset(center.dx, top),
+        Offset(r, top + h * 0.2),
+      ]) {
         c.drawCircle(p, w * 0.045, Paint()..color = Colors.white);
       }
     }
@@ -794,5 +989,8 @@ class _RoyalBoxPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_RoyalBoxPainter old) =>
-      old.lid != lid || old.crown != crown || old.rays != rays || old.raysOnly != raysOnly;
+      old.lid != lid ||
+      old.crown != crown ||
+      old.rays != rays ||
+      old.raysOnly != raysOnly;
 }

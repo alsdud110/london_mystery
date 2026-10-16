@@ -339,8 +339,8 @@ void main() {
       }
       await capture(t, '${caseId}_final_cards_$tag');
       for (var i = 0; i < fin.hints.length; i++) {
-        await reveal(t, find.text('GET A TIP'));
-        await t.tap(find.text('GET A TIP'));
+        await reveal(t, hintAction(upper: true));
+        await t.tap(hintAction(upper: true));
         await wait(t, const Duration(milliseconds: 600));
         await takeTipFromSheet(t);
       }
@@ -393,8 +393,8 @@ void main() {
         await openFinal(t, size, 'ep01');
         await capture(t, 'ep01_final_page_$tag');
         for (var i = 0; i < 2; i++) {
-          await reveal(t, find.text('GET A TIP'));
-          await t.tap(find.text('GET A TIP'));
+          await reveal(t, hintAction(upper: true));
+          await t.tap(hintAction(upper: true));
           await wait(t, const Duration(milliseconds: 600));
           await takeTipFromSheet(t);
         }

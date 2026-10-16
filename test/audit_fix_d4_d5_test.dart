@@ -30,10 +30,18 @@ void main() {
     final words = <(String, String, String)>[
       ('ep03', 'The boot smells of trains and smoke.', 'smells'),
       ('ep03', 'The boot smells of trains and smoke.', 'smoke.'),
-      ('ep03', "Open your notebook and look closer at the footprint. 'Smells of …' tells you where she had been. Which clock tower fits?", "'Smells"),
+      (
+        'ep03',
+        "Open your notebook and look closer at the footprint. 'Smells of …' tells you where she had been. Which clock tower fits?",
+        "'Smells",
+      ),
       ('ep03', "KING'S CROSS — LOST PROPERTY", 'PROPERTY'),
       ('ep03', 'Luggage Tag', 'Luggage'),
-      ('ep03', 'You started with the driest step. Her first step was the wettest.', 'wettest.'),
+      (
+        'ep03',
+        'You started with the driest step. Her first step was the wettest.',
+        'wettest.',
+      ),
       ('ep08', 'You cannot prove it, Detective!"', 'prove'),
       ('ep08', 'Which evidence shows that she was in Gallery 8?', 'evidence'),
       ('ep08', 'Think back to an earlier case.', 'earlier'),
@@ -47,25 +55,43 @@ void main() {
       ('ep06', 'On the back, a black raven is stamped: the mark of the Raven Society.', 'mark'),
       ('ep09', "Anna borrowed the key, but the note says WHOSE key you used. Was it Anna's own key?", 'borrowed'),
       ('ep05', "'The other way' is the opposite way.", 'opposite'),
-      ('ep10', "'Put together' means two words side by side make one name.", 'together'),
+      (
+        'ep10',
+        "'Put together' means two words side by side make one name.",
+        'together',
+      ),
     ];
 
     // Every string a case shows (its glossary aside).
     List<String> strings(Object? x) => switch (x) {
-          String s => [s],
-          Map m => [for (final e in m.entries) if (e.key != 'glossary') ...strings(e.value)],
-          List l => [for (final v in l) ...strings(v)],
-          _ => const [],
-        };
+      String s => [s],
+      Map m => [
+        for (final e in m.entries)
+          if (e.key != 'glossary') ...strings(e.value),
+      ],
+      List l => [for (final v in l) ...strings(v)],
+      _ => const [],
+    };
 
     test('each one is in its sentence, and its case explains it', () {
       for (final (caseId, sentence, word) in words) {
         final e = byId(caseId);
-        expect(strings(e.toJson()).any((s) => s.contains(sentence)), isTrue, reason: '$caseId: "$sentence"');
+        expect(
+          strings(e.toJson()).any((s) => s.contains(sentence)),
+          isTrue,
+          reason: '$caseId: "$sentence"',
+        );
         expect(sentence, contains(word));
-        expect(e.meaningOf(word.replaceAll(RegExp(r"^'|[.,!?]+$"), '')), isNotNull, reason: '$caseId: $word');
-        expect(glossaryWordsOf(e, sentence).map((w) => w.word), contains(word.replaceAll(RegExp(r"^'|[.,!?]+$"), '')),
-            reason: '$caseId: $word, as it is written');
+        expect(
+          e.meaningOf(word.replaceAll(RegExp(r"^'|[.,!?]+$"), '')),
+          isNotNull,
+          reason: '$caseId: $word',
+        );
+        expect(
+          glossaryWordsOf(e, sentence).map((w) => w.word),
+          contains(word.replaceAll(RegExp(r"^'|[.,!?]+$"), '')),
+          reason: '$caseId: $word, as it is written',
+        );
       }
     });
 
@@ -78,8 +104,14 @@ void main() {
       // "Turn right at the bridge".
       final c07 = byId('ep07');
       expect(c07.intro, contains('Inspector Grey was right.'));
-      expect(c07.missionById('ep07_m1')!.question, 'Which map shows the right spot?');
-      expect(c07.missionById('ep07_m1')!.letter, contains('Turn right at the bridge.'));
+      expect(
+        c07.missionById('ep07_m1')!.question,
+        'Which map shows the right spot?',
+      );
+      expect(
+        c07.missionById('ep07_m1')!.letter,
+        contains('Turn right at the bridge.'),
+      );
       expect(c07.meaningOf('right'), allOf(contains('오른쪽'), contains('맞는')));
       // Case 01: King's Cross, a station; Case 02: Mrs Bell, a person.
       expect(byId('ep01').meaningOf("King's"), contains("King's Cross"));
@@ -92,7 +124,8 @@ void main() {
       final answers = {
         for (final e in season)
           for (final m in e.allMissions)
-            if (m.type == MissionType.wordInput) ...[m.answer, ...m.acceptedAnswers].map((a) => a.toLowerCase()),
+            if (m.type == MissionType.wordInput)
+              ...[m.answer, ...m.acceptedAnswers].map((a) => a.toLowerCase()),
       };
       const added = [
         'complete', 'sentences', 'opposites', 'moment', 'smells', 'smoke', 'wettest', 'driest', 'luggage', 'property',
@@ -106,11 +139,20 @@ void main() {
       }
       // A word only the right card has would point at it.
       for (final e in season) {
-        for (final m in e.allMissions.where((m) => m.type == MissionType.multipleChoice)) {
-          final right = m.options.firstWhere((o) => o.id == m.answer).label.toLowerCase();
-          final others = m.options.where((o) => o.id != m.answer).map((o) => o.label.toLowerCase()).join(' ');
+        for (final m in e.allMissions.where(
+          (m) => m.type == MissionType.multipleChoice,
+        )) {
+          final right = m.options
+              .firstWhere((o) => o.id == m.answer)
+              .label
+              .toLowerCase();
+          final others = m.options
+              .where((o) => o.id != m.answer)
+              .map((o) => o.label.toLowerCase())
+              .join(' ');
           for (final w in added) {
-            if (RegExp('\\b$w\\b').hasMatch(right)) expect(others, contains(w), reason: '${m.id}: $w');
+            if (RegExp('\\b$w\\b').hasMatch(right))
+              expect(others, contains(w), reason: '${m.id}: $w');
           }
         }
       }
@@ -156,38 +198,59 @@ void main() {
   });
 
   group('D4 — meanings where a child gets stuck', () {
-    for (final (size, tag) in const [(Size(360, 640), '360x640'), (Size(390, 844), '390x844')]) {
-      testWidgets('answer cards $tag: a tap chooses first; on the chosen card a word shows its meaning', (t) async {
-        final play = MissionPlay();
-        final m = await play.openPuzzle(t, size, 'm01');
-        const label = 'The Science Museum (rockets and machines)';
-        final card = findReadable(label);
-        expect(card, findsOneWidget, reason: 'not chosen: plain words');
+    for (final (size, tag) in const [
+      (Size(360, 640), '360x640'),
+      (Size(390, 844), '390x844'),
+    ]) {
+      testWidgets(
+        'answer cards $tag: a tap chooses first; on the chosen card a word shows its meaning',
+        (t) async {
+          final play = MissionPlay();
+          final m = await play.openPuzzle(t, size, 'm01');
+          const label = 'The Science Museum (rockets and machines)';
+          final card = findReadable(label);
+          expect(card, findsOneWidget, reason: 'not chosen: plain words');
 
-        // A tap on a word of a card not yet chosen chooses the card.
-        await reveal(t, card);
-        await t.tapOnText(find.textRange.ofSubstring('rockets'));
-        await wait(t, const Duration(milliseconds: 400));
-        expect(find.text('WORD CARD'), findsNothing, reason: 'choosing comes first');
-        expect(_chosen(t, label), isTrue);
+          // A tap on a word of a card not yet chosen chooses the card.
+          await reveal(t, card);
+          await t.tapOnText(find.textRange.ofSubstring('rockets'));
+          await wait(t, const Duration(milliseconds: 400));
+          expect(
+            find.text('WORD CARD'),
+            findsNothing,
+            reason: 'choosing comes first',
+          );
+          expect(_chosen(t, label), isTrue);
 
-        // On the chosen card, the same word shows its meaning, and nothing else.
-        await t.tapOnText(find.textRange.ofSubstring('rockets'));
-        await wait(t, const Duration(milliseconds: 600));
-        expect(find.text('= ${byId('ep01').meaningOf('rockets')}'), findsOneWidget);
-        expect(find.text('Not quite!'), findsNothing, reason: 'no answer was checked');
-        await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
-        expect(_chosen(t, label), isTrue, reason: 'the card stays chosen after the word card closes');
-        expect(play.path(), Routes.mission('m01'));
+          // On the chosen card, the same word shows its meaning, and nothing else.
+          await t.tapOnText(find.textRange.ofSubstring('rockets'));
+          await wait(t, const Duration(milliseconds: 600));
+          expect(
+            find.text('= ${byId('ep01').meaningOf('rockets')}'),
+            findsOneWidget,
+          );
+          expect(
+            find.text('Not quite!'),
+            findsNothing,
+            reason: 'no answer was checked',
+          );
+          await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
+          expect(
+            _chosen(t, label),
+            isTrue,
+            reason: 'the card stays chosen after the word card closes',
+          );
+          expect(play.path(), Routes.mission('m01'));
 
-        // Every card: inside the screen and a comfortable target.
-        for (final o in m.options) {
-          final r = t.getRect(findReadable(o.label));
-          expect(r.left, greaterThanOrEqualTo(0), reason: o.label);
-          expect(r.right, lessThanOrEqualTo(size.width), reason: o.label);
-        }
-        expect(t.takeException(), isNull);
-      });
+          // Every card: inside the screen and a comfortable target.
+          for (final o in m.options) {
+            final r = t.getRect(findReadable(o.label));
+            expect(r.left, greaterThanOrEqualTo(0), reason: o.label);
+            expect(r.right, lessThanOrEqualTo(size.width), reason: o.label);
+          }
+          expect(t.takeException(), isNull);
+        },
+      );
 
       testWidgets('tips and the try-again line $tag: a word shows its meaning; the sheet and tips stay', (t) async {
         final play = MissionPlay();
@@ -210,39 +273,61 @@ void main() {
         expect(find.text('= ${byId('ep05').meaningOf('right')}'), findsOneWidget);
         await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
         expect(find.text('Not quite!'), findsOneWidget, reason: 'the try-again sheet is still open');
-        await tapText(t, 'GET A TIP', after: const Duration(milliseconds: 700));
+        await tapText(t, 'GET MORE HINTS', after: const Duration(milliseconds: 700));
         await takeTipFromSheet(t);
 
-        final tip = byId('ep05').missionById('ep05_m2')!.hints.last;
-        // The first tip opened from the sheet; open the second from the page.
-        await tapText(t, 'Get a tip', after: const Duration(milliseconds: 600));
-        await takeTipFromSheet(t);
-        await reveal(t, findReadable(tip));
-        await t.tapOnText(find.textRange.ofSubstring('opposite'));
-        await wait(t, const Duration(milliseconds: 600));
-        expect(find.text('= ${byId('ep05').meaningOf('opposite')}'), findsOneWidget);
-        await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
-        expect(findReadable(tip), findsOneWidget, reason: 'the tips stay open');
-        expect(play.path(), Routes.mission('ep05_m2'));
-        expect(t.takeException(), isNull);
-      });
+          final tip = byId('ep05').missionById('ep05_m2')!.hints.last;
+          // The first tip opened from the sheet; open the second from the page.
+          await tapText(
+            t,
+            'Get More Hints',
+            after: const Duration(milliseconds: 600),
+          );
+          await takeTipFromSheet(t);
+          await reveal(t, findReadable(tip));
+          await t.tapOnText(find.textRange.ofSubstring('opposite'));
+          await wait(t, const Duration(milliseconds: 600));
+          expect(
+            find.text('= ${byId('ep05').meaningOf('opposite')}'),
+            findsOneWidget,
+          );
+          await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
+          expect(
+            findReadable(tip),
+            findsOneWidget,
+            reason: 'the tips stay open',
+          );
+          expect(play.path(), Routes.mission('ep05_m2'));
+          expect(t.takeException(), isNull);
+        },
+      );
 
-      testWidgets('the final question $tag: its words show their meaning on the dark desk', (t) async {
-        await _openFinal(t, size, season, 'ep08');
-        final q = byId('ep08').finalMission.question;
-        await reveal(t, findReadable(q));
-        await t.tapOnText(find.textRange.ofSubstring('evidence'));
-        await wait(t, const Duration(milliseconds: 600));
-        expect(find.text('= 증거'), findsOneWidget);
-        await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
-        expect(findReadable(q), findsOneWidget);
-        expect(t.takeException(), isNull);
-      });
+      testWidgets(
+        'the final question $tag: its words show their meaning on the dark desk',
+        (t) async {
+          await _openFinal(t, size, season, 'ep08');
+          final q = byId('ep08').finalMission.question;
+          await reveal(t, findReadable(q));
+          await t.tapOnText(find.textRange.ofSubstring('evidence'));
+          await wait(t, const Duration(milliseconds: 600));
+          expect(find.text('= 증거'), findsOneWidget);
+          await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
+          expect(findReadable(q), findsOneWidget);
+          expect(t.takeException(), isNull);
+        },
+      );
     }
 
-    testWidgets('text 1.3×: a chosen card with its dotted words still fits', (t) async {
+    testWidgets('text 1.3×: a chosen card with its dotted words still fits', (
+      t,
+    ) async {
       final play = MissionPlay();
-      final m = await play.openPuzzle(t, const Size(360, 640), 'm01', textScale: 1.3);
+      final m = await play.openPuzzle(
+        t,
+        const Size(360, 640),
+        'm01',
+        textScale: 1.3,
+      );
       for (final o in m.options) {
         await reveal(t, findReadable(o.label));
         await t.tap(findReadable(o.label));
@@ -253,24 +338,41 @@ void main() {
       }
     });
 
-    testWidgets('screen readers: an answer card is one answer, with its words as actions', (t) async {
-      final semantics = t.ensureSemantics();
-      final play = MissionPlay();
-      await play.openPuzzle(t, const Size(390, 844), 'm01');
-      const label = 'C. The London Transport Museum (old buses and trains)';
-      final node = t.getSemantics(find.bySemanticsLabel(label));
-      final actions = [
-        for (final id in node.getSemanticsData().customSemanticsActionIds ?? const <int>[])
-          CustomSemanticsAction.getAction(id)!.label,
-      ];
-      expect(actions, containsAll(['Meaning of Transport', 'Meaning of Museum', 'Meaning of buses', 'Meaning of trains']));
-      semantics.dispose();
-    });
+    testWidgets(
+      'screen readers: an answer card is one answer, with its words as actions',
+      (t) async {
+        final semantics = t.ensureSemantics();
+        final play = MissionPlay();
+        await play.openPuzzle(t, const Size(390, 844), 'm01');
+        const label = 'C. The London Transport Museum (old buses and trains)';
+        final node = t.getSemantics(find.bySemanticsLabel(label));
+        final actions = [
+          for (final id
+              in node.getSemanticsData().customSemanticsActionIds ??
+                  const <int>[])
+            CustomSemanticsAction.getAction(id)!.label,
+        ];
+        expect(
+          actions,
+          containsAll([
+            'Meaning of Transport',
+            'Meaning of Museum',
+            'Meaning of buses',
+            'Meaning of trains',
+          ]),
+        );
+        semantics.dispose();
+      },
+    );
 
     testWidgets('the story text keeps its dotted words (unchanged)', (t) async {
       final play = MissionPlay();
       await play.openPuzzle(t, const Size(390, 844), 'm01');
-      await tapText(t, 'Letter', after: const Duration(milliseconds: 600));
+      await tapText(
+        t,
+        'Reread Letter',
+        after: const Duration(milliseconds: 600),
+      );
       await t.tapOnText(find.textRange.ofSubstring('museum').first);
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('= 박물관'), findsOneWidget);
@@ -280,40 +382,68 @@ void main() {
 
 /// Whether the answer card showing [label] is the chosen one.
 bool _chosen(WidgetTester t, String label) {
-  final semantics = find.ancestor(of: findReadable(label), matching: find.byType(Semantics)).first;
+  final semantics = find
+      .ancestor(of: findReadable(label), matching: find.byType(Semantics))
+      .first;
   return t.widget<Semantics>(semantics).properties.selected ?? false;
 }
 
 /// The final case of [caseId] open on its puzzle (earlier cases and its
 /// missions solved).
-Future<void> _openFinal(WidgetTester t, Size size, List<Episode> season, String caseId) async {
+Future<void> _openFinal(
+  WidgetTester t,
+  Size size,
+  List<Episode> season,
+  String caseId,
+) async {
   t.view.physicalSize = size * 3;
   t.view.devicePixelRatio = 3;
   addTearDown(t.view.reset);
   final e = season.firstWhere((x) => x.id == caseId);
-  final earlier = [for (final x in season) if (x.number < e.number) x];
+  final earlier = [
+    for (final x in season)
+      if (x.number < e.number) x,
+  ];
   final start = DateTime.now().subtract(const Duration(minutes: 1));
-  String progress(List<String> done, {bool solved = false}) => jsonEncode(GameProgress(
-        detectiveName: 'MINYOUNG',
-        introSeen: true,
-        completedMissionIds: done,
-        startedAt: start,
-        completedAt: solved ? start : null,
-        playMillis: 0,
-      ).toJson());
-  await t.pumpWidget(ProviderScope(
-    overrides: await testOverrides(prefs: {
-      for (final x in earlier) AppConstants.progressKeyFor(x.id): progress([for (final m in x.allMissions) m.id], solved: true),
-      AppConstants.progressKeyFor(e.id): progress([for (final m in e.missions) m.id]),
-      AppConstants.seasonStorageKey: jsonEncode(
-        SeasonProgress(activeEpisodeId: e.id, solvedEpisodeIds: [for (final x in earlier) x.id]).toJson(),
+  String progress(List<String> done, {bool solved = false}) => jsonEncode(
+    GameProgress(
+      detectiveName: 'MINYOUNG',
+      introSeen: true,
+      completedMissionIds: done,
+      startedAt: start,
+      completedAt: solved ? start : null,
+      playMillis: 0,
+    ).toJson(),
+  );
+  await t.pumpWidget(
+    ProviderScope(
+      overrides: await testOverrides(
+        prefs: {
+          for (final x in earlier)
+            AppConstants.progressKeyFor(x.id): progress([
+              for (final m in x.allMissions) m.id,
+            ], solved: true),
+          AppConstants.progressKeyFor(e.id): progress([
+            for (final m in e.missions) m.id,
+          ]),
+          AppConstants.seasonStorageKey: jsonEncode(
+            SeasonProgress(
+              activeEpisodeId: e.id,
+              solvedEpisodeIds: [for (final x in earlier) x.id],
+            ).toJson(),
+          ),
+        },
       ),
-    }),
-    child: const LondonMysteryApp(),
-  ));
+      child: const LondonMysteryApp(),
+    ),
+  );
   await wait(t, const Duration(milliseconds: 300));
-  ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider).go(Routes.finalMission);
+  ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first)
+      .read(routerProvider)
+      .go(Routes.finalMission);
   await wait(t, const Duration(milliseconds: 1200));
-  await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 500)));
+  await t.runAsync(
+    () => Future<void>.delayed(const Duration(milliseconds: 500)),
+  );
   await t.pump();
 }

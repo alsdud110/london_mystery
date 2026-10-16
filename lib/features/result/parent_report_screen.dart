@@ -108,7 +108,7 @@ class ParentReportScreen extends ConsumerWidget {
                               value: '${report.missionsCompleted} / ${report.missionsTotal}',
                             ),
                             _Metric(
-                              label: 'Tips Opened',
+                              label: 'Hints Opened',
                               labelKo: '열어 본 힌트',
                               value: report.hasPlayRecord ? '${report.hintsUsed}' : '기록 없음',
                             ),

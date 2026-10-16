@@ -299,6 +299,54 @@ class InkTextButton extends StatelessWidget {
   }
 }
 
+/// A small button for a choice inside a dialog (about 44 high, 104 to 140
+/// wide): [primary] is navy, the other paper with a fine rule. Flat, so the
+/// dialog's own content (a price, a question) leads, not its buttons.
+class CompactButton extends StatelessWidget {
+  const CompactButton({super.key, required this.label, required this.onPressed, this.primary = false, this.semanticLabel});
+
+  final String label;
+  final VoidCallback? onPressed;
+  final bool primary;
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final ink = primary ? AppColors.paperLight : AppColors.navy;
+    return Semantics(
+      label: semanticLabel,
+      excludeSemantics: semanticLabel != null,
+      button: true,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 104, maxWidth: 140, minHeight: 44),
+        child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            minimumSize: const Size(104, 44),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
+            backgroundColor: primary ? AppColors.navy : AppColors.paperLight,
+            foregroundColor: ink,
+            overlayColor: primary ? AppColors.paperLight : AppColors.navy,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.button),
+              side: primary ? BorderSide.none : BorderSide(color: AppLine.faint(0.35), width: AppLine.hairline),
+            ),
+          ),
+          // One line always: a large text size scales it down, never cuts it.
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              maxLines: 1,
+              style: AppText.button(size: 14, color: ink).copyWith(letterSpacing: 1.2),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// The hairline printed just inside a [GameButton]'s edge.
 class _InnerRule extends Decoration {
   const _InnerRule(this.color);
