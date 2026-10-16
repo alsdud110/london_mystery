@@ -158,7 +158,7 @@ void main() {
       await tapText(t, 'START ADVENTURE');
       await t.tap(find.byKey(const ValueKey('avatar-boy')));
       await t.pump();
-      await t.enterText(find.byType(TextField), 'minyoung');
+      await t.enterText(find.byType(TextField), 'MinYoung');
       await tapText(
         t,
         'START INVESTIGATION',
@@ -226,7 +226,7 @@ void main() {
       );
       await t.tap(find.byTooltip('Menu'));
       await wait(t);
-      expect(find.text('Detective MINYOUNG'), findsOneWidget);
+      expect(find.text('Detective MinYoung'), findsOneWidget);
       await t.tapAt(const Offset(20, 20)); // close the menu
       await wait(t);
       // Where the next place is would give away the answer of this one.
@@ -414,7 +414,7 @@ void main() {
         after: const Duration(milliseconds: 3500),
       );
       expect(find.text('CASE SOLVED'), findsOneWidget);
-      expect(find.text('Brilliant work, Detective MINYOUNG!'), findsOneWidget);
+      expect(find.text('Brilliant work, Detective MinYoung!'), findsOneWidget);
       // The Royal Box opening is the solve's sound (not the generic final cue).
       expect(audio.played, contains(GameSound.royalBoxOpen));
       expect(audio.played, isNot(contains(GameSound.finale)));
@@ -422,7 +422,7 @@ void main() {
       // The story after the case, then the case file and the parent report.
       await throughPostCase(t, caseNumber: '01', evidence: 'The Missing Crown');
       expect(find.text('CASE CLOSED'), findsOneWidget);
-      expect(find.text('MINYOUNG'), findsOneWidget);
+      expect(find.text('MinYoung'), findsOneWidget);
       expect(find.text('THE MISSING CROWN'), findsOneWidget);
       expect(find.text('MASTER DETECTIVE'), findsOneWidget);
       await reveal(t, find.text('Evidence'));

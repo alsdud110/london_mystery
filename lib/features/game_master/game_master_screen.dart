@@ -24,7 +24,8 @@ class GameMasterScreen extends ConsumerWidget {
     final ok = await GameDialog.confirmPlain(
       context,
       title: '다음 플레이어를 위해 초기화할까요?',
-      message: '탐정 이름과 진행 기록(사건·코인·힌트)이 모두 삭제됩니다.\n'
+      message: '탐정 이름·아바타와 진행 기록(사건·코인·힌트)이 모두 삭제되고, '
+          '다음 플레이어는 탐정 만들기와 How to Play부터 시작합니다.\n'
           '이 기기에 보관 중인 이전 버전 저장 원본도 함께 삭제됩니다.',
       confirmLabel: '초기화',
       cancelLabel: '취소',

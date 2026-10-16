@@ -2,9 +2,9 @@ import '../../core/constants/app_constants.dart';
 
 /// The one rule for a detective's name.
 ///
-/// Upper- and lower-case letters are both a valid stored form: the game
-/// writes names in capitals (`GameController.cleanName`), and a saved name
-/// is never rejected for its case.
+/// The letters are kept exactly as typed (Lee, MIN, alex, McDonald): the
+/// game never changes a name's case, in storage or on screen. Names saved in
+/// capitals by earlier versions stay as they were.
 ///
 /// Letters (A–Z, a–z), Hangul syllables, digits, spaces, "." and "-"; no
 /// space at either end and never two in a row; 1 to 12 characters. Every
@@ -29,4 +29,17 @@ abstract final class DetectiveName {
   /// Whether [name] is already in the stored form and allowed.
   static bool isValid(String name) =>
       name.length >= minLength && name.length <= maxLength && !name.contains('  ') && _pattern.hasMatch(name);
+
+  /// Where the detective's name goes in a line that speaks to them.
+  static const placeholder = '{detectiveName}';
+
+  /// [text] with [placeholder] replaced by [name], as saved (never changed in
+  /// case). Without a name the placeholder and the space before it go
+  /// ("Hello, Detective {detectiveName}!" → "Hello, Detective!"): a line
+  /// never shows "null" or the placeholder itself.
+  static String address(String text, String? name) {
+    final n = name?.trim() ?? '';
+    if (n.isEmpty) return text.replaceAll(' $placeholder', '').replaceAll(placeholder, '');
+    return text.replaceAll(placeholder, n);
+  }
 }

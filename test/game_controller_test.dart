@@ -29,9 +29,9 @@ void main() {
   });
 
   group('detective name', () {
-    test('is trimmed and upper-cased', () {
-      expect(ctrl().createDetective('  minyoung  ', DetectiveAvatar.boy), isNull);
-      expect(state().detectiveName, 'MINYOUNG');
+    test('is trimmed, its letters kept exactly as typed', () {
+      expect(ctrl().createDetective('  minYoung  ', DetectiveAvatar.boy), isNull);
+      expect(state().detectiveName, 'minYoung');
     });
 
     test('rejects empty, too long and unsafe input', () {
@@ -162,7 +162,7 @@ void main() {
     ]);
     addTearDown(restarted.dispose);
     final restored = restarted.read(gameControllerProvider);
-    expect(restored.detectiveName, 'KIM');
+    expect(restored.detectiveName, 'Kim');
     expect(restored.completedMissionIds, state().completedMissionIds);
     expect(restored.badgeIds, state().badgeIds);
     expect(restored.isCaseSolved, isTrue);
@@ -174,7 +174,7 @@ void main() {
     ctrl().startInvestigation();
     ctrl().submitAnswer(m['m01']!, 'b');
     ctrl().playAgain();
-    expect(state().detectiveName, 'KIM');
+    expect(state().detectiveName, 'Kim');
     expect(state().completedMissionIds, isEmpty);
     expect(state().badgeIds, isEmpty);
     expect(state().introSeen, isFalse);

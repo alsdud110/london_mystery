@@ -357,7 +357,7 @@ void main() {
       await t.tap(find.text('START NEW ADVENTURE'));
       await wait(t, const Duration(milliseconds: 1500));
       expect(find.text('Who will take\nthe case?'), findsNothing, reason: 'the detective stays: no new detective to create');
-      expect(find.text('Welcome, Detective!'), findsOneWidget, reason: 'a new adventure begins (How to Play, never seen yet)');
+      expect(find.byKey(const ValueKey('how-to-play-welcome')), findsOneWidget, reason: 'a new adventure begins (How to Play, never seen yet)');
       await wait(t, const Duration(seconds: 3));
     });
   }
@@ -398,8 +398,8 @@ void main() {
       final labelX = inkX(t.renderObject<RenderParagraph>(find.text('Detective Name')));
       final paper = t.getRect(find.ancestor(of: find.text('CREATE YOUR DETECTIVE'), matching: find.byType(Container)).last);
       expect(labelX, closeTo(paper.center.dx, 1.5), reason: 'the label is in the middle of the form');
-      expect(inkX(t.renderObject<RenderParagraph>(find.text('SHERLOCK'))), closeTo(labelX, 1.5), reason: 'the hint under the label');
-      expect(t.renderObject<RenderParagraph>(find.text('SHERLOCK')).didExceedMaxLines, isFalse, reason: 'the hint is whole');
+      expect(inkX(t.renderObject<RenderParagraph>(find.text('Sherlock'))), closeTo(labelX, 1.5), reason: 'the hint under the label');
+      expect(t.renderObject<RenderParagraph>(find.text('Sherlock')).didExceedMaxLines, isFalse, reason: 'the hint is whole');
       double typedX() {
         final editable = t.state<EditableTextState>(field).renderEditable;
         final text = editable.text!.toPlainText();
@@ -409,7 +409,7 @@ void main() {
       }
 
       // 2–3. Tap the line: focus, keyboard; a short name, then the longest, both centred.
-      await t.tap(find.text('SHERLOCK'));
+      await t.tap(find.text('Sherlock'));
       await t.pump();
       expect(focused(), isTrue);
       expect(t.testTextInput.isVisible, isTrue, reason: 'the keyboard comes when asked');

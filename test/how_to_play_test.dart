@@ -8,6 +8,7 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/wallet_controller.dart';
@@ -42,7 +43,7 @@ void main() {
   });
 
   const titles = [
-    'Welcome, Detective!',
+    'Hello, Detective MinYoung!',
     'Read the Letter',
     'Talk to People',
     'Solve the Mystery',
@@ -73,7 +74,7 @@ void main() {
     await tapText(t, 'START ADVENTURE');
     await t.tap(find.byKey(const ValueKey('avatar-boy')));
     await t.pump();
-    await t.enterText(find.byType(TextField), 'minyoung');
+    await t.enterText(find.byType(TextField), 'MinYoung');
     await tapText(t, 'START INVESTIGATION', after: const Duration(milliseconds: 900));
   }
 
@@ -92,14 +93,16 @@ void main() {
     expect(path(t), Routes.howToPlay, reason: 'straight after registration');
     expect(find.text(titles.first), findsOneWidget);
     expect(find.bySemanticsLabel('Page 1 of 8'), findsOneWidget);
-    // The opening spread: the game's name over London at night, the partner,
+    // The opening spread: the game's name over London at night, the detective,
     // the welcome on its card.
     expect(find.text('LONDON'), findsOneWidget);
     expect(find.text('MYSTERY'), findsOneWidget);
     expect(
-        find.text("Hello, Detective MINYOUNG! I'm your detective partner. Let's find clues and solve mysteries in London together."),
+        find.text("Your first mystery awaits. Let's find clues and solve mysteries in London!"),
         findsOneWidget,
-        reason: 'the partner greets the player by name');
+        reason: 'the welcome under the greeting by name');
+    expect(find.text("I'm your detective partner."), findsNothing, reason: 'the detective in the picture is the player');
+    expect(find.bySemanticsLabel('Detective MinYoung'), findsOneWidget, reason: 'the picture, by the detective\'s name');
     for (var i = 1; i < titles.length; i++) {
       await next(t);
       expect(find.text(titles[i]), findsOneWidget, reason: 'page ${i + 1}');
@@ -202,7 +205,7 @@ void main() {
     expect(find.bySemanticsLabel(RegExp('^Sealed letter. Tap to open.')), findsOneWidget, reason: 'for screen readers too');
     await t.tap(find.text('TAP TO OPEN'));
     await wait(t, const Duration(milliseconds: 1400));
-    expect(findReadable('Dear Detective,\n\nMy little cat, Pip, is lost!\nPip loves warm places.\nPlease help me find her.\n\n— Mr Finch'),
+    expect(findReadable('Dear Detective MinYoung,\n\nMy little cat, Pip, is lost!\nPip loves warm places.\nPlease help me find her.\n\n— Mr Finch'),
         findsOneWidget);
     await reveal(t, find.text('Letter'));
     await t.tap(find.text('Letter'));
@@ -346,7 +349,11 @@ void main() {
   }
 
   test('the guide has its own pictures, none of a case', () {
-    final own = [ArtAssets.onboardingPartner, ArtAssets.onboardingPartnerReady, ArtAssets.onboardingWitness, ArtAssets.onboardingCat];
+    final own = [
+      for (final a in [...DetectiveAvatar.values, null]) ...[ArtAssets.onboardingWelcome(a), ArtAssets.onboardingReady(a)],
+      ArtAssets.onboardingWitness,
+      ArtAssets.onboardingCat,
+    ];
     for (final f in own) {
       expect(f, startsWith('assets/art/onboarding/'));
     }

@@ -22,7 +22,8 @@ Future<void> main() async {
   // The whole season is loaded up front; the open case is chosen in the
   // case files (see `seasonProvider` / `currentEpisodeProvider`).
   final catalog = MockEpisodeRepository.sortedByNumber([
-    for (final id in await episodes.availableEpisodeIds()) await episodes.fetchEpisode(id),
+    for (final id in await episodes.availableEpisodeIds())
+      await episodes.fetchEpisode(id),
   ]);
 
   runApp(

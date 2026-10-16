@@ -12,6 +12,8 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/models/detective_name.dart';
+import '../../data/models/profile.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/art_assets.dart';
@@ -33,8 +35,8 @@ import '../mission/widgets/tip_shop.dart';
 import '../season/widgets/season_props.dart';
 import 'how_to_play_state.dart';
 
-/// How to Play: an eight-page storybook before the first case, shown by
-/// the detective partner. It opens and closes on London at night (the
+/// How to Play: an eight-page storybook before the first case, with the
+/// player's own detective (boy or girl, by name). It opens and closes on London at night (the
 /// cover pages); between them each page is a parchment leaf in a gold frame
 /// with its own scene to try — a letter, a witness, a case file, a
 /// notebook of words, tip cards, the detective notebook. Everything tried
@@ -157,14 +159,16 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
     setState(() {
       _tips = tip;
       _tipOpen = tip;
-      // Practice coins only; short of them, the partner helps for free.
+      // Practice coins only; short of them, the hint is free.
       if (state == TipState.buy) _practiceCoins -= price;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final name = ref.watch(gameControllerProvider.select((p) => p.detectiveName));
+    // The detective as saved: their name (as typed) and their picture.
+    final detective = ref.watch(detectiveProfileProvider);
+    final name = detective.detectiveName ?? ref.watch(gameControllerProvider.select((p) => p.detectiveName));
     return BackTo(
       onBack: _back,
       child: Scaffold(
@@ -189,13 +193,13 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
               child: child,
             ),
           ),
-          child: KeyedSubtree(key: ValueKey(_page), child: _spread(name)),
+          child: KeyedSubtree(key: ValueKey(_page), child: _spread(name, detective.avatar)),
         ),
       ),
     );
   }
 
-  Widget _spread(String? name) {
+  Widget _spread(String? name, DetectiveAvatar? avatar) {
     Widget paper({required String title, required String line, required Widget scene, required String caption}) =>
         _PaperSpread(
           page: _page,
@@ -208,13 +212,14 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
           onNext: _next,
         );
     return switch (_page) {
-      0 => _WelcomeSpread(name: name, onNext: _next, onBack: _back, onSkip: _done),
+      0 => _WelcomeSpread(name: name, avatar: avatar, onNext: _next, onBack: _back, onSkip: _done),
       1 => paper(
         title: 'Read the Letter',
         line: 'Every letter holds a clue. Read it carefully!',
         caption: _letterOpened ? 'You can always tap Letter to read it again.' : 'Every case begins with a letter.',
         scene: _practice(
           _LetterScene(
+            name: name,
             opened: _letterOpened,
             onOpen: () => _sound(GameSound.envelopeOpen),
             onOpened: () => setState(() => _letterOpened = true),
@@ -226,7 +231,7 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
         title: 'Talk to People',
         line: 'Ask questions. Listen closely. Every detail matters.',
         caption: 'In some cases, you will meet people to talk to.',
-        scene: _WitnessScene(asked: _asked, onAsk: (q) => setState(() => _asked = q)),
+        scene: _WitnessScene(name: name, asked: _asked, onAsk: (q) => setState(() => _asked = q)),
       ),
       3 => paper(
         title: 'Solve the Mystery',
@@ -261,7 +266,7 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
         title: 'Hints When You Need Them',
         line: 'Your first hint is free. More hints cost a few coins.',
         caption: _tips < _TipsScene.tips.length
-            ? 'Not enough coins? Your partner still gives you the hint, for free.'
+            ? 'Not enough coins? You can still get a free hint!'
             : 'These were practice coins. Your real coins are safe.',
         scene: _TipsScene(
           revealed: _tips,
@@ -640,7 +645,7 @@ class _GoldFramePainter extends CustomPainter {
   bool shouldRepaint(_GoldFramePainter oldDelegate) => oldDelegate.color != color;
 }
 
-/// One of the guide's own pictures (see `ArtAssets.onboardingPartner`), at
+/// One of the guide's own pictures (see `ArtAssets.onboardingWelcome`), at
 /// [height], decoded no larger than it shows. A missing file leaves its
 /// place empty — never a stand-in drawing. [label]: what it shows, for
 /// screen readers (none: decoration).
@@ -762,11 +767,11 @@ List<Shadow> _nightLift() => [
   Shadow(color: AppColors.navyDeep.withValues(alpha: 0.75), blurRadius: 10, offset: const Offset(0, 1)),
 ];
 
-/// The partner standing in the scene, lit by the lamps: a warm glow behind
+/// The player's detective standing in the scene, lit by the lamps: a warm glow behind
 /// them and their boots [behind] the part of the page below (a card, the
 /// button), so they stand in the street, not on top of the page.
-class _PartnerInScene extends StatelessWidget {
-  const _PartnerInScene({required this.file, required this.label, this.behind = 0});
+class _DetectiveInScene extends StatelessWidget {
+  const _DetectiveInScene({required this.file, required this.label, this.behind = 0});
 
   final String file;
   final String label;
@@ -815,13 +820,31 @@ class _PartnerInScene extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// The storybook's cover: London at night inside the gold frame, the game's
-/// name at the top, the detective partner standing in the street as the
+/// name at the top, the player's detective standing in the street as the
 /// page's hero, and a parchment card laid in front of them with the
 /// welcome. The dots and NEXT sit at the foot of the frame.
 class _WelcomeSpread extends StatelessWidget {
-  const _WelcomeSpread({required this.name, required this.onNext, required this.onBack, required this.onSkip});
+  /// The greeting at the top of the card (see [DetectiveName.address]).
+  static const welcomeLine = 'Hello, Detective ${DetectiveName.placeholder}!';
 
+  /// Under the greeting: the detective in the picture is the player.
+  static const welcomeBody = "Your first mystery awaits. Let's find clues and solve mysteries in London!";
+
+  /// The picture, for screen readers: the player's own detective.
+  static const pictureLabel = 'Detective ${DetectiveName.placeholder}';
+
+  const _WelcomeSpread({
+    required this.name,
+    required this.avatar,
+    required this.onNext,
+    required this.onBack,
+    required this.onSkip,
+  });
+
+  /// The detective's name, as saved (null: not readable — the greeting
+  /// then goes without it).
   final String? name;
+  final DetectiveAvatar? avatar;
   final VoidCallback onNext;
   final VoidCallback onBack;
   final VoidCallback onSkip;
@@ -829,12 +852,12 @@ class _WelcomeSpread extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.sizeOf(context);
-    // A short phone keeps the partner the page's hero: a smaller name, one
+    // A short phone keeps the detective the page's hero: a smaller name, one
     // flourish, a tighter card (the words stay readable).
     final compact = screen.height < 720;
     final size = compact ? (screen.width * 0.08).clamp(26.0, 30.0) : (screen.width * 0.1).clamp(30.0, 40.0);
     return _NightCover(
-      // The gas lamp on the left, Big Ben on the right, the partner between.
+      // The gas lamp on the left, Big Ben on the right, the detective between.
       background: const _NightLondon(focus: Alignment(0.3, 0)),
       shade: const [(0, 0.78), (0.26, 0.4), (0.48, 0.12), (0.66, 0.3), (1, 0.88)],
       child: Column(
@@ -872,14 +895,14 @@ class _WelcomeSpread extends StatelessWidget {
               ],
             ),
           ),
-          const Expanded(
-            child: _PartnerInScene(
-              file: ArtAssets.onboardingPartner,
-              label: 'Your detective partner, waving hello',
+          Expanded(
+            child: _DetectiveInScene(
+              file: ArtAssets.onboardingWelcome(avatar),
+              label: DetectiveName.address(_WelcomeSpread.pictureLabel, name),
               behind: 40,
             ),
           ),
-          // The welcome, on a card laid in front of the partner.
+          // The welcome, on a card laid in front of the detective.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
             child: MediaQuery.withClampedTextScaling(
@@ -891,17 +914,19 @@ class _WelcomeSpread extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: compact ? AppSpace.md : AppSpace.lg),
                 child: Column(
                   children: [
+                    // The reading face, not the small-caps display face: the
+                    // name shows exactly as the detective wrote it.
                     Text(
-                      'Welcome, Detective!',
+                      DetectiveName.address(welcomeLine, name),
+                      key: const ValueKey('how-to-play-welcome'),
                       textAlign: TextAlign.center,
-                      style: AppText.placeTitle(size: compact ? 21 : 23),
+                      style: AppText.title(size: compact ? 21 : 23),
                     ),
                     const SizedBox(height: AppSpace.xs),
                     const OrnamentRule(width: 96),
                     const SizedBox(height: AppSpace.xs),
                     Text(
-                      "Hello, Detective${name == null ? '' : ' $name'}! I'm your detective partner. "
-                      "Let's find clues and solve mysteries in London together.",
+                      welcomeBody,
                       textAlign: TextAlign.center,
                       style: AppText.bodyText(size: compact ? 15 : 16, color: AppColors.inkBrown),
                     ),
@@ -934,19 +959,31 @@ class _WelcomeSpread extends StatelessWidget {
 /// The envelope of every mission, large on the page, in the lamplight of a
 /// soft ink shadow; once open, its letter, and a paper tab to read it again.
 class _LetterScene extends StatelessWidget {
-  const _LetterScene({required this.opened, required this.onOpen, required this.onOpened, required this.onReread});
+  const _LetterScene({
+    required this.name,
+    required this.opened,
+    required this.onOpen,
+    required this.onOpened,
+    required this.onReread,
+  });
+
+  /// The detective's name, as saved: the letter is written to them.
+  final String? name;
 
   final bool opened;
   final VoidCallback onOpen;
   final VoidCallback onOpened;
   final VoidCallback onReread;
 
-  static const letter =
-      'Dear Detective,\n\n'
+  static const letterText =
+      'Dear Detective ${DetectiveName.placeholder},\n\n'
       'My little cat, Pip, is lost!\n'
       'Pip loves warm places.\n'
       'Please help me find her.\n\n'
       '— Mr Finch';
+
+  /// The letter, to this detective.
+  String get letter => DetectiveName.address(letterText, name);
 
   void _reread(BuildContext context) {
     onReread();
@@ -966,7 +1003,7 @@ class _LetterScene extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const PaperSheetTab(),
-                const LetterCard(text: letter),
+                LetterCard(text: letter),
                 const SizedBox(height: AppSpace.lg),
                 GameButton(label: 'BACK', onPressed: () => Navigator.of(sheet).pop()),
               ],
@@ -1103,14 +1140,17 @@ class _PaperTab extends StatelessWidget {
 /// Mrs Moss in a gold medallion over a sepia London street, what she says
 /// in a paper bubble, and the questions as paper slips to tap.
 class _WitnessScene extends StatelessWidget {
-  const _WitnessScene({required this.asked, required this.onAsk});
+  const _WitnessScene({required this.name, required this.asked, required this.onAsk});
+
+  /// The detective's name, as saved: Mrs Moss greets them by it.
+  final String? name;
 
   final String? asked;
   final ValueChanged<String> onAsk;
 
   static const questions = {'seen': 'Did you see a cat?', 'where': 'Where did she go?'};
   static const answers = {
-    null: '"Hello, Detective! I sell tea here every day. Ask me anything!"',
+    null: '"Hello, Detective ${DetectiveName.placeholder}! I sell tea here every day. Ask me anything!"',
     'seen': '"Yes! A little cat with a red collar ran past my stall."',
     'where': '"She jumped up to the roof, next to the warm chimney."',
   };
@@ -1196,7 +1236,7 @@ class _WitnessScene extends StatelessWidget {
                           padding: const EdgeInsets.all(AppSpace.md),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
-                            child: Text(answers[asked]!, key: ValueKey(asked), style: AppText.letter(size: 16)),
+                            child: Text(DetectiveName.address(answers[asked]!, name), key: ValueKey(asked), style: AppText.letter(size: 16)),
                           ),
                         ),
                       ),
@@ -2048,7 +2088,7 @@ class _PracticeEvidence extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// The book's last page, the cover's twin: the same London night, further
-/// along the embankment towards Big Ben, the partner setting off with the
+/// along the embankment towards Big Ben, the player's detective setting off with the
 /// letter and the magnifying glass, the season's name, and the gold
 /// START FIRST CASE.
 class _ReadySpread extends ConsumerWidget {
@@ -2092,10 +2132,10 @@ class _ReadySpread extends ConsumerWidget {
               ],
             ),
           ),
-          const Expanded(
-            child: _PartnerInScene(
-              file: ArtAssets.onboardingPartnerReady,
-              label: 'Your detective partner, setting off',
+          Expanded(
+            child: _DetectiveInScene(
+              file: ArtAssets.onboardingReady(ref.watch(detectiveProfileProvider).avatar),
+              label: DetectiveName.address(_WelcomeSpread.pictureLabel, ref.watch(detectiveProfileProvider).detectiveName),
             ),
           ),
           const SizedBox(height: AppSpace.sm),
@@ -2115,7 +2155,7 @@ class _ReadySpread extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSpace.xs),
                 Text(
-                  "I'll be right here with tips whenever you need me.",
+                  "Hints are here whenever you need them.",
                   textAlign: TextAlign.center,
                   style: AppText.aside(
                     size: 15,

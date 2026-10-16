@@ -62,7 +62,7 @@ void main() {
     await t.enterText(find.byType(TextField), 'anna');
     await t.testTextInput.receiveAction(TextInputAction.done);
     await wait(t, const Duration(milliseconds: 600));
-    expect(find.text('Welcome, Detective!'), findsOneWidget, reason: 'How to Play comes next');
+    expect(find.byKey(const ValueKey('how-to-play-welcome')), findsOneWidget, reason: 'How to Play comes next');
     final profile = ProfileStore(prefs).profile!;
     expect((profile.detectiveName, profile.avatar), ('ANNA', DetectiveAvatar.girl));
 

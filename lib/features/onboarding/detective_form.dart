@@ -142,8 +142,8 @@ class _AvatarCard extends StatelessWidget {
   }
 }
 
-/// The name, written on the form's signature line: centred, in capitals, a
-/// long name written a little smaller so it always fits the line.
+/// The name, written on the form's signature line: centred, its letters as
+/// typed, a long name written a little smaller so it always fits the line.
 class DetectiveNameLine extends StatelessWidget {
   const DetectiveNameLine({super.key, required this.controller, required this.onSubmitted, this.compact = false});
 
@@ -186,7 +186,8 @@ class DetectiveNameLine extends StatelessWidget {
           // A tap anywhere else puts the pen down: the keyboard closes, the
           // name stays. It only listens — the tap still reaches its target.
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-          textCapitalization: TextCapitalization.characters,
+          // The name is kept exactly as typed: no capitals forced.
+          textCapitalization: TextCapitalization.none,
           textInputAction: TextInputAction.done,
           maxLength: AppConstants.nameMaxLength,
           inputFormatters: [
@@ -202,8 +203,8 @@ class DetectiveNameLine extends StatelessWidget {
             labelStyle: AppText.bodyText(size: 16, color: AppColors.muted),
             floatingLabelStyle: AppText.eyebrow(color: AppColors.muted).copyWith(letterSpacing: 1.5),
             counterStyle: AppText.caption(),
-            hintText: 'SHERLOCK',
-            hintStyle: _nameStyle(context, 'SHERLOCK', box.maxWidth, color: AppColors.parchmentDark),
+            hintText: 'Sherlock',
+            hintStyle: _nameStyle(context, 'Sherlock', box.maxWidth, color: AppColors.parchmentDark),
             // Lowered a touch (paint only) to sit level with the written name.
             prefixIcon: Transform.translate(
               offset: const Offset(0, 7),

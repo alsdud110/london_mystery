@@ -86,12 +86,12 @@ void main() {
       expect(game.createDetective('  anna  ', DetectiveAvatar.girl), isNull);
       await Future<void>.delayed(Duration.zero);
       final p = ProfileStore(c.read(sharedPreferencesProvider)).profile!;
-      expect(p.detectiveName, 'ANNA');
+      expect(p.detectiveName, 'anna');
       expect(p.avatar, DetectiveAvatar.girl);
       expect(p.createdAt, isNotNull);
       expect(p.createdAt!.isBefore(before.subtract(const Duration(seconds: 1))), isFalse);
       expect(p.id, c.read(profileSessionProvider).profileId);
-      expect(c.read(gameControllerProvider).detectiveName, 'ANNA');
+      expect(c.read(gameControllerProvider).detectiveName, 'anna');
       expect(c.read(detectiveProfileProvider).avatar, DetectiveAvatar.girl);
     });
 
@@ -103,7 +103,7 @@ void main() {
       await Future<void>.delayed(Duration.zero);
       expect(game.createDetective('Ben', DetectiveAvatar.boy), 'You already have a detective.');
       final p = ProfileStore(c.read(sharedPreferencesProvider)).profile!;
-      expect((p.detectiveName, p.avatar), ('ANNA', DetectiveAvatar.girl));
+      expect((p.detectiveName, p.avatar), ('Anna', DetectiveAvatar.girl));
       expect(ProfileStore(c.read(sharedPreferencesProvider)).read()!.held, isEmpty);
     });
 
@@ -126,7 +126,7 @@ void main() {
         profileSessionProvider.overrideWithValue(start),
       ]);
       addTearDown(again.dispose);
-      expect(again.read(gameControllerProvider).detectiveName, 'ANNA');
+      expect(again.read(gameControllerProvider).detectiveName, 'Anna');
       expect(again.read(gameControllerProvider).completedMissionIds, ['m01']);
       expect(again.read(detectiveProfileProvider).avatar, DetectiveAvatar.girl);
       expect(again.read(walletProvider).balance, coins);
@@ -149,9 +149,9 @@ void main() {
       await c.read(detectiveProfileProvider.notifier).setAvatar(DetectiveAvatar.boy);
       await Future<void>.delayed(Duration.zero);
 
-      expect(c.read(gameControllerProvider).detectiveName, 'SHERLOCK');
+      expect(c.read(gameControllerProvider).detectiveName, 'Sherlock');
       final ep01 = repo.load('ep01');
-      expect(ep01.detectiveName, 'SHERLOCK', reason: 'every case save takes the new name');
+      expect(ep01.detectiveName, 'Sherlock', reason: 'every case save takes the new name');
       expect(ep01.completedMissionIds, solved01('KIM').completedMissionIds);
       expect(ep01.isCaseSolved, isTrue);
       expect(XpBreakdown.totalFor(episode01, ep01), xp);
@@ -159,9 +159,9 @@ void main() {
       expect(c.read(walletProvider).balance, coins);
       expect(c.read(seasonProvider).solvedEpisodeIds, ['ep01']);
       final p = c.read(profileStoreProvider).profile!;
-      expect((p.detectiveName, p.avatar), ('SHERLOCK', DetectiveAvatar.boy));
+      expect((p.detectiveName, p.avatar), ('Sherlock', DetectiveAvatar.boy));
       expect(c.read(gameControllerProvider.notifier).renameDetective('<x>'), isNotNull);
-      expect(c.read(gameControllerProvider).detectiveName, 'SHERLOCK');
+      expect(c.read(gameControllerProvider).detectiveName, 'Sherlock');
     });
 
     testWidgets('the router: CREATE YOUR DETECTIVE only while there is none; settings need one', (t) async {
@@ -345,9 +345,9 @@ void main() {
 
         await t.enterText(find.byType(TextField), 'anna');
         await tapText(t, 'START INVESTIGATION', after: const Duration(milliseconds: 900));
-        expect(find.text('Welcome, Detective!'), findsOneWidget, reason: 'How to Play comes first');
+        expect(find.byKey(const ValueKey('how-to-play-welcome')), findsOneWidget, reason: 'How to Play comes first');
         final p = ref.read(profileStoreProvider).profile!;
-        expect((p.detectiveName, p.avatar), ('ANNA', DetectiveAvatar.girl));
+        expect((p.detectiveName, p.avatar), ('anna', DetectiveAvatar.girl));
         expect(t.takeException(), isNull);
       });
     }
@@ -370,7 +370,7 @@ void main() {
       await t.tap(find.byKey(const ValueKey('avatar-boy')));
       await t.enterText(find.byType(TextField), 'watson');
       await tapText(t, 'SAVE CHANGES', after: const Duration(milliseconds: 900));
-      expect(ref.read(gameControllerProvider).detectiveName, 'WATSON');
+      expect(ref.read(gameControllerProvider).detectiveName, 'watson');
       expect(ref.read(detectiveProfileProvider).avatar, DetectiveAvatar.boy);
       expect(ref.read(gameControllerProvider).completedMissionIds, hasLength(episode01.allMissions.length));
       expect(ref.read(walletProvider).balance, coins);

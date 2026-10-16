@@ -1,6 +1,7 @@
 import 'dart:ui' show Offset, Size;
 
 import '../data/models/mission.dart';
+import '../data/models/profile.dart';
 import '../features/game/scoring.dart';
 
 /// The two pictures of the Royal Box: shut, and open with the Crown inside.
@@ -85,16 +86,25 @@ abstract final class ArtAssets {
   /// How to Play (the first-play guide): its own pictures, never a case's
   /// character or evidence. A missing file leaves its place empty.
   ///
-  /// The detective partner who shows the way (never the player, who has no
-  /// fixed look), waving hello: full figure on transparency, 2:3.
-  static const onboardingPartner = 'assets/art/onboarding/detective_welcome.png';
+  /// The detective in the guide, as the player chose them (boy or girl; a
+  /// detective made before avatars existed: the boy), waving hello: full
+  /// figure on transparency, 2:3. One rule for every page: see
+  /// [onboardingReady].
+  static String onboardingWelcome(DetectiveAvatar? avatar) => switch (avatar) {
+        DetectiveAvatar.girl => 'assets/art/onboarding/detective_welcome_girl.png',
+        DetectiveAvatar.boy || null => 'assets/art/onboarding/detective_welcome_boy.png',
+      };
 
-  /// The same partner setting off, letter and magnifying glass in hand
-  /// (the guide's last page). Same size as [onboardingPartner].
-  static const onboardingPartnerReady = 'assets/art/onboarding/detective_ready.png';
+  /// The same detective setting off, letter and magnifying glass in hand
+  /// (the guide's last page). Same size as [onboardingWelcome].
+  static String onboardingReady(DetectiveAvatar? avatar) => switch (avatar) {
+        DetectiveAvatar.girl => 'assets/art/onboarding/detective_ready_girl.png',
+        DetectiveAvatar.boy || null => 'assets/art/onboarding/detective_ready_boy.png',
+      };
 
-  /// Pixel size of [onboardingPartner] and [onboardingPartnerReady].
-  static const onboardingPartnerPixels = Size(1024, 1536);
+  /// Pixel size of the [onboardingWelcome] and [onboardingReady] pictures
+  /// (all four alike, so the boy and the girl show at the same size).
+  static const onboardingDetectivePixels = Size(1024, 1536);
 
   /// Mrs Moss, the tea seller: the practice witness (no case's), printed
   /// like the witnesses of the cases (4:5 on parchment, [witnessPortraitAspect]).

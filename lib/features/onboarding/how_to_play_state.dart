@@ -20,6 +20,13 @@ class HowToPlaySeenNotifier extends Notifier<bool> {
     state = true;
     ref.read(sharedPreferencesProvider).setBool(_key, true);
   }
+
+  /// Not seen any more: the next detective of the device (the game
+  /// master's next-player reset) is shown How to Play again.
+  Future<void> forget() async {
+    state = false;
+    await ref.read(sharedPreferencesProvider).remove(_key);
+  }
 }
 
 final howToPlaySeenProvider = NotifierProvider<HowToPlaySeenNotifier, bool>(HowToPlaySeenNotifier.new);

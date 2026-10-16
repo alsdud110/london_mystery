@@ -68,10 +68,10 @@ Finder findReadableContaining(String part) => find.byWidgetPredicate(
 /// first page), and SKIP goes on — to the season's casebook, as
 /// registration did before it. Pumps through the page change.
 Future<void> skipHowToPlay(WidgetTester t) async {
-  for (var i = 0; i < 20 && find.text('Welcome, Detective!').evaluate().isEmpty; i++) {
+  for (var i = 0; i < 20 && find.byKey(const ValueKey('how-to-play-welcome')).evaluate().isEmpty; i++) {
     await t.pump(const Duration(milliseconds: 50));
   }
-  expect(find.text('Welcome, Detective!'), findsOneWidget, reason: 'How to Play comes first');
+  expect(find.byKey(const ValueKey('how-to-play-welcome')), findsOneWidget, reason: 'How to Play comes first');
   await t.tap(find.text('SKIP'));
   for (var i = 0; i < 24; i++) {
     await t.pump(const Duration(milliseconds: 50));

@@ -4,6 +4,7 @@ import '../../data/models/game_progress.dart';
 import '../../data/models/profile.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
+import '../onboarding/how_to_play_state.dart';
 
 /// Playtest tools appear in debug builds, or in a build made with
 /// `--dart-define=LM_PLAYTEST=true`. A normal release build never shows them.
@@ -62,12 +63,14 @@ Future<void> startPlaytestAt(WidgetRef ref, String episodeId) async {
 void restartCurrentCase(WidgetRef ref) => ref.read(gameControllerProvider.notifier).playAgain();
 
 /// The game master's reset for the next player: wipes the game and the
-/// detective (the next child creates their own) and also the saves this
-/// device kept from before profiles. The only way those originals are ever removed. Returns
+/// detective (the next child creates their own and sees How to Play again)
+/// and also the saves this device kept from before profiles. The only way those originals are ever removed. Returns
 /// false if some saved record could not be removed; running it again is
 /// safe and removes what is left. A reset cut short never brings the old
 /// progress back: the originals are copied only once.
 Future<bool> resetForNextPlayer(WidgetRef ref) async {
   await ref.read(gameControllerProvider.notifier).resetAll();
+  // A new child: How to Play from its first page, after their detective.
+  await ref.read(howToPlaySeenProvider.notifier).forget();
   return ref.read(profileStoreProvider).wipeLegacy();
 }

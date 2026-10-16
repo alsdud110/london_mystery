@@ -149,8 +149,9 @@ class GameController extends Notifier<GameProgress> {
     return null;
   }
 
-  /// The name as the game writes it: [DetectiveName.normalize]d, in capitals.
-  static String cleanName(String raw) => DetectiveName.normalize(raw).toUpperCase();
+  /// The name as the game writes it: [DetectiveName.normalize]d, with the
+  /// letters exactly as typed (Lee stays Lee, MIN stays MIN).
+  static String cleanName(String raw) => DetectiveName.normalize(raw);
 
   static String? validateName(String? raw) {
     final name = cleanName(raw ?? '');

@@ -111,8 +111,8 @@ bool _saveTip(WidgetRef ref, Mission mission, int tip) {
 /// The coins dialog for a hint that costs coins: a small paper sheet with
 /// the question, the price said once, CANCEL and GET MORE HINTS. GET MORE HINTS pays, writes
 /// the hint on the puzzle page and closes it; CANCEL (or a tap outside)
-/// changes nothing. When the coins are short it says so, and the partner
-/// gives the hint free (no one is ever stuck). Returns true when a hint was
+/// changes nothing. When the coins are short it says so, and the hint is
+/// given free (no one is ever stuck). Returns true when a hint was
 /// revealed.
 Future<bool> showTipShop(BuildContext context, Mission mission) async {
   final revealed = await showDialog<bool>(
@@ -209,7 +209,7 @@ class TipShopCard extends StatelessWidget {
     final message = switch (state) {
       TipState.buy => 'Spend coins to get another hint.',
       TipState.help =>
-        'You have $balance ${balance == 1 ? 'coin' : 'coins'}. Your partner gives you this hint for free.',
+        'You have $balance ${balance == 1 ? 'coin' : 'coins'}. This hint is free!',
       TipState.yours => 'This hint is already yours. Read it again for free.',
       _ => 'This hint is free.',
     };

@@ -47,7 +47,7 @@ void main() {
     for (var i = 0; i < ids.length; i++) {
       expect(ctrl().openEpisode(ids[i]), isTrue, reason: ids[i]);
       expect(current().id, ids[i]);
-      expect(state().detectiveName, 'KIM', reason: 'the detective keeps their name');
+      expect(state().detectiveName, 'Kim', reason: 'the detective keeps their name, as typed');
       if (i + 1 < ids.length) expect(ctrl().openEpisode(ids[i + 1]), isFalse, reason: 'not yet');
       solveCurrentCase();
     }
@@ -113,7 +113,7 @@ void main() {
     addTearDown(restarted.dispose);
     expect(restarted.read(currentEpisodeProvider).id, 'ep02');
     final p = restarted.read(gameControllerProvider);
-    expect(p.detectiveName, 'KIM');
+    expect(p.detectiveName, 'Kim');
     expect(p.completedMissionIds, [first.id]);
     expect(restarted.read(seasonProvider).isSolved('ep01'), isTrue);
   });

@@ -695,7 +695,7 @@ void main() {
           t,
           const Size(360, 640),
           message:
-              'You have $left ${left == 1 ? 'coin' : 'coins'}. Your partner gives you this hint for free.',
+              'You have $left ${left == 1 ? 'coin' : 'coins'}. This hint is free!',
         );
         await capture(t, 'tip_dialog_help_360x640');
         await takeTipFromSheet(t);

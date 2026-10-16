@@ -432,8 +432,8 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
   return choice ?? TryAgainChoice.retry;
 }
 
-/// "Detective Hints": up to two hints, revealed one at a time. Framed as a
-/// partner's help (not a failure). Hints never cost XP; hint 2 costs coins,
+/// "Detective Hints": up to two hints, revealed one at a time. Framed as
+/// help on the way (not a failure). Hints never cost XP; hint 2 costs coins,
 /// or is given free when the coins are short (see tip_shop.dart).
 class TipsPanel extends StatelessWidget {
   const TipsPanel({super.key, required this.hints, required this.revealed, required this.onReveal, this.dark = false});

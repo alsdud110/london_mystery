@@ -129,7 +129,7 @@ void main() {
     await tapText(t, 'START ADVENTURE');
     await t.tap(find.byKey(const ValueKey('avatar-boy')));
     await t.pump();
-    await t.enterText(find.byType(TextField), 'minyoung');
+    await t.enterText(find.byType(TextField), 'MinYoung');
     await shot('register');
     await tapText(t, 'START INVESTIGATION');
     await skipHowToPlay(t); // its pages: how_to_play_test
@@ -380,7 +380,7 @@ void main() {
     await shot('final_locks');
     await tapText(t, 'OPEN THE BOX', after: const Duration(milliseconds: 3500));
     await shot('case_solved_box');
-    expect(find.text('Brilliant work, Detective MINYOUNG!'), findsOneWidget);
+    expect(find.text('Brilliant work, Detective MinYoung!'), findsOneWidget);
     // The Royal Box opening is the solve's sound (not the generic final cue).
     expect(audio.played, contains(GameSound.royalBoxOpen));
     expect(audio.played, isNot(contains(GameSound.finale)));
@@ -397,7 +397,7 @@ void main() {
       after: const Duration(milliseconds: 3200),
     );
     await shot('case_closed');
-    expect(find.text('MINYOUNG'), findsOneWidget);
+    expect(find.text('MinYoung'), findsOneWidget);
     expect(find.text('THE MISSING CROWN'), findsOneWidget);
     expect(find.text('MASTER DETECTIVE'), findsOneWidget);
     await reveal(t, find.text('Evidence'));
