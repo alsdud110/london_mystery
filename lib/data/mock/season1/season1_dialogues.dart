@@ -20,15 +20,15 @@ const Map<String, DialogueScene> season1Dialogues = {
   'ep06_m1': DialogueScene(
     place: 'MARKET HALL',
     background: 'assets/art/scenes/covent_garden/covent_garden_market_hall.png',
-    // Wave 2.5: what to do, never which answer — the mission, then how
-    // (talk, ask, the clues may differ). The three questions stand alike: the
-    // one about what he carried is not marked out.
+    // The mission said first — what to find out, and why the witnesses
+    // (never the answer: a small bag).
     goal: 'Find out what the stranger carried.',
-    how: 'Ask what they saw. You may find different clues.',
-    guide: 'Talk to a witness.',
+    how: 'Two witnesses may have seen the same thing.',
+    guide: 'Choose a witness to begin.',
+    // The mission's question first (the same three questions and answers).
     questions: [
-      DialogueQuestion(id: 'wearing', text: 'What was he wearing?'),
       DialogueQuestion(id: 'carry', text: 'What did he carry?'),
+      DialogueQuestion(id: 'wearing', text: 'What was he wearing?'),
       DialogueQuestion(id: 'when', text: 'When did you see him?'),
     ],
     speakers: [
@@ -76,38 +76,28 @@ const Map<String, DialogueScene> season1Dialogues = {
       ),
     ],
     statements: [
-      DialogueStatement(id: 'flowerSeller.wearing', speakerId: 'flowerSeller', about: 'wearing', text: 'He was wearing a dark coat.', thing: 'a dark coat'),
-      DialogueStatement(id: 'flowerSeller.carry', speakerId: 'flowerSeller', about: 'carry', text: 'He carried a small bag.', thing: 'a small bag'),
-      DialogueStatement(id: 'juggler.wearing', speakerId: 'juggler', about: 'wearing', text: 'He had a grey hat.', thing: 'a grey hat'),
-      DialogueStatement(id: 'juggler.carry', speakerId: 'juggler', about: 'carry', text: 'He carried a small bag.', thing: 'a small bag'),
-      DialogueStatement(id: 'baker.wearing', speakerId: 'baker', about: 'wearing', text: 'He had a dark coat.', thing: 'a dark coat'),
-      DialogueStatement(id: 'baker.carry', speakerId: 'baker', about: 'carry', text: 'He had a big red umbrella.', thing: 'a big red umbrella'),
+      DialogueStatement(id: 'flowerSeller.wearing', speakerId: 'flowerSeller', about: 'wearing', text: 'He was wearing a dark coat.'),
+      DialogueStatement(id: 'flowerSeller.carry', speakerId: 'flowerSeller', about: 'carry', text: 'He carried a small bag.'),
+      DialogueStatement(id: 'juggler.wearing', speakerId: 'juggler', about: 'wearing', text: 'He had a grey hat.'),
+      DialogueStatement(id: 'juggler.carry', speakerId: 'juggler', about: 'carry', text: 'He carried a small bag.'),
+      DialogueStatement(id: 'baker.wearing', speakerId: 'baker', about: 'wearing', text: 'He had a dark coat.'),
+      DialogueStatement(id: 'baker.carry', speakerId: 'baker', about: 'carry', text: 'He had a big red umbrella.'),
     ],
-    // Wave 2.5 / 2.5.1: the detective chooses two of the statements heard —
-    // about anything — and the game says at once what they show (two coats
-    // match too, but he wore them). A wrong pair is never recorded, never
-    // says which is right. The two bags answer it (`b`); then what he wore is
-    // still to be found if it was not heard (the next mission asks the
-    // colour of his hat) — asked for without naming it.
+    // Wave 2.3: one next thing at a time — ask one witness, ask another,
+    // then say whether two stories match (yes / no). Being wrong is a look
+    // again, never a recorded answer, and never says which way.
     deduction: DialogueDeduction(
       topic: 'carry',
       pair: {'flowerSeller.carry', 'juggler.carry'},
       answer: 'b',
-      askLine: 'Ask a question.',
-      anotherLine: 'Ask another witness.',
-      readyLine: 'Compare two statements.',
-      compareGoal: 'Find two witnesses who saw him carry the same thing.',
-      compareHow: 'Tap two statements to compare them.',
-      matchLine: 'Both witnesses saw the same thing being carried.',
-      offTopicLine: 'Both witnesses described the same clothing.',
-      checkLine: "You're looking for something he carried, not wore.",
-      differentLine: 'These witnesses described different things.',
-      retryLine: 'Try another pair.',
-      then: {'juggler.wearing'},
-      thenGoal: 'Find out what the stranger was wearing.',
-      thenHow: "Ask the witnesses about the stranger's clothes.",
-      doneLine: "You learned something about the stranger's appearance.",
-      notesLine: 'Your witness notes are ready.',
+      question: 'Do their stories match?',
+      choose: 'Choose two witnesses to compare.',
+      foundLine: 'One witness has spoken. Ask another witness.',
+      readyLine: 'Do the witnesses agree?',
+      matchLine: 'They both saw the same thing.',
+      differentLine: 'These stories are different. Ask another witness.',
+      otherPairLine: 'These stories are different. Try another pair.',
+      lookAgainLine: 'Look again. Are they carrying the same thing?',
     ),
   ),
 };
