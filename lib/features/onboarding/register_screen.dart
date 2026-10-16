@@ -20,6 +20,7 @@ import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
+import 'how_to_play_state.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -49,7 +50,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       showGameToast(context, error, glyph: InkGlyph.pen);
       return;
     }
-    context.go(Routes.season);
+    // A new detective learns how to play first (once per profile), then
+    // the season's casebook, as before.
+    context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season);
   }
 
   /// The name as written on the line: 24 pt, or smaller when a long name

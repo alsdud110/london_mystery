@@ -93,8 +93,37 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
     final wallet = ref.watch(walletProvider);
     final balance = wallet.balance;
     final tip = _tip;
-    final price = WalletController.priceOf(tip);
-    final state = tipStateOf(tip: tip, revealed: tip - 1, owns: wallet.ownsTip(m.id, tip), balance: balance);
+    return TipShopCard(
+      balance: balance,
+      price: WalletController.priceOf(tip),
+      state: tipStateOf(tip: tip, revealed: tip - 1, owns: wallet.ownsTip(m.id, tip), balance: balance),
+      onCancel: () => Navigator.of(context).pop(false),
+      onReveal: () => _reveal(tip),
+    );
+  }
+}
+
+/// The GET A TIP dialog as it looks: the coins in hand, the question, the
+/// price (or FREE), CANCEL and REVEAL. What the buttons do is the caller's
+/// (the puzzle's tip shop, or How to Play's practice, which spends nothing).
+class TipShopCard extends StatelessWidget {
+  const TipShopCard({
+    super.key,
+    required this.balance,
+    required this.price,
+    required this.state,
+    required this.onCancel,
+    required this.onReveal,
+  });
+
+  final int balance;
+  final int price;
+  final TipState state;
+  final VoidCallback onCancel;
+  final VoidCallback onReveal;
+
+  @override
+  Widget build(BuildContext context) {
     final paid = state == TipState.buy;
     final message = switch (state) {
       TipState.buy => 'Use $price coins to reveal this clue.',
@@ -166,7 +195,7 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
                         label: 'CANCEL',
                         style: GameButtonStyle.outline,
                         singleLine: true,
-                        onPressed: () => Navigator.of(context).pop(false),
+                        onPressed: onCancel,
                       ),
                     ),
                     const SizedBox(width: AppSpace.sm),
@@ -175,7 +204,7 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
                         label: 'REVEAL',
                         semanticLabel: paid ? 'Reveal, $price coins' : 'Reveal, free',
                         singleLine: true,
-                        onPressed: () => _reveal(tip),
+                        onPressed: onReveal,
                       ),
                     ),
                   ],

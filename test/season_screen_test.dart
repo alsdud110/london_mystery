@@ -267,6 +267,8 @@ void main() {
       await tapText(t, 'START ADVENTURE');
       await t.enterText(find.byType(TextField), 'minyoung');
       await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 600));
+      // How to Play comes first for a new detective (how_to_play_test).
+      await skipHowToPlay(t);
     } else {
       appRef.read(routerProvider).go(Routes.season);
     }
@@ -671,7 +673,10 @@ void main() {
     await tapText(t, 'START NEW ADVENTURE', after: const Duration(milliseconds: 1000));
     expect(path(), Routes.register);
     await t.enterText(find.byType(TextField), 'kim');
-    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 2200));
+    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 600));
+    // This detective played before How to Play existed: shown once, now.
+    await skipHowToPlay(t);
+    await wait(t, const Duration(milliseconds: 2200));
     expect(path(), Routes.season);
     expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
     final o = appRef.read(seasonOverviewProvider);

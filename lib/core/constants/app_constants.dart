@@ -72,6 +72,12 @@ abstract final class AppConstants {
   /// Device setting (shared by every profile).
   static const soundEnabledKey = 'lm.settings.sound';
 
+  /// Whether a profile has been through How to Play (the first-play guide).
+  /// One per profile, so another detective or account on the device still
+  /// gets it. Outside [profilePrefix] on purpose: NEW ADVENTURE clears a
+  /// profile's saves, not that it has learnt how to play. Never synced.
+  static String onboardingSeenKey(String profileId) => 'lm.onboarding.v1.$profileId';
+
   // Detective name rules.
   static const nameMinLength = 1;
   static const nameMaxLength = 12;

@@ -102,6 +102,7 @@ void main() {
     await t.enterText(find.byType(TextField), 'minyoung');
     await shot('register');
     await tapText(t, 'OPEN THE CASEBOOK');
+    await skipHowToPlay(t); // its pages: how_to_play_test
     // The season's casebook, then (as a tour of the case files) Case 01 from there.
     await wait(t, const Duration(milliseconds: 1600));
     expect(find.text('BEGIN SEASON ONE'), findsOneWidget);

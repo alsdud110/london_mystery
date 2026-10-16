@@ -246,6 +246,11 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                     Navigator.of(sheetContext).pop();
                     context.go(Routes.episodes);
                   }),
+                  // The first-play guide again, over the map (back returns here).
+                  item(InkGlyph.hint, 'How to play', () {
+                    Navigator.of(sheetContext).pop();
+                    context.push(Routes.howToPlayAgain);
+                  }),
                   item(InkGlyph.home, 'Title screen', () {
                     Navigator.of(sheetContext).pop();
                     context.go(Routes.start);

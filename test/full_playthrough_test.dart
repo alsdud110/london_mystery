@@ -102,7 +102,10 @@ void main() {
     expect(find.text('Become a Detective.'), findsOneWidget);
     await tapText(t, 'START ADVENTURE');
     await t.enterText(find.byType(TextField), 'minyoung');
-    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 2400));
+    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 600));
+    // How to Play first (its own tests: how_to_play_test); skipped here.
+    await skipHowToPlay(t);
+    await wait(t, const Duration(milliseconds: 2400));
 
     // The season's casebook comes first (its BEGIN SEASON ONE path is in
     // season_screen_test); this run starts the case from the case files.

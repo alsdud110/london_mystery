@@ -20,6 +20,7 @@ import '../account/account_controller.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
+import 'how_to_play_state.dart';
 
 /// Title page of the storybook: the name of the game, London, and one way in.
 class StartScreen extends ConsumerStatefulWidget {
@@ -106,8 +107,9 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
       context.go(Routes.map);
     } else if (progress.hasDetective) {
       // No case under way: the season (its casebook the very first time,
-      // then the board with the case to work on).
-      context.go(Routes.season);
+      // then the board with the case to work on) — after How to Play, for a
+      // detective who left it unfinished before the season began.
+      context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season);
     } else {
       context.go(Routes.register);
     }

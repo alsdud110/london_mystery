@@ -74,6 +74,28 @@ abstract final class ArtAssets {
   /// Pixel size of [season1LondonNight] (never decoded larger).
   static const season1LondonNightPixels = Size(941, 1671);
 
+  /// How to Play (the first-play guide): its own pictures, never a case's
+  /// character or evidence. A missing file leaves its place empty.
+  ///
+  /// The detective partner who shows the way (never the player, who has no
+  /// fixed look), waving hello: full figure on transparency, 2:3.
+  static const onboardingPartner = 'assets/art/onboarding/detective_welcome.png';
+
+  /// The same partner setting off, letter and magnifying glass in hand
+  /// (the guide's last page). Same size as [onboardingPartner].
+  static const onboardingPartnerReady = 'assets/art/onboarding/detective_ready.png';
+
+  /// Pixel size of [onboardingPartner] and [onboardingPartnerReady].
+  static const onboardingPartnerPixels = Size(1024, 1536);
+
+  /// Mrs Moss, the tea seller: the practice witness (no case's), printed
+  /// like the witnesses of the cases (4:5 on parchment, [witnessPortraitAspect]).
+  static const onboardingWitness = 'assets/art/onboarding/witness_tea_seller.png';
+
+  /// Pip, the practice puzzle's lost kitten (red collar): square, on
+  /// transparency.
+  static const onboardingCat = 'assets/art/onboarding/lost_cat.png';
+
   /// Scene pictures (mission, final, image choices, the arrival at a place,
   /// Case Solved photo), full colour: the nine London landmarks in
   /// `scenes/landmarks/`, and the places inside a landmark in a folder named

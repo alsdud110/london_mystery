@@ -16,6 +16,7 @@ import '../../features/mission/story_scene_screen.dart';
 import '../../features/mission_map/mission_map_screen.dart';
 import '../../features/notebook/notebook_screen.dart';
 import '../../features/onboarding/episode_select_screen.dart';
+import '../../features/onboarding/how_to_play_screen.dart';
 import '../../features/onboarding/register_screen.dart';
 import '../../features/onboarding/start_screen.dart';
 import '../../features/onboarding/story_intro_screen.dart';
@@ -28,6 +29,11 @@ import '../../widgets/back_to.dart';
 abstract final class Routes {
   static const start = '/';
   static const register = '/register';
+
+  /// How to Play: once after registration, before the season (see
+  /// `needsHowToPlayProvider`); [howToPlayAgain] opens it from the map menu.
+  static const howToPlay = '/how-to-play';
+  static const howToPlayAgain = '/how-to-play?again=1';
   static const season = '/season';
   static const prologue = '/season/prologue';
   static const episodes = '/episodes';
@@ -154,6 +160,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: Routes.start, pageBuilder: (c, s) => _fade(s, const StartScreen())),
       GoRoute(path: Routes.register, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const RegisterScreen()))),
+      // Needs a detective, like every page below. It handles back itself
+      // (the page before, then where it was opened from).
+      GoRoute(
+        path: Routes.howToPlay,
+        pageBuilder: (c, s) => _fade(s, HowToPlayScreen(again: s.uri.queryParameters['again'] == '1')),
+      ),
       // The season above its cases (needs a detective, like every page below).
       GoRoute(path: Routes.season, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const SeasonScreen()))),
       // The season's opening, once, from the casebook, before Case 01. It

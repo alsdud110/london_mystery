@@ -57,6 +57,20 @@ final tipSheetButton = find.byWidgetPredicate(
   description: 'the GET A TIP dialog REVEAL button',
 );
 
+/// Right after a new detective's registration: How to Play is there (its
+/// first page), and SKIP goes on — to the season's casebook, as
+/// registration did before it. Pumps through the page change.
+Future<void> skipHowToPlay(WidgetTester t) async {
+  for (var i = 0; i < 20 && find.text('Welcome, Detective!').evaluate().isEmpty; i++) {
+    await t.pump(const Duration(milliseconds: 50));
+  }
+  expect(find.text('Welcome, Detective!'), findsOneWidget, reason: 'How to Play comes first');
+  await t.tap(find.text('SKIP'));
+  for (var i = 0; i < 24; i++) {
+    await t.pump(const Duration(milliseconds: 50));
+  }
+}
+
 /// In the GET A TIP dialog (just opened): REVEAL, which closes the dialog
 /// and writes the next tip on the page.
 Future<void> takeTipFromSheet(WidgetTester t) async {

@@ -113,6 +113,8 @@ flutter:
     - assets/art/objects/
     - assets/art/symbols/
     - assets/art/special/
+    # How to Play: the detective partner, the practice witness, the lost cat.
+    - assets/art/onboarding/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:

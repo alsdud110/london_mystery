@@ -311,6 +311,9 @@ void main() {
       await t.enterText(find.byType(TextField), 'kim');
       await t.tap(find.text('OPEN THE CASEBOOK'));
       t.view.resetViewInsets(); // the keyboard goes with the name field
+      await wait(t, const Duration(milliseconds: 600));
+      // How to Play first, then on to the season, as before.
+      await skipHowToPlay(t);
       await wait(t, const Duration(milliseconds: 1500));
       expect(find.text('BEGIN SEASON ONE'), findsOneWidget, reason: 'on to the season, as before');
       await wait(t, const Duration(seconds: 3));
