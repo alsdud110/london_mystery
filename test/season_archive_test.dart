@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
@@ -37,7 +38,7 @@ void main() {
 
   group('Season Archive data', () {
     test('a fresh season: Case 01 is this case, every other case is sealed', () {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       final a = archive();
       expect(a, hasLength(12));
       expect(a.first.status, ArchiveStatus.current);
@@ -46,7 +47,7 @@ void main() {
     });
 
     test('the open case shows only what has been found so far', () {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       ctrl().startInvestigation();
       final m = current().missions.first;
       ctrl().submitAnswer(m, m.answer);
@@ -55,7 +56,7 @@ void main() {
     });
 
     test('solved cases show all their evidence; the next case is open but not opened', () {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       solveCurrentCase();
       expect(entry('ep01').status, ArchiveStatus.solved);
       expect(entry('ep01').evidence, hasLength(episode01.allEvidence.length));
@@ -65,7 +66,7 @@ void main() {
     });
 
     test('a started case that is not open is read from its own save', () {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       solveCurrentCase();
       ctrl().openEpisode('ep02');
       ctrl().startInvestigation();
@@ -77,7 +78,7 @@ void main() {
     });
 
     test('in Case 12, the evidence of Cases 01-11 can all be read', () {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       for (final e in container.read(episodeCatalogProvider)) {
         expect(ctrl().openEpisode(e.id), isTrue);
         if (e.id != 'ep12') solveCurrentCase();
@@ -94,7 +95,7 @@ void main() {
     });
 
     test('playing a solved case again keeps its evidence in the archive', () {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       solveCurrentCase();
       ctrl().playAgain();
       expect(state().collectedEvidence(current()), isEmpty);
@@ -106,7 +107,7 @@ void main() {
   group('Play again gives no double rewards', () {
     for (final id in ['ep01', 'ep02']) {
       test('$id: XP, evidence and badges are the same after a second solve', () {
-        ctrl().registerDetective('Kim');
+        ctrl().createDetective('Kim', DetectiveAvatar.boy);
         if (id != 'ep01') {
           solveCurrentCase();
           ctrl().openEpisode(id);
@@ -156,7 +157,7 @@ void main() {
 
   group('Locked cases', () {
     test('Case 12 cannot be opened before Case 11 is solved', () {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       for (final e in container.read(episodeCatalogProvider).take(10)) {
         ctrl().openEpisode(e.id);
         solveCurrentCase();

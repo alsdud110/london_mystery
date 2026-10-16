@@ -156,7 +156,6 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				5FE81951C5250AE3F18EB449 /* Firebase config (flavor) */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 			);
@@ -251,27 +250,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
-		};
-		5FE81951C5250AE3F18EB449 /* Firebase config (flavor) */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(PROJECT_DIR)/config/$(LM_FLAVOR)/GoogleService-Info.plist",
-			);
-			name = "Firebase config (flavor)";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Copies the flavor's Firebase config into the app (see ios/scripts/setup_flavors.rb).\nDST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleService-Info.plist\"\nif [ -z \"${LM_FLAVOR}\" ]; then\n  rm -f \"$DST\"; echo \"No flavor: no Firebase config (the game plays as a guest).\"; exit 0\nfi\nSRC=\"${PROJECT_DIR}/config/${LM_FLAVOR}/GoogleService-Info.plist\"\nif [ ! -f \"$SRC\" ]; then\n  rm -f \"$DST\"; echo \"warning: no ios/config/${LM_FLAVOR}/GoogleService-Info.plist: Firebase stays off for this build.\"; exit 0\nfi\nID=$(/usr/libexec/PlistBuddy -c \"Print :BUNDLE_ID\" \"$SRC\" 2>/dev/null)\nif [ \"$ID\" != \"${PRODUCT_BUNDLE_IDENTIFIER}\" ]; then\n  echo \"error: ios/config/${LM_FLAVOR}/GoogleService-Info.plist is for '$ID', this build is '${PRODUCT_BUNDLE_IDENTIFIER}'.\"; exit 1\nfi\ncp \"$SRC\" \"$DST\"; echo \"Firebase config: ${LM_FLAVOR} ($ID)\"\n";
 		};
 		9740EEB61CF901F6004384FC /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -643,7 +621,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LM_FLAVOR = dev;
 				PRODUCT_BUNDLE_IDENTIFIER = com.londonmystery.app.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -824,7 +801,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LM_FLAVOR = prod;
 				PRODUCT_BUNDLE_IDENTIFIER = com.londonmystery.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -848,7 +824,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LM_FLAVOR = prod;
 				PRODUCT_BUNDLE_IDENTIFIER = com.londonmystery.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -929,7 +904,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LM_FLAVOR = dev;
 				PRODUCT_BUNDLE_IDENTIFIER = com.londonmystery.app.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -1083,7 +1057,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LM_FLAVOR = dev;
 				PRODUCT_BUNDLE_IDENTIFIER = com.londonmystery.app.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -1106,7 +1079,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LM_FLAVOR = prod;
 				PRODUCT_BUNDLE_IDENTIFIER = com.londonmystery.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";

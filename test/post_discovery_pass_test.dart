@@ -124,7 +124,7 @@ void main() {
       await play.solve(t, m);
       await wait(t, const Duration(milliseconds: 2600));
       if (shot != null) await capture(t, '${shot}_discovery');
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       expect(play.path(), Routes.story(id));
       await t.tapAt(Offset(size.width / 2, size.height / 2)); // the whole scene at once
       await wait(t, const Duration(milliseconds: 1200));
@@ -147,7 +147,7 @@ void main() {
             findsNothing, reason: 'no card');
         expect(find.textContaining('old gate'), findsNothing);
         await capture(t, 'pass_ep07_m3_discovery_$tag');
-        await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+        await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
         await t.tapAt(Offset(size.width / 2, size.height / 2));
         await wait(t, const Duration(milliseconds: 1200));
         expect(find.text(m.transition.first), findsOneWidget);
@@ -250,7 +250,7 @@ void main() {
       final state = play.ref.read(gameControllerProvider);
       expect(find.text('+${XpBreakdown.of(m, state).total} XP   ·   +${WalletController.coinsFor(m)} COINS'), findsOneWidget);
       expect(state.isCompleted('ep10_m3'), isTrue, reason: 'saved before the moment');
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -265,7 +265,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 1200));
         if (moment != 'during the Discovery Moment') {
           await wait(t, const Duration(milliseconds: 1400));
-          await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 300));
+          await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 300));
         }
         await play.restart(t);
         final state = play.ref.read(gameControllerProvider);

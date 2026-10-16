@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
@@ -29,7 +30,7 @@ void main() {
 
   group('detective name', () {
     test('is trimmed and upper-cased', () {
-      expect(ctrl().registerDetective('  minyoung  '), isNull);
+      expect(ctrl().createDetective('  minyoung  ', DetectiveAvatar.boy), isNull);
       expect(state().detectiveName, 'MINYOUNG');
     });
 
@@ -39,13 +40,13 @@ void main() {
       expect(GameController.validateName('A' * (AppConstants.nameMaxLength + 1)), isNotNull);
       expect(GameController.validateName('<script>'), isNotNull);
       expect(GameController.validateName('민영'), isNull);
-      expect(ctrl().registerDetective('<b>x</b>'), isNotNull);
+      expect(ctrl().createDetective('<b>x</b>', DetectiveAvatar.boy), isNotNull);
       expect(state().hasDetective, isFalse);
     });
   });
 
   test('missions unlock strictly in order', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     ctrl().startInvestigation();
     final e = episode01;
     expect(state().isUnlocked(e, 'm01'), isTrue);
@@ -64,7 +65,7 @@ void main() {
 
   // XP rule 4 (as rule 3): tips are help, not failure, so they cost no XP.
   test('hints open one at a time, at most two, and are free', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     ctrl().startInvestigation();
     expect(ctrl().useHint(m['m01']!), 1);
     expect(ctrl().useHint(m['m01']!), 2);
@@ -77,7 +78,7 @@ void main() {
   });
 
   test('XP rule 4: +30 for everyone who solves, whatever the tries, tips or time', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     ctrl().startInvestigation();
 
     ctrl().markMissionStarted('m01');
@@ -104,7 +105,7 @@ void main() {
   });
 
   test('records wrong answers, clues, evidence and looked-up words', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     ctrl().startInvestigation();
     expect(ctrl().submitAnswer(m['m01']!, 'a').result, SubmitResult.tryAgain);
     expect(ctrl().submitAnswer(m['m01']!, 'b').result, SubmitResult.correct);
@@ -119,7 +120,7 @@ void main() {
   });
 
   test('badges are awarded once, in order, as the case progresses', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     ctrl().startInvestigation();
     ctrl().markMissionStarted('m01');
     final first = ctrl().submitAnswer(m['m01']!, 'b');
@@ -141,7 +142,7 @@ void main() {
   });
 
   test('full run solves the case and survives an app restart', () async {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     ctrl().startInvestigation();
     for (final (id, answer) in fullRun) {
       expect(ctrl().submitAnswer(m[id]!, answer).result, SubmitResult.correct, reason: id);
@@ -169,7 +170,7 @@ void main() {
   });
 
   test('play again keeps the name; reset clears everything', () async {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     ctrl().startInvestigation();
     ctrl().submitAnswer(m['m01']!, 'b');
     ctrl().playAgain();
@@ -208,7 +209,7 @@ void main() {
     }
 
     setUp(() {
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       advance(const Duration(minutes: 3)); // registering is not case time
       ctrl().startInvestigation();
     });

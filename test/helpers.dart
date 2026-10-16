@@ -15,8 +15,8 @@ final episode01 = Episode.fromJson(episode01Json);
 /// Overrides that make the app run without platform plugins.
 ///
 /// [prefs] may hold saves under the keys used before profiles: on the first
-/// read the game copies them to the device's guest profile, as an updated
-/// app does.
+/// read the game copies them to the device's detective, as an updated app
+/// does.
 Future<List<Override>> testOverrides({
   Map<String, Object> prefs = const {},
   AudioService? audio,
@@ -34,15 +34,12 @@ Future<List<Override>> testOverridesFor(
   audioServiceProvider.overrideWithValue(audio ?? MockAudioService()),
 ];
 
-/// The active profile's key for a save kept under [legacyKey] before
-/// profiles (e.g. `AppConstants.progressStorageKey`).
+/// The detective's key for a save kept under [legacyKey] before profiles
+/// (e.g. `AppConstants.progressStorageKey`).
 String savedKey(SharedPreferences prefs, String legacyKey) =>
-    AppConstants.profileKey(
-      ProfileStore(prefs).read()!.activeProfileId,
-      legacyKey,
-    );
+    AppConstants.profileKey(ProfileStore(prefs).read()!.profile.id, legacyKey);
 
-/// The active profile's saved JSON under [legacyKey], or null.
+/// The detective's saved JSON under [legacyKey], or null.
 String? savedString(SharedPreferences prefs, String legacyKey) =>
     prefs.getString(savedKey(prefs, legacyKey));
 
@@ -93,14 +90,14 @@ Finder hintAction({bool upper = false}) => find.byWidgetPredicate(
   description: 'the hint ${upper ? 'button' : 'link'}',
 );
 
-/// GET HINT, in the coins dialog of a hint that costs coins.
+/// GET MORE HINTS, in the coins dialog of a hint that costs coins.
 final tipSheetButton = find.byWidgetPredicate(
   (w) => w is CompactButton && w.label == 'GET MORE HINTS',
-  description: 'the hint dialog GET HINT button',
+  description: 'the hint dialog GET MORE HINTS button',
 );
 
 /// After asking for a hint: a free hint is already on the page (no dialog);
-/// a hint that costs coins is taken with GET HINT, which closes the dialog and
+/// a hint that costs coins is taken with GET MORE HINTS, which closes the dialog and
 /// writes it on the page.
 Future<void> takeTipFromSheet(WidgetTester t) async {
   await t.pump(const Duration(milliseconds: 400));

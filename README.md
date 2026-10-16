@@ -4,7 +4,10 @@ An offline detective mission game for kids aged 8–12. Players solve English
 clues and puzzles in a real play space:
 **STORY → EXPLORATION → PUZZLE → DISCOVERY → REWARD**.
 
-This is an MVP that runs entirely on local mock data (no backend).
+The game is **100% offline**: no account, no sign-in, no server, no network
+request. Each device has exactly one detective (a boy or girl picture and a
+name), kept on the device with all of its progress
+(`docs/OFFLINE_SINGLE_DETECTIVE.md`).
 
 ## Run
 
@@ -21,10 +24,12 @@ types the code printed under the QR card.
 
 ## Flow
 
-Title → detective name → case file → typed story intro → **mission map** →
-missions 01–05 → final Royal Box → Case Closed report (kid) → Detective Report (parent).
+Title → **CREATE YOUR DETECTIVE** (boy / girl, name) → How to Play → case
+file → typed story intro → **mission map** → missions 01–05 → final Royal Box
+→ Case Closed report (kid) → Detective Report (parent).
 Progress is saved after every step, so closing and reopening the app resumes
-the case.
+the case. The detective's name and picture can be changed later from the map
+menu (**My detective**); progress, XP, coins and badges stay.
 
 Each mission has three steps, one action per screen:
 **scene + sealed envelope → read the letter → solve the puzzle**. After a
@@ -94,9 +99,10 @@ lib/
 - **Content is data.** Missions live in `data/mock/season1/episode01_mock.dart` as the
   same JSON a backend would return and are parsed with `Episode.fromJson`.
   Adding an episode means adding data, not widgets.
-- **Backend-ready.** `EpisodeRepository` and `ProgressRepository` are
-  interfaces. To move to Firebase (or another backend), implement them and
-  override `episodeRepositoryProvider` / `progressRepositoryProvider` in `main.dart`.
+- **One detective, on the device.** `ProfileStore` keeps the device's
+  detective (`lm.detective.v1`); `LegacyMigrator` brings earlier saves to it at
+  start (copy, read back, verify; nothing is removed). `ProgressRepository`
+  saves each change at once, several keys all-or-nothing (`SaveJournal`).
 - **State.** `GameController` (a Riverpod `Notifier`) owns the run: unlock
   order, attempts, wrong answers, hints (counted once per mission), clues and
   the case timer. It saves after every change.
@@ -114,6 +120,7 @@ lib/
 - If this is hosted on the web, set the security headers (CSP,
   X-Frame-Options, X-Content-Type-Options, Referrer-Policy) on the hosting
   layer.
-- When a backend is added, validate answers and progress on the server as
-  well. Today the answers ship inside the app, which is fine for an offline
-  venue game but not for competitive or rewarded play.
+- The answers ship inside the app, which is fine for an offline game but not
+  for competitive or rewarded play.
+- Add the two avatar pictures (`assets/art/avatars/detective_boy.png`,
+  `detective_girl.png`); the folder is already listed in `pubspec.yaml`.

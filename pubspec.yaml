@@ -20,23 +20,19 @@ dependencies:
   qr_flutter: ^4.1.0
   # Sound effects
   audioplayers: ^6.8.1
-  firebase_core: ^4.15.0
-  firebase_auth: ^6.7.0
-  cloud_firestore: ^6.10.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # On-device checks against the DEV Firebase project (integration_test/).
+  # On-device end-to-end checks of the offline game (integration_test/).
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
-  # Android flavors: dev (com.londonmystery.app.dev → Firebase london-mystery-dev)
-  # and prod (com.londonmystery.app → london-mystery-prod). A plain
-  # `flutter run` builds dev, never prod.
+  # Flavors: dev (com.londonmystery.app.dev, "London Mystery DEV") and prod
+  # (com.londonmystery.app). A plain `flutter run` builds dev, never prod.
   default-flavor: dev
 
   assets:
@@ -115,6 +111,9 @@ flutter:
     - assets/art/special/
     # How to Play: the detective partner, the practice witness, the lost cat.
     - assets/art/onboarding/
+    # The player's detective: detective_boy.png and detective_girl.png
+    # (until they are added, the choice shows the cap icon and the word).
+    - assets/art/avatars/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:

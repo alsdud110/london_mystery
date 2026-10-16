@@ -58,8 +58,8 @@ void main() {
     final o = await open(t);
     await t.tapAt(const Offset(20, 20));
     await t.pump();
-    await t.tap(find.text('CONTINUE'));
-    await t.tap(find.text('CONTINUE'), warnIfMissed: false);
+    await t.tap(find.text('CONTINUE INVESTIGATION'));
+    await t.tap(find.text('CONTINUE INVESTIGATION'), warnIfMissed: false);
     await t.pumpAndSettle();
     await o.closed;
     expect(o.pops(), 1, reason: 'only the overlay is closed, not the page under it');

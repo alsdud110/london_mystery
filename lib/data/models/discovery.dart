@@ -6,31 +6,36 @@ import 'mission.dart';
 /// Moment names it. Presentation only: nothing here is saved.
 enum DiscoveryType {
   /// A real object or paper, newly in the detective's hands.
-  evidenceFound('EVIDENCE FOUND'),
+  evidenceFound('EVIDENCE FOUND', 'Clue Discovered!'),
 
   /// A fact needed later, found by solving the puzzle.
-  clueFound('CLUE FOUND'),
+  clueFound('CLUE FOUND', 'Clue Discovered!'),
 
   /// A fact the detective had already seen before the puzzle, now made
   /// sure of. Never called "found".
-  clueConfirmed('CLUE CONFIRMED'),
+  clueConfirmed('CLUE CONFIRMED', 'Excellent Detective Work!'),
 
   /// A conclusion the puzzle worked out.
-  deduction('DEDUCTION'),
+  deduction('DEDUCTION', 'Brilliant Deduction!'),
 
   /// The next place or person.
-  newLead('NEW LEAD'),
+  newLead('NEW LEAD', 'You Made It!'),
 
   /// An important fact about the case.
-  storyDiscovery('STORY DISCOVERY'),
+  storyDiscovery('STORY DISCOVERY', 'Excellent Detective Work!'),
 
   /// Nothing to show beyond the solved puzzle (also the fallback).
-  puzzleComplete('PUZZLE COMPLETE');
+  puzzleComplete('PUZZLE COMPLETE', 'You Made It!');
 
-  const DiscoveryType(this.label);
+  const DiscoveryType(this.label, this.cheer);
 
-  /// The words on screen (the type is never told by colour alone).
+  /// What kind of discovery it is, in words (read out with the moment).
   final String label;
+
+  /// The line that greets the solve, first and largest on the Discovery
+  /// Moment. Like [label] it keeps the timing rule: what was seen before
+  /// the puzzle is never "discovered".
+  final String cheer;
 }
 
 /// When the detective first had the discovery's information: before the

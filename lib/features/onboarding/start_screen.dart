@@ -16,7 +16,6 @@ import '../../widgets/game_dialog.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
-import '../account/account_controller.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
@@ -117,19 +116,23 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
 
   Future<void> _confirmNewGame() async {
     _setAmbient(false);
+    final name = ref.read(gameControllerProvider).detectiveName;
     final ok = await GameDialog.confirm(
       context,
       title: 'Start a New Adventure?',
-      // What resetAll() clears: every case save, the season record and the
-      // detective's name (registration comes next).
-      message: 'Your investigation progress, case files and clues will be cleared. You will sign up again with a detective name.',
+      // What newAdventure() clears: every case, the season, XP, badges and
+      // coins. The detective stays.
+      message: 'Your cases, clues, XP, badges and coins will start again. '
+          'Detective $name stays with you.',
       confirmLabel: 'START NEW ADVENTURE',
       cancelLabel: 'Keep playing',
       onScene: true,
     );
     if (ok && mounted) {
-      await ref.read(gameControllerProvider.notifier).resetAll();
-      if (mounted) context.go(Routes.register);
+      await ref.read(gameControllerProvider.notifier).newAdventure();
+      // The season from its beginning (How to Play first if never seen, as
+      // after creating the detective): the casebook, then Case 01.
+      if (mounted) context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season);
     } else {
       _setAmbient(true);
     }
@@ -154,14 +157,6 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     // behind the title, the desk front under the greeting and the buttons —
     // and nowhere else: the window, the city and the lamp stay as painted.
     const shade = AppColors.navyDeep;
-    final accountsShown = ref.watch(accountControllerProvider).accountsShown;
-    final accountLink = !accountsShown
-        ? null
-        : switch (ref.watch(accountStateProvider.select((a) => a.status))) {
-            AccountStatus.signedOut => ('Sign in', Routes.account),
-            AccountStatus.signedIn => ('My account', Routes.accountSettings),
-            AccountStatus.starting || AccountStatus.unavailable => null,
-          };
 
     return Scaffold(
       backgroundColor: AppColors.nightBottom,
@@ -248,19 +243,6 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                     child: Center(
                                       // Starts the whole adventure over (asks first).
                                       child: _PageLink(label: 'NEW ADVENTURE', emphasis: true, onPressed: _confirmNewGame),
-                                    ),
-                                  ),
-                                ),
-                              // The user account, small and quiet: playing never
-                              // needs it (only when this build has accounts).
-                              if (accountLink case (final label, final route))
-                                _RiseIn(
-                                  intro: _intro,
-                                  from: 0.75,
-                                  child: SizedBox(
-                                    height: 48,
-                                    child: Center(
-                                      child: _PageLink(label: label, onPressed: () => context.go(route)),
                                     ),
                                   ),
                                 ),
@@ -612,7 +594,7 @@ class _Greeting extends StatelessWidget {
 
 /// A quiet way off the title page, under its button: words only, lifted
 /// off the desk. [emphasis] (NEW ADVENTURE): cream caps with a faint rule
-/// under them; otherwise (Sign in) smaller and plainer, the least of the page.
+/// under them; otherwise smaller and plainer, the least of the page.
 class _PageLink extends StatelessWidget {
   const _PageLink({required this.label, required this.onPressed, this.emphasis = false});
 

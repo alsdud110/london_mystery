@@ -2,17 +2,15 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_constants.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
-import '../../data/models/detective_name.dart';
+import '../../data/models/profile.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/game_toast.dart';
@@ -20,8 +18,12 @@ import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
+import 'detective_form.dart';
 import 'how_to_play_state.dart';
 
+/// CREATE YOUR DETECTIVE: the device's one detective, made once — a picture
+/// (boy or girl) and a name — then the investigation begins. No account,
+/// nothing sent anywhere.
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
@@ -31,9 +33,8 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _name = TextEditingController(
-    text: ref.read(gameControllerProvider).detectiveName ?? '',
-  );
+  final _name = TextEditingController();
+  DetectiveAvatar? _avatar;
 
   @override
   void dispose() {
@@ -42,56 +43,79 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   void _submit() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    final error = ref
-        .read(gameControllerProvider.notifier)
-        .registerDetective(_name.text);
+    // Both are checked at once: the name line shows its own error.
+    final named = _formKey.currentState?.validate() ?? false;
+    if (_avatar == null) {
+      showGameToast(context, 'Choose your detective first.', glyph: InkGlyph.pen);
+      return;
+    }
+    if (!named) return;
+    final error = ref.read(gameControllerProvider.notifier).createDetective(_name.text, _avatar);
     if (error != null) {
       showGameToast(context, error, glyph: InkGlyph.pen);
       return;
     }
-    // A new detective learns how to play first (once per profile), then
-    // the season's casebook, as before.
+    // A new detective learns how to play first (once), then the season's
+    // casebook and its opening.
     context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season);
-  }
-
-  /// The name as written on the line: 24 pt, or smaller when a long name
-  /// would not fit between the pen's slot and its twin (48 dp each side).
-  static TextStyle _nameStyle(
-    BuildContext context,
-    String name,
-    double lineWidth, {
-    Color color = AppColors.navy,
-  }) {
-    final full = AppText.title(
-      size: 24,
-      color: color,
-    ).copyWith(letterSpacing: 2);
-    if (name.isEmpty) return full;
-    // Less a little for the cursor and its margin at the end of the line.
-    final room = lineWidth - 2 * kMinInteractiveDimension - AppSpace.md;
-    final painter = TextPainter(
-      text: TextSpan(text: name, style: full),
-      textDirection: TextDirection.ltr,
-      textScaler: MediaQuery.textScalerOf(context),
-      maxLines: 1,
-    )..layout();
-    final width = painter.width;
-    painter.dispose();
-    if (width <= room) return full;
-    final size = (24 * room / width).clamp(12.0, 24.0);
-    return full.copyWith(fontSize: size, letterSpacing: 2 * size / 24);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Keyboard up (on a small phone it takes half the screen): the card folds
-    // away its emblem and agency line so the name line and the button both
-    // stay in view above the keys.
+    return DetectiveDesk(
+      formKey: _formKey,
+      heading: 'CREATE YOUR DETECTIVE',
+      question: 'Who will take\nthe case?',
+      onBack: () => context.go(Routes.start),
+      avatar: _avatar,
+      onAvatar: (a) => setState(() => _avatar = a),
+      name: _name,
+      action: 'START INVESTIGATION',
+      onAction: _submit,
+    );
+  }
+}
+
+/// The detective's form laid on the desk, the office of the title page
+/// behind it, dimmed: [heading], [question], the picture choice, the name
+/// line, and [action]. Shared by CREATE YOUR DETECTIVE and the detective's
+/// settings. With the keyboard up (half a small phone), the emblem folds
+/// away and the pictures shrink so the line and the button stay in view.
+class DetectiveDesk extends StatelessWidget {
+  const DetectiveDesk({
+    super.key,
+    required this.formKey,
+    required this.heading,
+    required this.question,
+    required this.onBack,
+    required this.avatar,
+    required this.onAvatar,
+    required this.name,
+    required this.action,
+    required this.onAction,
+    this.note,
+  });
+
+  final GlobalKey<FormState> formKey;
+  final String heading;
+  final String question;
+  final VoidCallback onBack;
+  final DetectiveAvatar? avatar;
+  final ValueChanged<DetectiveAvatar> onAvatar;
+  final TextEditingController name;
+  final String action;
+  final VoidCallback onAction;
+
+  /// A quiet line under the button (e.g. what a change keeps).
+  final String? note;
+
+  @override
+  Widget build(BuildContext context) {
     final typing = MediaQuery.viewInsetsOf(context).bottom > 0;
-    // The registration form laid on the detective's desk: the office of the
-    // title page behind it, dimmed, so the paper is the one thing in the
-    // light. The office stays put when the keyboard comes up.
+    // A small phone: the emblem stays off and the pictures are shorter, so
+    // the whole form and its button fit the screen.
+    final short = MediaQuery.sizeOf(context).height < 700;
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     return Stack(
       children: [
         const Positioned.fill(child: OfficeBehind()),
@@ -103,10 +127,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             leading: IconButton(
               tooltip: 'Back',
               icon: const InkIcon(InkGlyph.back),
-              style: IconButton.styleFrom(
-                backgroundColor: AppColors.navyDeep.withValues(alpha: 0.45),
-              ),
-              onPressed: () => context.go(Routes.start),
+              style: IconButton.styleFrom(backgroundColor: AppColors.navyDeep.withValues(alpha: 0.45)),
+              onPressed: onBack,
             ),
           ),
           extendBodyBehindAppBar: true,
@@ -123,24 +145,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 400),
                     child: Form(
-                      key: _formKey,
-                      // The registration form, to be filled in by hand. It is
-                      // laid on the desk as the page comes up (a short fade
+                      key: formKey,
+                      // Laid on the desk as the page comes up (a short fade
                       // and settle; none with reduced motion).
                       child: TweenAnimationBuilder<double>(
                         tween: Tween(begin: 0, end: 1),
-                        duration:
-                            (MediaQuery.maybeDisableAnimationsOf(context) ??
-                                false)
-                            ? Duration.zero
-                            : const Duration(milliseconds: 300),
+                        duration: still ? Duration.zero : const Duration(milliseconds: 300),
                         curve: Curves.easeOutCubic,
                         builder: (context, t, child) => Opacity(
                           opacity: t,
-                          child: Transform.translate(
-                            offset: Offset(0, 10 * (1 - t)),
-                            child: child,
-                          ),
+                          child: Transform.translate(offset: Offset(0, 10 * (1 - t)), child: child),
                         ),
                         child: Column(
                           children: [
@@ -172,182 +186,51 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                height: AppSpace.md,
-                                              ),
-                                              const BrassEmblem(size: 64),
-                                              const SizedBox(
-                                                height: AppSpace.md,
-                                              ),
+                                              const SizedBox(height: AppSpace.sm),
+                                              if (!short) ...[
+                                                const BrassEmblem(size: 48),
+                                                const SizedBox(height: AppSpace.sm),
+                                              ],
                                             ],
                                           ),
                                   ),
                                   Text(
-                                    'DETECTIVE REGISTRATION',
-                                    style: AppText.mark(
-                                      color: AppColors.burgundy,
-                                    ),
+                                    heading,
+                                    style: AppText.mark(color: AppColors.burgundy),
                                     textAlign: TextAlign.center,
                                   ),
-                                  const SizedBox(height: AppSpace.sm),
+                                  const SizedBox(height: AppSpace.xs),
                                   Text(
-                                    'What should we\ncall you, Detective?',
-                                    style: AppText.title(
-                                      size: typing ? 21 : 24,
-                                    ),
+                                    question,
+                                    style: AppText.title(size: typing ? 20 : 23),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: AppSpace.sm),
                                   const OrnamentRule(),
-                                  SizedBox(
-                                    height: typing ? AppSpace.sm : AppSpace.lg,
-                                  ),
-                                  // A long name is written a little smaller so it always fits the
-                                  // line (and stays centred) instead of scrolling inside it.
-                                  LayoutBuilder(
-                                    builder: (context, box) =>
-                                        ValueListenableBuilder<
-                                          TextEditingValue
-                                        >(
-                                          valueListenable: _name,
-                                          builder: (context, value, _) => TextFormField(
-                                            controller: _name,
-                                            // No focus on arrival: the whole form shows first;
-                                            // the keyboard comes when the line is tapped.
-                                            textAlign: TextAlign.center,
-                                            // A tap anywhere else puts the pen down: the keyboard
-                                            // closes, the name stays. It only listens — the tap
-                                            // still reaches whatever was tapped (Back, the button).
-                                            onTapOutside: (_) => FocusManager
-                                                .instance
-                                                .primaryFocus
-                                                ?.unfocus(),
-                                            textCapitalization:
-                                                TextCapitalization.characters,
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            maxLength:
-                                                AppConstants.nameMaxLength,
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.allow(
-                                                DetectiveName.typeable,
-                                              ),
-                                              LengthLimitingTextInputFormatter(
-                                                AppConstants.nameMaxLength,
-                                              ),
-                                            ],
-                                            style: _nameStyle(
-                                              context,
-                                              value.text,
-                                              box.maxWidth,
-                                            ),
-                                            // Written on the card's signature line, not in a box.
-                                            decoration: InputDecoration(
-                                              labelText: 'Detective Name',
-                                              // A printed label over the line, as on a form — it
-                                              // stays put rather than floating up.
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.always,
-                                              floatingLabelAlignment:
-                                                  FloatingLabelAlignment.center,
-                                              labelStyle: AppText.bodyText(
-                                                size: 16,
-                                                color: AppColors.muted,
-                                              ),
-                                              floatingLabelStyle:
-                                                  AppText.eyebrow(
-                                                    color: AppColors.muted,
-                                                  ).copyWith(
-                                                    letterSpacing: 1.5,
-                                                  ),
-                                              counterStyle: AppText.caption(),
-                                              hintText: 'SHERLOCK',
-                                              // The example name fits the line by the same rule as a real one.
-                                              hintStyle: _nameStyle(
-                                                context,
-                                                'SHERLOCK',
-                                                box.maxWidth,
-                                                color: AppColors.parchmentDark,
-                                              ),
-                                              // Lowered a touch (paint only, the line's layout is
-                                              // unchanged) to sit level with the written name.
-                                              prefixIcon: Transform.translate(
-                                                offset: const Offset(0, 7),
-                                                child: const InkIcon(
-                                                  InkGlyph.pen,
-                                                  color: AppColors.inkBrown,
-                                                ),
-                                              ),
-                                              // The same empty slot on the right as the pen's on the
-                                              // left (both get the decorator's 48 dp icon box), so the
-                                              // writing space — and the centred name in it — sits in
-                                              // the middle of the form, under its label.
-                                              suffixIcon:
-                                                  const SizedBox.shrink(),
-                                              filled: false,
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: AppSpace.md,
-                                                  ),
-                                              border: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: AppLine.faint(0.45),
-                                                  width: AppLine.rule,
-                                                ),
-                                              ),
-                                              enabledBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: AppLine.faint(
-                                                        0.45,
-                                                      ),
-                                                      width: AppLine.rule,
-                                                    ),
-                                                  ),
-                                              // Writing on it darkens the line in ink, no bright accent.
-                                              focusedBorder:
-                                                  const UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: AppColors.inkBrown,
-                                                      width: AppLine.rule,
-                                                    ),
-                                                  ),
-                                              errorBorder:
-                                                  const UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: AppColors.tryAgain,
-                                                      width: AppLine.rule,
-                                                    ),
-                                                  ),
-                                              focusedErrorBorder:
-                                                  const UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: AppColors.tryAgain,
-                                                      width: AppLine.ink,
-                                                    ),
-                                                  ),
-                                            ),
-                                            validator:
-                                                GameController.validateName,
-                                            onFieldSubmitted: (_) => _submit(),
-                                          ),
-                                        ),
-                                  ),
+                                  SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
+                                  AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
+                                  SizedBox(height: typing ? AppSpace.sm : AppSpace.lg),
+                                  DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: typing ? AppSpace.md : AppSpace.lg,
-                            ),
-                            // It hands the detective the season's casebook.
+                            SizedBox(height: typing ? AppSpace.md : AppSpace.lg),
                             GameButton(
-                              label: 'OPEN THE CASEBOOK',
+                              label: action,
                               arrow: true,
                               singleLine: true, // one line on a 360-wide phone
                               style: GameButtonStyle.glass,
                               tap: TapRole.primary,
-                              onPressed: _submit,
+                              onPressed: onAction,
                             ),
+                            if (note != null && !typing) ...[
+                              const SizedBox(height: AppSpace.md),
+                              Text(
+                                note!,
+                                textAlign: TextAlign.center,
+                                style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.85)),
+                              ),
+                            ],
                           ],
                         ),
                       ),

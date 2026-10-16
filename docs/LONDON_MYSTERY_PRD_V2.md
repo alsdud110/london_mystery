@@ -1,5 +1,7 @@
 # London Mystery — PRD V2 (Guest-first + Parent Account Edition)
 
+> **⛔ 폐기된 방향 (2026-10-16):** 사용자 계정·Firebase·클라우드 동기화 방향은 최종 폐기되었다. London Mystery는 **기기당 탐정 1명, 100% 오프라인** 게임이다. 현재 설계는 `docs/OFFLINE_SINGLE_DETECTIVE.md`. 이 문서의 계정·프로필·동기화·보호자 계정 관련 내용은 더 이상 유효하지 않으며 기록으로만 남긴다.
+
 > **문서 상태:** 소스 대조 완료(2026-10-13) · **D3 = B안(게스트 우선 체험 + 선택적 부모 계정 연결) 확정** · 구현 승인 전
 > **기준:** 실제 저장소 `lib/`, `test/`, `pubspec.yaml` 대조 결과. 부록 A(V1)는 과거 보고 기준선이며, 코드와 다른 점은 §4.1에 정리.
 > **표기:** `[CURRENT]` 소스에서 확인된 기존 구현 · `[PLANNED]` 신규 개발 예정 · `[DECISION]` 확정한 제품 방향 · `[OPEN]` 결정 필요

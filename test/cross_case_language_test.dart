@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/mock/season1/season1_learning.dart';
 import 'package:london_mystery/data/models/learning.dart';
@@ -147,7 +148,7 @@ void main() {
   test('XP rule 4 holds: Case 12 with a "before" slip is 3 × 30 + 60', () async {
     final container = ProviderContainer(overrides: await testOverrides());
     addTearDown(container.dispose);
-    container.read(gameControllerProvider.notifier).registerDetective('KIM');
+    container.read(gameControllerProvider.notifier).createDetective('KIM', DetectiveAvatar.boy);
     for (final e in season.take(11)) {
       container.read(seasonProvider.notifier).markSolved(e.id);
     }

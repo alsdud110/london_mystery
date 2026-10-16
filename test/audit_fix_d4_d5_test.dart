@@ -151,8 +151,9 @@ void main() {
               .map((o) => o.label.toLowerCase())
               .join(' ');
           for (final w in added) {
-            if (RegExp('\\b$w\\b').hasMatch(right))
+            if (RegExp('\\b$w\\b').hasMatch(right)) {
               expect(others, contains(w), reason: '${m.id}: $w');
+            }
           }
         }
       }

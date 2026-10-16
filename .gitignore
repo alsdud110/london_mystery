@@ -65,22 +65,13 @@ devtools_options.yaml
 .claude/skills/impeccable/reference/mode-*.md
 skills-lock.json
 
-# Firebase client config, per environment (see docs/PHASE3A_FIREBASE_AUTH_PLAN.md).
-# Fetched with FlutterFire CLI from the registered apps; firebase.json records
-# which project and app each file comes from, so it can be regenerated:
-#   flutterfire configure --project=london-mystery-dev  --platforms=android --android-package-name=com.londonmystery.app.dev --out=firebase/generated/firebase_options_dev.dart  --android-out=android/app/src/dev/google-services.json
-#   flutterfire configure --project=london-mystery-prod --platforms=android --android-package-name=com.londonmystery.app     --out=firebase/generated/firebase_options_prod.dart --android-out=android/app/src/prod/google-services.json
+# The game is offline only (no Firebase). Cloud client config must never be
+# committed should a copy turn up in the tree.
 **/google-services.json
 **/GoogleService-Info.plist
-/firebase/generated/
 # Signing and credentials: never commit.
 *.jks
 *.keystore
 /android/key.properties
 *service-account*.json
 *-firebase-adminsdk-*.json
-# Firestore rules tests (firebase/): dependencies and emulator logs.
-/firebase/node_modules/
-/firebase/functions/node_modules/
-firebase-debug.log
-firestore-debug.log

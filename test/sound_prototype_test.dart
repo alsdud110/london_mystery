@@ -412,7 +412,7 @@ void main() {
       await play.solve(t, m);
       await wait(t, const Duration(milliseconds: 2500));
       audio.played.clear();
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       List<GameSound> notTyping() => audio.played.where((s) => s != GameSound.typewriterKey).toList();
       expect(notTyping(), [GameSound.uiTap], reason: 'CONTINUE taps the casebook; the story itself is quiet');
       await t.tapAt(const Offset(200, 400)); // all of the story at once

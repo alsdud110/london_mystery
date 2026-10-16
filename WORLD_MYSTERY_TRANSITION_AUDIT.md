@@ -1,5 +1,7 @@
 # World Mystery 전환 전수조사 보고서
 
+> **참고 (2026-10-16):** 이 감사 이후 계정·Firebase·클라우드 동기화 코드는 모두 제거되었다(`docs/OFFLINE_SINGLE_DETECTIVE.md`). 아래의 `lib/core/cloud`, `lib/data/sync`, `features/account|sync`, Firestore·Firebase 설정 항목은 더 이상 존재하지 않는다.
+
 - 작성일: 2026-10-16
 - 대상: London Mystery Flutter 프로젝트 (`/Users/myhwang/flutter-workspace/london_mystery`, 브랜치 `main`, HEAD `0c169cd`)
 - 성격: 읽기 전용 조사 및 설계 제안 (조사 중 소스·설정·에셋 수정 없음)

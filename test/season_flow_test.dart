@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
@@ -35,7 +36,7 @@ void main() {
   }
 
   test('Case 01 is open; every later case is sealed until the one before is solved', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     final ids = [for (final e in catalog()) e.id];
     expect(ids.first, 'ep01');
     for (final id in ids.skip(1)) {
@@ -54,7 +55,7 @@ void main() {
   });
 
   test('each case keeps its own clues, evidence, XP and badges — no double awards', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     solveCurrentCase();
     final ep01Save = savedString(container.read(sharedPreferencesProvider), AppConstants.progressStorageKey);
     final ep01Xp = XpBreakdown.totalFor(current(), state());
@@ -86,7 +87,7 @@ void main() {
   });
 
   test('hints are counted per case', () {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     solveCurrentCase();
     ctrl().openEpisode('ep02');
     ctrl().startInvestigation();
@@ -100,7 +101,7 @@ void main() {
   });
 
   test('restarting the app restores the open case and the solved cases', () async {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     solveCurrentCase();
     ctrl().openEpisode('ep02');
     ctrl().startInvestigation();
@@ -135,7 +136,7 @@ void main() {
   });
 
   test('playing a case again keeps the next case open; reset seals everything', () async {
-    ctrl().registerDetective('Kim');
+    ctrl().createDetective('Kim', DetectiveAvatar.boy);
     solveCurrentCase();
     ctrl().playAgain();
     expect(state().isCaseSolved, isFalse);
@@ -144,7 +145,7 @@ void main() {
     await ctrl().resetAll();
     expect(current().id, 'ep01');
     expect(state().hasDetective, isFalse);
-    ctrl().registerDetective('Lee');
+    ctrl().createDetective('Lee', DetectiveAvatar.boy);
     expect(ctrl().openEpisode('ep02'), isFalse);
     final prefs = container.read(sharedPreferencesProvider);
     final case01 = savedKey(prefs, AppConstants.progressStorageKey);

@@ -102,7 +102,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 2300));
 
       // D–E. Open, solved, CONTINUE (to the post-case scene) as the glass button.
-      final onward = find.text('CONTINUE');
+      final onward = find.text('CONTINUE INVESTIGATION');
       await t.scrollUntilVisible(onward, 300, scrollable: find.byType(Scrollable).first);
       await wait(t, const Duration(milliseconds: 300));
       expect(t.widget<GameButton>(find.ancestor(of: onward, matching: find.byType(GameButton))).style, GameButtonStyle.glass);

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,10 +7,7 @@ import '../../core/constants/app_constants.dart';
 import '../models/game_progress.dart';
 import '../models/season_progress.dart';
 import '../models/wallet.dart';
-import '../sync/case_conflicts.dart';
-import '../sync/cloud/cloud_sync_meta.dart';
-import '../sync/outbox.dart';
-import '../sync/save_journal.dart';
+import 'save_journal.dart';
 
 /// Persists one detective's runs so they survive app restarts: one
 /// [GameProgress] per case, the [SeasonProgress] record and the [Wallet].
@@ -40,31 +36,17 @@ abstract interface class ProgressRepository {
   T transaction<T>(T Function() body);
 }
 
-/// Saves of one profile, under its namespace (`lm.p.<profileId>.…`, the
+/// Saves of the detective, under its namespace (`lm.p.<profileId>.…`, the
 /// same keys as before profiles otherwise). The saves made before profiles
-/// existed are never written or removed here.
-///
-/// Every change is also queued in the profile's [outbox] for a later sync,
-/// in the same all-or-nothing save as the change itself (see
-/// [SaveJournal]); a save that changes nothing writes nothing.
+/// existed are never written or removed here. A save of several keys is
+/// stored all or none (see [SaveJournal]); a save that changes nothing
+/// writes nothing.
 class SharedPrefsProgressRepository implements ProgressRepository {
-  SharedPrefsProgressRepository(this._prefs, {required this.profileId, this.legacyFallback = false, this.onQueued})
+  SharedPrefsProgressRepository(this._prefs, {required this.profileId, this.legacyFallback = false})
       : _journal = SaveJournal(_prefs, profileId) {
-    // A save the app stopped in the middle of is finished first; changes
-    // handed to a sender before the app stopped wait to be sent again.
+    // A save the app stopped in the middle of is finished first.
     _journal.recover();
-    final waiting = outbox;
-    final recovered = waiting.recovered();
-    if (!identical(recovered, waiting)) _put({_outboxKey: recovered.encode()});
   }
-
-  /// Reads [profileId]'s saves without finishing or releasing anything
-  /// (another detective on a list, while it is not being played). Not for
-  /// saving.
-  SharedPrefsProgressRepository.peek(this._prefs, {required this.profileId})
-      : legacyFallback = false,
-        onQueued = null,
-        _journal = SaveJournal(_prefs, profileId);
 
   final SharedPreferences _prefs;
   final String profileId;
@@ -74,15 +56,7 @@ class SharedPrefsProgressRepository implements ProgressRepository {
   /// does not have yet is read from the original saves, until it starts over.
   final bool legacyFallback;
 
-  /// Told after a change was queued for the sync (a game save, not the
-  /// sender's own bookkeeping), so a sync can be planned. It must only plan:
-  /// it may be called inside a [transaction].
-  final void Function()? onQueued;
-
-  static final _random = Random.secure();
-
   String _key(String legacyKey) => AppConstants.profileKey(profileId, legacyKey);
-  String get _outboxKey => AppConstants.outboxKey(profileId);
 
   /// Writes of the transaction under way (null: none).
   Map<String, String?>? _tx;
@@ -116,21 +90,6 @@ class SharedPrefsProgressRepository implements ProgressRepository {
     }
   }
 
-  /// How many times everything of this profile was wiped. Every save and
-  /// queued change belongs to it; a merge prefers a later epoch, so a reset
-  /// is never undone by data from before it. Kept in the namespace, so a
-  /// reset and its new epoch are saved together.
-  int get epoch {
-    final raw = _get(AppConstants.metaKey(profileId));
-    if (raw == null) return 0;
-    try {
-      final e = (jsonDecode(raw) as Map)['epoch'];
-      return e is int && e > 0 ? e : 0;
-    } catch (_) {
-      return 0;
-    }
-  }
-
   bool get _readsOriginals {
     if (!legacyFallback) return false;
     final key = AppConstants.legacyClearedKey(profileId);
@@ -158,29 +117,6 @@ class SharedPrefsProgressRepository implements ProgressRepository {
     return null;
   }
 
-  OutboxEvent _event(
-    OutboxKind kind,
-    String subject, {
-    String? runId,
-    int runSeq = 0,
-    int rev = 0,
-    Map<String, dynamic>? payload,
-    bool playtest = false,
-  }) =>
-      OutboxEvent(
-        id: [for (var i = 0; i < 8; i++) _random.nextInt(256).toRadixString(16).padLeft(2, '0')].join(),
-        profileId: profileId,
-        kind: kind,
-        subject: subject,
-        epoch: epoch,
-        runId: runId,
-        runSeq: runSeq,
-        rev: rev,
-        payload: payload,
-        playtest: playtest,
-        createdAt: DateTime.now(),
-      );
-
   @override
   GameProgress load([String episodeId = AppConstants.currentEpisodeId]) {
     final json = _read(AppConstants.progressKeyFor(episodeId));
@@ -189,29 +125,16 @@ class SharedPrefsProgressRepository implements ProgressRepository {
 
   @override
   Future<void> save(GameProgress progress, [String episodeId = AppConstants.currentEpisodeId]) {
-    _saveCase(progress, episodeId, queue: true);
+    _write(AppConstants.progressKeyFor(episodeId), progress.toJson());
     return Future.value();
   }
 
-  void _saveCase(GameProgress progress, String episodeId, {required bool queue}) {
-    final key = _key(AppConstants.progressKeyFor(episodeId));
-    final json = jsonEncode(progress.toJson());
-    if (_get(key) == json) return;
-    _put({
-      key: json,
-      if (queue)
-        _outboxKey: outbox
-            .enqueue(_event(
-              OutboxKind.caseRun,
-              episodeId,
-              runId: progress.runId,
-              runSeq: progress.runSeq,
-              rev: progress.rev,
-              playtest: progress.playtest,
-            ))
-            .encode(),
-    });
-    if (queue) onQueued?.call();
+  /// Writes [json] under [legacyKey]'s namespaced key, unless it is saved
+  /// already exactly so.
+  void _write(String legacyKey, Map<String, dynamic> json) {
+    final key = _key(legacyKey);
+    final encoded = jsonEncode(json);
+    if (_get(key) != encoded) _put({key: encoded});
   }
 
   @override
@@ -222,16 +145,8 @@ class SharedPrefsProgressRepository implements ProgressRepository {
 
   @override
   Future<void> saveSeason(SeasonProgress season) {
-    _saveSeason(season, queue: true);
+    _write(AppConstants.seasonStorageKey, season.toJson());
     return Future.value();
-  }
-
-  void _saveSeason(SeasonProgress season, {required bool queue}) {
-    final key = _key(AppConstants.seasonStorageKey);
-    final json = jsonEncode(season.toJson());
-    if (_get(key) == json) return;
-    _put({key: json, if (queue) _outboxKey: outbox.enqueue(_event(OutboxKind.season, 'season')).encode()});
-    if (queue) onQueued?.call();
   }
 
   @override
@@ -242,137 +157,24 @@ class SharedPrefsProgressRepository implements ProgressRepository {
 
   @override
   Future<void> saveWallet(Wallet wallet) {
-    _saveWallet(wallet, queue: true);
+    _write(AppConstants.walletStorageKey, wallet.toJson());
     return Future.value();
   }
 
-  /// Queues every entry not saved before (entries never change: each is
-  /// sent once, by its key).
-  void _saveWallet(Wallet wallet, {required bool queue}) {
-    final key = _key(AppConstants.walletStorageKey);
-    final json = jsonEncode(wallet.toJson());
-    if (_get(key) == json) return;
-    var box = outbox;
-    if (queue) {
-      final before = loadWallet() ?? Wallet.empty;
-      for (final e in wallet.entries) {
-        if (!before.has(e.key)) {
-          box = box.enqueue(_event(OutboxKind.walletEntry, e.key, payload: e.toJson(), playtest: e.playtest));
-        }
-      }
-    }
-    _put({key: json, if (queue) _outboxKey: box.encode()});
-    if (queue) onQueued?.call();
-  }
-
-  /// Removes this profile's saves only, together with its queued changes:
-  /// other profiles and the saves made before profiles stay. The profile
-  /// moves to the next epoch. In safe mode the originals stop being read.
-  /// The kept case files (sync conflicts) stay, archived: a New Adventure
-  /// never throws away a run the sync kept (Phase 4.5).
+  /// Removes the detective's saves: the saves made before profiles stay
+  /// (only the game master's reset removes those), and so do the case runs
+  /// the builds with a cloud kept aside. In safe mode the originals stop
+  /// being read.
   @override
   Future<void> clear() {
-    final next = epoch + 1;
     final prefix = AppConstants.profilePrefix(profileId);
-    final journal = AppConstants.journalKey(profileId);
-    final conflictsKey = AppConstants.conflictsKey(profileId);
-    final kept = conflicts;
+    final keep = {AppConstants.journalKey(profileId), AppConstants.keptRunsKey(profileId)};
     _put({
       for (final k in {..._prefs.getKeys(), ...?_tx?.keys})
-        if (k.startsWith(prefix) && k != journal && k != conflictsKey) k: null,
-      AppConstants.metaKey(profileId): jsonEncode({'epoch': next}),
+        if (k.startsWith(prefix) && !keep.contains(k)) k: null,
       if (legacyFallback) AppConstants.legacyClearedKey(profileId): 'true',
-      if (kept.isNotEmpty) conflictsKey: _encodeConflicts(CaseConflicts.archiveAll(kept, DateTime.now())),
     });
     return Future.value();
-  }
-
-  // --- For syncing (no sender yet) ---------------------------------------
-
-  /// The profile's changes waiting to be synced.
-  Outbox get outbox => Outbox.decode(_get(_outboxKey));
-
-  /// Changes the outbox (a sender claims, acknowledges or releases events).
-  void updateOutbox(Outbox Function(Outbox outbox) change) => _put({_outboxKey: change(outbox).encode()});
-
-  /// The cloud sync bookkeeping (confirmed cloudVersions, back-off), under
-  /// its own key: no game save changes for it. A full wipe ([clear]) drops
-  /// it with the rest (the next sync then merges with the cloud first).
-  CloudSyncMeta get cloudSync => CloudSyncMeta.decode(_get(AppConstants.cloudSyncKey(profileId)));
-
-  /// Changes the bookkeeping; inside [transaction] it commits with the rest
-  /// (e.g. a confirmation together with the events it acknowledges).
-  void updateCloudSync(CloudSyncMeta Function(CloudSyncMeta meta) change) =>
-      _put({AppConstants.cloudSyncKey(profileId): change(cloudSync).encode()});
-
-  /// Saves merged with the other side: stored like any save, and queued
-  /// only when [queue] (the other side does not have it yet).
-  void saveMerged({String? episodeId, GameProgress? progress, SeasonProgress? season, Wallet? wallet, required bool queue}) =>
-      transaction(() {
-        if (progress != null) _saveCase(progress, episodeId ?? AppConstants.currentEpisodeId, queue: queue);
-        if (season != null) _saveSeason(season, queue: queue);
-        if (wallet != null) _saveWallet(wallet, queue: queue);
-      });
-
-  /// Sync conflicts kept for a later decision, oldest first.
-  List<Map<String, dynamic>> get conflicts {
-    final raw = _get(AppConstants.conflictsKey(profileId));
-    if (raw == null) return const [];
-    try {
-      final list = (jsonDecode(raw) as Map)['items'];
-      return list is List ? list.whereType<Map<String, dynamic>>().toList() : const [];
-    } catch (_) {
-      return const [];
-    }
-  }
-
-  /// Keeps [conflict] (with an `id`); one with the same id is kept once.
-  void keepConflict(Map<String, dynamic> conflict) {
-    final items = conflicts;
-    if (items.any((c) => c['id'] == conflict['id'])) return;
-    _put({AppConstants.conflictsKey(profileId): _encodeConflicts([...items, conflict])});
-  }
-
-  /// Changes kept conflicts (their status, see `CaseConflicts`). [change]
-  /// must keep every record: nothing kept is ever removed.
-  void updateConflicts(List<Map<String, dynamic>> Function(List<Map<String, dynamic>> items) change) {
-    final items = conflicts;
-    final next = change(items);
-    final ids = {for (final c in next) c['id']};
-    if (items.any((c) => !ids.contains(c['id']))) throw StateError('a kept conflict would be removed');
-    _put({AppConstants.conflictsKey(profileId): _encodeConflicts(next)});
-  }
-
-  static String _encodeConflicts(List<Map<String, dynamic>> items) => jsonEncode({'items': items});
-
-  /// Moves to [newEpoch] (a reset made on another copy of the profile):
-  /// every save of the current epoch is first kept as a conflict, then the
-  /// saves and queued changes of the old epoch are emptied.
-  void adoptEpoch(int newEpoch, {required Iterable<String> episodeIds}) {
-    final old = epoch;
-    if (newEpoch <= old) return;
-    transaction(() {
-      final kept = <String, dynamic>{
-        for (final id in episodeIds)
-          if (_get(_key(AppConstants.progressKeyFor(id))) case final raw?) id: jsonDecode(raw),
-        if (_get(_key(AppConstants.seasonStorageKey)) case final raw?) 'season': jsonDecode(raw),
-        if (_get(_key(AppConstants.walletStorageKey)) case final raw?) 'wallet': jsonDecode(raw),
-      };
-      if (kept.isNotEmpty) {
-        keepConflict({'id': 'epoch:$old>$newEpoch', 'kind': 'epoch', 'subject': 'profile', 'reason': 'reset elsewhere', 'local': kept});
-      }
-      // Choices of the epoch before are not offered any more; kept.
-      final items = conflicts;
-      if (items.isNotEmpty) _put({AppConstants.conflictsKey(profileId): _encodeConflicts(CaseConflicts.archiveAll(items, DateTime.now()))});
-      _put({
-        for (final k in {..._prefs.getKeys(), ...?_tx?.keys})
-          if (k.startsWith(AppConstants.profilePrefix(profileId)) &&
-              (k.contains('.progress.v1') || k.endsWith('.season.v1') || k.endsWith('.wallet.v1')))
-            k: null,
-        _outboxKey: null,
-        AppConstants.metaKey(profileId): jsonEncode({'epoch': newEpoch}),
-      });
-    });
   }
 }
 

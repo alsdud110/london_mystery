@@ -1,43 +1,44 @@
 import 'package:flutter/foundation.dart';
 
-/// What kind of detective a profile is. Stored by [name]: never rename one.
-enum ProfileKind {
-  /// Plays on this device without an account (one per device). Never synced.
-  guest,
+/// The detective's picture, chosen when the detective is created. Stored by
+/// [name]: never rename one.
+enum DetectiveAvatar {
+  boy('BOY'),
+  girl('GIRL');
 
-  /// A detective profile owned by a user account (see [DetectiveProfile.ownerUid]).
-  account;
+  const DetectiveAvatar(this.label);
 
-  static ProfileKind? byName(Object? name) {
-    for (final k in values) {
-      if (k.name == name) return k;
+  /// The word on the choice card.
+  final String label;
+
+  static DetectiveAvatar? byName(Object? name) {
+    for (final a in values) {
+      if (a.name == name) return a;
     }
     return null;
   }
 }
 
-/// Where a profile's data came from. Stored by [name]: never rename one.
+/// Where the detective's data came from. Stored by [name]: never rename one.
 enum ProfileOrigin {
   /// Copied from the saves made before profiles existed.
   legacy,
 
   /// Started new on this device.
-  fresh,
+  fresh;
 
-  /// Touched by the operator (playtest) tools: test data, never to be synced
-  /// to a live cloud or linked to an account.
-  playtest;
-
-  static ProfileOrigin? byName(Object? name) {
+  /// Unknown values (and `playtest`, from the builds with a cloud) read as
+  /// [fresh]: nothing about it changes how the game plays.
+  static ProfileOrigin byName(Object? name) {
     for (final o in values) {
       if (o.name == name) return o;
     }
-    return null;
+    return fresh;
   }
 }
 
-/// Whether the profile's first wallet still has to pay back a save from
-/// before coins existed. Stored by [name]: never rename one.
+/// Whether the first wallet still has to pay back a save from before coins
+/// existed. Stored by [name]: never rename one.
 enum WalletBackfill {
   /// A legacy save without a wallet: the first wallet pays it back, once.
   pending,
@@ -56,100 +57,78 @@ enum WalletBackfill {
   }
 }
 
-/// One detective on this device. Its saves live under its own storage
-/// namespace (see `AppConstants.profileKey`), so two detectives never share
-/// progress, coins or tips.
+/// The one detective of this device. Its saves live under its own storage
+/// namespace (see `AppConstants.profileKey`).
+///
+/// The slot exists from the first start (its [id] names the namespace); the
+/// detective is *created* when a name is given (see [isCreated]). NEW
+/// ADVENTURE empties the slot again; there is never a second detective.
 @immutable
 class DetectiveProfile {
   const DetectiveProfile({
     required this.id,
-    this.kind = ProfileKind.guest,
     this.origin = ProfileOrigin.fresh,
     this.walletBackfill = WalletBackfill.never,
     this.detectiveName,
+    this.avatar,
     this.createdAt,
-    this.needsReview = false,
-    this.ownerUid,
   });
 
   /// Random, never changes (hex only, so it is safe inside a storage key).
   final String id;
-  final ProfileKind kind;
   final ProfileOrigin origin;
   final WalletBackfill walletBackfill;
 
-  /// The name shown for the profile. The game itself still reads the name
-  /// kept in each case save (`GameProgress.detectiveName`).
+  /// The detective's name. The game also keeps it in each case save
+  /// (`GameProgress.detectiveName`); both change together.
   final String? detectiveName;
+
+  /// Null for a detective made before avatars existed (chosen later, in the
+  /// detective's settings).
+  final DetectiveAvatar? avatar;
+
+  /// When the detective was created (or, for older data, first found).
   final DateTime? createdAt;
 
-  /// Found again when the profile records could not be read, next to other
-  /// saved profiles: kept whole, but not synced until a grown-up has
-  /// confirmed which detective it is.
-  final bool needsReview;
+  bool get isCreated => detectiveName != null;
 
-  /// The user account this profile belongs to (the sign-in provider's id), or
-  /// null for the guest. Its saves on this device open only while that
-  /// account is signed in.
-  final String? ownerUid;
-
-  /// Whether this profile may be opened with [signedInUid] signed in (null:
-  /// nobody): the guest always; an account's profile only for that account.
-  bool mayOpen(String? signedInUid) => ownerUid == null || ownerUid == signedInUid;
-
-  /// A profile id: lowercase hex, 8 to 64 digits (new ones are 32). The
-  /// same pattern is the cloud document id rule (`firebase/firestore.rules`).
+  /// A profile id: lowercase hex, 8 to 64 digits (new ones are 32).
   static const idPattern = r'^[0-9a-f]{8,64}$';
   static final _validId = RegExp(idPattern);
 
   static bool isValidId(Object? id) => id is String && _validId.hasMatch(id);
 
-  /// Whether this profile's data may ever go to a live cloud: an account
-  /// profile that the operator tools never set up, and not waiting for a
-  /// review. (Operator data inside it is filtered record by record.)
-  bool get syncable => kind == ProfileKind.account && origin != ProfileOrigin.playtest && !needsReview;
-
   DetectiveProfile copyWith({
     ProfileOrigin? origin,
     WalletBackfill? walletBackfill,
     String? detectiveName,
-    bool? needsReview,
+    DetectiveAvatar? avatar,
+    DateTime? createdAt,
   }) =>
       DetectiveProfile(
         id: id,
-        kind: kind,
         origin: origin ?? this.origin,
         walletBackfill: walletBackfill ?? this.walletBackfill,
         detectiveName: detectiveName ?? this.detectiveName,
-        createdAt: createdAt,
-        needsReview: needsReview ?? this.needsReview,
-        ownerUid: ownerUid,
+        avatar: avatar ?? this.avatar,
+        createdAt: createdAt ?? this.createdAt,
       );
 
-  /// The same profile after everything it played was wiped: no name, and
-  /// nothing left to pay back.
-  DetectiveProfile startedOver({required ProfileOrigin origin}) => DetectiveProfile(
-        id: id,
-        kind: kind,
-        origin: origin,
-        createdAt: createdAt,
-        needsReview: needsReview,
-        ownerUid: ownerUid,
-      );
+  /// The same slot after everything it played was wiped (NEW ADVENTURE): no
+  /// name, no avatar, nothing left to pay back. The id stays.
+  DetectiveProfile startedOver() => DetectiveProfile(id: id);
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'kind': kind.name,
         'origin': origin.name,
         'walletBackfill': walletBackfill.name,
         if (detectiveName != null) 'detectiveName': detectiveName,
+        if (avatar != null) 'avatar': avatar!.name,
         if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
-        if (needsReview) 'needsReview': true,
-        if (ownerUid != null) 'ownerUid': ownerUid,
       };
 
   /// Null for an entry that cannot be read. Unknown values fall back to the
-  /// safest reading: playtest stays out of sync, nothing is paid back.
+  /// safest reading: nothing is paid back.
   static DetectiveProfile? fromJson(Object? json) {
     if (json is! Map) return null;
     final id = json['id'];
@@ -158,75 +137,48 @@ class DetectiveProfile {
     final created = json['createdAt'];
     return DetectiveProfile(
       id: id as String,
-      kind: ProfileKind.byName(json['kind']) ?? ProfileKind.guest,
-      origin: ProfileOrigin.byName(json['origin']) ?? ProfileOrigin.playtest,
+      origin: ProfileOrigin.byName(json['origin']),
       walletBackfill: WalletBackfill.byName(json['walletBackfill']) ?? WalletBackfill.never,
       detectiveName: name is String && name.isNotEmpty ? name : null,
+      avatar: DetectiveAvatar.byName(json['avatar']),
       createdAt: created is String ? DateTime.tryParse(created) : null,
-      needsReview: json['needsReview'] == true,
-      ownerUid: switch (json['ownerUid']) {
-        final String uid when uid.isNotEmpty => uid,
-        _ => null,
-      },
     );
   }
 }
 
-/// Every detective on this device and which one is playing.
+/// What the device keeps about its detective (`lm.detective.v1`): the one
+/// [profile], and the ids of earlier profiles found on the device that are
+/// not it ([held]). A held profile's saves stay on the device untouched:
+/// never opened, never removed.
 @immutable
-class ProfileRegistry {
-  const ProfileRegistry({required this.activeProfileId, required this.profiles});
+class DetectiveRecord {
+  const DetectiveRecord({required this.profile, this.held = const []});
 
   static const schema = 1;
 
-  final String activeProfileId;
-  final List<DetectiveProfile> profiles;
+  final DetectiveProfile profile;
+  final List<String> held;
 
-  DetectiveProfile? byId(String id) {
-    for (final p in profiles) {
-      if (p.id == id) return p;
-    }
-    return null;
-  }
-
-  DetectiveProfile get active => byId(activeProfileId)!;
-
-  /// [profile] added, or put in place of the profile with its id.
-  ProfileRegistry upsert(DetectiveProfile profile) => ProfileRegistry(
-        activeProfileId: activeProfileId,
-        profiles: byId(profile.id) == null
-            ? [...profiles, profile]
-            : [for (final p in profiles) p.id == profile.id ? profile : p],
-      );
-
-  ProfileRegistry withActive(String id) {
-    if (byId(id) == null) throw ArgumentError.value(id, 'id', 'no such profile');
-    return ProfileRegistry(activeProfileId: id, profiles: profiles);
+  DetectiveRecord withProfile(DetectiveProfile next) {
+    assert(next.id == profile.id);
+    return DetectiveRecord(profile: next, held: held);
   }
 
   Map<String, dynamic> toJson() => {
         'schema': schema,
-        'activeProfileId': activeProfileId,
-        'profiles': [for (final p in profiles) p.toJson()],
+        'profile': profile.toJson(),
+        if (held.isNotEmpty) 'held': held,
       };
 
-  /// Null when nothing usable is saved. Unreadable profiles are dropped, a
-  /// repeated id keeps its first entry, and an unknown active id falls back
-  /// to the first profile.
-  static ProfileRegistry? fromJson(Object? json) {
+  /// Null when nothing usable is saved.
+  static DetectiveRecord? fromJson(Object? json) {
     if (json is! Map) return null;
-    final raw = json['profiles'];
-    if (raw is! List) return null;
-    final profiles = <DetectiveProfile>[];
-    for (final e in raw) {
-      final p = DetectiveProfile.fromJson(e);
-      if (p != null && !profiles.any((q) => q.id == p.id)) profiles.add(p);
-    }
-    if (profiles.isEmpty) return null;
-    final active = json['activeProfileId'];
-    return ProfileRegistry(
-      activeProfileId: profiles.any((p) => p.id == active) ? active as String : profiles.first.id,
-      profiles: profiles,
+    final profile = DetectiveProfile.fromJson(json['profile']);
+    if (profile == null) return null;
+    final held = json['held'];
+    return DetectiveRecord(
+      profile: profile,
+      held: held is List ? [for (final id in held) if (DetectiveProfile.isValidId(id) && id != profile.id) id as String] : const [],
     );
   }
 }

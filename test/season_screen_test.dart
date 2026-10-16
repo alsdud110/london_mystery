@@ -265,8 +265,10 @@ void main() {
   Future<void> playOpening(WidgetTester t, Size size, String tag, {bool fromRegister = false}) async {
     if (fromRegister) {
       await tapText(t, 'START ADVENTURE');
+      await t.tap(find.byKey(const ValueKey('avatar-boy')));
+      await t.pump();
       await t.enterText(find.byType(TextField), 'minyoung');
-      await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 600));
+      await tapText(t, 'START INVESTIGATION', after: const Duration(milliseconds: 600));
       // How to Play comes first for a new detective (how_to_play_test).
       await skipHowToPlay(t);
     } else {
@@ -667,13 +669,13 @@ void main() {
     await wait(t, const Duration(seconds: 3));
   });
 
-  testWidgets('reset all: the season starts again with its casebook', (t) async {
+  testWidgets('NEW ADVENTURE: the same detective, the season starts again with its casebook', (t) async {
     await pumpApp(t, seasonSaves(6));
+    final name = appRef.read(gameControllerProvider).detectiveName;
     await tapText(t, 'NEW ADVENTURE');
     await tapText(t, 'START NEW ADVENTURE', after: const Duration(milliseconds: 1000));
-    expect(path(), Routes.register);
-    await t.enterText(find.byType(TextField), 'kim');
-    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 600));
+    expect(path(), isNot(Routes.register), reason: 'the detective is kept, not made again');
+    expect(appRef.read(gameControllerProvider).detectiveName, name);
     // This detective played before How to Play existed: shown once, now.
     await skipHowToPlay(t);
     await wait(t, const Duration(milliseconds: 2200));

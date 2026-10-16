@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
@@ -69,7 +70,7 @@ void main() {
 
     setUp(() async {
       container = ProviderContainer(overrides: await testOverrides());
-      ctrl().registerDetective('Kim');
+      ctrl().createDetective('Kim', DetectiveAvatar.boy);
       ctrl().startInvestigation();
     });
     tearDown(() => container.dispose());

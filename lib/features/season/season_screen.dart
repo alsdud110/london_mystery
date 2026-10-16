@@ -19,7 +19,6 @@ import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
-import '../sync/ui/case_files_screen.dart';
 import 'season_actions.dart';
 import 'season_overview.dart';
 import 'widgets/investigation_board.dart';
@@ -178,7 +177,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
                   child: Center(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 520),
-                      child: _boardPage(overview, casesWithTwoFiles(ref)),
+                      child: _boardPage(overview),
                     ),
                   ),
                 ),
@@ -268,7 +267,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
     );
   }
 
-  Widget _boardPage(SeasonOverview overview, Set<String> twoFiles) {
+  Widget _boardPage(SeasonOverview overview) {
     return LayoutBuilder(
       // The board takes the room the dossier leaves; on a small phone with
       // large text it keeps a usable size and the page scrolls instead.
@@ -292,7 +291,6 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
                           before: _before,
                           t: t,
                           onCase: (i) => _openFile(overview, i),
-                          twoFiles: twoFiles,
                         ),
                       ),
                     ),

@@ -74,8 +74,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
             .read(gameControllerProvider.notifier)
             .markMissionStarted(_mission.id);
         final locks = _locksKey.currentContext;
-        if (returning && locks != null && locks.mounted)
+        if (returning && locks != null && locks.mounted) {
           Scrollable.ensureVisible(locks, alignment: 0.05);
+        }
       });
     }
   }
@@ -95,6 +96,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   /// actually added (0 when the case was paid before, e.g. played again).
   int _xpEarned = 0;
   int _coinsEarned = 0;
+  bool _firstSolve = true;
 
   /// Big Ben rings as the news comes up ("Big Ben rings again!", at 0.55 of
   /// the opening), after the clock has caught: once.
@@ -102,8 +104,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     if (!_solvedNow ||
         _rung ||
         _open.value < 0.55 ||
-        !ringsBellOnSolve(_mission))
+        !ringsBellOnSolve(_mission)) {
       return;
+    }
     _rung = true;
     ref.read(audioServiceProvider).play(GameSound.bigBenBell);
   }
@@ -118,10 +121,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   /// pencil.
   Future<void> _showHint() async {
     if (ref.read(gameControllerProvider).hintsFor(_mission.id) >=
-        _mission.hints.length)
+        _mission.hints.length) {
       return;
-    if (await requestTip(context, ref, _mission) && mounted)
+    }
+    if (await requestTip(context, ref, _mission) && mounted) {
       ref.read(audioServiceProvider).play(GameSound.pencilNote);
+    }
   }
 
   Future<void> _tryOpen() => _submit(_digits.join());
@@ -154,6 +159,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           ref.read(gameControllerProvider),
         ).total;
         _coinsEarned = outcome.coins;
+        _firstSolve = outcome.firstSolve;
         // A thing of the story (the Royal Box, the Great Clock, a heavy
         // lock) sounds as it opens on screen; otherwise the final's cue now.
         final sound = solveSoundOf(_mission);
@@ -504,21 +510,36 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Only for the solve just made (not a revisit): what it paid, as the
-        // Discovery Moment shows it. No coins when none were added.
+        // Only for the solve just made (not a revisit): the cheer, and what
+        // it paid, as the Discovery Moment shows it. No coins when none were
+        // added; a case solved before earns nothing new and says so.
         if (_solvedNow && _xpEarned > 0) ...[
           Text(
-            '+$_xpEarned XP${_coinsEarned > 0 ? '   ·   +$_coinsEarned COINS' : ''}',
-            key: const ValueKey('final-reward'),
+            'You Made It!',
+            key: const ValueKey('final-cheer'),
             textAlign: TextAlign.center,
-            style: AppText.style(
-              AppText.body,
-              size: 16,
-              weight: FontWeight.w700,
-              color: AppColors.goldLight,
-              letterSpacing: 2,
-            ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+            style: AppText.cinematicPrompt(size: 28, color: AppColors.goldLight),
           ),
+          const SizedBox(height: AppSpace.sm),
+          _firstSolve
+              ? Text(
+                  '+$_xpEarned XP${_coinsEarned > 0 ? '   ·   +$_coinsEarned COINS' : ''}',
+                  key: const ValueKey('final-reward'),
+                  textAlign: TextAlign.center,
+                  style: AppText.style(
+                    AppText.body,
+                    size: 16,
+                    weight: FontWeight.w700,
+                    color: AppColors.goldLight,
+                    letterSpacing: 2,
+                  ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+                )
+              : Text(
+                  alreadyRewarded,
+                  key: const ValueKey('final-reward'),
+                  textAlign: TextAlign.center,
+                  style: AppText.aside(size: 15, color: AppColors.paperLight.withValues(alpha: 0.8)),
+                ),
           const SizedBox(height: AppSpace.md),
         ],
         _nextButton(),
@@ -536,7 +557,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           onPressed: () => context.go(Routes.solved),
         )
       : GameButton(
-          label: 'CONTINUE',
+          label: continueInvestigation,
           arrow: true,
           style: GameButtonStyle.glass,
           tap: TapRole.primary,
@@ -747,8 +768,9 @@ class RoyalBoxAnimation extends StatelessWidget {
           painter: _RoyalBoxPainter(lid: lid, crown: crown, rays: t),
           child: const SizedBox.expand(),
         );
-        if (pictures == null)
+        if (pictures == null) {
           return Transform.translate(offset: Offset(shake, 0), child: drawn);
+        }
         // The painted box: the same timing — it shakes, the light comes
         // out as it opens (drawn behind it), the open picture (Crown in it)
         // takes over from the shut one as the lid would swing.
@@ -925,13 +947,14 @@ class _RoyalBoxPainter extends CustomPainter {
       ..close();
     canvas.drawPath(lidPath, Paint()..color = AppColors.goldDeep);
     canvas.drawPath(lidPath, ink..strokeWidth = 3);
-    if (lid < 0.3)
+    if (lid < 0.3) {
       _crown(
         canvas,
         Offset(cx, lidRect.top + lidRect.height * 0.35),
         26,
         emblem: true,
       );
+    }
     canvas.restore();
   }
 

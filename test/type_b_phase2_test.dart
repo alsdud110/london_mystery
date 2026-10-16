@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/mock/season1/season1_learning.dart';
 import 'package:london_mystery/data/models/learning.dart';
@@ -107,7 +108,7 @@ void main() {
     final container = ProviderContainer(overrides: await testOverrides());
     addTearDown(container.dispose);
     final ctrl = container.read(gameControllerProvider.notifier);
-    ctrl.registerDetective('KIM');
+    ctrl.createDetective('KIM', DetectiveAvatar.boy);
     expect(ctrl.openEpisode('ep01'), isTrue);
     // Case 02 is opened as the active case once Case 01 counts as solved.
     container.read(seasonProvider.notifier).markSolved('ep01');

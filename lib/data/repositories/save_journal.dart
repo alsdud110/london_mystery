@@ -10,8 +10,7 @@ import '../../core/constants/app_constants.dart';
 ///
 /// Each single key is written whole and in order (the platform commits each
 /// write on its own, one after the other), but a save of several keys could
-/// stop half way: coins paid with the mission not saved as solved, or a
-/// change saved with no sync event for it. So a save of several keys first
+/// stop half way: coins paid with the mission not saved as solved. So a save of several keys first
 /// writes all of them into one journal key, then each key, then removes the
 /// journal. An unfinished journal found at the next start is written again
 /// ([recover]); writing the same values twice changes nothing.

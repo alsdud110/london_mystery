@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
@@ -95,7 +96,7 @@ void main() {
       final container = ProviderContainer(overrides: await testOverrides());
       addTearDown(container.dispose);
       final c = container.read(gameControllerProvider.notifier);
-      c.registerDetective('KIM');
+      c.createDetective('KIM', DetectiveAvatar.boy);
       c.startInvestigation();
       for (final w in ['wax', 'Wax', 'seal', 'pressed']) {
         c.lookUpWord(w); // what the notebook's word cards call

@@ -8,9 +8,8 @@
 #   Profile stay as they were.
 # - Bundle ids: dev com.londonmystery.app.dev, prod com.londonmystery.app;
 #   home-screen names "London Mystery DEV" / "London Mystery".
-# - LM_FLAVOR build setting, read by the "Firebase config (flavor)" phase,
-#   which copies ios/config/<flavor>/GoogleService-Info.plist (git-ignored)
-#   into the app and refuses one made for another bundle id.
+# - Removes the "Firebase config (flavor)" build phase and the LM_FLAVOR
+#   setting of the builds that had a cloud (the game is offline only).
 # - Shared schemes dev and prod (what `flutter run --flavor` looks for).
 require 'xcodeproj'
 
@@ -21,23 +20,7 @@ FLAVORS = {
   'prod' => { bundle: 'com.londonmystery.app', name: 'London Mystery' },
 }.freeze
 BASES = %w[Debug Release Profile].freeze
-PHASE = 'Firebase config (flavor)'.freeze
-SCRIPT = <<~'SH'.freeze
-  # Copies the flavor's Firebase config into the app (see ios/scripts/setup_flavors.rb).
-  DST="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleService-Info.plist"
-  if [ -z "${LM_FLAVOR}" ]; then
-    rm -f "$DST"; echo "No flavor: no Firebase config (the game plays as a guest)."; exit 0
-  fi
-  SRC="${PROJECT_DIR}/config/${LM_FLAVOR}/GoogleService-Info.plist"
-  if [ ! -f "$SRC" ]; then
-    rm -f "$DST"; echo "warning: no ios/config/${LM_FLAVOR}/GoogleService-Info.plist: Firebase stays off for this build."; exit 0
-  fi
-  ID=$(/usr/libexec/PlistBuddy -c "Print :BUNDLE_ID" "$SRC" 2>/dev/null)
-  if [ "$ID" != "${PRODUCT_BUNDLE_IDENTIFIER}" ]; then
-    echo "error: ios/config/${LM_FLAVOR}/GoogleService-Info.plist is for '$ID', this build is '${PRODUCT_BUNDLE_IDENTIFIER}'."; exit 1
-  fi
-  cp "$SRC" "$DST"; echo "Firebase config: ${LM_FLAVOR} ($ID)"
-SH
+OLD_PHASE = 'Firebase config (flavor)'.freeze
 
 project = Xcodeproj::Project.open(PROJECT)
 runner = project.targets.find { |t| t.name == 'Runner' } or abort('no Runner target')
@@ -64,26 +47,14 @@ BASES.each do |base|
     r = copy_config(runner.build_configuration_list, base, name, project)
     r.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = info[:bundle]
     r.build_settings['APP_DISPLAY_NAME'] = info[:name]
-    r.build_settings['LM_FLAVOR'] = flavor
+    r.build_settings.delete('LM_FLAVOR')
     next unless tests
     t = copy_config(tests.build_configuration_list, base, name, project)
     t.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle]}.RunnerTests"
   end
 end
 
-phase = runner.shell_script_build_phases.find { |p| p.name == PHASE }
-unless phase
-  phase = runner.new_shell_script_build_phase(PHASE)
-  # After the resources are copied, so the app's resource folder exists.
-  resources = runner.resources_build_phase
-  runner.build_phases.delete(phase)
-  runner.build_phases.insert(runner.build_phases.index(resources) + 1, phase)
-end
-phase.shell_path = '/bin/sh'
-phase.shell_script = SCRIPT
-phase.input_paths = ['$(PROJECT_DIR)/config/$(LM_FLAVOR)/GoogleService-Info.plist']
-phase.output_paths = ['$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist']
-phase.always_out_of_date = '1'
+runner.shell_script_build_phases.select { |p| p.name == OLD_PHASE }.each(&:remove_from_project)
 
 project.save
 

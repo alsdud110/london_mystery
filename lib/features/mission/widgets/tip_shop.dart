@@ -109,7 +109,7 @@ bool _saveTip(WidgetRef ref, Mission mission, int tip) {
 }
 
 /// The coins dialog for a hint that costs coins: a small paper sheet with
-/// the question, the price said once, CANCEL and GET HINT. GET HINT pays, writes
+/// the question, the price said once, CANCEL and GET MORE HINTS. GET MORE HINTS pays, writes
 /// the hint on the puzzle page and closes it; CANCEL (or a tap outside)
 /// changes nothing. When the coins are short it says so, and the partner
 /// gives the hint free (no one is ever stuck). Returns true when a hint was
@@ -184,7 +184,7 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
 }
 
 /// The coins dialog as it looks: the question, the price said once, how it
-/// is paid, CANCEL and GET HINT. What the buttons do is the caller's (the
+/// is paid, CANCEL and GET MORE HINTS. What the buttons do is the caller's (the
 /// puzzle's hint shop, or How to Play's practice, which spends nothing).
 class TipShopCard extends StatelessWidget {
   const TipShopCard({
@@ -300,11 +300,11 @@ class TipShopCard extends StatelessWidget {
                   children: [
                     CompactButton(label: 'CANCEL', onPressed: onCancel),
                     CompactButton(
-                      label: 'GET HINT',
+                      label: 'GET MORE HINTS',
                       primary: true,
                       semanticLabel: paid
-                          ? 'Get hint, $price coins'
-                          : 'Get hint, free',
+                          ? 'Get more hints, $price coins'
+                          : 'Get more hints, free',
                       onPressed: onReveal,
                     ),
                   ],

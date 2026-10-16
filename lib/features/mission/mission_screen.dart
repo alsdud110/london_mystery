@@ -167,11 +167,13 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// (see [requestTip]). A hint revealed is written onto the page, with the
   /// pencil. True when a hint was opened.
   Future<bool> _showHint(Mission m) async {
-    if (ref.read(gameControllerProvider).hintsFor(m.id) >= m.hints.length)
+    if (ref.read(gameControllerProvider).hintsFor(m.id) >= m.hints.length) {
       return false;
+    }
     final revealed = await requestTip(context, ref, m);
-    if (revealed && mounted)
+    if (revealed && mounted) {
       ref.read(audioServiceProvider).play(GameSound.pencilNote);
+    }
     return revealed;
   }
 
@@ -241,6 +243,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           discovery: discoveryOf(m),
           xp: XpBreakdown.of(m, progress),
           coins: outcome.coins,
+          firstSolve: outcome.firstSolve,
           newBadges: outcome.newBadges,
           onEvidenceLaid: () => audio.play(GameSound.paperPlace),
         );

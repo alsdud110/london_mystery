@@ -2,9 +2,6 @@ import java.util.Properties
 
 plugins {
     id("com.android.application")
-    // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
-    // END: FlutterFire Configuration
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -55,19 +52,18 @@ android {
         }
     }
 
-    // DEV and PROD are separate apps with separate Firebase projects: each
-    // flavor's google-services.json sits in src/<flavor>/ (git-ignored).
+    // DEV and PROD are separate apps (installable side by side).
     flavorDimensions += "env"
     productFlavors {
         create("dev") {
             dimension = "env"
-            applicationIdSuffix = ".dev" // com.londonmystery.app.dev → london-mystery-dev
+            applicationIdSuffix = ".dev" // com.londonmystery.app.dev
             manifestPlaceholders["appLabel"] = "London Mystery DEV"
             // Internal builds only: a DEV release may use the debug key.
             signingConfig = signingConfigs.getByName("debug")
         }
         create("prod") {
-            dimension = "env" // com.londonmystery.app → london-mystery-prod
+            dimension = "env" // com.londonmystery.app
             manifestPlaceholders["appLabel"] = "London Mystery"
             if (hasUploadKey) signingConfig = signingConfigs.getByName("upload")
         }
@@ -79,13 +75,6 @@ android {
             signingConfig = null
         }
     }
-}
-
-// A checkout without the (git-ignored) Firebase config still builds: the game
-// then runs guest-only, as the app finds no Firebase settings at start.
-googleServices {
-    missingGoogleServicesStrategy =
-        com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy.WARN
 }
 
 // A PROD release without the upload key stops here instead of producing an

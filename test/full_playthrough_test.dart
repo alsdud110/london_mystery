@@ -53,7 +53,7 @@ Future<void> throughPostCase(
   required String caseNumber,
   required String evidence,
 }) async {
-  await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 1000));
+  await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 1000));
   expect(
     find.text('CASE $caseNumber COMPLETE'),
     findsOneWidget,
@@ -107,15 +107,15 @@ Future<void> openMission(WidgetTester t, String goLabel) async {
 /// Success overlay → story scene → back on the map (unlock ceremony).
 Future<void> finishMission(WidgetTester t, {required String sceneLine}) async {
   await wait(t, const Duration(milliseconds: 2800));
-  // The Discovery Moment: what was found, in words (no WELL DONE stamp).
+  // The Discovery Moment: the cheer, then what was found (no WELL DONE stamp).
   expect(
     find.byWidgetPredicate(
-      (w) => w is Text && DiscoveryType.values.any((d) => d.label == w.data),
+      (w) => w is Text && DiscoveryType.values.any((d) => d.cheer == w.data),
     ),
     findsOneWidget,
   );
   expect(find.text('WELL DONE'), findsNothing);
-  await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+  await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
   expect(find.text(sceneLine), findsOneWidget, reason: 'story transition');
   await t.tapAt(const Offset(200, 400)); // skip typing
   await wait(t, const Duration(milliseconds: 900));
@@ -156,10 +156,12 @@ void main() {
       // START → register.
       expect(find.text('Become a Detective.'), findsOneWidget);
       await tapText(t, 'START ADVENTURE');
+      await t.tap(find.byKey(const ValueKey('avatar-boy')));
+      await t.pump();
       await t.enterText(find.byType(TextField), 'minyoung');
       await tapText(
         t,
-        'OPEN THE CASEBOOK',
+        'START INVESTIGATION',
         after: const Duration(milliseconds: 600),
       );
       // How to Play first (its own tests: how_to_play_test); skipped here.
@@ -287,7 +289,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 2800));
       expect(find.textContaining('New badge:'), findsOneWidget);
       expect(find.textContaining('First Clue'), findsOneWidget);
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       expect(
         find.text('The letter suddenly begins to glow...'),
         findsOneWidget,

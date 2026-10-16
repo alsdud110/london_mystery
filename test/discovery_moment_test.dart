@@ -85,7 +85,7 @@ void main() {
     test('12–14. the timing exceptions: ticket, letter, seven ravens', () {
       String all(String id) {
         final d = discoveryOf(mission(id));
-        return [d.type.label, d.title, d.detail, ?d.note].join(' ');
+        return [d.type.cheer, d.title, d.detail, ?d.note].join(' ');
       }
 
       final c06 = discoveryOf(mission('ep06_m3'));
@@ -157,10 +157,10 @@ void main() {
           await t.pump();
           await t.pump(const Duration(milliseconds: 2600));
           expect(t.takeException(), isNull, reason: m.id);
-          expect(find.text(d.type.label), findsOneWidget, reason: m.id);
+          expect(find.text(d.type.cheer), findsOneWidget, reason: m.id);
           expect(find.text(d.title), findsOneWidget, reason: m.id);
           expect(find.text('WELL DONE'), findsNothing);
-          final cta = find.text('CONTINUE');
+          final cta = find.text('CONTINUE INVESTIGATION');
           await t.scrollUntilVisible(cta, 200, scrollable: find.byType(Scrollable).last);
           final r = t.getRect(cta);
           expect(r.bottom, lessThanOrEqualTo(size.height), reason: '${m.id}: CONTINUE on screen');
@@ -187,7 +187,7 @@ void main() {
 
     /// Every line of [d] on screen (title, label, detail, note), whole.
     void expectShown(WidgetTester t, Discovery d) {
-      expect(inMoment(find.text(d.type.label)), findsOneWidget);
+      expect(inMoment(find.text(d.type.cheer)), findsOneWidget);
       expect(inMoment(find.text(d.title)), findsOneWidget);
       if (d.detail.isNotEmpty) expect(inMoment(find.text(d.detail)), findsOneWidget);
       if (d.note case final n?) expect(inMoment(find.text(n)), findsOneWidget);
@@ -222,7 +222,7 @@ void main() {
         await wait(t, const Duration(seconds: 4));
         expect(path(), Routes.mission(id));
         expect(find.text(d.title), findsOneWidget);
-        await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+        await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
         expect(path(), Routes.story(id));
         expect(find.text(m.transition.first), findsOneWidget, reason: 'the story scene goes on as before');
         await t.tapAt(const Offset(200, 400));
@@ -241,7 +241,7 @@ void main() {
       await capture(t, 'discovery_badge_m01_390x844');
       // The discovery leads, the badge follows it.
       expect(t.getRect(find.text('THE BRITISH MUSEUM')).top, lessThan(t.getRect(find.textContaining('New badge:')).top));
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -251,9 +251,9 @@ void main() {
       final m = await openPuzzle(t, const Size(390, 844), 'ep02_m2');
       await solve(t, m);
       await t.pump(const Duration(milliseconds: 350));
-      expect(opacityOf(t, find.text('CONTINUE')), 1);
+      expect(opacityOf(t, find.text('CONTINUE INVESTIGATION')), 1);
       expect(opacityOf(t, find.text('SMALL BRASS GEAR')), 1);
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       expect(path(), Routes.story('ep02_m2'));
       await wait(t, const Duration(seconds: 3));
     });
@@ -261,11 +261,11 @@ void main() {
     testWidgets('a tap while it is being laid out shows all of it at once', (t) async {
       final m = await openPuzzle(t, const Size(390, 844), 'ep07_m3');
       await solve(t, m);
-      expect(opacityOf(t, find.text('CONTINUE')), 0, reason: 'the button comes last');
+      expect(opacityOf(t, find.text('CONTINUE INVESTIGATION')), 0, reason: 'the button comes last');
       await t.tapAt(const Offset(20, 120));
       await t.pump();
-      expect(opacityOf(t, find.text('CONTINUE')), 1);
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      expect(opacityOf(t, find.text('CONTINUE INVESTIGATION')), 1);
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -285,7 +285,7 @@ void main() {
       final m = await openPuzzle(t, const Size(390, 844), 'ep06_m3');
       await solve(t, m);
       await wait(t, const Duration(milliseconds: 2600));
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       play.ref.read(routerProvider).go(Routes.finalMission);
       await wait(t, const Duration(milliseconds: 1500));
       await tapText(t, 'Inspector Grey', after: const Duration(milliseconds: 200));
@@ -308,8 +308,8 @@ void main() {
         ('ep02_m3', 'deduction', <String>[]),
         ('ep10_m3', 'new_lead', ["Ravenmaster's Letter", 'Given to you at the north tower']),
         ('ep03_m3', 'clue_found', <String>[]),
-        ('ep08_m1', 'before_puzzle_confirmed', ['EVIDENCE FOUND', 'Name Tag']),
-        ('ep06_m3', 'timing_exception', ['Theatre Ticket', 'ROW R · SEAT 17', 'EVIDENCE FOUND']),
+        ('ep08_m1', 'before_puzzle_confirmed', ['EVIDENCE FOUND', 'Discovered', 'Name Tag']),
+        ('ep06_m3', 'timing_exception', ['Theatre Ticket', 'ROW R · SEAT 17', 'EVIDENCE FOUND', 'Discovered']),
         ('ep02_m2', 'season_clue', <String>[]),
         ('ep12_m3', 'no_seven_ravens', ['Seven Ravens', 'SEASON CLUE']),
         ('ep10_m1', 'r_m_ring', <String>[]),
@@ -336,7 +336,7 @@ void main() {
             expect(inMoment(find.text(ev.name)), findsNothing, reason: '${ev.name}: not shown as new');
           }
           await capture(t, 'discovery_${kind}_${id}_$tag');
-          final cta = find.text('CONTINUE');
+          final cta = find.text('CONTINUE INVESTIGATION');
           await reveal(t, cta);
           expect(t.getRect(cta).bottom, lessThanOrEqualTo(size.height));
           await capture(t, 'discovery_${kind}_${id}_${tag}_cta');
@@ -355,7 +355,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 2600));
         expect(t.takeException(), isNull);
         await capture(t, 'discovery_long_ep05_m3_${tag}_text130');
-        final cta = find.text('CONTINUE');
+        final cta = find.text('CONTINUE INVESTIGATION');
         await reveal(t, cta);
         expect(t.getRect(cta).bottom, lessThanOrEqualTo(size.height));
         await capture(t, 'discovery_long_ep05_m3_${tag}_text130_cta');

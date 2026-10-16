@@ -23,7 +23,7 @@ void main() {
     addTearDown(t.view.resetViewInsets);
     await wait(t, const Duration(milliseconds: 600));
     expect(t.takeException(), isNull, reason: 'no overflow above the keyboard');
-    for (final f in [find.byType(TextField), find.text('OPEN THE CASEBOOK')]) {
+    for (final f in [find.byType(TextField), find.text('START INVESTIGATION')]) {
       final r = t.getRect(f);
       expect(r.top, greaterThanOrEqualTo(0), reason: '$f is not pushed off the top');
       expect(r.bottom, lessThanOrEqualTo(640 - 300), reason: '$f sits above the keyboard');

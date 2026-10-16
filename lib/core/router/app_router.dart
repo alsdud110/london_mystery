@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/account/account_controller.dart';
-import '../../features/account/ui/account_desk_screen.dart';
-import '../../features/account/ui/account_screens.dart';
-import '../../features/account/ui/profile_screens.dart';
 import '../../features/game/game_controller.dart';
 import '../../features/game/game_providers.dart';
 import '../../features/game_master/game_master_screen.dart';
@@ -15,6 +11,7 @@ import '../../features/mission/qr_scanner_screen.dart';
 import '../../features/mission/story_scene_screen.dart';
 import '../../features/mission_map/mission_map_screen.dart';
 import '../../features/notebook/notebook_screen.dart';
+import '../../features/onboarding/detective_settings_screen.dart';
 import '../../features/onboarding/episode_select_screen.dart';
 import '../../features/onboarding/how_to_play_screen.dart';
 import '../../features/onboarding/register_screen.dart';
@@ -24,12 +21,16 @@ import '../../features/result/case_solved_screen.dart';
 import '../../features/result/parent_report_screen.dart';
 import '../../features/season/season_prologue_screen.dart';
 import '../../features/season/season_screen.dart';
-import '../../features/sync/ui/case_files_screen.dart';
 import '../../widgets/back_to.dart';
 
 abstract final class Routes {
   static const start = '/';
+
+  /// CREATE YOUR DETECTIVE: the device's one detective (no detective yet).
   static const register = '/register';
+
+  /// The detective's name and picture, changed later (progress stays).
+  static const detective = '/detective';
 
   /// How to Play: once after registration, before the season (see
   /// `needsHowToPlayProvider`); [howToPlayAgain] opens it from the map menu.
@@ -48,25 +49,12 @@ abstract final class Routes {
   static const qrScanner = '/scan';
   static const gameMaster = '/game-master';
 
-  // The user account (no detective needed; never behind the parent gate).
-  static const account = '/account';
-  static const newAccount = '/account?mode=new';
-  static const accountReset = '/account/reset';
-  static const accountVerify = '/account/verify';
-  static const accountSettings = '/account/settings';
-  static const accountDelete = '/account/delete';
-  static const profiles = '/profiles';
-  static const newProfile = '/profiles/new';
-
   static String mission(String id) => '/mission/$id';
 
   static String story(String id) => '/story/$id';
 
   /// Case Files with one case chosen and its folder open ("OPEN CASE 03").
   static String caseFile(String episodeId) => '$episodes?case=$episodeId';
-
-  /// Two case files of a case, to choose the one to keep playing (Phase 4.5).
-  static String caseFiles(String episodeId) => '/case-files/$episodeId';
 }
 
 CustomTransitionPage<void> _fade(GoRouterState state, Widget child) => CustomTransitionPage<void>(
@@ -113,23 +101,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (path == Routes.gameMaster) {
         return ref.read(gameMasterAccessProvider) ? null : Routes.start;
       }
-      const open = {Routes.start, Routes.register};
-      if (open.contains(path)) return null;
+      if (path == Routes.start) return null;
+      // One detective per device: CREATE YOUR DETECTIVE only while there is none.
+      if (path == Routes.register) return progress.hasDetective ? Routes.start : null;
 
-      // Account pages: none in a build that offers no accounts (PROD for now).
-      // Otherwise open to everyone; those about a signed-in account send a
-      // signed-out user to the Account Desk. Deletion is a DEV page.
-      if ((path == Routes.account || path.startsWith('${Routes.account}/') || path.startsWith(Routes.profiles)) &&
-          !ref.read(accountControllerProvider).accountsShown) {
-        return Routes.start;
-      }
-      if (path == Routes.account || path == Routes.accountReset || path == Routes.profiles) return null;
-      if (path.startsWith('${Routes.account}/') || path == Routes.newProfile) {
-        final account = ref.read(accountControllerProvider);
-        if (ref.read(accountStateProvider).uid == null) return Routes.account;
-        if (path == Routes.accountDelete && !account.devBuild) return Routes.accountSettings;
-        return null;
-      }
       if (!progress.hasDetective) return Routes.register;
 
       if (path == Routes.map || path == Routes.notebook || path == Routes.qrScanner) {
@@ -164,6 +139,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: Routes.start, pageBuilder: (c, s) => _fade(s, const StartScreen())),
       GoRoute(path: Routes.register, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const RegisterScreen()))),
+      // Pushed over the page it was opened from (back returns there).
+      GoRoute(path: Routes.detective, pageBuilder: (c, s) => _fade(s, const DetectiveSettingsScreen())),
       // Needs a detective, like every page below. It handles back itself
       // (the page before, then where it was opened from).
       GoRoute(
@@ -180,13 +157,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         // The case files sit under the season: back goes up to it.
         pageBuilder: (c, s) =>
             _fade(s, _backTo(c, Routes.season, EpisodeSelectScreen(focusCase: s.uri.queryParameters['case']))),
-      ),
-      GoRoute(
-        path: '/case-files/:id',
-        pageBuilder: (c, s) {
-          final id = s.pathParameters['id']!;
-          return _fade(s, _backTo(c, Routes.caseFile(id), CaseFilesScreen(caseId: id)));
-        },
       ),
       GoRoute(path: Routes.intro, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.episodes, const StoryIntroScreen()))),
       GoRoute(path: Routes.map, pageBuilder: (c, s) => _fade(s, const MissionMapScreen())),
@@ -213,49 +183,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.solved, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.map, const CaseSolvedScreen()))),
       GoRoute(path: Routes.report, pageBuilder: (c, s) => _fade(s, const ParentReportScreen())),
       GoRoute(path: Routes.gameMaster, pageBuilder: (c, s) => _fade(s, const GameMasterScreen())),
-      GoRoute(
-        path: Routes.account,
-        pageBuilder: (c, s) => _fade(
-          s,
-          // Keyed by mode: SIGN IN and NEW ACCOUNT links open the right tab.
-          _backTo(
-            c,
-            Routes.start,
-            AccountDeskScreen(
-              key: ValueKey(s.uri.queryParameters['mode']),
-              newAccount: s.uri.queryParameters['mode'] == 'new',
-            ),
-          ),
-        ),
-        routes: [
-          GoRoute(
-            path: 'reset',
-            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.account, const PasswordResetScreen())),
-          ),
-          GoRoute(
-            path: 'verify',
-            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.profiles, const EmailCheckScreen())),
-          ),
-          GoRoute(
-            path: 'settings',
-            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const AccountSettingsScreen())),
-          ),
-          GoRoute(
-            path: 'delete',
-            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.accountSettings, const AccountDeleteScreen())),
-          ),
-        ],
-      ),
-      GoRoute(
-        path: Routes.profiles,
-        pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const ProfileSelectScreen())),
-        routes: [
-          GoRoute(
-            path: 'new',
-            pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.profiles, const NewProfileScreen())),
-          ),
-        ],
-      ),
     ],
   );
 });

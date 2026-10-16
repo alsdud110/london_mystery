@@ -5,7 +5,7 @@
 > 새 세션은 반드시 이 파일을 먼저 읽고, 아래 *Session Continuity Protocol*을 따른다.
 > 코드와 이 문서가 다르면 **코드가 source of truth**다.
 >
-> 최종 검증일: 2026-10-14 — `flutter analyze` 0 issues, `flutter test` **1384개** 통과(1개 skip, 기존).
+> 최종 검증일: 2026-10-17 — `flutter analyze` 0 issues, `flutter test` **1272개 전부 통과**, Android DEV APK·iOS 시뮬레이터 빌드 성공.
 > 마지막 작업: **Wave 2.5.2 — Case 06-M1 추리 피드백 다듬기**(GOOD MATCH / 다름 구분, 판정을 카드 바로 아래로, 착지 후 말풍선, DESCRIPTION RECORDED + CONTINUE). 그 전: **Wave 2.5.1 — Case 06-M1 상호작용 다듬기**(TALK 은은한 빛, 초상화 비행 전환, 두 진술 선택 즉시 판정). 그 전: **Wave 2.5 — Case 06-M1 직관적 수사·진짜 추리**(화살표 제거, 진술 2개 선택 비교, 옷차림 확인 단계, Notebook 진술 기록, WORDS). 그 전: **Wave 2.4.1 — Case 06-M1 미조사 증인 안내 보정**(남은 증인마다 같은 작은 정적 화살표). 그 전: **Wave 2.4 — Case 06-M1 다음 행동 화살표**(GuidedActionIndicator·ASK ANOTHER WITNESS·CHOOSE ANOTHER PAIR). 그 전: Wave 2.3 — Case 06-M1 단계별 수사(한 번에 다음 행동 하나·YES/NO 비교). 그 전: Wave 2.2 — Case 06-M1 목표 중심 수사(YOUR MISSION·carry 진술 2명 조건·BACK TO WITNESSES). 그 전: Wave 2.1 — Case 06-M1 대화 화면 다듬기. 그 전: Wave 2 — Case 06-M1 증인 대화 수사. 그 전: Wave 1.2 — Case 03-M1 화면 마감. 그 전: Wave 1.1 — Case 03-M1 탐색 UX. 그 전: Wave 1 — Case 03-M1 현장 탐색. 그 전: **Phase 4 P1-3·P1-4 — 사건 간 영어 재사용**(12-M2 after, 12-F whose, 11-M3 never sleeps). 그 전: Phase 4 P1-1·P1-2(Notebook 단어 뜻, Operator Archive 참고 공개), TYPE B Phase 3B — Season 1 전 사건 TYPE B 적용.
 
 ---
@@ -33,6 +33,7 @@
 
 ## Current Project State (2026-10-07)
 
+- **제품 방향 최종 결정 (2026-10-16): 계정·Firebase·클라우드 완전 제거 → 100% 오프라인, 기기당 탐정 1명(Boy/Girl 아바타 + 이름).** 회원가입·로그인·동기화·충돌 해결·여러 탐정 선택 UI와 코드·의존성·테스트·Firebase 설정 삭제. 미션 완료 연출에 축하 문구 + CONTINUE INVESTIGATION. 아바타 그림 2장은 Custom Asset Required(`assets/art/avatars/` 등록 완료 — 파일만 넣으면 됨, 없으면 잉크 모자 아이콘 + 글자). Tip 코인 대화상자 버튼 = GET MORE HINTS
 - Season 1: Case 01~12 전부 구현 (Case 01 = 일반 미션 5 + Final, Case 02~12 = 3 + Final → 일반 미션 38개 + Final 12개)
 - **Detective Reasoning Pass COMPLETE** (Case 02 pilot, Wave 1: 01·04·06·08·11, Wave 2: 03·07·10, Wave 3: 09)
 - **Final Small Pass COMPLETE** (Case 06·08 Final의 정답 노출 제거, Case 08 동일인 판정을 플레이어가 하게 함)
@@ -60,7 +61,7 @@
 ## Play Flow (현재)
 
 ### 시즌 진입
-Title(`/`) → Registration(`/register`) → Season Cover(`/season`, 시즌 시작 전) → Opening 5장면 + Case 01 파일(`/season/prologue`) → Story Intro(`/intro`) → Map(`/map`)
+Title(`/`) → **CREATE YOUR DETECTIVE**(`/register`: BOY/GIRL + 이름 → START INVESTIGATION, 기기당 1명) → How to Play(처음 1회) → Season Cover(`/season`, 시즌 시작 전) → Opening 5장면 + Case 01 파일(`/season/prologue`) → Story Intro(`/intro`) → Map(`/map`)
 
 ### 일반 Mission (38개)
 ```
@@ -90,7 +91,7 @@ Map(OPEN THE FINAL CASE) → Final(/final: 장면·이야기·편지·퍼즐, OP
 - 구현: `showDiscoveryMoment()` in `lib/features/mission/widgets/answer_feedback.dart` (기존 WELL DONE 오버레이 대체. `showGeneralDialog` 오버레이, 새 route 없음). 호출: `mission_screen.dart` `_submit` 한 곳. **Final에는 없음**
 - Presentation 모델: `lib/data/models/discovery.dart` — `DiscoveryType`, `DiscoveryTiming`, `Discovery{type, timing, title, detail, showEvidence, seasonClue, note}`, `Discovery.fallback(m)`(매핑 없는 미션 = PUZZLE COMPLETE + successMessage)
 - 매핑: `lib/data/mock/season1/season1_discoveries.dart` — `season1Discoveries`(미션 id → Discovery, 38개 전부 명시), `discoveryOf(m)`. **위젯에 미션별 분기 없음**(범용 렌더러)
-- 화면 순서: ① 종류 라벨(글자로: DEDUCTION / NEW LEAD / EVIDENCE FOUND / CLUE CONFIRMED / CLUE FOUND / STORY DISCOVERY, + `ALSO A SEASON CLUE`) ② 큰 제목 ③ (선택) Evidence 카드(사건 종료 카드와 같은 `EvidenceChip` 종이 카드, 탭 → 확대) ④ 한 문장 detail ⑤ (선택) `NOTED IN YOUR NOTEBOOK` + Puzzle 전에 본 사실 ⑥ 작은 `+XP` ⑦ 새 배지 한 줄 ⑧ CONTINUE(glass)
+- 화면 순서: ① 축하 문구(`DiscoveryType.cheer`: DEDUCTION → Brilliant Deduction! / EVIDENCE·CLUE FOUND → Clue Discovered! / CLUE CONFIRMED·STORY DISCOVERY → Excellent Detective Work! / NEW LEAD·PUZZLE COMPLETE → You Made It! — 퍼즐 전 정보에 Discovered 금지, 종류 라벨은 화면 읽기에만, + `ALSO A SEASON CLUE`) ② 큰 제목 ③ (선택) Evidence 카드(사건 종료 카드와 같은 `EvidenceChip` 종이 카드, 탭 → 확대) ④ 한 문장 detail ⑤ (선택) `NOTED IN YOUR NOTEBOOK` + Puzzle 전에 본 사실 ⑥ 작은 `+XP · +COINS`(다시 푼 미션은 *Already in your case file*) ⑦ 새 배지 한 줄 ⑧ CONTINUE INVESTIGATION(glass)
 - 배경: 현재 미션 장소의 장면(`PlaceScenery(PlaceArt.sceneryOf(m))`, Story Scene과 같은 공용 위젯 `lib/widgets/place_scenery.dart`) — "현장에서 발견"
 - 동작: 2.2s 순차 등장(튀는 효과·컨페티 없음), **탭 = 즉시 완성**, 모션 줄이기 = 즉시 완성, CONTINUE는 한 번만, **자동 이동 없음**. Android Back = 오버레이 닫힘 → Story(이전 WELL DONE과 동일, 정답은 이미 저장)
 - 테스트용 key: `ValueKey('discovery-moment')`(아래 페이지는 해결 상태로 다시 그려져 있으므로 finder는 이 안으로 한정)
@@ -213,9 +214,9 @@ lib/
 ├── data/
 │   ├── models/      episode, mission(Mission/Clue/Evidence/ChoiceOption/MissionType/Artwork), game_progress, season, season_progress, discovery
 │   ├── mock/season1/ episode01~12_mock.dart(백엔드 JSON과 같은 const Map), season1_mock.dart(카탈로그·시즌 정보), season1_discoveries.dart
-│   └── repositories/ EpisodeRepository(+Mock), ProgressRepository(+SharedPrefs, InMemory)
+│   └── repositories/ EpisodeRepository(+Mock), ProgressRepository(+SharedPrefs, InMemory), SaveJournal(원자적 저장), ProfileStore(단일 탐정 `lm.detective.v1`), LegacyMigrator(이전 저장 → 탐정)
 ├── features/
-│   ├── onboarding/  start, register, episode_select(Case Files), story_intro
+│   ├── onboarding/  start, register(CREATE YOUR DETECTIVE + DetectiveDesk), detective_form(아바타·이름 줄), detective_settings(/detective), detective_hold(보류 화면 + DeviceDetectiveGate), how_to_play, episode_select(Case Files), story_intro
 │   ├── season/      season_screen(Cover/Board), season_prologue_screen, season_overview, season_actions, widgets(investigation_board, prologue_art, season_props)
 │   ├── mission_map/ mission_map_screen(Map Camera), map_world, widgets(london_map_painter, map_pin)
 │   ├── mission/     mission_screen, story_scene_screen, final_mission_screen, qr_scanner_screen, widgets(question_widgets, qr_question, answer_feedback = Discovery Moment·Try Again·TipsPanel)
@@ -233,7 +234,8 @@ lib/
 | Path | 화면 | 가드 |
 |---|---|---|
 | `/` | Start | 항상 |
-| `/register` | Registration | 항상 |
+| `/register` | CREATE YOUR DETECTIVE | 탐정이 **없을 때만** (있으면 `/`) |
+| `/detective` | My detective(이름·아바타 변경, 진행 유지) | 탐정 등록 |
 | `/season` | Cover(시즌 시작 전) / Investigation Board | 탐정 등록 |
 | `/season/prologue` | Opening 5장면 + Case 01 파일 | 탐정 등록 |
 | `/episodes` (`?case=epNN`) | Case Files(해당 사건 열림·선택) | 탐정 등록 |
@@ -247,9 +249,11 @@ lib/
 | `/game-master` | Game Master | Parent Gate |
 
 ### Persistence
-- 키: `lm.progress.v1`(Case 01, 구버전 호환) / `lm.progress.v1.epNN` / `lm.season.v1`(`activeEpisodeId`, `solvedEpisodeIds`) / `lm.settings.sound`
+- **100% 오프라인, 기기당 탐정 1명** (`docs/OFFLINE_SINGLE_DETECTIVE.md`). 탐정 기록 `lm.detective.v1` = `{profile: {id, detectiveName, avatar, createdAt, origin, walletBackfill}, held: [보류된 이전 프로필 id]}`
+- 진행 키(탐정 네임스페이스): `lm.p.<id>.progress.v1`(Case 01) / `…progress.v1.epNN` / `…season.v1` / `…wallet.v1` / `…journal.v1`(여러 키 저장 중에만). 프로필 이전 원본 `lm.progress.v1…`·`lm.season.v1`·`lm.wallet.v1`은 보존(GM 초기화만 삭제). 계정 빌드의 `lm.profiles.v1`, `…conflicts.v1`, `…outbox.v1`, `…cloud.v1`, `…meta.v1`, `lm.device.v1`은 읽기만/무시하고 지우지 않음. 기기 설정 `lm.settings.sound`
+- 시작 시 `LegacyMigrator`: 기록 있음 → 그대로 / 계정 빌드 목록만 있음 → 진행 기록 있는 프로필 1개를 탐정으로(0개면 게스트), **2개 이상이면 보류 화면(보호자 선택, 아무것도 쓰지 않음)** / 그 외 레거시 복사·검증·안전 모드(기존 규칙)
 - `GameProgress`: detectiveName, introSeen, completedMissionIds(해결 순서), attempts, wrongAnswers, hintsUsed, missionStartedAt, missionStartPlayMillis, solveSeconds, badgeIds, lookedUpWords, **lookupsRecorded**(단어 목록이 없던 세이브 = false, 저장 후에도 유지), **xpRules**(미션 → XP 규칙 번호 1·2·3, 비어 있으면 JSON에 안 씀), **behavior**(`BehaviorLog`: rechecked·evidenceViewed·words, 키가 없으면 "기록 없음" — 새 실행은 항상 기록), startedAt, completedAt, playMillis. 관대한 fromJson, 손상 시 새 게임
-- Play again = 현재 사건만 초기화(시즌 해결 기록 유지 → 다음 사건 잠기지 않음). Reset all = 전체 삭제(Start NEW ADVENTURE, Game Master)
+- Play again = 현재 사건만 초기화(시즌 해결 기록 유지 → 다음 사건 잠기지 않음, 다시 푼 미션은 코인 0·"Already in your case file"). NEW ADVENTURE(확인 대화상자) = **같은 탐정(ID·이름·아바타 유지)**, 사건·시즌·XP·배지 초기화, 새 지갑(시작 코인) → How to Play(미시청 시) → 시즌 케이스북. Game Master 초기화 = 진행 + 탐정(이름·아바타) 삭제 + 레거시 원본 삭제 → CREATE YOUR DETECTIVE
 
 ---
 
@@ -345,6 +349,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-16~17 — **오프라인 단일 탐정 전환**(사용자 승인 방향): Firebase Auth·Firestore·Functions 연동, 회원가입/로그인/이메일 인증/비밀번호 재설정/계정 설정·삭제·동의, 클라우드 동기화·복원·충돌 해결, 다중 프로필 코드·화면·테스트·의존성·Android/iOS Firebase 설정 삭제. 기기당 탐정 1명(`lm.detective.v1`, Boy/Girl + 이름), CREATE YOUR DETECTIVE → START INVESTIGATION, My detective(이름·아바타 변경, 진행 유지), 계정 빌드 데이터 이전(진행 있는 프로필 2개 이상이면 보류 화면). NEW ADVENTURE = 같은 탐정으로 진행만 초기화. 미션 완료 축하 문구 + CONTINUE INVESTIGATION, 재플레이 보상 없음 표시. 기존 실패 43개 정리: 코인 대화상자 버튼을 **GET MORE HINTS**로(사용자 확정, 테스트 헬퍼와 일치), Case 06 팁 테스트를 현재 흐름(Get a Free Hint → 패널·Notes에 DETECTIVE HINT)으로 갱신. 설계: `docs/OFFLINE_SINGLE_DETECTIVE.md`. Tests 1272 통과
 - 2026-10-15 — **Wave 2.5.2: Case 06-M1 추리 피드백 다듬기**(UI만): 판정 3종 — 두 bag: THE STORIES MATCH! + "Both witnesses saw the same thing being carried." / 같은 옷(coat): **GOOD MATCH!**(초록 체크) "Both witnesses described the same clothing." + **BUT CHECK YOUR MISSION**(금색) "You're looking for something he carried, not wore." / 다른 것: **THE STORIES ARE DIFFERENT** "These witnesses described different things." "Try another pair." — 빨간 오류색 없음(테스트), 일치한 쌍은 두 카드 초록 테두리. 비교 화면: 첫 선택 전에는 큰 카드 자리 없음, 첫 선택부터 카드 1 + 빈 자리 2, 판정 블록은 두 카드 바로 아래(같은 블록, 두 번째 선택 시 맨 위로·판정 시 끝이 보이게만 300ms 스크롤), 하단은 CHOOSE ANOTHER PAIR / BACK TO WITNESSES만. 전환: 초상화 400ms 비행 → 착지 150ms 뒤 말풍선 220ms 페이드, 질문 패널은 착지 60ms 뒤(비행 중 패널·말풍선은 터치 무시, 사라지는 도입 패널도 터치 무시 — 비행 중 탭이 Get a tip으로 새던 버그 수정). 완료: 두 bag 해결 + grey hat 청취(순서 무관) → **DESCRIPTION RECORDED** "You learned something about the stranger's appearance." "Your witness notes are ready." + VIEW WITNESS NOTES / CONTINUE(자동 완료 제거, CONTINUE 연타도 정답 b 1회), 이 단계에선 질문·Notes 링크·팁 숨김. 노트 시트 제목 WITNESS NOTES. 모델: `checkLine`·`retryLine`·`notesLine` 추가. 대본·정답·보상·저장 불변. 테스트 43개 유지(내용 갱신·추가). Tests 1482 통과 / 4 실패(다른 세션의 ep06 M3·다른 사건 데이터 변경 때문, 이번 작업 무관) / 52 skip. 실기기 미검증
 - 2026-10-15 — **Wave 2.5.1: Case 06-M1 상호작용 다듬기**(UI만): **TALK**: 세 태그가 하나의 컨트롤러(1초 왕복 = 약 2초 주기)로 함께 금테·글자 밝기·은은한 빛만 변함(크기·위치 불변, 높이 28), 증인 선택 시 도입 화면과 함께 정리, 모션 줄이기 = 가장 밝은 정적 상태. **초상화 비행**: 도입에서 인물을 고르면 그 인물 그림(`_PrintedPortrait`, 같은 종이 카드)이 도입 카드 위치에서 대화 초상화 위치로 400ms 커지며 이동(Rect 보간, 페이지 Stack 위 오버레이, 도착 위치는 배치 후 `talk-portrait`를 찾아 측정) — 그동안 원래 카드와 대화 초상화는 숨김(중복 없음), 도입 문구·다른 카드는 350ms 페이드, 하단 패널은 320ms 페이드+살짝 위로. 비행 중 다른 탭 무시, 뒤로가기 안전, 증인 간 전환은 비행 없음, 모션 줄이기 = 즉시. **즉시 판정**: YES/NO 제거. 두 번째 진술을 고르면 두 카드를 나란히 보여 주고(스크롤로 보이게) 450ms 뒤 판정 — 두 bag = THE STORIES MATCH!(1.8초 후 닫힘, 이후 Wave 2.5 흐름: grey hat 미청취면 ONE MORE THING), 같은 물건(coat) = "These statements match, but are they about what he carried?", 다른 물건 = "These witnesses described different things." — 두 카드는 남고 500ms 동안 탭 잠금, 이후 탭하면 그 진술로 새 쌍 시작 또는 CHOOSE ANOTHER PAIR. 반복 오답에도 정답 공개 없음, 기록 없음. 모델: `question`·`lookAgainLine` 제거, compareHow "Tap two statements to compare them." 대본·정답·보상·저장·Firestore 불변. 테스트 `case06_dialogue_test` 38 → 43(TALK 동일·은은함·고정 위치·종료, 비행 출발/도착/성장·중복 없음, 연속 탭 1회, 비행 중 뒤로가기, 모션 줄이기, YES/NO 없음, 판정 중 탭 무시, 반복 오답). Tests 1486 통과 / 52 skip. 실기기 미검증(다른 세션 AVD 사용·부하 높음)
 - 2026-10-15 — **Wave 2.5: Case 06-M1 직관적 수사, 진짜 추리**(테스터 피드백: 화살표 의미 불명, 점선 단어가 힌트처럼 보임, 비교 규칙 불명, grey hat 놓침): **화살표 전부 제거**(GuidedActionIndicator·GuideMark는 Case 06에서 미사용, 파일은 남김) — 도입 인물마다 TALK, 얼굴 아래 TALK / SPOKEN TO(질문 하나라도 하면), 상태 줄 "n STATEMENT(S)" + 다음 행동 문장(Ask a question. / Ask another witness. / Compare two statements.). **질문 3개 동일**(순서 wearing·carry·when, 접기·금테 제거). 진술마다 STATEMENT RECORDED / IN YOUR NOTES(모든 진술 동일). **비교**: COMPARE TWO STATEMENTS(두 증인의 진술이 생기면, 주제 무관) → "Find two witnesses who saw him carry the same thing." / "Choose two statements. Then decide if they match." → 들은 진술 전부 목록(동일 스타일)에서 두 개 선택 → 나란히 + "Do these statements describe the same thing?" YES, THEY MATCH / NO, THEY DON'T(나란히). 판정은 데이터 `DialogueStatement.thing`(같은 물건이면 일치): 두 small bag + YES = 해결, 두 dark coat + YES = "They match — but is it something he carried?"(오답 아님, 다른 쌍), 다른 것 + NO = "Right. They are about different things." → CHOOSE ANOTHER PAIR, 틀린 YES/NO = "Look carefully. Are they talking about the same thing?"(기록 없음). **4단계**: 해결 후 `deduction.then`(juggler.wearing)을 아직 못 들었으면 완료하지 않고 목표 띠 "Find out what the stranger was wearing." + ONE MORE THING "Ask the witnesses about the stranger's clothes." — 들으면 DESCRIPTION COMPLETE 1.8초 후 정답 b 1회 제출. 이미 들었으면 반복 없이 바로 완료. **Notebook**: Witness Notes 증거 확대 화면에 해결된 대화 미션이면 WHAT THE WITNESSES TOLD YOU(완료가 보장하는 진술 3개: 두 bag + grey hat, 증인 얼굴·이름·원문, "Heard at the Market Hall · Mission 1") — M2 화면 오른쪽 위 Notebook에서 확인. 저장 필드 추가 없음(완료 여부에서 도출), 옛 완료 세이브도 표시. **단어**: 대화 화면 안의 점선 단어 제거(GlossaryText 대신 Text), 패널 Words → 화면의 어려운 단어 카드 목록(탭 = 기존 단어 카드, 부모 보고서 기록 유지). 공용 GlossaryText는 불변(다른 화면은 그대로). 모델: `DialogueDeduction` 재구성(solves, then·thenGoal·thenHow·doneLine, compareGoal 등), `DialogueScene.matches/described/recorded`, `DialogueProgress.solved`. 대본·Episode JSON·정답·보상·저장·Firestore 불변. 테스트 `case06_dialogue_test` 43 → 38(화살표 테스트 제거, 시작 순서 3가지·4단계·grey hat 먼저·오답/주제외 일치·Notebook(M2에서)·WORDS·360×640 1.3배 비교 카드 전체 보임 추가). Tests 1481 통과 / 52 skip. 실기기 미검증(5560·5562는 다른 세션 E2E 사용 중)

@@ -65,7 +65,7 @@ Future<void> openMission(WidgetTester t, String goLabel) async {
 Future<void> finishMission(WidgetTester t, {required String sceneLine}) async {
   await wait(t, const Duration(milliseconds: 2800));
   await shot('success');
-  await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+  await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
   await t.tapAt(const Offset(200, 400));
   await wait(t, const Duration(milliseconds: 900));
   await shot('story_scene');
@@ -127,9 +127,11 @@ void main() {
     await t.pump();
     await shot('start');
     await tapText(t, 'START ADVENTURE');
+    await t.tap(find.byKey(const ValueKey('avatar-boy')));
+    await t.pump();
     await t.enterText(find.byType(TextField), 'minyoung');
     await shot('register');
-    await tapText(t, 'OPEN THE CASEBOOK');
+    await tapText(t, 'START INVESTIGATION');
     await skipHowToPlay(t); // its pages: how_to_play_test
     // The season's casebook, then (as a tour of the case files) Case 01 from there.
     await wait(t, const Duration(milliseconds: 1600));
@@ -259,7 +261,7 @@ void main() {
     await wait(t, const Duration(milliseconds: 2800));
     await shot('success_badge');
     expect(find.textContaining('First Clue'), findsOneWidget);
-    await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+    await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
     expect(find.text('The letter suddenly begins to glow...'), findsOneWidget);
     await t.tapAt(const Offset(200, 400));
     await wait(t, const Duration(milliseconds: 900));
@@ -384,7 +386,7 @@ void main() {
     expect(audio.played, isNot(contains(GameSound.finale)));
 
     // The story after the case, then the case file and the parent report.
-    await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 1000));
+    await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 1000));
     expect(find.text('CASE 01 COMPLETE'), findsOneWidget);
     await t.tapAt(t.getCenter(find.byType(Scaffold).last));
     await wait(t, const Duration(milliseconds: 1200));

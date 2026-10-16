@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,33 +21,50 @@ final sharedPreferencesProvider = Provider<SharedPreferences>(
 
 final episodeRepositoryProvider = Provider<EpisodeRepository>((ref) => const MockEpisodeRepository());
 
-/// The detectives of this device (see [ProfileStore]).
+/// The device's one detective, as saved (see [ProfileStore]).
 final profileStoreProvider = Provider<ProfileStore>((ref) => ProfileStore(ref.watch(sharedPreferencesProvider)));
 
-/// The detective this game session plays. Each profile runs in a container
-/// of its own (see `ProfileSessionHost`), which overrides this; without one
-/// (tests) the active profile is found, or made, here.
+/// The detective this game session plays: given by `main()` from
+/// [ProfileStore.bootstrap]; without it (tests) found, or made, here.
 final profileSessionProvider = Provider<ProfileSession>((ref) => ref.watch(profileStoreProvider).ensureActiveSync());
 
-/// The session's profile as saved now (name, origin, pay-back), or as the
+/// The session's profile as saved now (name, avatar, pay-back), or as the
 /// session started when it is not saved (safe mode).
-DetectiveProfile sessionProfile(Ref ref) {
-  final session = ref.read(profileSessionProvider);
-  return ref.read(profileStoreProvider).profile(session.profileId) ?? session.profile;
+DetectiveProfile sessionProfile(Ref ref) =>
+    ref.read(profileStoreProvider).profile ?? ref.read(profileSessionProvider).profile;
+
+/// The detective as saved (name, avatar), for the pages that show them.
+/// Changed only through [change] (see `GameController.createDetective`,
+/// `renameDetective`): the name in the case saves changes with it.
+class DetectiveProfileNotifier extends Notifier<DetectiveProfile> {
+  @override
+  DetectiveProfile build() => sessionProfile(ref);
+
+  /// Saves [update] of the detective. In safe mode (nothing saved yet) it
+  /// holds for this session only.
+  Future<void> change(DetectiveProfile Function(DetectiveProfile p) update) async {
+    final store = ref.read(profileStoreProvider);
+    final saved = store.read();
+    // Shown at once (nothing waits on the write); written behind it.
+    final next = update(saved?.profile ?? state);
+    state = next;
+    if (saved != null) await store.write(saved.withProfile(next));
+  }
+
+  /// A new picture for the detective (nothing else changes).
+  Future<void> setAvatar(DetectiveAvatar avatar) => change((p) => p.copyWith(avatar: avatar));
 }
 
-/// Told whenever a save queued a change for the cloud sync (the device's
-/// sync scheduler, given by `main()`; nothing without it).
-final syncSaveSignalProvider = Provider<void Function()?>((ref) => null);
+final detectiveProfileProvider =
+    NotifierProvider<DetectiveProfileNotifier, DetectiveProfile>(DetectiveProfileNotifier.new);
 
-/// The session profile's saves.
+/// The detective's saves.
 final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
   final session = ref.watch(profileSessionProvider);
   return SharedPrefsProgressRepository(
     ref.watch(sharedPreferencesProvider),
     profileId: session.profileId,
     legacyFallback: session.legacyFallback,
-    onQueued: ref.watch(syncSaveSignalProvider),
   );
 });
 
@@ -103,20 +118,11 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
     ref.read(progressRepositoryProvider).saveSeason(next);
   }
 
-  /// The saves changed under the game (a cloud merge): the season is read
-  /// again. Returns whether it differed.
-  bool reloadFromSaves() {
-    final saved = _fromSaves();
-    if (jsonEncode(saved.toJson()) == jsonEncode(state.toJson())) return false;
-    state = saved;
-    return true;
-  }
-
   void open(String episodeId) => _set(state.copyWith(activeEpisodeId: episodeId));
 
-  /// [episodeId] solved; a [playtest] solve is recorded as operator data.
-  void markSolved(String episodeId, {bool playtest = false}) {
-    final next = state.markSolved(episodeId, playtest: playtest);
+  /// [episodeId] solved.
+  void markSolved(String episodeId) {
+    final next = state.markSolved(episodeId);
     if (!identical(next, state)) _set(next);
   }
 
@@ -216,29 +222,12 @@ final operatorToolsAvailableProvider = Provider<bool>((ref) => operatorToolsInBu
 /// Master tools, behind the parent gate; never on in a build without
 /// operator tools. Turning it on marks no case solved and gives nothing; a
 /// mission solved while it is on is saved (progress, XP, coins) as in normal
-/// play. Turning it on marks nothing: what is played in a case only it
-/// opened is recorded as operator data, record by record (see
-/// [openedOnlyByOperator]). Session-only, never saved, so a restart turns it
-/// off.
+/// play. Session-only, never saved, so a restart turns it off.
 class OperatorAccessNotifier extends Notifier<bool> {
   @override
   bool build() => false;
 
   void set(bool on) => state = on && ref.read(operatorToolsAvailableProvider);
-}
-
-/// Whether [episodeId] is open only through operator access: still sealed
-/// under the normal rules, counting only cases solved in normal play (a case
-/// the operator tools marked solved opens nothing for real). What is played
-/// in it — the case run, its coin entries, its solve in the season record —
-/// is operator (playtest) data, never synced to a live cloud.
-bool openedOnlyByOperator(Ref ref, String episodeId) {
-  final season = ref.read(seasonProvider);
-  final normal = season.copyWith(solvedEpisodeIds: [
-    for (final id in season.solvedEpisodeIds)
-      if (!season.playtestEpisodeIds.contains(id)) id,
-  ]);
-  return !SeasonNotifier.unlockRule(ref.read(episodeCatalogProvider), normal, episodeId, operator: false);
 }
 
 /// The operator access switch (see [operatorAccessProvider] for the effect).

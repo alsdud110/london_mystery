@@ -17,17 +17,27 @@ import '../../../widgets/place_scenery.dart';
 import '../../game/scoring.dart';
 
 /// The Discovery Moment, after a regular mission's correct answer: in the
-/// place the puzzle was solved, what the detective just found or worked
-/// out ([discovery]), then the XP and any new badge, then [buttonLabel].
+/// place the puzzle was solved, a short cheer ("Brilliant Deduction!"), what
+/// the detective just found or worked out ([discovery]), then the XP and any
+/// new badge, then [buttonLabel]. A mission solved before ([firstSolve]
+/// false: Play again) earns nothing new, and says so instead of the reward.
 /// Everything is already saved before it opens; it only shows it. Returns
 /// when the detective continues (or goes back).
+/// The way on from a solve (the Discovery Moment, the final case opened).
+const continueInvestigation = 'CONTINUE INVESTIGATION';
+
+/// Said in place of the reward when a mission solved before is solved again
+/// (Play again): its XP and coins were counted the first time.
+const alreadyRewarded = 'Already in your case file';
+
 Future<void> showDiscoveryMoment(
   BuildContext context, {
   required Mission mission,
   required Discovery discovery,
   required XpBreakdown xp,
   int coins = 0,
-  String buttonLabel = 'CONTINUE',
+  bool firstSolve = true,
+  String buttonLabel = continueInvestigation,
   List<GameBadge> newBadges = const [],
   VoidCallback? onEvidenceLaid,
 }) {
@@ -44,6 +54,7 @@ Future<void> showDiscoveryMoment(
       buttonLabel: buttonLabel,
       xp: xp,
       coins: coins,
+      firstSolve: firstSolve,
       newBadges: newBadges,
       onEvidenceLaid: onEvidenceLaid,
     ),
@@ -59,6 +70,7 @@ class _DiscoveryMoment extends StatefulWidget {
     required this.xp,
     required this.newBadges,
     this.coins = 0,
+    this.firstSolve = true,
     this.onEvidenceLaid,
   });
 
@@ -69,6 +81,9 @@ class _DiscoveryMoment extends StatefulWidget {
 
   /// Coins this solve paid (0 for a mission paid before: not shown).
   final int coins;
+
+  /// False for a mission solved before: no reward is announced.
+  final bool firstSolve;
   final List<GameBadge> newBadges;
 
   /// The evidence card has just been laid down (only when one is shown).
@@ -175,16 +190,19 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                       builder: (context, _) => Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // 1. What kind of discovery, in words.
+                          // 1. The cheer: the solve is greeted first.
                           _rise(
                             _label,
                             Semantics(
                               header: true,
+                              label: '${d.type.cheer} ${d.type.label}',
+                              excludeSemantics: true,
                               child: Column(
                                 children: [
-                                  Text(d.type.label,
-                                      textAlign: TextAlign.center, style: AppText.mark(color: AppColors.goldLight, size: 17)),
-                                  const SizedBox(height: AppSpace.xs),
+                                  Text(d.type.cheer,
+                                      textAlign: TextAlign.center,
+                                      style: AppText.cinematicPrompt(size: 28, color: AppColors.goldLight)),
+                                  const SizedBox(height: AppSpace.sm),
                                   const OrnamentRule(color: AppColors.goldLight),
                                   if (d.seasonClue) ...[
                                     const SizedBox(height: AppSpace.sm),
@@ -202,7 +220,7 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                             _title,
                             Text(d.title,
                                 textAlign: TextAlign.center,
-                                style: AppText.placeTitle(size: 30, color: AppColors.paperLight).copyWith(height: 1.2)),
+                                style: AppText.placeTitle(size: 26, color: AppColors.paperLight).copyWith(height: 1.2)),
                           ),
                           // 3. The evidence itself, laid down at the scene.
                           if (evidence != null) ...[
@@ -223,16 +241,21 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                             _rise(_detail, _NotebookNote(note)),
                           ],
                           const SizedBox(height: AppSpace.xl),
-                          // 5. The reward, small.
+                          // 5. The reward, small (counted once: a mission
+                          // solved before only says it is already counted).
                           Opacity(
                             opacity: _o(_xp),
-                            child: Text(
-                              '+${(widget.xp.total * _xp.value).round()} XP'
-                              '${widget.coins > 0 ? '   ·   +${(widget.coins * _xp.value).round()} COINS' : ''}',
-                              style: AppText.style(AppText.body,
-                                      size: 16, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
-                                  .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
-                            ),
+                            child: widget.firstSolve
+                                ? Text(
+                                    '+${(widget.xp.total * _xp.value).round()} XP'
+                                    '${widget.coins > 0 ? '   ·   +${(widget.coins * _xp.value).round()} COINS' : ''}',
+                                    style: AppText.style(AppText.body,
+                                            size: 16, weight: FontWeight.w700, color: AppColors.goldLight, letterSpacing: 2)
+                                        .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+                                  )
+                                : Text(alreadyRewarded,
+                                    textAlign: TextAlign.center,
+                                    style: AppText.aside(size: 15, color: AppColors.paperLight.withValues(alpha: 0.8))),
                           ),
                           // Only when a badge was just earned: one small line.
                           if (widget.newBadges.isNotEmpty) ...[

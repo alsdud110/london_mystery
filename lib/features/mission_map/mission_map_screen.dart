@@ -233,6 +233,11 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                     Navigator.of(sheetContext).pop();
                     context.push(Routes.notebook);
                   }),
+                  // The detective's name and picture (progress stays).
+                  item(InkGlyph.pen, 'My detective', () {
+                    Navigator.of(sheetContext).pop();
+                    context.push(Routes.detective);
+                  }),
                   if (progress.isCaseSolved)
                     item(InkGlyph.folder, 'Case results', () {
                       Navigator.of(sheetContext).pop();

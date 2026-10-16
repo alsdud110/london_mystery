@@ -159,8 +159,8 @@ void main() {
         app.go(Routes.finalMission);
         await wait(t, const Duration(milliseconds: 1200));
         expect(find.text('SEE MY CASE REPORT'), findsNothing);
-        await t.scrollUntilVisible(find.text('CONTINUE'), 300, scrollable: find.byType(Scrollable).first);
-        await t.tap(find.text('CONTINUE'));
+        await t.scrollUntilVisible(find.text('CONTINUE INVESTIGATION'), 300, scrollable: find.byType(Scrollable).first);
+        await t.tap(find.text('CONTINUE INVESTIGATION'));
         await wait(t, const Duration(milliseconds: 900));
         expect(app.path, Routes.story(f.id));
         expect(find.text('CASE ${e.numberLabel} COMPLETE'), findsOneWidget);

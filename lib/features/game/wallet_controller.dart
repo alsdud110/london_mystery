@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -41,11 +39,7 @@ class WalletController extends Notifier<Wallet> {
     final backfill = sessionProfile(ref).walletBackfill == WalletBackfill.pending;
     final made = _firstWallet(backfill: backfill);
     repo.saveWallet(made);
-    if (backfill) {
-      ref
-          .read(profileStoreProvider)
-          .update(ref.read(profileSessionProvider).profileId, (p) => p.copyWith(walletBackfill: WalletBackfill.done));
-    }
+    if (backfill) ref.read(profileStoreProvider).update((p) => p.copyWith(walletBackfill: WalletBackfill.done));
     return made;
   }
 
@@ -82,15 +76,6 @@ class WalletController extends Notifier<Wallet> {
     return wallet;
   }
 
-  /// The saves changed under the game (a cloud merge): the coins are read
-  /// again. Returns whether they differed.
-  bool reloadFromSaves() {
-    final saved = ref.read(progressRepositoryProvider).loadWallet();
-    if (saved == null || jsonEncode(saved.toJson()) == jsonEncode(state.toJson())) return false;
-    state = saved;
-    return true;
-  }
-
   void _set(Wallet next) {
     if (identical(next, state)) return;
     state = next;
@@ -98,23 +83,21 @@ class WalletController extends Notifier<Wallet> {
   }
 
   /// Pays a solved [mission]'s coins, once ever. Returns the coins added
-  /// (0 when it was paid before, e.g. a case played again). A [playtest]
-  /// entry is operator data (see [CoinEntry.playtest]).
-  int rewardMission(Mission mission, {bool playtest = false}) {
+  /// (0 when it was paid before, e.g. a case played again).
+  int rewardMission(Mission mission) {
     final key = Wallet.missionKey(mission.id);
     if (state.has(key)) return 0;
     final coins = coinsFor(mission);
     _set(state.adding(
-      CoinEntry(key: key, amount: coins, source: CoinSource.mission, at: GameController.now(), playtest: playtest),
+      CoinEntry(key: key, amount: coins, source: CoinSource.mission, at: GameController.now()),
     ));
     return coins;
   }
 
   /// Makes tip [tip] (1 or 2) of [mission] the detective's: free, paid, or
   /// given as help when the coins are short. A tip already theirs costs
-  /// nothing again; the balance never goes below zero. A [playtest] entry is
-  /// operator data.
-  TipUnlock unlockTip(Mission mission, int tip, {bool playtest = false}) {
+  /// nothing again; the balance never goes below zero.
+  TipUnlock unlockTip(Mission mission, int tip) {
     assert(tip >= 1 && tip <= AppConstants.tipPrices.length);
     if (state.ownsTip(mission.id, tip)) return TipUnlock.alreadyYours;
     final price = priceOf(tip);
@@ -129,7 +112,6 @@ class WalletController extends Notifier<Wallet> {
         amount: amount,
         source: CoinSource.tip,
         at: GameController.now(),
-        playtest: playtest,
       ),
     ));
     return result;

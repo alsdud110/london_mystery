@@ -71,8 +71,10 @@ void main() {
   /// A new player, from the title page through registration.
   Future<void> register(WidgetTester t) async {
     await tapText(t, 'START ADVENTURE');
+    await t.tap(find.byKey(const ValueKey('avatar-boy')));
+    await t.pump();
     await t.enterText(find.byType(TextField), 'minyoung');
-    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 900));
+    await tapText(t, 'START INVESTIGATION', after: const Duration(milliseconds: 900));
   }
 
   Future<void> next(WidgetTester t) async {
@@ -145,10 +147,9 @@ void main() {
     app(t).read(routerProvider).go(Routes.start);
     await wait(t, const Duration(milliseconds: 1200));
     await tapText(t, 'NEW ADVENTURE');
-    await tapText(t, 'START NEW ADVENTURE', after: const Duration(milliseconds: 1000));
-    await t.enterText(find.byType(TextField), 'kim');
-    await tapText(t, 'OPEN THE CASEBOOK', after: const Duration(milliseconds: 1500));
+    await tapText(t, 'START NEW ADVENTURE', after: const Duration(milliseconds: 1500));
     expect(path(t), Routes.season, reason: 'learnt once: not again after a new adventure');
+    expect(app(t).read(gameControllerProvider).detectiveName, 'MINYOUNG', reason: 'the detective stays');
     await wait(t, const Duration(seconds: 3));
   });
 
@@ -269,7 +270,7 @@ void main() {
     expect(find.descendant(of: dialog, matching: find.text('Get Another Hint?')), findsOneWidget);
     expect(find.descendant(of: dialog, matching: find.bySemanticsLabel('$price coins')), findsOneWidget,
         reason: "the game's own price");
-    await t.tap(find.descendant(of: dialog, matching: find.text('GET HINT')));
+    await t.tap(find.descendant(of: dialog, matching: find.text('GET MORE HINTS')));
     await wait(t, const Duration(milliseconds: 600));
     expect(dialog, findsNothing);
     expect(find.text(hint2), findsOneWidget, reason: 'hint 2 on its card, open');

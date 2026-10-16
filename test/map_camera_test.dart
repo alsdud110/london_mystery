@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
@@ -118,7 +119,7 @@ void main() {
       ));
       await wait(t, const Duration(milliseconds: 300));
       final game = appRef.read(gameControllerProvider.notifier);
-      game.registerDetective('Kim');
+      game.createDetective('Kim', DetectiveAvatar.boy);
       game.startInvestigation();
       if (justUnlocked != null) {
         // As when a case is solved: m01 done, m02 just unlocked.

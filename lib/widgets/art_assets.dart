@@ -74,6 +74,14 @@ abstract final class ArtAssets {
   /// Pixel size of [season1LondonNight] (never decoded larger).
   static const season1LondonNightPixels = Size(941, 1671);
 
+  /// The player's detective, chosen at CREATE YOUR DETECTIVE (see
+  /// `DetectiveAvatar`): a boy and a girl in the storybook's style, head and
+  /// shoulders on transparency, 4:5. Custom Asset Required: the folder is
+  /// already in pubspec.yaml, so dropping the two files in is enough; until
+  /// then the choice shows the cap icon and its word.
+  static const avatarBoy = 'assets/art/avatars/detective_boy.png';
+  static const avatarGirl = 'assets/art/avatars/detective_girl.png';
+
   /// How to Play (the first-play guide): its own pictures, never a case's
   /// character or evidence. A missing file leaves its place empty.
   ///

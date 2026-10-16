@@ -217,7 +217,7 @@ void main() {
     await t.enterText(find.byType(TextField), 'RAVEN');
     await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 3200));
     expect(ref.read(gameControllerProvider).isCaseSolved, isTrue);
-    await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 1000));
+    await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 1000));
     await t.tapAt(const Offset(180, 320)); // the post-case scene at once
     await wait(t, const Duration(milliseconds: 1200));
     await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 3800));

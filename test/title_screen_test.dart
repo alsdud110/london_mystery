@@ -184,7 +184,7 @@ void main() {
     await t.pump(const Duration(milliseconds: 100));
     await t.tap(find.text('START ADVENTURE'), warnIfMissed: false);
     await wait(t);
-    expect(find.text('OPEN THE CASEBOOK'), findsOneWidget, reason: 'registration opened right away');
+    expect(find.text('START INVESTIGATION'), findsOneWidget, reason: 'registration opened right away');
     await wait(t, const Duration(seconds: 3));
   });
 
@@ -209,7 +209,7 @@ void main() {
     // Leaving the title disposes everything (no ticker left running).
     await t.tap(find.text('START ADVENTURE'));
     await wait(t, const Duration(milliseconds: 800));
-    expect(find.text('OPEN THE CASEBOOK'), findsOneWidget);
+    expect(find.text('START INVESTIGATION'), findsOneWidget);
     await wait(t, const Duration(seconds: 3));
   });
 
@@ -278,7 +278,7 @@ void main() {
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // decode the office
       await wait(t);
       expect(t.takeException(), isNull, reason: 'no overflow');
-      for (final s in ['LONDON DETECTIVE AGENCY', 'DETECTIVE REGISTRATION', 'What should we\ncall you, Detective?', 'Detective Name']) {
+      for (final s in ['LONDON DETECTIVE AGENCY', 'CREATE YOUR DETECTIVE', 'Who will take\nthe case?', 'Detective Name']) {
         expect(find.text(s), findsOneWidget, reason: s);
       }
       // The office is behind the form, not a plain page.
@@ -289,9 +289,9 @@ void main() {
             ((w.image as ResizeImage).imageProvider as AssetImage).assetName == ArtAssets.titleDetectiveOffice),
         findsOneWidget,
       );
-      final paper = t.getRect(find.ancestor(of: find.text('DETECTIVE REGISTRATION'), matching: find.byType(Container)).last);
+      final paper = t.getRect(find.ancestor(of: find.text('CREATE YOUR DETECTIVE'), matching: find.byType(Container)).last);
       expect(paper.left, greaterThan(20), reason: 'the office shows around the form');
-      final cta = t.getRect(find.text('OPEN THE CASEBOOK'));
+      final cta = t.getRect(find.text('START INVESTIGATION'));
       expect(cta.bottom, lessThan(size.height), reason: 'the button is on screen');
       await capture(t, 'register_$tag');
 
@@ -303,13 +303,15 @@ void main() {
       addTearDown(t.view.resetViewInsets);
       await wait(t, const Duration(milliseconds: 600));
       expect(t.takeException(), isNull, reason: 'no overflow with the keyboard');
-      for (final f in [find.byType(TextField), find.text('OPEN THE CASEBOOK')]) {
+      for (final f in [find.byType(TextField), find.text('START INVESTIGATION')]) {
         expect(t.getRect(f).bottom, lessThanOrEqualTo(size.height * 0.55 + 1), reason: '$f above the keys');
       }
       await capture(t, 'register_${tag}_keyboard');
 
+      await t.tap(find.byKey(const ValueKey('avatar-boy')));
+      await t.pump();
       await t.enterText(find.byType(TextField), 'kim');
-      await t.tap(find.text('OPEN THE CASEBOOK'));
+      await t.tap(find.text('START INVESTIGATION'));
       t.view.resetViewInsets(); // the keyboard goes with the name field
       await wait(t, const Duration(milliseconds: 600));
       // How to Play first, then on to the season, as before.
@@ -354,7 +356,8 @@ void main() {
       await wait(t, const Duration(milliseconds: 500));
       await t.tap(find.text('START NEW ADVENTURE'));
       await wait(t, const Duration(milliseconds: 1500));
-      expect(find.text('What should we\ncall you, Detective?'), findsOneWidget, reason: 'the reset leads to registration, as before');
+      expect(find.text('Who will take\nthe case?'), findsNothing, reason: 'the detective stays: no new detective to create');
+      expect(find.text('Welcome, Detective!'), findsOneWidget, reason: 'a new adventure begins (How to Play, never seen yet)');
       await wait(t, const Duration(seconds: 3));
     });
   }
@@ -393,7 +396,7 @@ void main() {
       }
 
       final labelX = inkX(t.renderObject<RenderParagraph>(find.text('Detective Name')));
-      final paper = t.getRect(find.ancestor(of: find.text('DETECTIVE REGISTRATION'), matching: find.byType(Container)).last);
+      final paper = t.getRect(find.ancestor(of: find.text('CREATE YOUR DETECTIVE'), matching: find.byType(Container)).last);
       expect(labelX, closeTo(paper.center.dx, 1.5), reason: 'the label is in the middle of the form');
       expect(inkX(t.renderObject<RenderParagraph>(find.text('SHERLOCK'))), closeTo(labelX, 1.5), reason: 'the hint under the label');
       expect(t.renderObject<RenderParagraph>(find.text('SHERLOCK')).didExceedMaxLines, isFalse, reason: 'the hint is whole');
@@ -420,7 +423,7 @@ void main() {
       await capture(t, 'register_typing_$tag');
 
       // 4. A blank part of the form: pen down, name kept.
-      final blank = t.getRect(find.text('DETECTIVE REGISTRATION'));
+      final blank = t.getRect(find.text('CREATE YOUR DETECTIVE'));
       await t.tapAt(Offset(paper.left + 12, blank.center.dy));
       await t.pump();
       expect(focused(), isFalse, reason: 'tap on the form closes the keyboard');
@@ -442,7 +445,7 @@ void main() {
 
       // 8. The button still works while the keyboard is up: validation as before.
       await t.enterText(field, '');
-      await t.tap(find.text('OPEN THE CASEBOOK'));
+      await t.tap(find.text('START INVESTIGATION'));
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('Please type your detective name.'), findsOneWidget, reason: 'validation, as before');
       // Under the line on the left, as before — not centred like the name.

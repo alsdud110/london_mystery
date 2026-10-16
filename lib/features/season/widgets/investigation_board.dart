@@ -24,15 +24,11 @@ import 'season_props.dart';
 /// plays what changed since then: the new photo, its pin, its thread, its
 /// tag, then the next case and the figure in the middle.
 class InvestigationBoard extends StatelessWidget {
-  const InvestigationBoard({super.key, required this.overview, this.before, this.t = 1, required this.onCase, this.twoFiles = const {}});
+  const InvestigationBoard({super.key, required this.overview, this.before, this.t = 1, required this.onCase});
 
   final SeasonOverview overview;
   final SeasonOverview? before;
   final double t;
-
-  /// Cases played on two devices: their two case files wait for a choice
-  /// (a small tag on the case, Phase 4.5).
-  final Set<String> twoFiles;
 
   /// A case on the board was tapped (by its index in the season).
   final ValueChanged<int> onCase;
@@ -195,27 +191,12 @@ class InvestigationBoard extends StatelessWidget {
         // A sealed case says only that it is sealed.
         label: mark == CaseMark.sealed
             ? 'Case ${e.numberLabel}, $status'
-            : 'Case ${e.numberLabel}, ${e.title}, $status${twoFiles.contains(e.id) ? ', two case files' : ''}',
+            : 'Case ${e.numberLabel}, ${e.title}, $status',
         excludeSemantics: true,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => onCase(i),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned.fill(child: Transform.rotate(angle: slot.tilt, child: child)),
-              if (twoFiles.contains(e.id) && mark != CaseMark.sealed)
-                // Clipped to the corner of the case: two files wait for a choice.
-                Positioned(
-                  right: -n.width * 0.12,
-                  top: -n.height * 0.08,
-                  child: Transform.rotate(
-                    angle: 0.1,
-                    child: PaperTag('2 FILES', size: (n.height * 0.13).clamp(8.0, 10.0), color: AppColors.burgundy),
-                  ),
-                ),
-            ],
-          ),
+          child: Transform.rotate(angle: slot.tilt, child: child),
         ),
       ),
     );

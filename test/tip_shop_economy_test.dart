@@ -403,7 +403,7 @@ void main() {
         expect(
           c.right,
           lessThan(r.left),
-          reason: 'CANCEL left, GET HINT right',
+          reason: 'CANCEL left, GET MORE HINTS right',
         );
       }
       for (final b in [c, r]) {
@@ -711,7 +711,7 @@ void main() {
     );
 
     testWidgets(
-      'a quick double tap on GET HINT reveals one hint and charges once',
+      'a quick double tap on GET MORE HINTS reveals one hint and charges once',
       (t) async {
         final play = MissionPlay();
         await play.openPuzzle(t, const Size(390, 844), 'm01');
@@ -949,7 +949,7 @@ void main() {
       );
       expect(t.widget<Text>(reward).style!.color, AppColors.goldLight);
       final next = find.ancestor(
-        of: find.text('CONTINUE'),
+        of: find.text('CONTINUE INVESTIGATION'),
         matching: find.byType(GameButton),
       );
       await reveal(t, next);
@@ -964,7 +964,7 @@ void main() {
     });
 
     testWidgets(
-      'played again (coins paid before): +60 XP only, no coins shown',
+      'played again (paid before): nothing new is announced, nothing is paid twice',
       (t) async {
         final paid = Wallet.empty
             .adding(
@@ -983,19 +983,20 @@ void main() {
             );
         final c = await openFinal(t, wallet: paid);
         await openTheLocks(t);
-        expect(text(t), '+${AppConstants.finalXp} XP');
+        expect(text(t), 'Already in your case file');
         expect(
           find.textContaining('COINS'),
           findsNothing,
           reason: 'no coins were added',
         );
+        expect(find.text('You Made It!'), findsOneWidget);
         await capture(t, 'final_reward_replay_390x844');
         expect(c.read(walletProvider).balance, paid.balance);
         expect(
           XpBreakdown.totalFor(episode01, c.read(gameControllerProvider)),
           AppConstants.missionXp * episode01.missions.length +
               AppConstants.finalXp,
-          reason: "the XP shown is in this run's case total",
+          reason: "the case's XP is this run's, never added on top",
         );
       },
     );
@@ -1005,7 +1006,7 @@ void main() {
     ) async {
       await openFinal(t, finalSolved: true);
       await t.scrollUntilVisible(
-        find.text('CONTINUE'),
+        find.text('CONTINUE INVESTIGATION'),
         300,
         scrollable: find.byType(Scrollable).first,
       );

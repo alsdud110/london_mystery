@@ -1,7 +1,7 @@
 {
   // London Mystery: Android and iOS share the same flavors.
-  //   dev  → com.londonmystery.app.dev  (Firebase london-mystery-dev)
-  //   prod → com.londonmystery.app      (Firebase london-mystery-prod)
+  //   dev  → com.londonmystery.app.dev  ("London Mystery DEV")
+  //   prod → com.londonmystery.app      ("London Mystery")
   // Pick the device in the status bar (an Android emulator or an iOS
   // simulator such as iPhone 17 Pro). iOS needs the shared Xcode schemes
   // "dev" / "prod" (ios/scripts/setup_flavors.rb).

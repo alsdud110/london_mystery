@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -9,7 +6,7 @@ import '../../data/models/detective_name.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/profile.dart';
-import '../../data/sync/merge.dart';
+import '../../data/models/wallet.dart';
 import 'game_providers.dart';
 import 'scoring.dart';
 import 'wallet_controller.dart';
@@ -18,7 +15,7 @@ import 'wallet_controller.dart';
 enum SubmitResult { correct, tryAgain, locked }
 
 class SubmitOutcome {
-  const SubmitOutcome(this.result, {this.newBadges = const [], this.coins = 0});
+  const SubmitOutcome(this.result, {this.newBadges = const [], this.coins = 0, this.firstSolve = true});
 
   final SubmitResult result;
 
@@ -27,6 +24,10 @@ class SubmitOutcome {
 
   /// Coins this answer paid (0 for a mission paid before).
   final int coins;
+
+  /// False when the mission was solved (and rewarded) before, in an earlier
+  /// run of the case: nothing new is earned, so nothing new is announced.
+  final bool firstSolve;
 }
 
 /// Owns the player's run. Every change is persisted immediately so the game
@@ -49,18 +50,6 @@ class GameController extends Notifier<GameProgress> {
     _episodeId = ref.watch(seasonProvider.select((s) => s.activeEpisodeId));
     _activeSince = now(); // the app is starting, so it is in the foreground
     return ref.read(progressRepositoryProvider).load(_episodeId);
-  }
-
-  /// The saves changed under the game (a cloud merge): the open case is
-  /// read again if [episodeId] is it (null: whichever is open). The play
-  /// clock carries on; what is typed on a page is not part of the save and
-  /// stays. Returns whether the case differed.
-  bool reloadFromSaves([String? episodeId]) {
-    if (episodeId != null && episodeId != _episodeId) return false;
-    final saved = ref.read(progressRepositoryProvider).load(_episodeId);
-    if (jsonEncode(saved.toJson()) == jsonEncode(state.toJson())) return false;
-    state = saved;
-    return true;
   }
 
   /// The case clock runs from the story intro until the case is solved.
@@ -86,31 +75,9 @@ class GameController extends Notifier<GameProgress> {
       next = next.copyWith(playMillis: (next.playMillis ?? 0) + stretch);
     }
     if (_activeSince != null) _activeSince = at;
-    // Played in a case only operator access opened: the run is operator data.
-    if (!next.playtest && !isBlankRun(next) && openedOnlyByOperator(ref, _episodeId)) {
-      next = next.copyWith(playtest: true);
-    }
-    next = _stamped(next);
     state = next;
     ref.read(progressRepositoryProvider).save(next, _episodeId);
   }
-
-  /// [next] with its run recorded. A new run (Play again) keeps what it was
-  /// given. Otherwise only a real change counts: it gets the save a run if
-  /// it has none (a save from before runs), or one more revision. A save
-  /// with nothing changed stays exactly as it was.
-  GameProgress _stamped(GameProgress next) {
-    if (next.runId != null && next.runId != state.runId) return next;
-    final changed = jsonEncode(next.copyWith(rev: state.rev).toJson()) != jsonEncode(state.toJson());
-    if (!changed) return next.copyWith(rev: state.rev);
-    return next.runId == null ? next.copyWith(runId: newRunId(), rev: 0) : next.copyWith(rev: state.rev + 1);
-  }
-
-  static final _random = Random.secure();
-
-  /// A new run id (16 hex digits).
-  static String newRunId() =>
-      [for (var i = 0; i < 8; i++) _random.nextInt(256).toRadixString(16).padLeft(2, '0')].join();
 
   /// Opens another case file. Refused (false) while the case is still sealed:
   /// the check lives here, not only in the case files UI. The detective
@@ -144,17 +111,41 @@ class GameController extends Notifier<GameProgress> {
   /// The app is in the foreground again: the clock continues from here.
   void resumePlayClock() => _activeSince ??= now();
 
-  /// Validates and stores the detective name. Returns an error message
-  /// (kid-friendly) or null on success.
-  String? registerDetective(String rawName) {
+  /// Creates the device's detective: [rawName] and [avatar]. Returns an
+  /// error message (kid-friendly) or null on success. There is only ever
+  /// one detective: refused while one exists (NEW ADVENTURE empties the
+  /// slot first).
+  String? createDetective(String rawName, DetectiveAvatar? avatar) {
+    if (state.hasDetective || sessionProfile(ref).isCreated) return 'You already have a detective.';
+    if (avatar == null) return 'Choose your detective first.';
     final error = validateName(rawName);
     if (error != null) return error;
     final name = cleanName(rawName);
     _update(state.copyWith(detectiveName: name));
-    // The profile shows the same name (the game reads the case save's).
     ref
-        .read(profileStoreProvider)
-        .update(ref.read(profileSessionProvider).profileId, (p) => p.copyWith(detectiveName: name));
+        .read(detectiveProfileProvider.notifier)
+        .change((p) => p.copyWith(detectiveName: name, avatar: avatar, createdAt: now()));
+    return null;
+  }
+
+  /// A new name for the detective. Everything played stays: every case save
+  /// keeps its progress and takes the new name, saved together. Returns an
+  /// error message or null on success.
+  String? renameDetective(String rawName) {
+    if (!state.hasDetective) return 'Create your detective first.';
+    final error = validateName(rawName);
+    if (error != null) return error;
+    final name = cleanName(rawName);
+    final repo = ref.read(progressRepositoryProvider);
+    repo.transaction(() {
+      for (final e in ref.read(episodeCatalogProvider)) {
+        if (e.id == _episodeId) continue;
+        final saved = repo.load(e.id);
+        if (saved.hasDetective && saved.detectiveName != name) repo.save(saved.copyWith(detectiveName: name), e.id);
+      }
+      _update(state.copyWith(detectiveName: name));
+    });
+    ref.read(detectiveProfileProvider.notifier).change((p) => p.copyWith(detectiveName: name));
     return null;
   }
 
@@ -204,8 +195,7 @@ class GameController extends Notifier<GameProgress> {
   /// Reveals tip [tip] (1 or 2) of [mission]: makes it the detective's (see
   /// [WalletController.unlockTip]) and opens it on the page, saved together.
   TipUnlock revealTip(Mission mission, int tip) => ref.read(progressRepositoryProvider).transaction(() {
-        final playtest = state.playtest || openedOnlyByOperator(ref, _episodeId);
-        final result = ref.read(walletProvider.notifier).unlockTip(mission, tip, playtest: playtest);
+        final result = ref.read(walletProvider.notifier).unlockTip(mission, tip);
         useHint(mission);
         return result;
       });
@@ -282,14 +272,11 @@ class GameController extends Notifier<GameProgress> {
       return const SubmitOutcome(SubmitResult.tryAgain);
     }
 
-    // A solve in a case only operator access opened, or in a run the
-    // operator tools set up: its run, coins and season solve are operator
-    // data. A case a child could reach is normal play, switch on or off.
-    final playtest = state.playtest || openedOnlyByOperator(ref, episode.id);
-
     // Paid before the solve is saved: a wallet made right now (a save from
-    // before coins) then pays it as this solve, not as an old one.
-    final coins = ref.read(walletProvider.notifier).rewardMission(mission, playtest: playtest);
+    // before coins) then pays it as this solve, not as an old one. A mission
+    // pays once ever: solving it again (Play again) pays nothing.
+    final firstSolve = !ref.read(walletProvider).has(Wallet.missionKey(mission.id));
+    final coins = ref.read(walletProvider.notifier).rewardMission(mission);
     final solvedAt = now();
     final seconds = _solveSeconds(mission.id, solvedAt);
     var next = state.copyWith(
@@ -299,7 +286,6 @@ class GameController extends Notifier<GameProgress> {
       // The XP rule this answer is scored under, kept with it for good.
       xpRules: {...state.xpRules, mission.id: XpBreakdown.currentRule},
       completedAt: mission.isFinal ? solvedAt : null,
-      playtest: playtest,
     );
 
     final newBadges = [
@@ -314,42 +300,57 @@ class GameController extends Notifier<GameProgress> {
     if (mission.isFinal) {
       // A first solve is news for the season board; a replay is not.
       if (!ref.read(seasonProvider).isSolved(episode.id)) ref.read(recentSolveProvider.notifier).add(episode.id);
-      ref.read(seasonProvider.notifier).markSolved(episode.id, playtest: playtest);
+      ref.read(seasonProvider.notifier).markSolved(episode.id);
     }
 
     if (mission.nextMissionId != null) {
       ref.read(recentUnlockProvider.notifier).set(mission.nextMissionId);
     }
-    return SubmitOutcome(SubmitResult.correct, newBadges: newBadges, coins: coins);
+    return SubmitOutcome(SubmitResult.correct, newBadges: newBadges, coins: coins, firstSolve: firstSolve);
   }
 
   /// Clears the case but keeps the detective name.
-  /// A new run of the case: the run before it is over for good, so it can
-  /// never come back in its place.
   void playAgain() {
     ref.read(recentUnlockProvider.notifier).set(null);
-    _update(state.resetCase().copyWith(runId: newRunId(), runSeq: state.runSeq + 1));
+    _update(state.resetCase());
   }
 
-  /// Wipes everything of this detective — every case and the season —
-  /// including the name. Other profiles and the saves made before profiles
-  /// stay (only the game master's reset removes those, see
-  /// `resetForNextPlayer`).
+  /// NEW ADVENTURE: the same detective (id, name, picture) starts the game
+  /// over. Every case, the season, XP, badges and coins start again as for
+  /// a new player (a new wallet with the start coins). The saves made before
+  /// profiles stay (only the game master's reset removes those).
+  Future<void> newAdventure() async {
+    final name = state.detectiveName ?? sessionProfile(ref).detectiveName;
+    _wipe(keepName: name);
+    // Nothing is paid back any more: the coins start with this wallet.
+    await ref
+        .read(detectiveProfileProvider.notifier)
+        .change((p) => p.copyWith(walletBackfill: WalletBackfill.never));
+  }
+
+  /// The game master's reset for the next player: the game starts over and
+  /// the detective's slot is emptied (no name, no picture; the id stays), so
+  /// the next child creates their own detective.
   Future<void> resetAll() async {
+    _wipe();
+    await ref.read(detectiveProfileProvider.notifier).change((p) => p.startedOver());
+  }
+
+  /// Wipes every save of the detective (and plays nothing back), keeping
+  /// [keepName] on the first case when given.
+  void _wipe({String? keepName}) {
     ref.read(recentUnlockProvider.notifier).set(null);
     ref.read(recentSolveProvider.notifier).clear();
-    state = GameProgress.empty;
-    // The wipe, the next epoch and the new wallet are saved together.
+    final fresh = GameProgress(detectiveName: keepName);
+    // The wipe, the new wallet and the name kept are saved together.
     final repo = ref.read(progressRepositoryProvider);
     repo.transaction(() {
       repo.clear();
       ref.read(walletProvider.notifier).startFresh();
+      if (keepName != null) repo.save(fresh, AppConstants.currentEpisodeId);
     });
+    state = fresh;
     ref.read(seasonProvider.notifier).reset(); // back to Case 01
-    // Nothing of the profile is left, test data included.
-    await ref
-        .read(profileStoreProvider)
-        .update(ref.read(profileSessionProvider).profileId, (p) => p.startedOver(origin: ProfileOrigin.fresh));
   }
 }
 

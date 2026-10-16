@@ -29,10 +29,14 @@ abstract final class AppConstants {
       key == seasonStorageKey ||
       key == walletStorageKey;
 
-  /// The detectives of this device and which one plays (see `ProfileRegistry`).
+  /// The device's one detective (see `DetectiveRecord`).
+  static const detectiveStorageKey = 'lm.detective.v1';
+
+  /// The list of detectives kept by the builds that had user accounts. Read
+  /// once, to find the device's detective; never written or removed.
   static const profilesStorageKey = 'lm.profiles.v1';
 
-  /// The record of copying the saves made before profiles to the guest profile.
+  /// The record of copying the saves made before profiles to the detective.
   static const legacyMigrationKey = 'lm.migration.legacy.v1';
 
   /// Every save of a profile starts with this.
@@ -53,29 +57,16 @@ abstract final class AppConstants {
   /// the first and last write of a save of several keys.
   static String journalKey(String profileId) => '${profilePrefix(profileId)}journal.v1';
 
-  /// A profile's changes waiting to be synced (see `Outbox`).
-  static String outboxKey(String profileId) => '${profilePrefix(profileId)}outbox.v1';
+  /// Case runs that the builds with a cloud kept aside (sync conflicts). The
+  /// game never reads them, and NEW ADVENTURE never removes them.
+  static String keptRunsKey(String profileId) => '${profilePrefix(profileId)}conflicts.v1';
 
-  /// A profile's sync conflicts kept for a later decision (see `ConflictStore`).
-  static String conflictsKey(String profileId) => '${profilePrefix(profileId)}conflicts.v1';
-
-  /// A profile's reset epoch (see `SharedPrefsProgressRepository.epoch`).
-  static String metaKey(String profileId) => '${profilePrefix(profileId)}meta.v1';
-
-  /// A profile's cloud sync bookkeeping: confirmed cloudVersions, failures,
-  /// back-off (see `CloudSyncMeta`). Separate from every game save.
-  static String cloudSyncKey(String profileId) => '${profilePrefix(profileId)}cloud.v1';
-
-  /// This installation of the app (see `ProfileStore.installId`).
-  static const deviceStorageKey = 'lm.device.v1';
-
-  /// Device setting (shared by every profile).
+  /// Device setting (kept through NEW ADVENTURE).
   static const soundEnabledKey = 'lm.settings.sound';
 
-  /// Whether a profile has been through How to Play (the first-play guide).
-  /// One per profile, so another detective or account on the device still
-  /// gets it. Outside [profilePrefix] on purpose: NEW ADVENTURE clears a
-  /// profile's saves, not that it has learnt how to play. Never synced.
+  /// Whether the detective has been through How to Play (the first-play
+  /// guide). Outside [profilePrefix] on purpose: NEW ADVENTURE clears the
+  /// detective's saves, not that the player has learnt how to play.
   static String onboardingSeenKey(String profileId) => 'lm.onboarding.v1.$profileId';
 
   // Detective name rules.

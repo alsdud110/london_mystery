@@ -1,17 +1,15 @@
 import '../../core/constants/app_constants.dart';
 
-/// The one rule for a detective's name, on this device and in the cloud
-/// (`firebase/firestore.rules` checks the same [pattern]; see
-/// test/cloud_profile_store_test.dart).
+/// The one rule for a detective's name.
 ///
-/// Upper- and lower-case letters are both a valid stored form (approved
-/// 2026-10-13): the game writes names in capitals (`GameController.cleanName`),
-/// and the cloud accepts either, so a name is never rejected for its case.
+/// Upper- and lower-case letters are both a valid stored form: the game
+/// writes names in capitals (`GameController.cleanName`), and a saved name
+/// is never rejected for its case.
 ///
 /// Letters (A–Z, a–z), Hangul syllables, digits, spaces, "." and "-"; no
 /// space at either end and never two in a row; 1 to 12 characters. Every
-/// allowed character is one UTF-16 unit, so Dart's `length`, the rules'
-/// `size()` and the text field's count all agree.
+/// allowed character is one UTF-16 unit, so Dart's `length` and the text
+/// field's count agree.
 abstract final class DetectiveName {
   static const minLength = AppConstants.nameMinLength;
   static const maxLength = AppConstants.nameMaxLength;

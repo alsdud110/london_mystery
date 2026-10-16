@@ -196,7 +196,7 @@ void main() {
       final m = await play.openPuzzle(t, phone, 'm01');
       await play.solve(t, m);
       await wait(t, const Duration(milliseconds: 2500));
-      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 900));
+      await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
       audio.played.clear();
       await t.tapAt(const Offset(200, 400)); // all of the story at once
       await wait(t, const Duration(milliseconds: 900));

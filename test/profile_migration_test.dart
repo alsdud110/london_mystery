@@ -45,6 +45,9 @@ Future<SharedPreferences> prefsWith(Map<String, Object> values) async {
   return SharedPreferences.getInstance();
 }
 
+/// The start of the game on [p], which must find the device's detective.
+Future<ProfileSession> boot(SharedPreferences p) async => (await ProfileStore(p).bootstrap()) as ProfileSession;
+
 Map<String, Object?> snapshot(SharedPreferences p) => {for (final k in p.getKeys()) k: p.get(k)};
 
 Map<String, dynamic> marker(SharedPreferences p) =>
@@ -54,20 +57,20 @@ void main() {
   tearDown(() => LegacyMigrator.simulateVerifyFailure = false);
 
   group('first start', () {
-    test('an empty device gets one fresh guest that starts with the start coins only', () async {
+    test('an empty device gets one empty detective slot that starts with the start coins only', () async {
       final prefs = await prefsWith({});
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       expect(session.legacyFallback, isFalse);
-      expect(session.profile.kind, ProfileKind.guest);
+      expect(session.profile.isCreated, isFalse, reason: 'CREATE YOUR DETECTIVE comes first');
       expect(session.profile.origin, ProfileOrigin.fresh);
       expect(session.profile.walletBackfill, WalletBackfill.never);
-      expect(ProfileStore(prefs).read()!.profiles, hasLength(1));
+      expect(ProfileStore(prefs).read()!.held, isEmpty);
       expect(prefs.getString(AppConstants.legacyMigrationKey), isNull, reason: 'nothing to copy');
     });
 
     test('saves from before profiles are copied byte for byte; the originals stay as they were', () async {
       final prefs = await prefsWith(legacySaves);
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       final pid = session.profileId;
       expect(session.legacyFallback, isFalse);
       for (final e in legacySaves.entries) {
@@ -76,7 +79,7 @@ void main() {
       }
       expect(marker(prefs)['state'], 'done');
       expect(marker(prefs)['profileId'], pid);
-      final p = ProfileStore(prefs).read()!.active;
+      final p = ProfileStore(prefs).read()!.profile;
       expect(p.id, pid);
       expect(p.origin, ProfileOrigin.legacy);
       expect(p.detectiveName, 'KIM', reason: 'from the open case');
@@ -100,9 +103,9 @@ void main() {
   group('running again', () {
     test('a second start changes nothing', () async {
       final prefs = await prefsWith(legacySaves);
-      final first = await ProfileStore(prefs).bootstrap();
+      final first = await boot(prefs);
       final before = snapshot(prefs);
-      final again = await ProfileStore(prefs).bootstrap();
+      final again = await boot(prefs);
       expect(again.profileId, first.profileId);
       expect(snapshot(prefs), before);
     });
@@ -115,7 +118,7 @@ void main() {
         AppConstants.legacyMigrationKey: jsonEncode({'state': 'copying', 'profileId': pid}),
         AppConstants.profileKey(pid, AppConstants.progressStorageKey): legacySaves[AppConstants.progressStorageKey]!,
       });
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       expect(session.profileId, pid);
       expect(session.legacyFallback, isFalse);
       for (final e in legacySaves.entries) {
@@ -123,28 +126,29 @@ void main() {
         expect(prefs.getString(e.key), e.value);
       }
       expect(marker(prefs)['state'], 'done');
-      expect(ProfileStore(prefs).read()!.profiles.map((p) => p.id), [pid], reason: 'one guest, not two');
+      expect(ProfileStore(prefs).read()!.profile.id, pid);
+      expect(ProfileStore(prefs).read()!.held, isEmpty, reason: 'one detective, not two');
     });
 
-    test('cut short between the registry and the done mark: marked done on the next start', () async {
+    test('cut short between the record and the done mark: marked done on the next start', () async {
       final prefs = await prefsWith(legacySaves);
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       await prefs.setString(
         AppConstants.legacyMigrationKey,
         jsonEncode({'state': 'copying', 'profileId': session.profileId}),
       );
-      expect((await ProfileStore(prefs).bootstrap()).profileId, session.profileId);
+      expect((await boot(prefs)).profileId, session.profileId);
       expect(marker(prefs)['state'], 'done');
     });
 
-    test('an unreadable registry is rebuilt for the same profile, its saves kept', () async {
+    test('an unreadable detective record is rebuilt for the same profile, its saves kept', () async {
       final prefs = await prefsWith(legacySaves);
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       final pid = session.profileId;
       final newer = save(const GameProgress(detectiveName: 'KIM', introSeen: true, completedMissionIds: ['x']));
       await prefs.setString(AppConstants.profileKey(pid, AppConstants.progressKeyFor('ep02')), newer);
-      await prefs.setString(AppConstants.profilesStorageKey, '{not json');
-      final again = await ProfileStore(prefs).bootstrap();
+      await prefs.setString(AppConstants.detectiveStorageKey, '{not json');
+      final again = await boot(prefs);
       expect(again.profileId, pid);
       expect(prefs.getString(AppConstants.profileKey(pid, AppConstants.progressKeyFor('ep02'))), newer,
           reason: 'newer progress is never replaced by the old copy');
@@ -171,7 +175,7 @@ void main() {
         AppConstants.legacyMigrationKey: jsonEncode({'state': 'copying', 'profileId': pid}),
         AppConstants.profileKey(pid, case01): newer,
       });
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       expect(session.profileId, pid);
       expect(prefs.getString(AppConstants.profileKey(pid, case01)), newer, reason: 'not replaced by the older original');
       expect(prefs.getString(AppConstants.profileKey(pid, AppConstants.seasonStorageKey)),
@@ -190,7 +194,7 @@ void main() {
       final coins = c.read(walletProvider).balance;
       c.dispose();
       for (var i = 0; i < 3; i++) {
-        await ProfileStore(prefs).bootstrap();
+        await boot(prefs);
       }
       final again = ProviderContainer(overrides: await testOverridesFor(prefs));
       addTearDown(again.dispose);
@@ -202,13 +206,13 @@ void main() {
       }
     });
 
-    test('an unreadable copy record with the registry intact changes nothing', () async {
+    test('an unreadable copy record with the detective record intact changes nothing', () async {
       final prefs = await prefsWith(legacySaves);
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       await prefs.setString(AppConstants.profileKey(session.profileId, case01), newer);
       await prefs.setString(AppConstants.legacyMigrationKey, '{broken');
       final before = snapshot(prefs);
-      final again = await ProfileStore(prefs).bootstrap();
+      final again = await boot(prefs);
       expect(again.profileId, session.profileId);
       expect(snapshot(prefs), before);
     });
@@ -219,30 +223,31 @@ void main() {
         AppConstants.legacyMigrationKey: '{broken',
         AppConstants.profileKey(pid, case01): newer,
       });
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       expect(session.profileId, pid, reason: 'found by its own saves, not a new profile');
       expect(prefs.getString(AppConstants.profileKey(pid, case01)), newer);
-      expect(ProfileStore(prefs).read()!.profiles.map((p) => p.id), [pid]);
+      expect(ProfileStore(prefs).read()!.profile.id, pid);
+      expect(ProfileStore(prefs).read()!.held, isEmpty);
     });
 
-    test('registry and record both unreadable on a device that never had old saves: the profile is found', () async {
+    test('detective and copy records both unreadable, no old saves: the detective is found by its saves', () async {
       final c = ProviderContainer(overrides: await testOverrides());
       final prefs = c.read(sharedPreferencesProvider);
       final id = c.read(profileSessionProvider).profileId;
-      c.read(gameControllerProvider.notifier).registerDetective('ANNA');
+      c.read(gameControllerProvider.notifier).createDetective('ANNA', DetectiveAvatar.boy);
       expect(c.read(walletProvider).balance, 20);
       c.dispose();
-      await prefs.setString(AppConstants.profilesStorageKey, 'garbage');
+      await prefs.setString(AppConstants.detectiveStorageKey, 'garbage');
 
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       expect(session.profileId, id);
       expect(session.profile.origin, ProfileOrigin.fresh);
-      expect(session.profile.detectiveName, 'ANNA');
+      expect(session.profile.detectiveName, 'ANNA', reason: 'read back from the case save');
       expect(session.profile.walletBackfill, WalletBackfill.done);
       expect(prefs.getString(AppConstants.legacyMigrationKey), isNull, reason: 'nothing was copied');
     });
 
-    test('registry unreadable and the wallet lost after a finished copy: no second pay-back', () async {
+    test('detective record unreadable and the wallet lost after a finished copy: no second pay-back', () async {
       final beforeCoins = {
         AppConstants.progressStorageKey: save(const GameProgress(
           detectiveName: 'LEE',
@@ -255,10 +260,10 @@ void main() {
       final id = c.read(profileSessionProvider).profileId;
       expect(c.read(walletProvider).balance, 80, reason: 'paid back once: 20 + 30 + 30');
       c.dispose();
-      await prefs.setString(AppConstants.profilesStorageKey, 'garbage');
+      await prefs.setString(AppConstants.detectiveStorageKey, 'garbage');
       await prefs.remove(AppConstants.profileKey(id, AppConstants.walletStorageKey));
 
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       expect(session.profileId, id);
       expect(session.profile.walletBackfill, WalletBackfill.never);
       final again = ProviderContainer(overrides: await testOverridesFor(prefs));
@@ -271,7 +276,7 @@ void main() {
     test('plays from the original saves, saves nothing over them, and tries again next start', () async {
       final prefs = await prefsWith(legacySaves);
       LegacyMigrator.simulateVerifyFailure = true;
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       expect(session.legacyFallback, isTrue);
       expect(ProfileStore(prefs).read(), isNull, reason: 'not marked done');
       expect(marker(prefs)['state'], 'copying');
@@ -292,7 +297,7 @@ void main() {
 
       // Next start: the copy works; the newer progress made in safe mode is kept.
       LegacyMigrator.simulateVerifyFailure = false;
-      final next = await ProfileStore(prefs).bootstrap();
+      final next = await boot(prefs);
       expect(next.legacyFallback, isFalse);
       expect(next.profileId, session.profileId);
       final ep02 = prefs.getString(AppConstants.profileKey(next.profileId, AppConstants.progressKeyFor('ep02')))!;
@@ -303,7 +308,7 @@ void main() {
     test('starting over in safe mode hides the originals without removing them', () async {
       final prefs = await prefsWith(legacySaves);
       LegacyMigrator.simulateVerifyFailure = true;
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       final c = ProviderContainer(overrides: [
         ...await testOverridesFor(prefs),
         profileSessionProvider.overrideWithValue(session),
@@ -316,7 +321,7 @@ void main() {
         expect(prefs.getString(e.key), e.value);
       }
       LegacyMigrator.simulateVerifyFailure = false;
-      final next = await ProfileStore(prefs).bootstrap();
+      final next = await boot(prefs);
       final repoKeys = prefs.getKeys().where((k) => k.startsWith(AppConstants.profilePrefix(next.profileId)));
       expect(repoKeys.any((k) => k.endsWith('progress.v1')), isFalse, reason: 'the originals are not copied back');
     });
@@ -337,10 +342,10 @@ void main() {
       final c = ProviderContainer(overrides: await testOverrides(prefs: beforeCoins));
       final prefs = c.read(sharedPreferencesProvider);
       final pid = c.read(profileSessionProvider).profileId;
-      expect(ProfileStore(prefs).profile(pid)!.walletBackfill, WalletBackfill.pending);
+      expect(ProfileStore(prefs).profile!.walletBackfill, WalletBackfill.pending);
       expect(c.read(walletProvider).balance, 20 + 30 + 30);
       expect(c.read(walletProvider).ownsTip('m01', 1), isTrue);
-      expect(ProfileStore(prefs).profile(pid)!.walletBackfill, WalletBackfill.done);
+      expect(ProfileStore(prefs).profile!.walletBackfill, WalletBackfill.done);
       c.dispose();
 
       // The wallet record is lost: a new wallet has the start coins only.
@@ -353,7 +358,7 @@ void main() {
 
     test('a fresh profile is never paid back for case saves it finds', () async {
       final prefs = await prefsWith({});
-      final session = await ProfileStore(prefs).bootstrap();
+      final session = await boot(prefs);
       await prefs.setString(
         AppConstants.profileKey(session.profileId, AppConstants.progressStorageKey),
         beforeCoins[AppConstants.progressStorageKey]! as String,

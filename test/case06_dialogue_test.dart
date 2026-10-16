@@ -18,7 +18,7 @@ import 'package:london_mystery/features/game/wallet_controller.dart';
 import 'package:london_mystery/widgets/art_assets.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
-import 'helpers.dart' show findReadable, findReadableContaining, tipSheetButton;
+import 'helpers.dart' show findReadable, findReadableContaining, takeTipFromSheet;
 import 'mission_play.dart';
 import 'title_screen_test.dart' show capture;
 
@@ -521,12 +521,17 @@ void main() {
         final play = MissionPlay();
         await play.openPuzzle(t, size, 'ep06_m1');
         await ask(play, t, 'juggler', 'carry');
-        await reveal(t, find.text('Get a tip'));
-        await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
-        await t.tap(tipSheetButton);
-        await wait(t, const Duration(milliseconds: 800));
+        // The free hint is written on the talk panel at once (no dialog) …
+        await tapText(t, 'Get a Free Hint', after: const Duration(milliseconds: 500));
+        await takeTipFromSheet(t);
         expect(
-          find.descendant(of: find.byKey(const ValueKey('statements-sheet')), matching: find.text('DETECTIVE TIP 1')),
+          find.descendant(of: find.byKey(const ValueKey('talk-hints')), matching: find.text('DETECTIVE HINT 1')),
+          findsOneWidget,
+        );
+        // … and kept with the statements in the notes.
+        await play.tapKey(t, 'open-statements', after: const Duration(milliseconds: 600));
+        expect(
+          find.descendant(of: find.byKey(const ValueKey('statements-sheet')), matching: find.text('DETECTIVE HINT 1')),
           findsOneWidget,
         );
         await tapText(t, 'BACK TO THE WITNESSES', after: const Duration(milliseconds: 500));

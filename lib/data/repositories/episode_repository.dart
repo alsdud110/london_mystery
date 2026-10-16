@@ -2,8 +2,7 @@ import '../mock/season1/episode01_mock.dart';
 import '../mock/season1/season1_mock.dart';
 import '../models/episode.dart';
 
-/// Source of episode content. Swap [MockEpisodeRepository] for a remote
-/// implementation (e.g. Firebase) without changing any UI code.
+/// Source of episode content (bundled with the app: the game is offline).
 abstract interface class EpisodeRepository {
   Future<List<String>> availableEpisodeIds();
 
