@@ -182,16 +182,19 @@ const Map<String, dynamic> episode06Json = {
           'How many are different?',
       'codeLength': 1,
       'answer': '4',
+      // Each slip names where to look again, never the count: 3 misses the
+      // man / woman line under tall / short, 5 counts the coat, 6 counts
+      // past the five details.
       'feedback': {
-        '3': 'You may have missed a difference. Check all five details again.',
-        '5': 'Look again. Are all five details really different?',
-        '6': 'There are only five details to compare. Try counting again.',
+        '3': 'One difference is missing. Did you check both height (tall or short) and person (man or woman)?',
+        '5': 'Look at the coat on Monday and on Tuesday. Is it really different?',
+        '6': 'There are only five details. Count each one once: height, person, coat, hat, bag.',
       },
       'hints': [
         'Compare the details one by one. '
             'Is each one the same or different?',
-        'Make two groups: SAME and DIFFERENT. '
-            'Count only the DIFFERENT details.',
+        'Make two groups: SAME and DIFFERENT. Read Monday and Tuesday line by line, '
+            'and check the coats too. Count only the DIFFERENT details.',
       ],
       'clue': {
         'id': 'ep06_c3',
@@ -204,15 +207,21 @@ const Map<String, dynamic> episode06Json = {
         'id': 'ep06_e3',
         'name': 'Theatre Ticket',
         'icon': 'ticket',
-        'description': 'Dropped by the woman in the red hat.',
+        // The raven on the back is kept here too, so the notebook still shows
+        // why she is the Raven Society's (the final rules her out by it).
+        'description': 'Dropped by the woman in the red hat. A black raven is stamped on the back.',
         'inscription': 'ROW R · SEAT 17',
       },
       'successMessage': 'Four details differ. The coats match, but the people do not!',
       'transition': [
         // Where the ticket comes from: the guard hands it over.
         'The guard gives you a theatre ticket. "The woman in the red hat dropped it."',
+        // R and 17 are left for the child to connect (Case 02's 8:17): the
+        // scene hints, it does not explain.
         'Row R, seat 17. The letter R and the number 17 seem familiar.',
-        'The ticket might connect the woman in the red hat to the Raven Society.',
+        // The fact the final needs, seen on the ticket (the mark of Cases 03,
+        // 04): she is the Raven Society's, so the tall man is someone else.
+        'On the back, a black raven is stamped: the mark of the Raven Society.',
         // Who the man is, is the final's question: the scene only asks it
         // (not by his hat: "grey" would hand over the name).
         'But who is the tall man?',
@@ -251,7 +260,7 @@ const Map<String, dynamic> episode06Json = {
       {
         'id': 'a',
         'label': 'A Raven Society thief',
-        'feedback': 'Compare the person by the fountain with the two people in the theatre guard’s notes. Which details match?',
+        'feedback': 'The ticket with the raven was dropped by the short woman. Is the man by the fountain short, with a big bag?',
       },
       {
         'id': 'b',
@@ -328,5 +337,12 @@ const Map<String, dynamic> episode06Json = {
     'seat': '좌석',
     'compare': '비교하다',
     'matches': '~와 맞다, 일치하다',
+    // The five details 06-M3 asks to compare, and the ticket's raven mark.
+    'details': '세부 사항, 특징',
+    'height': '키',
+    'person': '사람 (남자인지 여자인지)',
+    'raven': '까마귀',
+    'stamped': '(도장으로) 찍혀 있다',
+    'mark': '표시, 상징',
   },
 };

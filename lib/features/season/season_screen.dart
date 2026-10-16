@@ -188,8 +188,8 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
   }
 
   /// The cover: the London panorama is the screen. The title stands in the
-  /// night sky; the button sits on the rooftops below the young detective,
-  /// never over them.
+  /// evening sky; the button rests on the stone balcony in front, below the
+  /// river and the city, never over them.
   Widget _coverPage(SeasonOverview overview) {
     return AnimatedBuilder(
       animation: Listenable.merge([_book, _leave]),
@@ -202,17 +202,20 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
           children: [
             const ColoredBox(color: AppColors.nightBottom),
             _CoverPanorama(scale: 1 + 0.025 * iv(0, 1) + 0.14 * leave),
-            // Shade only where words stand: the sky under the title, the
-            // rooftops under the button. The city between stays clear.
+            // Shade only where words stand, and only a little (the painting
+            // is lit, not dark): the sky under the title, the balcony under
+            // the button. The city between stays as painted.
             DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    for (final a in const [0.72, 0.45, 0.0, 0.0, 0.6]) AppColors.navyDeep.withValues(alpha: a),
+                    // Down to the first lights of the city: on a short phone the
+                    // tagline stands over them.
+                    for (final a in const [0.55, 0.38, 0.0, 0.0, 0.42]) AppColors.navyDeep.withValues(alpha: a),
                   ],
-                  stops: const [0, 0.24, 0.42, 0.8, 1],
+                  stops: const [0, 0.3, 0.48, 0.82, 1],
                 ),
               ),
             ),
@@ -239,16 +242,17 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
                               label: 'BEGIN ${overview.info.label}',
                               arrow: true,
                               singleLine: true,
-                              style: GameButtonStyle.glass,
+                              // The title page's button: the same storybook, turned a page.
+                              style: GameButtonStyle.parchment,
                               // The season's opening sequence comes before its first case.
                               tap: TapRole.primary,
                               onPressed: _begin,
                             ),
                           ),
                         ),
-                        // Raised off the edge so the rooftops show below it: the
-                        // button rests on the city, not on the phone. Capped on
-                        // tall phones so it stays below the young detective.
+                        // Raised off the edge so the balcony shows below it: the
+                        // button rests on the stone, not on the phone. Capped on
+                        // tall phones so it stays below the river.
                         SizedBox(height: AppSpace.lg + (MediaQuery.sizeOf(context).height * 0.038).clamp(20.0, 28.0)),
                       ],
                     ),
@@ -318,9 +322,9 @@ class _CoverPanorama extends StatelessWidget {
   final double scale;
 
   /// When the phone is narrower than the painting (9:16), the crop leans
-  /// right: Big Ben stands near the right edge; the young detective, on the
-  /// left, stays in.
-  static const _focus = Alignment(0.55, 0);
+  /// right: Big Ben stands near the right edge; the gas lamp on the left
+  /// gives up a little of its edge instead.
+  static const _focus = Alignment(0.6, 0);
 
   @override
   Widget build(BuildContext context) {

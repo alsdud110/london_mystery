@@ -182,7 +182,8 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
       case _city:
         return _SceneLayout(
           // The whole screen is London: the picture full-bleed, a little
-          // shade at the top for Back / SKIP and at the bottom for the words.
+          // shade at the top for Back / SKIP and at the bottom for the words
+          // (the warm paving and the river's lights show through it).
           background: Stack(
             fit: StackFit.expand,
             children: [
@@ -194,10 +195,10 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      for (final a in const [0.6, 0.0, 0.0, 0.74, 0.92])
+                      for (final a in const [0.5, 0.0, 0.0, 0.62, 0.86])
                         AppColors.navyDeep.withValues(alpha: a),
                     ],
-                    stops: const [0, 0.16, 0.52, 0.76, 1],
+                    stops: const [0, 0.14, 0.54, 0.76, 1],
                   ),
                 ),
               ),

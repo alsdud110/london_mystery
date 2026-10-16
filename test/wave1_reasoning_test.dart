@@ -176,7 +176,9 @@ void main() {
 
     test('the theatre ticket and the post-case payoff stay', () {
       expect(e.missionById('ep06_m3')!.evidence!.inscription, 'ROW R · SEAT 17');
-      expect(e.missionById('ep06_m3')!.transition, contains('Row R, seat 17. R for Raven. 17, like 8:17.'));
+      // Hinted, not explained; the raven mark is the fact (approved 2026-10-16).
+      expect(e.missionById('ep06_m3')!.transition, contains('Row R, seat 17. The letter R and the number 17 seem familiar.'));
+      expect(e.missionById('ep06_m3')!.transition, contains('On the back, a black raven is stamped: the mark of the Raven Society.'));
       expect(fin.transition.first, 'Inspector Grey is on your side.');
       expect(byId('ep10').finalMission.transition, contains('ROW R\nSEAT 17.'));
       expect(byId('ep11').synopsis.first, contains('Row R, Seat 17'));
@@ -219,8 +221,10 @@ void main() {
     });
 
     test('Mrs Robin carries on into Case 09', () {
-      expect(fin.successMessage, 'Mrs Robin cannot say no!');
-      expect(fin.transition, containsAll(['Mrs Robin cannot say no.', 'BUCKINGHAM PALACE.', '"The Clockmaker gives the orders."']));
+      // 2026-10-15 wording: the proof shown to her.
+      expect(fin.successMessage, 'The red button connects Mrs Robin to Gallery 8!');
+      expect(fin.transition,
+          containsAll(['You show Mrs Robin the red button from Gallery 8.', 'BUCKINGHAM PALACE.', '"The Clockmaker gives the orders."']));
       expect(fin.transition.join(' '), contains('Miss Rose was Mrs Robin all along'));
       expect(fin.evidence!.inscription, contains('BUCKINGHAM PALACE'));
       expect(redButton.name, 'Red Button');
