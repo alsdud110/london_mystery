@@ -43,31 +43,36 @@ abstract final class ArtAssets {
   /// Pixel size of [londonMap]: it is never decoded larger than this.
   static const londonMapPixels = Size(1536, 1024);
 
-  /// The title screen: the detective's office at night — lamp, desk with a
-  /// map, magnifying glass and sealed letter, and London (Big Ben, the moon)
-  /// through the window (portrait, no text). The title screen only.
+  /// The title screen: the detective's study on a London evening, in warm
+  /// watercolour — bookshelves and the lamp on the left, the desk with a
+  /// sealed letter, map and magnifying glass below, and a wide window over
+  /// Westminster (Big Ben on the right, the moon above it). Portrait, no
+  /// text: the window's sky is left for the title. The title screen (and,
+  /// blurred, behind the registration form) only.
   static const titleDetectiveOffice = 'assets/images/title/title_detective_office.png';
 
   /// Pixel size of [titleDetectiveOffice] (never decoded larger).
-  static const titleDetectiveOfficePixels = Size(941, 1672);
+  static const titleDetectiveOfficePixels = Size(942, 1670);
 
-  /// The Season 1 cover: London from above at night — the whole city, the
-  /// Thames, Big Ben, and a young detective looking out over it from a
-  /// balcony (portrait, no text). The cover only: the opening's first scene
-  /// has its own picture ([season1LondonNight]), closer in.
+  /// The Season 1 cover: London from above at dusk — the Thames and its
+  /// bridges, Westminster and Big Ben on the right, St Paul's far off, a
+  /// stone balcony and a gas lamp in front (portrait, no text). The cover
+  /// only: the opening's first scene has its own picture
+  /// ([season1LondonNight]), closer in.
   static const season1CoverLondonPanorama = 'assets/images/season1/season1_cover_london_panorama.png';
 
   /// Pixel size of [season1CoverLondonPanorama] (never decoded larger).
   static const season1CoverLondonPanoramaPixels = Size(941, 1672);
 
-  /// The first scene of the Season 1 opening: London at night — Big Ben,
-  /// Westminster, the Thames, a gas lamp (portrait, no text). Shown full
-  /// screen once, as that scene's hero picture; used nowhere else, so the
-  /// opening keeps its moment. Missing → the London drawn in code.
+  /// The first scene of the Season 1 opening: a warm London night on the
+  /// embankment — Big Ben, Westminster, the bridge and the Thames, a gas
+  /// lamp and wet paving in front (portrait, no text). Shown full screen
+  /// once, as that scene's hero picture; used nowhere else, so the opening
+  /// keeps its moment. Missing → the London drawn in code.
   static const season1LondonNight = 'assets/images/season1/season1_london_night.png';
 
   /// Pixel size of [season1LondonNight] (never decoded larger).
-  static const season1LondonNightPixels = Size(941, 1672);
+  static const season1LondonNightPixels = Size(941, 1671);
 
   /// Scene pictures (mission, final, image choices, the arrival at a place,
   /// Case Solved photo), full colour: the nine London landmarks in

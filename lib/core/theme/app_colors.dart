@@ -39,6 +39,10 @@ abstract final class AppColors {
   static const goldLight = Color(0xFFD9C38F); // gold on dark backgrounds
   static const goldDeep = Color(0xFF7E5F2C); // gold ink for small text on paper (≥4.5:1)
 
+  /// Cream gold: the game's name over a painting (the title page) — paler
+  /// than [goldLight], so it reads on a lit evening sky without a glow.
+  static const creamGold = Color(0xFFE6D5AC);
+
   /// Leather of the detective's notebook cover and report folder.
   static const leather = Color(0xFF4B2C24);
   static const leatherDeep = Color(0xFF34201A);

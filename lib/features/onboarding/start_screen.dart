@@ -13,6 +13,7 @@ import '../../core/utils/audio_service.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/game_dialog.dart';
+import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../account/account_controller.dart';
@@ -147,9 +148,9 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     final progress = ref.watch(gameControllerProvider);
     final hasSave = progress.hasDetective;
     final screen = MediaQuery.sizeOf(context);
-    // Shade where the words stand — the bookshelves behind the title, the
-    // desk front under the button — and nowhere else: the window, the lamp
-    // and the things on the desk stay as painted.
+    // A breath of shade where the words stand — the top of the evening sky
+    // behind the title, the desk front under the greeting and the buttons —
+    // and nowhere else: the window, the city and the lamp stay as painted.
     const shade = AppColors.navyDeep;
     final accountsShown = ref.watch(accountControllerProvider).accountsShown;
     final accountLink = !accountsShown
@@ -174,23 +175,15 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
             _Office(push: _push, rain: _rain, lamp: _lamp, ambientIn: _ambientIn),
             DecoratedBox(
               decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  center: const Alignment(-0.85, -0.72),
-                  radius: 0.95,
-                  colors: [shade.withValues(alpha: 0.62), shade.withValues(alpha: 0.32), shade.withValues(alpha: 0)],
-                  stops: const [0, 0.55, 1],
-                ),
-              ),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    for (final a in const [0.0, 0.0, 0.6]) shade.withValues(alpha: a),
+                    // From the top of the desk down: soft enough that the
+                    // letter and map still read as paper, never a panel.
+                    for (final a in const [0.4, 0.16, 0.0, 0.0, 0.4, 0.64]) shade.withValues(alpha: a),
                   ],
-                  stops: const [0, 0.8, 1],
+                  stops: const [0, 0.2, 0.36, 0.56, 0.78, 1],
                 ),
               ),
             ),
@@ -209,22 +202,28 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              SizedBox(height: (screen.height * 0.05).clamp(AppSpace.lg, AppSpace.xxxl)),
-                              // The title, in the dark of the bookshelves on the
-                              // left: the window (moon, Big Ben) stays clear.
+                              SizedBox(height: (screen.height * 0.04).clamp(AppSpace.md, AppSpace.xxl)),
+                              // The title, centred in the evening sky of the
+                              // window, above the city: the moon and Big Ben
+                              // on the right stay clear.
                               // Long-press: the grown-ups' game master tools.
-                              Align(
-                                alignment: Alignment.centerLeft,
+                              Center(
                                 child: GestureDetector(
                                   onLongPress: _openGameMaster,
-                                  child: _TitleBlock(
-                                    intro: _intro,
-                                    detectiveName: hasSave ? progress.detectiveName : null,
-                                    width: screen.width,
-                                  ),
+                                  child: _TitleBlock(intro: _intro, width: screen.width),
                                 ),
                               ),
+                              // The middle is the window: London, left to itself.
                               const Spacer(),
+                              // The greeting stands with the way in, on the
+                              // desk: an invitation for a new player, a welcome
+                              // for a detective coming back.
+                              _RiseIn(
+                                intro: _intro,
+                                from: 0.42,
+                                child: _Greeting(detectiveName: hasSave ? progress.detectiveName : null),
+                              ),
+                              const SizedBox(height: AppSpace.md),
                               // Last to come in, but answers a tap from the first frame.
                               _RiseIn(
                                 intro: _intro,
@@ -233,7 +232,7 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                   label: hasSave ? 'CONTINUE ADVENTURE' : 'START ADVENTURE',
                                   arrow: true,
                                   singleLine: true, // one line on a 360-wide phone
-                                  style: GameButtonStyle.glass,
+                                  style: GameButtonStyle.parchment,
                                   tap: TapRole.primary,
                                   onPressed: _continue,
                                 ),
@@ -245,12 +244,8 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                   child: SizedBox(
                                     height: 52,
                                     child: Center(
-                                      child: InkTextButton(
-                                        // Starts the whole adventure over (asks first).
-                                        label: 'NEW ADVENTURE',
-                                        color: AppColors.paperLight.withValues(alpha: 0.75),
-                                        onPressed: _confirmNewGame,
-                                      ),
+                                      // Starts the whole adventure over (asks first).
+                                      child: _PageLink(label: 'NEW ADVENTURE', emphasis: true, onPressed: _confirmNewGame),
                                     ),
                                   ),
                                 ),
@@ -261,13 +256,9 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                   intro: _intro,
                                   from: 0.75,
                                   child: SizedBox(
-                                    height: 44,
+                                    height: 48,
                                     child: Center(
-                                      child: InkTextButton(
-                                        label: label,
-                                        color: AppColors.paperLight.withValues(alpha: 0.6),
-                                        onPressed: () => context.go(route),
-                                      ),
+                                      child: _PageLink(label: label, onPressed: () => context.go(route)),
                                     ),
                                   ),
                                 ),
@@ -309,8 +300,8 @@ class _Office extends StatelessWidget {
   final Animation<double> ambientIn;
 
   /// When the phone is narrower than the painting (9:16), the crop leans a
-  /// little right to keep the window (Big Ben) whole; the lamp on the left
-  /// keeps its shade and light.
+  /// little right to keep Big Ben (near the right edge of the window) whole;
+  /// the lamp on the left keeps its glowing bulb.
   static const _focus = Alignment(0.55, 0);
 
   /// The camera drifts in this far (and back), towards the window.
@@ -399,10 +390,8 @@ class _RainPainter extends CustomPainter {
 
   /// The glass between the window's bars (left, top, right, bottom).
   static const _panes = [
-    Rect.fromLTRB(0.598, 0.000, 0.720, 0.205),
-    Rect.fromLTRB(0.733, 0.040, 0.983, 0.203),
-    Rect.fromLTRB(0.598, 0.218, 0.720, 0.556),
-    Rect.fromLTRB(0.733, 0.218, 0.983, 0.556),
+    Rect.fromLTRB(0.350, 0.040, 0.618, 0.630),
+    Rect.fromLTRB(0.645, 0.020, 0.968, 0.630),
   ];
 
   /// One streak: across its pane (0..1), where it starts, how long, how
@@ -468,7 +457,7 @@ class _LampLightPainter extends CustomPainter {
   final Animation<double> shown;
 
   /// The bulb under the shade, as fractions of the painting.
-  static const _bulb = Offset(0.138, 0.478);
+  static const _bulb = Offset(0.100, 0.506);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -524,74 +513,134 @@ class _RiseIn extends StatelessWidget {
   }
 }
 
-/// THE CASEBOOK OF / LONDON / MYSTERY / ◆ / Become a Detective (or welcome back), set left.
+/// Lifts light words off the painted desk (its letter and map are pale):
+/// a wide faint halo, a soft one and a close edge, all dark — no glow.
+List<Shadow> _lift([double strength = 1]) => [
+      Shadow(color: AppColors.navyDeep.withValues(alpha: 0.35 * strength), blurRadius: 18),
+      Shadow(color: AppColors.navyDeep.withValues(alpha: 0.55 * strength), blurRadius: 8, offset: const Offset(0, 1)),
+      Shadow(color: AppColors.navyDeep.withValues(alpha: 0.45 * strength), blurRadius: 2, offset: const Offset(0, 1)),
+    ];
+
+/// The detective's cap / LONDON / MYSTERY / ◆, centred in the window's sky.
 class _TitleBlock extends StatelessWidget {
-  const _TitleBlock({required this.intro, required this.detectiveName, required this.width});
+  const _TitleBlock({required this.intro, required this.width});
 
   final Animation<double> intro;
-  final String? detectiveName;
   final double width;
 
   @override
   Widget build(BuildContext context) {
-    final lift = [Shadow(color: AppColors.navyDeep.withValues(alpha: 0.7), blurRadius: 12)];
-    final size = (width * 0.105).clamp(34.0, 46.0);
-    // Large text grows the title a little, not out over the window: the
-    // column keeps to the dark of the bookshelves and longer lines wrap.
+    // Only enough to lift the letters off the painted clouds: no glow.
+    final lift = [Shadow(color: AppColors.navyDeep.withValues(alpha: 0.55), blurRadius: 8, offset: const Offset(0, 1))];
+    // Sized to leave the sky and the city the larger part of the window.
+    final size = (width * 0.1).clamp(32.0, 42.0);
+    // Large text grows the title a little, not over the moon or into the
+    // city: the column stays narrow, and a long greeting wraps.
     return MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.15,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: width * 0.68 - AppSpace.screen),
+        constraints: BoxConstraints(maxWidth: width * 0.76),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _RiseIn(
               intro: intro,
               from: 0,
-              child: Text(
-                'THE CASEBOOK OF',
-                style: AppText.eyebrow(color: AppColors.goldLight.withValues(alpha: 0.85)).copyWith(shadows: lift),
-              ),
+              child: const InkIcon(InkGlyph.deerstalker, size: AppIconSize.medium, color: AppColors.goldLight),
             ),
             const SizedBox(height: AppSpace.sm),
-            // One word to a line, always: fitted to the column, never broken.
+            // One word to a line, always: fitted to a narrower column than the
+            // greeting's (large text shrinks the words rather than reach the
+            // moon), never broken.
             _RiseIn(
               intro: intro,
               from: 0.12,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final (word, color) in const [('LONDON', AppColors.paperLight), ('MYSTERY', AppColors.goldLight)])
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        word,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: AppText.logo(size: size, color: color).copyWith(shadows: lift),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: width * 0.58),
+                child: Column(
+                  children: [
+                    for (final word in const ['LONDON', 'MYSTERY'])
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          word,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: AppText.logo(size: size, color: AppColors.creamGold)
+                              .copyWith(letterSpacing: size * 0.08, height: 1.08, shadows: lift),
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: AppSpace.md),
-            _RiseIn(intro: intro, from: 0.3, child: const OrnamentRule(color: AppColors.goldLight, width: 150)),
-            const SizedBox(height: AppSpace.md),
-            // One line under the title: an invitation for a new player, a
-            // greeting for a detective coming back — same place, same voice.
-            _RiseIn(
-              intro: intro,
-              from: 0.42,
-              child: Text(
-                detectiveName == null ? 'Become a Detective.' : 'Welcome back, Detective $detectiveName!',
-                style: AppText.aside(
-                  size: 18,
-                  color: AppColors.paperLight.withValues(alpha: 0.85),
-                ).copyWith(shadows: lift),
-              ),
-            ),
+            _RiseIn(intro: intro, from: 0.3, child: const OrnamentRule(color: AppColors.goldLight, width: 120)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Become a Detective. (or Welcome back, Detective NAME!) — in the
+/// storybook italic, ivory, just above the way in. A long name takes a
+/// second line, never a third.
+class _Greeting extends StatelessWidget {
+  const _Greeting({required this.detectiveName});
+
+  final String? detectiveName;
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.15,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+        child: Text(
+          detectiveName == null ? 'Become a Detective.' : 'Welcome back, Detective $detectiveName!',
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: AppText.aside(size: 17, color: AppColors.paperLight).copyWith(shadows: _lift(1.4)),
+        ),
+      ),
+    );
+  }
+}
+
+/// A quiet way off the title page, under its button: words only, lifted
+/// off the desk. [emphasis] (NEW ADVENTURE): cream caps with a faint rule
+/// under them; otherwise (Sign in) smaller and plainer, the least of the page.
+class _PageLink extends StatelessWidget {
+  const _PageLink({required this.label, required this.onPressed, this.emphasis = false});
+
+  final String label;
+  final VoidCallback onPressed;
+  final bool emphasis;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = emphasis ? AppColors.creamGold : AppColors.paperLight.withValues(alpha: 0.9);
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        minimumSize: const Size(48, 48),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+        foregroundColor: color,
+        // A soft light under the finger: it answers, it does not flash.
+        overlayColor: AppColors.paperLight,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+      ),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: AppText.button(size: emphasis ? 15 : 14, color: color).copyWith(
+          letterSpacing: emphasis ? 1.4 : 0.3,
+          fontWeight: emphasis ? null : FontWeight.w500,
+          shadows: _lift(1.4),
+          decoration: emphasis ? TextDecoration.underline : null,
+          decorationColor: color.withValues(alpha: 0.45),
+          decorationThickness: 1,
         ),
       ),
     );

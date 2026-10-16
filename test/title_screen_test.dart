@@ -13,13 +13,16 @@ import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/theme/app_tokens.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/widgets/art_assets.dart';
+import 'package:london_mystery/widgets/game_button.dart';
 import 'package:london_mystery/widgets/ink_icon.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
 
-/// The title screen: the detective's office, the title in the dark of the
-/// bookshelves (clear of the window), the button raised off the bottom edge.
+/// The title screen: the detective's study, the title centred in the
+/// window's evening sky (clear of the moon and Big Ben), London left clear
+/// in the middle, and on the desk the greeting over the parchment button,
+/// raised off the bottom edge, with its quiet links under it.
 /// Set LM_SCREENSHOTS to a folder to save a picture of each state.
 void main() {
   setUpAll(() async {
@@ -71,13 +74,18 @@ void main() {
       // One subtitle: the invitation for a new player, the greeting for one coming back.
       final subtitle = save ? 'Welcome back, Detective MINYOUNG!' : 'Become a Detective.';
       expect(find.text(save ? 'Become a Detective.' : 'Welcome back, Detective MINYOUNG!'), findsNothing);
-      // Same left edge as the title above it.
-      expect(t.getRect(find.text(subtitle)).left, closeTo(t.getRect(find.text('THE CASEBOOK OF')).left, 1));
-      for (final s in ['THE CASEBOOK OF', 'LONDON', 'MYSTERY', subtitle]) {
+      final (moon, bigBen) = _skyMarks(size);
+      for (final s in ['LONDON', 'MYSTERY', subtitle]) {
         expect(find.text(s), findsOneWidget);
-        // The window (moon, Big Ben) is the right part of the painting.
-        expect(t.getRect(find.text(s)).right, lessThan(size.width * 0.72), reason: '$s stays clear of the window');
+        final ink = _inkRect(t.renderObject<RenderParagraph>(find.text(s)));
+        // Centred on the page, like the cover's title (within the letter
+        // spacing after the last letter, or the space where a line wraps).
+        expect(ink.center.dx, closeTo(size.width / 2, 3), reason: '$s centred');
+        // In the sky of the window, never over the moon or the clock tower.
+        expect(ink.overlaps(moon), isFalse, reason: '$s clear of the moon');
+        expect(ink.overlaps(bigBen), isFalse, reason: '$s clear of Big Ben');
       }
+      expect(find.text('THE CASEBOOK OF'), findsNothing, reason: 'the name alone, under the cap');
       // The two title words never break mid-word, whatever the text size.
       for (final word in ['LONDON', 'MYSTERY']) {
         final para = t.renderObject<RenderParagraph>(find.text(word));
@@ -87,14 +95,26 @@ void main() {
       }
       final cta = find.text(save ? 'CONTINUE ADVENTURE' : 'START ADVENTURE');
       expect(cta, findsOneWidget);
+      expect(t.widget<GameButton>(find.ancestor(of: cta, matching: find.byType(GameButton))).style, GameButtonStyle.parchment);
       final button = t.getRect(find.ancestor(of: cta, matching: find.byType(GestureDetector)).first);
       expect(button.bottom, lessThan(size.height - (save ? 48 : 36)), reason: 'raised off the bottom edge');
       expect(button.top, greaterThan(size.height * 0.7), reason: 'below the desk things, not over the window');
+      // The greeting stands with the way in: just above the button, apart
+      // from it, and the middle of the page (the window) is left clear.
+      final greeting = _inkRect(t.renderObject<RenderParagraph>(find.text(subtitle)));
+      expect(greeting.bottom, lessThanOrEqualTo(button.top - AppSpace.sm), reason: 'above the button, not on it');
+      expect(button.top - greeting.bottom, lessThan(AppSpace.xxl), reason: 'it belongs to the button');
+      final title = _inkRect(t.renderObject<RenderParagraph>(find.text('MYSTERY')));
+      expect(greeting.top - title.bottom, greaterThan(size.height * 0.3), reason: 'London in between, nothing on it');
+      expect(t.renderObject<RenderParagraph>(find.text(subtitle)).didExceedMaxLines, isFalse, reason: 'whole, in two lines at most');
       if (save) {
         // Starts the whole adventure over (behind its question), not a case.
         expect(find.text('NEW ADVENTURE'), findsOneWidget);
         expect(find.text('Start a new case'), findsNothing);
         expect(t.getRect(find.text('NEW ADVENTURE')).bottom, lessThan(size.height - 16), reason: 'the group is off the edge');
+        final link = t.getRect(find.widgetWithText(TextButton, 'NEW ADVENTURE'));
+        expect(link.height, greaterThanOrEqualTo(48), reason: 'a comfortable target');
+        expect(link.top, greaterThanOrEqualTo(button.bottom), reason: 'under the button, never over it');
       }
 
       await capture(t, 'title_$tag');
@@ -104,6 +124,45 @@ void main() {
         expect(t.takeException(), isNull);
         await capture(t, 'title_${tag}_ambient');
       }
+    });
+  }
+
+  // The longest name (12 letters), in the widest letters: the welcome takes
+  // two lines at most, centred, and the group still fits a small phone.
+  for (final (size, scale) in const [(Size(360, 640), 1.0), (Size(360, 640), 1.3), (Size(390, 844), 1.3)]) {
+    final tag = '${size.width.toInt()}x${size.height.toInt()}${scale == 1 ? '' : '_text13'}';
+    testWidgets('a long detective name at $tag: two lines at most, above the button', (t) async {
+      t.view.physicalSize = size * 3;
+      t.view.devicePixelRatio = 3;
+      t.platformDispatcher.textScaleFactorTestValue = scale;
+      addTearDown(t.view.reset);
+      addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
+      const name = 'WWWWWWWWWWWW';
+      expect(name.length, AppConstants.nameMaxLength);
+      await t.pumpWidget(ProviderScope(
+        overrides: await testOverrides(prefs: {
+          AppConstants.progressStorageKey: jsonEncode(const GameProgress(detectiveName: name).toJson()),
+        }),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+      ));
+      await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
+      await wait(t);
+      expect(t.takeException(), isNull, reason: 'no overflow');
+      final text = find.text('Welcome back, Detective $name!');
+      final para = t.renderObject<RenderParagraph>(text);
+      expect(para.didExceedMaxLines, isFalse, reason: 'the whole name shows');
+      final lines = para.getBoxesForSelection(TextSelection(baseOffset: 0, extentOffset: para.text.toPlainText().length))
+          .map((b) => b.top.round())
+          .toSet();
+      expect(lines.length, lessThanOrEqualTo(2));
+      final greeting = _inkRect(para);
+      expect(greeting.center.dx, closeTo(size.width / 2, 3), reason: 'centred');
+      expect(greeting.left, greaterThanOrEqualTo(0));
+      expect(greeting.right, lessThanOrEqualTo(size.width));
+      final button = t.getRect(find.ancestor(of: find.text('CONTINUE ADVENTURE'), matching: find.byType(GestureDetector)).first);
+      expect(greeting.bottom, lessThanOrEqualTo(button.top - AppSpace.sm));
+      expect(t.getRect(find.text('NEW ADVENTURE')).bottom, lessThan(size.height), reason: 'the group is whole on screen');
+      await capture(t, 'title_long_name_$tag');
     });
   }
 
@@ -168,7 +227,7 @@ void main() {
       ));
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
 
-      final ui = ['THE CASEBOOK OF', 'LONDON', 'MYSTERY', 'Welcome back, Detective MINYOUNG!', 'CONTINUE ADVENTURE', 'NEW ADVENTURE'];
+      final ui = ['LONDON', 'MYSTERY', 'Welcome back, Detective MINYOUNG!', 'CONTINUE ADVENTURE', 'NEW ADVENTURE'];
       final painting = find.byWidgetPredicate((w) => w is Image);
       var elapsed = Duration.zero;
       for (final (at, name) in const [
@@ -417,6 +476,30 @@ Future<void> capture(WidgetTester t, String name) async {
     final png = await image.toByteData(format: ui.ImageByteFormat.png);
     File('$shots/$name.png').writeAsBytesSync(png!.buffer.asUint8List());
   });
+}
+
+/// Where the painting's moon and Big Ben land on a [size] screen (the title
+/// page's crop: `BoxFit.cover`, leaning right at `Alignment(0.55, 0)`).
+/// Measured on `title_detective_office.png` (942 × 1670), as fractions.
+(Rect, Rect) _skyMarks(Size size) {
+  const pixels = ArtAssets.titleDetectiveOfficePixels;
+  final scale = math.max(size.width / pixels.width, size.height / pixels.height);
+  final picture = const Alignment(0.55, 0).inscribe(pixels * scale, Offset.zero & size);
+  Rect at(Rect f) => Rect.fromLTRB(
+        picture.left + f.left * picture.width,
+        picture.top + f.top * picture.height,
+        picture.left + f.right * picture.width,
+        picture.top + f.bottom * picture.height,
+      );
+  return (at(const Rect.fromLTRB(0.800, 0.122, 0.884, 0.172)), at(const Rect.fromLTRB(0.835, 0.290, 0.925, 0.500)));
+}
+
+/// Where the letters of [p] are on screen (its box can be wider than them).
+Rect _inkRect(RenderParagraph p) {
+  final text = p.text.toPlainText();
+  final boxes = p.getBoxesForSelection(TextSelection(baseOffset: 0, extentOffset: text.length));
+  final local = boxes.map((b) => b.toRect()).reduce((a, b) => a.expandToInclude(b));
+  return MatrixUtils.transformRect(p.getTransformTo(null), local);
 }
 
 /// Whether [a] is painted after (on top of) [b]: below their nearest common
