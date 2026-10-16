@@ -85,7 +85,8 @@ void main() {
 
     test('16. Case 06: the final and the ticket line are unchanged', () {
       expect(c06.finalMission.answerLabel, 'Inspector Grey');
-      expect(m063.transition, contains('Row R, seat 17. R for Raven. 17, like 8:17.'));
+      // The ticket line, hinting R and 17 without explaining them (approved 2026-10-16).
+      expect(m063.transition, contains('Row R, seat 17. The letter R and the number 17 seem familiar.'));
     });
 
     test('17–19. no other mission hands over evidence in its scene; 38 discoveries; no final', () {
@@ -195,7 +196,7 @@ void main() {
 
       for (final (id, name, writing, description) in const [
         ('ep10_m3', "Ravenmaster's Letter", '"The Clockmaker watches me. So Poppy speaks for me."', 'Given to you at the north tower.'),
-        ('ep06_m3', 'Theatre Ticket', 'ROW R · SEAT 17', 'Dropped by the woman in the red hat.'),
+        ('ep06_m3', 'Theatre Ticket', 'ROW R · SEAT 17', 'Dropped by the woman in the red hat. A black raven is stamped on the back.'),
       ]) {
         for (final scale in const [1.0, 1.3]) {
           testWidgets('$id $tag text ${scale}x: the scene hands over $name as a card', (t) async {

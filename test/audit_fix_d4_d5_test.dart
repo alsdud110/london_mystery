@@ -37,7 +37,15 @@ void main() {
       ('ep08', 'You cannot prove it, Detective!"', 'prove'),
       ('ep08', 'Which evidence shows that she was in Gallery 8?', 'evidence'),
       ('ep08', 'Think back to an earlier case.', 'earlier'),
-      ('ep06', 'Compare Monday and Tuesday. How many things are different?', 'Compare'),
+      // 06-M3's question names the five details (2026-10-15 wording); its
+      // ticket's raven mark (2026-10-16); 09-F's umbrella line.
+      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'Compare'),
+      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'details'),
+      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'height,'),
+      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'person,'),
+      ('ep06', 'On the back, a black raven is stamped: the mark of the Raven Society.', 'stamped'),
+      ('ep06', 'On the back, a black raven is stamped: the mark of the Raven Society.', 'mark'),
+      ('ep09', "Anna borrowed the key, but the note says WHOSE key you used. Was it Anna's own key?", 'borrowed'),
       ('ep05', "'The other way' is the opposite way.", 'opposite'),
       ('ep10', "'Put together' means two words side by side make one name.", 'together'),
     ];
@@ -62,9 +70,10 @@ void main() {
     });
 
     test('the words that read two ways keep the sense the tips use', () {
-      // Case 05: "the order is not right" — not the right hand.
+      // Case 05: "the right number of left and right turns" — both senses in
+      // one line, 맞는 first (2026-10-15 wording).
       expect(byId('ep05').meaningOf('right'), allOf(contains('오른쪽'), contains('맞는')));
-      expect(byId('ep05').missionById('ep05_m2')!.orderFeedback, contains('is not right'));
+      expect(byId('ep05').missionById('ep05_m2')!.orderFeedback, allOf(contains('the right number'), contains('right turns')));
       // Case 07: "Inspector Grey was right", "the right spot" — and still
       // "Turn right at the bridge".
       final c07 = byId('ep07');
@@ -89,6 +98,8 @@ void main() {
         'complete', 'sentences', 'opposites', 'moment', 'smells', 'smoke', 'wettest', 'driest', 'luggage', 'property',
         'describes', 'opposite', 'compare', 'matches', 'upside', 'prove', 'evidence', 'earlier', 'counts', 'together',
         'enough', 'shapes', 'tunnel',
+        // 2026-10-16: 06-M3's details and the ticket's mark, 09-F's umbrella line.
+        'details', 'height', 'person', 'stamped', 'mark', 'borrowed',
       ];
       for (final w in added) {
         expect(answers, isNot(contains(w)), reason: w);
@@ -118,22 +129,28 @@ void main() {
       expect({for (final e in season) e.id: fnv(jsonEncode(e.toJson()..remove('glossary')))}, const {
         // Case 01 M4 matches the palace artwork (commit 3ea9964: letter 2
         // lines, option a feedback, 2 tips). See test/case01_m4_scope_test.dart.
-        'ep01': 3676363318,
-        'ep02': 828099214,
+        // Every case below, again (2026-10-16, approved): the season copy
+        // pass of commit 0c169cd (success lines, scenes, wrong-answer lines
+        // and tips that point to what was misread without the answer), with
+        // its follow-up — 01-M1 tip 2, 02-F '817' line and tip 2, 03-M3 tip 2,
+        // 05-M2 the Direction Note keeps its turns, 06-M3 lines, tip 2 and the
+        // ticket's raven mark, 06-F option a, 09-F umbrella line.
+        'ep01': 2429473966,
+        'ep02': 1023821448,
         // Wave 1 (2026-10-14): 03-M1 is searched; its tip 2 reads the place
         // words. Wave 1.1: the report says 'I noticed three things in the
         // gallery' (not all on the floor). Wave 1.2: 'GALLERY 8' in its title
         // never breaks (a no-break space). See test/case03_investigation_test.dart.
-        'ep03': 2931193291,
-        'ep04': 2214622234,
-        'ep05': 2839864243,
-        'ep06': 2037077153,
-        'ep07': 623140760,
-        'ep08': 3200728483,
-        'ep09': 253575133,
-        'ep10': 3844691840,
-        'ep11': 757361312,
-        'ep12': 3707602319,
+        'ep03': 494843145,
+        'ep04': 3227171614,
+        'ep05': 3809709994,
+        'ep06': 878804669,
+        'ep07': 923859634,
+        'ep08': 932948487,
+        'ep09': 3984906767,
+        'ep10': 1240895729,
+        'ep11': 2763911661,
+        'ep12': 3222189086,
       });
     });
   });
@@ -186,8 +203,9 @@ void main() {
         expect(find.text('Not quite!'), findsOneWidget);
         final line = byId('ep05').missionById('ep05_m2')!.orderFeedback!;
         expect(findReadable(line), findsOneWidget);
-        // "...two rights, yes! But the order is not right." — the last "right".
-        await t.tapOnText(find.textRange.ofSubstring('right').last);
+        // "You have the right number of left and right turns…" — the first
+        // "right" (맞는), the sense the line is about.
+        await t.tapOnText(find.textRange.ofSubstring('right').first);
         await wait(t, const Duration(milliseconds: 600));
         expect(find.text('= ${byId('ep05').meaningOf('right')}'), findsOneWidget);
         await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));

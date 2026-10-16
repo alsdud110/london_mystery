@@ -224,7 +224,7 @@ const Map<String, LearningObjective> season1Learning = {
     level: LearningLevel.comprehension,
     skill: LanguageSkill.vocabulary,
     objective: '두 날의 인물 묘사(tall/short, man/woman …)를 비교해 다른 점을 센다.',
-    expressions: ['A tall man', 'A short woman', 'How many things are different?'],
+    expressions: ['A tall man', 'A short woman', 'How many are different?'],
   ),
   'ep06_final': LearningObjective(
     dependency: LanguageDependency.helpful,

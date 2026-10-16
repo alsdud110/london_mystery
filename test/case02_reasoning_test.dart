@@ -140,7 +140,12 @@ void main() {
       final ep03 = byId('ep03');
       expect(ep03.intro.join(' '), allOf(contains('9:18'), contains('Gallery 8'), contains('one minute too late')));
       expect(ep03.missionById('ep03_m1')!.location, 'GALLERY 8');
-      expect(byId('ep06').missionById('ep06_m3')!.transition.join(' '), contains('17, like 8:17'));
+      // Case 06's seat 17 points back to 8:17 for the child to connect: the
+      // scene hints at the 17 and never spells the link out (approved
+      // 2026-10-16).
+      final ticket = byId('ep06').missionById('ep06_m3')!.transition.join(' ');
+      expect(ticket, allOf(contains('seat 17'), contains('the number 17 seem familiar')));
+      expect(ticket, isNot(contains('8:17')), reason: 'the link is the child\'s to make');
       final realGear = byId('ep12').missionById('ep12_m1')!;
       expect(realGear.letter, allOf(contains('raven stamp'), contains('Case 02')));
       // Case 02's post-case still confirms the message and the raven.

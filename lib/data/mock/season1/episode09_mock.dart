@@ -222,7 +222,8 @@ const Map<String, dynamic> episode09Json = {
     'prompt': 'IN THE ___',
     'answer': 'HAT',
     'feedback': {
-      'UMBRELLA': "Check who owned the key, not just who borrowed it. Does that point to Anna?",
+      // Never spells the answer by chance (no "that", "what"): see type_b_cases_test.
+      'UMBRELLA': "Anna borrowed the key, but the note says WHOSE key you used. Was it Anna's own key?",
       'RED UMBRELLA': "Anna's thing is red. But the note says the one WHOSE key you used: was it Anna's key?",
       'BAG': "The green bag is Ben's. Did Ben's key open the jewel case?",
       'GREEN BAG': "This is Ben's bag. Whose key opened the jewel case?",
@@ -289,5 +290,7 @@ const Map<String, dynamic> episode09Json = {
     'hiding': '숨기고 있는',
     'prize': '상, 목표물',
     'counts': '세다, 포함하다',
+    // The final's umbrella line: using a key is not owning it.
+    'borrowed': '빌렸다',
   },
 };
