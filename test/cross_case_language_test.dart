@@ -180,7 +180,7 @@ void main() {
         expect(find.textContaining('before the Edinburgh train'), findsOneWidget);
         // The board, one line longer, still reads on the letter sheet.
         await tapText(t, 'TRY AGAIN', after: const Duration(milliseconds: 600));
-        await tapText(t, 'Letter', after: const Duration(milliseconds: 800));
+        await tapText(t, 'Reread Letter', after: const Duration(milliseconds: 800));
         expect(findReadable('after the train from Edinburgh."'), findsNothing, reason: 'one letter, many lines');
         expect(find.textContaining('10:15', findRichText: true), findsWidgets);
         await capture(t, 'phase4_board_letter_$tag');
@@ -190,7 +190,7 @@ void main() {
       testWidgets("$tag: Case 11 Mission 03, the first tip points back to Case 04's words", (t) async {
         final play = MissionPlay();
         await play.openPuzzle(t, size, 'ep11_m3');
-        await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
+        await tapText(t, 'Get a Free Hint', after: const Duration(milliseconds: 500));
         await takeTipFromSheet(t);
         expect(find.textContaining('never sleeps'), findsOneWidget);
         expect(t.takeException(), isNull);

@@ -200,8 +200,8 @@ void main() {
         await reveal(t, find.text('CHECK ANSWER'));
         await capture(t, 'ep09_final_puzzle_$tag');
         for (var i = 0; i < fin.hints.length; i++) {
-          await reveal(t, find.text('GET A TIP'));
-          await t.tap(find.text('GET A TIP'));
+          await reveal(t, hintAction(upper: true));
+          await t.tap(hintAction(upper: true));
           await wait(t, const Duration(milliseconds: 700));
           await takeTipFromSheet(t);
         }

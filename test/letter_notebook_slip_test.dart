@@ -79,11 +79,11 @@ void main() {
       await wait(t, const Duration(milliseconds: 1200));
       // Case 01 M1 has longer options (TYPE B): on a small phone the tip
       // link sits below them, a scroll away.
-      await reveal(t, find.text('Get a tip'));
-      expect(find.text('Get a tip'), findsOneWidget, reason: 'on the puzzle');
+      await reveal(t, find.text('Get a Free Hint'));
+      expect(find.text('Get a Free Hint'), findsOneWidget, reason: 'on the puzzle');
 
       Future<void> open() async {
-        await t.tap(find.text('Letter'));
+        await t.tap(find.text('Reread Letter'));
         await wait(t, const Duration(milliseconds: 700));
         expect(find.byType(LetterCard), findsOneWidget);
       }
@@ -102,8 +102,8 @@ void main() {
       await t.tap(find.text('BACK TO THE PUZZLE'));
       await wait(t, const Duration(milliseconds: 700));
       expect(find.byType(BottomSheet), findsNothing);
-      await reveal(t, find.text('Get a tip'));
-      expect(find.text('Get a tip'), findsOneWidget, reason: 'back on the puzzle');
+      await reveal(t, find.text('Get a Free Hint'));
+      expect(find.text('Get a Free Hint'), findsOneWidget, reason: 'back on the puzzle');
 
       await closesThreeWays(t, open, find.byType(LetterCard));
     });
@@ -120,7 +120,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 1200));
 
       Future<void> open() async {
-        final button = find.text('Letter');
+        final button = find.text('Reread Letter');
         await t.scrollUntilVisible(button, 300, scrollable: find.byType(Scrollable).first);
         await wait(t, const Duration(milliseconds: 300));
         await t.tap(button);

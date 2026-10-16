@@ -283,8 +283,8 @@ void main() {
       }
       await capture(t, '${fin.id}_small_pass_cards_$tag');
       for (var i = 0; i < fin.hints.length; i++) {
-        await reveal(t, find.text('GET A TIP'));
-        await t.tap(find.text('GET A TIP'));
+        await reveal(t, hintAction(upper: true));
+        await t.tap(hintAction(upper: true));
         await wait(t, const Duration(milliseconds: 600));
         await takeTipFromSheet(t);
       }

@@ -22,6 +22,9 @@ enum InkGlyph {
   menu,
   down,
 
+  /// A small fold mark (points down: tap to open; turned up: to fold).
+  chevron,
+
   // Investigation
   search,
   notebook,
@@ -348,6 +351,8 @@ class _InkGlyphPainter extends CustomPainter {
       case InkGlyph.down:
         line(12, 4, 12, 19);
         poly(const [Offset(7, 14), Offset(12, 19), Offset(17, 14)]);
+      case InkGlyph.chevron:
+        poly(const [Offset(7, 9.5), Offset(12, 14.5), Offset(17, 9.5)]);
       case InkGlyph.clock:
         canvas.drawCircle(const Offset(12, 12), 8.5, p);
         line(12, 12, 12, 7);

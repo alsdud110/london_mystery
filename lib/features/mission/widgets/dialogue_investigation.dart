@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +15,6 @@ import '../../../widgets/art_assets.dart';
 import '../../../widgets/detective_tips.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
-import '../../../widgets/guided_action_indicator.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/paper.dart';
 import '../../../widgets/paper_background.dart';
@@ -29,8 +29,9 @@ import '../../game/game_providers.dart';
 /// What was asked and heard lives in [progress], kept by the page that
 /// shows the talk (going back to the place and in again keeps it); it is
 /// not saved: after a restart the talk begins again. Once two statements
-/// are linked that answer the deduction, [onComplete] is called once with
-/// the scene's answer (the mission's puzzle answer).
+/// that answer the deduction are matched, and what is still to be found
+/// after it is heard, [onComplete] is called once with the scene's answer
+/// (the mission's puzzle answer).
 class DialogueInvestigation extends ConsumerStatefulWidget {
   const DialogueInvestigation({
     super.key,
@@ -65,90 +66,73 @@ class DialogueInvestigation extends ConsumerStatefulWidget {
 }
 
 class _DialogueInvestigationState extends ConsumerState<DialogueInvestigation> {
-  bool _solved = false;
   bool _completed = false;
+
+  /// Everything is found (the deduction made, and what was still to find):
+  /// DESCRIPTION RECORDED, and the detective goes on with CONTINUE.
+  bool _finishing = false;
 
   /// The statements needed to compare were just heard (on this page): the
   /// COMPARE button is shown once with a little gold, until it is used.
   bool _ready = false;
 
-  /// Comparing is open: nothing on the talk is pointed at under it.
-  bool _comparing = false;
-
-  /// What the guide arrow can point at (see [_guide]).
-  final _lineupLink = GuideLink();
-  final _carryLink = GuideLink();
-  final _compareLink = GuideLink();
+  /// Choosing from the prints arriving: the chosen portrait flies to its
+  /// place in the talk ([_flight], from where it was), the rest fade away.
+  final _stackKey = GlobalKey();
+  late final Map<String, GlobalKey> _printKeys = {for (final s in widget.scene.speakers) s.id: GlobalKey()};
+  final _flying = ValueNotifier<String?>(null);
+  Rect? _flight;
 
   DialogueProgress get _p => widget.progress;
 
-  /// Another witness is the next thing (one was heard on the topic, the one
-  /// talked to has told it, comparing is not yet the thing): every witness
-  /// not asked yet is marked alike — whom to ask is the detective's, and
-  /// the one already asked is never pointed at.
-  bool get _inviteOthers {
-    if (_completed || _comparing || _p.speakerId == null) return false;
-    final scene = widget.scene;
-    final stories = scene.comparable(_p.heard);
-    final canCompare = scene.canCompare(_p.heard);
-    final different = canCompare && _p.differentAt == stories.length;
-    return stories.isNotEmpty && (!canCompare || different) && _p.hasAsked(_p.speakerId!, scene.deduction.topic);
+  @override
+  void dispose() {
+    _flying.dispose();
+    super.dispose();
   }
 
-  /// The one next thing to point at, as far as the detective has got — a
-  /// place to act, never a witness or an answer: the people (arriving), the
-  /// mission's question (a witness not asked it yet), the witnesses' faces
-  /// (another witness is next), COMPARE (enough heard). Null: nothing.
-  ({String step, GuideLink link, GuideSide side, double along, Color color, Duration delay, bool span})? _guide() {
-    if (_completed || _comparing) return null;
-    final scene = widget.scene;
-    final topic = scene.deduction.topic;
-    final speaker = _p.speakerId;
-    if (speaker == null) {
-      final still = _p.introSeen || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
-      return (
-        step: 'lineup',
-        link: _lineupLink,
-        side: GuideSide.above,
-        along: 0,
-        color: AppColors.goldLight,
-        delay: still ? Duration.zero : const Duration(milliseconds: 1300),
-        // All three, none favoured: the middle print is not the one meant.
-        span: true,
-      );
+  /// Where [box] is on this page.
+  Rect? _onPage(RenderObject? box) {
+    final page = _stackKey.currentContext?.findRenderObject();
+    if (box is! RenderBox || page is! RenderBox || !box.attached || !box.hasSize) return null;
+    return MatrixUtils.transformRect(box.getTransformTo(page), Offset.zero & box.size);
+  }
+
+  /// The talk's portrait, where it is laid out (null: not yet).
+  Rect? _portraitPlace() {
+    RenderObject? found;
+    void visit(Element e) {
+      if (e.widget.key == const ValueKey('talk-portrait')) found = e.findRenderObject();
+      e.visitChildren(visit);
     }
-    final stories = scene.comparable(_p.heard);
-    final canCompare = scene.canCompare(_p.heard);
-    final different = canCompare && _p.differentAt == stories.length;
-    if (canCompare && !different) {
-      // After the gold of COMPARE coming in has settled.
-      return (
-        step: 'compare-${stories.length}',
-        link: _compareLink,
-        side: GuideSide.above,
-        along: 0,
-        color: AppColors.goldDeep,
-        delay: _ready ? const Duration(milliseconds: 700) : Duration.zero,
-        span: false,
-      );
+
+    _stackKey.currentContext?.visitChildElements(visit);
+    return _onPage(found);
+  }
+
+  /// A print chosen arriving: the talk begins, the portrait flying in (at
+  /// once with motion reduced). One at a time: taps meanwhile wait.
+  void _talkFromPrint(String id) {
+    if (_flying.value != null || _p.speakerId != null) return;
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final from = still ? null : _onPage(_printKeys[id]!.currentContext?.findRenderObject());
+    if (from != null) {
+      _flying.value = id;
+      _flight = from;
     }
-    if (!_p.hasAsked(speaker, topic)) {
-      // Between the first two faces above it: never on a face or a name.
-      return (
-        step: 'ask-$speaker',
-        link: _carryLink,
-        side: GuideSide.above,
-        along: -0.28,
-        color: AppColors.goldDeep,
-        delay: Duration.zero,
-        span: false,
-      );
-    }
-    return null;
+    _talkTo(id);
+  }
+
+  void _landed() {
+    if (!mounted) return;
+    _flying.value = null;
+    setState(() => _flight = null);
   }
 
   void _talkTo(String id) {
-    if (_completed) return;
+    if (_completed || _finishing) return;
+    // A portrait in the air: it lands first.
+    if (_flying.value != null && _p.speakerId != null) return;
     if (_p.speakerId == id && _p.questionId == null) return;
     playUiTap(context, TapRole.select);
     setState(() {
@@ -159,9 +143,9 @@ class _DialogueInvestigationState extends ConsumerState<DialogueInvestigation> {
   }
 
   void _ask(String questionId) {
-    if (_completed || _p.speakerId == null) return;
-    // Comparing opens when two witnesses have said what he carried (matching
-    // or not: telling whether they match is the detective's).
+    if (_completed || _finishing || _p.speakerId == null) return;
+    // Comparing opens once two witnesses have said something (about
+    // anything: sorting out what matches is the detective's).
     final before = widget.scene.canCompare(_p.heard);
     setState(() {
       _p.ask(widget.scene, questionId);
@@ -174,6 +158,20 @@ class _DialogueInvestigationState extends ConsumerState<DialogueInvestigation> {
       playUiTap(context, TapRole.select);
     }
     widget.onChanged();
+    // The deduction made, the last thing found: recorded; on with CONTINUE.
+    if (_p.solved && widget.scene.described(_p.heard)) _wrapUp();
+  }
+
+  void _wrapUp() {
+    if (_finishing || _completed) return;
+    setState(() => _finishing = true);
+  }
+
+  /// The mission's answer, once (CONTINUE, however often it is tapped).
+  void _complete() {
+    if (_completed || !mounted) return;
+    _completed = true;
+    widget.onComplete(widget.scene.deduction.answer);
   }
 
   Future<void> _notes() async {
@@ -188,61 +186,55 @@ class _DialogueInvestigationState extends ConsumerState<DialogueInvestigation> {
     );
   }
 
-  Future<void> _tip() async {
-    if (await widget.onHint() && mounted) {
-      // The tip is written with the statements, where it is read.
-      await showDialogueNotes(
-        context,
-        scene: widget.scene,
-        heard: _p.heard,
-        hints: widget.hints,
-        hintsShown: widget.hintsShown + 1,
-      );
-    }
-  }
+  /// A hint opened is written in the panel, under the questions (the talk
+  /// stays as it is).
+  Future<void> _tip() => widget.onHint();
 
-  void _toggleOthers() {
-    playUiTap(context, TapRole.select);
-    setState(() => _p.othersOpen = !_p.othersOpen);
+  /// The words of what is on the screen now, each with its meaning on a tap
+  /// (the same word cards as anywhere; here they are listed, not dotted, so
+  /// no word in the talk looks like a clue).
+  Future<void> _words() {
+    final scene = widget.scene;
+    final speaker = _p.speakerId == null ? null : scene.speaker(_p.speakerId!);
+    final line = speaker == null
+        ? null
+        : (_p.questionId == null ? speaker.greeting : speaker.answers[_p.questionId]!.line);
+    final text = [
+      _p.solved ? scene.deduction.thenGoal : scene.goal,
+      if (speaker == null) scene.how,
+      ?line,
+      if (speaker != null)
+        for (final q in scene.questions) q.text,
+    ].join(' ');
+    return showTalkWords(context, ref, text);
   }
 
   Future<void> _compare() async {
-    if (_completed) return;
-    setState(() {
-      _ready = false;
-      _comparing = true;
-    });
+    if (_completed || _finishing || _p.solved) return;
+    setState(() => _ready = false);
     ref.read(audioServiceProvider).play(GameSound.paperRustle);
-    final stories = widget.scene.comparable(_p.heard);
+    var solved = false;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       shape: paperSheetShape,
       showDragHandle: false,
-      builder: (context) => _CompareSheet(
-        scene: widget.scene,
-        stories: stories,
-        onSolved: () => _solved = true,
-        // Rightly found different, with no one else to compare them with:
-        // the next thing is another witness (until one more is heard).
-        onDifferent: () => _p.differentAt = stories.length,
-      ),
+      builder: (context) => _CompareSheet(scene: widget.scene, heard: [..._p.heard], onSolved: () => solved = true),
     );
-    if (!mounted) return;
-    setState(() => _comparing = false);
-    // Matched: the answer, once (also when the sheet was closed early).
-    if (_solved && !_completed) {
-      _completed = true;
-      widget.onComplete(widget.scene.deduction.answer);
-    }
+    if (!mounted || !solved) return;
+    // Matched (also when the sheet was closed early): recorded if nothing is
+    // left to find (on with CONTINUE); else what is left is the next thing.
+    setState(() => _p.solved = true);
+    widget.onChanged();
+    if (widget.scene.described(_p.heard)) _wrapUp();
   }
 
   @override
   Widget build(BuildContext context) {
     final scene = widget.scene;
-    final canCompare = scene.canCompare(_p.heard);
-    final guide = _guide();
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     return Stack(
+      key: _stackKey,
       fit: StackFit.expand,
       children: [
         PlaceScenery.file(scene.background),
@@ -251,55 +243,59 @@ class _DialogueInvestigationState extends ConsumerState<DialogueInvestigation> {
           children: [
             Expanded(
               child: AnimatedSwitcher(
-                duration: (MediaQuery.maybeDisableAnimationsOf(context) ?? false)
-                    ? Duration.zero
-                    : const Duration(milliseconds: 220),
+                // Arriving → talking: as long as the portrait's flight, the
+                // rest fading out and the talk in; between witnesses, quicker.
+                duration: still ? Duration.zero : Duration(milliseconds: _flight != null ? 350 : 220),
                 child: _p.speakerId == null
                     ? _Arrival(
                         key: const ValueKey('talk-intro'),
                         scene: scene,
                         instant: _p.introSeen,
-                        lineupLink: _lineupLink,
-                        onTalkTo: _talkTo,
+                        printKeys: _printKeys,
+                        flying: _flying,
+                        onTalkTo: _talkFromPrint,
                       )
                     : _Conversation(
                         key: ValueKey('talk-${_p.speakerId}'),
                         scene: scene,
+                        goal: _p.solved ? scene.deduction.thenGoal : scene.goal,
                         speaker: scene.speaker(_p.speakerId!),
                         question: _p.questionId == null
                             ? null
                             : scene.questions.firstWhere((q) => q.id == _p.questionId),
                         fresh: _p.fresh,
+                        recorded: _p.questionId != null &&
+                            _p.heard.contains(scene.speaker(_p.speakerId!).answers[_p.questionId]!.statementId),
+                        flying: _flying,
                       ),
               ),
             ),
             _TalkPanel(
               scene: scene,
               progress: _p,
-              canCompare: canCompare,
               ready: _ready,
+              finishing: _finishing,
+              flying: _flying,
+              onContinue: _complete,
               tipLabel: nextTipLabel(widget.hints, widget.hintsShown),
-              carryLink: _carryLink,
-              invite: _inviteOthers,
-              compareLink: _compareLink,
+              hints: widget.hints,
+              hintsShown: widget.hintsShown,
               onTalkTo: _talkTo,
               onAsk: _ask,
-              onToggleOthers: _toggleOthers,
               onCompare: _compare,
               onNotes: _notes,
+              onWords: _words,
               onTip: _tip,
             ),
           ],
         ),
-        if (guide != null)
-          GuidedActionIndicator(
-            key: ValueKey('guide-${guide.step}'),
-            link: guide.link,
-            side: guide.side,
-            along: guide.along,
-            color: guide.color,
-            delay: guide.delay,
-            span: guide.span,
+        if (_flight != null && _p.speakerId != null)
+          _PortraitFlight(
+            key: ValueKey('flight-${_p.speakerId}'),
+            speaker: scene.speaker(_p.speakerId!),
+            from: _flight!,
+            to: _portraitPlace,
+            onDone: _landed,
           ),
       ],
     );
@@ -312,21 +308,27 @@ class _DialogueInvestigationState extends ConsumerState<DialogueInvestigation> {
 /// then the three people in a row, each one a print to tap and talk to —
 /// the only way to choose here (the panel's small faces come with the
 /// talk). The lines come in once (about a second); coming back shows them
-/// at once.
-class _Arrival extends StatelessWidget {
+/// at once. The three TALK tags glow softly together, the same for each,
+/// until a witness is chosen (still with motion reduced: a steady gold).
+class _Arrival extends StatefulWidget {
   const _Arrival({
     super.key,
     required this.scene,
     required this.instant,
-    required this.lineupLink,
+    required this.printKeys,
+    required this.flying,
     required this.onTalkTo,
   });
 
   final DialogueScene scene;
   final bool instant;
 
-  /// The row of people, for the guide arrow (the whole row: never one).
-  final GuideLink lineupLink;
+  /// Each print's picture, by speaker id: where a chosen portrait flies from.
+  final Map<String, GlobalKey> printKeys;
+
+  /// The witness whose portrait is flying to the talk (their print here is
+  /// left out meanwhile, so it is never seen twice).
+  final ValueListenable<String?> flying;
   final ValueChanged<String> onTalkTo;
 
   /// The lines keep about this much height; the row of people takes the
@@ -336,19 +338,50 @@ class _Arrival extends StatelessWidget {
   static const _lineupMost = 290.0;
 
   @override
+  State<_Arrival> createState() => _ArrivalState();
+}
+
+class _ArrivalState extends State<_Arrival> with SingleTickerProviderStateMixin {
+  /// The TALK tags' glow, one for all three: up and down, about 2 s a round.
+  late final AnimationController _glow = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    if (still) {
+      _glow
+        ..stop()
+        ..value = 1;
+    } else if (!_glow.isAnimating) {
+      _glow.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _glow.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final still = instant || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
+    final scene = widget.scene;
+    final still = widget.instant || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
     return InkSurface(
       night: true,
       child: LayoutBuilder(
         builder: (context, box) {
-          // Never taller than the prints themselves (they fill their width):
-          // the row is the people, with no empty band over them — what the
-          // guide arrow points at is them.
+          // Never taller than the prints themselves (they fill their width),
+          // their names and TALK: the row is the people, no empty band over
+          // them.
           final printWidth = (box.maxWidth - 2 * AppSpace.md - 6 * AppSpace.xs) / scene.speakers.length;
-          final nameRoom = AppSpace.sm + MediaQuery.textScalerOf(context).scale(14) * 1.5;
+          final nameRoom = AppSpace.sm + MediaQuery.textScalerOf(context).scale(14) * 1.5 + AppSpace.xs + _TalkTag.height;
           final natural = printWidth / ArtAssets.witnessPortraitAspect + nameRoom + AppSpace.md;
-          final lineup = math.min((box.maxHeight - _linesRoom).clamp(_lineupLeast, _lineupMost), natural);
+          final lineup = math.min(
+            (box.maxHeight - _Arrival._linesRoom).clamp(_Arrival._lineupLeast, _Arrival._lineupMost),
+            natural,
+          );
           return Column(
             children: [
               Expanded(child: _lines(still)),
@@ -359,19 +392,22 @@ class _Arrival extends StatelessWidget {
                   height: lineup,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(AppSpace.md, 0, AppSpace.md, AppSpace.md),
-                    child: GuideTarget(
-                      link: lineupLink,
-                      child: Row(
-                        children: [
-                          for (final s in scene.speakers)
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
-                                child: _LineupPrint(speaker: s, onTap: () => onTalkTo(s.id)),
+                    child: Row(
+                      children: [
+                        for (final s in scene.speakers)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
+                              child: _LineupPrint(
+                                speaker: s,
+                                pictureKey: widget.printKeys[s.id]!,
+                                flying: widget.flying,
+                                glow: _glow,
+                                onTap: () => widget.onTalkTo(s.id),
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -384,6 +420,7 @@ class _Arrival extends StatelessWidget {
   }
 
   Widget _lines(bool still) {
+    final scene = widget.scene;
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.lg, AppSpace.screen, AppSpace.md),
@@ -401,21 +438,21 @@ class _Arrival extends StatelessWidget {
             const SizedBox(height: AppSpace.sm),
             _FadeUp(
               delay: still ? Duration.zero : const Duration(milliseconds: 300),
-              child: GlossaryText(
+              // Plain words (no dotted ones that look like clues): their
+              // meanings are under WORDS.
+              child: Text(
                 scene.goal,
                 key: const ValueKey('talk-goal'),
                 textAlign: TextAlign.center,
-                linkColor: AppColors.goldLight,
                 style: AppText.title(size: 23, color: AppColors.paperLight),
               ),
             ),
             const SizedBox(height: AppSpace.sm),
             _FadeUp(
               delay: still ? Duration.zero : const Duration(milliseconds: 650),
-              child: GlossaryText(
+              child: Text(
                 scene.how,
                 textAlign: TextAlign.center,
-                linkColor: AppColors.goldLight,
                 style: AppText.bodyText(size: 17, color: AppColors.paperLight.withValues(alpha: 0.85)),
               ),
             ),
@@ -426,12 +463,21 @@ class _Arrival extends StatelessWidget {
   }
 }
 
-/// One of the people in the arrival's row: their print, their name under
-/// it; a tap talks to them.
+/// One of the people in the arrival's row: their print, their name and
+/// TALK under it (what a tap does, the same for each); a tap talks to them.
 class _LineupPrint extends StatelessWidget {
-  const _LineupPrint({required this.speaker, required this.onTap});
+  const _LineupPrint({
+    required this.speaker,
+    required this.pictureKey,
+    required this.flying,
+    required this.glow,
+    required this.onTap,
+  });
 
   final DialogueSpeaker speaker;
+  final GlobalKey pictureKey;
+  final ValueListenable<String?> flying;
+  final Animation<double> glow;
   final VoidCallback onTap;
 
   @override
@@ -449,16 +495,14 @@ class _LineupPrint extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Flexible(
-              child: AspectRatio(
-                aspectRatio: ArtAssets.witnessPortraitAspect,
-                child: PaperSheet(
-                  padding: const EdgeInsets.all(AppSpace.xs),
-                  child: Image.asset(
-                    speaker.portrait,
-                    fit: BoxFit.contain,
-                    excludeFromSemantics: true,
-                    errorBuilder: (context, error, stack) => const SizedBox.expand(),
-                  ),
+              child: ValueListenableBuilder<String?>(
+                valueListenable: flying,
+                // Flying to the talk: the print is the one in the air.
+                builder: (context, id, child) => Opacity(opacity: id == speaker.id ? 0 : 1, child: child),
+                child: AspectRatio(
+                  key: pictureKey,
+                  aspectRatio: ArtAssets.witnessPortraitAspect,
+                  child: _PrintedPortrait(speaker: speaker),
                 ),
               ),
             ),
@@ -471,6 +515,8 @@ class _LineupPrint extends StatelessWidget {
                 style: AppText.mark(color: AppColors.goldLight, size: 14),
               ),
             ),
+            const SizedBox(height: AppSpace.xs),
+            _TalkTag(glow: glow),
           ],
         ),
       ),
@@ -478,9 +524,128 @@ class _LineupPrint extends StatelessWidget {
   }
 }
 
+/// TALK, under each person arriving: what tapping them does. Its gold edge
+/// and letters brighten and soften with [glow] (never its size or place).
+class _TalkTag extends StatelessWidget {
+  const _TalkTag({required this.glow});
+
+  final Animation<double> glow;
+
+  static const height = 28.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1);
+    return AnimatedBuilder(
+      animation: glow,
+      builder: (context, _) {
+        final t = Curves.easeInOut.transform(glow.value);
+        return Container(
+          key: const ValueKey('talk-tag'),
+          height: height,
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppRadius.button),
+            color: AppColors.goldLight.withValues(alpha: 0.06 + 0.08 * t),
+            border: Border.all(color: AppColors.goldLight.withValues(alpha: 0.5 + 0.5 * t), width: AppLine.rule),
+            boxShadow: [BoxShadow(color: AppColors.goldLight.withValues(alpha: 0.28 * t), blurRadius: 8)],
+          ),
+          child: Text(
+            'TALK',
+            textScaler: scaler,
+            style: AppText.eyebrow(color: AppColors.goldLight.withValues(alpha: 0.7 + 0.3 * t)),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// A witness's picture on its sheet of parchment (in the row arriving, in
+/// the talk, and flying between them — the same everywhere).
+class _PrintedPortrait extends StatelessWidget {
+  const _PrintedPortrait({required this.speaker, super.key});
+
+  final DialogueSpeaker speaker;
+
+  @override
+  Widget build(BuildContext context) {
+    return PaperSheet(
+      padding: const EdgeInsets.all(AppSpace.xs),
+      child: Image.asset(
+        speaker.portrait,
+        fit: BoxFit.contain,
+        excludeFromSemantics: true,
+        errorBuilder: (context, error, stack) => const SizedBox.expand(),
+      ),
+    );
+  }
+}
+
+/// A chosen witness's portrait flying from their print arriving to its place
+/// in the talk ([to], found once the talk is laid out), growing as it goes;
+/// [onDone] when it lands (at once when there is nowhere to land).
+class _PortraitFlight extends StatefulWidget {
+  const _PortraitFlight({super.key, required this.speaker, required this.from, required this.to, required this.onDone});
+
+  final DialogueSpeaker speaker;
+  final Rect from;
+  final Rect? Function() to;
+  final VoidCallback onDone;
+
+  static const duration = Duration(milliseconds: 400);
+
+  @override
+  State<_PortraitFlight> createState() => _PortraitFlightState();
+}
+
+class _PortraitFlightState extends State<_PortraitFlight> with SingleTickerProviderStateMixin {
+  late final AnimationController _move = AnimationController(vsync: this, duration: _PortraitFlight.duration);
+  Rect? _to;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _to = widget.to();
+      if (_to == null) {
+        widget.onDone();
+        return;
+      }
+      setState(() {});
+      _move.forward().whenComplete(() {
+        if (mounted) widget.onDone();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _move.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _move,
+      builder: (context, child) {
+        final rect = Rect.lerp(widget.from, _to ?? widget.from, Curves.easeInOutCubic.transform(_move.value))!;
+        return Positioned.fromRect(rect: rect, child: child!);
+      },
+      child: IgnorePointer(
+        child: _PrintedPortrait(key: const ValueKey('portrait-flight'), speaker: widget.speaker),
+      ),
+    );
+  }
+}
+
 /// The person talked to: their portrait (a print on parchment), their name
 /// plate, and what they just said, under what they were asked. A statement
-/// heard for the first time is marked NEW STATEMENT.
+/// that is written down is marked so — STATEMENT RECORDED the first time,
+/// IN YOUR NOTES after — the same for every statement, whatever it says.
 ///
 /// A tall space stacks the portrait over the words; otherwise they stand
 /// side by side, the portrait as tall as the space allows (never more than
@@ -490,15 +655,27 @@ class _Conversation extends StatelessWidget {
   const _Conversation({
     super.key,
     required this.scene,
+    required this.goal,
     required this.speaker,
     required this.question,
     required this.fresh,
+    required this.recorded,
+    required this.flying,
   });
 
   final DialogueScene scene;
+
+  /// The witness whose portrait is flying in (theirs here waits unseen).
+  final ValueListenable<String?> flying;
+
+  /// What the detective is finding out now (the mission, or what is left).
+  final String goal;
   final DialogueSpeaker speaker;
   final DialogueQuestion? question;
   final String? fresh;
+
+  /// The answer shown is a statement in the notes.
+  final bool recorded;
 
   /// From this height the portrait stands over the words, leaving them about
   /// [_wordsRoom]; below it, beside them.
@@ -508,24 +685,32 @@ class _Conversation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final answer = question == null ? null : speaker.answers[question!.id];
-    _Speech words({required bool beside}) => _Speech(
-      speaker: speaker,
-      question: question,
-      line: answer?.line ?? speaker.greeting,
-      isNew: fresh != null && answer?.statementId == fresh,
-      beside: beside,
+    // The words come once the portrait flying in has landed.
+    Widget words({required bool beside}) => _AfterLanding(
+      flying: flying,
+      id: speaker.id,
+      delay: const Duration(milliseconds: 150),
+      child: _Speech(
+        speaker: speaker,
+        question: question,
+        line: answer?.line ?? speaker.greeting,
+        note: !recorded
+            ? null
+            : (fresh != null && answer?.statementId == fresh ? _Note.recorded : _Note.kept),
+        beside: beside,
+      ),
     );
     // The mission, one quiet line over the talk: what the questions are for.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _MissionStrip(goal: scene.goal),
+        _MissionStrip(goal: goal),
         Expanded(child: _scene(words)),
       ],
     );
   }
 
-  Widget _scene(_Speech Function({required bool beside}) words) {
+  Widget _scene(Widget Function({required bool beside}) words) {
     return LayoutBuilder(
       builder: (context, box) {
         const pad = AppSpace.lg;
@@ -540,7 +725,7 @@ class _Conversation extends StatelessWidget {
               children: [
                 SizedBox(
                   height: portraitHeight,
-                  child: _Portrait(speaker: speaker),
+                  child: _Portrait(speaker: speaker, flying: flying),
                 ),
                 const SizedBox(height: AppSpace.sm),
                 Expanded(child: words(beside: false)),
@@ -560,7 +745,7 @@ class _Conversation extends StatelessWidget {
               SizedBox(
                 width: portraitWidth,
                 height: portraitWidth / aspect,
-                child: _Portrait(speaker: speaker),
+                child: _Portrait(speaker: speaker, flying: flying),
               ),
               const SizedBox(width: AppSpace.md + 4),
               Expanded(
@@ -576,9 +761,10 @@ class _Conversation extends StatelessWidget {
 
 /// A portrait printed on parchment, whole (never cropped or stretched).
 class _Portrait extends StatelessWidget {
-  const _Portrait({required this.speaker});
+  const _Portrait({required this.speaker, required this.flying});
 
   final DialogueSpeaker speaker;
+  final ValueListenable<String?> flying;
 
   @override
   Widget build(BuildContext context) {
@@ -588,15 +774,11 @@ class _Portrait extends StatelessWidget {
       child: Center(
         child: AspectRatio(
           aspectRatio: ArtAssets.witnessPortraitAspect,
-          child: PaperSheet(
-            key: const ValueKey('talk-portrait'),
-            padding: const EdgeInsets.all(AppSpace.xs),
-            child: Image.asset(
-              speaker.portrait,
-              fit: BoxFit.contain,
-              excludeFromSemantics: true,
-              errorBuilder: (context, error, stack) => const SizedBox.expand(),
-            ),
+          // While it flies in from the print, the one in the air is seen.
+          child: ValueListenableBuilder<String?>(
+            valueListenable: flying,
+            builder: (context, id, child) => Opacity(opacity: id == speaker.id ? 0 : 1, child: child),
+            child: _PrintedPortrait(key: const ValueKey('talk-portrait'), speaker: speaker),
           ),
         ),
       ),
@@ -611,14 +793,16 @@ class _Speech extends StatelessWidget {
     required this.speaker,
     required this.question,
     required this.line,
-    required this.isNew,
+    required this.note,
     this.beside = false,
   });
 
   final DialogueSpeaker speaker;
   final DialogueQuestion? question;
   final String line;
-  final bool isNew;
+
+  /// How the answer is in the notes (null: it is not a statement).
+  final _Note? note;
 
   /// Beside the portrait: the words sit level with the person, and their
   /// card points to them.
@@ -627,6 +811,7 @@ class _Speech extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final isNew = note == _Note.recorded;
     final edge = isNew ? AppColors.gold : AppLine.faint();
     final edgeWidth = isNew ? AppLine.ink : AppLine.hairline;
     return Column(
@@ -669,11 +854,12 @@ class _Speech extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // NEW STATEMENT over the answer (always in sight); the
-                          // question asked is the one marked in the list below.
-                          if (isNew) ...[
+                          // STATEMENT RECORDED over the answer (always in sight),
+                          // alike for every statement; the question asked is the
+                          // one marked in the list below.
+                          if (note != null) ...[
                             Row(
-                              key: const ValueKey('new-statement'),
+                              key: ValueKey(isNew ? 'new-statement' : 'kept-statement'),
                               children: [
                                 const InkIcon(InkGlyph.pen, size: AppIconSize.tiny, color: AppColors.burgundy),
                                 const SizedBox(width: AppSpace.xs),
@@ -683,7 +869,7 @@ class _Speech extends StatelessWidget {
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      'NEW STATEMENT',
+                                      isNew ? 'STATEMENT RECORDED' : 'IN YOUR NOTES',
                                       maxLines: 1,
                                       style: AppText.eyebrow(color: AppColors.burgundy),
                                     ),
@@ -695,7 +881,7 @@ class _Speech extends StatelessWidget {
                           ],
                           // Beside the person with larger text, a little smaller:
                           // a long answer still reads whole in a short space.
-                          GlossaryText(
+                          Text(
                             '"$line"',
                             style: AppText.letter(
                               size: beside && MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 16 : 18,
@@ -725,6 +911,9 @@ class _Speech extends StatelessWidget {
     );
   }
 }
+
+/// How an answer is in the notes: written down just now, or already.
+enum _Note { recorded, kept }
 
 /// The small point on the left of a speech card, toward the speaker: paper
 /// filled, its two outer sides in the card's edge ink.
@@ -806,73 +995,73 @@ class _TalkPanel extends StatelessWidget {
   const _TalkPanel({
     required this.scene,
     required this.progress,
-    required this.canCompare,
     required this.ready,
+    required this.finishing,
+    required this.flying,
+    required this.onContinue,
     required this.tipLabel,
-    required this.carryLink,
-    required this.compareLink,
-    required this.invite,
+    required this.hints,
+    required this.hintsShown,
     required this.onTalkTo,
     required this.onAsk,
-    required this.onToggleOthers,
     required this.onCompare,
     required this.onNotes,
+    required this.onWords,
     required this.onTip,
   });
 
   final DialogueScene scene;
   final DialogueProgress progress;
-  final bool canCompare;
 
   /// Enough statements were just heard: COMPARE is shown with a little gold
   /// once.
   final bool ready;
+
+  /// Everything is found: DESCRIPTION RECORDED, VIEW WITNESS NOTES and
+  /// CONTINUE (the mission ends on CONTINUE).
+  final bool finishing;
+
+  /// The witness whose portrait is flying in: the questions come after.
+  final ValueListenable<String?> flying;
+  final VoidCallback onContinue;
   final String? tipLabel;
 
-  /// What the guide arrow can point at: the mission's question, COMPARE.
-  final GuideLink carryLink;
-  final GuideLink compareLink;
-
-  /// Mark every witness not asked yet alike (another witness is next).
-  final bool invite;
+  /// The hints opened so far: written under the questions, above the links.
+  final List<String> hints;
+  final int hintsShown;
   final ValueChanged<String> onTalkTo;
   final ValueChanged<String> onAsk;
-  final VoidCallback onToggleOthers;
   final VoidCallback onCompare;
   final VoidCallback onNotes;
+  final VoidCallback onWords;
   final VoidCallback onTip;
-
-  static const _counts = ['NO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'];
-
-  /// The guide arrow's room under a step's line: the arrow at rest, its
-  /// gap, and a bracket when it points at a whole row (its nod reaches into
-  /// the line's own margin).
-  static const _arrowRoom =
-      GuidedActionIndicator.length + 2 * GuidedActionIndicator.gap + GuidedActionIndicator.bracket + 1;
 
   @override
   Widget build(BuildContext context) {
     final speaker = progress.speakerId;
     final d = scene.deduction;
-    final stories = scene.comparable(progress.heard);
-    final witnesses = scene.witnessesHeard(progress.heard);
-    // Two stories rightly found different, nothing new heard since: the
-    // next thing is another witness, so COMPARE steps back.
-    final different = canCompare && progress.differentAt == stories.length;
-    // One next thing at a time (never who to ask): before a witness, choose
-    // one; after one on the topic, ask another; then compare.
-    final (String? mark, String? line) = switch (null) {
+    final heard = progress.heard.length;
+    final canCompare = !progress.solved && scene.canCompare(progress.heard);
+    final count = '$heard ${heard == 1 ? 'STATEMENT' : 'STATEMENTS'}';
+    // Where the detective has got and the one next thing to do, in words
+    // (never whom to ask, never which statement).
+    final (String? mark, String line) = switch (null) {
+      _ when finishing => ('DESCRIPTION RECORDED', d.doneLine),
+      _ when progress.solved => ('ONE MORE THING', d.thenHow),
       _ when speaker == null => (null, scene.guide),
-      _ when different => ('DIFFERENT STORIES', d.differentLine),
-      _ when canCompare => ('${_counts[math.min(stories.length, _counts.length - 1)]} STORIES COLLECTED', d.readyLine),
-      _ when witnesses > 0 => ('CLUE FOUND', d.foundLine),
-      _ => (null, null),
+      _ when canCompare => (count, d.readyLine),
+      _ when heard > 0 => (count, d.anotherLine),
+      _ => (null, d.askLine),
     };
-    final topic = scene.questions.firstWhere((q) => q.id == d.topic);
-    final others = [
-      for (final q in scene.questions)
-        if (q.id != d.topic) q,
-    ];
+    final first = [for (final q in scene.questions.take(2)) q];
+    final rest = [for (final q in scene.questions.skip(2)) q];
+    Widget question(DialogueQuestion q) => _QuestionChoice(
+          key: ValueKey('question-${q.id}'),
+          question: q,
+          asked: progress.hasAsked(speaker!, q.id),
+          current: progress.questionId == q.id,
+          onTap: () => onAsk(q.id),
+        );
     return ConstrainedBox(
       // Never more than about half the screen: the person and what they
       // say stay in sight (the rest of the panel scrolls).
@@ -892,103 +1081,135 @@ class _TalkPanel extends StatelessWidget {
             top: false,
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xs),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (line != null) _Status(mark: mark, line: line, guide: speaker == null),
-                  // Room for the guide arrow under a step's line, pointing at
-                  // what comes next (COMPARE, or the faces).
-                  if (mark != null) const SizedBox(height: _arrowRoom),
-                  // Comparing, the next thing once there is enough to compare.
-                  if (canCompare && !different) ...[
-                    GuideTarget(
-                      link: compareLink,
-                      child: _CompareButton(ready: ready, quiet: false, onPressed: onCompare),
-                    ),
-                    const SizedBox(height: AppSpace.xs),
-                  ],
-                  // Arriving, the people are chosen from their prints above;
-                  // talking, from their faces here.
-                  if (speaker != null) ...[
-                    Row(
-                      key: const ValueKey('talk-faces'),
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final s in scene.speakers)
-                          Expanded(
-                            child: _SpeakerChoice(
-                              speaker: s,
-                              chosen: s.id == speaker,
-                              found: progress.hasAsked(s.id, d.topic),
-                              invite: invite && !progress.hasAsked(s.id, d.topic),
-                              onTap: () => onTalkTo(s.id),
-                            ),
-                          ),
+              // The talk beginning: its questions come up softly from below.
+              child: AnimatedSwitcher(
+                duration: (MediaQuery.maybeDisableAnimationsOf(context) ?? false)
+                    ? Duration.zero
+                    : const Duration(milliseconds: 320),
+                switchInCurve: Curves.easeOutCubic,
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween(begin: const Offset(0, 0.06), end: Offset.zero).animate(animation),
+                    child: child,
+                  ),
+                ),
+                // What is going away takes no touch (a tap mid-change is
+                // never a tip or a word).
+                layoutBuilder: (current, previous) => Stack(
+                  alignment: Alignment.topCenter,
+                  children: [for (final w in previous) IgnorePointer(child: w), ?current],
+                ),
+                child: _AfterLanding(
+                  key: ValueKey(speaker == null ? 'panel-arriving' : 'panel-talking'),
+                  flying: flying,
+                  id: speaker,
+                  delay: const Duration(milliseconds: 60),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _Status(mark: mark, line: line, guide: speaker == null, extra: finishing ? d.notesLine : null),
+                      // All found: the notes to look at, and on.
+                      if (finishing) ...[
+                        const SizedBox(height: AppSpace.sm),
+                        GameButton(
+                          key: const ValueKey('view-witness-notes'),
+                          label: 'VIEW WITNESS NOTES',
+                          glyph: InkGlyph.notebook,
+                          singleLine: true,
+                          style: GameButtonStyle.outline,
+                          onPressed: onNotes,
+                        ),
+                        const SizedBox(height: AppSpace.sm),
+                        GameButton(
+                          key: const ValueKey('continue-investigation'),
+                          label: 'CONTINUE',
+                          arrow: true,
+                          singleLine: true,
+                          onPressed: onContinue,
+                        ),
+                        const SizedBox(height: AppSpace.sm),
                       ],
-                    ),
-                    const SizedBox(height: AppSpace.sm),
-                    // The mission's question first and largest; the others
-                    // are there to open, never in its way.
-                    GuideTarget(
-                      link: carryLink,
-                      child: _QuestionChoice(
-                        key: ValueKey('question-${topic.id}'),
-                        question: topic,
-                        lead: true,
-                        asked: progress.hasAsked(speaker, topic.id),
-                        current: progress.questionId == topic.id,
-                        onTap: () => onAsk(topic.id),
-                      ),
-                    ),
-                    _OthersToggle(open: progress.othersOpen, onTap: onToggleOthers),
-                    // Side by side: opening them leaves the person in sight.
-                    if (progress.othersOpen)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpace.xs),
-                        child: IntrinsicHeight(
+                      // Comparing, the one strong button once there is enough
+                      // to compare.
+                      if (canCompare) ...[
+                        _CompareButton(ready: ready, onPressed: onCompare),
+                        const SizedBox(height: AppSpace.sm),
+                      ],
+                      // Arriving, the people are chosen from their prints above;
+                      // talking, from their faces here (done: no more asking).
+                      if (speaker != null && !finishing) ...[
+                        Row(
+                          key: const ValueKey('talk-faces'),
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (final s in scene.speakers)
+                              Expanded(
+                                child: _SpeakerChoice(
+                                  speaker: s,
+                                  chosen: s.id == speaker,
+                                  spoken: scene.questions.any((q) => progress.hasAsked(s.id, q.id)),
+                                  onTap: () => onTalkTo(s.id),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpace.sm),
+                        // The questions, all alike: two side by side, then the rest.
+                        IntrinsicHeight(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              for (final q in others) ...[
-                                if (q != others.first) const SizedBox(width: AppSpace.sm),
-                                Expanded(
-                                  child: _QuestionChoice(
-                                    key: ValueKey('question-${q.id}'),
-                                    question: q,
-                                    asked: progress.hasAsked(speaker, q.id),
-                                    current: progress.questionId == q.id,
-                                    onTap: () => onAsk(q.id),
-                                  ),
-                                ),
+                              for (final q in first) ...[
+                                if (q != first.first) const SizedBox(width: AppSpace.sm),
+                                Expanded(child: question(q)),
                               ],
                             ],
                           ),
                         ),
-                      ),
-                  ],
-                  // Found different: comparing again waits below, quietly
-                  // (another witness is the next thing).
-                  if (different) ...[
-                    const SizedBox(height: AppSpace.xs),
-                    _CompareButton(ready: false, quiet: true, onPressed: onCompare),
-                  ],
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: AppSpace.sm,
-                    children: [
-                      if (speaker != null)
-                        InkTextButton(
-                          key: const ValueKey('open-statements'),
-                          label: 'Statements (${progress.heard.length})',
-                          glyph: InkGlyph.letter,
-                          onPressed: onNotes,
+                        for (final q in rest) ...[
+                          const SizedBox(height: AppSpace.sm),
+                          question(q),
+                        ],
+                        const SizedBox(height: AppSpace.xs),
+                      ],
+                      // The hints opened, on the panel (never over the talk);
+                      // always there, so a hint opened now unfolds in.
+                      if (!finishing) ...[
+                        if (hintsShown > 0) const SizedBox(height: AppSpace.xs),
+                        DetectiveTipNotes(
+                          key: const ValueKey('talk-hints'),
+                          hints: hints,
+                          revealed: hintsShown,
+                          compact: true,
                         ),
-                      if (tipLabel != null)
-                        InkTextButton(label: tipLabel!, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
+                      ],
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: AppSpace.xs,
+                        children: [
+                          // All found: VIEW WITNESS NOTES above says it; no tip needed.
+                          if (speaker != null && !finishing)
+                            InkTextButton(
+                              key: const ValueKey('open-statements'),
+                              label: 'Notes ($heard)',
+                              glyph: InkGlyph.notebook,
+                              onPressed: onNotes,
+                            ),
+                          InkTextButton(
+                            key: const ValueKey('open-words'),
+                            label: 'Words',
+                            glyph: InkGlyph.letter,
+                            onPressed: onWords,
+                          ),
+                          if (tipLabel != null && !finishing)
+                            InkTextButton(label: tipLabel!, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -999,13 +1220,16 @@ class _TalkPanel extends StatelessWidget {
 }
 
 /// Where the detective has got, and the next thing to do: a small mark
-/// (CLUE FOUND) over one short line. Arriving, the line alone ([guide]).
+/// (2 STATEMENTS) over one short line. Arriving, the line alone ([guide]).
 class _Status extends StatelessWidget {
-  const _Status({required this.mark, required this.line, required this.guide});
+  const _Status({required this.mark, required this.line, required this.guide, this.extra});
 
   final String? mark;
   final String line;
   final bool guide;
+
+  /// A second, quieter line (where what was found is kept).
+  final String? extra;
 
   @override
   Widget build(BuildContext context) {
@@ -1035,6 +1259,13 @@ class _Status extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppText.bodyText(size: guide ? 18 : 16, weight: FontWeight.w600, color: AppColors.navy),
             ),
+            if (extra != null)
+              Text(
+                extra!,
+                key: const ValueKey('talk-extra'),
+                textAlign: TextAlign.center,
+                style: AppText.bodyText(size: 15, color: AppColors.inkBrown),
+              ),
           ],
         ),
       ),
@@ -1042,68 +1273,22 @@ class _Status extends StatelessWidget {
   }
 }
 
-/// "Other questions": opens and closes the questions besides the mission's.
-class _OthersToggle extends StatelessWidget {
-  const _OthersToggle({required this.open, required this.onTap});
-
-  final bool open;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      expanded: open,
-      label: 'Other questions',
-      excludeSemantics: true,
-      child: InkWell(
-        key: const ValueKey('other-questions'),
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.button),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 44),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Other questions',
-                style: AppText.bodyText(size: 15, weight: FontWeight.w600, color: AppColors.royalBlue),
-              ),
-              const SizedBox(width: AppSpace.xs),
-              AnimatedRotation(
-                turns: open ? 0.5 : 0,
-                duration: (MediaQuery.maybeDisableAnimationsOf(context) ?? false)
-                    ? Duration.zero
-                    : const Duration(milliseconds: 180),
-                child: const InkIcon(InkGlyph.down, size: AppIconSize.tiny, color: AppColors.royalBlue),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// COMPARE STORIES. When it has just become possible ([ready]), it comes
-/// in once with a gold edge and a soft glow that settles (still with motion
-/// reduced: the gold edge only). [quiet]: comparing is not the next thing
-/// (the stories heard were found different), an outline.
+/// COMPARE TWO STATEMENTS. When it has just become possible ([ready]), it
+/// comes in once with a gold edge and a soft glow that settles (still with
+/// motion reduced: the gold edge only).
 class _CompareButton extends StatelessWidget {
-  const _CompareButton({required this.ready, required this.quiet, required this.onPressed});
+  const _CompareButton({required this.ready, required this.onPressed});
 
   final bool ready;
-  final bool quiet;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     final button = GameButton(
       key: const ValueKey('compare-statements'),
-      label: 'COMPARE STORIES',
+      label: 'COMPARE TWO STATEMENTS',
       glyph: InkGlyph.eye,
       singleLine: true,
-      style: quiet ? GameButtonStyle.outline : GameButtonStyle.navy,
       onPressed: onPressed,
     );
     if (!ready) return button;
@@ -1136,105 +1321,98 @@ class _CompareButton extends StatelessWidget {
 }
 
 /// A witness to choose: their face in a round frame, their name under it,
-/// a gold ring when they are the one talked to, and a green tick once they
-/// have told what the mission asks ([found]).
+/// a gold ring when they are the one talked to, and under the name what
+/// tapping does or has done — TALK, or SPOKEN TO once asked anything (the
+/// same for every witness, whatever they said).
 class _SpeakerChoice extends StatelessWidget {
   const _SpeakerChoice({
     required this.speaker,
     required this.chosen,
-    required this.found,
+    required this.spoken,
     required this.onTap,
-    this.invite = false,
   });
 
   final DialogueSpeaker speaker;
   final bool chosen;
-  final bool found;
-
-  /// One of the witnesses to ask next: a small still arrow over the face,
-  /// the same on each of them.
-  final bool invite;
+  final bool spoken;
   final VoidCallback onTap;
 
   static const size = 44.0;
 
   @override
   Widget build(BuildContext context) {
+    // A label under the face: it keeps its size with larger text.
+    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1);
     return Semantics(
       button: true,
       selected: chosen,
-      label: 'Talk to ${speaker.name.toLowerCase()}${found ? ', story heard' : (invite ? ', not asked yet' : '')}',
+      label: 'Talk to ${speaker.name.toLowerCase()}${spoken ? ', spoken to' : ''}',
       excludeSemantics: true,
       child: InkWell(
         key: ValueKey('speaker-${speaker.id}'),
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.button),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
-          child: Column(
-            children: [
-              SizedBox.square(
-                dimension: size + 6,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 180),
-                      width: size + 6,
-                      height: size + 6,
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: chosen ? AppColors.gold : AppLine.faint(0.3),
-                          width: chosen ? AppLine.ink + 1 : AppLine.rule,
-                        ),
-                      ),
-                      child: ClipOval(child: _Face(speaker: speaker)),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
+            child: Column(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: size + 6,
+                  height: size + 6,
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: chosen ? AppColors.gold : AppLine.faint(0.3),
+                      width: chosen ? AppLine.ink + 1 : AppLine.rule,
                     ),
-                    if (invite)
-                      Positioned(
-                        key: ValueKey('invite-${speaker.id}'),
-                        top: -(GuideMark.length + 5),
-                        left: (size + 6 - GuideMark.width) / 2,
-                        child: const GuideMark(),
-                      ),
-                    if (found)
-                      Positioned(
-                        right: -4,
-                        bottom: -2,
-                        child: Container(
-                          key: ValueKey('found-${speaker.id}'),
-                          width: 20,
-                          height: 20,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.success,
-                            border: Border.all(color: AppColors.paperLight, width: AppLine.rule),
-                          ),
-                          child: const InkIcon(InkGlyph.check, size: 12, color: AppColors.paperLight),
+                  ),
+                  child: ClipOval(child: _Face(speaker: speaker)),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  speaker.name.replaceFirst('The ', ''),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textScaler: scaler,
+                  style: AppText.style(
+                    AppText.body,
+                    size: 13,
+                    weight: chosen ? FontWeight.w700 : FontWeight.w500,
+                    color: chosen ? AppColors.navy : AppColors.muted,
+                  ),
+                ),
+                Row(
+                  key: ValueKey('${spoken ? 'spoken' : 'talk'}-${speaker.id}'),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (spoken) ...[
+                      const InkIcon(InkGlyph.check, size: 11, color: AppColors.success),
+                      const SizedBox(width: 2),
+                    ],
+                    Flexible(
+                      child: Text(
+                        spoken ? 'SPOKEN TO' : 'TALK',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textScaler: scaler,
+                        style: AppText.style(
+                          AppText.body,
+                          size: 10.5,
+                          weight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                          color: spoken ? AppColors.success : AppColors.royalBlue,
                         ),
                       ),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                speaker.name.replaceFirst('The ', ''),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                // A label under the face: it keeps its size with larger text.
-                textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1),
-                style: AppText.style(
-                  AppText.body,
-                  size: 13,
-                  weight: chosen ? FontWeight.w700 : FontWeight.w500,
-                  color: chosen ? AppColors.navy : AppColors.muted,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1285,9 +1463,7 @@ class _Face extends StatelessWidget {
 
 /// A question to put to the person talked to: a paper strip, ticked once
 /// asked (it can be asked again to hear the answer again); the one just
-/// asked is inked in soft blue — marked, never as loud as the next thing
-/// to do (COMPARE). The mission's
-/// question ([lead]) is the larger one, gold-edged until asked.
+/// asked is inked in soft blue. All alike: none is marked as the one.
 class _QuestionChoice extends StatelessWidget {
   const _QuestionChoice({
     super.key,
@@ -1295,14 +1471,9 @@ class _QuestionChoice extends StatelessWidget {
     required this.asked,
     required this.current,
     required this.onTap,
-    this.lead = false,
   });
 
   final DialogueQuestion question;
-
-  /// The mission's question: larger, marked (a magnifier, a gold edge)
-  /// until asked.
-  final bool lead;
   final bool asked;
   final bool current;
   final VoidCallback onTap;
@@ -1319,29 +1490,29 @@ class _QuestionChoice extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.paper),
           side: BorderSide(
-            color: current ? AppColors.navy : (lead && !asked ? AppColors.gold : AppLine.faint(0.25)),
-            width: current || (lead && !asked) ? AppLine.ink : AppLine.hairline,
+            color: current ? AppColors.navy : AppLine.faint(0.25),
+            width: current ? AppLine.ink : AppLine.hairline,
           ),
         ),
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.paper),
           child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: lead ? 56 : 48),
+            constraints: const BoxConstraints(minHeight: 48),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: lead ? AppSpace.md : AppSpace.sm, vertical: AppSpace.sm),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.sm),
               child: Row(
                 children: [
                   InkIcon(
-                    asked ? InkGlyph.check : (lead ? InkGlyph.search : InkGlyph.arrow),
-                    size: lead ? AppIconSize.medium : AppIconSize.small,
+                    asked ? InkGlyph.check : InkGlyph.arrow,
+                    size: AppIconSize.small,
                     color: asked ? AppColors.success : AppColors.navy,
                   ),
-                  SizedBox(width: lead ? AppSpace.md : AppSpace.sm),
+                  const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: Text(
                       question.text,
-                      style: AppText.bodyText(size: lead ? 19 : 15, weight: FontWeight.w600, color: AppColors.navy),
+                      style: AppText.bodyText(size: 15, weight: FontWeight.w600, color: AppColors.navy),
                     ),
                   ),
                 ],
@@ -1354,7 +1525,57 @@ class _QuestionChoice extends StatelessWidget {
   }
 }
 
-// ── Sheets: the statements, and comparing two of them ────────────────────
+// ── Sheets: the words, the statements, and comparing two of them ─────────
+
+/// The harder words of [text] (from the case's glossary), each a card to
+/// tap for its meaning — listed here, so no word in the talk is dotted and
+/// none looks like a clue. The meaning is never shown before a tap: the
+/// English is read first.
+Future<void> showTalkWords(BuildContext context, WidgetRef ref, String text) {
+  final words = glossaryWordsOf(ref.read(currentEpisodeProvider), text);
+  return showModalBottomSheet<void>(
+    context: context,
+    shape: paperSheetShape,
+    showDragHandle: false,
+    builder: (context) => SafeArea(
+      child: Padding(
+        key: const ValueKey('words-sheet'),
+        padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const PaperSheetTab(),
+            Text('WORDS', textAlign: TextAlign.center, style: AppText.eyebrow()),
+            const SizedBox(height: AppSpace.xs),
+            Text(
+              words.isEmpty ? 'No hard words here.' : 'Tap a word to see what it means.',
+              textAlign: TextAlign.center,
+              style: AppText.caption(),
+            ),
+            const SizedBox(height: AppSpace.md),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: AppSpace.sm,
+              runSpacing: AppSpace.sm,
+              children: [
+                for (final w in words)
+                  ActionChip(
+                    key: ValueKey('word-${w.word.toLowerCase()}'),
+                    label: Text(w.word, style: AppText.bodyText(size: 16, weight: FontWeight.w600, color: AppColors.navy)),
+                    backgroundColor: AppColors.paper,
+                    side: BorderSide(color: AppLine.faint(0.3)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.paper)),
+                    onPressed: () => lookUpAndShowWord(context, ref, w.word, w.meaning),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 
 /// The statements heard so far, under who said them, and the tips opened.
 Future<void> showDialogueNotes(
@@ -1387,17 +1608,18 @@ Future<void> showDialogueNotes(
                   children: [
                     Row(
                       children: [
-                        Expanded(child: Text('STATEMENTS', style: AppText.eyebrow())),
+                        Expanded(child: Text('WITNESS NOTES', style: AppText.eyebrow())),
                         Text('${heard.length} / ${scene.statements.length}', style: AppText.mark(size: 14)),
                       ],
                     ),
                     const SizedBox(height: AppSpace.sm),
+                    Text('What the witnesses told you, word for word.', style: AppText.caption()),
                     if (heard.isEmpty)
                       Text('Nothing yet. Ask the witnesses what they saw.', style: AppText.caption())
                     else
                       for (final id in heard) ...[
                         const SizedBox(height: AppSpace.sm),
-                        _StatementLine(scene: scene, statement: scene.statement(id)),
+                        WitnessStatementLine(scene: scene, statement: scene.statement(id)),
                       ],
                   ],
                 ),
@@ -1413,12 +1635,14 @@ Future<void> showDialogueNotes(
   );
 }
 
-/// One statement: who said it (face and name), and its words.
-class _StatementLine extends StatelessWidget {
-  const _StatementLine({required this.scene, required this.statement});
+/// One statement: who said it (face and name), and its words, word for
+/// word; with [source], where it was heard (in the notebook).
+class WitnessStatementLine extends StatelessWidget {
+  const WitnessStatementLine({super.key, required this.scene, required this.statement, this.source});
 
   final DialogueScene scene;
   final DialogueStatement statement;
+  final String? source;
 
   @override
   Widget build(BuildContext context) {
@@ -1436,7 +1660,8 @@ class _StatementLine extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(who.title, style: AppText.eyebrow(color: AppColors.muted)),
-              GlossaryText('"${statement.text}"', style: AppText.letter(size: 17)),
+              Text('"${statement.text}"', style: AppText.letter(size: 17, color: AppColors.ink)),
+              if (source != null) Text(source!, style: AppText.caption()),
             ],
           ),
         ),
@@ -1445,103 +1670,131 @@ class _StatementLine extends StatelessWidget {
   }
 }
 
-/// What the detective's yes or no about two stories turned out to be.
+/// What two chosen statements show.
 enum _Verdict {
-  /// Wrong (either way): look again, on the same page.
-  lookAgain,
+  /// The same thing, but not what the mission asks about: another pair.
+  offTopic,
 
-  /// Rightly different, with a third story there to compare instead.
-  otherPair,
-
-  /// Rightly different, and no one else heard yet: ask another witness.
+  /// Different things: another pair.
   different,
 
-  /// Rightly the same: the answer.
+  /// The same thing, what the mission asks about: the answer.
   match,
 }
 
-/// Comparing stories: two witnesses' stories side by side, and the
-/// detective says whether they match. With two stories heard they are
-/// shown at once; with more, two witnesses are chosen first (and can be
-/// changed). Never chosen for the detective, never told which way.
+/// Comparing statements: the detective chooses two of the statements heard
+/// (any of them, about anything) and sees them side by side; a moment later
+/// the game says what the two show. Nothing is chosen for the detective, no
+/// statement is marked out, a pair that is not the answer never says which
+/// is, and choosing again is always open.
 class _CompareSheet extends ConsumerStatefulWidget {
-  const _CompareSheet({required this.scene, required this.stories, required this.onSolved, required this.onDifferent});
+  const _CompareSheet({required this.scene, required this.heard, required this.onSolved});
 
   final DialogueScene scene;
 
-  /// The statements on the deduction's topic heard, one per witness, in the
-  /// order heard.
-  final List<String> stories;
+  /// The statements heard, in the order heard.
+  final List<String> heard;
   final VoidCallback onSolved;
-
-  /// Two stories rightly found different, with no third to compare.
-  final VoidCallback onDifferent;
 
   @override
   ConsumerState<_CompareSheet> createState() => _CompareSheetState();
 }
 
 class _CompareSheetState extends ConsumerState<_CompareSheet> {
-  late final bool _choosing = widget.stories.length > 2;
-  late final List<String> _picked = _choosing ? [] : [...widget.stories];
+  final List<String> _picked = [];
   _Verdict? _verdict;
-  Timer? _close;
 
-  /// What the guide arrow can point at: the witnesses to choose from, and
-  /// the way on once two were rightly found different.
-  final _pickLink = GuideLink();
-  final _nextLink = GuideLink();
+  /// Two are chosen and being looked at (the verdict comes in a moment, and
+  /// stays a moment): taps wait, so none is lost or doubled.
+  bool _judging = false;
+  Timer? _timer;
+  final _scroll = ScrollController();
 
+  /// The two chosen, side by side: brought into sight once both are chosen.
+  final _pairKey = GlobalKey();
+
+  /// The two chosen are seen side by side before what they show is said,
+  /// and what they show stays a moment before another tap counts.
+  static const judgeAfter = Duration(milliseconds: 450);
+  static const holdAfter = Duration(milliseconds: 500);
   static const closeAfter = Duration(milliseconds: 1800);
 
   @override
   void dispose() {
-    _close?.cancel();
+    _timer?.cancel();
+    _scroll.dispose();
     super.dispose();
   }
 
   void _pick(String id) {
-    if (_verdict == _Verdict.match) return;
+    if (_judging || _verdict == _Verdict.match) return;
     playUiTap(context, TapRole.select);
     setState(() {
-      _verdict = null;
+      // After a pair that was not the answer, a tap starts a new pair with it.
+      if (_verdict != null) {
+        _verdict = null;
+        _picked.clear();
+      }
       if (_picked.contains(id)) {
         _picked.remove(id);
       } else {
-        // Two at most: a third choice takes the place of the first.
-        if (_picked.length == 2) _picked.removeAt(0);
         _picked.add(id);
       }
     });
+    if (_picked.length == 2) _judgeSoon();
   }
 
-  void _say({required bool same}) {
-    if (_picked.length != 2 || _verdict == _Verdict.match) return;
-    final match = widget.scene.deduction.matches(_picked[0], _picked[1]);
-    final audio = ref.read(audioServiceProvider);
-    if (same != match) {
-      // Not recorded, not failed: the same two to look at again.
-      HapticFeedback.lightImpact();
-      setState(() => _verdict = _Verdict.lookAgain);
-    } else if (match) {
-      audio.play(GameSound.pencilNote);
+  /// The two chosen: brought into sight whole, then judged.
+  void _judgeSoon() {
+    setState(() => _judging = true);
+    _showPair(top: true);
+    _timer = Timer(judgeAfter, _judge);
+  }
+
+  /// The two chosen and what they show, brought into sight with a short
+  /// glide: the two at the top of what is seen ([top]), or just enough for
+  /// what they show to be seen whole (no move when it already is).
+  void _showPair({bool top = false}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pair = _pairKey.currentContext;
+      if (!mounted || pair == null) return;
+      final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+      Scrollable.ensureVisible(
+        pair,
+        alignmentPolicy: top ? ScrollPositionAlignmentPolicy.explicit : ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        duration: still ? Duration.zero : const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  void _judge() {
+    if (!mounted || _picked.length != 2) return;
+    final scene = widget.scene;
+    final (a, b) = (_picked[0], _picked[1]);
+    if (scene.deduction.solves(a, b)) {
+      ref.read(audioServiceProvider).play(GameSound.pencilNote);
       HapticFeedback.mediumImpact();
       widget.onSolved();
       setState(() => _verdict = _Verdict.match);
-      _close = Timer(closeAfter, () {
+      _showPair();
+      _timer = Timer(closeAfter, () {
         if (mounted) Navigator.of(context).pop();
       });
-    } else {
-      audio.play(GameSound.pencilNote);
-      HapticFeedback.selectionClick();
-      if (!_choosing) widget.onDifferent();
-      setState(() => _verdict = _choosing ? _Verdict.otherPair : _Verdict.different);
+      return;
     }
+    // Not the answer: what they show, and the same two stay to look at.
+    HapticFeedback.selectionClick();
+    setState(() => _verdict = scene.matches(a, b) ? _Verdict.offTopic : _Verdict.different);
+    _showPair();
+    _timer = Timer(holdAfter, () {
+      if (mounted) setState(() => _judging = false);
+    });
   }
 
-  /// Every witness was heard and these two differ: back to choosing two
-  /// (none chosen for the detective; the stories stay).
+  /// Back to choosing two (none chosen for the detective).
   void _anotherPair() {
+    if (_judging) return;
     playUiTap(context, TapRole.select);
     setState(() {
       _picked.clear();
@@ -1554,209 +1807,142 @@ class _CompareSheetState extends ConsumerState<_CompareSheet> {
     final scene = widget.scene;
     final d = scene.deduction;
     final matched = _verdict == _Verdict.match;
-    // Found different with no one else to compare: the way on is another
-    // witness (the way back, named for what it is for).
-    final askAnother = _verdict == _Verdict.different;
-    // Every witness heard and these two differ: the way on is another pair.
-    final anotherPair = _verdict == _Verdict.otherPair;
-    final pair = _picked.length == 2;
-    final saying = pair && _verdict != _Verdict.different;
-    // The one next thing to point at (never YES or NO, never a witness).
-    final guide = switch (null) {
-      _ when askAnother => ('ask-another', _nextLink, GuideSide.left),
-      _ when anotherPair => ('another-pair', _nextLink, GuideSide.left),
-      _ when _choosing && !pair && !matched => ('choose-two', _pickLink, GuideSide.above),
-      _ => null,
-    };
-    // The stories scroll; the question, what saying shows and the buttons
-    // stay at the bottom, so the way on and the way back are always in sight.
+    // The two describe the same thing (the answer, or not what is asked).
+    final alike = matched || _verdict == _Verdict.offTopic;
+    // Not the answer: the way on is another pair.
+    final anotherPair = _verdict == _Verdict.offTopic || _verdict == _Verdict.different;
+    // Headings keep (about) their size with larger text, so the statements
+    // keep their room.
+    final heading = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1);
     return SafeArea(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.9),
-        child: Stack(
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.92),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
-                  child: SingleChildScrollView(
-                    key: const ValueKey('compare-sheet'),
-                    padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const PaperSheetTab(),
-                        Text('COMPARE STORIES', textAlign: TextAlign.center, style: AppText.eyebrow()),
-                        // Choosing whom to compare only when there is a choice
-                        // (two stories: they are simply the two).
-                        if (_choosing) ...[
-                          const SizedBox(height: AppSpace.xs),
-                          Text(
-                            d.choose,
-                            key: const ValueKey('compare-choose'),
-                            textAlign: TextAlign.center,
-                            textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1),
-                            style: AppText.bodyText(size: 16, weight: FontWeight.w600, color: AppColors.navy),
-                          ),
-                          // Room for the guide arrow over the witnesses.
-                          const SizedBox(height: _TalkPanel._arrowRoom),
-                          GuideTarget(
-                            link: _pickLink,
-                            child: Row(
-                              key: const ValueKey('compare-witnesses'),
-                              children: [
-                                for (final id in widget.stories)
-                                  Expanded(
-                                    child: _WitnessPick(
-                                      speaker: scene.speaker(scene.statement(id).speakerId),
-                                      order: _picked.indexOf(id),
-                                      onTap: () => _pick(id),
+            Flexible(
+              child: SingleChildScrollView(
+                key: const ValueKey('compare-sheet'),
+                controller: _scroll,
+                padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.sm),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const PaperSheetTab(),
+                    Text('COMPARE STATEMENTS', textAlign: TextAlign.center, style: AppText.eyebrow()),
+                    const SizedBox(height: AppSpace.xs),
+                    // What to find, and how — never which.
+                    Text(
+                      d.compareGoal,
+                      key: const ValueKey('compare-goal'),
+                      textAlign: TextAlign.center,
+                      textScaler: heading,
+                      style: AppText.title(size: 18),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      d.compareHow,
+                      key: const ValueKey('compare-how'),
+                      textAlign: TextAlign.center,
+                      textScaler: heading,
+                      style: AppText.bodyText(size: 15, weight: FontWeight.w600, color: AppColors.inkBrown),
+                    ),
+                    // The two chosen side by side, and right under them what
+                    // they show — one block, brought into sight whole. Nothing
+                    // here before a first choice.
+                    if (_picked.isNotEmpty)
+                      Padding(
+                        key: _pairKey,
+                        padding: const EdgeInsets.only(top: AppSpace.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            IntrinsicHeight(
+                              child: Row(
+                                key: const ValueKey('compare-pair'),
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  for (var i = 0; i < 2; i++) ...[
+                                    if (i > 0) const SizedBox(width: AppSpace.sm),
+                                    Expanded(
+                                      child: i < _picked.length
+                                          ? _StoryCard(
+                                              key: ValueKey('story-${_picked[i]}'),
+                                              scene: scene,
+                                              statement: scene.statement(_picked[i]),
+                                              matched: alike,
+                                            )
+                                          : const _EmptyStory(),
                                     ),
-                                  ),
-                              ],
+                                  ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                        const SizedBox(height: AppSpace.md),
-                        // The two stories, side by side (two empty places until
-                        // two witnesses are chosen).
-                        IntrinsicHeight(
-                          child: Row(
-                            key: const ValueKey('compare-pair'),
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              for (var i = 0; i < 2; i++) ...[
-                                if (i > 0) const SizedBox(width: AppSpace.sm),
-                                Expanded(
-                                  child: i < _picked.length
-                                      ? _StoryCard(
-                                          key: ValueKey('story-${_picked[i]}'),
-                                          scene: scene,
-                                          statement: scene.statement(_picked[i]),
-                                          matched: matched,
-                                          face: !_choosing,
-                                        )
-                                      : const _EmptyStory(),
-                                ),
-                              ],
-                            ],
+                            if (_verdict != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: AppSpace.sm),
+                                child: _VerdictBlock(verdict: _verdict!, deduction: d),
+                              ),
+                          ],
+                        ),
+                      ),
+                    if (!matched) ...[
+                      const SizedBox(height: AppSpace.md),
+                      Text(
+                        _picked.isEmpty ? 'YOUR STATEMENTS — TAP TWO' : 'YOUR STATEMENTS',
+                        textScaler: heading,
+                        style: AppText.eyebrow(color: AppColors.muted),
+                      ),
+                      const SizedBox(height: AppSpace.xs),
+                      // Every statement heard, alike, in the order heard.
+                      for (final id in widget.heard)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpace.xs),
+                          child: _PickStatement(
+                            scene: scene,
+                            statement: scene.statement(id),
+                            order: _picked.indexOf(id),
+                            onTap: () => _pick(id),
                           ),
                         ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            // The way on (another pair) and the way back, always in sight.
+            if (!matched)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: AppLine.faint(0.15))),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (anotherPair) ...[
+                        GameButton(
+                          key: const ValueKey('choose-another-pair'),
+                          label: 'CHOOSE ANOTHER PAIR',
+                          glyph: InkGlyph.eye,
+                          singleLine: true,
+                          onPressed: _anotherPair,
+                        ),
                         const SizedBox(height: AppSpace.sm),
-                        if (matched)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: AppSpace.lg),
-                            child: _Match(line: d.matchLine),
-                          ),
                       ],
-                    ),
+                      GameButton(
+                        key: const ValueKey('back-to-witnesses'),
+                        label: 'BACK TO WITNESSES',
+                        glyph: InkGlyph.back,
+                        singleLine: true,
+                        style: GameButtonStyle.outline,
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
                   ),
                 ),
-                if (!matched)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.screen, 0, AppSpace.screen, AppSpace.lg),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // A short heading: it keeps (about) its size with larger
-                        // text, so the stories above keep their room.
-                        MediaQuery.withClampedTextScaling(
-                          maxScaleFactor: 1.1,
-                          child: GlossaryText(
-                            d.question,
-                            key: const ValueKey('compare-question'),
-                            textAlign: TextAlign.center,
-                            style: AppText.title(size: 21),
-                          ),
-                        ),
-                        // Room for the line is kept even when empty: the buttons
-                        // never move under the finger while saying.
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(minHeight: 56),
-                          child: Center(
-                            child: switch (_verdict) {
-                              null || _Verdict.match => const SizedBox.shrink(),
-                              _Verdict.lookAgain => _VerdictLine(d.lookAgainLine, right: false),
-                              _Verdict.otherPair => _VerdictLine(
-                                d.otherPairLine,
-                                right: true,
-                                mark: 'DIFFERENT STORIES',
-                              ),
-                              _Verdict.different => _VerdictLine(
-                                d.differentLine,
-                                right: true,
-                                mark: 'DIFFERENT STORIES',
-                              ),
-                            },
-                          ),
-                        ),
-                        // Saying: YES / NO. Once two are rightly found different
-                        // with another pair to try, the way on stands where NO
-                        // was (the bottom buttons never move; the stories gain
-                        // the room).
-                        if (anotherPair)
-                          GuideTarget(
-                            link: _nextLink,
-                            child: GameButton(
-                              key: const ValueKey('choose-another-pair'),
-                              label: 'CHOOSE ANOTHER PAIR',
-                              glyph: InkGlyph.eye,
-                              singleLine: true,
-                              onPressed: _anotherPair,
-                            ),
-                          )
-                        else ...[
-                          GameButton(
-                            key: const ValueKey('say-same'),
-                            label: 'YES, THEY MATCH',
-                            glyph: InkGlyph.check,
-                            singleLine: true,
-                            onPressed: saying ? () => _say(same: true) : null,
-                          ),
-                          const SizedBox(height: AppSpace.sm),
-                          GameButton(
-                            key: const ValueKey('say-different'),
-                            label: 'NO, THEY ARE DIFFERENT',
-                            glyph: InkGlyph.close,
-                            singleLine: true,
-                            onPressed: saying ? () => _say(same: false) : null,
-                          ),
-                        ],
-                        const SizedBox(height: AppSpace.sm),
-                        // The way back; when another witness is the next thing,
-                        // it says so (one button, not two that do the same).
-                        askAnother
-                            ? GuideTarget(
-                                link: _nextLink,
-                                child: GameButton(
-                                  key: const ValueKey('ask-another-witness'),
-                                  label: 'ASK ANOTHER WITNESS',
-                                  glyph: InkGlyph.back,
-                                  singleLine: true,
-                                  onPressed: () => Navigator.of(context).pop(),
-                                ),
-                              )
-                            : GameButton(
-                                key: const ValueKey('back-to-witnesses'),
-                                label: 'BACK TO WITNESSES',
-                                glyph: InkGlyph.back,
-                                singleLine: true,
-                                style: GameButtonStyle.outline,
-                                onPressed: () => Navigator.of(context).pop(),
-                              ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-            if (guide != null)
-              GuidedActionIndicator(
-                key: ValueKey('guide-${guide.$1}'),
-                link: guide.$2,
-                side: guide.$3,
-                // The witnesses to choose from: all of them, none favoured.
-                span: guide.$2 == _pickLink,
               ),
           ],
         ),
@@ -1765,61 +1951,94 @@ class _CompareSheetState extends ConsumerState<_CompareSheet> {
   }
 }
 
-/// One line saying how the detective's yes or no turned out: right (a
-/// green tick) or a gentle look again.
-class _VerdictLine extends StatelessWidget {
-  const _VerdictLine(this.line, {required this.right, this.mark});
+/// What two chosen statements show, right under them. The answer: the
+/// MATCH stamp. The same thing but not what is asked: the match first,
+/// acknowledged (it is a true find), then the mission recalled — calmly,
+/// never as an error, never naming the answer. Different things: said
+/// gently, and to try another pair.
+class _VerdictBlock extends StatelessWidget {
+  const _VerdictBlock({required this.verdict, required this.deduction});
 
-  final String line;
-  final bool right;
-
-  /// A small heading over the line (DIFFERENT STORIES).
-  final String? mark;
+  final _Verdict verdict;
+  final DialogueDeduction deduction;
 
   @override
   Widget build(BuildContext context) {
-    final color = right ? AppColors.success : AppColors.tryAgain;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (mark != null)
-            Text(
-              mark!,
-              key: const ValueKey('compare-mark'),
-              textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1),
-              style: AppText.eyebrow(color: AppColors.goldDeep),
+    final d = deduction;
+    final heading = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1);
+    Widget mark(String text, Color color, {InkGlyph? glyph}) => Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (glyph != null) ...[
+              InkIcon(glyph, size: AppIconSize.small, color: color),
+              const SizedBox(width: AppSpace.xs),
+            ],
+            Flexible(
+              child: Text(text, textAlign: TextAlign.center, textScaler: heading, style: AppText.eyebrow(color: color)),
             ),
-          Text.rich(
-            TextSpan(
-              children: [
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: AppSpace.xs),
-                    child: InkIcon(right ? InkGlyph.check : InkGlyph.eye, size: AppIconSize.small, color: color),
-                  ),
-                ),
-                TextSpan(text: line),
-              ],
+          ],
+        );
+    Widget line(String text, {Color color = AppColors.ink}) => Text(
+          text,
+          textAlign: TextAlign.center,
+          style: AppText.bodyText(size: 16, weight: FontWeight.w600, color: color),
+        );
+    final body = switch (verdict) {
+      _Verdict.match => _Match(line: d.matchLine),
+      _Verdict.offTopic => Column(
+          children: [
+            mark('GOOD MATCH!', AppColors.success, glyph: InkGlyph.check),
+            const SizedBox(height: 2),
+            line(d.offTopicLine),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
+              child: Divider(height: 1, color: AppLine.faint(0.2)),
             ),
-            key: const ValueKey('compare-feedback'),
-            textAlign: TextAlign.center,
-            style: AppText.bodyText(size: 16, color: color, weight: FontWeight.w600),
-          ),
-        ],
+            mark('BUT CHECK YOUR MISSION', AppColors.goldDeep, glyph: InkGlyph.search),
+            const SizedBox(height: 2),
+            line(d.checkLine, color: AppColors.navy),
+          ],
+        ),
+      _Verdict.different => Column(
+          children: [
+            mark('THE STORIES ARE DIFFERENT', AppColors.inkBrown),
+            const SizedBox(height: 2),
+            line(d.differentLine),
+            const SizedBox(height: 2),
+            line(d.retryLine, color: AppColors.muted),
+          ],
+        ),
+    };
+    return TweenAnimationBuilder<double>(
+      key: ValueKey(verdict),
+      tween: Tween(begin: (MediaQuery.maybeDisableAnimationsOf(context) ?? false) ? 1 : 0, end: 1),
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOut,
+      builder: (context, t, child) => Opacity(opacity: t, child: child),
+      child: Container(
+        key: const ValueKey('compare-feedback'),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
+        decoration: verdict == _Verdict.match
+            ? null
+            : BoxDecoration(
+                color: AppColors.parchment.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(AppRadius.paper),
+                border: Border.all(color: AppLine.faint(0.2), width: AppLine.hairline),
+              ),
+        child: body,
       ),
     );
   }
 }
 
-/// A witness to choose for comparing: their face, their name, and 1 or 2
-/// when chosen (tap again to let them go).
-class _WitnessPick extends StatelessWidget {
-  const _WitnessPick({required this.speaker, required this.order, required this.onTap});
+/// A statement to choose for comparing: who said it and their words, and
+/// 1 or 2 when chosen (tap again to let it go). Every statement looks the
+/// same until chosen.
+class _PickStatement extends StatelessWidget {
+  const _PickStatement({required this.scene, required this.statement, required this.order, required this.onTap});
 
-  final DialogueSpeaker speaker;
+  final DialogueScene scene;
+  final DialogueStatement statement;
 
   /// 0 or 1 when chosen (first, second), else -1.
   final int order;
@@ -1828,74 +2047,63 @@ class _WitnessPick extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chosen = order >= 0;
+    final who = scene.speaker(statement.speakerId);
     return Semantics(
       button: true,
       selected: chosen,
-      label: 'Compare ${speaker.name.toLowerCase()}${chosen ? ', chosen ${order + 1}' : ''}',
+      label: '${who.name} said: ${statement.text}${chosen ? ', chosen ${order + 1}' : ''}',
       excludeSemantics: true,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
-        child: Material(
-          color: chosen ? AppColors.royalBlueSoft : AppColors.paper,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.paper),
-            side: BorderSide(
-              color: chosen ? AppColors.navy : AppLine.faint(0.25),
-              width: chosen ? AppLine.ink : AppLine.hairline,
-            ),
+      child: Material(
+        color: chosen ? AppColors.royalBlueSoft : AppColors.paper,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.paper),
+          side: BorderSide(
+            color: chosen ? AppColors.navy : AppLine.faint(0.25),
+            width: chosen ? AppLine.ink : AppLine.hairline,
           ),
-          child: InkWell(
-            key: ValueKey('pick-${speaker.id}'),
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(AppRadius.paper),
+        ),
+        child: InkWell(
+          key: ValueKey('pick-${statement.id}'),
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.paper),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpace.sm, horizontal: AppSpace.xs),
-              child: Column(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs + 2),
+              child: Row(
                 children: [
-                  SizedBox.square(
-                    dimension: 40,
-                    child: Stack(
-                      clipBehavior: Clip.none,
+                  SizedBox.square(dimension: 32, child: ClipOval(child: _Face(speaker: who))),
+                  const SizedBox(width: AppSpace.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipOval(child: _Face(speaker: speaker)),
-                        if (chosen)
-                          Positioned(
-                            right: -6,
-                            top: -4,
-                            child: Container(
-                              width: 22,
-                              height: 22,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.navy),
-                              child: Text(
-                                '${order + 1}',
-                                textScaler: TextScaler.noScaling,
-                                style: AppText.style(
-                                  AppText.body,
-                                  size: 13,
-                                  weight: FontWeight.w700,
-                                  color: AppColors.paperLight,
-                                ),
-                              ),
-                            ),
-                          ),
+                        Text(
+                          who.name.replaceFirst('The ', '').toUpperCase(),
+                          textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1),
+                          style: AppText.eyebrow(color: AppColors.muted),
+                        ),
+                        Text('"${statement.text}"', style: AppText.letter(size: 16, color: AppColors.ink)),
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSpace.xs),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      speaker.name.replaceFirst('The ', ''),
-                      maxLines: 1,
-                      textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1),
-                      style: AppText.style(
-                        AppText.body,
-                        size: 13,
-                        weight: chosen ? FontWeight.w700 : FontWeight.w500,
-                        color: chosen ? AppColors.navy : AppColors.muted,
-                      ),
+                  const SizedBox(width: AppSpace.xs),
+                  Container(
+                    width: 26,
+                    height: 26,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: chosen ? AppColors.navy : Colors.transparent,
+                      border: Border.all(color: chosen ? Colors.transparent : AppLine.faint(0.35), width: AppLine.rule),
                     ),
+                    child: chosen
+                        ? Text(
+                            '${order + 1}',
+                            textScaler: TextScaler.noScaling,
+                            style: AppText.style(AppText.body, size: 13, weight: FontWeight.w700, color: AppColors.paperLight),
+                          )
+                        : null,
                   ),
                 ],
               ),
@@ -1910,15 +2118,11 @@ class _WitnessPick extends StatelessWidget {
 /// One witness's story, set beside another: their face and name over what
 /// they said, word for word. Ringed in green once the two match.
 class _StoryCard extends StatelessWidget {
-  const _StoryCard({super.key, required this.scene, required this.statement, required this.matched, this.face = true});
+  const _StoryCard({super.key, required this.scene, required this.statement, required this.matched});
 
   final DialogueScene scene;
   final DialogueStatement statement;
   final bool matched;
-
-  /// Their face over the words (left out when their face was just chosen
-  /// above: the stories keep the room).
-  final bool face;
 
   @override
   Widget build(BuildContext context) {
@@ -1940,13 +2144,11 @@ class _StoryCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            if (face) ...[
-              SizedBox.square(
-                dimension: 44,
-                child: ClipOval(child: _Face(speaker: who)),
-              ),
-              const SizedBox(height: AppSpace.xs),
-            ],
+            SizedBox.square(
+              dimension: 44,
+              child: ClipOval(child: _Face(speaker: who)),
+            ),
+            const SizedBox(height: AppSpace.xs),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
@@ -1974,21 +2176,21 @@ class _StoryCard extends StatelessWidget {
   }
 }
 
-/// The place of a story not chosen yet.
+/// The place of the second statement, not chosen yet.
 class _EmptyStory extends StatelessWidget {
   const _EmptyStory();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minHeight: 96),
+      constraints: const BoxConstraints(minHeight: 72),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: AppColors.parchment.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppRadius.paper),
         border: Border.all(color: AppColors.parchmentDark, width: AppLine.rule),
       ),
-      child: Text('?', style: AppText.title(size: 28, color: AppColors.parchmentDark)),
+      child: Text('2', style: AppText.title(size: 28, color: AppColors.parchmentDark)),
     );
   }
 }
@@ -2011,8 +2213,61 @@ class _Match extends StatelessWidget {
         children: [
           const InkStamp('THE STORIES MATCH!', color: AppColors.success, tilt: -0.05),
           const SizedBox(height: AppSpace.md),
-          GlossaryText(line, textAlign: TextAlign.center, style: AppText.title(size: 20)),
+          Text(line, textAlign: TextAlign.center, style: AppText.title(size: 20)),
         ],
+      ),
+    );
+  }
+}
+
+/// A child that waits while the portrait of [id] is flying in, and comes in
+/// softly [delay] after it lands (at once when nothing is flying). It never
+/// takes a touch while waiting.
+class _AfterLanding extends StatefulWidget {
+  const _AfterLanding({super.key, required this.flying, required this.id, required this.delay, required this.child});
+
+  final ValueListenable<String?> flying;
+  final String? id;
+  final Duration delay;
+  final Widget child;
+
+  @override
+  State<_AfterLanding> createState() => _AfterLandingState();
+}
+
+class _AfterLandingState extends State<_AfterLanding> {
+  late bool _shown = widget.id == null || widget.flying.value != widget.id;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.flying.addListener(_changed);
+  }
+
+  void _changed() {
+    if (_shown || widget.flying.value == widget.id) return;
+    _timer ??= Timer(widget.delay, () {
+      if (mounted) setState(() => _shown = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.flying.removeListener(_changed);
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      ignoring: !_shown,
+      child: AnimatedOpacity(
+        opacity: _shown ? 1 : 0,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        child: widget.child,
       ),
     );
   }

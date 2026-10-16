@@ -209,7 +209,7 @@ void main() {
     final ref = await pumpApp(t, lateSeason(['ep12_m1'], hints: {'ep12_m2': 1}));
     ref.read(routerProvider).go(Routes.mission('ep12_m2'));
     await wait(t, const Duration(milliseconds: 1200));
-    expect(find.text('DETECTIVE TIP 1'), findsOneWidget, reason: 'puzzle stage, one tip open');
+    expect(find.text('DETECTIVE HINT 1'), findsOneWidget, reason: 'puzzle stage, one tip open');
 
     await t.tap(find.byTooltip('Detective notebook'));
     await wait(t, const Duration(milliseconds: 1000));
@@ -227,7 +227,7 @@ void main() {
     await t.tap(find.byTooltip('Close'));
     await wait(t, const Duration(milliseconds: 1000));
     expect(pathOf(ref), Routes.mission('ep12_m2'));
-    expect(find.text('DETECTIVE TIP 1'), findsOneWidget, reason: 'the puzzle is as it was');
+    expect(find.text('DETECTIVE HINT 1'), findsOneWidget, reason: 'the puzzle is as it was');
     expect(ref.read(gameControllerProvider).hintsFor('ep12_m2'), 1);
     await wait(t, const Duration(seconds: 3));
   });

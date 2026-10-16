@@ -456,18 +456,9 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
     );
   }
 
-  Future<void> _askTip() async {
-    if (await widget.onHint() && mounted) {
-      // The tip is written in the report, with what to find.
-      await showInvestigationReport(
-        context,
-        scene: widget.scene,
-        found: widget.found,
-        hints: widget.hints,
-        hintsShown: widget.hintsShown + 1,
-      );
-    }
-  }
+  /// A hint opened is written in the panel under the picture (the search
+  /// stays as it is; the report lists it too).
+  Future<void> _askTip() => widget.onHint();
 
   @override
   Widget build(BuildContext context) {
@@ -580,7 +571,7 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
                             child: _PencilSlip(
                               line: _line,
                               nudge: !_allFound && _misses >= _nudgeAfter
-                                  ? 'Stuck? Read the report again, or get a tip.'
+                                  ? 'Stuck? Read the report again, or get a hint.'
                                   : null,
                             ),
                           ),
@@ -594,6 +585,8 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
             _SearchPanel(
               scene: scene,
               tipLabel: nextTipLabel(widget.hints, widget.hintsShown),
+              hints: widget.hints,
+              hintsShown: widget.hintsShown,
               onReport: _openReport,
               onTip: _askTip,
             ),
@@ -957,10 +950,22 @@ class _PencilSlip extends StatelessWidget {
 /// Under the picture: what to find, how to search (the main line: tap the
 /// picture), how to look closer, and the report and the tips.
 class _SearchPanel extends StatelessWidget {
-  const _SearchPanel({required this.scene, required this.tipLabel, required this.onReport, required this.onTip});
+  const _SearchPanel({
+    required this.scene,
+    required this.tipLabel,
+    required this.hints,
+    required this.hintsShown,
+    required this.onReport,
+    required this.onTip,
+  });
 
   final InvestigationScene scene;
   final String? tipLabel;
+
+  /// The hints opened so far: written above the links, in a short strip
+  /// that scrolls (the picture keeps most of the screen).
+  final List<String> hints;
+  final int hintsShown;
   final VoidCallback onReport;
   final VoidCallback onTip;
 
@@ -1007,6 +1012,14 @@ class _SearchPanel extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(scene.zoomGuide, textAlign: TextAlign.center, style: AppText.caption()),
+                if (hintsShown > 0) const SizedBox(height: AppSpace.sm),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.2),
+                  child: SingleChildScrollView(
+                    key: const ValueKey('search-hints'),
+                    child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
+                  ),
+                ),
                 Wrap(
                   alignment: WrapAlignment.center,
                   spacing: AppSpace.sm,

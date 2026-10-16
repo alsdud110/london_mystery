@@ -508,12 +508,19 @@ void main() {
         expect(sheet, findsNothing);
         expect(counter(1), findsOneWidget, reason: 'the cloth is still found');
 
-        // A tip: opened in the tip dialog, then read in the report.
-        await tapText(t, 'Get a tip', after: const Duration(milliseconds: 500));
-        await t.tap(tipSheetButton);
+        // A hint: the free one opens at once (no dialog, no sheet), written in
+        // the panel under the picture; the report lists it too.
+        await tapText(t, 'Get a Free Hint', after: const Duration(milliseconds: 500));
+        expect(tipSheetButton, findsNothing, reason: 'no dialog for the free hint');
         await wait(t, const Duration(milliseconds: 800));
-        expect(find.descendant(of: sheet, matching: find.text('DETECTIVE TIP 1')), findsOneWidget);
+        expect(sheet, findsNothing, reason: 'the report stays closed');
+        expect(
+          find.descendant(of: find.byKey(const ValueKey('search-panel')), matching: find.text('DETECTIVE HINT 1')),
+          findsOneWidget,
+        );
         expect(play.ref.read(gameControllerProvider).hintsFor('ep03_m1'), 1);
+        await tapText(t, scene.documentLabel, after: const Duration(milliseconds: 500));
+        expect(find.descendant(of: sheet, matching: find.text('DETECTIVE HINT 1')), findsOneWidget);
       });
 
       testWidgets('back to the report keeps what was found; a restart starts the search again', (t) async {
@@ -578,8 +585,8 @@ void main() {
           await play.tapInPicture(t, const Offset(0.62, 0.86));
         }
         expect(line(scene.missLine), findsOneWidget);
-        expect(line('get a tip'), findsOneWidget);
-        expect(find.text('Get a tip'), findsOneWidget, reason: 'the tips are there as on every puzzle');
+        expect(line('get a hint'), findsOneWidget);
+        expect(find.text('Get a Free Hint'), findsOneWidget, reason: 'the hints are there as on every puzzle');
       });
     });
   }

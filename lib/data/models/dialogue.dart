@@ -66,7 +66,13 @@ class DialogueSpeaker {
 /// A statement: what a witness said that the detective writes down.
 @immutable
 class DialogueStatement {
-  const DialogueStatement({required this.id, required this.speakerId, required this.about, required this.text});
+  const DialogueStatement({
+    required this.id,
+    required this.speakerId,
+    required this.about,
+    required this.text,
+    required this.thing,
+  });
 
   final String id;
   final String speakerId;
@@ -77,65 +83,91 @@ class DialogueStatement {
 
   /// The statement as it was said, word for word.
   final String text;
+
+  /// The thing it describes ("a small bag", "a dark coat"): two statements
+  /// match when they describe the same thing. Never shown; the detective
+  /// reads the words.
+  final String thing;
 }
 
-/// The deduction that ends the talk: two witnesses' stories about its
-/// [topic] put side by side, and the detective saying whether they match.
+/// The deduction that ends the talk: two of the statements heard, chosen
+/// by the detective and put side by side; the game says at once what the
+/// two show. The two that match about the [topic]
+/// ([pair]) answer it; then the [then] statements, if not heard yet, are
+/// still to be found before the mission ends (one more thing to check, for
+/// the missions after it).
 @immutable
 class DialogueDeduction {
   const DialogueDeduction({
     required this.topic,
     required this.pair,
     required this.answer,
-    required this.question,
-    required this.choose,
-    required this.foundLine,
+    required this.askLine,
+    required this.anotherLine,
     required this.readyLine,
+    required this.compareGoal,
+    required this.compareHow,
     required this.matchLine,
+    required this.offTopicLine,
+    required this.checkLine,
     required this.differentLine,
-    required this.otherPairLine,
-    required this.lookAgainLine,
+    required this.retryLine,
+    this.then = const {},
+    this.thenGoal = '',
+    this.thenHow = '',
+    this.doneLine = '',
+    this.notesLine = '',
     this.witnesses = 2,
   });
 
-  /// The question the deduction is about ("carry"): only statements about
-  /// it are compared, and asking it is what opens comparing.
+  /// What the deduction is about ("carry").
   final String topic;
 
-  /// Witnesses whose statement about [topic] must be heard before comparing:
-  /// any of them, matching or not (comparing is the detective's to do).
-  final int witnesses;
-
-  /// The two statements that match (the answer).
+  /// The two statements that match about [topic] (the answer).
   final Set<String> pair;
 
   /// The mission's puzzle answer the deduction gives (submitted once).
   final String answer;
 
-  /// What the comparing page asks of two stories ("Do their stories
-  /// match?"), and, with more stories than two, how to begin ("Choose two
-  /// witnesses to compare.").
-  final String question;
-  final String choose;
-
-  /// What to do next, said in the talk: one witness heard on [topic]
-  /// ([foundLine]); enough to compare ([readyLine]).
-  final String foundLine;
+  /// What to do next, said in the talk: a witness chosen, nothing heard
+  /// yet ([askLine]); statements from one witness only ([anotherLine]);
+  /// enough to compare ([readyLine]).
+  final String askLine;
+  final String anotherLine;
   final String readyLine;
 
-  /// Said when the detective is right: the stories match ([matchLine]);
-  /// they differ and someone else is still to be asked ([differentLine]), or
-  /// every witness was heard and another pair is to be compared
-  /// ([otherPairLine]).
+  /// Witnesses whose statements must be heard before comparing (about
+  /// anything: sorting them out is the detective's).
+  final int witnesses;
+
+  /// The comparing page: what to find ([compareGoal]) and how ([compareHow]).
+  final String compareGoal;
+  final String compareHow;
+
+  /// What two chosen statements show: the two that answer it ([matchLine]);
+  /// two that match but not about [topic] — the match acknowledged
+  /// ([offTopicLine]), then the mission recalled ([checkLine], never what
+  /// the answer is); two about different things ([differentLine], then
+  /// [retryLine]).
   final String matchLine;
+  final String offTopicLine;
+  final String checkLine;
   final String differentLine;
-  final String otherPairLine;
+  final String retryLine;
 
-  /// Said when the detective is wrong about two stories (never which way).
-  final String lookAgainLine;
+  /// Statements still to be found once the deduction is made (if not heard
+  /// already), and the lines that ask for them without naming them: what to
+  /// find out ([thenGoal]), how ([thenHow]), and once everything is found
+  /// (the deduction made, they heard): what was found ([doneLine]) and where
+  /// it is kept ([notesLine]).
+  final Set<String> then;
+  final String thenGoal;
+  final String thenHow;
+  final String doneLine;
+  final String notesLine;
 
-  /// Whether statements [a] and [b] say the same thing (they answer it).
-  bool matches(String a, String b) => a != b && {a, b}.containsAll(pair);
+  /// Whether [a] and [b] answer the deduction (in either order).
+  bool solves(String a, String b) => a != b && {a, b}.containsAll(pair);
 }
 
 /// A mission played by talking to the people at its place (presentation
@@ -164,12 +196,12 @@ class DialogueScene {
   final String background;
 
   /// What the detective is here to find out ("Find out what the stranger
-  /// carried."), shown as the mission, and how ("Two witnesses may have
-  /// seen the same thing."). Never the answer.
+  /// carried."), shown as the mission, and how ("Ask what they saw. You
+  /// may find different clues."). Never the answer.
   final String goal;
   final String how;
 
-  /// The first thing to do, in one line ("Choose a witness to begin.").
+  /// The first thing to do, in one line ("Talk to a witness.").
   final String guide;
 
   final List<DialogueSpeaker> speakers;
@@ -181,18 +213,25 @@ class DialogueScene {
 
   DialogueStatement statement(String id) => statements.firstWhere((s) => s.id == id);
 
-  /// Of [heard], the statements the deduction compares (about its topic),
-  /// in the order heard.
-  List<String> comparable(List<String> heard) => [
-        for (final id in heard)
-          if (statement(id).about == deduction.topic) id,
-      ];
+  /// Whether statements [a] and [b] describe the same thing.
+  bool matches(String a, String b) => a != b && statement(a).thing == statement(b).thing;
 
-  /// How many witnesses' statements about the topic are in [heard].
-  int witnessesHeard(List<String> heard) => {for (final id in comparable(heard)) statement(id).speakerId}.length;
+  /// How many witnesses have given a statement in [heard].
+  int witnessesHeard(List<String> heard) => {for (final id in heard) statement(id).speakerId}.length;
 
-  /// Whether comparing is open: enough witnesses heard on the topic.
+  /// Whether comparing is open: statements from enough witnesses.
   bool canCompare(List<String> heard) => witnessesHeard(heard) >= deduction.witnesses;
+
+  /// Whether every statement still to be found once the deduction is made
+  /// is in [heard] (the mission can end).
+  bool described(List<String> heard) => heard.toSet().containsAll(deduction.then);
+
+  /// The statements a finished talk is sure to have heard: the two that
+  /// answered it and the ones found after (what the notebook keeps).
+  List<DialogueStatement> recorded() => [
+        for (final s in statements)
+          if (deduction.pair.contains(s.id) || deduction.then.contains(s.id)) s,
+      ];
 }
 
 /// How far the detective has got in a [DialogueScene]: who they are talking
@@ -213,14 +252,9 @@ class DialogueProgress {
 
   bool introSeen = false;
 
-  /// The questions besides the mission's are shown (the detective opened
-  /// them; they stay open from witness to witness until closed).
-  bool othersOpen = false;
-
-  /// How many statements on the topic had been heard when two were rightly
-  /// found different and there was no one else to compare them with: until
-  /// another is heard, the next thing to do is ask another witness.
-  int? differentAt;
+  /// The deduction is made (the two that answer it were matched): what is
+  /// left is [DialogueDeduction.then].
+  bool solved = false;
 
   bool hasAsked(String speakerId, String questionId) => asked.contains('$speakerId/$questionId');
 

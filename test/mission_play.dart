@@ -92,19 +92,31 @@ class MissionPlay {
   /// Answers [m] through its own puzzle, as a child would; stops as the
   /// Discovery Moment opens.
   Future<void> solve(WidgetTester t, Mission m) async {
-    // A talk: hear the two stories that match, then say they do (Wave 2.3).
+    // A talk: hear the two statements that match and what is still to be
+    // found after, then choose the two (judged at once, Wave 2.5.1), and go
+    // on.
     final talk = dialogueOf(m);
     if (talk != null) {
       String speakerOf(String statement) => talk.statement(statement).speakerId;
-      // Only the two that answer it: no other question is needed.
-      for (final s in talk.deduction.pair) {
+      for (final s in [...talk.deduction.pair, ...talk.deduction.then]) {
         // Arriving, the witnesses are their prints; talking, their faces.
         final lineup = find.byKey(ValueKey('lineup-${speakerOf(s)}'));
-        await tapKey(t, lineup.evaluate().isNotEmpty ? 'lineup-${speakerOf(s)}' : 'speaker-${speakerOf(s)}');
+        // From a print, the portrait flies in first and the questions follow.
+        final arriving = lineup.evaluate().isNotEmpty;
+        await tapKey(
+          t,
+          arriving ? 'lineup-${speakerOf(s)}' : 'speaker-${speakerOf(s)}',
+          after: Duration(milliseconds: arriving ? 900 : 400),
+        );
         await tapKey(t, 'question-${talk.statement(s).about}');
       }
       await tapKey(t, 'compare-statements', after: const Duration(milliseconds: 600));
-      await tapKey(t, 'say-same', after: const Duration(milliseconds: 2800));
+      for (final s in talk.deduction.pair) {
+        await tapKey(t, 'pick-$s');
+      }
+      await wait(t, const Duration(milliseconds: 2800));
+      // Everything found: DESCRIPTION RECORDED, then CONTINUE (Wave 2.5.2).
+      await tapKey(t, 'continue-investigation', after: const Duration(milliseconds: 600));
       await wait(t, const Duration(milliseconds: 800));
       return;
     }

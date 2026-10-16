@@ -57,7 +57,7 @@ void main() {
     expect(r.xp, 5 * 100 + 200 + 4 * 50 + 0 + 25);
     expect(r.wordsLookedUp, ['museum', 'thief']);
     expect(r.parentComments.join(), contains('단어 2개'));
-    expect(r.parentComments.join(), contains('Detective Tip을 3번'));
+    expect(r.parentComments.join(), contains('Detective Hint를 3번'));
     expect(r.caseSummary, contains('Case closed, Detective!'), reason: 'wrong answers are not held against the detective');
     expect(r.caseSummary, isNot(contains('hint')), reason: 'tips are never framed as a failure');
   });
