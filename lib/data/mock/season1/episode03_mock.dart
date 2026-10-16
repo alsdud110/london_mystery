@@ -175,7 +175,7 @@ const Map<String, dynamic> episode03Json = {
       'orderFeedback': 'Some steps are in the right place. Put them from very wet to almost dry.',
       'hints': [
         'Each line says how wet one footprint was. Find the wettest and the driest.',
-        'Start with the wettest print and compare each next print. Which mark would come last?',
+        'Wet shoes get drier with every step: her first print is the wettest, her last is the driest. Put the other two between them.',
       ],
       'clue': {
         'id': 'ep03_c3',

@@ -142,7 +142,9 @@ const Map<String, dynamic> episode05Json = {
         'name': 'Direction Note',
         'icon': 'letter',
         'description': 'Carved into the door.',
-        'inscription': 'Four turns are described on the door; follow them in order.',
+        // Saved once the door is open: the turns as worked out, to read
+        // again in the notebook.
+        'inscription': 'LEFT · RIGHT · LEFT · RIGHT',
       },
       'successMessage': 'Click, clack! The door opens.',
       'transition': [

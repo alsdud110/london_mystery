@@ -24,8 +24,9 @@ class LondonNightHero extends StatelessWidget {
 
   /// Where the picture is held when the phone is narrower than the picture
   /// (9:16): Big Ben stands at the right, so the crop leans right and keeps
-  /// it whole; a little of the gas lamp on the left goes instead.
-  static const focus = Alignment(0.75, -0.2);
+  /// it whole (with the camera push too); the gas lamp in front, on the
+  /// left, gives up only its outer edge.
+  static const focus = Alignment(0.6, -0.2);
 
   @override
   Widget build(BuildContext context) {

@@ -72,10 +72,37 @@ void main() {
       expect(m1.transition.join(' '), allOf(contains('small bag'), contains('fountain'), contains('card')));
       // Mission 03: the tall man had the small bag; the short woman (the Raven Society) a big bag.
       expect(m3.letter, allOf(contains('A tall man'), contains('A small bag'), contains('A short woman'), contains('A big bag')));
-      expect(m3.transition.join(' '), contains('The woman in the red hat is with the Raven Society!'));
+      // She is the Raven Society's, as a fact seen on her ticket (its raven
+      // mark), kept in the notebook too: what rules out 'A Raven Society thief'.
+      expect(m3.transition, contains('On the back, a black raven is stamped: the mark of the Raven Society.'));
+      expect(m3.evidence!.description, allOf(contains('woman in the red hat'), contains('black raven')));
+      expect(AnswerChecker.feedbackFor(fin, 'a'), allOf(contains('raven'), contains('short woman')),
+          reason: 'the wrong card is answered with that fact');
       // Mission 02: the card names him.
       expect(m2.evidence!.inscription, 'INSPECTOR GREY — LONDON DETECTIVE AGENCY');
       expect(m2.evidence!.description, contains('fountain'));
+    });
+
+    test('3b. every card is decided by what was found before the final', () {
+      final before = beforeFinal(e);
+      final labels = {for (final o in fin.options) o.id: o.label};
+      expect(labels, {'a': 'A Raven Society thief', 'b': 'The theatre guard', 'c': 'Inspector Grey', 'd': 'The juggler'});
+      // c, the answer: the man with the small bag dropped the card by the
+      // fountain (M1), the card is an inspector's (M2), and the man by the
+      // fountain is tall with a small bag, looking for something lost (final).
+      expect(m1.transition.join(' '), allOf(contains('small bag'), contains('fountain'), contains('drops a small card')));
+      expect(m2.evidence!.description, contains('fountain'));
+      expect(fin.letter, allOf(contains('A tall man'), contains('small bag'), contains('lost something')));
+      // a: the Raven Society's one is the short woman with the big bag (her
+      // ticket's raven mark, M3) — not the tall man with the small bag.
+      expect(m3.letter, allOf(contains('A short woman'), contains('A big bag'), contains('A tall man'), contains('A small bag')));
+      expect(m3.transition.join(' '), allOf(contains('woman in the red hat dropped it'), contains('mark of the Raven Society')));
+      // b: the guard was keeping his notebook at the theatre door (M3).
+      expect(m3.story.join(' '), contains('The theatre guard keeps a notebook'));
+      // d: the juggler is one of the witnesses who saw the stranger (M1).
+      expect(m1.letter, contains('The juggler:'));
+      // No line before the answer makes the Raven Society's one a man.
+      expect(before, isNot(contains('the man in the red hat')));
     });
 
     test('4. no direct leak: no line before the answer says who he is', () {
@@ -102,7 +129,9 @@ void main() {
       expect(fin.transition, contains('"Find the other half\nin Hyde Park."'));
       expect(e.hook, contains('Hyde Park'));
       expect(m3.evidence!.inscription, 'ROW R · SEAT 17');
-      expect(m3.transition, contains('Row R, seat 17. R for Raven. 17, like 8:17.'));
+      // R and 17 hinted, not explained (approved 2026-10-16).
+      expect(m3.transition, contains('Row R, seat 17. The letter R and the number 17 seem familiar.'));
+      expect(m3.transition.join(' '), allOf(isNot(contains('R for Raven')), isNot(contains('8:17'))));
       expect(m3.transition.first, contains('ticket'), reason: 'the scene shows where the ticket comes from');
       expect(byId('ep10').finalMission.transition, contains('ROW R\nSEAT 17.'));
       expect(byId('ep11').synopsis.first, contains('Row R, Seat 17'));
@@ -182,11 +211,12 @@ void main() {
 
     test('14. the post-case scene confirms what the detective proved', () {
       final scene = fin.transition.join(' ');
-      expect(fin.transition.first, 'Mrs Robin cannot say no.');
+      // The proof shown to her, then what it confirms (2026-10-15 wording).
+      expect(fin.transition.first, 'You show Mrs Robin the red button from Gallery 8.');
       expect(scene, contains('You were right.'));
       expect(scene, contains('Miss Rose was Mrs Robin all along.'));
       expect(scene, isNot(contains('are the same person')));
-      expect(fin.successMessage, 'Mrs Robin cannot say no!');
+      expect(fin.successMessage, 'The red button connects Mrs Robin to Gallery 8!');
     });
 
     test('15–16. The Raven Tower and the way into Case 09 stay', () {
@@ -381,25 +411,34 @@ const _otherCases = <String, int>{
   // Case 01 M4 matches the palace artwork (commit 3ea9964: letter 2 lines,
   // option a feedback, 2 tips; was 433367548), and its new words flag, flies,
   // fountain in the glossary (QA 2026-10-13). See test/case01_m4_scope_test.dart.
-  'ep01': 3818454493,
+  //
+  // Every case below, again — the season copy pass (approved 2026-10-16):
+  // commit 0c169cd's success lines, scenes, wrong-answer lines and tips
+  // (pointing to what was misread, never the answer), and its follow-up:
+  // 01-M1 tip 2, 02-F '817' line and tip 2, 03-M3 tip 2, 05-M2 the Direction
+  // Note keeps its turns, 09-F umbrella line and 'borrowed' in its glossary.
+  // Values before it: ep01 3818454493, ep02 1070329097, ep03 4102152038,
+  // ep04 1168042718, ep05 1744860961, ep07 3755420405, ep09 1605147981,
+  // ep10 1810398867, ep11 913478642, ep12 3787923803.
+  'ep01': 1558901493,
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
-  'ep02': 1070329097,
+  'ep02': 3508708899,
   // Wave 1 (2026-10-14): 03-M1 tip 2 (the search of Gallery 8); Wave 1.1:
   // its report's first line (three things in the gallery, not on the floor);
   // Wave 1.2: a no-break space in its title ('GALLERY 8').
-  'ep03': 4102152038,
+  'ep03': 2213693696,
   // Audit fix D3 (2026-10-12): the postmark keeps only its picture.
-  'ep04': 1168042718,
+  'ep04': 1263118138,
   // Audit fix D2 (2026-10-12): 05-M3 shows the warning on the wall.
-  'ep05': 1744860961,
+  'ep05': 1062733482,
   // Post-discovery small pass: one transition line each (07 M3, 10 M2).
   // TYPE B Phase 3A (approved 2026-10-12): Case 07 feedback lines (06, 08: guarded above).
   // Audit follow-up (2026-10-12): Case 07 glossary 'right' also means 맞는.
-  'ep07': 3755420405,
-  'ep09': 1605147981,
-  'ep10': 1810398867,
+  'ep07': 1138937255,
+  'ep09': 660966236,
+  'ep10': 1827099610,
   // Phase 4 (approved 2026-10-12): 11-M3 tip 1 (never sleeps), 12-M2 board + after, 12-F whose.
   // Audit fix N1 (2026-10-12): 11-M2 tip 1 reads from the last letter, M.
-  'ep11': 913478642,
-  'ep12': 3787923803,
+  'ep11': 4002299555,
+  'ep12': 1830498596,
 };

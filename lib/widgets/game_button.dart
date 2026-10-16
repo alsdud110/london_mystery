@@ -13,9 +13,12 @@ import 'paper_background.dart';
 /// dark night screens, [outline] a secondary action. One primary per screen.
 /// - [navy]: primary on paper. [gold]: primary on the night page.
 /// - [outline]: secondary (paper ink, or gold ink on the night page).
-/// - [glass]: primary over a full-screen painting (the season cover): dark
-///   translucent navy with a thin gold edge, so the picture stays first.
-enum GameButtonStyle { navy, gold, outline, glass }
+/// - [glass]: primary over a full-screen painting: dark translucent navy
+///   with a thin gold edge, so the picture stays first.
+/// - [parchment]: primary over the storybook's opening paintings (the title
+///   page, the season cover): a light parchment cover with an antique gold
+///   edge and navy ink, like the label on a casebook's spine.
+enum GameButtonStyle { navy, gold, outline, glass, parchment }
 
 /// The casebook tap ([GameSound.uiTap]) at [role]'s level, for a tap that
 /// is not a [GameButton] (choosing a case from a list).
@@ -113,6 +116,14 @@ class _GameButtonState extends State<GameButton> {
           AppColors.goldLight.withValues(alpha: 0.92),
           AppColors.goldLight.withValues(alpha: 0.32),
           null,
+        ),
+      // Stands on a gold edge and presses into it, as the navy button does.
+      GameButtonStyle.parchment => (
+          AppColors.paper,
+          AppColors.navy,
+          AppColors.gold,
+          AppColors.gold.withValues(alpha: 0.55),
+          AppColors.goldDeep as Color?,
         ),
       // Ink on paper; gold ink on the navy night background, where dark
       // ink would disappear (e.g. "OPEN MY NOTEBOOK" in the final case).

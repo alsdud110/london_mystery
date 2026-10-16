@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
@@ -131,6 +132,21 @@ void _whole(WidgetTester t, Finder f, Size size) {
 
 void main() {
   group('title page', () {
+    // The game's faces, so the pictures of the links show their real words.
+    setUpAll(() async {
+      for (final (family, files) in [
+        ('Sentient', ['Sentient-Variable.ttf']),
+        ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
+        ('LibreBaskerville', ['LibreBaskerville.ttf', 'LibreBaskerville-Italic.ttf']),
+      ]) {
+        final loader = FontLoader(family);
+        for (final f in files) {
+          loader.addFont(rootBundle.load('assets/fonts/$f'));
+        }
+        await loader.load();
+      }
+    });
+
     testWidgets('a small Sign in link under the game button; playing needs no account', (t) async {
       final app = await _open(t);
       await wait(t, const Duration(seconds: 3)); // the title's rise-in
@@ -143,6 +159,42 @@ void main() {
       expect(find.byType(TextField), findsWidgets);
       expect(find.textContaining('parent', findRichText: true), findsNothing, reason: 'no parent gate');
     });
+
+    // The whole group on the desk, in order and apart: the greeting, the
+    // button, NEW ADVENTURE (a returning detective), then Sign in, the least.
+    for (final (size, scale) in const [(Size(360, 640), 1.0), (Size(360, 640), 1.3), (Size(390, 844), 1.0)]) {
+      for (final returning in [false, true]) {
+        final tag = '${size.width.toInt()}x${size.height.toInt()}${scale == 1 ? '' : '_text13'}${returning ? '_save' : ''}';
+        testWidgets('the links under the button at $tag: in order, whole, comfortable to tap', (t) async {
+          await _open(t, size: size, scale: scale, guestPlayed: returning);
+          await wait(t, const Duration(seconds: 3));
+          await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // the painting
+          await t.pump();
+          expect(t.takeException(), isNull, reason: 'no overflow');
+          final order = [
+            find.text(returning ? 'Welcome back, Detective ANNA!' : 'Become a Detective.'),
+            find.text(returning ? 'CONTINUE ADVENTURE' : 'START ADVENTURE'),
+            if (returning) find.widgetWithText(TextButton, 'NEW ADVENTURE'),
+            find.widgetWithText(TextButton, 'Sign in'),
+          ];
+          for (var i = 1; i < order.length; i++) {
+            expect(t.getRect(order[i]).top, greaterThanOrEqualTo(t.getRect(order[i - 1]).bottom - 0.5), reason: '${order[i]}');
+          }
+          for (final link in order.skip(2)) {
+            _whole(t, link, size);
+            expect(t.getRect(link).height, greaterThanOrEqualTo(48), reason: '$link');
+          }
+          // Sign in stays the quieter of the two: smaller words.
+          final signIn = t.widget<Text>(find.text('Sign in')).style!;
+          if (returning) {
+            final newAdventure = t.widget<Text>(find.text('NEW ADVENTURE')).style!;
+            expect(signIn.fontSize!, lessThan(newAdventure.fontSize!));
+          }
+          expect(signIn.shadows, isNotEmpty, reason: 'lifted off the desk');
+          await capture(t, 'title_links_$tag');
+        });
+      }
+    }
 
     testWidgets('without accounts in the build: no link at all', (t) async {
       await t.pumpWidget(ProviderScope(overrides: await testOverrides(), child: const LondonMysteryApp()));
