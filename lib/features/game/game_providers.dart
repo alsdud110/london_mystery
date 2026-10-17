@@ -157,7 +157,9 @@ final currentEpisodeProvider = Provider<Episode>((ref) {
 
 class SoundEnabledNotifier extends Notifier<bool> {
   @override
-  bool build() => ref.read(sharedPreferencesProvider).getBool(AppConstants.soundEnabledKey) ?? true;
+  // Off until the player switches it on (the map's sound toggle): the sounds
+  // stay in the game, they are simply not heard by default for now.
+  bool build() => ref.read(sharedPreferencesProvider).getBool(AppConstants.soundEnabledKey) ?? false;
 
   void toggle() {
     state = !state;
