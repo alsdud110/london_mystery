@@ -40,7 +40,7 @@ Path _deckledRect(Size s, math.Random rnd, {double amp = 1.6, double step = 12})
 /// A handwritten case letter: a sheet of aged paper with slightly uneven
 /// edges, faint fold creases and a small wax seal, lying on the desk.
 class LetterCard extends StatelessWidget {
-  const LetterCard({super.key, required this.text, this.tilt = -0.01, this.textOpacity = 1, this.textSize = 19});
+  const LetterCard({super.key, required this.text, this.tilt = -0.01, this.textOpacity = 1, this.textSize = 19, this.compact = false});
 
   final String text;
   final double tilt;
@@ -52,6 +52,10 @@ class LetterCard extends StatelessWidget {
   /// The writing fades in last when the letter has just been unfolded.
   final double textOpacity;
 
+  /// Written close, as one block (a report handed over that must read on
+  /// one small screen, under a button that stays in sight).
+  final bool compact;
+
   @override
   Widget build(BuildContext context) {
     return Transform.rotate(
@@ -61,11 +65,19 @@ class LetterCard extends StatelessWidget {
         children: [
           CustomPaint(
             painter: const _LetterPaperPainter(),
+            // Room round the writing; below it, clear of the seal.
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(28, 30, 28, 40),
+              padding: compact
+                  ? const EdgeInsets.fromLTRB(28, 30, 28, 40)
+                  : const EdgeInsets.fromLTRB(28, AppSpace.xxl, 28, AppSpace.xxxl),
               child: SizedBox(
                 width: double.infinity,
-                child: Opacity(opacity: textOpacity, child: GlossaryText(text, style: AppText.letter(size: textSize))),
+                child: Opacity(
+                  opacity: textOpacity,
+                  child: compact
+                      ? GlossaryText(text, style: AppText.letter(size: textSize))
+                      : _LetterBody(text: text, size: textSize),
+                ),
               ),
             ),
           ),
@@ -75,6 +87,36 @@ class LetterCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// The letter's writing, read line by line as it was written: a new line
+/// (a new sentence) starts a little apart from the one before, more than a
+/// line that only wraps; a blank line opens a paragraph, further apart
+/// still. Each written line keeps its dotted words ([GlossaryText]).
+class _LetterBody extends StatelessWidget {
+  const _LetterBody({required this.text, required this.size});
+
+  final String text;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = AppText.letter(size: size).copyWith(height: 1.65);
+    // The gaps follow the writing's size, and so the text size setting.
+    final scale = MediaQuery.textScalerOf(context).scale(size);
+    final children = <Widget>[];
+    var paragraph = false;
+    for (final line in text.split('\n')) {
+      if (line.trim().isEmpty) {
+        paragraph = children.isNotEmpty;
+        continue;
+      }
+      if (children.isNotEmpty) children.add(SizedBox(height: scale * (paragraph ? 1.2 : 0.4)));
+      children.add(GlossaryText(line, style: style));
+      paragraph = false;
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 }
 
@@ -99,11 +141,22 @@ class _LetterPaperPainter extends CustomPainter {
         Paint()..color = AppColors.parchmentDark.withValues(alpha: 0.08),
       );
     }
-    // Where the letter was folded in three.
+    // Where the letter was folded in three: clear at the paper's edges,
+    // fading to a trace under the writing so it never crosses the words.
+    Paint crease(Color color, double edge, double middle, double y) => Paint()
+      ..shader = LinearGradient(
+        colors: [
+          color.withValues(alpha: edge),
+          color.withValues(alpha: middle),
+          color.withValues(alpha: middle),
+          color.withValues(alpha: edge),
+        ],
+        stops: const [0, 0.12, 0.88, 1],
+      ).createShader(Rect.fromLTWH(0, y, size.width, 1));
     for (final f in [1 / 3, 2 / 3]) {
       final y = size.height * f;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), Paint()..color = AppColors.ink.withValues(alpha: 0.07));
-      canvas.drawLine(Offset(0, y + 1), Offset(size.width, y + 1), Paint()..color = AppColors.paperLight.withValues(alpha: 0.6));
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), crease(AppColors.ink, 0.06, 0.02, y));
+      canvas.drawLine(Offset(0, y + 1), Offset(size.width, y + 1), crease(AppColors.paperLight, 0.5, 0.12, y + 1));
     }
     canvas.restore();
 

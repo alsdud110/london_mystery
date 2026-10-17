@@ -152,7 +152,7 @@ class _InvestigationArrivalState extends ConsumerState<InvestigationArrival> wit
                               opacity: document,
                               child: Transform.translate(
                                 offset: Offset(0, 40 * (1 - document)),
-                                child: LetterCard(key: const ValueKey('arrival-report'), text: widget.letter, textSize: 17),
+                                child: LetterCard(key: const ValueKey('arrival-report'), text: widget.letter, textSize: 17, compact: true),
                               ),
                             ),
                           ],

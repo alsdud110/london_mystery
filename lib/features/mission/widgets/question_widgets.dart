@@ -366,6 +366,14 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
           autocorrect: false,
           enableSuggestions: false,
           maxLength: 20,
+          // With the keyboard up, the page scrolls the field into view with
+          // room below it for CHECK ANSWER (the gap and a 56-high button).
+          scrollPadding: const EdgeInsets.fromLTRB(
+            AppSpace.xl,
+            AppSpace.xl,
+            AppSpace.xl,
+            AppSpace.lg + 56 + AppSpace.xl,
+          ),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
             LengthLimitingTextInputFormatter(20),

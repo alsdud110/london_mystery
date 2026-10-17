@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/widgets/letter_card.dart';
 import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/mock/season1/season1_learning.dart';
@@ -182,7 +183,9 @@ void main() {
         // The board, one line longer, still reads on the letter sheet.
         await tapText(t, 'TRY AGAIN', after: const Duration(milliseconds: 600));
         await tapText(t, 'Reread Letter', after: const Duration(milliseconds: 800));
-        expect(findReadable('after the train from Edinburgh."'), findsNothing, reason: 'one letter, many lines');
+        expect(find.byType(LetterCard), findsOneWidget, reason: 'one letter, many lines');
+        expect(find.descendant(of: find.byType(LetterCard), matching: findReadable('after the train from Edinburgh."')), findsOneWidget,
+            reason: 'the board line, on the letter');
         expect(find.textContaining('10:15', findRichText: true), findsWidgets);
         await capture(t, 'phase4_board_letter_$tag');
         expect(t.takeException(), isNull);

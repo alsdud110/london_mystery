@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/widgets/letter_card.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
@@ -205,8 +206,10 @@ void main() {
     expect(find.bySemanticsLabel(RegExp('^Sealed letter. Tap to open.')), findsOneWidget, reason: 'for screen readers too');
     await t.tap(find.text('TAP TO OPEN'));
     await wait(t, const Duration(milliseconds: 1400));
-    expect(findReadable('Dear Detective MinYoung,\n\nMy little cat, Pip, is lost!\nPip loves warm places.\nPlease help me find her.\n\n— Mr Finch'),
-        findsOneWidget);
+    // The letter, written line by line on the one sheet.
+    for (final line in ['Dear Detective MinYoung,', 'My little cat, Pip, is lost!', 'Pip loves warm places.', 'Please help me find her.', '— Mr Finch']) {
+      expect(find.descendant(of: find.byType(LetterCard), matching: findReadable(line)), findsOneWidget, reason: line);
+    }
     await reveal(t, find.text('Letter'));
     await t.tap(find.text('Letter'));
     await wait(t, const Duration(milliseconds: 700));

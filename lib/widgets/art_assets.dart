@@ -113,10 +113,9 @@ abstract final class ArtAssets {
   /// before avatars existed is shown as the boy (as in How to Play).
   ///
   /// Cut-outs on transparency (RGBA), waist up. They were delivered with a
-  /// checkered backdrop painted in; the delivered files are kept untouched
-  /// in `detectives/original/` (not in the app) and the backdrop was taken
-  /// out by `tool/detective_cutout/`. Shown whole (an illustration) or in
-  /// a medallion ([detectiveCrops]).
+  /// checkered backdrop painted in, which was taken out once (the delivered
+  /// files are no longer kept). Shown whole (an illustration) or in a
+  /// medallion ([detectiveCrops]).
   static String detective(DetectiveAvatar? avatar, DetectiveExpression expression) =>
       '${_art}detectives/${(avatar ?? DetectiveAvatar.boy).name}/${expression.name}.png';
 

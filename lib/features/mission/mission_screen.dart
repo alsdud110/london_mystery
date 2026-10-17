@@ -21,6 +21,7 @@ import '../../widgets/detective_character.dart';
 import '../../widgets/detective_tips.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/back_to.dart';
+import '../../widgets/centered_scroll.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
@@ -426,6 +427,14 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   }
 }
 
+/// The page margins of the place, the letter and the puzzle: the same on
+/// all three, and the same above and below, so each page's group sits in
+/// the true middle when it fits ([CenteredScroll]).
+const _stagePadding = EdgeInsets.symmetric(
+  horizontal: AppSpace.screen,
+  vertical: AppSpace.xl,
+);
+
 /// The place: its name, and the story's title in a quiet line below.
 class _PlaceHeading extends StatelessWidget {
   const _PlaceHeading({required this.mission});
@@ -456,13 +465,10 @@ class _StoryStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final m = mission;
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpace.screen,
-        AppSpace.sm,
-        AppSpace.screen,
-        AppSpace.xxl,
-      ),
+    // The heading, the picture, the story and the way in are one group:
+    // centred under the bar when they fit, scrolled from the top when not.
+    return CenteredScroll(
+      padding: _stagePadding,
       children: [
         _PlaceHeading(mission: m),
         const SizedBox(height: AppSpace.xl),
@@ -535,13 +541,11 @@ class _LetterStage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpace.screen,
-        AppSpace.lg,
-        AppSpace.screen,
-        AppSpace.xxl,
-      ),
+    // The intro, the letter, the dotted-word note and the button are one
+    // group: centred under the bar when the letter is short, read from the
+    // top and scrolled when it is long.
+    return CenteredScroll(
+      padding: _stagePadding,
       children: [
         GlossaryText(
           mission.letterIntro,
@@ -555,28 +559,37 @@ class _LetterStage extends StatelessWidget {
           onOpen: onOpening,
           onOpened: onOpened,
         ),
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: !opened
-              ? const SizedBox(key: ValueKey('sealed'), height: AppSpace.xl)
-              : Column(
-                  key: const ValueKey('open'),
-                  children: [
-                    const SizedBox(height: AppSpace.lg),
-                    Text(
-                      'Tap a dotted word to see what it means.',
-                      style: AppText.caption(),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpace.xl),
-                    GameButton(
-                      label: 'SOLVE THE PUZZLE',
-                      arrow: true,
-                      tap: TapRole.primary,
-                      onPressed: onDone,
-                    ),
-                  ],
-                ),
+        // The note and the button arrive with a short grow, so the centred
+        // group eases up to make room instead of jumping.
+        AnimatedSize(
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.topCenter,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: !opened
+                ? const SizedBox(key: ValueKey('sealed'), height: AppSpace.xl)
+                : Column(
+                    key: const ValueKey('open'),
+                    children: [
+                      const SizedBox(height: AppSpace.lg),
+                      Text(
+                        'Tap a dotted word to see what it means.',
+                        style: AppText.caption(),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpace.xl),
+                      GameButton(
+                        label: 'SOLVE THE PUZZLE',
+                        arrow: true,
+                        tap: TapRole.primary,
+                        onPressed: onDone,
+                      ),
+                    ],
+                  ),
+          ),
         ),
       ],
     );
@@ -607,13 +620,11 @@ class _PuzzleStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tipLabel = nextTipLabel(mission.hints, hintsShown);
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpace.screen,
-        AppSpace.sm,
-        AppSpace.screen,
-        AppSpace.xxl,
-      ),
+    // From the heading to Reread Letter and the tip, one group: centred
+    // under the bar when it fits (whatever the puzzle's size), scrolled from
+    // the top when it does not — a small phone, large text, the keyboard up.
+    return CenteredScroll(
+      padding: _stagePadding,
       children: [
         Text(
           'MISSION ${mission.numberLabel} · THE PUZZLE',
