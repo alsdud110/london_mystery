@@ -59,13 +59,22 @@ class HowToPlayScreen extends ConsumerStatefulWidget {
 }
 
 class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
+  /// The page open, or being turned to: NEXT and BACK go from here, and
+  /// only it takes taps (not the one turning away).
   int _page = 0;
+
+  /// The book's pages, turned by a swipe or by NEXT / BACK alike.
+  final _book = PageController();
+
+  /// A page turn: long enough to be seen, short enough not to wait for.
+  static const _turn = Duration(milliseconds: 300);
 
   /// Set once the guide is left: later taps do nothing (no double move).
   bool _leaving = false;
 
   /// A quick second tap on NEXT / BACK does not skip a page: one move, then
-  /// a short rest.
+  /// a short rest, while the book takes no touch (a touch would stop the
+  /// page half turned).
   Timer? _resting;
 
   // The practice, kept here so BACK and NEXT find each page as it was left.
@@ -95,13 +104,44 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
   @override
   void dispose() {
     _resting?.cancel();
+    _book.dispose();
     super.dispose();
   }
 
+  /// NEXT and BACK: one page on or back, as a swipe would turn it (at once
+  /// with reduced motion). Never past the first or the last page: the last
+  /// one is left only by its own button.
   void _move(int to) {
-    if (_leaving || to == _page || (_resting?.isActive ?? false)) return;
-    _resting = Timer(const Duration(milliseconds: 300), () {});
-    setState(() => _page = to.clamp(0, HowToPlayScreen.pageCount - 1));
+    if (_leaving || to < 0 || to >= HowToPlayScreen.pageCount || to == _page) return;
+    if (_resting?.isActive ?? false) return;
+    _resting = Timer(_turn, () {
+      if (mounted) setState(() {});
+    });
+    setState(() => _page = to);
+    if (!_book.hasClients) return;
+    if (_still) {
+      _book.jumpToPage(to);
+    } else {
+      _book.animateToPage(to, duration: _turn, curve: Curves.easeOutCubic);
+    }
+  }
+
+  /// A swipe has turned the book past half a page.
+  void _turned(int page) {
+    if (page != _page) setState(() => _page = page);
+  }
+
+  /// The book never rests between two pages. A swipe or NEXT always ends on
+  /// one; bringing something on a page into view (focus, a screen reader)
+  /// can also scroll the book sideways, so it is set back square.
+  bool _rested(ScrollEndNotification end) {
+    if (end.depth != 0 || !_book.hasClients) return false;
+    final at = _book.page;
+    if (at == null || (at - at.roundToDouble()).abs() < 0.001) return false;
+    scheduleMicrotask(() {
+      if (mounted && _book.hasClients) _book.jumpToPage(at.round());
+    });
+    return false;
   }
 
   void _next() => _move(_page + 1);
@@ -174,36 +214,38 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
       onBack: _back,
       child: Scaffold(
         backgroundColor: AppColors.nightBottom,
-        // Turning a page: the spread fades, a little to the side.
-        body: AnimatedSwitcher(
-          duration: _still ? Duration.zero : const Duration(milliseconds: 280),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeInCubic,
-          // The page being turned away takes no more taps.
-          layoutBuilder: (current, previous) => Stack(
-            fit: StackFit.expand,
-            children: [
-              for (final p in previous) IgnorePointer(child: p),
-              ?current,
-            ],
-          ),
-          transitionBuilder: (child, a) => FadeTransition(
-            opacity: a,
-            child: SlideTransition(
-              position: Tween(begin: const Offset(0.03, 0), end: Offset.zero).animate(a),
-              child: child,
+        // Turning a page: a swipe either way, or NEXT / BACK. The scenes
+        // only tap and scroll up and down, so a sideways drag is the book's.
+        body: NotificationListener<ScrollEndNotification>(
+          onNotification: _rested,
+          child: AbsorbPointer(
+            absorbing: _resting?.isActive ?? false,
+            child: PageView.builder(
+              controller: _book,
+              itemCount: HowToPlayScreen.pageCount,
+              onPageChanged: _turned,
+              // No give past the first or last page: the guide is never left
+              // by a swipe (the last page is left by START FIRST CASE only).
+              physics: _leaving ? const NeverScrollableScrollPhysics() : const _BookPhysics(),
+              // Each page read on its own by a screen reader, as before (a
+              // page of the book is not one long button); the page being
+              // turned away takes no more taps.
+              itemBuilder: (context, i) => Semantics(
+                container: true,
+                explicitChildNodes: true,
+                child: IgnorePointer(ignoring: i != _page, child: _spread(i, name, detective.avatar)),
+              ),
             ),
           ),
-          child: KeyedSubtree(key: ValueKey(_page), child: _spread(name, detective.avatar)),
         ),
       ),
     );
   }
 
-  Widget _spread(String? name, DetectiveAvatar? avatar) {
+  Widget _spread(int page, String? name, DetectiveAvatar? avatar) {
     Widget paper({required String title, required String line, required Widget scene, required String caption}) =>
         _PaperSpread(
-          page: _page,
+          page: page,
           title: title,
           line: line,
           scene: scene,
@@ -212,7 +254,7 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
           onSkip: _done,
           onNext: _next,
         );
-    return switch (_page) {
+    return switch (page) {
       0 => _WelcomeSpread(name: name, avatar: avatar, onNext: _next, onBack: _back, onSkip: _done),
       1 => paper(
         title: 'Read the Letter',
@@ -295,6 +337,19 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
 // ─────────────────────────────────────────────────────────────────────────────
 // The book: its pages, frame, dots and button
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// The book's pages under the finger: no give past the first or the last,
+/// and a page let go settles as briskly as NEXT turns one (about 300ms),
+/// with no bounce.
+class _BookPhysics extends PageScrollPhysics {
+  const _BookPhysics({ScrollPhysics? parent}) : super(parent: parent ?? const ClampingScrollPhysics());
+
+  @override
+  _BookPhysics applyTo(ScrollPhysics? ancestor) => _BookPhysics(parent: buildParent(ancestor));
+
+  @override
+  SpringDescription get spring => SpringDescription.withDampingRatio(mass: 0.5, stiffness: 260, ratio: 1.0);
+}
 
 /// A parchment leaf of the storybook laid on the navy night, inside an
 /// antique gold frame: BACK and SKIP at the top, the page's title and line,
@@ -941,8 +996,26 @@ class _WelcomeSpread extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
             child: Row(
               children: [
-                const _PageDots(page: 0, onNight: true),
-                const Spacer(),
+                // The first page only: the book also turns with a swipe.
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const _PageDots(page: 0, onNight: true),
+                      const SizedBox(height: AppSpace.sm),
+                      MediaQuery.withClampedTextScaling(
+                        maxScaleFactor: 1.15,
+                        child: Text(
+                          'Swipe to explore',
+                          style: AppText.caption(color: AppColors.goldLight.withValues(alpha: 0.75))
+                              .copyWith(fontSize: 12.5, fontStyle: FontStyle.italic, shadows: _nightLift()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpace.sm),
                 _StorybookButton(label: 'NEXT', onPressed: onNext),
               ],
             ),

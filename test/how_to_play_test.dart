@@ -163,10 +163,11 @@ void main() {
     await next(t);
     await next(t);
     expect(find.text(titles[2]), findsOneWidget);
-    // Two taps in a row move one page, not two.
-    await t.tap(find.text('NEXT').hitTestable());
+    // Two taps in a row (the same spot) move one page, not two.
+    final spot = t.getCenter(find.text('NEXT').hitTestable());
+    await t.tapAt(spot);
     await t.pump(const Duration(milliseconds: 60));
-    await t.tap(find.text('NEXT').hitTestable());
+    await t.tapAt(spot);
     await wait(t, const Duration(milliseconds: 450));
     expect(find.text(titles[3]), findsOneWidget, reason: 'one page for a double tap');
     await t.tap(find.byTooltip('Back'));
@@ -331,8 +332,177 @@ void main() {
     await wait(t, const Duration(seconds: 3));
   });
 
+  // Turning the pages by swipe as well as by NEXT / BACK.
+  group('swipe', () {
+    /// A swipe across the open page: [left] to the next one, else back.
+    Future<void> swipe(WidgetTester t, {required bool left}) async {
+      await t.fling(find.byType(PageView), Offset(left ? -260 : 260, 0), 1200);
+      await wait(t, const Duration(milliseconds: 450));
+    }
+
+    String? openPage(WidgetTester t) {
+      for (var i = 0; i < titles.length; i++) {
+        if (find.text(titles[i]).hitTestable().evaluate().isNotEmpty) return titles[i];
+      }
+      return null;
+    }
+
+    testWidgets('left: the next page, right: the one before; the dots follow; NEXT and BACK too', (t) async {
+      final semantics = t.ensureSemantics();
+      await pump(t);
+      await register(t);
+      expect(find.text('Swipe to explore'), findsOneWidget, reason: 'the hint, on the first page');
+      for (var i = 1; i < titles.length; i++) {
+        await swipe(t, left: true);
+        expect(openPage(t), titles[i], reason: 'swiped to page ${i + 1}');
+        expect(find.bySemanticsLabel('Page ${i + 1} of 8'), findsOneWidget, reason: 'the dots, after a swipe');
+        expect(find.text('Swipe to explore'), findsNothing, reason: 'the first page only');
+      }
+      for (var i = titles.length - 2; i >= 0; i--) {
+        await swipe(t, left: false);
+        expect(openPage(t), titles[i], reason: 'swiped back to page ${i + 1}');
+        expect(find.bySemanticsLabel('Page ${i + 1} of 8'), findsOneWidget);
+      }
+      // The buttons and a swipe, mixed: one move each.
+      await next(t);
+      await swipe(t, left: true);
+      expect(openPage(t), titles[2]);
+      await t.tap(find.byTooltip('Back'));
+      await wait(t, const Duration(milliseconds: 450));
+      expect(openPage(t), titles[1]);
+      expect(find.bySemanticsLabel('Page 2 of 8'), findsOneWidget);
+      await wait(t, const Duration(seconds: 3));
+      semantics.dispose();
+    });
+
+    testWidgets('never past the first page, nor out of the last one: only START FIRST CASE ends it', (t) async {
+      await pump(t);
+      await register(t);
+      await swipe(t, left: false);
+      await swipe(t, left: false);
+      expect(openPage(t), titles.first, reason: 'nothing before the first page');
+      expect(path(t), Routes.howToPlay, reason: 'a swipe does not leave the guide');
+      for (var i = 1; i < titles.length; i++) {
+        await swipe(t, left: true);
+      }
+      expect(openPage(t), titles.last);
+      await swipe(t, left: true);
+      await swipe(t, left: true);
+      expect(openPage(t), titles.last, reason: 'nothing after the last page');
+      expect(path(t), Routes.howToPlay, reason: 'not finished by a swipe');
+      expect(app(t).read(howToPlaySeenProvider), isFalse);
+      await tapText(t, 'START FIRST CASE', after: const Duration(milliseconds: 1500));
+      expect(path(t), Routes.season);
+      expect(app(t).read(howToPlaySeenProvider), isTrue);
+      await wait(t, const Duration(seconds: 3));
+    });
+
+    testWidgets('quick swipes and taps: one page each, in order, never skipped', (t) async {
+      await pump(t);
+      await register(t);
+      // Two quick swipes: two pages on, one by one.
+      await t.fling(find.byType(PageView), const Offset(-260, 0), 1200);
+      await t.pump(const Duration(milliseconds: 80));
+      await t.fling(find.byType(PageView), const Offset(-260, 0), 1200);
+      await wait(t, const Duration(milliseconds: 600));
+      expect(openPage(t), titles[2]);
+      // A double tap on NEXT straight after a swipe: one page more.
+      await t.fling(find.byType(PageView), const Offset(-260, 0), 1200);
+      await wait(t, const Duration(milliseconds: 450));
+      expect(openPage(t), titles[3]);
+      final spot = t.getCenter(find.text('NEXT').hitTestable());
+      await t.tapAt(spot);
+      await t.pump(const Duration(milliseconds: 40));
+      await t.tapAt(spot);
+      await t.pump(const Duration(milliseconds: 40));
+      await t.tapAt(spot);
+      await wait(t, const Duration(milliseconds: 600));
+      expect(openPage(t), titles[4], reason: 'three quick taps, one page');
+      // And quickly back again.
+      await t.fling(find.byType(PageView), const Offset(260, 0), 1200);
+      await t.pump(const Duration(milliseconds: 80));
+      await t.fling(find.byType(PageView), const Offset(260, 0), 1200);
+      await wait(t, const Duration(milliseconds: 600));
+      expect(openPage(t), titles[2]);
+      await wait(t, const Duration(seconds: 3));
+    });
+
+    testWidgets('the practice still answers its taps, and a tall page still scrolls, after a swipe', (t) async {
+      final semantics = t.ensureSemantics();
+      await pump(t, size: const Size(360, 640), scale: 1.3);
+      await register(t);
+      final walletBefore = app(t).read(walletProvider).balance;
+      await swipe(t, left: true);
+      // The letter.
+      await reveal(t, find.text('TAP TO OPEN'));
+      await t.tap(find.text('TAP TO OPEN'));
+      await wait(t, const Duration(milliseconds: 1400));
+      expect(find.text('TAP TO OPEN'), findsNothing);
+      await swipe(t, left: true);
+      await swipe(t, left: false);
+      expect(find.text('TAP TO OPEN'), findsNothing, reason: 'still open after swiping away and back');
+      // The witness.
+      await swipe(t, left: true);
+      await reveal(t, find.text('Where did she go?'));
+      await t.tap(find.text('Where did she go?'));
+      await wait(t, const Duration(milliseconds: 400));
+      expect(find.text('"She jumped up to the roof, next to the warm chimney."'), findsOneWidget);
+      // The practice puzzle: the page scrolls up and down, the book stays.
+      await swipe(t, left: true);
+      final inner = find.descendant(of: find.byType(PageView), matching: find.byType(Scrollable)).first;
+      final scroll = t.state<ScrollableState>(inner).position;
+      expect(scroll.maxScrollExtent, greaterThan(0), reason: 'a tall page on a small phone with large text');
+      await t.drag(inner, const Offset(0, -200));
+      await wait(t, const Duration(milliseconds: 400));
+      expect(scroll.pixels, greaterThan(0), reason: 'scrolled down');
+      expect(openPage(t), titles[3], reason: 'an upward drag is not a page turn');
+      await t.tap(find.bySemanticsLabel('On the warm roof'));
+      await t.pump();
+      await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 400));
+      expect(find.text('Well done!'), findsOneWidget);
+      // A dotted word.
+      await swipe(t, left: true);
+      await t.tapOnText(find.textRange.ofSubstring('chimney'));
+      await wait(t, const Duration(milliseconds: 600));
+      expect(find.text('WORD CARD'), findsOneWidget);
+      await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
+      // The free hint, then the notebook's tabs.
+      await swipe(t, left: true);
+      await tapText(t, 'GET A FREE HINT', after: const Duration(milliseconds: 500));
+      expect(find.text('Read the letter again. What does Pip love?'), findsOneWidget);
+      await swipe(t, left: true);
+      await tapText(t, 'EVIDENCE', after: const Duration(milliseconds: 400));
+      expect(find.text("Mr Finch's Letter"), findsOneWidget);
+      expect(app(t).read(walletProvider).balance, walletBefore, reason: 'real coins untouched');
+      await wait(t, const Duration(seconds: 3));
+      semantics.dispose();
+    });
+
+    testWidgets('reduced motion: NEXT turns the page at once', (t) async {
+      await pump(t);
+      await register(t);
+      t.platformDispatcher.accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(t.platformDispatcher.clearAccessibilityFeaturesTestValue);
+      await t.pump();
+      await t.tap(find.text('NEXT').hitTestable());
+      await t.pump();
+      await t.pump();
+      expect(find.text(titles[1]), findsOneWidget, reason: 'no turning animation to wait for');
+      expect(find.text(titles[0]), findsNothing, reason: 'the page before already gone');
+      expect(t.getRect(find.text(titles[1])).center.dx, closeTo(195, 1), reason: 'square on the screen');
+      await wait(t, const Duration(seconds: 3));
+    });
+  });
+
   // 13. Every page whole on a small phone and with large text; the pictures.
-  for (final (size, scale) in const [(Size(360, 640), 1.0), (Size(360, 640), 1.3), (Size(390, 844), 1.0), (Size(390, 844), 1.3)]) {
+  for (final (size, scale) in const [
+    (Size(360, 640), 1.0),
+    (Size(360, 640), 1.3),
+    (Size(390, 844), 1.0),
+    (Size(390, 844), 1.3),
+    (Size(430, 932), 1.0),
+    (Size(430, 932), 1.3),
+  ]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}${scale == 1 ? '' : '_text13'}';
     testWidgets('every page at $tag: no overflow, the way on always on screen', (t) async {
       await pump(t, size: size, scale: scale);
