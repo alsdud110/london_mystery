@@ -149,8 +149,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       // The season above its cases (needs a detective, like every page below).
       GoRoute(path: Routes.season, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const SeasonScreen()))),
-      // The season's opening, once, from the casebook, before Case 01. It
-      // handles back itself: the scene before, or the casebook.
+      // The season's opening, before Case 01: from the casebook, or straight
+      // from How to Play's START FIRST CASE. It handles back itself: the
+      // scene before, or the casebook.
       GoRoute(path: Routes.prologue, pageBuilder: (c, s) => _fade(s, const SeasonPrologueScreen())),
       GoRoute(
         path: Routes.episodes,

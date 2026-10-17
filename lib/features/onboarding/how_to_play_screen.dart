@@ -147,16 +147,19 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
   void _next() => _move(_page + 1);
 
   /// Out of the guide, forwards (finished or skipped): learnt, and on.
-  void _done() {
+  /// [started]: START FIRST CASE on the last page, which already introduced
+  /// the season — straight into its opening (as BEGIN SEASON ONE would, which
+  /// prepares nothing more), then Case 01. SKIP still goes to the casebook.
+  void _done({bool started = false}) {
     if (_leaving) return;
     _leaving = true;
     ref.read(howToPlaySeenProvider.notifier).complete();
     if (widget.again) {
       context.canPop() ? context.pop() : context.go(Routes.map);
     } else {
-      // The way registration always went: the season's casebook, then its
-      // opening, then Case 01 (none of them skipped).
-      context.go(Routes.season);
+      // `go`: nothing lies under the opening; its back from the first scene
+      // goes to the casebook, never into the finished guide.
+      context.go(started ? Routes.prologue : Routes.season);
     }
   }
 
@@ -326,7 +329,7 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
         scene: _practice(_NotebookScene(tab: _notebookTab, onTab: (i) => setState(() => _notebookTab = i))),
       ),
       _ => _ReadySpread(
-        onStart: _done,
+        onStart: () => _done(started: true),
         onBack: _back,
         startLabel: widget.again ? 'BACK TO MY CASE' : 'START FIRST CASE',
       ),

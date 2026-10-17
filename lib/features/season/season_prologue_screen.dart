@@ -22,8 +22,8 @@ import 'season_overview.dart';
 import 'widgets/prologue_art.dart';
 import 'widgets/season_props.dart';
 
-/// The season's opening sequence, played once — from the casebook, before
-/// the first case. Short scenes, one message each, the picture first:
+/// The season's opening sequence, played once — from the casebook (or from
+/// How to Play's START FIRST CASE), before the first case. Short scenes, one message each, the picture first:
 ///
 ///  1. London at night: something strange is happening.
 ///  2. The desk: the kinds of trouble, laid down one by one.
