@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/data/models/detective_name.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/mock/season1/season1_mock.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
@@ -173,7 +174,9 @@ void main() {
         await wait(t, const Duration(milliseconds: 300));
         expect(t.takeException(), isNull);
         for (final line in f.transition) {
-          expect(storyLine(line), findsNWidgets(f.transition.where((l) => l == line).length), reason: line);
+          // A line spoken to the detective is read with the detective's name.
+          expect(storyLine(DetectiveName.address(line, 'MINYOUNG')),
+              findsNWidgets(f.transition.where((l) => l == line).length), reason: line);
         }
         expect(find.text('TO THE MAP'), findsNothing);
         expect(find.text('NEW PLACE UNLOCKED'), findsNothing);

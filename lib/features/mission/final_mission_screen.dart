@@ -31,6 +31,7 @@ import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
+import '../../data/models/detective_name.dart';
 
 /// The final case: four picture locks. The player must combine what they
 /// collected — the lock order (Crown Symbol evidence) and the number each
@@ -687,7 +688,7 @@ class _CaseSolvedBanner extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Brilliant work, Detective $detectiveName!',
+              'Brilliant work, ${DetectiveName.title(detectiveName)}!',
               style: AppText.subtitle(color: AppColors.goldLight),
               textAlign: TextAlign.center,
             ),

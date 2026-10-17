@@ -17,6 +17,7 @@ import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
 import 'title_screen_test.dart' show capture;
+import 'personalized_lines.dart';
 
 /// Reasoning: the final small pass (Cases 06 and 08). Each final is solved
 /// with what the detective found, not by matching a word on the page:
@@ -241,7 +242,8 @@ void main() {
       return h;
     }
 
-    final now = {for (final e in season) e.id: fnv(jsonEncode(e.toJson()))};
+    // The lines that name the detective are read as they were (2026-10-17).
+    final now = {for (final e in season) e.id: fnv(withoutNames(jsonEncode(e.toJson())))};
     expect({for (final id in now.keys) if (id != 'ep06' && id != 'ep08') id: now[id]}, _otherCases);
   });
 

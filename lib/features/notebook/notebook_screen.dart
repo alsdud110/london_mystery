@@ -20,6 +20,7 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'season_archive.dart';
+import '../../data/models/detective_name.dart';
 
 /// The Detective Notebook, in two parts: THIS CASE (clues, evidence and
 /// badges of the open case) and the CASE ARCHIVE (every case of the season,
@@ -161,7 +162,7 @@ class _NotebookCover extends StatelessWidget {
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
-                  child: Text('Detective ${progress.detectiveName ?? ''}',
+                  child: Text(DetectiveName.title(progress.detectiveName),
                       maxLines: 1, style: AppText.title(size: 21, color: AppColors.paperLight)),
                 ),
               ],

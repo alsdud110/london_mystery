@@ -37,9 +37,31 @@ abstract final class DetectiveName {
   /// case). Without a name the placeholder and the space before it go
   /// ("Hello, Detective {detectiveName}!" → "Hello, Detective!"): a line
   /// never shows "null" or the placeholder itself.
+  ///
+  /// A name that already starts with the title ("Detective Lu") is not
+  /// titled twice: "Dear Detective {detectiveName}," → "Dear Detective Lu,".
+  /// The name goes in as plain text (never as a pattern), whatever it holds.
   static String address(String text, String? name) {
-    final n = name?.trim() ?? '';
+    final n = normalize(name ?? '');
     if (n.isEmpty) return text.replaceAll(' $placeholder', '').replaceAll(placeholder, '');
+    if (_titled.hasMatch(n)) text = text.replaceAll('$_title $placeholder', n);
     return text.replaceAll(placeholder, n);
+  }
+
+  static const _title = 'Detective';
+  static final _titled = RegExp(r'^detective(\s|$)', caseSensitive: false);
+
+  /// How the game names the detective on its own: "Detective Luna" (or just
+  /// "Detective" without a name, and never "Detective Detective Lu").
+  static String title(String? name) => address('$_title $placeholder', name);
+
+  /// [text] split around each [placeholder]: the parts as written, with the
+  /// name's place between them (`null`). For a surface that must keep the
+  /// name apart from the words around it (a name is never a dotted word).
+  static List<String?> splitAtName(String text) {
+    final parts = text.split(placeholder);
+    return [
+      for (final (i, part) in parts.indexed) ...[if (i > 0) null, part],
+    ];
   }
 }

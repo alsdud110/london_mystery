@@ -38,6 +38,7 @@ import 'widgets/dialogue_investigation.dart';
 import 'widgets/investigation_search.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
+import '../../data/models/detective_name.dart';
 
 /// The three steps of a mission. Each screen offers one main action.
 enum MissionStage { story, letter, puzzle }
@@ -689,7 +690,7 @@ class _SolvedStage extends ConsumerWidget {
         const Center(child: InkStamp('SOLVED', color: AppColors.success)),
         const SizedBox(height: AppSpace.md),
         Text(
-          m.successMessage,
+          DetectiveName.address(m.successMessage, ref.watch(gameControllerProvider).detectiveName),
           style: AppText.bodyText(),
           textAlign: TextAlign.center,
         ),

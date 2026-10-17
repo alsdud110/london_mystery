@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
+import '../data/models/detective_name.dart';
 import '../data/models/episode.dart';
 import '../features/game/game_controller.dart';
 import '../features/game/game_providers.dart';
@@ -14,6 +15,10 @@ import 'paper.dart';
 /// English text where harder words (from the episode glossary) get a dotted
 /// underline. Tapping one shows its meaning — the translation is never shown
 /// up front, so children still read the English first.
+///
+/// A line that speaks to the player ([DetectiveName.placeholder], e.g.
+/// "Dear Detective {detectiveName},") is written with the detective's name
+/// as saved now; the name is plain text, never a dotted word.
 class GlossaryText extends ConsumerStatefulWidget {
   const GlossaryText(
     this.text, {
@@ -75,8 +80,43 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
   Widget build(BuildContext context) {
     _disposeRecognizers();
     final Episode episode = widget.episode ?? ref.watch(currentEpisodeProvider);
+    final name = ref.watch(gameControllerProvider.select((s) => s.detectiveName));
     final spans = <InlineSpan>[];
-    for (final match in _tokens.allMatches(widget.text)) {
+    for (final (text, isName) in _pieces(widget.text, name)) {
+      if (isName) {
+        spans.add(TextSpan(text: text));
+        continue;
+      }
+      _addWords(text, episode, spans);
+    }
+    return Text.rich(TextSpan(children: spans), style: widget.style, textAlign: widget.textAlign);
+  }
+
+  /// [text] as written for [name]: the words around it, and the name apart.
+  static List<(String, bool)> _pieces(String text, String? name) {
+    final n = DetectiveName.normalize(name ?? '');
+    // Without a name the line reads as before ("Dear Detective,").
+    if (n.isEmpty || !text.contains(DetectiveName.placeholder)) return [(DetectiveName.address(text, n), false)];
+    // A name that is its own title ("Detective Lu") takes the title's place.
+    const title = 'Detective ';
+    final titled = DetectiveName.title(n) == n;
+    final pieces = <(String, bool)>[];
+    for (final part in DetectiveName.splitAtName(text)) {
+      if (part != null) {
+        pieces.add((part, false));
+        continue;
+      }
+      if (titled && pieces.isNotEmpty && pieces.last.$1.endsWith(title)) {
+        final before = pieces.removeLast().$1;
+        pieces.add((before.substring(0, before.length - title.length), false));
+      }
+      pieces.add((n, true));
+    }
+    return pieces;
+  }
+
+  void _addWords(String text, Episode episode, List<InlineSpan> spans) {
+    for (final match in _tokens.allMatches(text)) {
       final token = match.group(0)!;
       final meaning = widget.interactive ? episode.meaningOf(token) : null;
       if (meaning == null) {
@@ -97,7 +137,6 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
         ),
       ));
     }
-    return Text.rich(TextSpan(children: spans), style: widget.style, textAlign: widget.textAlign);
   }
 }
 

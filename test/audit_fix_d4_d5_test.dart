@@ -17,6 +17,7 @@ import 'package:london_mystery/widgets/glossary_text.dart';
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
 import 'mission_play.dart';
+import 'personalized_lines.dart';
 
 /// Season 1 audit fixes D4 (word meanings where a child gets stuck: answer
 /// cards, tips, the try-again line, the final case's question) and D5 (the
@@ -42,7 +43,8 @@ void main() {
         'You started with the driest step. Her first step was the wettest.',
         'wettest.',
       ),
-      ('ep08', 'You cannot prove it, Detective!"', 'prove'),
+      // Mrs Robin speaks to the detective by name (2026-10-17).
+      ('ep08', 'You cannot prove it, Detective {detectiveName}!"', 'prove'),
       ('ep08', 'Which evidence shows that she was in Gallery 8?', 'evidence'),
       ('ep08', 'Think back to an earlier case.', 'earlier'),
       // 06-M3's question names the five details (2026-10-15 wording); its
@@ -169,7 +171,9 @@ void main() {
         return h;
       }
 
-      expect({for (final e in season) e.id: fnv(jsonEncode(e.toJson()..remove('glossary')))}, const {
+      // The lines that speak to the detective by name are read as they were
+      // (2026-10-17, see personalized_lines.dart).
+      expect({for (final e in season) e.id: fnv(withoutNames(jsonEncode(e.toJson()..remove('glossary'))))}, const {
         // Case 01 M4 matches the palace artwork (commit 3ea9964: letter 2
         // lines, option a feedback, 2 tips). See test/case01_m4_scope_test.dart.
         // Every case below, again (2026-10-16, approved): the season copy

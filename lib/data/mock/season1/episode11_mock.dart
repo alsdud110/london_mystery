@@ -192,7 +192,7 @@ const Map<String, dynamic> episode11Json = {
     'scene': 'suitcase',
     'story': [
       'The stranger smiles and bows.',
-      '"Hello again, Detective," he says. "Do you remember me?"',
+      '"Hello again, Detective {detectiveName}," he says. "Do you remember me?"',
     ],
     'letterIntro': 'He gives you a small card.',
     // Case 01's Old Letter ("Signed: The Shadow / P.S. I love trains!", in

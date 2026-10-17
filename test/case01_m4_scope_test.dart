@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
+import 'personalized_lines.dart';
 
 /// Case 01 M4 was made to match the palace artwork (commit 3ea9964): the
 /// note's description, option a's feedback and the two tips. Its new words
@@ -67,6 +68,7 @@ void main() {
       ..remove('flies')
       ..remove('fountain');
     // Was 433367548 before M1 tip 2 (2026-10-16, pinned above).
-    expect(fnv(jsonEncode({...json, 'glossary': glossary})), 1590700020);
+    // The letters that name the detective are read as they were (2026-10-17).
+    expect(fnv(withoutNames(jsonEncode({...json, 'glossary': glossary}))), 1590700020);
   });
 }

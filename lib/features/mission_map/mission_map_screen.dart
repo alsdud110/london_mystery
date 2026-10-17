@@ -28,6 +28,7 @@ import 'map_camera.dart';
 import 'map_world.dart';
 import 'widgets/london_map_painter.dart';
 import 'widgets/map_pin.dart';
+import '../../data/models/detective_name.dart';
 
 /// The detective's map of London. One purpose: go to the next place.
 /// Case status (name, XP, play time) lives in the menu, not on the map.
@@ -201,7 +202,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(episode.title, style: AppText.aside()),
-                        Text('Detective ${progress.detectiveName}', style: AppText.title(size: 22)),
+                        Text(DetectiveName.title(progress.detectiveName), style: AppText.title(size: 22)),
                         const SizedBox(height: AppSpace.xs),
                         Text(
                           '$xp XP  ·  ${Formatters.clock(playTime)}',

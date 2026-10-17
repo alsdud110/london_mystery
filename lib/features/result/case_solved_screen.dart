@@ -24,6 +24,7 @@ import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
 import '../season/season_overview.dart';
 import 'detective_report.dart';
+import '../../data/models/detective_name.dart';
 
 /// Kid-facing result, designed as a detective's case file rather than a
 /// score sheet — pretty enough that parents want to share a screenshot.
@@ -262,7 +263,7 @@ class _CaseFile extends StatelessWidget {
                     size: height,
                     entrance: false,
                     halo: true,
-                    semanticLabel: 'Detective ${report.detectiveName}, case solved',
+                    semanticLabel: '${DetectiveName.title(report.detectiveName)}, case solved',
                   ),
                 ),
               ),

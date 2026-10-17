@@ -73,7 +73,7 @@ const Map<String, dynamic> episode08Json = {
         'description': 'The name is gone. The rest is not.',
         'inscription': 'TO: EDINBURGH · 1 ADULT, ALONE',
       },
-      'successMessage': 'Good question, Detective!',
+      'successMessage': 'Good question, Detective {detectiveName}!',
       'transition': [
         'You walk along the platform.',
         '"Excuse me," you say. "Where are you going?"',
@@ -222,7 +222,7 @@ const Map<String, dynamic> episode08Json = {
         '"My name is Mrs Robin.\n'
         'I have never been to the British Museum.\n'
         'I was never in Gallery 8.\n\n'
-        'You cannot prove it, Detective!"',
+        'You cannot prove it, Detective {detectiveName}!"',
     'type': 'multipleChoice',
     'question': 'Which evidence shows that she was in Gallery 8?',
     'options': [

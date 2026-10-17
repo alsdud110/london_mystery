@@ -152,7 +152,7 @@ const Map<String, dynamic> episode04Json = {
       ],
       'letterIntro': 'The second letter is short.',
       'letter':
-          'Detective,\n\n'
+          'Detective {detectiveName},\n\n'
           'I sent this letter from an old castle by the river.\n'
           'It has four towers and thick stone walls.\n'
           'Black birds live there.\n\n'
@@ -212,7 +212,7 @@ const Map<String, dynamic> episode04Json = {
     ],
     'letterIntro': 'The last letter says:',
     'letter':
-        'Dear Detective,\n\n'
+        'Dear Detective {detectiveName},\n\n'
         'You read very well. Now read one more time.\n\n'
         'My friends and I have a secret name.\n'
         'We are named after a bird.\n'

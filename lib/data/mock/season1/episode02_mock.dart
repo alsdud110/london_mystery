@@ -43,7 +43,7 @@ const Map<String, dynamic> episode02Json = {
       ],
       'letterIntro': 'Mrs Bell, the clockkeeper, gives you her notebook.',
       'letter':
-          'Detective,\n\n'
+          'Detective {detectiveName},\n\n'
           'I looked at the clock at the moment it stopped.\n'
           'The hour hand was between eight and nine.\n'
           'The minute hand was on the three...\n'
@@ -99,7 +99,7 @@ const Map<String, dynamic> episode02Json = {
       ],
       'letterIntro': 'A note is pinned to the empty place.',
       'letter':
-          'Dear Detective,\n\n'
+          'Dear Detective {detectiveName},\n\n'
           'A clock needs every gear to turn.\n'
           'I took one small brass gear.\n\n'
           'I did not take it far.\n'

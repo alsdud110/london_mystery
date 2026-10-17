@@ -33,6 +33,7 @@
 
 ## Current Project State (2026-10-07)
 
+- **탐정 이름 개인화 (2026-10-17)**: 플레이어에게 직접 말하는 10줄만 `Detective {detectiveName}`(`DetectiveName.placeholder`)로 표시 — 편지 6(01-M1·01-M5·02-M1·02-M2·04-M3·04-F), 인물 대사 4(06-F Grey 호루라기, 08-M1 successMessage, 08-F Mrs Robin, 11-F Shadow). 치환은 **표시 시점에만**(`GlossaryText`가 이름을 일반 텍스트로 넣음 — 점선 단어가 되지 않음, 이름 변경 즉시 반영; 타자기·완료 문구는 `DetectiveName.address/title`). 이름 없음 → `Dear Detective,`, 이름이 `Detective …`로 시작하면 호칭 중복 없음. 저장·정답·단서·증거·힌트에는 플레이스홀더 금지(`detective_address_test`). 목록과 원문: `test/personalized_lines.dart` — 내용 고정(FNV) 테스트는 `withoutNames`로 원문을 복원해 **기존 해시 그대로** 비교. 새 줄을 개인화하면 이 목록에 추가
 - **제품 방향 최종 결정 (2026-10-16): 계정·Firebase·클라우드 완전 제거 → 100% 오프라인, 기기당 탐정 1명(Boy/Girl 아바타 + 이름).** 회원가입·로그인·동기화·충돌 해결·여러 탐정 선택 UI와 코드·의존성·테스트·Firebase 설정 삭제. 미션 완료 연출에 축하 문구 + CONTINUE INVESTIGATION. 아바타 그림 2장은 Custom Asset Required(`assets/art/avatars/` 등록 완료 — 파일만 넣으면 됨, 없으면 잉크 모자 아이콘 + 글자). Tip 코인 대화상자 버튼 = GET MORE HINTS
 - Season 1: Case 01~12 전부 구현 (Case 01 = 일반 미션 5 + Final, Case 02~12 = 3 + Final → 일반 미션 38개 + Final 12개)
 - **Detective Reasoning Pass COMPLETE** (Case 02 pilot, Wave 1: 01·04·06·08·11, Wave 2: 03·07·10, Wave 3: 09)

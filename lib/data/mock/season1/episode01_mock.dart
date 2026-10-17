@@ -35,7 +35,7 @@ const Map<String, dynamic> episode01Json = {
       ],
       'letterIntro': 'Inside the suitcase, there is a letter.',
       'letter':
-          'Dear Detective,\n\n'
+          'Dear Detective {detectiveName},\n\n'
           'I took the Crown! Ha ha!\n'
           'My next stop is a very big museum.\n'
           'It has old mummies from Egypt and a famous stone.\n\n'
@@ -293,7 +293,7 @@ const Map<String, dynamic> episode01Json = {
       ],
       'letterIntro': 'The guard gives you a small card.',
       'letter':
-          'Detective, the thief hid a secret code near the gate.\n\n'
+          'Detective {detectiveName}, the thief hid a secret code near the gate.\n\n'
           'Look for the QR code with the golden crown sticker.\n'
           'Scan it to open the last door!',
       'type': 'qrScan',

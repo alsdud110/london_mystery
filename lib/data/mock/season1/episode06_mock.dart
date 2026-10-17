@@ -291,7 +291,7 @@ const Map<String, dynamic> episode06Json = {
     'transition': [
       'Inspector Grey is on your side.',
       'He gives you a silver whistle.',
-      '"Blow it if you need help."',
+      '"Blow it if you need help, Detective {detectiveName}."',
       'Then he tells you one more thing.',
       '"Find the other half\nin Hyde Park."',
       'The mystery is getting bigger.',

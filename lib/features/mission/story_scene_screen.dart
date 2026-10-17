@@ -24,6 +24,7 @@ import '../../widgets/paper_background.dart';
 import '../../widgets/typewriter_text.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
+import '../../data/models/detective_name.dart';
 
 /// Short cinematic scene between missions: what happened next, and which
 /// place just opened up.
@@ -102,7 +103,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
   @override
   Widget build(BuildContext context) {
     final episode = ref.watch(currentEpisodeProvider);
-    final name = ref.watch(gameControllerProvider).detectiveName ?? '';
+    final name = ref.watch(gameControllerProvider).detectiveName;
     final m = episode.missionById(widget.missionId)!;
     final next = m.nextMissionId == null ? null : episode.missionById(m.nextMissionId!);
     // The final case: the scene after the case is closed.
@@ -148,7 +149,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                           const OrnamentRule(color: AppColors.goldLight),
                           const SizedBox(height: AppSpace.sm),
                           Text(
-                            'Great work, Detective $name.',
+                            'Great work, ${DetectiveName.title(name)}.',
                             textAlign: TextAlign.center,
                             style: AppText.bodyText(size: 16, color: AppColors.paperLight.withValues(alpha: 0.72)),
                           ),
@@ -181,7 +182,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                                     style: _lineStyle(i == lines.length - 1),
                                                   )
                                                 : TypewriterText(
-                                                    lines[i],
+                                                    DetectiveName.address(lines[i], name),
                                                     key: ValueKey('scene-$i'),
                                                     skip: _skip,
                                                     style: _lineStyle(i == lines.length - 1),
