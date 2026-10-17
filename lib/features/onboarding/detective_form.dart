@@ -65,7 +65,7 @@ class AvatarChoice extends StatelessWidget {
             child: _AvatarCard(
               avatar: a,
               selected: selected == a,
-              height: compact ? 0 : (short ? 72 : 104),
+              height: compact ? 0 : (short ? 68 : 104),
               onTap: () {
                 if (selected != a) playUiTap(context, TapRole.select);
                 onChanged(a);

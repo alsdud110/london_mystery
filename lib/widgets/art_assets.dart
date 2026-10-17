@@ -19,6 +19,30 @@ typedef ClockHandsArt = ({
   ({int hour, int minute}) after,
 });
 
+/// How the player's detective looks at a moment of play (see
+/// [ArtAssets.detective]). The pictures are named after these: never rename
+/// one without its files.
+enum DetectiveExpression {
+  /// Chin in hand: working out a puzzle, or looking again.
+  thinking,
+
+  /// Wide eyes, a letter in hand: something new has just turned up.
+  surprised,
+
+  /// Magnifying glass up: searching a place.
+  investigating,
+
+  /// Fists up, eyes shut with joy: a mission solved.
+  happy,
+
+  /// Pointing out, glass in hand: the whole case solved.
+  confident,
+}
+
+/// Where a detective picture's medallion is cut: the centre of the circle
+/// and its radius, in the picture's own pixels ([pixels]).
+typedef DetectiveCrop = ({Size pixels, Offset centre, double radius});
+
 /// The one place where finished artwork files are plugged in.
 ///
 /// Every picture in the game is drawn in code today: scenes by `LandmarkArt`,
@@ -82,6 +106,48 @@ abstract final class ArtAssets {
   /// then the choice shows the cap icon and its word.
   static const avatarBoy = 'assets/art/avatars/detective_boy.png';
   static const avatarGirl = 'assets/art/avatars/detective_girl.png';
+
+  /// The player's detective through the cases, one picture per
+  /// [DetectiveExpression]: `detectives/<boy|girl>/<expression>.png`. The
+  /// avatar is the one chosen at CREATE YOUR DETECTIVE; a detective made
+  /// before avatars existed is shown as the boy (as in How to Play).
+  ///
+  /// Cut-outs on transparency (RGBA), waist up. They were delivered with a
+  /// checkered backdrop painted in; the delivered files are kept untouched
+  /// in `detectives/original/` (not in the app) and the backdrop was taken
+  /// out by `tool/detective_cutout/`. Shown whole (an illustration) or in
+  /// a medallion ([detectiveCrops]).
+  static String detective(DetectiveAvatar? avatar, DetectiveExpression expression) =>
+      '${_art}detectives/${(avatar ?? DetectiveAvatar.boy).name}/${expression.name}.png';
+
+  /// The medallion of each detective picture (its pixel size, and the
+  /// circle round the face with the hands and what they hold).
+  static DetectiveCrop detectiveCrop(DetectiveAvatar? avatar, DetectiveExpression expression) =>
+      detectiveCrops[avatar ?? DetectiveAvatar.boy]![expression]!;
+
+  static const _square = Size(1254, 1254);
+  static const _wide = Size(1312, 1199);
+
+  static const detectiveCrops = <DetectiveAvatar, Map<DetectiveExpression, DetectiveCrop>>{
+    DetectiveAvatar.boy: {
+      // The chin in the hand.
+      DetectiveExpression.thinking: (pixels: _square, centre: Offset(720, 600), radius: 400),
+      // The face over the letter.
+      DetectiveExpression.surprised: (pixels: _square, centre: Offset(730, 620), radius: 420),
+      // The face and the magnifying glass.
+      DetectiveExpression.investigating: (pixels: _square, centre: Offset(850, 700), radius: 400),
+      DetectiveExpression.happy: (pixels: _square, centre: Offset(720, 480), radius: 420),
+      // The pointing hand and the glass either side of the face.
+      DetectiveExpression.confident: (pixels: _wide, centre: Offset(780, 540), radius: 470),
+    },
+    DetectiveAvatar.girl: {
+      DetectiveExpression.thinking: (pixels: _square, centre: Offset(740, 620), radius: 420),
+      DetectiveExpression.surprised: (pixels: _square, centre: Offset(760, 640), radius: 430),
+      DetectiveExpression.investigating: (pixels: _square, centre: Offset(830, 700), radius: 420),
+      DetectiveExpression.happy: (pixels: _wide, centre: Offset(790, 520), radius: 450),
+      DetectiveExpression.confident: (pixels: _wide, centre: Offset(820, 560), radius: 470),
+    },
+  };
 
   /// How to Play (the first-play guide): its own pictures, never a case's
   /// character or evidence. A missing file leaves its place empty.

@@ -17,6 +17,7 @@ import '../../data/models/investigation.dart';
 import '../../data/mock/season1/season1_sounds.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/coin_balance.dart';
+import '../../widgets/detective_character.dart';
 import '../../widgets/detective_tips.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/back_to.dart';
@@ -230,6 +231,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           context,
           hintAvailable: canHint,
           message: AnswerChecker.feedbackFor(m, answer),
+          showDetective: true,
         );
         if (choice == TryAgainChoice.hint && mounted) _showHint(m);
       case SubmitResult.correct:
@@ -246,6 +248,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           firstSolve: outcome.firstSolve,
           newBadges: outcome.newBadges,
           onEvidenceLaid: () => audio.play(GameSound.paperPlace),
+          showDetective: true,
         );
         if (mounted) context.go(Routes.story(m.id));
     }
@@ -497,11 +500,16 @@ class _StoryStage extends StatelessWidget {
             ),
           ),
         const SizedBox(height: AppSpace.xl),
-        GameButton(
-          label: 'INVESTIGATE',
-          arrow: true,
-          tap: TapRole.primary,
-          onPressed: onInvestigate,
+        // The player's detective, magnifying glass up, by the way in.
+        WithPlayerDetective(
+          moment: DetectiveMoment.investigate,
+          child: GameButton(
+            label: 'INVESTIGATE',
+            arrow: true,
+            singleLine: true, // beside the detective on a 360-wide phone
+            tap: TapRole.primary,
+            onPressed: onInvestigate,
+          ),
         ),
       ],
     );

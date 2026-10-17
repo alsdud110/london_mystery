@@ -205,9 +205,25 @@ class DetectiveDesk extends StatelessWidget {
                                     style: AppText.title(size: typing ? 20 : 23),
                                     textAlign: TextAlign.center,
                                   ),
-                                  const SizedBox(height: AppSpace.sm),
-                                  const OrnamentRule(),
-                                  SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
+                                  SizedBox(height: short && !typing ? AppSpace.xs : AppSpace.sm),
+                                  // A small phone: the label takes the
+                                  // ornament's place, so the form still fits.
+                                  if (typing || !short) ...[
+                                    const OrnamentRule(),
+                                    SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
+                                  ],
+                                  // A printed label over the pictures, as the
+                                  // name line has its own: the player picks
+                                  // how their detective looks (the cases are
+                                  // the same for both).
+                                  if (!typing) ...[
+                                    Text(
+                                      'CHOOSE YOUR DETECTIVE',
+                                      textAlign: TextAlign.center,
+                                      style: AppText.eyebrow(color: AppColors.muted).copyWith(letterSpacing: 1.5),
+                                    ),
+                                    SizedBox(height: short ? AppSpace.xs : AppSpace.sm),
+                                  ],
                                   AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
                                   SizedBox(height: typing ? AppSpace.sm : AppSpace.lg),
                                   DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),

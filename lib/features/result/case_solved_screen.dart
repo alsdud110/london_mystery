@@ -10,6 +10,7 @@ import '../../core/utils/audio_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/badge_medal.dart';
+import '../../widgets/detective_character.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/letter_card.dart';
@@ -109,6 +110,9 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     // a case played again keeps OPEN CASE NN opening case NN's file.
     final toBoard = nextCase == null || ref.watch(seasonOverviewProvider).currentCase?.id == nextCase.id;
     final paper = _iv(0, 0.25);
+    // The detective who closed it rises behind the file as it lands, just
+    // before the stamp comes down.
+    final detective = _iv(0.15, 0.38);
     final stamp = _iv(0.3, 0.45, Curves.easeInCubic);
     final xp = _iv(0.4, 0.75);
     final badge = _iv(0.6, 0.85);
@@ -133,6 +137,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                         offset: Offset(0, 60 * (1 - paper.value)),
                         child: _CaseFile(
                           report: report,
+                          detective: detective.value,
                           stamp: stamp.value,
                           xpShown: (report.xp * xp.value).round(),
                           badgePop: badge.value,
@@ -210,11 +215,21 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
   }
 }
 
-/// The paper case file itself.
+/// The paper case file itself, the player's detective standing behind it,
+/// waist up over its top edge (confident: the case is theirs).
 class _CaseFile extends StatelessWidget {
-  const _CaseFile({required this.report, required this.stamp, required this.xpShown, required this.badgePop});
+  const _CaseFile({
+    required this.report,
+    required this.detective,
+    required this.stamp,
+    required this.xpShown,
+    required this.badgePop,
+  });
 
   final DetectiveReport report;
+
+  /// How far the detective has come in (0..1).
+  final double detective;
   final double stamp;
   final int xpShown;
   final double badgePop;
@@ -222,10 +237,39 @@ class _CaseFile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final top = report.topBadge;
+    final standing = DetectiveCast.shows(DetectiveMoment.caseSolved);
+    // Taller than at a mission's solve (Discovery); less on a short phone.
+    final height = MediaQuery.sizeOf(context).height < 700 ? 150.0 : 190.0;
+    // The file is laid over the detective's faded waist.
+    final behind = standing ? height * 0.8 : 0.0;
+    final shown = detective.clamp(0.0, 1.0);
     return Stack(
       clipBehavior: Clip.none,
       children: [
+        if (standing)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Center(
+              // Rises a little into place behind the file: no spring.
+              child: Opacity(
+                opacity: shown,
+                child: Transform.translate(
+                  offset: Offset(0, 14 * (1 - shown)),
+                  child: PlayerDetective(
+                    moment: DetectiveMoment.caseSolved,
+                    size: height,
+                    entrance: false,
+                    halo: true,
+                    semanticLabel: 'Detective ${report.detectiveName}, case solved',
+                  ),
+                ),
+              ),
+            ),
+          ),
         Container(
+          margin: EdgeInsets.only(top: behind),
           padding: const EdgeInsets.fromLTRB(22, 22, 22, 26),
           decoration: BoxDecoration(
             gradient: const LinearGradient(

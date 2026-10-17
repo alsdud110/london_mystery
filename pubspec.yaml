@@ -109,11 +109,15 @@ flutter:
     - assets/art/objects/
     - assets/art/symbols/
     - assets/art/special/
-    # How to Play: the detective partner, the practice witness, the lost cat.
+    # How to Play: the player's detective, the practice witness, the lost cat.
     - assets/art/onboarding/
     # The player's detective: detective_boy.png and detective_girl.png
     # (until they are added, the choice shows the cap icon and the word).
     - assets/art/avatars/
+    # The player's detective in play, one picture per expression
+    # (`ArtAssets.detective`, `DetectiveExpression`).
+    - assets/art/detectives/boy/
+    - assets/art/detectives/girl/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:

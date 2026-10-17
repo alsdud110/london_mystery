@@ -150,6 +150,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           context,
           hintAvailable: canHint,
           message: AnswerChecker.feedbackFor(_mission, answer),
+          showDetective: true,
         );
         if (choice == TryAgainChoice.hint && mounted) _showHint();
       case SubmitResult.correct:

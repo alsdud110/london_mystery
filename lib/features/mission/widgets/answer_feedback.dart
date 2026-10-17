@@ -6,6 +6,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
 import '../../../data/models/discovery.dart';
 import '../../../data/models/mission.dart';
+import '../../../widgets/detective_character.dart';
 import '../../../widgets/evidence_card.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
@@ -40,6 +41,7 @@ Future<void> showDiscoveryMoment(
   String buttonLabel = continueInvestigation,
   List<GameBadge> newBadges = const [],
   VoidCallback? onEvidenceLaid,
+  bool showDetective = false,
 }) {
   return showGeneralDialog<void>(
     context: context,
@@ -57,6 +59,7 @@ Future<void> showDiscoveryMoment(
       firstSolve: firstSolve,
       newBadges: newBadges,
       onEvidenceLaid: onEvidenceLaid,
+      showDetective: showDetective,
     ),
     transitionBuilder: (context, anim, _, child) => FadeTransition(opacity: anim, child: child),
   );
@@ -72,6 +75,7 @@ class _DiscoveryMoment extends StatefulWidget {
     this.coins = 0,
     this.firstSolve = true,
     this.onEvidenceLaid,
+    this.showDetective = false,
   });
 
   final Mission mission;
@@ -88,6 +92,10 @@ class _DiscoveryMoment extends StatefulWidget {
 
   /// The evidence card has just been laid down (only when one is shown).
   final VoidCallback? onEvidenceLaid;
+
+  /// The player's detective greets the solve, small, with the cheer:
+  /// surprised by a new find, happy otherwise (see [DetectiveMoment]).
+  final bool showDetective;
 
   @override
   State<_DiscoveryMoment> createState() => _DiscoveryMomentState();
@@ -169,6 +177,16 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
     final m = widget.mission;
     final evidence = d.showEvidence ? m.evidence : null;
     final soft = AppColors.paperLight.withValues(alpha: 0.88);
+    // Something new in hand is a surprise; any other solve, a joy.
+    final moment = switch (d.type) {
+      DiscoveryType.evidenceFound || DiscoveryType.clueFound => DetectiveMoment.newFind,
+      _ => DetectiveMoment.missionSolved,
+    };
+    final detective = widget.showDetective && DetectiveCast.shows(moment);
+    // The detective at the scene, waist up (their hands and what they hold),
+    // above the cheer: no wider than the evidence card, shorter on a short
+    // phone so the find and the button keep their room.
+    final detectiveSize = MediaQuery.sizeOf(context).height < 700 ? 120.0 : 160.0;
     return Material(
       key: const ValueKey('discovery-moment'),
       type: MaterialType.transparency,
@@ -199,6 +217,11 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                               excludeSemantics: true,
                               child: Column(
                                 children: [
+                                  if (detective) ...[
+                                    // Its foot fades out: the cheer sits just under it.
+                                    PlayerDetective(moment: moment, size: detectiveSize, entrance: false, halo: true),
+                                    const SizedBox(height: AppSpace.xs),
+                                  ],
                                   Text(d.type.cheer,
                                       textAlign: TextAlign.center,
                                       style: AppText.cinematicPrompt(size: 28, color: AppColors.goldLight)),
@@ -365,7 +388,17 @@ enum TryAgainChoice { retry, hint }
 ///
 /// [message] is the mission's line for this wrong answer (what was probably
 /// misread); without one, the general "look again" line is shown.
-Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hintAvailable, String? message}) async {
+/// [showDetective]: the player's detective, thinking, in place of the
+/// magnifier (the game's pages; needs the app's providers).
+Future<TryAgainChoice> showTryAgainSheet(
+  BuildContext context, {
+  required bool hintAvailable,
+  String? message,
+  bool showDetective = false,
+}) async {
+  // The medallion takes the magnifier's place, at the same size.
+  const mark = 84.0;
+  final detective = showDetective && DetectiveCast.shows(DetectiveMoment.lookAgain);
   final choice = await showModalBottomSheet<TryAgainChoice>(
     context: context,
     // Let the sheet grow past the default 9/16 of the screen (both buttons
@@ -384,21 +417,25 @@ Future<TryAgainChoice> showTryAgainSheet(BuildContext context, {required bool hi
           mainAxisSize: MainAxisSize.min,
           children: [
             const PaperSheetTab(),
-            Container(
-              width: 84,
-              height: 84,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.paper,
-                border: Border.all(color: AppColors.tryAgain.withValues(alpha: 0.6), width: AppLine.ink),
+            if (detective)
+              // "Good detectives look again": the player's detective, thinking.
+              const PlayerDetective(moment: DetectiveMoment.lookAgain, size: mark - 2 * DetectiveCharacter.rim)
+            else
+              Container(
+                width: mark,
+                height: mark,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.paper,
+                  border: Border.all(color: AppColors.tryAgain.withValues(alpha: 0.6), width: AppLine.ink),
+                ),
+                foregroundDecoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.tryAgain.withValues(alpha: 0.25), width: AppLine.hairline),
+                ),
+                // "Good detectives look again": the magnifier.
+                child: const InkIcon(InkGlyph.search, size: AppIconSize.hero - 8, color: AppColors.tryAgain),
               ),
-              foregroundDecoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.tryAgain.withValues(alpha: 0.25), width: AppLine.hairline),
-              ),
-              // "Good detectives look again": the magnifier.
-              child: const InkIcon(InkGlyph.search, size: AppIconSize.hero - 8, color: AppColors.tryAgain),
-            ),
             const SizedBox(height: 14),
             Text('Not quite!', style: AppText.title(size: 30, color: AppColors.tryAgain)),
             const SizedBox(height: AppSpace.sm),

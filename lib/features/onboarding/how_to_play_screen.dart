@@ -20,6 +20,7 @@ import '../../widgets/art_assets.dart';
 import '../../widgets/back_to.dart';
 import '../../widgets/badge_medal.dart';
 import '../../widgets/clue_card.dart';
+import '../../widgets/detective_character.dart';
 import '../../widgets/detective_tips.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/glossary_text.dart';
@@ -1353,12 +1354,14 @@ class _CaseFileScene extends StatelessWidget {
                   title: 'Well done!',
                   text: 'Pip loves warm places, and Mrs Moss saw her by the chimney.',
                   color: AppColors.success,
+                  moment: DetectiveMoment.missionSolved,
                 ),
                 false => const _Slip(
                   key: ValueKey('wrong'),
                   title: 'Not quite!',
                   text: 'Good detectives look again. What does Pip love? Read the letter again.',
                   color: AppColors.tryAgain,
+                  moment: DetectiveMoment.lookAgain,
                 ),
               },
             ),
@@ -1435,30 +1438,43 @@ class _Choice extends StatelessWidget {
   }
 }
 
-/// The answer's slip, as gentle as the game's: never a red cross.
+/// The answer's slip, as gentle as the game's: never a red cross. The
+/// player's own detective reacts beside it as in the cases ([moment]:
+/// happy when right, thinking when not).
 class _Slip extends StatelessWidget {
-  const _Slip({super.key, required this.title, required this.text, required this.color});
+  const _Slip({super.key, required this.title, required this.text, required this.color, required this.moment});
 
   final String title;
   final String text;
   final Color color;
+  final DetectiveMoment moment;
 
   @override
   Widget build(BuildContext context) {
+    final words = Column(
+      children: [
+        Text(title, style: AppText.title(size: 22, color: color)),
+        const SizedBox(height: AppSpace.xs),
+        OrnamentRule(color: color, width: 90),
+        const SizedBox(height: AppSpace.xs),
+        Text(text, textAlign: TextAlign.center, style: AppText.bodyText(size: 16)),
+      ],
+    );
     return Padding(
       padding: const EdgeInsets.only(top: AppSpace.md),
       child: PaperSheet(
         tilt: 0.008,
         padding: const EdgeInsets.all(AppSpace.md),
-        child: Column(
-          children: [
-            Text(title, style: AppText.title(size: 22, color: color)),
-            const SizedBox(height: AppSpace.xs),
-            OrnamentRule(color: color, width: 90),
-            const SizedBox(height: AppSpace.xs),
-            Text(text, textAlign: TextAlign.center, style: AppText.bodyText(size: 16)),
-          ],
-        ),
+        child: DetectiveCast.shows(moment)
+            ? Row(
+                children: [
+                  // A slip has little room: the medallion.
+                  PlayerDetective(moment: moment, style: DetectiveStyle.portrait, size: 52),
+                  const SizedBox(width: AppSpace.md),
+                  Expanded(child: words),
+                ],
+              )
+            : words,
       ),
     );
   }

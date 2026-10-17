@@ -11,6 +11,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
 import '../../../data/models/investigation.dart';
 import '../../../widgets/art_assets.dart';
+import '../../../widgets/detective_character.dart';
 import '../../../widgets/detective_tips.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
@@ -165,12 +166,17 @@ class _InvestigationArrivalState extends ConsumerState<InvestigationArrival> wit
                         ignoring: document < 1,
                         child: Opacity(
                           opacity: document,
-                          child: GameButton(
-                            label: widget.scene.startLabel,
-                            style: GameButtonStyle.glass,
-                            arrow: true,
-                            tap: TapRole.primary,
-                            onPressed: widget.onStart,
+                          // The player's detective, glass up, sets out on the search.
+                          child: WithPlayerDetective(
+                            moment: DetectiveMoment.investigate,
+                            child: GameButton(
+                              label: widget.scene.startLabel,
+                              style: GameButtonStyle.glass,
+                              arrow: true,
+                              singleLine: true, // beside the detective on a 360-wide phone
+                              tap: TapRole.primary,
+                              onPressed: widget.onStart,
+                            ),
                           ),
                         ),
                       ),
