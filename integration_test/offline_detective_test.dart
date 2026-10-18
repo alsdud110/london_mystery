@@ -22,7 +22,7 @@ import '../test/mission_play.dart';
 /// detective is created, a mission is played and rewarded once, and a
 /// restart of the game (a new start on the same storage) finds it all.
 /// Run with the network off to check the game needs none:
-///   flutter test integration_test/offline_detective_test.dart --flavor dev -d DEVICE_ID
+///   flutter test integration_test/offline_detective_test.dart -d DEVICE_ID
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 

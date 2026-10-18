@@ -31,7 +31,7 @@ dev_dependencies:
   # Launcher icons: `dart run flutter_launcher_icons` (config below).
   flutter_launcher_icons: ^0.14.4
 
-# App icon, shared by both flavors and both platforms. The source art
+# App icon, shared by both platforms. The source art
 # (assets/branding/app_icon.png) draws its own rounded gold frame on white;
 # app_icon_launcher_v1.png is the illustration inside that frame, cropped square
 # (980px at +139+113, scaled to 1024, RGB without alpha) so the system mask
@@ -55,10 +55,6 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
-  # Flavors: dev (com.londonmystery.app.dev, "London Mystery DEV") and prod
-  # (com.londonmystery.app). A plain `flutter run` builds dev, never prod.
-  default-flavor: dev
-
   assets:
     # Sounds: only the takes the game plays (`GameSound`, `ambienceLoops`,
     # `accentLoops` in lib/core/utils/audio_service.dart), file by file.

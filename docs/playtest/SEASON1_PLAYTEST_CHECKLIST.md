@@ -13,6 +13,12 @@
 flutter build apk --dart-define=LM_PLAYTEST=true
 ```
 
+release 빌드는 upload 키(`android/key.properties`)가 있어야 합니다. 키가 없는 기기에서는 debug 키로 서명되는 profile 빌드를 씁니다.
+
+```
+flutter build apk --profile --dart-define=LM_PLAYTEST=true
+```
+
 (`flutter run` 디버그 실행에서는 따로 설정하지 않아도 보입니다.)
 
 **원하는 사건부터 시작하기**

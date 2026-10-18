@@ -1,35 +1,31 @@
 {
-  // London Mystery: Android and iOS share the same flavors.
-  //   dev  → com.londonmystery.app.dev  ("London Mystery DEV")
-  //   prod → com.londonmystery.app      ("London Mystery")
+  // London Mystery: one app on Android and iOS,
+  //   com.londonmystery.app ("London Mystery").
   // Pick the device in the status bar (an Android emulator or an iOS
-  // simulator such as iPhone 17 Pro). iOS needs the shared Xcode schemes
-  // "dev" / "prod" (ios/scripts/setup_flavors.rb).
+  // simulator such as iPhone 17 Pro). An Android release build needs the
+  // upload key (android/key.properties, see android/app/build.gradle.kts).
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "London Mystery DEV (debug)",
+      "name": "London Mystery (debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "flutterMode": "debug",
-      "args": ["--flavor", "dev"]
+      "flutterMode": "debug"
     },
     {
-      "name": "London Mystery DEV (profile)",
+      "name": "London Mystery (profile)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "flutterMode": "profile",
-      "args": ["--flavor", "dev"]
+      "flutterMode": "profile"
     },
     {
-      "name": "London Mystery PROD (release, no operator tools)",
+      "name": "London Mystery (release, no operator tools)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "flutterMode": "release",
-      "args": ["--flavor", "prod"]
+      "flutterMode": "release"
     }
   ]
 }

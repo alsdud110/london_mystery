@@ -55,7 +55,7 @@ Title → START ADVENTURE → **CREATE YOUR DETECTIVE**(`/register`: BOY/GIRL �
 ## 6. 제거한 것
 
 계정(회원가입/로그인/로그아웃/이메일 인증/비밀번호 재설정/계정 설정·삭제·동의), Firebase Auth·Firestore·Cloud Functions 연동, 동기화(Scheduler/Sender/Restorer/Gate/Outbox/Journal 병합/충돌 해결/사건 파일 2개 선택), 여러 탐정 선택, DEV/PROD Firebase 연결, `LM_CLOUD_SYNC`·`LM_CLOUD_EMULATOR`, Firebase 통합 테스트와 Rules·Functions 테스트, Android `google-services` 플러그인, iOS "Firebase config (flavor)" 빌드 단계, 디버그용 에뮬레이터 cleartext 설정.
-Android/iOS의 dev/prod 플레이버, 앱 ID, 서명 설정은 유지한다.
+앱 ID와 서명 설정은 유지한다. (이후 2026-10-18에 dev/prod 플레이버를 없애고 단일 앱 `com.londonmystery.app` "London Mystery"로 통합했다. release 빌드는 upload 키 필수.)
 
 ## 7. 필요한 아바타 이미지 (Custom Asset Required)
 
