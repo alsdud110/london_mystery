@@ -7,7 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
+import 'package:london_mystery/data/repositories/episode_repository.dart';
 
 import 'full_playthrough_test.dart' show goToTime, reveal, tapText, wait;
 import 'helpers.dart';
@@ -93,14 +95,30 @@ void main() {
     expect(path(), Routes.mission('m01'));
   }
 
+  Finder lookRound() => find.byKey(const ValueKey('explore-picture'));
+
+  /// Case 01's first mission is played by looking round King's Cross: no
+  /// letter step (the letter is in the suitcase there).
   Future<void> investigate(WidgetTester t) async {
     await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
-    expect(find.text('TAP TO OPEN'), findsOneWidget, reason: 'the letter step');
+    expect(lookRound(), findsOneWidget, reason: 'the look round');
+    expect(find.text('TAP TO OPEN'), findsNothing, reason: 'no letter step');
   }
 
+  Future<void> tapSpot(WidgetTester t, String id) async {
+    final picture = t.getRect(lookRound());
+    final at = exploreOf(MockEpisodeRepository.bundled().first.missions.first)!.spot(id).areas.first.center;
+    await t.tapAt(Offset(picture.left + at.dx * picture.width, picture.top + at.dy * picture.height));
+    await wait(t, const Duration(milliseconds: 600));
+  }
+
+  /// The letter found and read in the suitcase, then the poster board open
+  /// (where the museum is chosen: the mission's puzzle).
   Future<void> openLetterAndSolve(WidgetTester t) async {
+    await tapSpot(t, 'suitcase');
     await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
-    await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
+    await tapText(t, 'BACK TO THE STATION', after: const Duration(milliseconds: 500));
+    await tapSpot(t, 'posters');
     expect(find.text('CHECK ANSWER'), findsOneWidget, reason: 'the puzzle step');
   }
 
@@ -114,30 +132,31 @@ void main() {
         await wait(t, const Duration(seconds: 3));
       });
 
-      testWidgets('the letter → back → the mission (the place) → back → the map', (t) async {
+      testWidgets('the look round → back → the mission (the place) → back → the map', (t) async {
         await start(t);
         await goToMission(t);
         await investigate(t);
         await back(t, via);
         expect(path(), Routes.mission('m01'));
         await reveal(t, find.text('INVESTIGATE'));
-        expect(find.text('INVESTIGATE'), findsOneWidget, reason: 'letter → the place');
+        expect(find.text('INVESTIGATE'), findsOneWidget, reason: 'look round → the place');
         await back(t, via);
         expectMapBack(t);
         await wait(t, const Duration(seconds: 3));
       });
 
-      testWidgets('the puzzle → back → the letter, still open → the place → the map', (t) async {
+      testWidgets('the posters → back → the look round, the letter still read → the place → the map', (t) async {
         await start(t);
         await goToMission(t);
         await investigate(t);
         await openLetterAndSolve(t);
         await back(t, via);
-        await reveal(t, find.text('SOLVE THE PUZZLE')); // under the letter on a small phone
-        expect(find.text('SOLVE THE PUZZLE'), findsOneWidget, reason: 'puzzle → the letter, still open');
+        expect(find.text('CHECK ANSWER'), findsNothing, reason: 'the posters closed first');
+        expect(lookRound(), findsOneWidget, reason: 'posters → the look round');
+        expect(find.text('Letter'), findsOneWidget, reason: 'the letter is still read');
         await back(t, via);
         await reveal(t, find.text('INVESTIGATE'));
-        expect(find.text('INVESTIGATE'), findsOneWidget, reason: 'letter → the place');
+        expect(find.text('INVESTIGATE'), findsOneWidget, reason: 'look round → the place');
         await back(t, via);
         expectMapBack(t);
         await wait(t, const Duration(seconds: 3));
@@ -149,15 +168,15 @@ void main() {
     await start(t);
     await goToMission(t);
     await investigate(t);
-    await openLetterAndSolve(t); // the puzzle is now started: next time it opens on the puzzle
+    await openLetterAndSolve(t); // the puzzle is now started: next time it opens on the look round
     for (var i = 0; i < 3; i++) {
-      await back(t, BackVia.backGesture);
+      await back(t, BackVia.backGesture); // posters → look round → place → map
     }
     expectMapBack(t);
     await goToMission(t);
-    expect(find.text('CHECK ANSWER'), findsOneWidget, reason: 'reopens on the puzzle');
-    for (var i = 0; i < 3; i++) {
-      await back(t, BackVia.backGesture);
+    expect(lookRound(), findsOneWidget, reason: 'reopens on the look round');
+    for (var i = 0; i < 2; i++) {
+      await back(t, BackVia.backGesture); // look round → place → map
     }
     expectMapBack(t);
     await wait(t, const Duration(seconds: 3));
@@ -178,7 +197,7 @@ void main() {
     await investigate(t);
     await openLetterAndSolve(t);
     for (var i = 0; i < 3; i++) {
-      await back(t, BackVia.backGesture); // puzzle → letter → place → map
+      await back(t, BackVia.backGesture); // posters → look round → place → map
     }
     expectMapBack(t);
     await back(t, BackVia.backGesture);

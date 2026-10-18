@@ -7,7 +7,12 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:london_mystery/data/mock/season1/season1_clocks.dart';
 import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
+import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
+import 'package:london_mystery/data/models/scene_explore.dart';
+import 'package:london_mystery/data/models/scene_inspect.dart';
 import 'package:london_mystery/data/mock/season1/season1_investigations.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
@@ -15,9 +20,52 @@ import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_providers.dart' show sharedPreferencesProvider;
+import 'package:london_mystery/widgets/letter_card.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
+
+/// Presses [f] as a finger does: down, held a moment (the button draws its
+/// press), then up. A page with nothing moving draws no frame between a
+/// tester's instant tap down and up; a real press always draws one.
+Future<void> press(WidgetTester t, Finder f, {Duration after = const Duration(milliseconds: 600)}) async {
+  await reveal(t, f);
+  final g = await t.startGesture(t.getCenter(f.last));
+  await t.pump(const Duration(milliseconds: 80));
+  await g.up();
+  await wait(t, after);
+}
+
+/// Saved progress with [missionId]'s case open at that mission: the cases
+/// before it solved, the missions before it in its case solved, and the
+/// mission itself started ([started]: back on its puzzle) or not (at its
+/// place).
+Map<String, Object> prefsAt(List<Episode> season, String missionId, {bool started = true, String name = 'MINYOUNG'}) {
+  final e = season.firstWhere((e) => e.missions.any((m) => m.id == missionId));
+  final before = e.missions.takeWhile((m) => m.id != missionId).map((m) => m.id).toList();
+  final earlier = [for (final x in season) if (x.number < e.number) x];
+  final start = DateTime.now().subtract(const Duration(minutes: 1));
+  String progress(List<String> done, {bool solved = false, Map<String, DateTime> begun = const {}}) =>
+      jsonEncode(GameProgress(
+        detectiveName: name,
+        introSeen: true,
+        completedMissionIds: done,
+        missionStartedAt: begun,
+        startedAt: start,
+        completedAt: solved ? start : null,
+        playMillis: 0,
+      ).toJson());
+  return {
+    for (final x in earlier)
+      AppConstants.progressKeyFor(x.id): progress([for (final m in x.allMissions) m.id], solved: true),
+    if (e.id != AppConstants.currentEpisodeId)
+      AppConstants.progressStorageKey: jsonEncode(GameProgress(detectiveName: name).toJson()),
+    AppConstants.progressKeyFor(e.id): progress(before, begun: started ? {missionId: start} : const {}),
+    AppConstants.seasonStorageKey: jsonEncode(
+      SeasonProgress(activeEpisodeId: e.id, solvedEpisodeIds: [for (final x in earlier) x.id]).toJson(),
+    ),
+  };
+}
 
 /// Plays one regular mission of Season 1 in the real app: opens it at its
 /// puzzle (earlier cases and missions solved) and answers it through its own
@@ -44,30 +92,8 @@ class MissionPlay {
     addTearDown(t.view.reset);
     addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
     final e = caseOf(missionId);
-    final before = e.missions.takeWhile((m) => m.id != missionId).map((m) => m.id).toList();
-    final earlier = [for (final x in season) if (x.number < e.number) x];
-    final start = DateTime.now().subtract(const Duration(minutes: 1));
-    String progress(List<String> done, {bool solved = false, Map<String, DateTime> started = const {}}) =>
-        jsonEncode(GameProgress(
-          detectiveName: 'MINYOUNG',
-          introSeen: true,
-          completedMissionIds: done,
-          missionStartedAt: started,
-          startedAt: start,
-          completedAt: solved ? start : null,
-          playMillis: 0,
-        ).toJson());
     await t.pumpWidget(ProviderScope(
-      overrides: await testOverrides(audio: audio, prefs: {
-        for (final x in earlier)
-          AppConstants.progressKeyFor(x.id): progress([for (final m in x.allMissions) m.id], solved: true),
-        if (e.id != AppConstants.currentEpisodeId)
-          AppConstants.progressStorageKey: jsonEncode(const GameProgress(detectiveName: 'MINYOUNG').toJson()),
-        AppConstants.progressKeyFor(e.id): progress(before, started: {missionId: start}),
-        AppConstants.seasonStorageKey: jsonEncode(
-          SeasonProgress(activeEpisodeId: e.id, solvedEpisodeIds: [for (final x in earlier) x.id]).toJson(),
-        ),
-      }),
+      overrides: await testOverrides(audio: audio, prefs: prefsAt(season, missionId)),
       child: RepaintBoundary(
         key: const ValueKey('shot'),
         child: Consumer(builder: (context, r, _) {
@@ -83,7 +109,10 @@ class MissionPlay {
         find.text('CHECK ANSWER').evaluate().isNotEmpty ||
             find.text('UNLOCK').evaluate().isNotEmpty ||
             find.byKey(const ValueKey('investigation-picture')).evaluate().isNotEmpty ||
-            find.byKey(const ValueKey('talk-panel')).evaluate().isNotEmpty,
+            find.byKey(const ValueKey('talk-panel')).evaluate().isNotEmpty ||
+            find.byKey(const ValueKey('clock-dial')).evaluate().isNotEmpty ||
+            find.byKey(const ValueKey('explore-picture')).evaluate().isNotEmpty ||
+            find.byKey(const ValueKey('inspect-room')).evaluate().isNotEmpty,
         isTrue,
         reason: '$missionId: at its puzzle');
     return e.missionById(missionId)!;
@@ -130,6 +159,31 @@ class MissionPlay {
       await wait(t, const Duration(milliseconds: 1200));
       return;
     }
+    // A look round: the letter found and opened, then the answer chosen
+    // where the choice is.
+    final explore = exploreOf(m);
+    if (explore != null) {
+      await readExploreDocument(t, explore);
+      await chooseInExplore(t, explore, m.answer);
+      return;
+    }
+    // Exhibits under the glass: the match examined, its label read, the
+    // word written.
+    final inspect = inspectionOf(m);
+    if (inspect != null) {
+      await openInspectLabel(t, inspect);
+      await writeOnLabel(t, m.answer);
+      return;
+    }
+    // A clock: its hands set to the answer, then SET THE TIME.
+    final clock = clockPuzzleOf(m);
+    if (clock != null) {
+      final answer = m.answer;
+      await setClock(t, int.parse(answer.substring(0, answer.length - 2)), int.parse(answer.substring(answer.length - 2)),
+          from: (clock.start.hour % 12) * 60 + clock.start.minute);
+      await tapKey(t, 'clock-submit');
+      return;
+    }
     switch (m.type) {
       case MissionType.multipleChoice:
         await tapText(t, m.answerLabel, after: const Duration(milliseconds: 200));
@@ -160,6 +214,108 @@ class MissionPlay {
         fail('not used here');
     }
     await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 400));
+  }
+
+  /// Sets a clock's hands to [hour]:[minute] with its HOUR and MINUTE keys,
+  /// from [from] (minutes since 12:00 shown now): the hours forward, then
+  /// the minutes forward (minutes stepped past the hour would move it too).
+  Future<void> setClock(WidgetTester t, int hour, int minute, {int from = 0}) async {
+    final hours = ((hour % 12) - from ~/ 60 + 12) % 12;
+    final minutes = minute - from % 60;
+    for (var i = 0; i < hours; i++) {
+      await tapKey(t, 'clock-hour-plus', after: const Duration(milliseconds: 60));
+    }
+    for (var i = 0; i < minutes.abs(); i++) {
+      await tapKey(t, minutes > 0 ? 'clock-minute-plus' : 'clock-minute-minus', after: const Duration(milliseconds: 60));
+    }
+  }
+
+  /// Where [point] (fractions of the examined room's picture) is on screen.
+  Offset inspectAt(WidgetTester t, Offset point) {
+    final box = t.getRect(find.byKey(const ValueKey('inspect-picture')));
+    return Offset(box.left + point.dx * box.width, box.top + point.dy * box.height);
+  }
+
+  /// Taps the examined room at [point] (fractions): the glass is carried
+  /// there and what is under it examined.
+  Future<void> tapInspect(WidgetTester t, Offset point, {Duration after = const Duration(milliseconds: 500)}) async {
+    await t.tapAt(inspectAt(t, point));
+    await wait(t, after);
+  }
+
+  /// Drags the glass from [from] to [to] (fractions), in small steps, then
+  /// lifts the finger (what is under it is examined), or keeps it down
+  /// ([lift] false: the gesture is returned, to lift later).
+  Future<TestGesture> dragGlass(WidgetTester t, Offset from, Offset to, {int steps = 12, bool lift = true}) async {
+    final g = await t.startGesture(inspectAt(t, from));
+    await t.pump();
+    for (var i = 1; i <= steps; i++) {
+      await g.moveTo(inspectAt(t, Offset.lerp(from, to, i / steps)!));
+      await t.pump(const Duration(milliseconds: 16));
+    }
+    if (lift) {
+      await g.up();
+      await wait(t, const Duration(milliseconds: 500));
+    }
+    return g;
+  }
+
+  /// [scene]'s match examined (a tap), then its label opened.
+  Future<void> openInspectLabel(WidgetTester t, InspectScene scene) async {
+    await tapInspect(t, scene.match.areas.first.center);
+    await tapKey(t, 'inspect-read-label', after: const Duration(milliseconds: 500));
+  }
+
+  /// [word] written on the open label, then CHECK ANSWER.
+  Future<void> writeOnLabel(WidgetTester t, String word) async {
+    final field = find.descendant(of: find.byKey(const ValueKey('inspect-label')), matching: find.byType(TextField));
+    await reveal(t, field);
+    await t.enterText(field, word);
+    await t.pump();
+    await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 400));
+  }
+
+  /// Where [point] (fractions of a looked-round picture) is on screen, as
+  /// the picture is shown now (enlarged or moved).
+  Offset exploreAt(WidgetTester t, Offset point) {
+    final box = t.getRect(find.byKey(const ValueKey('explore-picture')));
+    return Offset(box.left + point.dx * box.width, box.top + point.dy * box.height);
+  }
+
+  /// Taps a looked-round picture at [point] (fractions of the picture).
+  Future<void> tapExplore(WidgetTester t, Offset point, {Duration after = const Duration(milliseconds: 500)}) async {
+    await t.tapAt(exploreAt(t, point));
+    await wait(t, after);
+  }
+
+  /// The letter still in its sealed envelope (open, it is a letter card).
+  Finder sealedLetter() {
+    final envelope = find.byType(EnvelopeReveal);
+    final open = find.descendant(of: envelope, matching: find.byType(LetterCard));
+    return envelope.evaluate().isNotEmpty && open.evaluate().isEmpty ? envelope : find.byKey(const ValueKey('no-sealed-letter'));
+  }
+
+  /// Opens [scene]'s document where it is (its sealed envelope opened),
+  /// then goes back to looking.
+  Future<void> readExploreDocument(WidgetTester t, ExploreScene scene) async {
+    await tapExplore(t, scene.document!.areas.first.center);
+    final sealed = sealedLetter();
+    if (sealed.evaluate().isNotEmpty) {
+      await reveal(t, sealed);
+      await t.tap(sealed);
+      await wait(t, const Duration(milliseconds: 1200));
+    }
+    await tapKey(t, 'explore-close', after: const Duration(milliseconds: 500));
+  }
+
+  /// Opens [scene]'s choice, picks [optionId] and checks it.
+  Future<void> chooseInExplore(WidgetTester t, ExploreScene scene, String optionId) async {
+    if (find.byKey(const ValueKey('explore-choice')).evaluate().isEmpty) {
+      final choice = scene.spots.firstWhere((s) => s.kind == ExploreKind.choice);
+      await tapExplore(t, choice.areas.first.center);
+    }
+    await tapKey(t, 'poster-$optionId', after: const Duration(milliseconds: 200));
+    await tapKey(t, 'explore-check', after: const Duration(milliseconds: 400));
   }
 
   /// Where [point] (fractions of the search picture) is on screen, as the

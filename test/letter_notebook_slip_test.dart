@@ -8,10 +8,12 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
+import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/widgets/letter_card.dart';
 
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
+import 'mission_play.dart' show prefsAt;
 import 'title_screen_test.dart' show capture;
 
 /// The mission's letter again, and the final case's notebook: paper sheets
@@ -68,17 +70,21 @@ void main() {
     final tag = '${size.width.toInt()}x${size.height.toInt()}';
 
     testWidgets('mission letter $tag: the paper sheet, the letter as before, a word, BACK TO THE PUZZLE', (t) async {
-      final go = await pumpApp(t, size, GameProgress(
-        detectiveName: 'MINYOUNG',
-        introSeen: true,
-        startedAt: DateTime(2026, 9, 29, 10),
-        missionStartedAt: {'m01': DateTime(2026, 9, 29, 10)}, // back on the puzzle
-        playMillis: 0,
+      // Case 04's second letter (the case of letters, a short letter) keeps
+      // the letter page and its puzzle page's Reread Letter sheet; Case 01's
+      // first two are played in their places. Back on its puzzle.
+      t.view.physicalSize = size * 3;
+      t.view.devicePixelRatio = 3;
+      addTearDown(t.view.reset);
+      await t.pumpWidget(ProviderScope(
+        overrides: await testOverrides(prefs: prefsAt(MockEpisodeRepository.bundled(), 'ep04_m3')),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
       ));
-      go.go(Routes.mission('m01'));
+      await wait(t, const Duration(milliseconds: 300));
+      final go = GoRouterLike(ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider).go);
+      go.go(Routes.mission('ep04_m3'));
       await wait(t, const Duration(milliseconds: 1200));
-      // Case 01 M1 has longer options (TYPE B): on a small phone the tip
-      // link sits below them, a scroll away.
+      // On a small phone the tip link may sit below the answer, a scroll away.
       await reveal(t, find.text('Get a Free Hint'));
       expect(find.text('Get a Free Hint'), findsOneWidget, reason: 'on the puzzle');
 
@@ -93,7 +99,7 @@ void main() {
       expectPaperShell(t);
       await capture(t, 'letter_sheet_$tag');
       // A word in the letter still opens its card, over the letter.
-      await t.tapOnText(find.textRange.ofSubstring('museum').first);
+      await t.tapOnText(find.textRange.ofSubstring('castle', descendentOf: find.byType(LetterCard)).first);
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('WORD CARD'), findsOneWidget);
       await t.tap(find.text('GOT IT!'));

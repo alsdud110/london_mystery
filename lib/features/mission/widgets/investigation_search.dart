@@ -574,7 +574,7 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
                           right: AppSpace.md,
                           top: AppSpace.sm,
                           child: IgnorePointer(
-                            child: _PencilSlip(
+                            child: PencilSlip(
                               line: _line,
                               nudge: !_allFound && _misses >= _nudgeAfter
                                   ? 'Stuck? Read the report again, or get a hint.'
@@ -671,13 +671,13 @@ class _SearchPicture extends StatelessWidget {
                 Positioned(
                   left: tapAt!.dx * size.width - 22,
                   top: tapAt!.dy * size.height - 22,
-                  child: _TapRing(key: ValueKey('tap-$tapCount'), still: still),
+                  child: SearchTapRing(key: ValueKey('tap-$tapCount'), still: still),
                 ),
               if (guide)
                 Positioned(
-                  left: scene.guideAt.dx * size.width - _TapGuide.size / 2,
-                  top: scene.guideAt.dy * size.height - _TapGuide.size / 2,
-                  child: _TapGuide(key: const ValueKey('tap-guide'), onEnd: onGuideEnd),
+                  left: scene.guideAt.dx * size.width - TapGuide.size / 2,
+                  top: scene.guideAt.dy * size.height - TapGuide.size / 2,
+                  child: TapGuide(key: const ValueKey('tap-guide'), onEnd: onGuideEnd),
                 ),
               // Screen readers: one button per place (a tap on the picture
               // itself reaches the same places by position).
@@ -728,8 +728,8 @@ class _Inside extends CustomClipper<Rect> {
 /// How to search, shown once as the search opens: a fingertip tapping the
 /// picture (rings going out twice), then fading. Over an empty spot of the
 /// room, never a thing. Gone at the first touch.
-class _TapGuide extends StatefulWidget {
-  const _TapGuide({super.key, required this.onEnd});
+class TapGuide extends StatefulWidget {
+  const TapGuide({super.key, required this.onEnd});
 
   static const size = 88.0;
   static const duration = Duration(milliseconds: 1800);
@@ -737,11 +737,11 @@ class _TapGuide extends StatefulWidget {
   final VoidCallback onEnd;
 
   @override
-  State<_TapGuide> createState() => _TapGuideState();
+  State<TapGuide> createState() => _TapGuideState();
 }
 
-class _TapGuideState extends State<_TapGuide> with SingleTickerProviderStateMixin {
-  late final AnimationController _t = AnimationController(vsync: this, duration: _TapGuide.duration)
+class _TapGuideState extends State<TapGuide> with SingleTickerProviderStateMixin {
+  late final AnimationController _t = AnimationController(vsync: this, duration: TapGuide.duration)
     ..addStatusListener((s) {
       if (s == AnimationStatus.completed) widget.onEnd();
     })
@@ -757,7 +757,7 @@ class _TapGuideState extends State<_TapGuide> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: SizedBox.square(
-        dimension: _TapGuide.size,
+        dimension: TapGuide.size,
         child: AnimatedBuilder(
           animation: _t,
           builder: (context, _) {
@@ -874,8 +874,8 @@ class _FoundThing extends StatelessWidget {
 }
 
 /// A small ink ring where the finger landed, fading at once.
-class _TapRing extends StatelessWidget {
-  const _TapRing({super.key, required this.still});
+class SearchTapRing extends StatelessWidget {
+  const SearchTapRing({super.key, required this.still});
 
   final bool still;
 
@@ -908,8 +908,8 @@ class _TapRing extends StatelessWidget {
 /// The detective's pencilled slip over the room: what the last tap found
 /// (read aloud by screen readers as it changes). Nothing before the first
 /// tap.
-class _PencilSlip extends StatelessWidget {
-  const _PencilSlip({required this.line, this.nudge});
+class PencilSlip extends StatelessWidget {
+  const PencilSlip({super.key, required this.line, this.nudge});
 
   final String? line;
   final String? nudge;

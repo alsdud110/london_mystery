@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/models/detective_name.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
@@ -218,7 +219,8 @@ void main() {
       return ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first);
     }
 
-    /// Case 01's first letter, opened.
+    /// Case 01's first letter, opened: found in the old suitcase on the
+    /// bench at King's Cross, and its envelope opened there.
     Future<ProviderContainer> openFirstLetter(WidgetTester t, Size size, String? name, {double textScale = 1}) async {
       final app = await start(t, size, name: name, textScale: textScale);
       app.read(routerProvider).go(Routes.mission('m01'));
@@ -226,10 +228,14 @@ void main() {
       final investigate = find.text('INVESTIGATE');
       await t.scrollUntilVisible(investigate, 250, scrollable: find.byType(Scrollable).first);
       await t.tap(investigate);
+      await wait(t, const Duration(milliseconds: 700));
+      final picture = t.getRect(find.byKey(const ValueKey('explore-picture')));
+      final suitcase = exploreOf(byId('ep01').missions.first)!.spot('suitcase').areas.first.center;
+      await t.tapAt(Offset(picture.left + suitcase.dx * picture.width, picture.top + suitcase.dy * picture.height));
       await wait(t, const Duration(milliseconds: 600));
       await t.tap(find.text('TAP TO OPEN'));
       await wait(t, const Duration(milliseconds: 1600));
-      expect(find.text('SOLVE THE PUZZLE'), findsOneWidget);
+      expect(find.text('BACK TO THE STATION'), findsOneWidget);
       return app;
     }
 
@@ -274,7 +280,7 @@ void main() {
           expect(r.right, lessThanOrEqualTo(letter.right));
           final seal = t.getRect(find.byType(WaxSeal));
           expect(r.overlaps(seal), isFalse, reason: 'the greeting and the seal');
-          expect(t.getRect(find.text('SOLVE THE PUZZLE')).width, greaterThan(0));
+          expect(t.getRect(find.text('BACK TO THE STATION')).width, greaterThan(0));
         });
       }
     }

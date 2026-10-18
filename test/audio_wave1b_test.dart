@@ -1,16 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/audio_scenes.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
@@ -163,18 +160,16 @@ void main() {
       addTearDown(t.view.reset);
       late WidgetRef ref;
       await t.pumpWidget(ProviderScope(
-        overrides: await testOverrides(audio: audio, prefs: {
-          AppConstants.progressStorageKey:
-              jsonEncode(GameProgress(detectiveName: 'T', introSeen: true, startedAt: DateTime.now()).toJson()),
-          AppConstants.seasonStorageKey: jsonEncode(const SeasonProgress(activeEpisodeId: 'ep01').toJson()),
-        }),
+        // Case 04's first mission (the case of letters): its place, the
+        // letter page, the answer cards.
+        overrides: await testOverrides(audio: audio, prefs: prefsAt(MockEpisodeRepository.bundled(), 'ep04_m1', started: false)),
         child: Consumer(builder: (context, r, _) {
           ref = r;
           return const LondonMysteryApp();
         }),
       ));
       await wait(t, const Duration(milliseconds: 600));
-      ref.read(routerProvider).go(Routes.mission('m01'));
+      ref.read(routerProvider).go(Routes.mission('ep04_m1'));
       await wait(t, const Duration(milliseconds: 1200));
       audio.played.clear();
       await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 600));
@@ -184,7 +179,7 @@ void main() {
       await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 600));
       expect(audio.played, [GameSound.uiTap, GameSound.envelopeOpen, GameSound.uiTap]);
       audio.played.clear();
-      await tapText(t, 'The Natural History Museum (dinosaur bones)', after: const Duration(milliseconds: 200));
+      await tapText(t, 'The ticket office', after: const Duration(milliseconds: 200));
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 600));
       expect(audio.played, [GameSound.puzzleWrong], reason: 'CHECK ANSWER: its result alone');
       expect(count(audio, GameSound.uiTap), 0);

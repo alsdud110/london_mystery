@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
@@ -686,11 +687,9 @@ void main() {
           'Get a Free Hint',
           after: const Duration(milliseconds: 600),
         );
-        await tapText(
-          t,
-          'Get More Hints',
-          after: const Duration(milliseconds: 600),
-        );
+        // Pressed as a finger does (Case 01 M2's room has nothing moving
+        // to draw a frame between an instant tap's down and up).
+        await press(t, find.text('Get More Hints'));
         isConfirm(
           t,
           const Size(360, 640),
@@ -780,15 +779,11 @@ void main() {
       (t) async {
         final play = MissionPlay();
         final mission = await play.openPuzzle(t, const Size(390, 844), 'm01');
-        final wrong = mission.options
-            .firstWhere((o) => o.id != mission.answer)
-            .label;
-        await tapText(t, wrong, after: const Duration(milliseconds: 200));
-        await tapText(
-          t,
-          'CHECK ANSWER',
-          after: const Duration(milliseconds: 900),
-        );
+        // King's Cross: the letter read, then a wrong museum on the posters.
+        final scene = exploreOf(mission)!;
+        await play.readExploreDocument(t, scene);
+        await play.chooseInExplore(t, scene, mission.options.firstWhere((o) => o.id != mission.answer).id);
+        await wait(t, const Duration(milliseconds: 500));
         await tapText(
           t,
           'GET MORE HINTS',
@@ -796,8 +791,10 @@ void main() {
         );
         expect(find.byType(Dialog), findsNothing);
         expect(play.ref.read(gameControllerProvider).hintsFor('m01'), 1);
-        await reveal(t, findReadable(mission.hints[0]));
-        expect(findReadable(mission.hints[0]), findsOneWidget);
+        // On the posters, still open after the try-again sheet.
+        final onPosters = find.descendant(of: find.byKey(const ValueKey('explore-choice')), matching: findReadable(mission.hints[0]));
+        await reveal(t, onPosters);
+        expect(onPosters, findsOneWidget);
       },
     );
 

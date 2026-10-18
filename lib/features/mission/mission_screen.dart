@@ -12,6 +12,12 @@ import '../../data/models/mission.dart';
 import '../../data/mock/season1/season1_discoveries.dart';
 import '../../data/mock/season1/season1_investigations.dart';
 import '../../data/mock/season1/season1_dialogues.dart';
+import '../../data/mock/season1/season1_clocks.dart';
+import '../../data/mock/season1/season1_explores.dart';
+import '../../data/mock/season1/season1_inspections.dart';
+import '../../data/models/scene_explore.dart';
+import '../../data/models/scene_inspect.dart';
+import '../../data/models/clock_puzzle.dart';
 import '../../data/models/dialogue.dart';
 import '../../data/models/investigation.dart';
 import '../../data/mock/season1/season1_sounds.dart';
@@ -34,8 +40,11 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
+import 'widgets/clock_question.dart';
 import 'widgets/dialogue_investigation.dart';
 import 'widgets/investigation_search.dart';
+import 'widgets/lens_inspect.dart';
+import 'widgets/scene_explore.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
 import '../../data/models/detective_name.dart';
@@ -72,6 +81,21 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// the statements heard (kept while the page is open; not saved).
   final DialogueProgress _talk = DialogueProgress();
 
+  /// A mission played on a clock face: where the detective set its hands
+  /// (kept while the page is open, so reading the letter again keeps them;
+  /// not saved). Null: not touched yet, at the puzzle's start.
+  ClockTime? _clockTime;
+
+  /// A mission played by looking round its place: what was looked at, the
+  /// letter opened, what is open over the picture (kept while the page is
+  /// open; not saved).
+  final ExploreProgress _explore = ExploreProgress();
+
+  /// A mission played by examining its exhibits: what was examined, the
+  /// label read, what is open over the room, where the glass is (kept
+  /// while the page is open; not saved).
+  final InspectProgress _inspect = InspectProgress();
+
   @override
   void initState() {
     super.initState();
@@ -104,16 +128,65 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       context.canPop() ? context.pop() : context.go(Routes.map);
       return;
     }
-    // A talk has no letter step: back from it is the place.
+    final exploring =
+        _stage == MissionStage.puzzle && exploreOf(_mission) != null;
+    final inspecting =
+        _stage == MissionStage.puzzle && inspectionOf(_mission) != null;
+    // Looking round a place, or examining its exhibits: back first closes
+    // what is open over it.
+    if (exploring && _explore.open != null) {
+      setState(() => _explore.open = null);
+      return;
+    }
+    if (inspecting && _inspect.open != null) {
+      setState(() => _inspect.open = null);
+      return;
+    }
+    // A talk and a look round have no letter step: back from them is the
+    // place.
     final talking =
         _stage == MissionStage.puzzle && dialogueOf(_mission) != null;
     setState(() {
       if (_stage == MissionStage.puzzle) _letterOpened = true;
-      _stage = _stage == MissionStage.puzzle && !talking
+      _stage =
+          _stage == MissionStage.puzzle && !talking && !exploring && !inspecting
           ? MissionStage.letter
           : MissionStage.story;
     });
   }
+
+  /// Exhibits examined under the glass (the word on the label answers the
+  /// mission's puzzle).
+  Widget _inspectStage(Mission m, InspectScene scene, int hintsShown) =>
+      LensInspect(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        mission: m,
+        progress: _inspect,
+        onChanged: () => setState(() {}),
+        onSubmit: (word) => _submit(m, word),
+        onReread: () => _rereadLetter(m),
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+        wrongPulse: _wrongPulse,
+      );
+
+  /// A place looked round (its choice answers the mission's puzzle).
+  Widget _exploreStage(Mission m, ExploreScene scene, int hintsShown) =>
+      SceneExplore(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        mission: m,
+        progress: _explore,
+        onChanged: () => setState(() {}),
+        onChoose: (id) => _submit(m, id),
+        onReread: () => _rereadLetter(m),
+        onDocumentAgain: () =>
+            ref.read(gameControllerProvider.notifier).recordRecheck(m),
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+        wrongPulse: _wrongPulse,
+      );
 
   Mission get _mission =>
       ref.read(currentEpisodeProvider).missionById(widget.missionId)!;
@@ -258,6 +331,15 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
 
   Widget _questionFor(Mission m) => questionFor(m, (a) => _submit(m, a));
 
+  /// A clock's hands to set (the time set answers the mission's puzzle).
+  Widget _clockFor(Mission m, ClockPuzzle clock) => ClockQuestion(
+    puzzle: clock,
+    time: _clockTime ?? ClockTime.at(clock.start.hour, clock.start.minute),
+    moved: _clockTime != null,
+    onChanged: (t) => setState(() => _clockTime = t),
+    onSubmit: (a) => _submit(m, a),
+  );
+
   /// A searched place's search (it answers the mission's puzzle).
   Widget _search(Mission m, InvestigationScene scene, int hintsShown) =>
       InvestigationSearch(
@@ -284,17 +366,29 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final solved = progress.isCompleted(m.id);
     final scene = investigationOf(m);
     final talk = dialogueOf(m);
+    final clock = clockPuzzleOf(m);
+    final explore = exploreOf(m);
+    final inspect = inspectionOf(m);
 
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)
         : switch (_stage) {
             MissionStage.story =>
               // A talk starts at once: who is here is told in the talk itself.
+              // A look round shows its place first, then starts at once: the
+              // letter is found in the place itself.
               _StoryStage(
                 key: const ValueKey('story'),
                 mission: m,
+                picture: explore != null
+                    ? (explore.picture, explore.pixels.aspect)
+                    : inspect != null
+                    ? (inspect.picture, inspect.pixels.aspect)
+                    : null,
                 onInvestigate: () => _goTo(
-                  talk != null ? MissionStage.puzzle : MissionStage.letter,
+                  talk != null || explore != null || inspect != null
+                      ? MissionStage.puzzle
+                      : MissionStage.letter,
                 ),
               ),
             // A searched place: the arrival in the dark, the document handed
@@ -320,6 +414,16 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               scene,
               progress.hintsFor(m.id),
             ),
+            MissionStage.puzzle when explore != null => _exploreStage(
+              m,
+              explore,
+              progress.hintsFor(m.id),
+            ),
+            MissionStage.puzzle when inspect != null => _inspectStage(
+              m,
+              inspect,
+              progress.hintsFor(m.id),
+            ),
             MissionStage.puzzle when talk != null => _talkStage(
               m,
               talk,
@@ -328,11 +432,12 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle => _PuzzleStage(
               key: const ValueKey('puzzle'),
               mission: m,
+              question: clock?.question,
               hintsShown: progress.hintsFor(m.id),
               wrongPulse: _wrongPulse,
               onHint: () => _showHint(m),
               onReread: () => _rereadLetter(m),
-              child: _questionFor(m),
+              child: clock == null ? _questionFor(m) : _clockFor(m, clock),
             ),
           };
 
@@ -458,14 +563,21 @@ class _StoryStage extends StatelessWidget {
     super.key,
     required this.mission,
     required this.onInvestigate,
+    this.picture,
   });
 
   final Mission mission;
   final VoidCallback onInvestigate;
 
+  /// The place's own picture (its file and width / height) in place of the
+  /// mission's scene: a place looked round shows the place it is looked
+  /// round in (the scene elsewhere — the case photo, the board — stays).
+  final (String, double)? picture;
+
   @override
   Widget build(BuildContext context) {
     final m = mission;
+    final own = picture;
     // The heading, the picture, the story and the way in are one group:
     // centred under the bar when they fit, scrolled from the top when not.
     return CenteredScroll(
@@ -479,17 +591,25 @@ class _StoryStage extends StatelessWidget {
         Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)) < 1.2
+              maxWidth: own == null && LandmarkArt.aspectOf(PlaceArt.sceneOf(m)) < 1.2
                   ? 240
                   : double.infinity,
             ),
             child: PaperSheet(
               padding: const EdgeInsets.all(AppSpace.sm),
               tilt: -0.01,
-              child: AspectRatio(
-                aspectRatio: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)),
-                child: LandmarkArt(PlaceArt.sceneOf(m), borderRadius: 2),
-              ),
+              child: own == null
+                  ? AspectRatio(
+                      aspectRatio: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)),
+                      child: LandmarkArt(PlaceArt.sceneOf(m), borderRadius: 2),
+                    )
+                  : AspectRatio(
+                      aspectRatio: own.$2,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: Image.asset(own.$1, key: const ValueKey('story-picture'), fit: BoxFit.cover, excludeFromSemantics: true),
+                      ),
+                    ),
             ),
           ),
         ),
@@ -604,6 +724,7 @@ class _PuzzleStage extends StatelessWidget {
   const _PuzzleStage({
     super.key,
     required this.mission,
+    this.question,
     required this.hintsShown,
     required this.wrongPulse,
     required this.onHint,
@@ -612,6 +733,11 @@ class _PuzzleStage extends StatelessWidget {
   });
 
   final Mission mission;
+
+  /// The heading in place of the mission's question, when the puzzle is
+  /// played another way than the question says (a clock to set, not a
+  /// time to type).
+  final String? question;
   final int hintsShown;
   final int wrongPulse;
   final VoidCallback onHint;
@@ -634,7 +760,7 @@ class _PuzzleStage extends StatelessWidget {
         ),
         const SizedBox(height: AppSpace.sm),
         GlossaryText(
-          mission.question,
+          question ?? mission.question,
           style: AppText.title(size: 24),
           textAlign: TextAlign.center,
         ),

@@ -10,12 +10,13 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:london_mystery/widgets/letter_card.dart';
 import 'package:london_mystery/features/game/game_providers.dart'
     show sharedPreferencesProvider;
 
 import 'helpers.dart';
 import 'parent_gate_test.dart' show gateAnswer;
-import 'full_playthrough_test.dart' show wait, reveal, goToTime;
+import 'full_playthrough_test.dart' show wait, reveal, goToTime, tapRoomSpot, tapStationSpot;
 
 // Visual review tour: LM_TOUR=<folder> flutter test test/ui_tour_test.dart
 final _dir = Platform.environment['LM_TOUR'];
@@ -223,26 +224,29 @@ void main() {
       reason: 'the map letters its landmarks',
     );
 
-    // ── Mission 01: word card, a wrong answer, a tip, then the answer.
-    await openMission(t, "GO TO KING'S CROSS");
-    await tapText(
-      t,
-      'Reread Letter',
-      after: const Duration(milliseconds: 600),
-    ); // re-read the letter
-    await t.tapOnText(find.textRange.ofSubstring('museum').first);
+    // ── Mission 01: King's Cross looked round — the suitcase and its letter
+    // (a word card), then the posters: a wrong museum, a tip, the answer.
+    await t.tap(find.bySemanticsLabel("GO TO KING'S CROSS"));
+    await wait(t, goToTime);
+    await shot('mission_story');
+    await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
+    await shot('mission_explore');
+    await tapStationSpot(t, 'suitcase');
+    await shot('mission_envelope');
+    await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
+    await shot('mission_letter');
+    await t.tapOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
     await wait(t, const Duration(milliseconds: 600));
     await shot('word_card');
     await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
+    await tapText(t, 'BACK TO THE STATION', after: const Duration(milliseconds: 500));
+    await tapStationSpot(t, 'platform');
+    await shot('mission_note');
+    await tapText(t, 'Tap to keep looking', after: const Duration(milliseconds: 400));
+    await tapStationSpot(t, 'posters');
     await tapText(
       t,
-      'BACK TO THE PUZZLE',
-      after: const Duration(milliseconds: 500),
-    );
-
-    await tapText(
-      t,
-      'The Science Museum (rockets and machines)',
+      'The Science Museum',
       after: const Duration(milliseconds: 200),
     );
     await shot('choice_selected');
@@ -254,7 +258,7 @@ void main() {
     await shot('tip');
     await tapText(
       t,
-      'The British Museum (treasures from long ago)',
+      'The British Museum',
       after: const Duration(milliseconds: 200),
     );
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
@@ -279,8 +283,19 @@ void main() {
       reason: 'the new place is named on the map',
     );
 
-    // ── Mission 02: word input, using both tips.
-    await openMission(t, 'GO TO BRITISH MUSEUM');
+    // ── Mission 02: Room 4 examined under the glass — a golden mask (not
+    // it), the strange writing (it), its label; both tips, then the word.
+    await t.tap(find.bySemanticsLabel('GO TO BRITISH MUSEUM'));
+    await wait(t, goToTime);
+    await shot('inspect_story');
+    await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
+    await shot('inspect_room');
+    await tapRoomSpot(t, 'mask');
+    await shot('inspect_exhibit');
+    await tapRoomSpot(t, 'slab');
+    await shot('inspect_match');
+    await tapText(t, 'READ THE LABEL', after: const Duration(milliseconds: 500));
+    await shot('inspect_label');
     await tapText(
       t,
       'Get a Free Hint',
@@ -293,10 +308,11 @@ void main() {
       after: const Duration(milliseconds: 500),
     );
     await takeTipFromSheet(t);
-    expect(find.text('DETECTIVE HINT 2'), findsOneWidget);
+    expect(find.text('DETECTIVE HINT 2'), findsWidgets);
     expect(hintAction(), findsNothing, reason: 'at most two hints');
-    await reveal(t, find.byType(TextField));
-    await t.enterText(find.byType(TextField), 'stone');
+    final field = find.descendant(of: find.byKey(const ValueKey('inspect-label')), matching: find.byType(TextField));
+    await reveal(t, field);
+    await t.enterText(field, 'stone');
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await finishMission(t, sceneLine: 'The old stone shines in the dark.');
 

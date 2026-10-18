@@ -475,16 +475,16 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
             childAspectRatio: 1.45,
             children: [
               for (final d in ['1', '2', '3', '4', '5', '6', '7', '8', '9'])
-                _Key(label: d, onTap: () => _press(d)),
-              _Key(
+                PuzzleKey(label: d, onTap: () => _press(d)),
+              PuzzleKey(
                 glyph: InkGlyph.backspace,
                 onTap: _delete,
                 subtle: true,
                 semantic: 'Delete',
                 caption: 'Delete',
               ),
-              _Key(label: '0', onTap: () => _press('0')),
-              _Key(
+              PuzzleKey(label: '0', onTap: () => _press('0')),
+              PuzzleKey(
                 glyph: InkGlyph.clear,
                 onTap: () => setState(() => _code = ''),
                 subtle: true,
@@ -509,8 +509,10 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
   }
 }
 
-class _Key extends StatelessWidget {
-  const _Key({
+/// A puzzle's key: the keypad's digits and erasers, the clock's − and +.
+class PuzzleKey extends StatelessWidget {
+  const PuzzleKey({
+    super.key,
     this.label,
     this.glyph,
     required this.onTap,

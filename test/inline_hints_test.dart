@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/wallet_controller.dart';
@@ -38,13 +39,16 @@ void main() {
       testWidgets(
         'multiple choice: hints on the page, folded and unfolded, piled up, the puzzle still answers',
         (t) async {
+          // Case 01's first mission is a look round now; Case 02's clock
+          // room keeps the answer cards.
           final play = MissionPlay();
           final mission = await play.openPuzzle(
             t,
             size,
-            'm01',
+            'ep02_m2',
             textScale: scale,
           );
+          final before = play.ref.read(walletProvider).balance;
           await tapText(
             t,
             'Get a Free Hint',
@@ -54,7 +58,7 @@ void main() {
           expect(hintCard(1), findsOneWidget);
           expect(
             play.ref.read(walletProvider).balance,
-            20,
+            before,
             reason: 'the free hint costs nothing',
           );
           await reveal(t, findReadable(mission.hints[0]));
@@ -88,7 +92,7 @@ void main() {
           await takeTipFromSheet(t);
           await wait(t, const Duration(milliseconds: 400));
           nothingOver();
-          expect(coinsShown(t), 0);
+          expect(coinsShown(t), before - AppConstants.tipPrices[1], reason: 'the second hint paid for');
           expect(hintCard(2), findsOneWidget);
           expect(
             t.getRect(hintCard(1)).top,
@@ -100,7 +104,7 @@ void main() {
           // The puzzle still answers with the hints open.
           await play.solve(t, mission);
           expect(
-            play.ref.read(gameControllerProvider).isCompleted('m01'),
+            play.ref.read(gameControllerProvider).isCompleted('ep02_m2'),
             isTrue,
           );
           expect(t.takeException(), isNull);
@@ -112,8 +116,10 @@ void main() {
   testWidgets(
     'word input: the hint sits under the answer, and typing still works with the keyboard up',
     (t) async {
+      // Case 06's wet card keeps the word puzzle page (Case 01 M2's word is
+      // written on a label in its room: case01_inspect_test).
       final play = MissionPlay();
-      await play.openPuzzle(t, const Size(360, 640), 'm02');
+      await play.openPuzzle(t, const Size(360, 640), 'ep06_m2');
       final field = find.byType(TextField);
       await reveal(t, field);
       await t.showKeyboard(field);
@@ -133,9 +139,9 @@ void main() {
         reason: 'under the answer',
       );
       await reveal(t, field);
-      await t.enterText(field, 'stone');
+      await t.enterText(field, 'grey');
       await t.pump();
-      expect(find.text('stone'), findsOneWidget);
+      expect(find.text('grey'), findsOneWidget);
       await capture(t, 'inline_hint_word_keyboard_360x640');
       expect(t.takeException(), isNull);
     },

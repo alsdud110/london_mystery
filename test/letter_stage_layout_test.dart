@@ -5,11 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/mock/season1/episode01_mock.dart';
+import 'package:london_mystery/data/mock/season1/episode04_mock.dart';
 import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/widgets/game_button.dart';
@@ -18,6 +17,7 @@ import 'package:london_mystery/widgets/letter_card.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
+import 'mission_play.dart' show prefsAt;
 import 'title_screen_test.dart' show capture;
 
 /// The mission letter page: the intro, the letter, the dotted-word note and
@@ -62,10 +62,16 @@ void main() {
     '— The Shadow',
   ].join('\n\n');
 
-  /// The bundled catalog, with Case 01's first mission reading [letter].
+  /// The bundled catalog, with Case 04's first mission reading [letter].
+  /// Case 04 is the case of letters, and its first mission keeps the
+  /// letter page (Case 01's first two are played in their places).
   List<Episode> catalogWith(String letter) {
-    final json = jsonDecode(jsonEncode(episode01Json)) as Map<String, dynamic>;
+    final json = jsonDecode(jsonEncode(episode04Json)) as Map<String, dynamic>;
     (json['missions'] as List).first['letter'] = letter;
+    // The sample letters are Case 01's: their dotted words keep Case 01's
+    // meanings.
+    final words = episode01Json['glossary'] as Map<String, dynamic>;
+    (json['glossary'] as Map<String, dynamic>).addAll({for (final w in ['museum', 'palace']) w: words[w]});
     final changed = Episode.fromJson(json);
     return [
       for (final e in MockEpisodeRepository.bundled())
@@ -86,19 +92,11 @@ void main() {
     t.platformDispatcher.textScaleFactorTestValue = textScale;
     addTearDown(t.view.reset);
     addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
-    final progress = GameProgress(
-      detectiveName: 'MINYOUNG',
-      introSeen: true,
-      startedAt: DateTime(2026, 9, 29, 10),
-      playMillis: 0,
-    );
     await t.pumpWidget(
       ProviderScope(
         overrides: [
           ...await testOverrides(
-            prefs: {
-              AppConstants.progressStorageKey: jsonEncode(progress.toJson()),
-            },
+            prefs: prefsAt(MockEpisodeRepository.bundled(), 'ep04_m1', started: false),
           ),
           episodeCatalogProvider.overrideWithValue(catalogWith(letter)),
         ],
@@ -111,7 +109,7 @@ void main() {
     await wait(t, const Duration(milliseconds: 300));
     ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first)
         .read(routerProvider)
-        .go(Routes.mission('m01'));
+        .go(Routes.mission('ep04_m1'));
     await wait(t, const Duration(milliseconds: 1200));
     final investigate = find.text('INVESTIGATE');
     await t.scrollUntilVisible(

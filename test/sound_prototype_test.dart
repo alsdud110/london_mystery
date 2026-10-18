@@ -10,6 +10,7 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/mock/season1/season1_sounds.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
@@ -333,6 +334,9 @@ void main() {
       await wait(t, const Duration(milliseconds: 1200));
       await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 600));
       expect(audio.played, [GameSound.uiTap], reason: 'INVESTIGATE taps the casebook, nothing more');
+      // Case 01's first letter is in the old suitcase at King's Cross.
+      await _tapSpot(t, 'suitcase');
+      expect(audio.played, [GameSound.uiTap, GameSound.pencilNote], reason: 'the suitcase looked at');
       audio.played.clear();
 
       await reveal(t, find.text('TAP TO OPEN'));
@@ -348,9 +352,9 @@ void main() {
     testWidgets('a wrong answer: not quite, with the shake', (t) async {
       final audio = MockAudioService();
       final play = MissionPlay(audio: audio);
-      await play.openPuzzle(t, phone, 'm01');
+      await play.openPuzzle(t, phone, 'ep02_m2'); // answer cards (Case 01 M1 is a look round)
       audio.played.clear();
-      await tapText(t, 'The Natural History Museum (dinosaur bones)', after: const Duration(milliseconds: 200));
+      await tapText(t, 'Under the biggest bell', after: const Duration(milliseconds: 200));
       expect(audio.played, isEmpty, reason: 'choosing a card is quiet');
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 100));
       expect(audio.played, [GameSound.puzzleWrong]);
@@ -398,7 +402,7 @@ void main() {
     testWidgets('a Discovery Moment without a card is quiet after the cue', (t) async {
       final audio = MockAudioService();
       final play = MissionPlay(audio: audio);
-      final m = await play.openPuzzle(t, phone, 'm01');
+      final m = await play.openPuzzle(t, phone, 'ep04_m1'); // the platforms: no card
       audio.played.clear();
       await play.solve(t, m);
       await wait(t, const Duration(milliseconds: 2500));
@@ -580,9 +584,12 @@ void main() {
       ref.read(routerProvider).go(Routes.mission('m01'));
       await wait(t, const Duration(milliseconds: 1200));
       await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 600));
+      // King's Cross: the letter in the suitcase, then a wrong museum.
+      await _tapSpot(t, 'suitcase');
       await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1200));
-      await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 600));
-      await tapText(t, 'The Natural History Museum (dinosaur bones)', after: const Duration(milliseconds: 200));
+      await tapText(t, 'BACK TO THE STATION', after: const Duration(milliseconds: 500));
+      await _tapSpot(t, 'posters');
+      await tapText(t, 'The Natural History Museum', after: const Duration(milliseconds: 200));
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 600));
       expect(find.text('Not quite!'), findsOneWidget);
       expect(audio.played, isEmpty);
@@ -649,6 +656,14 @@ String _progress({bool introSeen = false, List<String> done = const [], bool sol
     completedAt: solved ? start : null,
     playMillis: 0,
   ).toJson());
+}
+
+/// Taps the spot [id] of Case 01 M1's look round (King's Cross at night).
+Future<void> _tapSpot(WidgetTester t, String id) async {
+  final picture = t.getRect(find.byKey(const ValueKey('explore-picture')));
+  final at = exploreOf(MockEpisodeRepository.bundled().first.missions.first)!.spot(id).areas.first.center;
+  await t.tapAt(Offset(picture.left + at.dx * picture.width, picture.top + at.dy * picture.height));
+  await wait(t, const Duration(milliseconds: 600));
 }
 
 late WidgetRef _ref;

@@ -101,17 +101,25 @@ void main() {
       await tapText(t, 'SKIP ›');
       await tapText(t, "I'M READY", after: const Duration(milliseconds: 1500));
 
-      // ── Mission 1: read the clock (keypad).
+      // ── Mission 1: set Mrs Bell's clock face to the stopped time (from
+      // 12:00: eight hours on, then seventeen minutes).
       expect(
         find.text('The Silent Clock'),
         findsOneWidget,
         reason: 'the map shows the case',
       );
       await openMission(t, 'GO TO WESTMINSTER BRIDGE');
-      for (final d in ['8', '1', '7']) {
-        await tapText(t, d, after: const Duration(milliseconds: 150));
+      for (final (key, times) in const [('clock-hour-plus', 8), ('clock-minute-plus', 17)]) {
+        for (var i = 0; i < times; i++) {
+          await reveal(t, find.byKey(ValueKey(key)));
+          await t.tap(find.byKey(ValueKey(key)));
+          await t.pump(const Duration(milliseconds: 60));
+        }
       }
-      await tapText(t, 'UNLOCK', after: Duration.zero);
+      expect(find.text('8:17'), findsOneWidget);
+      await reveal(t, find.byKey(const ValueKey('clock-submit')));
+      await t.tap(find.byKey(const ValueKey('clock-submit')));
+      await t.pump();
       await finishMission(
         t,
         sceneLine: 'Mrs Bell opens a small door at the bottom of the tower.',

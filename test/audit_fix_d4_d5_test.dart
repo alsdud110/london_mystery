@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
+import 'package:london_mystery/widgets/letter_card.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
@@ -211,14 +213,16 @@ void main() {
         'answer cards $tag: a tap chooses first; on the chosen card a word shows its meaning',
         (t) async {
           final play = MissionPlay();
-          final m = await play.openPuzzle(t, size, 'm01');
-          const label = 'The Science Museum (rockets and machines)';
+          // Case 01's first mission is a look round now (its posters: see
+          // case01_explore_test); Case 02's clock room keeps the answer cards.
+          final m = await play.openPuzzle(t, size, 'ep02_m2');
+          const label = 'Under the smallest bell';
           final card = findReadable(label);
           expect(card, findsOneWidget, reason: 'not chosen: plain words');
 
           // A tap on a word of a card not yet chosen chooses the card.
           await reveal(t, card);
-          await t.tapOnText(find.textRange.ofSubstring('rockets'));
+          await t.tapOnText(find.textRange.ofSubstring('smallest'));
           await wait(t, const Duration(milliseconds: 400));
           expect(
             find.text('WORD CARD'),
@@ -228,10 +232,10 @@ void main() {
           expect(_chosen(t, label), isTrue);
 
           // On the chosen card, the same word shows its meaning, and nothing else.
-          await t.tapOnText(find.textRange.ofSubstring('rockets'));
+          await t.tapOnText(find.textRange.ofSubstring('smallest'));
           await wait(t, const Duration(milliseconds: 600));
           expect(
-            find.text('= ${byId('ep01').meaningOf('rockets')}'),
+            find.text('= ${byId('ep02').meaningOf('smallest')}'),
             findsOneWidget,
           );
           expect(
@@ -245,7 +249,7 @@ void main() {
             isTrue,
             reason: 'the card stays chosen after the word card closes',
           );
-          expect(play.path(), Routes.mission('m01'));
+          expect(play.path(), Routes.mission('ep02_m2'));
 
           // Every card: inside the screen and a comfortable target.
           for (final o in m.options) {
@@ -330,7 +334,7 @@ void main() {
       final m = await play.openPuzzle(
         t,
         const Size(360, 640),
-        'm01',
+        'ep02_m2',
         textScale: 1.3,
       );
       for (final o in m.options) {
@@ -348,8 +352,8 @@ void main() {
       (t) async {
         final semantics = t.ensureSemantics();
         final play = MissionPlay();
-        await play.openPuzzle(t, const Size(390, 844), 'm01');
-        const label = 'C. The London Transport Museum (old buses and trains)';
+        await play.openPuzzle(t, const Size(390, 844), 'ep02_m2');
+        const label = 'C. Under the smallest bell';
         final node = t.getSemantics(find.bySemanticsLabel(label));
         final actions = [
           for (final id
@@ -359,26 +363,23 @@ void main() {
         ];
         expect(
           actions,
-          containsAll([
-            'Meaning of Transport',
-            'Meaning of Museum',
-            'Meaning of buses',
-            'Meaning of trains',
-          ]),
+          containsAll(['Meaning of smallest', 'Meaning of bell']),
         );
         semantics.dispose();
       },
     );
 
     testWidgets('the story text keeps its dotted words (unchanged)', (t) async {
+      // Case 01's first letter, read again where it was found (the suitcase).
       final play = MissionPlay();
       await play.openPuzzle(t, const Size(390, 844), 'm01');
+      await play.readExploreDocument(t, exploreOf(byId('ep01').missions.first)!);
       await tapText(
         t,
-        'Reread Letter',
+        'Letter',
         after: const Duration(milliseconds: 600),
       );
-      await t.tapOnText(find.textRange.ofSubstring('museum').first);
+      await t.tapOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('= 박물관'), findsOneWidget);
     });

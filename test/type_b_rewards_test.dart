@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
@@ -376,9 +377,12 @@ void main() {
       t,
     ) async {
       final play = MissionPlay();
-      await play.openPuzzle(t, const Size(390, 844), 'm01');
-      await tapText(t, 'The Natural History Museum (dinosaur bones)', after: const Duration(milliseconds: 200));
-      await tapText(t, 'CHECK ANSWER');
+      final m = await play.openPuzzle(t, const Size(390, 844), 'm01');
+      // King's Cross: the letter read in the suitcase, then a wrong museum.
+      final scene = exploreOf(m)!;
+      await play.readExploreDocument(t, scene);
+      await play.chooseInExplore(t, scene, 'a');
+      await wait(t, const Duration(milliseconds: 400));
       await tapText(t, 'TRY AGAIN', after: const Duration(milliseconds: 600));
       expect(
         play.ref.read(gameControllerProvider).behavior!.rechecked,
@@ -388,9 +392,8 @@ void main() {
       await tapText(t, 'Reread Letter', after: const Duration(milliseconds: 600));
       await tapText(t, 'BACK TO THE PUZZLE', after: const Duration(milliseconds: 600));
       expect(play.ref.read(gameControllerProvider).behavior!.rechecked, ['m01']);
-      await tapText(t, 'The British Museum (treasures from long ago)', after: const Duration(milliseconds: 200));
-      await tapText(t, 'CHECK ANSWER', after: Duration.zero);
-      await wait(t, const Duration(milliseconds: 2800));
+      await play.chooseInExplore(t, scene, 'b');
+      await wait(t, const Duration(milliseconds: 2400));
       expect(find.textContaining('Second Look'), findsOneWidget, reason: 'the Discovery Moment names the new badge');
       expect(find.text('+30 XP   ·   +30 COINS'), findsOneWidget);
       expect(t.takeException(), isNull);

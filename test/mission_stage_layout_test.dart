@@ -9,6 +9,8 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
+import 'package:london_mystery/data/mock/season1/season1_explores.dart';
+import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
 import 'package:london_mystery/data/mock/season1/season1_investigations.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
@@ -166,6 +168,14 @@ void main() {
     return Rect.fromLTRB(0, top, 1, bottom);
   }
 
+  /// Scrolls the page by [dy] with a finger on its side margin, where no
+  /// puzzle takes the drag (a clock face turns its hands instead).
+  Future<void> scrollPage(WidgetTester t, double dy) async {
+    final view = t.getRect(page());
+    await t.dragFrom(Offset(view.left + _margin / 3, view.center.dy), Offset(0, dy));
+    await t.pumpAndSettle();
+  }
+
   /// Centred when the group fits; otherwise read from the top, and scrolled
   /// to its end, the last of it above the page's bottom margin.
   Future<bool> expectCentredOrScrolled(WidgetTester t, String what) async {
@@ -184,8 +194,7 @@ void main() {
         moreOrLessEquals(_margin, epsilon: 0.5),
         reason: '$what: from the top',
       );
-      await t.drag(page(), const Offset(0, -5000));
-      await t.pumpAndSettle();
+      await scrollPage(t, -5000);
       expect(
         view.bottom - group(t).bottom,
         moreOrLessEquals(_margin, epsilon: 0.5),
@@ -204,7 +213,10 @@ void main() {
   ]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}@$scale';
     for (final m in plain) {
-      for (final puzzle in [false, true]) {
+      // A look round (Case 01 M1) and a room examined under the glass (Case
+      // 01 M2) have a plain place page, and their own page in place of the
+      // puzzle's (case01_explore_test, case01_inspect_test).
+      for (final puzzle in [false, if (exploreOf(m) == null && inspectionOf(m) == null) true]) {
         final step = puzzle ? 'puzzle (${m.type.name})' : 'place';
         testWidgets(
           '${m.id} $step $tag: centred when it fits, scrolled when not',
@@ -224,9 +236,9 @@ void main() {
       final tag = '${size.width.toInt()}x${size.height.toInt()}@$scale';
       for (final (id, puzzle) in const [
         ('m02', false),
-        ('m02', true),
+        ('ep06_m2', true), // the word puzzle (Case 01 M2's word is on a label in its room)
         ('m03', true),
-        ('m01', true),
+        ('m01', false),
         ('m04', true),
         ('ep03_m3', true),
       ]) {
@@ -234,8 +246,7 @@ void main() {
           await open(t, id, puzzle: puzzle, size: size, textScale: scale);
           // A scrolled page is pictured from its top, as it opens.
           if (!await expectCentredOrScrolled(t, id)) {
-            await t.drag(page(), const Offset(0, 5000));
-            await t.pumpAndSettle();
+            await scrollPage(t, 5000);
           }
           await capture(t, 'after_${id}_${puzzle ? 'puzzle' : 'place'}_$tag');
         });
@@ -245,7 +256,7 @@ void main() {
 
   for (final (id, puzzle) in const [
     ('m02', false),
-    ('m02', true),
+    ('ep06_m2', true),
     ('m03', true),
   ]) {
     testWidgets(
@@ -264,9 +275,11 @@ void main() {
   testWidgets(
     'the place: the player detective beside INVESTIGATE, whole and on the page',
     (t) async {
+      // Case 04's first mission: a place whose INVESTIGATE leads to the
+      // letter (Case 01's first two lead into their places).
       await open(
         t,
-        'm02',
+        'ep04_m1',
         puzzle: false,
         size: const Size(360, 640),
         textScale: 1.3,
@@ -307,11 +320,12 @@ void main() {
   testWidgets(
     'the word puzzle with the keyboard: the field and CHECK ANSWER in view, the word kept, centred again after',
     (t) async {
-      await open(t, 'm02', puzzle: true, size: const Size(390, 844));
+      // Case 06's wet card: the word puzzle page.
+      await open(t, 'ep06_m2', puzzle: true, size: const Size(390, 844));
       expect(await expectCentredOrScrolled(t, 'keyboard down'), isTrue);
       final field = find.byType(TextField);
       await t.tap(field);
-      await t.enterText(field, 'STO');
+      await t.enterText(field, 'GRE');
       // The keyboard comes up: the page is shorter than the group.
       t.view.viewInsets = const FakeViewPadding(bottom: 336 * 3);
       await t.pumpAndSettle();
@@ -336,14 +350,14 @@ void main() {
         isTrue,
         reason: 'CHECK ANSWER in reach with the keyboard up',
       );
-      expect(t.widget<TextField>(field).controller!.text, 'STO');
+      expect(t.widget<TextField>(field).controller!.text, 'GRE');
       expect(t.testTextInput.hasAnyClients, isTrue, reason: 'still focused');
-      await t.enterText(field, 'STOVE');
+      await t.enterText(field, 'GREEN');
       // The keyboard goes: back in the middle, the word still there.
       t.view.resetViewInsets();
       await t.pumpAndSettle();
       expect(await expectCentredOrScrolled(t, 'keyboard gone'), isTrue);
-      expect(t.widget<TextField>(field).controller!.text, 'STOVE');
+      expect(t.widget<TextField>(field).controller!.text, 'GREEN');
       // A wrong word: the try-again sheet, as before.
       await t.tap(check);
       await wait(t, const Duration(milliseconds: 900));
@@ -407,7 +421,7 @@ void main() {
   ) async {
     final m = await open(
       t,
-      'm02',
+      'ep06_m2',
       puzzle: true,
       size: const Size(360, 640),
       textScale: 1.3,
