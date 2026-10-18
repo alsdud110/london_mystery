@@ -28,6 +28,30 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  # Launcher icons: `dart run flutter_launcher_icons` (config below).
+  flutter_launcher_icons: ^0.14.4
+
+# App icon, shared by both flavors and both platforms. The source art
+# (assets/branding/app_icon.png) draws its own rounded gold frame on white;
+# app_icon_launcher_v1.png is the illustration inside that frame, cropped square
+# (980px at +139+113, scaled to 1024, RGB without alpha) so the system mask
+# rounds the corners instead of the drawn frame. Neither file ships in the app.
+# After regenerating, revert ios/Runner.xcodeproj/project.pbxproj and the
+# AppIcon Contents.json, and delete the 50/57/72px icons: v0.14.4 rewrites
+# ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS to "AppIcon" and
+# adds pre-iOS 7 iPad sizes. The template Contents.json names the same files.
+flutter_launcher_icons:
+  image_path: "assets/branding/app_icon_launcher_v1.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  # Adaptive icon: the full illustration over the 72dp viewport (16% inset on
+  # each side of the 108dp layer), on navyDeep (AppColors) for parallax margins.
+  # No monochrome layer: the illustration has no faithful one-colour form, so
+  # Android 13+ themed icons fall back to the full-colour icon.
+  adaptive_icon_foreground: "assets/branding/app_icon_launcher_v1.png"
+  adaptive_icon_foreground_inset: 16
+  adaptive_icon_background: "#151D30"
 
 flutter:
   uses-material-design: true
