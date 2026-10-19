@@ -348,20 +348,19 @@ class TipShopCard extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: AppSpace.xl),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: AppSpace.sm,
+                  runSpacing: AppSpace.sm,
                   children: [
                     CompactButton(label: 'CANCEL', onPressed: onCancel),
-                    if (short && onWatchAd != null) ...[
-                      const SizedBox(width: AppSpace.sm),
+                    if (short && onWatchAd != null)
                       CompactButton(
                         label: watchingAd ? 'WATCHING...' : 'WATCH AD +20',
                         primary: true,
                         onPressed: watchingAd ? null : onWatchAd,
                       ),
-                    ],
-                    if (!short) ...[
-                      const SizedBox(width: AppSpace.sm),
+                    if (!short)
                       CompactButton(
                         label: 'GET MORE HINTS',
                         primary: true,
@@ -370,7 +369,6 @@ class TipShopCard extends StatelessWidget {
                             : 'Get more hints, free',
                         onPressed: onReveal,
                       ),
-                    ],
                   ],
                 ),
               ],
