@@ -258,7 +258,7 @@ void main() {
       final c = ProviderContainer(overrides: await testOverrides(prefs: beforeCoins));
       final prefs = c.read(sharedPreferencesProvider);
       final id = c.read(profileSessionProvider).profileId;
-      expect(c.read(walletProvider).balance, 80, reason: 'paid back once: 20 + 30 + 30');
+      expect(c.read(walletProvider).balance, 30, reason: 'paid back once: 20 + 5 + 5');
       c.dispose();
       await prefs.setString(AppConstants.detectiveStorageKey, 'garbage');
       await prefs.remove(AppConstants.profileKey(id, AppConstants.walletStorageKey));
@@ -343,7 +343,7 @@ void main() {
       final prefs = c.read(sharedPreferencesProvider);
       final pid = c.read(profileSessionProvider).profileId;
       expect(ProfileStore(prefs).profile!.walletBackfill, WalletBackfill.pending);
-      expect(c.read(walletProvider).balance, 20 + 30 + 30);
+      expect(c.read(walletProvider).balance, 20 + 5 + 5);
       expect(c.read(walletProvider).ownsTip('m01', 1), isTrue);
       expect(ProfileStore(prefs).profile!.walletBackfill, WalletBackfill.done);
       c.dispose();
