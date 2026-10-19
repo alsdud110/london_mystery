@@ -27,6 +27,26 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   # Launcher icons: `dart run flutter_launcher_icons` (config below).
   flutter_launcher_icons: ^0.14.4
+  # Native launch screens: `dart run flutter_native_splash:create`.
+  flutter_native_splash: ^2.4.8
+  # Deterministic padding for the Android 12 splash asset.
+  image: ^4.12.0
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  color: "#151D30"
+  color_dark: "#151D30"
+  image: assets/branding/splash_logo.png
+  image_dark: assets/branding/splash_logo.png
+  android_gravity: center
+  ios_content_mode: center
+  android_12:
+    color: "#151D30"
+    color_dark: "#151D30"
+    image: assets/branding/splash_logo_android12.png
+    image_dark: assets/branding/splash_logo_android12.png
 
 # App icon, shared by both platforms. The source art
 # (assets/branding/app_icon.png) draws its own rounded gold frame on white;

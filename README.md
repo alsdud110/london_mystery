@@ -114,7 +114,7 @@ lib/
 
 ## Before release
 
-- Replace the launcher icons and splash screen.
+- Check launcher icons and the native splash on devices.
 - If this is hosted on the web, set the security headers (CSP,
   X-Frame-Options, X-Content-Type-Options, Referrer-Policy) on the hosting
   layer.
@@ -122,3 +122,30 @@ lib/
   for competitive or rewarded play.
 - Add the two avatar pictures (`assets/art/avatars/detective_boy.png`,
   `detective_girl.png`); the folder is already listed in `pubspec.yaml`.
+
+## Native splash screen
+
+Android and iOS use [splash_logo.png](assets/branding/splash_logo.png) on
+`#151D30` in both light and dark mode. Configuration lives in
+[pubspec.yaml](pubspec.yaml). After replacing the image, regenerate with:
+
+```sh
+flutter pub get
+dart run tool/prepare_splash.dart
+dart run flutter_native_splash:create
+```
+
+Rebuild and cold-launch the app; hot reload does not update native launch screens.
+Android 12 masks the image to a circle: artwork on a 1152px canvas should fit
+within the central 768px-diameter circle.
+[prepare_splash.dart](tool/prepare_splash.dart) preserves the original and writes
+[splash_logo_android12.png](assets/branding/splash_logo_android12.png), scaling
+the artwork into a 360px radius with transparent padding. It checks all visible
+pixels against the 384px mask radius. Only Android 12+ uses this variant.
+
+Validation (2026-10-19): native resource generation, Android debug APK build,
+iOS plist lint and diff whitespace checks passed. Independent resource review
+identified the Android 12 safe-area issue, addressed by the padded variant.
+iOS build and device launch appearance
+have not been verified. This chat has no bound OpenRig seat, so no queue handoff
+was available.
