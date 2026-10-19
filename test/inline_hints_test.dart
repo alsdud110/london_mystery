@@ -151,7 +151,8 @@ void main() {
     t,
   ) async {
     final play = MissionPlay();
-    await play.openPuzzle(t, const Size(360, 640), 'm03');
+    // A keypad mission (Case 01 M3, the keypad before, is now read for its traces).
+    await play.openPuzzle(t, const Size(360, 640), 'ep08_m3');
     await tapText(
       t,
       'Get a Free Hint',

@@ -155,30 +155,44 @@ const Map<String, dynamic> episode01Json = {
       'scene': 'bigBen',
       'story': [
         'You run to the tall clock tower: Big Ben!',
-        'At the bottom, there is a small metal box with a 3-number lock.',
+        'The thief hid a small box somewhere at the foot of the tower.',
       ],
-      'letterIntro': 'A note is stuck on the box.',
+      // The detective's own notes, written as the scene's three clues are
+      // found (big_ben_base_night.png): no line says where the box is.
+      'letterIntro': 'Your notes from the foot of Big Ben:',
       'letter':
-          'My code is in three sentences:\n\n'
-          '1. The tower has FOUR clock faces.\n'
-          '2. At one o\'clock, the bell rings ONE time.\n'
-          '3. I left London at SEVEN o\'clock.\n\n'
-          'Put the numbers in order!',
-      'type': 'numberCode',
-      'question': 'Find the three numbers hidden in the clues.',
-      'codeLength': 3,
-      'answer': '417',
-      'hints': [
-        'Look for the number words in BIG letters.',
-        'Each word in BIG letters is a number word. FOUR is 4. Now do the other two.',
+          'The footprints stop at the tower wall.\n'
+          'The lamp shines on one stone in the wall.\n'
+          'That stone has fresh scratches around it.',
+      // Chosen where it is in the picture (season1_deductions.dart): under
+      // the bench, behind the lit stone, under the drain cover.
+      'type': 'multipleChoice',
+      'question': 'Where is the box hidden?',
+      'options': [
+        {
+          'id': 'a',
+          'label': 'Under the bench',
+          'feedback': 'The bench is near the lamp, but the footprints do not go there. Where do they stop?',
+        },
+        {'id': 'b', 'label': 'Behind the stone in the tower wall'},
+        {
+          'id': 'c',
+          'label': 'Under the drain cover',
+          'feedback': 'The footprints walk past the drain cover. Read your notes again: where do they stop?',
+        },
       ],
-      'orderFeedback': 'The numbers are right, but not the order. Read the sentences from 1 to 3.',
+      'answer': 'b',
+      'hints': [
+        'Where do the footprints stop? Look closely at that place.',
+        'Read your three notes. The footprints, the lamp light and the scratches all point to the same place.',
+      ],
+      // The 7 of the final lock comes from the watch inside the box.
       'clue': {
         'id': 'c03',
         'title': "7 o'clock",
         'value': '7',
         'symbol': 'clock',
-        'note': "The Shadow left at 7 o'clock.",
+        'note': "The thief's watch stopped at 7 o'clock.",
       },
       'evidence': {
         'id': 'e03',
@@ -369,7 +383,7 @@ const Map<String, dynamic> episode01Json = {
       'The Crown is safe again.',
       'The Royal Box is open.',
       'But the Shadow is gone.',
-      'The note at Big Ben said:\n"I left London at SEVEN o\'clock."',
+      'The watch in the box at Big Ben\nhad stopped at 7 o\'clock.',
       'And his letter ended:',
       '"P.S. I love trains!"',
       'London is quiet tonight.',
@@ -438,5 +452,9 @@ const Map<String, dynamic> episode01Json = {
     'covered': '덮인',
     'complete': '완성하다',
     'sentences': '문장들',
+    'footprints': '발자국들',
+    'scratches': '긁힌 자국들',
+    'lamp': '가로등, 등불',
+    'drain': '배수구',
   },
 };

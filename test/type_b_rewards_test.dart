@@ -218,9 +218,9 @@ void main() {
       final second = ctrl().submitAnswer(m['m02']!, 'stone');
       expect(second.newBadges, contains(GameBadge.secondLook));
       // Once per case.
-      ctrl().submitAnswer(m['m03']!, '000');
+      ctrl().submitAnswer(m['m03']!, 'a');
       ctrl().recordRecheck(m['m03']!);
-      expect(ctrl().submitAnswer(m['m03']!, '417').newBadges, isNot(contains(GameBadge.secondLook)));
+      expect(ctrl().submitAnswer(m['m03']!, 'b').newBadges, isNot(contains(GameBadge.secondLook)));
     });
 
     test('11. Second Look: evidence opened after a wrong answer counts as a re-check of that mission', () {
@@ -239,7 +239,7 @@ void main() {
       final out = ctrl().submitAnswer(m['m02']!, 'stone');
       expect(out.newBadges, contains(GameBadge.notebookExplorer));
       ctrl().recordEvidenceViewed('e02');
-      expect(ctrl().submitAnswer(m['m03']!, '417').newBadges, isNot(contains(GameBadge.notebookExplorer)));
+      expect(ctrl().submitAnswer(m['m03']!, 'b').newBadges, isNot(contains(GameBadge.notebookExplorer)));
     });
 
     test('12. Notebook Explorer: nothing is recorded once the case is solved', () {
@@ -261,7 +261,7 @@ void main() {
       ctrl().lookUpWord('crown');
       expect(ctrl().submitAnswer(m['m02']!, 'stone').newBadges, contains(GameBadge.wordCollector));
       ctrl().lookUpWord('palace');
-      expect(ctrl().submitAnswer(m['m03']!, '417').newBadges, isNot(contains(GameBadge.wordCollector)));
+      expect(ctrl().submitAnswer(m['m03']!, 'b').newBadges, isNot(contains(GameBadge.wordCollector)));
       expect(state().badgeIds.where((b) => b == 'wordCollector'), hasLength(1));
     });
 

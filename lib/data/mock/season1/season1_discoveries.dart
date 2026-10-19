@@ -49,7 +49,10 @@ const Map<String, Discovery> season1Discoveries = {
     type: DiscoveryType.evidenceFound,
     timing: DiscoveryTiming.fromPuzzle,
     title: 'POCKET WATCH',
-    detail: 'The lock clicks open. The thief left a watch inside the box.',
+    // The final lock's clock number is found here: the watch's stopped time.
+    // (Not the card's own line, "It stopped at 7 o'clock.": said once.)
+    detail: "The loose stone slides out. Behind it is the box, and inside, the thief's pocket watch. "
+        "Its hands are frozen at 7 o'clock.",
     showEvidence: true,
   ),
   'm04': Discovery(

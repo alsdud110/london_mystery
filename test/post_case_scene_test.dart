@@ -55,11 +55,12 @@ void main() {
     });
 
     test("the scenes use the cases' own words and sources", () {
-      // Case 01: "SEVEN o'clock" is the note on the box at Big Ben (m03); the
-      // P.S. is the letter's (Old Letter, m01).
+      // Case 01: "7 o'clock" is the watch found in the box at Big Ben (m03,
+      // its Pocket Watch); the P.S. is the letter's (Old Letter, m01).
       expect(story('ep01'), isNot(contains('His letter said')));
-      expect(story('ep01'), contains("The note at Big Ben said:\n\"I left London at SEVEN o'clock.\""));
-      expect(byId('ep01').missionById('m03')!.letter, contains("I left London at SEVEN o'clock."));
+      expect(story('ep01'), contains("The watch in the box at Big Ben\nhad stopped at 7 o'clock."));
+      expect(byId('ep01').missionById('m03')!.evidence!.inscription, "It stopped at 7 o'clock.");
+      expect(story('ep01'), isNot(contains('SEVEN')), reason: 'the old note is gone');
       expect(byId('ep01').missionById('m01')!.evidence!.inscription, contains('P.S. I love trains!'));
       expect(story('ep01'), contains('"P.S. I love trains!"'));
       // Case 02: the raven is stamped on the gear.

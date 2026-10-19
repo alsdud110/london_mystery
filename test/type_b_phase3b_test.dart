@@ -185,10 +185,12 @@ void main() {
   });
 
   // The season count includes Wave 1's 03-M1 (a search: essential).
-  test('Essential: Case 09-11 has 9 of 12; the season 42 of 50', () {
+  // The season was 42 of 50 until Case 01 M3 was read for its traces
+  // (2026-10-19: essential → helpful, see learning_objectives_test).
+  test('Essential: Case 09-11 has 9 of 12; the season 41 of 50', () {
     final essential = missions.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential);
     expect(essential, hasLength(9));
-    expect(all.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential), hasLength(42));
+    expect(all.values.where((x) => learningOf(x)!.dependency == LanguageDependency.essential), hasLength(41));
   });
 
   test('XP rule 4 holds: Case 10 with tips and wrong orders is 3 × 30 + 60', () async {

@@ -7,6 +7,8 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
+import 'package:london_mystery/data/models/scene_deduction.dart';
 import 'package:london_mystery/data/mock/season1/season1_clocks.dart';
 import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
 import 'package:london_mystery/data/mock/season1/season1_explores.dart';
@@ -112,7 +114,8 @@ class MissionPlay {
             find.byKey(const ValueKey('talk-panel')).evaluate().isNotEmpty ||
             find.byKey(const ValueKey('clock-dial')).evaluate().isNotEmpty ||
             find.byKey(const ValueKey('explore-picture')).evaluate().isNotEmpty ||
-            find.byKey(const ValueKey('inspect-room')).evaluate().isNotEmpty,
+            find.byKey(const ValueKey('inspect-room')).evaluate().isNotEmpty ||
+            find.byKey(const ValueKey('deduction-picture')).evaluate().isNotEmpty,
         isTrue,
         reason: '$missionId: at its puzzle');
     return e.missionById(missionId)!;
@@ -175,6 +178,14 @@ class MissionPlay {
       await writeOnLabel(t, m.answer);
       return;
     }
+    // A place read for its traces: each clue noted, then the answer's place
+    // chosen in the picture and searched.
+    final deduction = deductionOf(m);
+    if (deduction != null) {
+      await noteClues(t, deduction);
+      await chooseAndSearch(t, deduction, m.answer);
+      return;
+    }
     // A clock: its hands set to the answer, then SET THE TIME.
     final clock = clockPuzzleOf(m);
     if (clock != null) {
@@ -228,6 +239,32 @@ class MissionPlay {
     for (var i = 0; i < minutes.abs(); i++) {
       await tapKey(t, minutes > 0 ? 'clock-minute-plus' : 'clock-minute-minus', after: const Duration(milliseconds: 60));
     }
+  }
+
+  /// Where [point] (fractions of a place read for its traces) is on screen,
+  /// as the picture is shown now (enlarged or moved).
+  Offset deductionAt(WidgetTester t, Offset point) {
+    final box = t.getRect(find.byKey(const ValueKey('deduction-picture')));
+    return Offset(box.left + point.dx * box.width, box.top + point.dy * box.height);
+  }
+
+  /// Taps a place read for its traces at [point] (fractions of the picture).
+  Future<void> tapDeduction(WidgetTester t, Offset point, {Duration after = const Duration(milliseconds: 400)}) async {
+    await t.tapAt(deductionAt(t, point));
+    await wait(t, after);
+  }
+
+  /// Every clue of [scene] tapped (and so noted), in order.
+  Future<void> noteClues(WidgetTester t, DeductionScene scene) async {
+    for (final c in scene.clues) {
+      await tapDeduction(t, c.areas.first.center);
+    }
+  }
+
+  /// The place of [optionId] chosen in the picture, then searched.
+  Future<void> chooseAndSearch(WidgetTester t, DeductionScene scene, String optionId) async {
+    await tapDeduction(t, scene.placeOf(optionId).areas.first.center);
+    await tapKey(t, 'deduction-search', after: const Duration(milliseconds: 400));
   }
 
   /// Where [point] (fractions of the examined room's picture) is on screen.

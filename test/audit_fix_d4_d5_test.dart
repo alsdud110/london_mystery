@@ -184,7 +184,9 @@ void main() {
         // its follow-up — 01-M1 tip 2, 02-F '817' line and tip 2, 03-M3 tip 2,
         // 05-M2 the Direction Note keeps its turns, 06-M3 lines, tip 2 and the
         // ticket's raven mark, 06-F option a, 09-F umbrella line.
-        'ep01': 2429473966,
+        // Case 01 M3 redesigned as the foot of Big Ben read for its traces
+        // (2026-10-19, requested; was 2429473966): see final_small_pass_test.
+        'ep01': 592271942,
         'ep02': 1023821448,
         // Wave 1 (2026-10-14): 03-M1 is searched; its tip 2 reads the place
         // words. Wave 1.1: the report says 'I noticed three things in the

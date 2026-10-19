@@ -138,7 +138,7 @@ void main() {
       for (final (id, answer) in [
         ('m01', 'b'),
         ('m02', 'stone'),
-        ('m03', '417'),
+        ('m03', 'b'),
         ('m04', 'c'),
         ('m05', 'LM-EP01-PALACE'),
       ]) {

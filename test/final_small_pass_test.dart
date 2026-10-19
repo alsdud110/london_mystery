@@ -422,7 +422,12 @@ const _otherCases = <String, int>{
   // Values before it: ep01 3818454493, ep02 1070329097, ep03 4102152038,
   // ep04 1168042718, ep05 1744860961, ep07 3755420405, ep09 1605147981,
   // ep10 1810398867, ep11 913478642, ep12 3787923803.
-  'ep01': 1558901493,
+  // Case 01 M3 redesigned as the foot of Big Ben read for its traces
+  // (2026-10-19, requested): its story, notes, question, places, answer,
+  // tips and wrong-place lines; c03's note and the post-case line now name
+  // the watch's 7 o'clock; four glossary words. Value before it: ep01
+  // 1558901493.
+  'ep01': 3068875867,
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
   'ep02': 3508708899,
   // Wave 1 (2026-10-14): 03-M1 tip 2 (the search of Gallery 8); Wave 1.1:

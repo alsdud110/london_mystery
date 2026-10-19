@@ -95,8 +95,13 @@ void main() {
       expect(m03.transition.last, "Let's go to Hyde Park!");
     });
 
-    test('its words stay: SEVEN o\'clock, P.S. I love trains!, no raven', () {
-      expect(m03.letter, contains("I left London at SEVEN o'clock."));
+    test("its words stay: the watch's 7 o'clock, P.S. I love trains!, no raven", () {
+      // The 7 of the final lock is found on the watch in the box (the box's
+      // message no longer gives a time).
+      expect(m03.clue!.value, '7');
+      expect(m03.clue!.note, contains("7 o'clock"));
+      expect(m03.clue!.note.toLowerCase(), contains('watch'));
+      expect(m03.letter, isNot(contains('7')));
       expect(e.missionById('m01')!.evidence!.inscription, 'Signed: The Shadow\nP.S. I love trains!');
       expect(jsonEncode(e.toJson()).toLowerCase(), isNot(contains('raven')));
     });

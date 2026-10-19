@@ -69,6 +69,8 @@ void main() {
       ..remove('fountain');
     // Was 433367548 before M1 tip 2 (2026-10-16, pinned above).
     // The letters that name the detective are read as they were (2026-10-17).
-    expect(fnv(withoutNames(jsonEncode({...json, 'glossary': glossary}))), 1590700020);
+    // Was 1590700020 before M3 was redesigned as the foot of Big Ben read
+    // for its traces (2026-10-19, requested; see case01_deduction_test).
+    expect(fnv(withoutNames(jsonEncode({...json, 'glossary': glossary}))), 376694330);
   });
 }

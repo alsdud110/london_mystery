@@ -21,9 +21,9 @@ void main() {
     }
   });
 
-  test('number code and final code', () {
-    expect(AnswerChecker.isCorrect(byId['m03']!, '417'), isTrue);
-    expect(AnswerChecker.isCorrect(byId['m03']!, '147'), isFalse);
+  test('the box at Big Ben (a place chosen) and the final code', () {
+    expect(AnswerChecker.isCorrect(byId['m03']!, 'b'), isTrue);
+    expect(AnswerChecker.isCorrect(byId['m03']!, 'a'), isFalse);
     expect(AnswerChecker.isCorrect(byId['final']!, '7924'), isTrue);
     expect(AnswerChecker.isCorrect(byId['final']!, '0000'), isFalse);
   });

@@ -16,7 +16,7 @@ import 'package:london_mystery/features/game/game_providers.dart'
 
 import 'helpers.dart';
 import 'parent_gate_test.dart' show gateAnswer;
-import 'full_playthrough_test.dart' show wait, reveal, goToTime, tapRoomSpot, tapStationSpot;
+import 'full_playthrough_test.dart' show wait, reveal, goToTime, tapRoomSpot, tapStationSpot, readBigBenBase;
 
 // Visual review tour: LM_TOUR=<folder> flutter test test/ui_tour_test.dart
 final _dir = Platform.environment['LM_TOUR'];
@@ -316,12 +316,10 @@ void main() {
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await finishMission(t, sceneLine: 'The old stone shines in the dark.');
 
-    // ── Mission 03: number code keypad.
-    await openMission(t, 'GO TO BIG BEN');
-    for (final d in ['4', '1', '7']) {
-      await tapText(t, d, after: const Duration(milliseconds: 150));
-    }
-    await tapText(t, 'UNLOCK', after: Duration.zero);
+    // ── Mission 03: the foot of Big Ben read for its traces.
+    await readBigBenBase(t);
+    await shot('big_ben_base');
+    await tapText(t, 'SEARCH HERE', after: Duration.zero);
     await finishMission(
       t,
       sceneLine: 'Inside the box, there is a pocket watch and a photo.',

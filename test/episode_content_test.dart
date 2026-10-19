@@ -19,15 +19,17 @@ void main() {
     expect(() => repo.fetchEpisode('nope'), throwsArgumentError);
   });
 
-  test('has 5 missions covering all 5 puzzle types, plus a final code', () {
+  // M3 (Big Ben) is a place chosen in its scene since 2026-10-19 (a choice,
+  // like M1's poster): the number code is left to the final case's locks.
+  test('has 5 missions over 4 puzzle types, plus a final code', () {
     expect(e.missions, hasLength(5));
     expect(e.missions.map((m) => m.type).toSet(), {
       MissionType.multipleChoice,
       MissionType.wordInput,
-      MissionType.numberCode,
       MissionType.imageChoice,
       MissionType.qrScan,
     });
+    expect(e.missionById('m03')!.type, MissionType.multipleChoice);
     expect(e.finalMission.type, MissionType.finalCode);
     expect(e.missions.first.location, "KING'S CROSS");
   });

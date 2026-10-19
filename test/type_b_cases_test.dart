@@ -79,10 +79,13 @@ void main() {
       expect(AnswerChecker.isCorrect(m2, 'stone'), isTrue);
     });
 
-    test('M3: the right numbers in the wrong order are told so', () {
+    test('M3: each wrong hiding place sends the detective back to where the footprints stop', () {
       final m3 = m('m03');
-      expect(AnswerChecker.feedbackFor(m3, '714'), m3.orderFeedback);
-      expect(AnswerChecker.feedbackFor(m3, '418'), isNull, reason: 'other wrong codes: the general line');
+      for (final wrong in ['a', 'c']) {
+        expect(AnswerChecker.feedbackFor(m3, wrong), contains('footprints'), reason: wrong);
+        expect(AnswerChecker.feedbackFor(m3, wrong)!.toLowerCase(), isNot(contains('stone')), reason: 'never the answer');
+      }
+      expect(AnswerChecker.feedbackFor(m3, 'b'), isNull);
     });
 
     test('M4: no names under the pictures; Final keeps its picture locks (the tutorial)', () {

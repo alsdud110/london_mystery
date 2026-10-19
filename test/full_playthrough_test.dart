@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
 import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
@@ -122,6 +123,28 @@ Future<void> openMission(WidgetTester t, String goLabel) async {
     findsOneWidget,
     reason: 'step 3: the puzzle',
   );
+}
+
+/// Taps the foot of Big Ben (Case 01 M3) at [at] (fractions of its picture).
+Future<void> tapBigBenBase(WidgetTester t, Offset at) async {
+  final picture = t.getRect(find.byKey(const ValueKey('deduction-picture')));
+  await t.tapAt(Offset(picture.left + at.dx * picture.width, picture.top + at.dy * picture.height));
+  await wait(t, const Duration(milliseconds: 500));
+}
+
+/// Case 01 M3 from the map: the place, then its foot at once (no
+/// envelope): the three traces noted, then the place they point to chosen
+/// (SEARCH HERE still to press).
+Future<void> readBigBenBase(WidgetTester t) async {
+  await t.tap(find.bySemanticsLabel('GO TO BIG BEN'));
+  await wait(t, goToTime);
+  await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
+  expect(find.text('TAP TO OPEN'), findsNothing, reason: 'no envelope: the traces are read where they are');
+  final scene = deductionOf(MockEpisodeRepository.bundled().first.missions[2])!;
+  for (final c in scene.clues) {
+    await tapBigBenBase(t, c.areas.first.center);
+  }
+  await tapBigBenBase(t, scene.placeOf('b').areas.first.center);
 }
 
 /// Success overlay → story scene → back on the map (unlock ceremony).
@@ -363,12 +386,10 @@ void main() {
       await tapText(t, 'CHECK ANSWER', after: Duration.zero);
       await finishMission(t, sceneLine: 'The old stone shines in the dark.');
 
-      // ── Mission 03: number code keypad.
-      await openMission(t, 'GO TO BIG BEN');
-      for (final d in ['4', '1', '7']) {
-        await tapText(t, d, after: const Duration(milliseconds: 150));
-      }
-      await tapText(t, 'UNLOCK', after: Duration.zero);
+      // ── Mission 03: the foot of Big Ben read for its traces; the box found
+      // where they all point.
+      await readBigBenBase(t);
+      await tapText(t, 'SEARCH HERE', after: Duration.zero);
       await finishMission(
         t,
         sceneLine: 'Inside the box, there is a pocket watch and a photo.',

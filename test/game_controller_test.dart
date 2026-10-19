@@ -9,7 +9,7 @@ import 'package:london_mystery/features/game/scoring.dart';
 
 import 'helpers.dart';
 
-const fullRun = [('m01', 'b'), ('m02', 'stone'), ('m03', '417'), ('m04', 'c'), ('m05', 'LM-EP01-PALACE')];
+const fullRun = [('m01', 'b'), ('m02', 'stone'), ('m03', 'b'), ('m04', 'c'), ('m05', 'LM-EP01-PALACE')];
 
 void main() {
   late ProviderContainer container;
@@ -54,7 +54,7 @@ void main() {
     expect(state().isUnlocked(e, 'final'), isFalse);
 
     // Skipping ahead is refused and not recorded.
-    expect(ctrl().submitAnswer(m['m03']!, '417').result, SubmitResult.locked);
+    expect(ctrl().submitAnswer(m['m03']!, 'b').result, SubmitResult.locked);
     expect(state().attempts, isEmpty);
 
     expect(ctrl().submitAnswer(m['m01']!, 'b').result, SubmitResult.correct);
@@ -97,10 +97,10 @@ void main() {
     expect((second.base, second.carefulBonus, second.total), (30, 0, 30));
     expect(state().solveSeconds['m02'], 300);
 
-    for (final guess in ['000', '111']) {
+    for (final guess in ['a', 'c']) {
       ctrl().submitAnswer(m['m03']!, guess);
     }
-    ctrl().submitAnswer(m['m03']!, '417');
+    ctrl().submitAnswer(m['m03']!, 'b');
     expect(XpBreakdown.of(m['m03']!, state()).total, 30, reason: 'the base is never lost');
   });
 

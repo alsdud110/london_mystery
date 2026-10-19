@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
 import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
 import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
@@ -213,10 +214,14 @@ void main() {
   ]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}@$scale';
     for (final m in plain) {
-      // A look round (Case 01 M1) and a room examined under the glass (Case
-      // 01 M2) have a plain place page, and their own page in place of the
-      // puzzle's (case01_explore_test, case01_inspect_test).
-      for (final puzzle in [false, if (exploreOf(m) == null && inspectionOf(m) == null) true]) {
+      // A look round (Case 01 M1), a room examined under the glass (Case 01
+      // M2) and a place read for its traces (Case 01 M3) have a plain place
+      // page, and their own page in place of the puzzle's
+      // (case01_explore_test, case01_inspect_test, case01_deduction_test).
+      for (final puzzle in [
+        false,
+        if (exploreOf(m) == null && inspectionOf(m) == null && deductionOf(m) == null) true,
+      ]) {
         final step = puzzle ? 'puzzle (${m.type.name})' : 'place';
         testWidgets(
           '${m.id} $step $tag: centred when it fits, scrolled when not',
@@ -237,7 +242,8 @@ void main() {
       for (final (id, puzzle) in const [
         ('m02', false),
         ('ep06_m2', true), // the word puzzle (Case 01 M2's word is on a label in its room)
-        ('m03', true),
+        ('m03', false), // its place (its puzzle is the scene read for traces: case01_deduction_test)
+        ('ep08_m3', true), // the number code keypad
         ('m01', false),
         ('m04', true),
         ('ep03_m3', true),
@@ -257,7 +263,7 @@ void main() {
   for (final (id, puzzle) in const [
     ('m02', false),
     ('ep06_m2', true),
-    ('m03', true),
+    ('ep08_m3', true), // the keypad (Case 01 M3 was the keypad before)
   ]) {
     testWidgets(
       '$id ${puzzle ? 'puzzle' : 'place'}: in the true middle on a large phone',
@@ -368,9 +374,11 @@ void main() {
   testWidgets(
     'the keypad on a small phone with large text: keys, Delete, Clear and UNLOCK work',
     (t) async {
+      // A keypad mission (Case 01 M3, the keypad before, is now read for its
+      // traces: case01_deduction_test).
       final m = await open(
         t,
-        'm03',
+        'ep08_m3',
         puzzle: true,
         size: const Size(360, 640),
         textScale: 1.3,

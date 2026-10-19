@@ -50,12 +50,14 @@ const Map<String, LearningObjective> season1Learning = {
     expressions: ['a hard piece of rock', 'a famous stone'],
     recallFrom: 'm01',
   ),
+  // The scene's three clues are drawn as well as written, so the notes help
+  // but the picture alone can decide it: helpful, exposure.
   'm03': LearningObjective(
-    dependency: LanguageDependency.essential,
-    level: LearningLevel.comprehension,
+    dependency: LanguageDependency.helpful,
+    level: LearningLevel.exposure,
     skill: LanguageSkill.vocabulary,
-    objective: '영어 숫자 단어(FOUR, ONE, SEVEN)를 숫자로 바꿔 자물쇠를 연다.',
-    expressions: ['The tower has FOUR clock faces', 'the bell rings ONE time', "I left London at SEVEN o'clock"],
+    objective: '현장에서 찾은 단서 메모(footprints, lamp, scratches)를 읽고 세 단서가 가리키는 숨긴 장소를 고른다.',
+    expressions: ['The footprints stop at the tower wall', 'The lamp shines on one stone', 'fresh scratches'],
   ),
   'm04': LearningObjective(
     dependency: LanguageDependency.essential,
