@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -103,7 +105,25 @@ class _LondonMysteryAppState extends ConsumerState<LondonMysteryApp> {
         final media = MediaQuery.of(context);
         return MediaQuery(
           data: media.copyWith(textScaler: media.textScaler.clamp(maxScaleFactor: 1.3)),
-          child: child!,
+          // The page annotation can be absent during route setup, or outside
+          // the status-bar sample point while the page slides/fades in.
+          // Keep the fallback white until a non-title route is resolved.
+          child: !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
+              ? ListenableBuilder(
+                  listenable: _router.routeInformationProvider,
+                  builder: (context, child) {
+                    final path = _router.routeInformationProvider.value.uri.path;
+                    final isTitle = path.isEmpty || path == Routes.start;
+                    return AnnotatedRegion<SystemUiOverlayStyle>(
+                      value: SystemUiOverlayStyle(
+                        statusBarBrightness: isTitle ? Brightness.dark : Brightness.light,
+                      ),
+                      child: child!,
+                    );
+                  },
+                  child: child!,
+                )
+              : child!,
         );
       },
     );

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -158,7 +160,7 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     // and nowhere else: the window, the city and the lamp stay as painted.
     const shade = AppColors.navyDeep;
 
-    return Scaffold(
+    final page = Scaffold(
       backgroundColor: AppColors.nightBottom,
       // No text field here: the keyboard of the parent gate dialog must not
       // squeeze the title page (the dialog moves above the keyboard itself).
@@ -268,6 +270,13 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
         ),
       ),
     );
+    // Match the native launch screen; scope this to the title, not the theme.
+    return !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
+        ? AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(statusBarBrightness: Brightness.dark),
+            child: page,
+          )
+        : page;
   }
 }
 
