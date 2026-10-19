@@ -287,6 +287,8 @@ void main() {
     expect(ArtAssets.evidencePictures, {
       'e01': ArtAssets.objects['letter'],
       'e02': ArtAssets.objects['key'],
+      // The Pocket Watch is the Royal Box's clock picture (2026-10-19, requested).
+      'e03': ArtAssets.royalBoxLocks['clock'],
       // The Crown Symbol card shows a crown (2026-10-19, requested).
       'e05': ArtAssets.objects['crown'],
       'e06': ArtAssets.objects['crown'],
@@ -298,11 +300,10 @@ void main() {
     });
     final evidence = {for (final e in MockEpisodeRepository.bundled()) for (final x in e.allEvidence) x.id: x};
     expect(evidence.keys, containsAll(ArtAssets.evidencePictures.keys), reason: 'real evidence ids');
-    // Case 01's watch (7 o'clock) and map (two swans) give numbers for the
-    // Royal Box; their pictures would show other ones, so they stay drawn.
+    // Case 01's map (two swans) gives a number for the Royal Box; its
+    // picture would show another one, so it stays drawn.
     expect(evidence['e03']!.inscription, contains('7'));
     expect(evidence['e04']!.inscription, contains('Two swans'));
-    expect(ArtAssets.evidencePictures.keys, isNot(contains('e03')));
     expect(ArtAssets.evidencePictures.keys, isNot(contains('e04')));
   });
 
@@ -320,7 +321,9 @@ void main() {
     expect(find.byType(InkIcon).evaluate().where((e) => (e.widget as InkIcon).glyph == InkGlyph.key), isEmpty, reason: 'the picture, not the glyph');
 
     await tile(evidence['e03']!);
-    expect(find.byType(Image), findsNothing, reason: 'the watch keeps its symbol');
+    final watch = t.widget<Image>(find.byType(Image));
+    expect((watch.image as ResizeImage).imageProvider,
+        isA<AssetImage>().having((a) => a.assetName, 'asset', 'assets/images/case01/symbols/symbol_pocket_watch.png'));
 
     await t.pumpWidget(const MaterialApp(home: Center(child: SizedBox(width: 160, height: 120, child: LandmarkArt(Artwork.raven)))));
     expect(find.byType(Image), findsOneWidget);

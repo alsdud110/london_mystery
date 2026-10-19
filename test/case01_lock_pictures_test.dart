@@ -185,7 +185,7 @@ void main() {
       semantics.dispose();
     });
 
-    Future<WidgetRef> openFinal(WidgetTester t, Size size, {double textScale = 1}) async {
+    Future<WidgetRef> openFinal(WidgetTester t, Size size, {double textScale = 1, String route = Routes.finalMission}) async {
       t.view.physicalSize = size * 3;
       t.view.devicePixelRatio = 3;
       t.platformDispatcher.textScaleFactorTestValue = textScale;
@@ -214,9 +214,59 @@ void main() {
         ),
       ));
       await wait(t, const Duration(milliseconds: 300));
-      ref.read(routerProvider).go(Routes.finalMission);
+      ref.read(routerProvider).go(route);
       await wait(t, const Duration(milliseconds: 1500));
       return ref;
+    }
+
+    // The notebook's EVIDENCE (2026-10-19): the Pocket Watch's tile and its
+    // close-up show the same watch as the CLOCK lock; screen readers hear
+    // its name once (the picture is not read).
+    for (final (size, scale) in const [(Size(360, 640), 1.0), (Size(360, 640), 1.3), (Size(430, 932), 1.0), (Size(768, 1024), 1.0)]) {
+      final tag = '${size.width.toInt()}x${size.height.toInt()}@$scale';
+      testWidgets('the notebook $tag: the Pocket Watch tile and its close-up show the CLOCK picture', (t) async {
+        final semantics = t.ensureSemantics();
+        final ref = await openFinal(t, size, textScale: scale, route: Routes.notebook);
+        await t.tap(find.text('EVIDENCE'));
+        await wait(t, const Duration(milliseconds: 800));
+        final tile = find.ancestor(of: find.text('Pocket Watch'), matching: find.byType(EvidenceTile));
+        await Scrollable.ensureVisible(t.element(tile), alignment: 0.5);
+        await wait(t, const Duration(milliseconds: 400));
+        expect(t.takeException(), isNull, reason: 'no overflow');
+        String asset(Finder image) => ((t.widget<Image>(image).image as ResizeImage).imageProvider as AssetImage).assetName;
+        final tileImage = find.descendant(of: tile, matching: find.byType(Image));
+        expect(asset(tileImage), RoyalBoxPicture.of('clock')!.file);
+        // The picture inside the tile, not cut by its edges.
+        final tileRect = t.getRect(tile);
+        final pictureRect = t.getRect(tileImage);
+        expect(tileRect.contains(pictureRect.topLeft) && tileRect.contains(pictureRect.bottomRight - const Offset(1, 1)), isTrue);
+        expect(find.bySemanticsLabel('Pocket Watch. Tap to look closer.'), findsOneWidget, reason: 'read once, the picture silent');
+        // The other evidence as before: letter and key pictures, the map drawn.
+        for (final (name, file) in [('Old Letter', ArtAssets.objects['letter']), ('Golden Key', ArtAssets.objects['key'])]) {
+          final other = find.descendant(of: find.ancestor(of: find.text(name), matching: find.byType(EvidenceTile)), matching: find.byType(Image));
+          expect(asset(other), file, reason: name);
+        }
+        expect(find.descendant(of: find.ancestor(of: find.text('London Map'), matching: find.byType(EvidenceTile)), matching: find.byType(Image)),
+            findsNothing);
+        // Decoded for real, so the shot shows the picture, not its fallback mark.
+        await t.runAsync(() => precacheImage(AssetImage(RoyalBoxPicture.of('clock')!.file), t.element(tile)));
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 200)));
+        await t.pump();
+        await capture(t, 'case01_notebook_watch_$tag');
+
+        await t.tap(tile);
+        await wait(t, const Duration(milliseconds: 800));
+        expect(t.takeException(), isNull, reason: 'no overflow in the close-up');
+        final zoomImages = find.byType(Image).evaluate().where((e) => e.widget is Image && ((e.widget as Image).image is ResizeImage)).toList();
+        expect(zoomImages.map((e) => (((e.widget as Image).image as ResizeImage).imageProvider as AssetImage).assetName),
+            contains(RoyalBoxPicture.of('clock')!.file));
+        expect(find.text('Pocket Watch'), findsWidgets);
+        expect(ref.read(gameControllerProvider).collectedEvidence(ep01).map((e) => e.id), contains('e03'));
+        await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 200)));
+        await t.pump();
+        await capture(t, 'case01_notebook_watch_zoom_$tag');
+        semantics.dispose();
+      });
     }
 
     for (final (size, scale) in const [(Size(360, 640), 1.0), (Size(360, 640), 1.3), (Size(430, 932), 1.0), (Size(768, 1024), 1.0)]) {
@@ -338,19 +388,19 @@ void main() {
       semantics.dispose();
     });
 
-    // The Discovery Moment's evidence card (2026-10-19): of Case 01's
-    // evidence, only the Crown Symbol (e05) matches one of the pictures —
-    // the crown — and is shown by it, closer in its round frame. The Pocket
-    // Watch (e03) keeps its drawn mark: the Royal Box's watch reads ten past
-    // ten, the evidence says 7 o'clock. The letter, key and map are not the
+    // The Discovery Moment's evidence card (2026-10-19): the Crown Symbol
+    // (e05) is shown by the crown picture, closer in its round frame. The
+    // Pocket Watch (e03) is shown by the Royal Box's own watch picture, the
+    // CLOCK of the locks (requested: one watch everywhere), a little farther
+    // so its bow and lid stay whole. The letter, key and map are not the
     // lock pictures' objects (e01, e02 keep their own pictures).
-    testWidgets('the Discovery evidence card: the Crown Symbol by the crown picture, closer; others as before', (t) async {
+    testWidgets('the Discovery evidence card: the Crown Symbol by the crown picture, closer; the watch by the CLOCK', (t) async {
       final evidence = {for (final e in season) for (final x in e.allEvidence) x.id: x};
       expect([for (final id in ['e01', 'e02', 'e03', 'e04', 'e05']) evidence[id]!.name],
           ['Old Letter', 'Golden Key', 'Pocket Watch', 'London Map', 'Crown Symbol']);
       expect(ArtAssets.evidencePictures['e05'], ArtAssets.objects['crown']);
-      expect(ArtAssets.evidencePictures.containsKey('e03'), isFalse, reason: 'the watch stopped at 7');
-      expect(ArtAssets.evidencePictureZoom, {'e05': 1.5}, reason: 'no other evidence shown closer');
+      expect(ArtAssets.evidencePictures['e03'], RoyalBoxPicture.of('clock')!.file, reason: 'the same watch as the lock');
+      expect(ArtAssets.evidencePictureZoom, {'e05': 1.5, 'e03': 0.95}, reason: 'no other evidence shown closer or farther');
       t.view.physicalSize = const Size(360, 800) * 3;
       t.view.devicePixelRatio = 3;
       addTearDown(t.view.reset);
@@ -383,9 +433,14 @@ void main() {
       // Its name and words as before, for every reader.
       expect(inChip('e05', find.text('Crown Symbol')), findsOneWidget);
       expect(inChip('e05', find.textContaining('Four pictures for four locks.')), findsOneWidget);
-      // e03: the drawn watch mark, no picture.
-      expect(inChip('e03', find.byType(Image)), findsNothing);
+      // e03: the Royal Box's watch, whole, in its own colours; its words as before.
+      final watch = t.widget<Image>(inChip('e03', find.byType(Image)));
+      expect(((watch.image as ResizeImage).imageProvider as AssetImage).assetName, RoyalBoxPicture.of('clock')!.file);
+      expect(watch.color, isNull, reason: 'its own colours');
+      final farther = find.ancestor(of: inChip('e03', find.byType(Image)), matching: find.byType(Transform)).first;
+      expect(t.widget<Transform>(farther).transform.entry(0, 0), closeTo(0.95, 1e-9), reason: "x scale (z stays 1)");
       expect(inChip('e03', find.text('Pocket Watch')), findsOneWidget);
+      expect(inChip('e03', find.text("It stopped at 7 o'clock.")), findsOneWidget);
       // Another case's pictured evidence: its picture as before, not closer.
       final other = find.ancestor(of: inChip('ep12_e4', find.byType(Image)), matching: find.byType(Transform)).first;
       expect(t.widget<Transform>(other).transform.getMaxScaleOnAxis(), closeTo(1, 1e-9));

@@ -339,14 +339,15 @@ abstract final class ArtAssets {
   };
 
   /// Evidence shown by its real picture (notebook, zoom, celebrations),
-  /// by evidence id. Only where the picture agrees with what the evidence
-  /// says: Case 01's watch (stopped at 7) and map (two swans), whose numbers
-  /// open the Royal Box, keep their drawn marks, as do the maps whose drawn
-  /// ravens the pictures lack. (The Royal Box's own pocket watch reads ten
-  /// past ten: never the watch stopped at 7.)
+  /// by evidence id. Case 01's map (two swans) keeps its drawn mark, as do
+  /// the maps whose drawn ravens the pictures lack. Case 01's Pocket Watch
+  /// is the Royal Box's own watch, the same picture everywhere it appears
+  /// (2026-10-19, requested), though that picture reads about ten past ten,
+  /// not the 7 o'clock its words give.
   static const evidencePictures = <String, String>{
     'e01': '${_art}objects/letter.png', // Old Letter
     'e02': '${_art}objects/key.png', // Golden Key
+    'e03': _case01PocketWatch, // Pocket Watch: the Royal Box's clock lock
     // Crown Symbol: the card with a crown on it (the crown it shows).
     'e05': '${_art}objects/crown.png',
     'e06': '${_art}objects/crown.png', // The Missing Crown
@@ -371,10 +372,13 @@ abstract final class ArtAssets {
   /// the margin goes, never the object. The crown (crown.png) fills about
   /// the middle half of its square; at 1.5× its cross, jewels and band
   /// still lie inside the circle.
-  static const evidencePictureZoom = <String, double>{'e05': 1.5};
+  /// Below 1, farther: the Pocket Watch's bow and open lid reach just past
+  /// its square's inscribed circle, so it is shown a little smaller, whole.
+  static const evidencePictureZoom = <String, double>{'e05': 1.5, 'e03': 0.95};
 
   static const _art = 'assets/art/';
   static const _case01 = 'assets/images/case01';
+  static const _case01PocketWatch = '$_case01/symbols/symbol_pocket_watch.png';
 
   /// The nine London landmarks.
   static const landmarkScenes = <Artwork, String>{
@@ -453,7 +457,7 @@ abstract final class ArtAssets {
   /// hidden message, the Crown Symbol evidence and the locks themselves —
   /// never tinted. Other cases keep their [symbols] glyphs.
   static const royalBoxLocks = <String, String>{
-    'clock': '$_case01/symbols/symbol_pocket_watch.png',
+    'clock': _case01PocketWatch,
     'train': '$_case01/symbols/symbol_steam_train.png',
     'park': '$_case01/symbols/symbol_swan.png',
     'museum': '$_case01/symbols/symbol_rosetta_stone.png',
