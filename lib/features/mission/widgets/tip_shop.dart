@@ -26,7 +26,7 @@ enum TipState {
   /// The next tip, paid for with coins.
   buy,
 
-  /// The next tip, more than the coins in hand: given free as help.
+  /// The next tip costs more coins than the detective has.
   help,
 
   /// Not yet: the tip before it comes first.
@@ -160,6 +160,8 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
   void _reveal(int tip) {
     if (_opening) return;
     _opening = true;
+    if (ref.read(walletProvider).balance < WalletController.priceOf(tip) &&
+        !ref.read(walletProvider).ownsTip(widget.mission.id, tip)) return;
     final saved = _saveTip(ref, widget.mission, tip);
     if (saved) {
       Navigator.of(context).pop(true);
@@ -205,11 +207,12 @@ class TipShopCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paid = state == TipState.buy;
+    final short = state == TipState.help;
     // The price leads; the title says what it buys; one line says how.
     final message = switch (state) {
       TipState.buy => 'Spend coins to get another hint.',
       TipState.help =>
-        'You have $balance ${balance == 1 ? 'coin' : 'coins'}. This hint is free!',
+        'Not enough coins! You have $balance ${balance == 1 ? 'coin' : 'coins'}.',
       TipState.yours => 'This hint is already yours. Read it again for free.',
       _ => 'This hint is free.',
     };
@@ -299,7 +302,12 @@ class TipShopCard extends StatelessWidget {
                   runSpacing: AppSpace.sm,
                   children: [
                     CompactButton(label: 'CANCEL', onPressed: onCancel),
-                    CompactButton(
+                    if (short)
+                      CompactButton(
+                        label: 'WATCH AD (SOON)',
+                        onPressed: () {},
+                      ),
+                    if (!short) CompactButton(
                       label: 'GET MORE HINTS',
                       primary: true,
                       semanticLabel: paid
