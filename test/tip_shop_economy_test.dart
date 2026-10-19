@@ -95,14 +95,14 @@ void main() {
       expect(coins().ownsTip('m01', 1) && coins().ownsTip('m01', 2), isTrue);
     });
 
-    test('short of coins: tip 2 is given as help, and the balance never goes below zero', () {
+    test('short of coins: tip 2 remains locked, and the balance never goes below zero', () {
       wallet().unlockTip(m['m01']!, 2); // 20 → 0
       expect(wallet().unlockTip(m['m02']!, 2), TipUnlock.insufficientCoins);
       expect(coins().balance, 0);
       expect(
         coins().ownsTip('m02', 2),
         isFalse,
-        reason: 'help is the detective’s too: read again free',
+        reason: 'insufficient funds must never grant a paid hint',
       );
       for (final e in coins().entries) {
         expect(e.amount >= -AppConstants.tipPrices.last, isTrue);
@@ -676,7 +676,7 @@ void main() {
     );
 
     testWidgets(
-      'short of coins: paid tip stays locked and ad placeholder is shown',
+      'short of coins: debug simulated ad awards 20 coins and keeps tip locked until purchased',
       (t) async {
         final play = MissionPlay();
         await play.openPuzzle(t, const Size(360, 640), 'm02');
@@ -833,7 +833,7 @@ void main() {
       final mission = await play.openPuzzle(t, const Size(390, 844), 'm01');
       await play.solve(t, mission);
       await wait(t, const Duration(milliseconds: 2600));
-      expect(find.text('+30 XP   ·   +30 COINS'), findsOneWidget);
+      expect(find.text('+30 XP   ·   +5 COINS'), findsOneWidget);
     });
   });
 
@@ -919,7 +919,7 @@ void main() {
 
     String text(WidgetTester t) => t.widget<Text>(reward).data!;
 
-    testWidgets('first solve: +60 XP · +60 COINS, gold, right above CONTINUE', (
+    testWidgets('first solve: +60 XP · +10 COINS, gold, right above CONTINUE', (
       t,
     ) async {
       final c = await openFinal(t);
