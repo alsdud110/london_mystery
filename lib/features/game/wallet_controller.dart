@@ -20,6 +20,9 @@ enum TipUnlock {
 
   /// Not enough coins: given free all the same, so no one is ever stuck.
   help,
+
+  /// Insufficient coins; the paid tip was not unlocked.
+  insufficientCoins,
 }
 
 /// The detective's coins, for the whole profile (every case, every run).
@@ -94,18 +97,16 @@ class WalletController extends Notifier<Wallet> {
     return coins;
   }
 
-  /// Makes tip [tip] (1 or 2) of [mission] the detective's: free, paid, or
-  /// given as help when the coins are short. A tip already theirs costs
-  /// nothing again; the balance never goes below zero.
+  /// Unlocks a tip only if it is free, already owned, or affordable.
+  /// Insufficient balance never unlocks or charges the tip.
   TipUnlock unlockTip(Mission mission, int tip) {
     assert(tip >= 1 && tip <= AppConstants.tipPrices.length);
     if (state.ownsTip(mission.id, tip)) return TipUnlock.alreadyYours;
     final price = priceOf(tip);
+    if (price > state.balance) return TipUnlock.insufficientCoins;
     final (amount, result) = price == 0
         ? (0, TipUnlock.free)
-        : state.balance >= price
-            ? (-price, TipUnlock.paid)
-            : (0, TipUnlock.help);
+        : (-price, TipUnlock.paid);
     _set(state.adding(
       CoinEntry(
         key: Wallet.tipKey(mission.id, tip),
@@ -115,6 +116,23 @@ class WalletController extends Notifier<Wallet> {
       ),
     ));
     return result;
+  }
+
+  /// Credits one completed ad event. Call only from a trusted reward callback.
+  /// [rewardId] must be stable and unique for that event. Returns 0 for a
+  /// duplicate or invalid id; never credit on load, click or dismissal.
+  int rewardCompletedAd(String rewardId) {
+    final id = rewardId.trim();
+    if (id.isEmpty) return 0;
+    final key = 'rewarded-ad:$id';
+    if (state.has(key)) return 0;
+    _set(state.adding(CoinEntry(
+      key: key,
+      amount: AppConstants.rewardedAdCoins,
+      source: CoinSource.rewardedAd,
+      at: GameController.now(),
+    )));
+    return AppConstants.rewardedAdCoins;
   }
 
   /// Everything was wiped (a new detective): a new wallet with the start
