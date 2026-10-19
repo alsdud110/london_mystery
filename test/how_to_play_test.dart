@@ -146,7 +146,8 @@ void main() {
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 900));
     expect(path(t), Routes.howToPlay, reason: 'left before it was seen');
     await tapText(t, 'SKIP', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.season);
+    expect(path(t), Routes.prologue);
+    expect(find.text('BEGIN SEASON ONE'), findsNothing);
     expect(app(t).read(howToPlaySeenProvider), isTrue, reason: 'SKIP counts as seen');
 
     app(t).read(routerProvider).go(Routes.start);
@@ -188,7 +189,8 @@ void main() {
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 900));
     expect(path(t), Routes.howToPlay);
     await tapText(t, 'SKIP', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.season);
+    expect(path(t), Routes.prologue);
+    expect(find.text('BEGIN SEASON ONE'), findsNothing);
     expect(app(t).read(howToPlaySeenProvider), isTrue);
     await wait(t, const Duration(seconds: 3));
   });
@@ -418,8 +420,8 @@ void main() {
       // plays the opening again), not the finished guide.
       await t.binding.handlePopRoute();
       await wait(t, const Duration(milliseconds: 1800));
-      expect(path(t), Routes.season);
-      expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
+      expect(path(t), Routes.prologue);
+      expect(find.text('BEGIN SEASON ONE'), findsNothing);
       expect(app(t).read(howToPlaySeenProvider), isTrue);
 
       await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 1500));
@@ -433,7 +435,7 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('SKIP still goes to the casebook', (t) async {
+    testWidgets('SKIP bypasses the season cover and enters the prologue', (t) async {
       await pump(t);
       await register(t);
       await skipHowToPlay(t);
