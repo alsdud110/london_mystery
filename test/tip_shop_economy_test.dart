@@ -19,7 +19,6 @@ import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
 import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/game/rewarded_ad_service.dart';
 import 'package:london_mystery/features/mission/widgets/tip_shop.dart';
 import 'package:london_mystery/features/notebook/notebook_screen.dart';
 import 'package:london_mystery/features/result/detective_report.dart';
