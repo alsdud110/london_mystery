@@ -314,35 +314,63 @@ class TipShopCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: AppText.bodyText(size: 15, color: AppColors.muted),
                 ),
+                if (rewardMessage != null) ...[
+                  const SizedBox(height: AppSpace.lg),
+                  Container(
+                    key: const ValueKey('rewarded-ad-result'),
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpace.md,
+                      vertical: AppSpace.md,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.paperLight,
+                      border: Border.all(color: AppColors.goldDeep),
+                      borderRadius: BorderRadius.circular(AppRadius.button),
+                    ),
+                    child: Text(
+                      rewardMessage!,
+                      textAlign: TextAlign.center,
+                      style: AppText.bodyText(
+                        size: 15,
+                        weight: FontWeight.w600,
+                        color: AppColors.navy,
+                      ),
+                    ),
+                  ),
+                ],
+                if (short && onWatchAd == null) ...[
+                  const SizedBox(height: AppSpace.md),
+                  Text(
+                    'Watch an ad for 20 coins — Coming soon',
+                    textAlign: TextAlign.center,
+                    style: AppText.bodyText(size: 14, color: AppColors.muted),
+                  ),
+                ],
                 const SizedBox(height: AppSpace.xl),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: AppSpace.md,
-                  runSpacing: AppSpace.sm,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CompactButton(label: 'CANCEL', onPressed: onCancel),
-                    if (short && onWatchAd != null)
+                    if (short && onWatchAd != null) ...[
+                      const SizedBox(width: AppSpace.sm),
                       CompactButton(
                         label: watchingAd ? 'WATCHING...' : 'WATCH AD +20',
-                        onPressed: watchingAd ? null : onWatchAd!,
+                        primary: true,
+                        onPressed: watchingAd ? null : onWatchAd,
                       ),
-                    if (short && onWatchAd == null)
-                      Text(
-                        'Watch an ad for 20 coins — Coming soon',
-                        textAlign: TextAlign.center,
-                        style: AppText.bodyText(size: 14, color: AppColors.muted),
+                    ],
+                    if (!short) ...[
+                      const SizedBox(width: AppSpace.sm),
+                      CompactButton(
+                        label: 'GET MORE HINTS',
+                        primary: true,
+                        semanticLabel: paid
+                            ? 'Get more hints, $price coins'
+                            : 'Get more hints, free',
+                        onPressed: onReveal,
                       ),
-                    if (rewardMessage != null)
-                      Text(rewardMessage!, textAlign: TextAlign.center,
-                        style: AppText.bodyText(size: 15, color: AppColors.inkBrown)),
-                    if (!short) CompactButton(
-                      label: 'GET MORE HINTS',
-                      primary: true,
-                      semanticLabel: paid
-                          ? 'Get more hints, $price coins'
-                          : 'Get more hints, free',
-                      onPressed: onReveal,
-                    ),
+                    ],
                   ],
                 ),
               ],
