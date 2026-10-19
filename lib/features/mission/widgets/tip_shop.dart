@@ -168,7 +168,9 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
   void _reveal(int tip) {
     if (_opening) return;
     if (ref.read(walletProvider).balance < WalletController.priceOf(tip) &&
-        !ref.read(walletProvider).ownsTip(widget.mission.id, tip)) return;
+        !ref.read(walletProvider).ownsTip(widget.mission.id, tip)) {
+      return;
+    }
     _opening = true;
     final saved = _saveTip(ref, widget.mission, tip);
     if (saved) {
