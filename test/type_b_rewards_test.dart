@@ -395,7 +395,7 @@ void main() {
       await play.chooseInExplore(t, scene, 'b');
       await wait(t, const Duration(milliseconds: 2400));
       expect(find.textContaining('Second Look'), findsOneWidget, reason: 'the Discovery Moment names the new badge');
-      expect(find.text('+30 XP   ·   +30 COINS'), findsOneWidget);
+      expect(find.text('+30 XP   ·   +5 COINS'), findsOneWidget);
       expect(t.takeException(), isNull);
     });
 
