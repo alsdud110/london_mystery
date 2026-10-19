@@ -420,8 +420,8 @@ void main() {
       // plays the opening again), not the finished guide.
       await t.binding.handlePopRoute();
       await wait(t, const Duration(milliseconds: 1800));
-      expect(path(t), Routes.prologue);
-      expect(find.text('BEGIN SEASON ONE'), findsNothing);
+      expect(path(t), Routes.season);
+      expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
       expect(app(t).read(howToPlaySeenProvider), isTrue);
 
       await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 1500));
@@ -440,8 +440,8 @@ void main() {
       await register(t);
       await skipHowToPlay(t);
       await wait(t, const Duration(milliseconds: 1500));
-      expect(path(t), Routes.season);
-      expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
+      expect(path(t), Routes.prologue);
+      expect(find.text('BEGIN SEASON ONE'), findsNothing);
       expect(app(t).read(howToPlaySeenProvider), isTrue);
       await wait(t, const Duration(seconds: 3));
     });
