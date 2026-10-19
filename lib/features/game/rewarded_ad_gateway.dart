@@ -23,3 +23,21 @@ final class DisabledRewardedAdGateway implements RewardedAdGateway {
   @override
   Future<String?> showAndEarnReward() async => null;
 }
+
+/// Development-only fake completion. Never enable this in a release build.
+/// Each call represents a distinct fully watched demo ad.
+final class SimulatedRewardedAdGateway implements RewardedAdGateway {
+  SimulatedRewardedAdGateway();
+
+  int _sequence = 0;
+
+  @override
+  bool get isAvailable => true;
+
+  @override
+  Future<String?> showAndEarnReward() async {
+    await Future<void>.delayed(const Duration(milliseconds: 600));
+    _sequence += 1;
+    return 'demo:${DateTime.now().microsecondsSinceEpoch}:$_sequence';
+  }
+}
