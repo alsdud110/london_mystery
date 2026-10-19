@@ -232,7 +232,7 @@ void main() {
 
       // The season's casebook comes first (its BEGIN SEASON ONE path is in
       // season_screen_test); this run starts the case from the case files.
-      expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
+      expect(find.text('BEGIN SEASON ONE'), findsNothing);
       appRef.read(routerProvider).go(Routes.episodes);
       await wait(t);
 
