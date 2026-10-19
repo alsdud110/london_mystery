@@ -112,8 +112,8 @@ bool _saveTip(WidgetRef ref, Mission mission, int tip) {
 /// The coins dialog for a hint that costs coins: a small paper sheet with
 /// the question, the price said once, CANCEL and GET MORE HINTS. GET MORE HINTS pays, writes
 /// the hint on the puzzle page and closes it; CANCEL (or a tap outside)
-/// changes nothing. When the coins are short it says so, and the hint is
-/// given free (no one is ever stuck). Returns true when a hint was
+/// changes nothing. When coins are short, the ad reward option is shown.
+/// Returns true when a hint was
 /// revealed.
 Future<bool> showTipShop(BuildContext context, Mission mission) async {
   final revealed = await showDialog<bool>(
@@ -164,22 +164,6 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
   /// gains it on REVEAL while the dialog is still closing.
   late final int _tip =
       ref.read(gameControllerProvider).hintsFor(widget.mission.id) + 1;
-
-  /// What the hint costs and the coins in hand when the dialog opened: the
-  /// words stay as they were while it closes after paying.
-  late final (TipState, int) _asked = () {
-    final wallet = ref.read(walletProvider);
-    final owns = wallet.ownsTip(widget.mission.id, _tip);
-    return (
-      tipStateOf(
-        tip: _tip,
-        revealed: _tip - 1,
-        owns: owns,
-        balance: wallet.balance,
-      ),
-      wallet.balance,
-    );
-  }();
 
   void _reveal(int tip) {
     if (_opening) return;
