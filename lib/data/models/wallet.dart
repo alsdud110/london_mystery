@@ -16,7 +16,10 @@ enum CoinSource {
   backfill,
 
   /// A Detective Tip unlocked (paid, free, or given as help).
-  tip;
+  tip,
+
+  /// A completed rewarded-ad event, keyed uniquely to prevent duplicates.
+  rewardedAd;
 
   static CoinSource? byName(Object? name) {
     for (final s in values) {

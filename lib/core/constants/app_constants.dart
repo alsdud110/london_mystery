@@ -99,11 +99,14 @@ abstract final class AppConstants {
   // Coins (see `Wallet`): earned by solving, spent on Detective Tips. Every
   // price and reward lives here.
   /// Each mission pays once, ever (a case played again pays nothing more).
-  static const missionCoins = 30;
-  static const finalCoins = 60;
+  static const missionCoins = 5;
+  static const finalCoins = 10;
 
   /// Given once, when the wallet is made, so the first paid tip is in reach.
   static const startCoins = 20;
+
+  /// Awarded once per completed rewarded-ad event (not on ad dismissal).
+  static const rewardedAdCoins = 20;
 
   /// Price of tip 1 and tip 2 of a mission. Tip 1 is always free; a tip the
   /// detective cannot pay for is given free too, so no one is ever stuck.

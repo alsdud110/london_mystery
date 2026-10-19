@@ -10,6 +10,7 @@ import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/paper.dart';
 import '../../game/game_controller.dart';
+import '../../game/rewarded_ad_service.dart';
 import '../../game/wallet_controller.dart';
 
 /// What the next Detective Hint is (see [requestTip]).
@@ -26,7 +27,7 @@ enum TipState {
   /// The next tip, paid for with coins.
   buy,
 
-  /// The next tip, more than the coins in hand: given free as help.
+  /// The next tip costs more coins than the detective has.
   help,
 
   /// Not yet: the tip before it comes first.
@@ -111,8 +112,8 @@ bool _saveTip(WidgetRef ref, Mission mission, int tip) {
 /// The coins dialog for a hint that costs coins: a small paper sheet with
 /// the question, the price said once, CANCEL and GET MORE HINTS. GET MORE HINTS pays, writes
 /// the hint on the puzzle page and closes it; CANCEL (or a tap outside)
-/// changes nothing. When the coins are short it says so, and the hint is
-/// given free (no one is ever stuck). Returns true when a hint was
+/// changes nothing. When coins are short, the ad reward option is shown.
+/// Returns true when a hint was
 /// revealed.
 Future<bool> showTipShop(BuildContext context, Mission mission) async {
   final revealed = await showDialog<bool>(
@@ -135,30 +136,39 @@ class _TipDialog extends ConsumerStatefulWidget {
 class _TipDialogState extends ConsumerState<_TipDialog> {
   /// Set by the first tap: the dialog reveals one tip, once.
   bool _opening = false;
+  bool _watchingAd = false;
+  String? _rewardMessage;
+
+  Future<void> _watchAd() async {
+    if (_watchingAd) return;
+    setState(() => _watchingAd = true);
+    try {
+      final result = await ref.read(rewardedAdServiceProvider).showAndReward();
+      if (!mounted) return;
+      setState(() {
+        _rewardMessage = result.coins > 0
+            ? 'You earned ${result.coins} coins!'
+            : result.status == RewardedAdStatus.unavailable
+                ? 'Ads are not available yet.'
+                : 'No coins earned. Please try again.';
+      });
+    } catch (error, stack) {
+      FlutterError.reportError(FlutterErrorDetails(exception: error, stack: stack, library: 'rewarded ad'));
+      if (mounted) setState(() => _rewardMessage = 'Ad unavailable. Please try again.');
+    } finally {
+      if (mounted) setState(() => _watchingAd = false);
+    }
+  }
 
   /// The tip this dialog is about (1-based), fixed when it opens: the page
   /// gains it on REVEAL while the dialog is still closing.
   late final int _tip =
       ref.read(gameControllerProvider).hintsFor(widget.mission.id) + 1;
 
-  /// What the hint costs and the coins in hand when the dialog opened: the
-  /// words stay as they were while it closes after paying.
-  late final (TipState, int) _asked = () {
-    final wallet = ref.read(walletProvider);
-    final owns = wallet.ownsTip(widget.mission.id, _tip);
-    return (
-      tipStateOf(
-        tip: _tip,
-        revealed: _tip - 1,
-        owns: owns,
-        balance: wallet.balance,
-      ),
-      wallet.balance,
-    );
-  }();
-
   void _reveal(int tip) {
     if (_opening) return;
+    if (ref.read(walletProvider).balance < WalletController.priceOf(tip) &&
+        !ref.read(walletProvider).ownsTip(widget.mission.id, tip)) return;
     _opening = true;
     final saved = _saveTip(ref, widget.mission, tip);
     if (saved) {
@@ -172,13 +182,18 @@ class _TipDialogState extends ConsumerState<_TipDialog> {
   @override
   Widget build(BuildContext context) {
     final tip = _tip;
-    final (state, balance) = _asked;
+    final wallet = ref.watch(walletProvider);
+    final state = tipStateOf(tip: tip, revealed: tip - 1,
+        owns: wallet.ownsTip(widget.mission.id, tip), balance: wallet.balance);
     return TipShopCard(
-      balance: balance,
+      balance: wallet.balance,
       price: WalletController.priceOf(tip),
       state: state,
       onCancel: () => Navigator.of(context).pop(false),
       onReveal: () => _reveal(tip),
+      onWatchAd: ref.watch(rewardedAdGatewayProvider).isAvailable ? _watchAd : null,
+      watchingAd: _watchingAd,
+      rewardMessage: _rewardMessage,
     );
   }
 }
@@ -194,6 +209,9 @@ class TipShopCard extends StatelessWidget {
     required this.state,
     required this.onCancel,
     required this.onReveal,
+    this.onWatchAd,
+    this.watchingAd = false,
+    this.rewardMessage,
   });
 
   final int balance;
@@ -201,15 +219,19 @@ class TipShopCard extends StatelessWidget {
   final TipState state;
   final VoidCallback onCancel;
   final VoidCallback onReveal;
+  final VoidCallback? onWatchAd;
+  final bool watchingAd;
+  final String? rewardMessage;
 
   @override
   Widget build(BuildContext context) {
     final paid = state == TipState.buy;
+    final short = state == TipState.help;
     // The price leads; the title says what it buys; one line says how.
     final message = switch (state) {
       TipState.buy => 'Spend coins to get another hint.',
       TipState.help =>
-        'You have $balance ${balance == 1 ? 'coin' : 'coins'}. This hint is free!',
+        'Not enough coins! You have $balance ${balance == 1 ? 'coin' : 'coins'}.',
       TipState.yours => 'This hint is already yours. Read it again for free.',
       _ => 'This hint is free.',
     };
@@ -299,7 +321,21 @@ class TipShopCard extends StatelessWidget {
                   runSpacing: AppSpace.sm,
                   children: [
                     CompactButton(label: 'CANCEL', onPressed: onCancel),
-                    CompactButton(
+                    if (short && onWatchAd != null)
+                      CompactButton(
+                        label: watchingAd ? 'WATCHING...' : 'WATCH AD +20',
+                        onPressed: watchingAd ? null : onWatchAd!,
+                      ),
+                    if (short && onWatchAd == null)
+                      Text(
+                        'Watch an ad for 20 coins — Coming soon',
+                        textAlign: TextAlign.center,
+                        style: AppText.bodyText(size: 14, color: AppColors.muted),
+                      ),
+                    if (rewardMessage != null)
+                      Text(rewardMessage!, textAlign: TextAlign.center,
+                        style: AppText.bodyText(size: 15, color: AppColors.inkBrown)),
+                    if (!short) CompactButton(
                       label: 'GET MORE HINTS',
                       primary: true,
                       semanticLabel: paid

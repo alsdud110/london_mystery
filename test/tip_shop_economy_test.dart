@@ -19,6 +19,7 @@ import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
 import 'package:london_mystery/features/game/wallet_controller.dart';
+import 'package:london_mystery/features/game/rewarded_ad_service.dart';
 import 'package:london_mystery/features/mission/widgets/tip_shop.dart';
 import 'package:london_mystery/features/notebook/notebook_screen.dart';
 import 'package:london_mystery/features/result/detective_report.dart';
@@ -59,9 +60,19 @@ void main() {
           AppConstants.finalCoins,
           AppConstants.startCoins,
         ),
-        (30, 60, 20),
+        (5, 10, 20),
       );
       expect((AppConstants.missionXp, AppConstants.finalXp), (30, 60));
+    });
+
+    test('a completed ad credits 20 coins once per reward event', () {
+      expect(wallet().rewardCompletedAd('ad-event-1'), 20);
+      expect(coins().balance, 40);
+      expect(wallet().rewardCompletedAd('ad-event-1'), 0);
+      expect(coins().balance, 40);
+      expect(wallet().rewardCompletedAd(''), 0);
+      expect(wallet().rewardCompletedAd('ad-event-2'), 20);
+      expect(coins().balance, 60);
     });
 
     test('a new detective starts with the start coins', () {
@@ -86,11 +97,11 @@ void main() {
 
     test('short of coins: tip 2 is given as help, and the balance never goes below zero', () {
       wallet().unlockTip(m['m01']!, 2); // 20 → 0
-      expect(wallet().unlockTip(m['m02']!, 2), TipUnlock.help);
+      expect(wallet().unlockTip(m['m02']!, 2), TipUnlock.insufficientCoins);
       expect(coins().balance, 0);
       expect(
         coins().ownsTip('m02', 2),
-        isTrue,
+        isFalse,
         reason: 'help is the detective’s too: read again free',
       );
       for (final e in coins().entries) {
@@ -100,8 +111,8 @@ void main() {
 
     test('a solve pays its coins once; Play again pays nothing more; XP rule 4 is recorded', () {
       game().startInvestigation();
-      expect(game().submitAnswer(m['m01']!, 'b').coins, 30);
-      expect(coins().balance, 20 + 30);
+      expect(game().submitAnswer(m['m01']!, 'b').coins, 5);
+      expect(coins().balance, 20 + 5);
       expect(
         game().submitAnswer(m['m01']!, 'b').coins,
         0,
@@ -119,7 +130,7 @@ void main() {
         0,
         reason: 'paid once ever',
       );
-      expect(coins().balance, 50);
+      expect(coins().balance, 25);
       expect(
         XpBreakdown.of(m['m01']!, c.read(gameControllerProvider)).total,
         30,
@@ -133,7 +144,7 @@ void main() {
       expect(coins().balance, 20);
     });
 
-    test('the final pays 60', () {
+    test('the final pays 10', () {
       game().startInvestigation();
       for (final (id, answer) in [
         ('m01', 'b'),
@@ -144,8 +155,8 @@ void main() {
       ]) {
         game().submitAnswer(m[id]!, answer);
       }
-      expect(game().submitAnswer(m['final']!, '7924').coins, 60);
-      expect(coins().balance, 20 + 5 * 30 + 60);
+      expect(game().submitAnswer(m['final']!, '7924').coins, 10);
+      expect(coins().balance, 20 + 5 * 5 + 10);
     });
 
     test('Reset everything: a new wallet, start coins only', () async {
@@ -174,7 +185,7 @@ void main() {
       );
       final wallet = again.read(walletProvider);
       expect(wallet.balance, saved.balance);
-      expect(wallet.balance, 20 + 30 - 20);
+      expect(wallet.balance, 20 + 5 - 20);
       expect(wallet.ownsTip('m02', 2), isTrue);
       expect(
         again.read(walletProvider.notifier).unlockTip(m['m02']!, 2),
@@ -182,7 +193,7 @@ void main() {
       );
       expect(
         again.read(walletProvider).balance,
-        30,
+        5,
         reason: 'no charge after a restart',
       );
       again.dispose();
@@ -236,7 +247,7 @@ void main() {
       final wallet = c.read(walletProvider);
       expect(
         wallet.balance,
-        20 + 5 * 30 + 60 + 30,
+        20 + 5 * 5 + 10 + 5,
         reason: 'start + Case 01 + one Case 02 mission',
       );
       expect(
@@ -295,8 +306,8 @@ void main() {
       final outcome = c
           .read(gameControllerProvider.notifier)
           .submitAnswer(m['m01']!, 'b');
-      expect(outcome.coins, 30);
-      expect(c.read(walletProvider).balance, 50);
+      expect(outcome.coins, 5);
+      expect(c.read(walletProvider).balance, 25);
       expect(
         c
             .read(walletProvider)
@@ -665,47 +676,31 @@ void main() {
     );
 
     testWidgets(
-      'short of coins: the dialog says what it costs and what is in hand; hint 2 is free help',
+      'short of coins: paid tip stays locked and ad placeholder is shown',
       (t) async {
         final play = MissionPlay();
-        final mission = await play.openPuzzle(t, const Size(360, 640), 'm02');
-        // Spend down below one hint (the solved m01 was paid when the wallet was made).
+        await play.openPuzzle(t, const Size(360, 640), 'm02');
         for (final other in season.skip(1).expand((e) => e.allMissions)) {
           if (play.ref.read(walletProvider).balance < 20) break;
           play.ref.read(walletProvider.notifier).unlockTip(other, 2);
         }
         final left = play.ref.read(walletProvider).balance;
-        expect(left, lessThan(20));
         await wait(t, const Duration(milliseconds: 300));
-        expect(
-          coinsShown(t),
-          left,
-          reason: 'coins spent elsewhere show in the bar',
-        );
-        await tapText(
-          t,
-          'Get a Free Hint',
-          after: const Duration(milliseconds: 600),
-        );
-        // Pressed as a finger does (Case 01 M2's room has nothing moving
-        // to draw a frame between an instant tap's down and up).
+        await tapText(t, 'Get a Free Hint', after: const Duration(milliseconds: 600));
         await press(t, find.text('Get More Hints'));
-        isConfirm(
-          t,
-          const Size(360, 640),
-          message:
-              'You have $left ${left == 1 ? 'coin' : 'coins'}. This hint is free!',
-        );
-        await capture(t, 'tip_dialog_help_360x640');
-        await takeTipFromSheet(t);
+        expect(find.text('Not enough coins! You have $left ${left == 1 ? 'coin' : 'coins'}.'), findsOneWidget);
+        expect(find.text('WATCH AD +20'), findsOneWidget);
+        expect(find.text('GET MORE HINTS'), findsNothing);
+        await t.tap(find.text('WATCH AD +20'));
+        await wait(t, const Duration(milliseconds: 900));
+        expect(find.text('You earned 20 coins!'), findsOneWidget);
+        expect(play.ref.read(walletProvider).balance, left + 20);
+        expect(find.text('GET MORE HINTS'), findsOneWidget);
+        await t.tap(cancel);
         await wait(t, const Duration(milliseconds: 400));
-        expect(
-          play.ref.read(walletProvider).balance,
-          left,
-          reason: 'help costs nothing',
-        );
-        await reveal(t, findReadable(mission.hints[1]));
-        expect(findReadable(mission.hints[1]), findsOneWidget);
+        expect(play.ref.read(walletProvider).balance, left + 20);
+        expect(play.ref.read(gameControllerProvider).hintsFor('m02'), 1);
+        expect(play.ref.read(walletProvider).ownsTip('m02', 2), isFalse);
       },
     );
 
