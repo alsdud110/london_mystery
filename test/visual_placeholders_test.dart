@@ -224,9 +224,11 @@ void main() {
       await settle(t, const Duration(milliseconds: 600));
       // The badges a case gives now (Sharp Eyes and Quick Thinker are retired
       // and shown only where already earned: see `type_b_rewards_test`).
+      // Earned, each shows its own medal picture (since 2026-10-19; the ink
+      // glyph stands in only while a file is missing).
       for (final b in [GameBadge.secondLook, GameBadge.wordCollector, GameBadge.puzzleSolver, GameBadge.masterDetective]) {
         await reveal(t, find.text(b.title));
-        expect(find.byWidgetPredicate((w) => w is InkIcon && w.glyph == b.glyph), findsOneWidget, reason: b.name);
+        expect(picture(ArtAssets.badges[b]!), findsOneWidget, reason: b.name);
         expect(monogram, findsNothing, reason: 'badges');
       }
       await capture(t, 'fix_badges_notebook_$tag');
@@ -242,7 +244,7 @@ void main() {
       expect(picture('assets/art/special/royal_box.png'), findsNothing);
       await reveal(t, find.text('MASTER DETECTIVE'));
       expect(monogram, findsNothing, reason: 'headline medal and the badge row');
-      expect(find.byWidgetPredicate((w) => w is InkIcon && w.glyph == InkGlyph.deerstalker), findsOneWidget);
+      expect(picture(ArtAssets.badges[GameBadge.masterDetective]!), findsOneWidget);
       await capture(t, 'fix_case01_report_$tag');
     });
 

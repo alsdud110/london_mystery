@@ -147,7 +147,7 @@ Vintage London Detective Storybook.
 | `scenes` | `Artwork` | `LandmarkArt`(미션, Final, 그림 선택, 썸네일, Case Solved 사진) |
 | `solvedScenes` | `Artwork` | 해결 후 모습이 바뀌는 장면(현재 `clockFace`만: 8:17 → 9:17) |
 | `symbols` | 심볼 키(`'park'` 등) | `GameSymbol.mark` → `InkMark`(단서 도장, 증거, 잠금 다이얼) |
-| `badges` | `GameBadge` | `BadgeMedal` → `InkMark` |
+| `badges` | `GameBadge` | `BadgeMedal`(완성 메달 PNG를 틴트 없이 그대로 표시, `assets/images/badges/`). 잠긴 배지는 `badgeFrame`(빈 로제트)을 흑백·반투명 + 자물쇠로 표시 |
 
 ### 파일 하나를 넣는 순서
 

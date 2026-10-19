@@ -118,6 +118,9 @@ flutter:
     # Case 01's Royal Box lock pictures (cut out; the delivered files in
     # symbols/original/ are kept out of the app).
     - assets/images/case01/symbols/
+    # Badge medals, one per GameBadge, and the empty rosette for locked ones
+    # (`ArtAssets.badges`, `ArtAssets.badgeFrame`).
+    - assets/images/badges/
     # Scene pictures: the nine landmarks, and the places inside them.
     - assets/art/scenes/landmarks/
     - assets/art/scenes/british_museum/

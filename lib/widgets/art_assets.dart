@@ -57,7 +57,7 @@ typedef DetectiveCrop = ({Size pixels, Offset centre, double radius});
 
 /// The one place where finished artwork files are plugged in.
 ///
-/// Every picture in the game is drawn in code today: scenes by `LandmarkArt`,
+/// A picture without a file is drawn in code: scenes by `LandmarkArt`,
 /// symbols and badges by the Ink Icon System (or a monogram while a drawing
 /// is still a Custom Asset Required). When an illustrator delivers a file,
 /// add it under `assets/art/`, list the folder in pubspec.yaml, and add one
@@ -463,9 +463,37 @@ abstract final class ArtAssets {
   /// centred with the same margin, so they look the same size side by side.
   static const royalBoxLockPixels = Size(512, 512);
 
-  /// Badge medal pictures, e.g. `GameBadge.sharpEyes: 'assets/art/badges/sharp_eyes.png'`.
-  /// One-colour on transparency, tinted like the glyph it replaces.
-  static const Map<GameBadge, String> badges = {};
+  static const _badges = 'assets/images/badges';
+
+  /// Badge medals, one per [GameBadge] (retired ones too: old saves still
+  /// show them). Each is a finished medal — the gold rosette, its enamel
+  /// face and the badge's own emblem — in full colour on transparency,
+  /// shown by `BadgeMedal` as it is: never tinted, never framed again.
+  static const Map<GameBadge, String> badges = {
+    GameBadge.firstClue: '$_badges/badge_first_clue.png',
+    GameBadge.sharpEyes: '$_badges/badge_sharp_eyes.png',
+    GameBadge.quickThinker: '$_badges/badge_quick_thinker.png',
+    GameBadge.puzzleSolver: '$_badges/badge_puzzle_solver.png',
+    GameBadge.londonExplorer: '$_badges/badge_london_explorer.png',
+    GameBadge.masterDetective: '$_badges/badge_master_detective.png',
+    GameBadge.clockWatcher: '$_badges/badge_clock_watcher.png',
+    GameBadge.evidenceHunter: '$_badges/badge_evidence_hunter.png',
+    GameBadge.letterReader: '$_badges/badge_letter_reader.png',
+    GameBadge.codeBreaker: '$_badges/badge_code_breaker.png',
+    GameBadge.mapMaster: '$_badges/badge_map_master.png',
+    GameBadge.londonLegend: '$_badges/badge_london_legend.png',
+    GameBadge.secondLook: '$_badges/badge_second_look.png',
+    GameBadge.notebookExplorer: '$_badges/badge_notebook_explorer.png',
+    GameBadge.wordCollector: '$_badges/badge_word_collector.png',
+  };
+
+  /// The same rosette with an empty face: a badge still to win. Every locked
+  /// badge shows it (greyed, with a lock), so its emblem stays a surprise.
+  static const badgeFrame = '$_badges/badge_frame.png';
+
+  /// The badge pictures and [badgeFrame] are square, all the same size, so
+  /// medals line up whatever their emblem.
+  static const badgePixels = Size(1254, 1254);
 
   /// The file for [artwork], or null to keep the drawing. Once a scene that
   /// changes when solved is being solved (or after), its solved picture if

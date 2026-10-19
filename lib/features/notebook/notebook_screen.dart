@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -267,6 +269,42 @@ class _BadgesTab extends StatelessWidget {
   final Episode episode;
   final GameProgress progress;
 
+  /// Three slots a row on every phone and tablet.
+  static const columns = 3;
+  static const medalSize = 84.0;
+
+  /// The same space between slots across and down.
+  static const gap = 8.0;
+
+  /// Inside a slot: a little paper round the medal and its words.
+  static const slotPadding = EdgeInsets.fromLTRB(3, 10, 3, 8);
+
+  /// The slot's fine ink line.
+  static const slotBorder = 0.8;
+
+  /// A slot no wider than this: on a tablet the page stays together.
+  static const _maxSlot = 136.0;
+
+  /// 1 when every short description fits on one line at this width and text
+  /// size, else 2 — the same for every slot, so all slots are one height.
+  static int captionLines(BuildContext context, List<GameBadge> badges, double width) {
+    final scaler = MediaQuery.textScalerOf(context);
+    // As the line is drawn: the page's text style under the caption's own.
+    final style = DefaultTextStyle.of(context).style.merge(AppText.caption());
+    for (final b in badges) {
+      final painter = TextPainter(
+        text: TextSpan(text: b.shortDescription, style: style),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+        maxLines: 1,
+      )..layout(maxWidth: width);
+      final wraps = painter.didExceedMaxLines;
+      painter.dispose();
+      if (wraps) return 2;
+    }
+    return 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     final earned = progress.badgeIds.toSet();
@@ -275,17 +313,127 @@ class _BadgesTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
       children: [
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 12,
-          runSpacing: 20,
-          children: [
-            for (final b in shown) BadgeMedal(badge: b, earned: earned.contains(b.name), size: 72),
-          ],
+        // The notebook's collection page: a slot printed on the paper for
+        // every badge the case can give.
+        LayoutBuilder(
+          builder: (context, box) {
+            final slot = math.min((box.maxWidth - gap * (columns - 1)) / columns, _maxSlot);
+            final inside = slot - slotPadding.horizontal - slotBorder * 2;
+            final medal = math.min(medalSize, inside);
+            final lines = captionLines(context, shown, inside);
+            return Center(
+              child: SizedBox(
+                width: slot * columns + gap * (columns - 1),
+                child: Column(
+                  children: [
+                    for (var row = 0; row < shown.length; row += columns)
+                      Padding(
+                        padding: EdgeInsets.only(top: row == 0 ? 0 : gap),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (var i = row; i < row + columns; i++) ...[
+                              if (i > row) const SizedBox(width: gap),
+                              SizedBox(
+                                width: slot,
+                                child: i < shown.length
+                                    ? _BadgeSlot(
+                                        badge: shown[i],
+                                        earned: earned.contains(shown[i].name),
+                                        medal: medal,
+                                        textWidth: inside,
+                                        captionLines: lines,
+                                      )
+                                    : null,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
         const SizedBox(height: 16),
         _Footer(text: '${shown.where((b) => earned.contains(b.name)).length} / ${shown.length} badges'),
       ],
+    );
+  }
+}
+
+/// One badge's slot on the collection page: a pocket printed on the paper in
+/// fine ink, the whole slot one tap target that opens its details. A badge
+/// still to win has a fainter pocket.
+class _BadgeSlot extends StatefulWidget {
+  const _BadgeSlot({
+    required this.badge,
+    required this.earned,
+    required this.medal,
+    required this.textWidth,
+    required this.captionLines,
+  });
+
+  final GameBadge badge;
+  final bool earned;
+  final double medal;
+  final double textWidth;
+  final int captionLines;
+
+  @override
+  State<_BadgeSlot> createState() => _BadgeSlotState();
+}
+
+class _BadgeSlotState extends State<_BadgeSlot> {
+  bool _pressed = false;
+
+  void _press(bool down) {
+    if (_pressed != down) setState(() => _pressed = down);
+  }
+
+  void _open() => showBadgeDetails(context, widget.badge, earned: widget.earned);
+
+  @override
+  Widget build(BuildContext context) {
+    final medal = BadgeMedal(
+      badge: widget.badge,
+      earned: widget.earned,
+      size: widget.medal,
+      labelWidth: widget.textWidth,
+      labelGap: 2,
+      caption: widget.badge.shortDescription,
+      captionLines: widget.captionLines,
+    );
+    // A shade darker than the page, no shadow: printed, not lifted. Pressed,
+    // the pocket darkens a touch.
+    final fill = AppColors.parchment.withValues(alpha: widget.earned ? 0.6 : 0.35);
+    return Semantics(
+      button: true,
+      label: medal.semanticLabel,
+      onTapHint: 'show badge details',
+      onTap: _open,
+      excludeSemantics: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) => _press(true),
+        onTapUp: (_) => _press(false),
+        onTapCancel: () => _press(false),
+        onTap: _open,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 90),
+          padding: _BadgesTab.slotPadding,
+          decoration: BoxDecoration(
+            color: _pressed ? Color.alphaBlend(AppColors.parchmentDark.withValues(alpha: 0.4), fill) : fill,
+            borderRadius: BorderRadius.circular(AppRadius.paper),
+            border: Border.all(
+              color: AppColors.inkBrown.withValues(alpha: widget.earned ? 0.3 : 0.18),
+              width: _BadgesTab.slotBorder,
+            ),
+          ),
+          child: Center(child: medal),
+        ),
+      ),
     );
   }
 }
