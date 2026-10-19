@@ -303,9 +303,10 @@ class TipShopCard extends StatelessWidget {
                   children: [
                     CompactButton(label: 'CANCEL', onPressed: onCancel),
                     if (short)
-                      CompactButton(
-                        label: 'WATCH AD (SOON)',
-                        onPressed: () {},
+                      Text(
+                        'Watch an ad for 20 coins — Coming soon',
+                        textAlign: TextAlign.center,
+                        style: AppText.bodyText(size: 14, color: AppColors.muted),
                       ),
                     if (!short) CompactButton(
                       label: 'GET MORE HINTS',
