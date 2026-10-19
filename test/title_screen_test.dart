@@ -317,7 +317,7 @@ void main() {
       // How to Play first, then on to the season, as before.
       await skipHowToPlay(t);
       await wait(t, const Duration(milliseconds: 1500));
-      expect(find.text('BEGIN SEASON ONE'), findsOneWidget, reason: 'on to the season, as before');
+      expect(find.text('BEGIN SEASON ONE'), findsNothing, reason: 'SKIP enters the prologue directly');
       await wait(t, const Duration(seconds: 3));
     });
 
