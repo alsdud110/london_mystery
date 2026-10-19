@@ -19,6 +19,7 @@ import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
 import 'package:london_mystery/features/game/wallet_controller.dart';
+import 'package:london_mystery/features/game/rewarded_ad_service.dart';
 import 'package:london_mystery/features/mission/widgets/tip_shop.dart';
 import 'package:london_mystery/features/notebook/notebook_screen.dart';
 import 'package:london_mystery/features/result/detective_report.dart';
@@ -62,6 +63,16 @@ void main() {
         (5, 10, 20),
       );
       expect((AppConstants.missionXp, AppConstants.finalXp), (30, 60));
+    });
+
+    test('a completed ad credits 20 coins once per reward event', () {
+      expect(wallet().rewardCompletedAd('ad-event-1'), 20);
+      expect(coins().balance, 40);
+      expect(wallet().rewardCompletedAd('ad-event-1'), 0);
+      expect(coins().balance, 40);
+      expect(wallet().rewardCompletedAd(''), 0);
+      expect(wallet().rewardCompletedAd('ad-event-2'), 20);
+      expect(coins().balance, 60);
     });
 
     test('a new detective starts with the start coins', () {
@@ -678,11 +689,16 @@ void main() {
         await tapText(t, 'Get a Free Hint', after: const Duration(milliseconds: 600));
         await press(t, find.text('Get More Hints'));
         expect(find.text('Not enough coins! You have $left ${left == 1 ? 'coin' : 'coins'}.'), findsOneWidget);
-        expect(find.text('Watch an ad for 20 coins — Coming soon'), findsOneWidget);
+        expect(find.text('WATCH AD +20'), findsOneWidget);
         expect(find.text('GET MORE HINTS'), findsNothing);
+        await t.tap(find.text('WATCH AD +20'));
+        await wait(t, const Duration(milliseconds: 900));
+        expect(find.text('You earned 20 coins!'), findsOneWidget);
+        expect(play.ref.read(walletProvider).balance, left + 20);
+        expect(find.text('GET MORE HINTS'), findsOneWidget);
         await t.tap(cancel);
         await wait(t, const Duration(milliseconds: 400));
-        expect(play.ref.read(walletProvider).balance, left);
+        expect(play.ref.read(walletProvider).balance, left + 20);
         expect(play.ref.read(gameControllerProvider).hintsFor('m02'), 1);
         expect(play.ref.read(walletProvider).ownsTip('m02', 2), isFalse);
       },
