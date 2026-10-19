@@ -278,13 +278,12 @@ void main() {
     expect(path(), fromRegister ? Routes.prologue : Routes.season);
     if (!fromRegister) {
       expect(find.text('SHADOWS\nOVER LONDON'), findsOneWidget);
-    expect(find.text('12 CASES • ONE MYSTERY'), findsOneWidget);
-    expect(find.text('CASE FILES'), findsNothing, reason: 'not straight to the case files');
-    expect(t.takeException(), isNull);
-    expectOnScreen(t, find.text('BEGIN SEASON ONE'), size);
-    await capture(t, 'cover_$tag');
-
-    await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 600));
+      expect(find.text('12 CASES • ONE MYSTERY'), findsOneWidget);
+      expect(find.text('CASE FILES'), findsNothing, reason: 'not straight to the case files');
+      expect(t.takeException(), isNull);
+      expectOnScreen(t, find.text('BEGIN SEASON ONE'), size);
+      await capture(t, 'cover_$tag');
+      await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 600));
     }
     expect(path(), Routes.prologue);
     expect(appRef.read(gameControllerProvider).introSeen, isFalse, reason: 'the opening starts no case');
