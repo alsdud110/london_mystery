@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'rewarded_ad_gateway.dart';
@@ -5,7 +6,9 @@ import 'wallet_controller.dart';
 
 /// Default is deliberately disabled until an approved rewarded-ad SDK is wired.
 final rewardedAdGatewayProvider = Provider<RewardedAdGateway>(
-  (ref) => const DisabledRewardedAdGateway(),
+  (ref) => kDebugMode
+      ? SimulatedRewardedAdGateway()
+      : const DisabledRewardedAdGateway(),
 );
 
 enum RewardedAdStatus { unavailable, notEarned, earned }
