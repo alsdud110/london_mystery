@@ -260,7 +260,13 @@ class _EnvelopeRevealState extends State<EnvelopeReveal> with SingleTickerProvid
   Future<void> _openEnvelope() async {
     if (_c.isAnimating || _open) return;
     widget.onOpen?.call();
-    await _c.forward();
+    // Respect the system's reduced-motion setting: reveal the letter without
+    // moving the envelope through its multi-stage opening sequence.
+    if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+      _c.value = 1;
+    } else {
+      await _c.forward();
+    }
     if (!mounted) return;
     setState(() => _open = true);
     widget.onOpened?.call();

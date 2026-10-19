@@ -102,7 +102,7 @@ class _DiscoveryMoment extends StatefulWidget {
 }
 
 class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1650))
     ..addListener(_layEvidence);
   bool _closing = false;
 
@@ -149,13 +149,13 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
       CurvedAnimation(parent: _c, curve: Interval(begin, end, curve: Curves.easeOutCubic));
 
   // What was found leads; the reward follows; the button comes last.
-  late final _label = _iv(0.05, 0.25);
-  late final _title = _iv(0.15, 0.4);
-  late final _evidence = _iv(0.3, 0.55);
-  late final _detail = _iv(0.4, 0.6);
-  late final _xp = _iv(0.55, 0.75);
-  late final _badges = _iv(0.65, 0.8);
-  late final _button = _iv(0.75, 0.9);
+  late final _label = _iv(0.0, 0.2);
+  late final _title = _iv(0.12, 0.34);
+  late final _evidence = _iv(0.28, 0.5);
+  late final _detail = _iv(0.38, 0.58);
+  late final _xp = _iv(0.53, 0.73);
+  late final _badges = _iv(0.63, 0.78);
+  late final _button = _iv(0.73, 0.88);
 
   @override
   void dispose() {
