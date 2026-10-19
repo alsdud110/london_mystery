@@ -59,7 +59,7 @@ void main() {
           AppConstants.finalCoins,
           AppConstants.startCoins,
         ),
-        (30, 60, 20),
+        (5, 10, 20),
       );
       expect((AppConstants.missionXp, AppConstants.finalXp), (30, 60));
     });
@@ -86,11 +86,11 @@ void main() {
 
     test('short of coins: tip 2 is given as help, and the balance never goes below zero', () {
       wallet().unlockTip(m['m01']!, 2); // 20 → 0
-      expect(wallet().unlockTip(m['m02']!, 2), TipUnlock.help);
+      expect(wallet().unlockTip(m['m02']!, 2), TipUnlock.insufficientCoins);
       expect(coins().balance, 0);
       expect(
         coins().ownsTip('m02', 2),
-        isTrue,
+        isFalse,
         reason: 'help is the detective’s too: read again free',
       );
       for (final e in coins().entries) {
@@ -100,8 +100,8 @@ void main() {
 
     test('a solve pays its coins once; Play again pays nothing more; XP rule 4 is recorded', () {
       game().startInvestigation();
-      expect(game().submitAnswer(m['m01']!, 'b').coins, 30);
-      expect(coins().balance, 20 + 30);
+      expect(game().submitAnswer(m['m01']!, 'b').coins, 5);
+      expect(coins().balance, 20 + 5);
       expect(
         game().submitAnswer(m['m01']!, 'b').coins,
         0,
@@ -119,7 +119,7 @@ void main() {
         0,
         reason: 'paid once ever',
       );
-      expect(coins().balance, 50);
+      expect(coins().balance, 25);
       expect(
         XpBreakdown.of(m['m01']!, c.read(gameControllerProvider)).total,
         30,
@@ -133,7 +133,7 @@ void main() {
       expect(coins().balance, 20);
     });
 
-    test('the final pays 60', () {
+    test('the final pays 10', () {
       game().startInvestigation();
       for (final (id, answer) in [
         ('m01', 'b'),
@@ -144,8 +144,8 @@ void main() {
       ]) {
         game().submitAnswer(m[id]!, answer);
       }
-      expect(game().submitAnswer(m['final']!, '7924').coins, 60);
-      expect(coins().balance, 20 + 5 * 30 + 60);
+      expect(game().submitAnswer(m['final']!, '7924').coins, 10);
+      expect(coins().balance, 20 + 5 * 5 + 10);
     });
 
     test('Reset everything: a new wallet, start coins only', () async {
@@ -174,7 +174,7 @@ void main() {
       );
       final wallet = again.read(walletProvider);
       expect(wallet.balance, saved.balance);
-      expect(wallet.balance, 20 + 30 - 20);
+      expect(wallet.balance, 20 + 5 - 20);
       expect(wallet.ownsTip('m02', 2), isTrue);
       expect(
         again.read(walletProvider.notifier).unlockTip(m['m02']!, 2),
@@ -182,7 +182,7 @@ void main() {
       );
       expect(
         again.read(walletProvider).balance,
-        30,
+        5,
         reason: 'no charge after a restart',
       );
       again.dispose();
@@ -236,7 +236,7 @@ void main() {
       final wallet = c.read(walletProvider);
       expect(
         wallet.balance,
-        20 + 5 * 30 + 60 + 30,
+        20 + 5 * 5 + 10 + 30,
         reason: 'start + Case 01 + one Case 02 mission',
       );
       expect(
@@ -295,8 +295,8 @@ void main() {
       final outcome = c
           .read(gameControllerProvider.notifier)
           .submitAnswer(m['m01']!, 'b');
-      expect(outcome.coins, 30);
-      expect(c.read(walletProvider).balance, 50);
+      expect(outcome.coins, 5);
+      expect(c.read(walletProvider).balance, 25);
       expect(
         c
             .read(walletProvider)
