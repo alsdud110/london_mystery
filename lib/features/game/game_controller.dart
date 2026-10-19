@@ -197,7 +197,7 @@ class GameController extends Notifier<GameProgress> {
   /// [WalletController.unlockTip]) and opens it on the page, saved together.
   TipUnlock revealTip(Mission mission, int tip) => ref.read(progressRepositoryProvider).transaction(() {
         final result = ref.read(walletProvider.notifier).unlockTip(mission, tip);
-        useHint(mission);
+        if (result != TipUnlock.insufficientCoins) useHint(mission);
         return result;
       });
 
