@@ -136,8 +136,8 @@ void main() {
     await skipHowToPlay(t); // its pages: how_to_play_test
     // The season's casebook, then (as a tour of the case files) Case 01 from there.
     await wait(t, const Duration(milliseconds: 1600));
-    expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
-    await shot('season_cover');
+    expect(find.text('BEGIN SEASON ONE'), findsNothing);
+    await shot('season_prologue');
     appRef.read(routerProvider).go(Routes.episodes);
     await wait(t);
     await shot('episodes');
