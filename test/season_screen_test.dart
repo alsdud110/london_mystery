@@ -275,8 +275,9 @@ void main() {
       appRef.read(routerProvider).go(Routes.season);
     }
     await wait(t, const Duration(milliseconds: 1800));
-    expect(path(), Routes.season);
-    expect(find.text('SHADOWS\nOVER LONDON'), findsOneWidget);
+    expect(path(), fromRegister ? Routes.prologue : Routes.season);
+    if (!fromRegister) {
+      expect(find.text('SHADOWS\nOVER LONDON'), findsOneWidget);
     expect(find.text('12 CASES • ONE MYSTERY'), findsOneWidget);
     expect(find.text('CASE FILES'), findsNothing, reason: 'not straight to the case files');
     expect(t.takeException(), isNull);
@@ -284,6 +285,7 @@ void main() {
     await capture(t, 'cover_$tag');
 
     await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 600));
+    }
     expect(path(), Routes.prologue);
     expect(appRef.read(gameControllerProvider).introSeen, isFalse, reason: 'the opening starts no case');
 
@@ -679,8 +681,8 @@ void main() {
     // This detective played before How to Play existed: shown once, now.
     await skipHowToPlay(t);
     await wait(t, const Duration(milliseconds: 2200));
-    expect(path(), Routes.season);
-    expect(find.text('BEGIN SEASON ONE'), findsOneWidget);
+    expect(path(), Routes.prologue);
+    expect(find.text('BEGIN SEASON ONE'), findsNothing);
     final o = appRef.read(seasonOverviewProvider);
     expect(o.solvedCount, 0);
     expect(o.begun, isFalse);
