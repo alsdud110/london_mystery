@@ -147,9 +147,8 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
   void _next() => _move(_page + 1);
 
   /// Out of the guide, forwards (finished or skipped): learnt, and on.
-  /// [started]: START FIRST CASE on the last page, which already introduced
-  /// the season — straight into its opening (as BEGIN SEASON ONE would, which
-  /// prepares nothing more), then Case 01. SKIP still goes to the casebook.
+  /// Finishing the guide or pressing SKIP both start the season prologue.
+  /// The guide has already introduced the season, so do not show its cover.
   void _done({bool started = false}) {
     if (_leaving) return;
     _leaving = true;
@@ -157,9 +156,9 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
     if (widget.again) {
       context.canPop() ? context.pop() : context.go(Routes.map);
     } else {
-      // `go`: nothing lies under the opening; its back from the first scene
-      // goes to the casebook, never into the finished guide.
-      context.go(started ? Routes.prologue : Routes.season);
+      // The onboarding guide already introduces Season One. Both its final
+      // action and SKIP enter the prologue, bypassing BEGIN SEASON ONE.
+      context.go(Routes.prologue);
     }
   }
 
