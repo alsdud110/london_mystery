@@ -236,7 +236,7 @@ void main() {
       final wallet = c.read(walletProvider);
       expect(
         wallet.balance,
-        20 + 5 * 5 + 10 + 30,
+        20 + 5 * 5 + 10 + 5,
         reason: 'start + Case 01 + one Case 02 mission',
       );
       expect(
@@ -665,47 +665,26 @@ void main() {
     );
 
     testWidgets(
-      'short of coins: the dialog says what it costs and what is in hand; hint 2 is free help',
+      'short of coins: paid tip stays locked and ad placeholder is shown',
       (t) async {
         final play = MissionPlay();
-        final mission = await play.openPuzzle(t, const Size(360, 640), 'm02');
-        // Spend down below one hint (the solved m01 was paid when the wallet was made).
+        await play.openPuzzle(t, const Size(360, 640), 'm02');
         for (final other in season.skip(1).expand((e) => e.allMissions)) {
           if (play.ref.read(walletProvider).balance < 20) break;
           play.ref.read(walletProvider.notifier).unlockTip(other, 2);
         }
         final left = play.ref.read(walletProvider).balance;
-        expect(left, lessThan(20));
         await wait(t, const Duration(milliseconds: 300));
-        expect(
-          coinsShown(t),
-          left,
-          reason: 'coins spent elsewhere show in the bar',
-        );
-        await tapText(
-          t,
-          'Get a Free Hint',
-          after: const Duration(milliseconds: 600),
-        );
-        // Pressed as a finger does (Case 01 M2's room has nothing moving
-        // to draw a frame between an instant tap's down and up).
+        await tapText(t, 'Get a Free Hint', after: const Duration(milliseconds: 600));
         await press(t, find.text('Get More Hints'));
-        isConfirm(
-          t,
-          const Size(360, 640),
-          message:
-              'You have $left ${left == 1 ? 'coin' : 'coins'}. This hint is free!',
-        );
-        await capture(t, 'tip_dialog_help_360x640');
-        await takeTipFromSheet(t);
+        expect(find.text('Not enough coins! You have $left ${left == 1 ? 'coin' : 'coins'}.'), findsOneWidget);
+        expect(find.text('Watch an ad for 20 coins — Coming soon'), findsOneWidget);
+        expect(find.text('GET MORE HINTS'), findsNothing);
+        await t.tap(cancel);
         await wait(t, const Duration(milliseconds: 400));
-        expect(
-          play.ref.read(walletProvider).balance,
-          left,
-          reason: 'help costs nothing',
-        );
-        await reveal(t, findReadable(mission.hints[1]));
-        expect(findReadable(mission.hints[1]), findsOneWidget);
+        expect(play.ref.read(walletProvider).balance, left);
+        expect(play.ref.read(gameControllerProvider).hintsFor('m02'), 1);
+        expect(play.ref.read(walletProvider).ownsTip('m02', 2), isFalse);
       },
     );
 
