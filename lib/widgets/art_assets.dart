@@ -1,11 +1,23 @@
-import 'dart:ui' show Offset, Size;
+import 'dart:ui' show Offset, Rect, Size;
 
 import '../data/models/mission.dart';
 import '../data/models/profile.dart';
 import '../features/game/scoring.dart';
 
-/// The two pictures of the Royal Box: shut, and open with the Crown inside.
-typedef RoyalBoxArt = ({String closed, String open});
+/// The two pictures of the Royal Box: shut, and open with the Crown inside,
+/// on canvases of the same size, in register. [dials] are the shut box's
+/// four dial drums, left to right, where the game writes the numbers the
+/// detective turns the locks to (fractions of the picture; empty: the shut
+/// picture has its own). [shut] and [opened] are the parts of the canvas
+/// the box fills, shut and open (fractions): the page looks closer at the
+/// open box, so the Crown reads large.
+typedef RoyalBoxArt = ({
+  String closed,
+  String open,
+  List<Rect> dials,
+  Rect shut,
+  Rect opened,
+});
 
 /// A clock face picture with no hands, and the hands drawn over it: where
 /// its pivot is and how long its hands are (fractions of the picture's
@@ -226,7 +238,7 @@ abstract final class ArtAssets {
   static const sceneAspects = <Artwork, double>{
     Artwork.raven: 1,
     Artwork.oldSuitcase: 1,
-    Artwork.royalBox: 885 / 868,
+    Artwork.royalBox: 1659 / 948,
     Artwork.greatCourt: 1264 / 848,
     Artwork.egyptRoom: 1264 / 848,
     Artwork.boathouse: 1288 / 816,
@@ -290,16 +302,35 @@ abstract final class ArtAssets {
   static const ravenMark = '${_art}symbols/raven_mark.png';
 
   /// Case 01's Royal Box (the final mission's golden box with the Crown
-  /// inside), as two pictures on transparency: shut, and open with the
-  /// Crown in it — the same box on near-identical canvases (the same empty
-  /// band under it), so fitted into the same space from the bottom they
-  /// stay in register. The opening animation crossfades the two over the
-  /// code-drawn light rays; a missing picture falls back to the box drawn in
-  /// code (`RoyalBoxAnimation`).
+  /// inside), as two pictures on transparency (1659 × 948, in register):
+  /// shut, its four dial drums blank — `royal_box_closed_blank.png`, made
+  /// from the delivered `royal_box_closed.png` (kept, its drums painted
+  /// 0000) by `tool/royal_box_blank/blank_test.dart` — so the game writes
+  /// on them the numbers the detective turns the locks to; and open with the
+  /// Crown in it, its drums showing the code (7924), shown only once the box
+  /// is opened. The opening animation crossfades the two; a missing picture
+  /// falls back to the box drawn in code (`RoyalBoxAnimation`).
   static const RoyalBoxArt royalBox = (
-    closed: '${_art}special/royal_box_closed.png',
+    closed: '${_art}special/royal_box_closed_blank.png',
     open: '${_art}special/royal_box_open.png',
+    // The drums' digit faces, measured on the picture (pixels 521–552,
+    // 709–740, 909–940, 1104–1135 across; 644–688 down).
+    dials: [
+      Rect.fromLTRB(521 / 1659, 644 / 948, 552 / 1659, 688 / 948),
+      Rect.fromLTRB(709 / 1659, 644 / 948, 740 / 1659, 688 / 948),
+      Rect.fromLTRB(909 / 1659, 644 / 948, 940 / 1659, 688 / 948),
+      Rect.fromLTRB(1104 / 1659, 644 / 948, 1135 / 1659, 688 / 948),
+    ],
+    // Shut: the whole box, its wide brass corners included. Open: the box
+    // from its lid to its feet, a little closer (the Crown larger).
+    shut: Rect.fromLTRB(30 / 1659, 80 / 948, 1630 / 1659, 905 / 948),
+    opened: Rect.fromLTRB(100 / 1659, 5 / 948, 1560 / 1659, 905 / 948),
   );
+
+  /// The delivered shut Royal Box, its drums painted 0000: the source of
+  /// [royalBox]'s shut picture, never shown (the 0000 would not follow the
+  /// locks).
+  static const royalBoxClosedPainted = '${_art}special/royal_box_closed.png';
 
   /// Special pictures. The theatre royal box: listed, not shown yet — the
   /// game's Royal Box (Case 01) is a golden box with the Crown inside.
@@ -311,10 +342,13 @@ abstract final class ArtAssets {
   /// by evidence id. Only where the picture agrees with what the evidence
   /// says: Case 01's watch (stopped at 7) and map (two swans), whose numbers
   /// open the Royal Box, keep their drawn marks, as do the maps whose drawn
-  /// ravens the pictures lack.
+  /// ravens the pictures lack. (The Royal Box's own pocket watch reads ten
+  /// past ten: never the watch stopped at 7.)
   static const evidencePictures = <String, String>{
     'e01': '${_art}objects/letter.png', // Old Letter
     'e02': '${_art}objects/key.png', // Golden Key
+    // Crown Symbol: the card with a crown on it (the crown it shows).
+    'e05': '${_art}objects/crown.png',
     'e06': '${_art}objects/crown.png', // The Missing Crown
     'ep03_e1': '${_art}objects/red_button.png', // Red Button (Case 03, again in Case 08)
     'ep04_e1': ravenMark, // Black Wax Seal: a raven pressed into the wax
@@ -323,7 +357,24 @@ abstract final class ArtAssets {
     'ep12_e4': '${_art}objects/pocket_watch.png', // The Clockmaker's Watch
   };
 
+  /// What a case's Case Closed file shows under its title in place of the
+  /// small tilted case photo, by case id: the thing the case was about,
+  /// alone on the file's paper. Case 01: the Missing Crown, cut out of
+  /// `objects/crown.png` (kept, on its parchment) by
+  /// `tool/crown_cutout/cutout_test.dart`. Other cases keep their photo.
+  static const caseClosedEmblems = <String, String>{
+    'ep01': '${_art}objects/crown_cutout.png',
+  };
+
+  /// How much closer an [evidencePictures] picture is shown in its round
+  /// frame, where its object sits small in a wide parchment margin: only
+  /// the margin goes, never the object. The crown (crown.png) fills about
+  /// the middle half of its square; at 1.5× its cross, jewels and band
+  /// still lie inside the circle.
+  static const evidencePictureZoom = <String, double>{'e05': 1.5};
+
   static const _art = 'assets/art/';
+  static const _case01 = 'assets/images/case01';
 
   /// The nine London landmarks.
   static const landmarkScenes = <Artwork, String>{
@@ -393,6 +444,24 @@ abstract final class ArtAssets {
   /// One-colour artwork on transparency: the game tints it with the symbol's
   /// colour, as it does the ink glyphs.
   static const Map<String, String> symbols = {};
+
+  /// Case 01's Royal Box: the four pictures of its locks, in full colour on
+  /// transparency (cut out of the delivered files kept in
+  /// `assets/images/case01/symbols/original/`, by
+  /// `tool/symbol_cutout/cutout_test.dart`), keyed like the locks'
+  /// `dialSymbols`. Shown where the lock order is read — the crown card's
+  /// hidden message, the Crown Symbol evidence and the locks themselves —
+  /// never tinted. Other cases keep their [symbols] glyphs.
+  static const royalBoxLocks = <String, String>{
+    'clock': '$_case01/symbols/symbol_pocket_watch.png',
+    'train': '$_case01/symbols/symbol_steam_train.png',
+    'park': '$_case01/symbols/symbol_swan.png',
+    'museum': '$_case01/symbols/symbol_rosetta_stone.png',
+  };
+
+  /// The Royal Box lock pictures are square (512 × 512), each drawing
+  /// centred with the same margin, so they look the same size side by side.
+  static const royalBoxLockPixels = Size(512, 512);
 
   /// Badge medal pictures, e.g. `GameBadge.sharpEyes: 'assets/art/badges/sharp_eyes.png'`.
   /// One-colour on transparency, tinted like the glyph it replaces.

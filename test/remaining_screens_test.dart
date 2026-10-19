@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
@@ -22,7 +22,7 @@ import 'parent_gate_test.dart' show gateAnswer;
 import 'title_screen_test.dart' show capture;
 
 /// The last screens of the UI audit in the game's language: the evidence
-/// close-up, the QR scanner, the parent gate, the parent report and the
+/// close-up, the absent scanner page, the parent gate, the parent report and the
 /// game master tools — their functions as before.
 void main() {
   setUpAll(() async {
@@ -90,27 +90,24 @@ void main() {
       expect(find.text('CLOSE'), findsNothing);
     });
 
-    testWidgets('qr scanner $tag (no camera): gold ink, GO BACK is the glass button, and goes back', (t) async {
-      debugDefaultTargetPlatformOverride = TargetPlatform.windows; // a device without a camera
-      try {
-        final ref = await pumpApp(t, size, GameProgress(detectiveName: 'KIM', introSeen: true, startedAt: DateTime(2026, 9, 29)));
-        ref.read(routerProvider).go(Routes.map);
-        await wait(t, const Duration(milliseconds: 1000));
-        ref.read(routerProvider).push(Routes.qrScanner);
-        await wait(t, const Duration(milliseconds: 1000));
-        expect(t.takeException(), isNull);
-        expect(find.text('No camera here'), findsOneWidget);
-        final back = find.ancestor(of: find.text('GO BACK'), matching: find.byType(GameButton));
-        expect(t.widget<GameButton>(back).style, GameButtonStyle.glass);
-        final white = t.widgetList<Text>(find.byType(Text)).where((w) => w.style?.color == Colors.white);
-        expect(white, isEmpty, reason: 'ink from the palette, not plain white');
-        await capture(t, 'qr_no_camera_$tag');
-        await t.tap(find.text('GO BACK'));
-        await wait(t, const Duration(milliseconds: 800));
-        expect(pathOf(ref), Routes.map);
-      } finally {
-        debugDefaultTargetPlatformOverride = null;
+    // The QR scanner page is gone (2026-10-19): Case 01 M5's crown card is
+    // examined in its own scene, on this device alone, with no camera.
+    testWidgets('no scanner page $tag: the app has no camera route, the map opens as before', (t) async {
+      final ref = await pumpApp(t, size, GameProgress(detectiveName: 'KIM', introSeen: true, startedAt: DateTime(2026, 9, 29)));
+      ref.read(routerProvider).go(Routes.map);
+      await wait(t, const Duration(milliseconds: 1000));
+      expect(t.takeException(), isNull);
+      expect(pathOf(ref), Routes.map);
+      final paths = <String>[];
+      void collect(List<RouteBase> routes) {
+        for (final r in routes) {
+          if (r is GoRoute) paths.add(r.path);
+          collect(r.routes);
+        }
       }
+      collect(ref.read(routerProvider).configuration.routes);
+      expect(paths, isNot(contains('/scan')));
+      expect(find.text('No camera here'), findsNothing);
     });
 
     testWidgets('parent gate and report $tag: the scene under a navy shade; the report, name whole', (t) async {
@@ -158,7 +155,10 @@ void main() {
       expect(find.byType(Card), findsNothing);
       expect(find.byType(BackButton), findsNothing);
       expect(find.byWidgetPredicate((w) => w is InkIcon && w.glyph == InkGlyph.back), findsOneWidget);
-      expect(find.text('LM-EP01-PALACE'), findsOneWidget, reason: 'the QR card, as before');
+      // No QR card to print or place on site any more (Case 01 M5 is played
+      // on the device), and the page says so.
+      expect(find.text('LM-EP01-PALACE'), findsNothing);
+      expect(find.textContaining('현장에 따로 준비할 카드는 없습니다'), findsOneWidget);
       await capture(t, 'game_master_$tag');
       await t.tap(find.byTooltip('Back'));
       await wait(t, const Duration(milliseconds: 800));

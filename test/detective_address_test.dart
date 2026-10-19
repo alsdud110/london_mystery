@@ -149,7 +149,6 @@ void main() {
       };
       expect(answers, {
         'm01': 'b',
-        'm05': 'LM-EP01-PALACE',
         'ep02_m1': '817',
         'ep02_m2': 'c',
         'ep04_m3': 'b',

@@ -427,7 +427,14 @@ const _otherCases = <String, int>{
   // tips and wrong-place lines; c03's note and the post-case line now name
   // the watch's 7 o'clock; four glossary words. Value before it: ep01
   // 1558901493.
-  'ep01': 3068875867,
+  // Case 01 M5 redesigned as the crown card examined on the device, no QR
+  // code (2026-10-19, requested): its type (examine), letter intro, letter
+  // (the card's hidden message), question, answer and two tips; four
+  // glossary words. Its story, clue c05, evidence e05, transition and the
+  // final (7924) unchanged. Value before it: ep01 3068875867. Then its
+  // letter shortened to "Four pictures. Four locks. / Remember the order."
+  // (no name; requested): value before it 2180131402.
+  'ep01': 3696114919,
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
   'ep02': 3508708899,
   // Wave 1 (2026-10-14): 03-M1 tip 2 (the search of Gallery 8); Wave 1.1:

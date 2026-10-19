@@ -186,7 +186,11 @@ void main() {
         // ticket's raven mark, 06-F option a, 09-F umbrella line.
         // Case 01 M3 redesigned as the foot of Big Ben read for its traces
         // (2026-10-19, requested; was 2429473966): see final_small_pass_test.
-        'ep01': 592271942,
+        // Case 01 M5 redesigned as the crown card examined on the device, no
+        // QR code (2026-10-19, requested; was 592271942): see
+        // case01_decode_test. Then its hidden message shortened (2026-10-19,
+        // requested; was 1576316267).
+        'ep01': 972650650,
         'ep02': 1023821448,
         // Wave 1 (2026-10-14): 03-M1 is searched; its tip 2 reads the place
         // words. Wave 1.1: the report says 'I noticed three things in the

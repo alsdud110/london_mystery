@@ -68,6 +68,12 @@ void main() {
           .isNotEmpty;
       expect(showing(ArtAssets.royalBox.closed), isTrue, reason: 'the shut box');
       expect(showing(ArtAssets.royalBox.open), isFalse);
+      // Its drums blank in the picture (the painted 0000 never shown), the
+      // locks' numbers written on them: 0 0 0 0 to start.
+      expect(showing(ArtAssets.royalBoxClosedPainted), isFalse);
+      String drum(int i) =>
+          t.widget<Text>(find.descendant(of: find.byKey(ValueKey('royal-box-dial-$i')), matching: find.byType(Text)).last).data!;
+      expect([for (var i = 0; i < 4; i++) drum(i)], ['0', '0', '0', '0']);
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // decode the box
       await t.pump();
       await capture(t, 'final_initial_$tag');
@@ -88,6 +94,9 @@ void main() {
         }
       }
       await wait(t, const Duration(milliseconds: 300));
+      // The box's drums follow the locks; still shut, the open box unseen.
+      expect([for (var i = 0; i < 4; i++) drum(i)], ['7', '9', '2', '4']);
+      expect(showing(ArtAssets.royalBox.open), isFalse, reason: 'not open before OPEN THE BOX');
       await capture(t, 'final_code_$tag');
       await t.tap(open);
       // D. Mid-opening: shut and open pictures crossfade in exactly the same place.
@@ -110,6 +119,12 @@ void main() {
       expect(find.text('CASE SOLVED'), findsOneWidget);
       expect(showing(ArtAssets.royalBox.open), isTrue, reason: 'open, the Crown inside');
       expect(showing(ArtAssets.royalBox.closed), isFalse);
+      expect(find.byKey(const ValueKey('royal-box-dial-0')), findsNothing, reason: 'the open box prints its own code');
+      // Open, the Crown reads large: the box fills the page's width, closer.
+      final openBox = t.getRect(find.byKey(const ValueKey('royal-box-open')));
+      final page = t.getRect(find.byType(RoyalBoxAnimation));
+      expect(openBox.width, greaterThan(page.width), reason: 'looked at closer than the whole canvas');
+      expect(page.width / size.width, greaterThan(0.8));
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
       await t.pump();
       await capture(t, 'final_opened_$tag');
@@ -142,15 +157,21 @@ void main() {
   testWidgets('a Royal Box picture that cannot be loaded falls back to the box drawn in code', (t) async {
     final c = AnimationController(vsync: const TestVSync());
     addTearDown(c.dispose);
-    const art = (closed: 'assets/art/special/missing_closed.png', open: 'assets/art/special/missing_open.png');
+    final art = (
+      closed: 'assets/art/special/missing_closed.png',
+      open: 'assets/art/special/missing_open.png',
+      dials: ArtAssets.royalBox.dials,
+      shut: ArtAssets.royalBox.shut,
+      opened: ArtAssets.royalBox.opened,
+    );
     await t.pumpWidget(MaterialApp(home: SizedBox(width: 300, height: 200, child: RoyalBoxAnimation(animation: c, art: art))));
     await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
     await t.pump();
     expect(t.takeException(), isNull);
     expect(
       find.byWidgetPredicate((w) => w is CustomPaint && w.painter.runtimeType.toString() == '_RoyalBoxPainter'),
-      findsNWidgets(2),
-      reason: 'the light, and the drawn box in place of the missing picture',
+      findsOneWidget,
+      reason: 'the drawn box in place of the missing picture',
     );
   });
 
@@ -160,7 +181,13 @@ void main() {
   testWidgets('Royal Box pictures, when given: shut → open with the same animation', (t) async {
     final c = AnimationController(vsync: const TestVSync());
     addTearDown(c.dispose);
-    const art = (closed: 'assets/art/objects/suitcase.png', open: 'assets/art/objects/crown.png');
+    final art = (
+      closed: 'assets/art/objects/suitcase.png',
+      open: 'assets/art/objects/crown.png',
+      dials: const <Rect>[],
+      shut: ArtAssets.royalBox.shut,
+      opened: ArtAssets.royalBox.opened,
+    );
     await t.pumpWidget(MaterialApp(home: SizedBox(width: 300, height: 200, child: RoyalBoxAnimation(animation: c, art: art))));
     double opacityOf(String file) => t
         .widgetList<Opacity>(find.ancestor(
@@ -170,7 +197,7 @@ void main() {
         .fold(1.0, (a, o) => a * o.opacity);
     expect(opacityOf(art.closed), 1);
     expect(find.byWidgetPredicate((w) => w is Image && (w.image as AssetImage).assetName == art.open), findsNothing);
-    c.value = 0.35;
+    c.value = 0.24; // the lid starting to swing (the shut box gives way first)
     await t.pump();
     expect(opacityOf(art.closed), inExclusiveRange(0.0, 1.0), reason: 'the lid swings: one into the other');
     expect(opacityOf(art.open), inExclusiveRange(0.0, 1.0));

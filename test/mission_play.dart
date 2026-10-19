@@ -8,7 +8,9 @@ import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
+import 'package:london_mystery/data/mock/season1/season1_decodes.dart';
 import 'package:london_mystery/data/models/scene_deduction.dart';
+import 'package:london_mystery/data/models/scene_decode.dart';
 import 'package:london_mystery/data/mock/season1/season1_clocks.dart';
 import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
 import 'package:london_mystery/data/mock/season1/season1_explores.dart';
@@ -115,7 +117,8 @@ class MissionPlay {
             find.byKey(const ValueKey('clock-dial')).evaluate().isNotEmpty ||
             find.byKey(const ValueKey('explore-picture')).evaluate().isNotEmpty ||
             find.byKey(const ValueKey('inspect-room')).evaluate().isNotEmpty ||
-            find.byKey(const ValueKey('deduction-picture')).evaluate().isNotEmpty,
+            find.byKey(const ValueKey('deduction-picture')).evaluate().isNotEmpty ||
+            find.byKey(const ValueKey('decode-picture')).evaluate().isNotEmpty,
         isTrue,
         reason: '$missionId: at its puzzle');
     return e.missionById(missionId)!;
@@ -186,6 +189,12 @@ class MissionPlay {
       await chooseAndSearch(t, deduction, m.answer);
       return;
     }
+    // A thing to examine: tapped, its code examined, then taken.
+    final decode = decodeOf(m);
+    if (decode != null) {
+      await examineAndTake(t, decode);
+      return;
+    }
     // A clock: its hands set to the answer, then SET THE TIME.
     final clock = clockPuzzleOf(m);
     if (clock != null) {
@@ -221,7 +230,7 @@ class MissionPlay {
           await t.tap(tile);
           await t.pump(const Duration(milliseconds: 150));
         }
-      case MissionType.qrScan || MissionType.finalCode:
+      case MissionType.examine || MissionType.finalCode:
         fail('not used here');
     }
     await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 400));
@@ -265,6 +274,27 @@ class MissionPlay {
   Future<void> chooseAndSearch(WidgetTester t, DeductionScene scene, String optionId) async {
     await tapDeduction(t, scene.placeOf(optionId).areas.first.center);
     await tapKey(t, 'deduction-search', after: const Duration(milliseconds: 400));
+  }
+
+  /// Where [point] (fractions of a thing's place) is on screen, as the
+  /// picture is shown now (the whole place, or the thing closer).
+  Offset decodeAt(WidgetTester t, Offset point) {
+    final box = t.getRect(find.byKey(const ValueKey('decode-picture')));
+    return Offset(box.left + point.dx * box.width, box.top + point.dy * box.height);
+  }
+
+  /// Taps a thing's place at [point] (fractions of the picture).
+  Future<void> tapDecode(WidgetTester t, Offset point, {Duration after = const Duration(milliseconds: 700)}) async {
+    await t.tapAt(decodeAt(t, point));
+    await wait(t, after);
+  }
+
+  /// [scene]'s thing tapped (brought closer), its code examined (the scan
+  /// and the message appearing waited out), then taken.
+  Future<void> examineAndTake(WidgetTester t, DecodeScene scene) async {
+    await tapDecode(t, scene.areas.first.center);
+    await tapKey(t, 'decode-examine', after: const Duration(milliseconds: 2800));
+    await tapKey(t, 'decode-take', after: const Duration(milliseconds: 400));
   }
 
   /// Where [point] (fractions of the examined room's picture) is on screen.

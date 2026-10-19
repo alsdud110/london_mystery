@@ -17,7 +17,6 @@ import '../../../widgets/art_assets.dart';
 import '../../../widgets/glossary_text.dart';
 import '../../../widgets/landmark_art.dart';
 import '../../game/game_providers.dart';
-import 'qr_question.dart';
 
 /// The one look of an answer card, whatever the puzzle type, so a child
 /// learns a single rule: the card I chose is filled in navy ink.
@@ -923,7 +922,12 @@ Widget questionFor(Mission mission, AnswerCallback onSubmit) =>
         mission: mission,
         onSubmit: onSubmit,
       ),
-      MissionType.qrScan => QrQuestion(mission: mission, onSubmit: onSubmit),
+      // Played in its scene (`SceneDecode`); without one, the thing is
+      // simply examined: nothing to type or choose.
+      MissionType.examine => GameButton(
+        label: 'EXAMINE',
+        onPressed: () => onSubmit(mission.answer),
+      ),
       MissionType.sequence => SequenceQuestion(
         mission: mission,
         onSubmit: onSubmit,

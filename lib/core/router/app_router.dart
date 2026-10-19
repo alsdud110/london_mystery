@@ -7,7 +7,6 @@ import '../../features/game/game_providers.dart';
 import '../../features/game_master/game_master_screen.dart';
 import '../../features/mission/final_mission_screen.dart';
 import '../../features/mission/mission_screen.dart';
-import '../../features/mission/qr_scanner_screen.dart';
 import '../../features/mission/story_scene_screen.dart';
 import '../../features/mission_map/mission_map_screen.dart';
 import '../../features/notebook/notebook_screen.dart';
@@ -46,7 +45,6 @@ abstract final class Routes {
   static const finalMission = '/final';
   static const solved = '/solved';
   static const report = '/report';
-  static const qrScanner = '/scan';
   static const gameMaster = '/game-master';
 
   static String mission(String id) => '/mission/$id';
@@ -107,7 +105,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (!progress.hasDetective) return Routes.register;
 
-      if (path == Routes.map || path == Routes.notebook || path == Routes.qrScanner) {
+      if (path == Routes.map || path == Routes.notebook) {
         return progress.introSeen ? null : Routes.episodes;
       }
       if (path.startsWith('/mission/')) {
@@ -179,7 +177,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           return _fade(s, _backTo(c, afterCase ? Routes.solved : Routes.map, StorySceneScreen(missionId: id)));
         },
       ),
-      GoRoute(path: Routes.qrScanner, pageBuilder: (c, s) => _fade(s, const QrScannerScreen())),
       GoRoute(path: Routes.finalMission, pageBuilder: (c, s) => _fade(s, const FinalMissionScreen())),
       GoRoute(path: Routes.solved, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.map, const CaseSolvedScreen()))),
       GoRoute(path: Routes.report, pageBuilder: (c, s) => _fade(s, const ParentReportScreen())),

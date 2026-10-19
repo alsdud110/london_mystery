@@ -24,6 +24,7 @@ import '../../widgets/paper.dart';
 import '../../widgets/place_art.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/desk_background.dart';
+import '../../widgets/royal_box_picture.dart';
 import '../../widgets/symbol_icon.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
@@ -80,6 +81,29 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         }
       });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // The Royal Box's pictures decoded ahead: shut on arrival, and open the
+    // moment the code is right (never a blank frame as the lid swings).
+    if (_precached || _mission.scene != Artwork.royalBox) return;
+    _precached = true;
+    for (final file in [ArtAssets.royalBox.closed, ArtAssets.royalBox.open]) {
+      precacheImage(AssetImage(file), context, onError: (_, _) {});
+    }
+  }
+
+  bool _precached = false;
+
+  /// The Royal Box's stage height for a page [width] wide: the open box,
+  /// fitted to the width, on a [screen] at least so tall; no taller than a
+  /// third of the screen and 320, no shorter than 150.
+  static double _royalBoxStage(double width, double screen) {
+    final open = ArtAssets.royalBox.opened;
+    final aspect = ArtAssets.sceneAspects[Artwork.royalBox]! * open.width / open.height;
+    return (width / aspect).clamp(150.0, math.min(320.0, math.max(150.0, screen * 0.36)));
   }
 
   @override
@@ -370,19 +394,24 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                     ),
                     const SizedBox(height: 12),
                     // A smaller stage on a small phone, so the story and the locks
-                    // come sooner; the full 250 on taller screens.
-                    SizedBox(
-                      height: (MediaQuery.sizeOf(context).height * 0.3).clamp(
-                        160.0,
-                        250.0,
-                      ),
-                      child: ClipRect(
-                        child: m.scene == Artwork.royalBox
-                            ? RoyalBoxAnimation(animation: _open)
-                            : _SceneReveal(
-                                scene: PlaceArt.sceneOf(m),
-                                animation: _open,
-                              ),
+                    // come sooner; the full 250 on taller screens. The Royal Box
+                    // gets the height its picture needs at this width (the open
+                    // box, looked at a little closer, the Crown large).
+                    LayoutBuilder(
+                      builder: (context, box) => SizedBox(
+                        height: m.scene == Artwork.royalBox
+                            ? _royalBoxStage(box.maxWidth, MediaQuery.sizeOf(context).height)
+                            : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
+                        child: ClipRect(
+                          child: m.scene == Artwork.royalBox
+                              // The numbers on its drums follow the locks below
+                              // until it opens.
+                              ? RoyalBoxAnimation(animation: _open, digits: solved ? const [] : _digits)
+                              : _SceneReveal(
+                                  scene: PlaceArt.sceneOf(m),
+                                  animation: _open,
+                                ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -585,7 +614,8 @@ class _Dial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = GameSymbol.of(symbol).label;
+    final label = RoyalBoxPicture.nameOf(symbol);
+    final picture = RoyalBoxPicture.of(symbol);
     // A brass lock plate with its picture, wheel and two levers.
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -607,7 +637,13 @@ class _Dial extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (symbol != null) SymbolBadge(symbol, size: 46, light: true),
+          // Case 01's Royal Box: its full-colour picture in a small parchment
+          // window on the brass (the same picture as on the crown card), and
+          // its name; any other lock keeps its stamp.
+          if (picture != null)
+            _LockPicture(key: ValueKey('lock-picture-${picture.symbol}'), picture: picture)
+          else if (symbol != null)
+            SymbolBadge(symbol, size: 46, light: true),
           IconButton(
             tooltip: 'Lock ${index + 1} up',
             onPressed: onUp,
@@ -655,6 +691,52 @@ class _Dial extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// A Royal Box lock's picture: set in a parchment window on the brass plate
+/// (the picture's own colours read against it, not against the gold), its
+/// name under it in capitals, one line whatever the text size.
+class _LockPicture extends StatelessWidget {
+  const _LockPicture({super.key, required this.picture});
+
+  final RoyalBoxPicture picture;
+
+  static const side = 58.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: side,
+          height: side,
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            color: AppColors.parchment,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: AppColors.goldDeep, width: AppLine.hairline),
+          ),
+          child: RoyalBoxPictureImage(picture, size: side - 6),
+        ),
+        const SizedBox(height: 3),
+        SizedBox(
+          width: side + 6,
+          child: MediaQuery.withClampedTextScaling(
+            maxScaleFactor: 1.15,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                picture.name.toUpperCase(),
+                maxLines: 1,
+                style: AppText.eyebrow(color: AppColors.navyDeep),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -737,16 +819,26 @@ class _SceneReveal extends StatelessWidget {
   }
 }
 
-/// The Royal Box: closed → lid lifts → light rays → crown rises.
+/// The Royal Box. Painted: shut, the numbers the detective has turned the
+/// locks to on its dial drums ([digits]); opening, a small jolt as the
+/// locks give, then the open picture (the Crown inside, the drums at the
+/// code) takes over from the shut one as the lid would swing, the page
+/// looking a little closer so the Crown reads large. Drawn in code when a
+/// picture is missing: closed → lid lifts → light → crown rises.
 class RoyalBoxAnimation extends StatelessWidget {
   const RoyalBoxAnimation({
     super.key,
     required this.animation,
+    this.digits = const [],
     this.art = ArtAssets.royalBox,
   });
 
   /// 0 = shut (the puzzle), 1 = open with the Crown (solved, or a revisit).
   final Animation<double> animation;
+
+  /// What the locks are turned to now, left to right: written on the shut
+  /// box's drums (the open box shows its own).
+  final List<int> digits;
 
   /// The box's two pictures, or null to draw it in code (see [ArtAssets.royalBox]).
   final RoyalBoxArt? art;
@@ -773,41 +865,114 @@ class RoyalBoxAnimation extends StatelessWidget {
         if (pictures == null) {
           return Transform.translate(offset: Offset(shake, 0), child: drawn);
         }
-        // The painted box: the same timing — it shakes, the light comes
-        // out as it opens (drawn behind it), the open picture (Crown in it)
-        // takes over from the shut one as the lid would swing.
-        Widget picture(String file, double opacity) => Opacity(
-          opacity: opacity,
-          child: Image.asset(
-            file,
-            fit: BoxFit.contain,
-            alignment: Alignment.bottomCenter,
-            width: double.infinity,
-            height: double.infinity,
-            excludeFromSemantics: true,
-            // A missing or broken picture: the box drawn in code.
-            errorBuilder: (context, error, stack) => drawn,
-          ),
-        );
+        // Both pictures on the same canvas, placed alike: the part of it the
+        // box fills shut, closer to the open box as the lid swings.
+        final view = Rect.lerp(pictures.shut, pictures.opened, lid)!;
         return Transform.translate(
           offset: Offset(shake, 0),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              CustomPaint(
-                painter: _RoyalBoxPainter(
-                  lid: lid,
-                  crown: 0,
-                  rays: t,
-                  raysOnly: true,
-                ),
-              ),
-              if (lid < 1) picture(pictures.closed, 1 - lid),
-              if (lid > 0) picture(pictures.open, lid),
-            ],
+          child: LayoutBuilder(
+            builder: (context, box) {
+              final canvas = _canvasFor(view, box.biggest);
+              Rect at(Rect r) => Rect.fromLTRB(
+                    canvas.left + r.left * canvas.width,
+                    canvas.top + r.top * canvas.height,
+                    canvas.left + r.right * canvas.width,
+                    canvas.top + r.bottom * canvas.height,
+                  );
+              Widget picture(String file, double opacity, Key key) => Positioned.fromRect(
+                    rect: canvas,
+                    child: Opacity(
+                      opacity: opacity,
+                      child: Image.asset(
+                        file,
+                        key: key,
+                        fit: BoxFit.fill,
+                        excludeFromSemantics: true,
+                        // A missing or broken picture: the box drawn in code.
+                        errorBuilder: (context, error, stack) => drawn,
+                      ),
+                    ),
+                  );
+              return Stack(
+                clipBehavior: Clip.hardEdge,
+                children: [
+                  // The shut box gives way first (the two boxes, shaped
+                  // differently, are seen together only briefly).
+                  if (lid < 1) picture(pictures.closed, (1 - lid * 1.6).clamp(0.0, 1.0), const ValueKey('royal-box-shut')),
+                  // The open box only once it opens: never before the code.
+                  if (lid > 0) picture(pictures.open, lid, const ValueKey('royal-box-open')),
+                  if (lid < 1)
+                    for (final (i, r) in pictures.dials.indexed)
+                      if (i < digits.length)
+                        Positioned.fromRect(
+                          rect: at(r),
+                          child: Opacity(
+                            opacity: 1 - lid,
+                            child: _DrumDigit(key: ValueKey('royal-box-dial-$i'), value: digits[i]),
+                          ),
+                        ),
+                ],
+              );
+            },
           ),
         );
       },
+    );
+  }
+
+  /// Where the whole canvas goes so that [view] (fractions of it) fits in
+  /// [size], centred, kept to its proportions.
+  static Rect _canvasFor(Rect view, Size size) {
+    final aspect = ArtAssets.sceneAspects[Artwork.royalBox]!;
+    final viewAspect = view.width * aspect / view.height;
+    var w = size.width, h = w / viewAspect;
+    if (h > size.height) {
+      h = size.height;
+      w = h * viewAspect;
+    }
+    final cw = w / view.width, ch = cw / aspect;
+    return Rect.fromLTWH(
+      (size.width - w) / 2 - view.left * cw,
+      (size.height - h) / 2 - view.top * ch,
+      cw,
+      ch,
+    );
+  }
+}
+
+/// A number on a dial drum of the painted box, in the drum's own dark ink
+/// with a pale rim, as the picture's open box prints its code; it rolls in
+/// as the lock below is turned. For the eye only: the lock below is read.
+class _DrumDigit extends StatelessWidget {
+  const _DrumDigit({super.key, required this.value});
+
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: ClipRect(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 160),
+          transitionBuilder: (child, anim) => SlideTransition(
+            position: Tween(begin: const Offset(0, 0.4), end: Offset.zero).animate(anim),
+            child: FadeTransition(opacity: anim, child: child),
+          ),
+          child: FittedBox(
+            key: ValueKey(value),
+            fit: BoxFit.contain,
+            child: Text(
+              '$value',
+              textScaler: TextScaler.noScaling,
+              style: AppText.title(size: 40, color: AppColors.ink).copyWith(
+                fontWeight: FontWeight.w800,
+                height: 1,
+                shadows: const [Shadow(color: AppColors.goldLight, blurRadius: 1.5)],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -817,11 +982,7 @@ class _RoyalBoxPainter extends CustomPainter {
     required this.lid,
     required this.crown,
     required this.rays,
-    this.raysOnly = false,
   });
-
-  /// Only the light from the opening box (behind a painted box).
-  final bool raysOnly;
 
   final double lid;
   final double crown;
@@ -870,8 +1031,6 @@ class _RoyalBoxPainter extends CustomPainter {
         Paint()..color = AppColors.goldLight.withValues(alpha: 0.25 * lid),
       );
     }
-
-    if (raysOnly) return;
 
     // Paint order: an opening lid goes behind the crown; a closed lid sits
     // in front of the body.
@@ -1016,6 +1175,5 @@ class _RoyalBoxPainter extends CustomPainter {
   bool shouldRepaint(_RoyalBoxPainter old) =>
       old.lid != lid ||
       old.crown != crown ||
-      old.rays != rays ||
-      old.raysOnly != raysOnly;
+      old.rays != rays;
 }

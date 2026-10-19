@@ -9,6 +9,7 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
+import 'package:london_mystery/data/mock/season1/season1_decodes.dart';
 import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
 import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
@@ -215,12 +216,14 @@ void main() {
     final tag = '${size.width.toInt()}x${size.height.toInt()}@$scale';
     for (final m in plain) {
       // A look round (Case 01 M1), a room examined under the glass (Case 01
-      // M2) and a place read for its traces (Case 01 M3) have a plain place
-      // page, and their own page in place of the puzzle's
-      // (case01_explore_test, case01_inspect_test, case01_deduction_test).
+      // M2), a place read for its traces (Case 01 M3) and a card examined
+      // (Case 01 M5) have a plain place page, and their own page in place of
+      // the puzzle's (case01_explore_test, case01_inspect_test,
+      // case01_deduction_test, case01_decode_test).
       for (final puzzle in [
         false,
-        if (exploreOf(m) == null && inspectionOf(m) == null && deductionOf(m) == null) true,
+        if (exploreOf(m) == null && inspectionOf(m) == null && deductionOf(m) == null && decodeOf(m) == null)
+          true,
       ]) {
         final step = puzzle ? 'puzzle (${m.type.name})' : 'place';
         testWidgets(

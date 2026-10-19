@@ -140,7 +140,7 @@ void main() {
         ('m02', 'stone'),
         ('m03', 'b'),
         ('m04', 'c'),
-        ('m05', 'LM-EP01-PALACE'),
+        ('m05', m['m05']!.answer),
       ]) {
         game().submitAnswer(m[id]!, answer);
       }

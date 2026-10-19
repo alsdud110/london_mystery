@@ -18,9 +18,8 @@ flutter test           # unit + full-playthrough widget tests
 flutter analyze
 ```
 
-The QR camera works on Android, iOS, macOS and web (web needs HTTPS or
-localhost). On other platforms, or if camera permission is denied, the player
-types the code printed under the QR card.
+Every mission is played on the device alone: no camera, no printed cards and
+no helper needed (Mission 05's crown card is examined in its own scene).
 
 ## Flow
 
@@ -42,7 +41,7 @@ scene → back to the map, where the next pin plays a LOCKED → UNLOCKED ceremo
 | 02 | British Museum | Word input | STONE (Rosetta Stone) | 🏛 Room **4** | Golden Key |
 | 03 | Big Ben | Number code | 417 | 🕰 **7** o'clock | Pocket Watch |
 | 04 | Hyde Park | Image choice | C. Buckingham Palace | 🌳 **2** swans | London Map |
-| 05 | Buckingham Palace | QR scan | `LM-EP01-PALACE` | The Royal Box | Crown Symbol |
+| 05 | Buckingham Palace | Card examined in the scene | (nothing to type: the card's code shows the lock order) | The Royal Box | Crown Symbol |
 | Final | The Royal Archive | 4 picture locks | **7924** | — | The Missing Crown |
 
 **Final case.** Each lock on the Royal Box shows a picture. The *Crown
@@ -77,7 +76,6 @@ pictures to places.
 Long-press the round emblem on the title screen and answer the grown-ups
 question to open the **Game Master** screen. From there you can:
 
-- show or print the QR card for Mission 05 (with its typed fallback code),
 - see the answer key for helpers,
 - reset the device for the next child.
 

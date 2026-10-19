@@ -33,8 +33,7 @@ flutter build apk --profile --dart-define=LM_PLAYTEST=true
 - 처음부터 하려면 `다음 플레이어를 위해 기기 초기화`
 
 **현장 준비물**
-- Case 01만 QR 카드가 필요합니다(Buckingham Palace 미션). Game Master 화면의 QR을 인쇄하거나 다른 기기에 띄워 두세요.
-- Case 02~12는 기기만 있으면 됩니다.
+- 모든 사건(Case 01~12)은 기기 하나만 있으면 됩니다. 현장에 비치할 카드나 카메라는 필요 없습니다(2026-10-19부터 Case 01 Buckingham Palace 미션도 화면 안에서 왕관 카드를 조사).
 
 **주의: 앞 사건을 이어받는 사건.** 아래 사건은 앞 사건을 기억하거나 Case Archive를 찾아봐야 풀립니다.
 `CASE NN부터`로 바로 시작한 아이라면 "기억이 안 나서"인지 "영어·논리가 어려워서"인지 구분해서 기록하세요.
@@ -89,10 +88,10 @@ flutter build apk --profile --dart-define=LM_PLAYTEST=true
 
 ### CASE 01 — The Missing Crown
 
-미션: ① King's Cross 객관식 → ② British Museum 단어 입력 → ③ Big Ben 숫자 코드 → ④ Hyde Park 그림 선택 → ⑤ Buckingham Palace QR → Final Royal Box 잠금 4개
+미션: ① King's Cross 객관식 → ② British Museum 단어 입력 → ③ Big Ben 숫자 코드 → ④ Hyde Park 그림 선택 → ⑤ Buckingham Palace 왕관 카드 조사(카드 탭 → EXAMINE THE CODE → 네 그림 순서) → Final Royal Box 잠금 4개
 
 관찰 포인트
-- QR 미션: 카드를 찾는 과정이 재미있는지, 카메라가 없을 때 아래 수동 코드로 입력할 수 있는지
+- Mission 5: 그림 속 카드를 바로 눌러 보는가, 스캔 연출 뒤 나타난 네 그림의 순서(시계→기차→공원→박물관)를 Final에서 다시 떠올리거나 Notebook의 Crown Symbol을 찾아보는가
 - Mission 1 (TYPE B): 보기가 박물관 네 곳(공룡·옛 보물·버스와 기차·로켓). 편지의 "mummies from Egypt"로 고르는가, 기차 박물관(The Shadow의 "I love trains")에 끌리는가. 오답 시 나오는 한 줄을 읽는가
 - Mission 2 (TYPE B): 화면에 STONE이 없습니다. 뜻풀이(a hard piece of rock)나 첫 편지("a famous stone")로 떠올리는가
 - Mission 4 (TYPE B): 그림 아래 이름이 없습니다. 묘사(red flag, fountain)로 궁전을 고르는가

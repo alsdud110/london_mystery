@@ -21,15 +21,18 @@ void main() {
 
   // M3 (Big Ben) is a place chosen in its scene since 2026-10-19 (a choice,
   // like M1's poster): the number code is left to the final case's locks.
+  // M5 (the palace gate) is a card examined in its scene since 2026-10-19,
+  // no longer a real QR code to scan.
   test('has 5 missions over 4 puzzle types, plus a final code', () {
     expect(e.missions, hasLength(5));
     expect(e.missions.map((m) => m.type).toSet(), {
       MissionType.multipleChoice,
       MissionType.wordInput,
       MissionType.imageChoice,
-      MissionType.qrScan,
+      MissionType.examine,
     });
     expect(e.missionById('m03')!.type, MissionType.multipleChoice);
+    expect(e.missionById('m05')!.type, MissionType.examine);
     expect(e.finalMission.type, MissionType.finalCode);
     expect(e.missions.first.location, "KING'S CROSS");
   });

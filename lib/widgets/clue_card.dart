@@ -9,6 +9,7 @@ import '../data/models/mission.dart';
 import '../features/game/game_providers.dart';
 import 'glossary_text.dart';
 import 'ink_icon.dart';
+import 'royal_box_picture.dart';
 import 'symbol_icon.dart';
 
 /// A notebook page entry: "CLUE #01 — Platform 9".
@@ -34,33 +35,61 @@ class ClueCard extends StatelessWidget {
       foregroundDecoration: const _IndexCardRules(),
       child: Row(
         children: [
-          SizedBox(
-            width: 76,
-            height: 72,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  width: 64,
-                  height: 64,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.navy,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColors.gold.withValues(alpha: 0.7), width: AppLine.rule),
-                  ),
-                  child: FittedBox(
-                    child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: Text(clue.value, style: AppText.title(size: 26, color: AppColors.goldLight)),
+          Consumer(
+            builder: (context, ref, _) {
+              // Case 01's clues show their lock's own picture (the same as
+              // on the crown card and the Royal Box), a little larger so it
+              // reads; every other clue keeps its stamp.
+              final picture = RoyalBoxPicture.forClue(clue, caseOfClue(ref.watch(episodeCatalogProvider), clue.id));
+              return SizedBox(
+                width: picture == null ? 76 : 88,
+                height: picture == null ? 72 : 78,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: 64,
+                      height: 64,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppColors.navy,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: AppColors.gold.withValues(alpha: 0.7), width: AppLine.rule),
+                      ),
+                      child: FittedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Text(clue.value, style: AppText.title(size: 26, color: AppColors.goldLight)),
+                        ),
+                      ),
                     ),
-                  ),
+                    // The picture that links this clue to a lock on the Royal Box.
+                    if (picture != null)
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Semantics(
+                          label: picture.name,
+                          child: Container(
+                            key: ValueKey('clue-picture-${clue.id}'),
+                            width: 48,
+                            height: 48,
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: AppColors.paperLight,
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: AppColors.goldDeep, width: AppLine.hairline),
+                            ),
+                            child: RoyalBoxPictureImage(picture, size: 44),
+                          ),
+                        ),
+                      )
+                    else if (clue.symbol != null)
+                      Positioned(right: 0, bottom: 0, child: SymbolBadge(clue.symbol, size: 32, light: true)),
+                  ],
                 ),
-                // The picture that links this clue to a lock on the Royal Box.
-                if (clue.symbol != null)
-                  Positioned(right: 0, bottom: 0, child: SymbolBadge(clue.symbol, size: 32, light: true)),
-              ],
-            ),
+              );
+            },
           ),
           const SizedBox(width: 10),
           Expanded(

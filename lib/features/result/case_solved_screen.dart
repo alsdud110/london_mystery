@@ -9,6 +9,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/mission.dart';
+import '../../widgets/art_assets.dart';
 import '../../widgets/badge_medal.dart';
 import '../../widgets/detective_character.dart';
 import '../../widgets/ink_icon.dart';
@@ -238,6 +239,8 @@ class _CaseFile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final top = report.topBadge;
+    // The case's emblem (Case 01: the Crown), else its small photo.
+    final emblem = ArtAssets.caseClosedEmblems[report.episode.id];
     final standing = DetectiveCast.shows(DetectiveMoment.caseSolved);
     // Taller than at a mission's solve (Discovery); less on a short phone.
     final height = MediaQuery.sizeOf(context).height < 700 ? 150.0 : 190.0;
@@ -307,16 +310,22 @@ class _CaseFile extends StatelessWidget {
                   const SizedBox(width: 12),
                   // The red stamp comes down on the case photo: placed by the
                   // photo, not at a fixed point of the page, so it never covers
-                  // the name whatever the text size.
+                  // the name whatever the text size. A case with an emblem
+                  // (below its title) has no photo: the stamp comes down on
+                  // the paper in the photo's place.
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      _Photo(scene: PlaceArt.sceneOf(report.episode.finalMission)),
+                      if (emblem == null)
+                        _Photo(scene: PlaceArt.sceneOf(report.episode.finalMission))
+                      else
+                        const SizedBox(key: ValueKey('case-closed-stamp-spot'), width: 112, height: 64),
                       if (stamp > 0)
                         Positioned(
-                          left: -AppSpace.md,
+                          // On the paper (no photo): kept off the name.
+                          left: emblem == null ? -AppSpace.md : 0,
                           right: -AppSpace.md,
-                          top: 34,
+                          top: emblem == null ? 34 : 6,
                           child: IgnorePointer(
                             child: Opacity(
                               opacity: stamp.clamp(0, 1),
@@ -334,8 +343,30 @@ class _CaseFile extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: emblem == null ? 10 : 2),
               _Field(label: 'Case', value: report.episode.title.toUpperCase(), name: true),
+              // What the case was about, alone on the paper, under its title:
+              // no frame, no tilt, no shadow.
+              if (emblem != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpace.md),
+                  child: Center(
+                    child: LayoutBuilder(
+                      builder: (context, box) {
+                        final side = (box.maxWidth * 0.42).clamp(96.0, 150.0);
+                        return Image.asset(
+                          emblem,
+                          key: const ValueKey('case-closed-emblem'),
+                          width: side,
+                          height: side,
+                          fit: BoxFit.contain,
+                          semanticLabel: report.episode.allEvidence.last.name,
+                          errorBuilder: (context, error, stack) => const SizedBox.shrink(),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               const _Rule(),
               _Row(
                 label: 'Missions',

@@ -5,6 +5,7 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
+import 'package:london_mystery/data/mock/season1/season1_decodes.dart';
 import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
@@ -145,6 +146,24 @@ Future<void> readBigBenBase(WidgetTester t) async {
     await tapBigBenBase(t, c.areas.first.center);
   }
   await tapBigBenBase(t, scene.placeOf('b').areas.first.center);
+}
+
+/// Case 01 M5 from the map: the place, then the card by the gate at once
+/// (no envelope, no camera): the card tapped, its code examined, the hidden
+/// pictures shown on it (TAKE THE CARD still to press).
+Future<void> examineCrownCard(WidgetTester t) async {
+  await t.tap(find.bySemanticsLabel('GO TO BUCKINGHAM PALACE'));
+  await wait(t, goToTime);
+  await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
+  expect(find.text('TAP TO OPEN'), findsNothing, reason: 'no envelope: the card is where it was left');
+  expect(findReadable('You found a mysterious card near the palace gate.'), findsOneWidget);
+  final scene = decodeOf(MockEpisodeRepository.bundled().first.missions[4])!;
+  final picture = t.getRect(find.byKey(const ValueKey('decode-picture')));
+  final at = scene.areas.first.center;
+  await t.tapAt(Offset(picture.left + at.dx * picture.width, picture.top + at.dy * picture.height));
+  await wait(t, const Duration(milliseconds: 700));
+  await tapText(t, 'EXAMINE THE CODE', after: const Duration(milliseconds: 2800));
+  expect(find.text('THE HIDDEN MESSAGE'), findsOneWidget);
 }
 
 /// Success overlay → story scene → back on the map (unlock ceremony).
@@ -406,16 +425,9 @@ void main() {
       await tapText(t, 'CHECK ANSWER', after: Duration.zero);
       await finishMission(t, sceneLine: 'The swans fly up into the sky.');
 
-      // ── Mission 05: QR (typed fallback, as on a device without a camera).
-      await openMission(t, 'GO TO BUCKINGHAM PALACE');
-      await tapText(
-        t,
-        "Can't scan? Type the code",
-        after: const Duration(milliseconds: 400),
-      );
-      await reveal(t, find.byType(TextField));
-      await t.enterText(find.byType(TextField), 'LM-EP01-PALACE');
-      await tapText(t, 'CHECK CODE', after: Duration.zero);
+      // ── Mission 05: the crown card by the gate, examined on the device.
+      await examineCrownCard(t);
+      await tapText(t, 'TAKE THE CARD', after: Duration.zero);
       await finishMission(t, sceneLine: 'The guard opens a secret door.');
       expect(
         find.text('OPEN THE FINAL CASE'),
@@ -443,6 +455,12 @@ void main() {
         find.textContaining('Four pictures for four locks'),
         findsOneWidget,
       );
+      // The same four pictures and names as on the crown card and the locks.
+      for (final s in ['clock', 'train', 'park', 'museum']) {
+        expect(find.byKey(ValueKey('sequence-$s')), findsOneWidget, reason: s);
+      }
+      expect(find.text('SWAN'), findsOneWidget);
+      expect(find.text('STONE'), findsOneWidget);
       await tapText(t, 'CLOSE', after: const Duration(milliseconds: 600));
       await tapText(t, 'BADGES', after: const Duration(milliseconds: 600));
       expect(find.text('London Explorer'), findsOneWidget);

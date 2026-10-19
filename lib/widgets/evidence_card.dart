@@ -14,6 +14,7 @@ import 'game_button.dart';
 import 'glossary_text.dart';
 import 'ink_icon.dart';
 import 'paper.dart';
+import 'royal_box_picture.dart';
 import 'symbol_icon.dart';
 
 /// The grid every [EvidenceTile] sits in (notebook, case archive, the final
@@ -215,7 +216,11 @@ class _EvidenceZoom extends StatelessWidget {
   }
 }
 
-/// A numbered row of pictures (left to right), e.g. the Royal Box lock order.
+/// A row of pictures in order (left to right), e.g. the Royal Box lock
+/// order. The Royal Box's own pictures are shown with their names, joined
+/// by small ink arrows — no numbers, so the order is never mistaken for the
+/// code — exactly as on the crown card and the locks; any other symbol keeps
+/// its numbered stamp.
 class SymbolSequence extends StatelessWidget {
   const SymbolSequence({super.key, required this.symbols, this.size = 52});
 
@@ -224,6 +229,42 @@ class SymbolSequence extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (symbols.isNotEmpty && symbols.every((s) => RoyalBoxPicture.of(s) != null)) {
+      return Semantics(
+        label: 'In order: ${symbols.map(RoyalBoxPicture.nameOf).join(', then ')}.',
+        container: true,
+        excludeSemantics: true,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final (i, s) in symbols.indexed) ...[
+                if (i > 0)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 2, right: 2, bottom: 18),
+                    child: InkIcon(InkGlyph.arrow, size: AppIconSize.small, color: AppColors.goldDeep),
+                  ),
+                Column(
+                  key: ValueKey('sequence-$s'),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RoyalBoxPictureImage(RoyalBoxPicture.of(s)!, size: size),
+                    const SizedBox(height: 2),
+                    MediaQuery.withNoTextScaling(
+                      child: Text(
+                        RoyalBoxPicture.nameOf(s).toUpperCase(),
+                        style: AppText.eyebrow(color: AppColors.inkBrown),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    }
     return Wrap(
       alignment: WrapAlignment.center,
       spacing: 10,
@@ -271,16 +312,20 @@ class _EvidenceArt extends StatelessWidget {
       child: picture == null
           ? mark
           : ClipOval(
-              child: Image.asset(
-                picture,
-                fit: BoxFit.cover,
-                width: size,
-                height: size,
-                cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).ceil(),
-                excludeFromSemantics: true,
-                // Its symbol until the picture is ready: never an empty ring.
-                frameBuilder: (context, child, frame, sync) => sync || frame != null ? child : Center(child: mark),
-                errorBuilder: (context, error, stack) => Center(child: mark),
+              child: Transform.scale(
+                // Closer where the object sits small in its margin.
+                scale: ArtAssets.evidencePictureZoom[evidence.id] ?? 1,
+                child: Image.asset(
+                  picture,
+                  fit: BoxFit.cover,
+                  width: size,
+                  height: size,
+                  cacheWidth: (size * (ArtAssets.evidencePictureZoom[evidence.id] ?? 1) * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                  excludeFromSemantics: true,
+                  // Its symbol until the picture is ready: never an empty ring.
+                  frameBuilder: (context, child, frame, sync) => sync || frame != null ? child : Center(child: mark),
+                  errorBuilder: (context, error, stack) => Center(child: mark),
+                ),
               ),
             ),
     );

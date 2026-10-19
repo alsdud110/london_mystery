@@ -9,7 +9,8 @@ import 'package:london_mystery/features/game/scoring.dart';
 
 import 'helpers.dart';
 
-const fullRun = [('m01', 'b'), ('m02', 'stone'), ('m03', 'b'), ('m04', 'c'), ('m05', 'LM-EP01-PALACE')];
+// M5's answer is what its scene sends once the crown card is taken.
+const fullRun = [('m01', 'b'), ('m02', 'stone'), ('m03', 'b'), ('m04', 'c'), ('m05', 'crown-card')];
 
 void main() {
   late ProviderContainer container;

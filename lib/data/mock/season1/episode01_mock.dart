@@ -305,17 +305,22 @@ const Map<String, dynamic> episode01Json = {
         'You reach Buckingham Palace.',
         'A guard in a red coat smiles at you.',
       ],
-      'letterIntro': 'The guard gives you a small card.',
+      // The card by the gate (buckingham_palace_crown_card.png), examined in
+      // the scene (season1_decodes.dart): its code, read, shows a hidden
+      // message, the letter below, and the order of the four pictures (e05's
+      // symbols). It gives the order only: the numbers stay in the notebook,
+      // for the final locks.
+      'letterIntro': 'The crown card, decoded:',
       'letter':
-          'Detective {detectiveName}, the thief hid a secret code near the gate.\n\n'
-          'Look for the QR code with the golden crown sticker.\n'
-          'Scan it to open the last door!',
-      'type': 'qrScan',
-      'question': 'Find the secret QR code and scan it.',
-      'answer': 'LM-EP01-PALACE',
+          'Four pictures. Four locks.\n'
+          'Remember the order.',
+      'type': 'examine',
+      'question': 'Examine the card near the palace gate.',
+      // Sent by the scene once the card is taken: never typed.
+      'answer': 'crown-card',
       'hints': [
-        'Look near the gate for a golden crown sticker.',
-        'Ask your game guide in English: "Where is the golden crown?"',
+        'Look closely at the card near the palace gate.',
+        'Tap the strange square symbol beside the crown. Then press EXAMINE THE CODE.',
       ],
       'clue': {
         'id': 'c05',
@@ -456,5 +461,9 @@ const Map<String, dynamic> episode01Json = {
     'scratches': '긁힌 자국들',
     'lamp': '가로등, 등불',
     'drain': '배수구',
+    'examine': '자세히 살펴보다',
+    'decoded': '(암호를) 풀어낸',
+    'order': '순서',
+    'remember': '기억하다',
   },
 };

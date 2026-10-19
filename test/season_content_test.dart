@@ -148,10 +148,14 @@ void main() {
       }
     });
 
-    test('no QR missions: they need physical cards on site', () {
+    // No mission needs physical cards on site, a camera or anyone's help:
+    // the one thing examined (Case 01's crown card) is examined in its own
+    // scene. (Since 2026-10-19 there is no QR mission type at all.)
+    test('no mission needs a card on site: only Case 01 M5 is examined, in its scene', () {
       for (final e in later) {
-        expect(e.allMissions.where((m) => m.type == MissionType.qrScan), isEmpty, reason: e.id);
+        expect(e.allMissions.where((m) => m.type == MissionType.examine), isEmpty, reason: e.id);
       }
+      expect(MissionType.values.map((t) => t.name), isNot(contains('qrScan')));
     });
 
     test('a case mixes puzzle types instead of repeating one', () {

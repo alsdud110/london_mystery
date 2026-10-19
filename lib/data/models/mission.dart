@@ -6,7 +6,12 @@ enum MissionType {
   wordInput,
   numberCode,
   imageChoice,
-  qrScan,
+
+  /// Examine one thing found at the place (Case 01's crown card): it is
+  /// looked at closer, its code read in the scene, and taken. Nothing to
+  /// type or choose, so never a wrong answer; the scene submits [Mission.answer]
+  /// once the thing is taken (see `season1_decodes.dart`).
+  examine,
   finalCode,
 
   /// Tap the options in the right order (ids joined by commas). An option
@@ -323,6 +328,7 @@ class Mission {
   String get answerLabel => switch (type) {
     MissionType.multipleChoice || MissionType.imageChoice => _optionLabel(answer),
     MissionType.sequence => sequenceIds(answer).map(_optionLabel).join(' → '),
+    MissionType.examine => 'Examine it in the scene (nothing to type)',
     _ => answer,
   };
 

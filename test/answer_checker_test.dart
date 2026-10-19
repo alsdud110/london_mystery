@@ -28,10 +28,14 @@ void main() {
     expect(AnswerChecker.isCorrect(byId['final']!, '0000'), isFalse);
   });
 
-  test('QR payload accepts scanned or typed code', () {
+  // M5 is a card examined in its scene (2026-10-19): the scene sends the
+  // mission's own answer once the card is taken; nothing is typed or
+  // scanned, and the old QR code no longer solves it.
+  test('the crown card (examined): only the scene\'s own answer solves it', () {
     final m = byId['m05']!;
-    expect(AnswerChecker.isCorrect(m, 'LM-EP01-PALACE'), isTrue);
-    expect(AnswerChecker.isCorrect(m, 'lm-ep01-palace'), isTrue);
-    expect(AnswerChecker.isCorrect(m, 'https://example.com'), isFalse);
+    expect(AnswerChecker.isCorrect(m, m.answer), isTrue);
+    expect(AnswerChecker.isCorrect(m, 'LM-EP01-PALACE'), isFalse);
+    expect(AnswerChecker.isCorrect(m, '7924'), isFalse);
+    expect(AnswerChecker.isCorrect(m, ''), isFalse);
   });
 }

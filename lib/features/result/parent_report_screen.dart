@@ -429,7 +429,7 @@ class _MissionRow extends StatelessWidget {
       MissionType.wordInput => '단어 입력',
       MissionType.numberCode => '숫자 암호',
       MissionType.imageChoice => '그림 선택',
-      MissionType.qrScan => 'QR 현장 탐색',
+      MissionType.examine => '현장 조사',
       MissionType.finalCode => '최종 암호',
       MissionType.sequence => '순서 맞추기',
     };

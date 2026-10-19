@@ -72,7 +72,7 @@ AudioScene? audioSceneFor({
       );
     case Routes.solved:
       return office(MusicTheme.resolution, MusicLevels.caseClosed);
-    case Routes.notebook || Routes.qrScanner:
+    case Routes.notebook:
       return null; // over the page below: its scene goes on
     case Routes.report || Routes.gameMaster:
       return AudioScene.silence; // grown-ups' pages

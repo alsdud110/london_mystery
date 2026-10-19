@@ -16,7 +16,7 @@ import 'package:london_mystery/features/game/game_providers.dart'
 
 import 'helpers.dart';
 import 'parent_gate_test.dart' show gateAnswer;
-import 'full_playthrough_test.dart' show wait, reveal, goToTime, tapRoomSpot, tapStationSpot, readBigBenBase;
+import 'full_playthrough_test.dart' show wait, reveal, goToTime, tapRoomSpot, tapStationSpot, readBigBenBase, examineCrownCard;
 
 // Visual review tour: LM_TOUR=<folder> flutter test test/ui_tour_test.dart
 final _dir = Platform.environment['LM_TOUR'];
@@ -337,16 +337,10 @@ void main() {
     await tapText(t, 'CHECK ANSWER', after: Duration.zero);
     await finishMission(t, sceneLine: 'The swans fly up into the sky.');
 
-    // ── Mission 05: QR (typed fallback, as on a device without a camera).
-    await openMission(t, 'GO TO BUCKINGHAM PALACE');
-    await tapText(
-      t,
-      "Can't scan? Type the code",
-      after: const Duration(milliseconds: 400),
-    );
-    await reveal(t, find.byType(TextField));
-    await t.enterText(find.byType(TextField), 'LM-EP01-PALACE');
-    await tapText(t, 'CHECK CODE', after: Duration.zero);
+    // ── Mission 05: the crown card by the gate, examined on the device.
+    await examineCrownCard(t);
+    await shot('crown_card_decoded');
+    await tapText(t, 'TAKE THE CARD', after: Duration.zero);
     await finishMission(t, sceneLine: 'The guard opens a secret door.');
     expect(
       find.text('OPEN THE FINAL CASE'),

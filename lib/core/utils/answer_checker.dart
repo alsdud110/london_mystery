@@ -30,7 +30,7 @@ abstract final class AnswerChecker {
         return _sameItems(given, Mission.sequenceIds(mission.answer)) ? mission.orderFeedback : null;
       case MissionType.wordInput:
       case MissionType.numberCode:
-      case MissionType.qrScan:
+      case MissionType.examine:
       case MissionType.finalCode:
         final given = normalize(submission);
         if (given.isEmpty) return null;
@@ -56,7 +56,7 @@ abstract final class AnswerChecker {
         return given.isNotEmpty && listEquals(given, expected);
       case MissionType.wordInput:
       case MissionType.numberCode:
-      case MissionType.qrScan:
+      case MissionType.examine:
       case MissionType.finalCode:
         final given = normalize(submission);
         if (given.isEmpty) return false;

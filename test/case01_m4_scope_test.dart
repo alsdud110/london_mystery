@@ -71,6 +71,10 @@ void main() {
     // The letters that name the detective are read as they were (2026-10-17).
     // Was 1590700020 before M3 was redesigned as the foot of Big Ben read
     // for its traces (2026-10-19, requested; see case01_deduction_test).
-    expect(fnv(withoutNames(jsonEncode({...json, 'glossary': glossary}))), 376694330);
+    // Was 376694330 before M5 was redesigned as the crown card examined on
+    // the device, no QR code (2026-10-19, requested; see case01_decode_test).
+    // Was 1565212565 before its hidden message was shortened (same day,
+    // requested).
+    expect(fnv(withoutNames(jsonEncode({...json, 'glossary': glossary}))), 2004498282);
   });
 }

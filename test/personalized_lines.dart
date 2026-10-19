@@ -10,7 +10,9 @@ import 'dart:convert';
 const personalizedLines = <(String, String, String, String, String)>[
   // Letters to the detective.
   ('ep01', 'm01', 'letter', 'Dear Detective,', 'Dear Detective {detectiveName},'),
-  ('ep01', 'm05', 'letter', 'Detective, the thief hid', 'Detective {detectiveName}, the thief hid'),
+  // (Case 01 M5's letter named the detective until 2026-10-19: the guard's
+  // card about the QR code, then the crown card's hidden message. Its short
+  // message now names no one: case01_decode_test.)
   ('ep02', 'ep02_m1', 'letter', 'Detective,\n\nI looked', 'Detective {detectiveName},\n\nI looked'),
   ('ep02', 'ep02_m2', 'letter', 'Dear Detective,', 'Dear Detective {detectiveName},'),
   ('ep04', 'ep04_m3', 'letter', 'Detective,\n\nI sent', 'Detective {detectiveName},\n\nI sent'),

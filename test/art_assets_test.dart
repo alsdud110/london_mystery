@@ -141,7 +141,7 @@ void main() {
       expect(t.widget<Image>(find.byType(Image)).fit, BoxFit.contain, reason: '$place');
       expect(LandmarkArt.aspectOf(place), closeTo(aspect, 1e-9), reason: 'frames take the picture ratio');
     }
-    for (final (scene, aspect) in [(Artwork.raven, 1.0), (Artwork.oldSuitcase, 1.0), (Artwork.royalBox, 885 / 868), (Artwork.clockFace, 1.0), (Artwork.greatCourt, 1264 / 848)]) {
+    for (final (scene, aspect) in [(Artwork.raven, 1.0), (Artwork.oldSuitcase, 1.0), (Artwork.royalBox, 1659 / 948), (Artwork.clockFace, 1.0), (Artwork.greatCourt, 1264 / 848)]) {
       await show(LandmarkArt(scene));
       expect(t.widget<Image>(find.byType(Image)).fit, BoxFit.contain, reason: '$scene');
       expect(LandmarkArt.aspectOf(scene), closeTo(aspect, 1e-9), reason: '$scene frame takes its own ratio');
@@ -287,6 +287,8 @@ void main() {
     expect(ArtAssets.evidencePictures, {
       'e01': ArtAssets.objects['letter'],
       'e02': ArtAssets.objects['key'],
+      // The Crown Symbol card shows a crown (2026-10-19, requested).
+      'e05': ArtAssets.objects['crown'],
       'e06': ArtAssets.objects['crown'],
       'ep03_e1': 'assets/art/objects/red_button.png',
       'ep04_e1': ArtAssets.ravenMark,

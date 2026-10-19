@@ -313,7 +313,7 @@ void main() {
       router = await start(t, size, await prefsFor('ep01', done: 5));
       router.go(Routes.finalMission);
       await settle(t);
-      expect(picture('assets/art/special/royal_box_closed.png'), findsOneWidget);
+      expect(picture('assets/art/special/royal_box_closed_blank.png'), findsOneWidget);
       expect(picture(archive), findsNothing);
 
       // After the case: the archive; then the report keeps the open Royal Box.
@@ -327,7 +327,9 @@ void main() {
       await capture(t, 'art3_case01_postcase_$tag');
       router.go(Routes.solved);
       await settle(t, const Duration(milliseconds: 3200));
-      expect(picture(royalBoxOpen), findsOneWidget);
+      // The file shows the Crown itself (2026-10-19); the board still pins
+      // the open box as the case photo (below, Case 12's board).
+      expect(picture('assets/art/objects/crown_cutout.png'), findsOneWidget);
       expect(picture(archive), findsNothing);
 
       // The board: Case 01 is the open Royal Box.

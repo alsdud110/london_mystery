@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../data/models/episode.dart';
-import '../../data/models/mission.dart';
 import '../game/game_providers.dart';
 import '../../widgets/game_dialog.dart';
 import '../../widgets/ink_icon.dart';
-import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import 'playtest_tools.dart';
 
-/// Operator tools for the play space: the QR cards to place on site, the
-/// answer key for helpers, and a reset for the next child.
+/// Operator tools for the play space: the answer key for helpers, the
+/// playtest tools, and a reset for the next child.
 class GameMasterScreen extends ConsumerWidget {
   const GameMasterScreen({super.key});
 
@@ -84,7 +81,6 @@ class GameMasterScreen extends ConsumerWidget {
     final episode = ref.watch(currentEpisodeProvider);
     final catalog = ref.watch(episodeCatalogProvider);
     final operatorOn = ref.watch(operatorAccessProvider);
-    final qrMissions = episode.allMissions.where((m) => m.type == MissionType.qrScan).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -107,29 +103,9 @@ class GameMasterScreen extends ConsumerWidget {
               Text('현장 운영 도구', style: AppText.title(size: 22)),
               Text('CASE ${episode.numberLabel} · ${episode.title}', style: AppText.eyebrow()),
               const SizedBox(height: 4),
-              Text('아래 QR 카드를 인쇄하거나 이 화면을 띄워 미션 장소에 비치하세요.', style: AppText.caption()),
-              const SizedBox(height: 16),
-              for (final m in qrMissions)
-                // A ruled card of the casebook; the code itself stays on white
-                // so a camera reads it.
-                PaperSheet(
-                  ruled: true,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text(
-                        'MISSION ${m.numberLabel} · ${m.location}',
-                        style: AppText.eyebrow(),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                      QrImageView(data: m.answer, size: 220, backgroundColor: Colors.white),
-                      const SizedBox(height: 8),
-                      SelectableText(m.answer, style: AppText.title(size: 20).copyWith(letterSpacing: 2)),
-                      Text('(QR 아래 수동 입력 코드)', style: AppText.caption()),
-                    ],
-                  ),
-                ),
+              // Every mission is played on this device alone: nothing to print
+              // or place on site.
+              Text('모든 미션은 이 기기 하나로 진행됩니다. 현장에 따로 준비할 카드는 없습니다.', style: AppText.caption()),
               const SizedBox(height: 16),
               ExpansionTile(
                 // Folded and unfolded alike: no Material rules around it.

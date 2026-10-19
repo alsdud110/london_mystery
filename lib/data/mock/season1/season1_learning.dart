@@ -69,7 +69,7 @@ const Map<String, LearningObjective> season1Learning = {
   'm05': LearningObjective(
     dependency: LanguageDependency.low,
     level: LearningLevel.exposure,
-    objective: '현장의 QR 카드를 찾는 미션. 영어 이해와는 거의 관계가 없다.',
+    objective: '궁전 정문 앞 왕관 카드를 살펴보고 암호를 해독해 네 그림의 순서를 확인하는 미션. 영어 이해와는 거의 관계가 없다.',
   ),
   'final': LearningObjective(
     dependency: LanguageDependency.low,

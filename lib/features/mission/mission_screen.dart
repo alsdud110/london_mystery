@@ -16,7 +16,9 @@ import '../../data/mock/season1/season1_clocks.dart';
 import '../../data/mock/season1/season1_explores.dart';
 import '../../data/mock/season1/season1_inspections.dart';
 import '../../data/mock/season1/season1_deductions.dart';
+import '../../data/mock/season1/season1_decodes.dart';
 import '../../data/models/scene_deduction.dart';
+import '../../data/models/scene_decode.dart';
 import '../../data/models/scene_explore.dart';
 import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
@@ -47,6 +49,7 @@ import 'widgets/dialogue_investigation.dart';
 import 'widgets/investigation_search.dart';
 import 'widgets/lens_inspect.dart';
 import 'widgets/scene_deduction.dart';
+import 'widgets/scene_decode.dart';
 import 'widgets/scene_explore.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
@@ -103,6 +106,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// the place chosen (kept while the page is open; not saved).
   final DeductionProgress _deduction = DeductionProgress();
 
+  /// A mission played by examining one thing at its place: how far the
+  /// detective has got with it (kept while the page is open; not saved).
+  final DecodeProgress _decode = DecodeProgress();
+
   @override
   void initState() {
     super.initState();
@@ -149,8 +156,16 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       setState(() => _inspect.open = null);
       return;
     }
-    // A talk, a look round and a place read for its traces have no letter
-    // step: back from them is the place.
+    // A thing brought closer, its code not yet decoded (or half-scanned):
+    // back first puts it back in its place.
+    final examining =
+        _stage == MissionStage.puzzle && decodeOf(_mission) != null;
+    if (examining && _decode.step == DecodeStep.closer) {
+      setState(() => _decode.step = DecodeStep.look);
+      return;
+    }
+    // A talk, a look round, a place read for its traces and a thing
+    // examined have no letter step: back from them is the place.
     final talking =
         _stage == MissionStage.puzzle && dialogueOf(_mission) != null;
     final reading =
@@ -162,11 +177,26 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               !talking &&
               !exploring &&
               !inspecting &&
-              !reading
+              !reading &&
+              !examining
           ? MissionStage.letter
           : MissionStage.story;
     });
   }
+
+  /// A thing examined at its place (taking it answers the mission's puzzle:
+  /// the scene sends the mission's own answer, never typed).
+  Widget _decodeStage(Mission m, DecodeScene scene, int hintsShown) =>
+      SceneDecode(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        mission: m,
+        progress: _decode,
+        onChanged: () => setState(() {}),
+        onTake: () => _submit(m, m.answer),
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+      );
 
   /// A place read for its traces (the place chosen answers the mission's
   /// puzzle).
@@ -398,6 +428,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final explore = exploreOf(m);
     final inspect = inspectionOf(m);
     final deduction = deductionOf(m);
+    final decode = decodeOf(m);
 
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)
@@ -417,12 +448,15 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                     ? (deduction.picture, deduction.pixels.aspect)
                     : null,
                 // A place read for its traces starts at once too: the notes
-                // are written as the traces are found.
+                // are written as the traces are found. So does a thing to
+                // examine: what it hides is shown on it. (Its place keeps
+                // the place's own scene: the thing is found after.)
                 onInvestigate: () => _goTo(
                   talk != null ||
                           explore != null ||
                           inspect != null ||
-                          deduction != null
+                          deduction != null ||
+                          decode != null
                       ? MissionStage.puzzle
                       : MissionStage.letter,
                 ),
@@ -458,6 +492,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when deduction != null => _deductionStage(
               m,
               deduction,
+              progress.hintsFor(m.id),
+            ),
+            MissionStage.puzzle when decode != null => _decodeStage(
+              m,
+              decode,
               progress.hintsFor(m.id),
             ),
             MissionStage.puzzle when inspect != null => _inspectStage(

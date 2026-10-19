@@ -569,8 +569,9 @@ void main() {
   });
 
   group('pages over the scene', () {
-    test('the notebook and the QR scanner keep the scene below', () {
-      for (final path in [Routes.notebook, Routes.qrScanner]) {
+    // (The QR scanner, once also over the scene, is gone since 2026-10-19.)
+    test('the notebook keeps the scene below', () {
+      for (final path in [Routes.notebook]) {
         expect(
           audioSceneFor(
             path: path,

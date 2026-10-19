@@ -92,7 +92,10 @@ void main() {
       expect(ArtAssets.scene(Artwork.royalBox, solved: 1), 'assets/art/special/royal_box_open.png');
       expect(ArtAssets.scenes.values, isNot(contains('assets/art/special/royal_box.png')));
       // The final case still animates its own two pictures.
-      expect(ArtAssets.royalBox.closed, 'assets/art/special/royal_box_closed.png');
+      // (Its shut picture: the delivered one with its painted 0000 taken off
+      // the drums, so the locks' own numbers are written there: 2026-10-19.)
+      expect(ArtAssets.royalBox.closed, 'assets/art/special/royal_box_closed_blank.png');
+      expect(ArtAssets.royalBoxClosedPainted, 'assets/art/special/royal_box_closed.png');
       expect(ArtAssets.royalBox.open, 'assets/art/special/royal_box_open.png');
       expect(mission('final').scene, Artwork.royalBox);
     });
@@ -168,14 +171,22 @@ void main() {
   for (final size in const [Size(360, 640), Size(390, 844)]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}';
 
-    testWidgets('Case 01 $tag: the Royal Box locks show a museum, a park, a clock and a train', (t) async {
+    // Since 2026-10-19 the Royal Box locks show the case's own full-colour
+    // pictures (a pocket watch, a steam train, a swan, the Rosetta Stone:
+    // case01_lock_pictures_test) in place of the clock, train, park and
+    // museum glyphs; still a picture on every lock, never a letter.
+    testWidgets('Case 01 $tag: the Royal Box locks show a watch, a train, a swan and a stone', (t) async {
       final router = await start(t, size, await prefsFor('ep01', done: 5));
       router.go(Routes.finalMission);
       await settle(t);
       await reveal(t, find.text('OPEN THE BOX'));
       expect(monogram, findsNothing, reason: 'no M / P on the locks');
-      for (final g in [InkGlyph.clock, InkGlyph.train, InkGlyph.park, InkGlyph.museum]) {
-        expect(find.byWidgetPredicate((w) => w is InkIcon && w.glyph == g), findsWidgets, reason: '$g');
+      for (final s in ['clock', 'train', 'park', 'museum']) {
+        expect(
+          find.byWidgetPredicate((w) => w is Image && w.image is AssetImage && (w.image as AssetImage).assetName == ArtAssets.royalBoxLocks[s]),
+          findsOneWidget,
+          reason: s,
+        );
       }
       await capture(t, 'fix_case01_locks_$tag');
     });
@@ -194,7 +205,17 @@ void main() {
       await t.tap(find.text('Crown Symbol'));
       await settle(t, const Duration(milliseconds: 600));
       expect(monogram, findsNothing, reason: 'the Crown Symbol, close up');
-      expect(find.byWidgetPredicate((w) => w is InkIcon && w.glyph == InkGlyph.crown), findsOneWidget);
+      // The Crown Symbol shows the crown picture since 2026-10-19 (its ink
+      // crown stands in only until the picture is drawn).
+      // (Sized for the screen: the asset inside a ResizeImage.)
+      expect(
+        find.byWidgetPredicate((w) {
+          if (w is! Image) return false;
+          final p = w.image is ResizeImage ? (w.image as ResizeImage).imageProvider : w.image;
+          return p is AssetImage && p.assetName == ArtAssets.objects['crown'];
+        }),
+        findsWidgets,
+      );
       await capture(t, 'fix_case01_crown_zoom_$tag');
       await t.binding.handlePopRoute(); // close the zoom
       await settle(t, const Duration(milliseconds: 600));
@@ -211,11 +232,13 @@ void main() {
       await capture(t, 'fix_badges_notebook_$tag');
     });
 
-    testWidgets('Case 01 $tag: the report headlines a deerstalker and shows the open Royal Box', (t) async {
+    testWidgets('Case 01 $tag: the report headlines a deerstalker and shows the Missing Crown', (t) async {
       final router = await start(t, size, await prefsFor('ep01', solved: true));
       router.go(Routes.solved);
       await settle(t, const Duration(milliseconds: 3200));
-      expect(picture('assets/art/special/royal_box_open.png'), findsOneWidget);
+      // Its file shows the Crown itself now, not the small box photo (2026-10-19).
+      expect(picture('assets/art/objects/crown_cutout.png'), findsOneWidget);
+      expect(picture('assets/art/special/royal_box_open.png'), findsNothing);
       expect(picture('assets/art/special/royal_box.png'), findsNothing);
       await reveal(t, find.text('MASTER DETECTIVE'));
       expect(monogram, findsNothing, reason: 'headline medal and the badge row');
