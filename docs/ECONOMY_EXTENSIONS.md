@@ -1,3 +1,14 @@
+## Development preview (feature/coin-economy-rewarded-ads)
+
+- Starting coins: 20. Mission: 5. Final: 10. XP is unchanged.
+- Tip 1 remains free; tip 2 costs 20. Insufficient coins do not unlock it.
+- In **Flutter debug mode only**, WATCH AD +20 simulates a fully completed rewarded ad (600ms demo wait). It adds 20 coins and shows `You earned 20 coins!`; the hint can then be purchased separately.
+- In profile/release builds, the ad gateway is disabled and shows Coming soon. **No AdMob SDK or IDs are integrated.** This preview must not be shipped as a real ad implementation.
+- `RewardedAdGateway` is the integration seam. Replace the disabled implementation only after checking child-directed ad policies, SDK initialization and rewarded callback; use server-side verification when available. No payout on failed/cancelled ads.
+- Existing wallet ledger entries and balances are preserved; changing constants does not retroactively recalculate them.
+
+---
+
 # Coins, Tips and Future Rewards — Extension Notes
 
 Status: design notes only. **No ad SDK, payment SDK, ad button or subscription UI exists in the app.**
