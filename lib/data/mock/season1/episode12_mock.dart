@@ -121,6 +121,8 @@ const Map<String, dynamic> episode12Json = {
       'type': 'numberCode',
       'question': "What time does the Clockmaker's train arrive?",
       'codeLength': 4,
+      // Read as a time: 11:40, the colon fixed between hours and minutes.
+      'codeFormat': 'time',
       'answer': '1140',
       'hints': [
         'Open Case 04 in your Case Archive. Which platform had the small red clock?',

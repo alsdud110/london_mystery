@@ -154,7 +154,7 @@ final season2Content = SeasonContent(
   info: season2InfoJson,
   episodes: season2Json,
   awaitingArt: season2AwaitingArtJson,
-  released: false,
+  released: true,
   clocks: season2Clocks,
   stationClocks: season2StationClocks,
   compares: season2Compares,
@@ -170,7 +170,8 @@ final season2Content = SeasonContent(
 );
 
 /// Whether season [seasonId] is out for players (an unknown season is not).
-bool seasonReleased(String seasonId) => SeasonCatalog.byId(seasonId)?.released ?? false;
+bool seasonReleased(String seasonId) =>
+    SeasonCatalog.byId(seasonId)?.released ?? false;
 
 /// Every season of the game, in play order, and the one place that finds a
 /// mission's or a case's season content. A mission's content is looked up in
@@ -187,42 +188,58 @@ abstract final class SeasonCatalog {
   }
 
   /// Where [seasonId] is in play order (-1: no such season).
-  static int indexOf(String seasonId) => all.indexWhere((s) => s.id == seasonId);
+  static int indexOf(String seasonId) =>
+      all.indexWhere((s) => s.id == seasonId);
 
   /// The season whose cases include [episodeId] (in the game or awaiting
   /// their pictures), or null.
   static SeasonContent? ofEpisode(String episodeId) {
     for (final s in all) {
-      if (s.episodes.containsKey(episodeId) || s.awaitingArt.containsKey(episodeId)) return s;
+      if (s.episodes.containsKey(episodeId) ||
+          s.awaitingArt.containsKey(episodeId))
+        return s;
     }
     return null;
   }
 
   /// Whether case [episodeId] is written but waiting for its pictures (see
   /// [SeasonContent.awaitingArt]): never in the game until they are.
-  static bool isAwaitingArt(String episodeId) => all.any((s) => s.awaitingArt.containsKey(episodeId));
+  static bool isAwaitingArt(String episodeId) =>
+      all.any((s) => s.awaitingArt.containsKey(episodeId));
 
   /// Mission id → its season and case, from the cases' own missions (the
   /// cases awaiting their pictures too: their content is checked by id).
   static final Map<String, (SeasonContent, String)> _missionSeason = {
     for (final s in all)
-      for (final MapEntry(key: caseId, value: json) in {...s.episodes, ...s.awaitingArt}.entries)
-        for (final m in Episode.fromJson({...json, 'seasonId': s.id}).allMissions) m.id: (s, caseId),
+      for (final MapEntry(key: caseId, value: json) in {
+        ...s.episodes,
+        ...s.awaitingArt,
+      }.entries)
+        for (final m in Episode.fromJson({
+          ...json,
+          'seasonId': s.id,
+        }).allMissions)
+          m.id: (s, caseId),
   };
 
   /// The season of the mission with [missionId], or null.
-  static SeasonContent? ofMission(String missionId) => _missionSeason[missionId]?.$1;
+  static SeasonContent? ofMission(String missionId) =>
+      _missionSeason[missionId]?.$1;
 
   /// The case of the mission with [missionId], or null.
-  static String? episodeOfMission(String missionId) => _missionSeason[missionId]?.$2;
+  static String? episodeOfMission(String missionId) =>
+      _missionSeason[missionId]?.$2;
 
-  static InvestigationScene? investigation(Mission m) => ofMission(m.id)?.investigations[m.id];
+  static InvestigationScene? investigation(Mission m) =>
+      ofMission(m.id)?.investigations[m.id];
 
   static ExploreScene? explore(Mission m) => ofMission(m.id)?.explores[m.id];
 
-  static InspectScene? inspection(Mission m) => ofMission(m.id)?.inspections[m.id];
+  static InspectScene? inspection(Mission m) =>
+      ofMission(m.id)?.inspections[m.id];
 
-  static DeductionScene? deduction(Mission m) => ofMission(m.id)?.deductions[m.id];
+  static DeductionScene? deduction(Mission m) =>
+      ofMission(m.id)?.deductions[m.id];
 
   static DecodeScene? decode(Mission m) => ofMission(m.id)?.decodes[m.id];
 
@@ -230,7 +247,8 @@ abstract final class SeasonCatalog {
 
   static ClockPuzzle? clock(Mission m) => ofMission(m.id)?.clocks[m.id];
 
-  static StationClocksScene? stationClocks(Mission m) => ofMission(m.id)?.stationClocks[m.id];
+  static StationClocksScene? stationClocks(Mission m) =>
+      ofMission(m.id)?.stationClocks[m.id];
 
   static CompareScene? compare(Mission m) => ofMission(m.id)?.compares[m.id];
 
@@ -238,13 +256,15 @@ abstract final class SeasonCatalog {
 
   static LayerScene? layer(Mission m) => ofMission(m.id)?.layers[m.id];
 
-  static CanvasScene? canvasChoice(Mission m) => ofMission(m.id)?.canvases[m.id];
+  static CanvasScene? canvasChoice(Mission m) =>
+      ofMission(m.id)?.canvases[m.id];
 
   static Exhibit? exhibit(Mission m) => ofMission(m.id)?.exhibits[m.id];
 
   static LockBoxArt? lockBox(Mission m) => ofMission(m.id)?.lockBoxes[m.id];
 
-  static StoryScenes? storyScenes(Mission m) => ofMission(m.id)?.storyScenes[m.id];
+  static StoryScenes? storyScenes(Mission m) =>
+      ofMission(m.id)?.storyScenes[m.id];
 
   /// The evidence [evidenceId] matches, from its season's content (evidence
   /// ids are never shared between seasons), or null.
@@ -257,13 +277,18 @@ abstract final class SeasonCatalog {
   }
 
   /// [m]'s Discovery Moment: its own, or a solved puzzle for one without.
-  static Discovery discovery(Mission m) => ofMission(m.id)?.discoveries[m.id] ?? Discovery.fallback(m);
+  static Discovery discovery(Mission m) =>
+      ofMission(m.id)?.discoveries[m.id] ?? Discovery.fallback(m);
 
   /// The evidence the scene after [m] hands over, if any.
   static Evidence? storyEvidence(Mission m) =>
-      (ofMission(m.id)?.storyEvidence.contains(m.id) ?? false) ? m.evidence : null;
+      (ofMission(m.id)?.storyEvidence.contains(m.id) ?? false)
+      ? m.evidence
+      : null;
 
-  static LearningObjective? learning(Mission m) => ofMission(m.id)?.learning[m.id];
+  static LearningObjective? learning(Mission m) =>
+      ofMission(m.id)?.learning[m.id];
 
-  static CaseLanguageTopic? languageTopic(String episodeId) => ofEpisode(episodeId)?.languageTopics[episodeId];
+  static CaseLanguageTopic? languageTopic(String episodeId) =>
+      ofEpisode(episodeId)?.languageTopics[episodeId];
 }

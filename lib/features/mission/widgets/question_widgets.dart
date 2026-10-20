@@ -433,14 +433,29 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
 
   @override
   Widget build(BuildContext context) {
+    final time = widget.mission.isTimeCode;
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        // Smaller rather than cut on a narrow phone (a time's colon included).
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             // The lock's number wheels: the next one to fill is ringed in gold.
-            for (var i = 0; i < _length; i++)
+            for (var i = 0; i < _length; i++) ...[
+              // A time (HH:MM): the colon is printed between the hours and the
+              // minutes, always there, never typed.
+              if (time && i == 2)
+                ExcludeSemantics(
+                  child: Padding(
+                    key: const ValueKey('code-time-colon'),
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: Text(':', style: AppText.title(size: 34, color: AppColors.navy)),
+                  ),
+                ),
               AnimatedContainer(
+                key: ValueKey('code-wheel-$i'),
                 duration: const Duration(milliseconds: 120),
                 margin: const EdgeInsets.symmetric(horizontal: 5),
                 width: 60,
@@ -461,7 +476,9 @@ class _NumberCodeQuestionState extends ConsumerState<NumberCodeQuestion> {
                   style: AppText.title(size: 34, color: AppColors.goldLight),
                 ),
               ),
+            ],
           ],
+        ),
         ),
         const SizedBox(height: AppSpace.xl),
         ConstrainedBox(

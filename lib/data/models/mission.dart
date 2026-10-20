@@ -287,6 +287,7 @@ class Mission {
     this.options = const [],
     this.acceptedAnswers = const [],
     this.codeLength,
+    this.codeFormat,
     this.dialSymbols = const [],
     this.clue,
     this.evidence,
@@ -318,6 +319,14 @@ class Mission {
   final String answer;
   final List<String> acceptedAnswers;
   final int? codeLength;
+
+  /// How a number code reads, or null (digits only). 'time': four digits as
+  /// HH:MM ("1140" is 11:40), the colon always shown between them and never
+  /// typed — the answer stays the digits.
+  final String? codeFormat;
+
+  /// A number code read as a time of day (HH:MM, see [codeFormat]).
+  bool get isTimeCode => codeFormat == 'time' && (codeLength ?? answer.length) == 4;
 
   /// Final case only: the picture on each lock, left to right.
   final List<String> dialSymbols;
@@ -401,6 +410,7 @@ class Mission {
     answer: json['answer'] as String,
     acceptedAnswers: (json['acceptedAnswers'] as List? ?? const []).cast<String>(),
     codeLength: json['codeLength'] as int?,
+    codeFormat: json['codeFormat'] as String?,
     dialSymbols: (json['dialSymbols'] as List? ?? const []).cast<String>(),
     hints: (json['hints'] as List).cast<String>(),
     clue: json['clue'] == null ? null : Clue.fromJson(json['clue'] as Map<String, dynamic>),
@@ -434,6 +444,7 @@ class Mission {
     'answer': answer,
     'acceptedAnswers': acceptedAnswers,
     if (codeLength != null) 'codeLength': codeLength,
+    if (codeFormat != null) 'codeFormat': codeFormat,
     if (dialSymbols.isNotEmpty) 'dialSymbols': dialSymbols,
     'hints': hints,
     if (clue != null) 'clue': clue!.toJson(),
