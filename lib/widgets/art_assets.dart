@@ -86,7 +86,7 @@ abstract final class ArtAssets {
   /// Westminster (Big Ben on the right, the moon above it). Portrait, no
   /// text: the window's sky is left for the title. The title screen (and,
   /// blurred, behind the registration form) only.
-  static const titleDetectiveOffice = 'assets/images/title/title_detective_office.png';
+  static const titleDetectiveOffice = 'assets/shared/title/title_detective_office.png';
 
   /// Pixel size of [titleDetectiveOffice] (never decoded larger).
   static const titleDetectiveOfficePixels = Size(942, 1670);
@@ -468,7 +468,7 @@ abstract final class ArtAssets {
   /// centred with the same margin, so they look the same size side by side.
   static const royalBoxLockPixels = Size(512, 512);
 
-  static const _badges = 'assets/images/badges';
+  static const _badges = 'assets/shared/badges';
 
   /// Badge medals, one per [GameBadge] (retired ones too: old saves still
   /// show them). Each is a finished medal — the gold rosette, its enamel
