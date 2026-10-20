@@ -19,7 +19,7 @@ const Map<String, DialogueScene> season1Dialogues = {
   // not a clue: not every question gives a statement.
   'ep06_m1': DialogueScene(
     place: 'MARKET HALL',
-    background: 'assets/art/scenes/covent_garden/covent_garden_market_hall.png',
+    background: 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_market_hall.png',
     // Wave 2.5: what to do, never which answer — the mission, then how
     // (talk, ask, the clues may differ). The three questions stand alike: the
     // one about what he carried is not marked out.

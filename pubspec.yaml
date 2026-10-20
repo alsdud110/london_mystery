@@ -131,7 +131,7 @@ flutter:
     # The title screen (the detective's office).
     - assets/images/title/
     # Season hero pictures (the opening of Season 1).
-    - assets/images/season1/
+    - assets/seasons/season_01_london/cover/
     # Case 01 Mission 01: King's Cross at night, searched, and its four museum
     # posters (`season1_explores.dart`).
     - assets/seasons/season_01_london/cases/case_01/
@@ -142,14 +142,14 @@ flutter:
     # (`ArtAssets.badges`, `ArtAssets.badgeFrame`).
     - assets/images/badges/
     # Scene pictures: the nine landmarks, and the places inside them.
-    - assets/art/scenes/landmarks/
-    - assets/art/scenes/british_museum/
-    - assets/art/scenes/hyde_park/
-    - assets/art/scenes/buckingham_palace/
-    - assets/art/scenes/covent_garden/
-    - assets/art/scenes/kings_cross/
-    - assets/art/scenes/royal_archive/
-    - assets/art/scenes/big_ben/
+    - assets/seasons/season_01_london/locations/landmarks/
+    - assets/seasons/season_01_london/locations/british_museum/
+    - assets/seasons/season_01_london/locations/hyde_park/
+    - assets/seasons/season_01_london/locations/buckingham_palace/
+    - assets/seasons/season_01_london/locations/covent_garden/
+    - assets/seasons/season_01_london/locations/kings_cross/
+    - assets/seasons/season_01_london/locations/royal_archive/
+    - assets/seasons/season_01_london/locations/big_ben/
     # Characters, story objects, the Raven Society mark, special pictures.
     - assets/art/characters/
     - assets/art/objects/

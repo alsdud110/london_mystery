@@ -96,7 +96,7 @@ abstract final class ArtAssets {
   /// stone balcony and a gas lamp in front (portrait, no text). The cover
   /// only: the opening's first scene has its own picture
   /// ([season1LondonNight]), closer in.
-  static const season1CoverLondonPanorama = 'assets/images/season1/season1_cover_london_panorama.png';
+  static const season1CoverLondonPanorama = 'assets/seasons/season_01_london/cover/season1_cover_london_panorama.png';
 
   /// Pixel size of [season1CoverLondonPanorama] (never decoded larger).
   static const season1CoverLondonPanoramaPixels = Size(941, 1672);
@@ -106,7 +106,7 @@ abstract final class ArtAssets {
   /// lamp and wet paving in front (portrait, no text). Shown full screen
   /// once, as that scene's hero picture; used nowhere else, so the opening
   /// keeps its moment. Missing → the London drawn in code.
-  static const season1LondonNight = 'assets/images/season1/season1_london_night.png';
+  static const season1LondonNight = 'assets/seasons/season_01_london/cover/season1_london_night.png';
 
   /// Pixel size of [season1LondonNight] (never decoded larger).
   static const season1LondonNightPixels = Size(941, 1671);
@@ -193,7 +193,7 @@ abstract final class ArtAssets {
 
   /// Scene pictures (mission, final, image choices, the arrival at a place,
   /// Case Solved photo), full colour: the nine London landmarks in
-  /// `scenes/landmarks/`, and the places inside a landmark in a folder named
+  /// `locations/landmarks/`, and the places inside a landmark in a folder named
   /// after it. A place inside a landmark (the Boathouse in Hyde Park) never
   /// borrows its landmark's picture: without its own it is drawn in code.
   static const Map<Artwork, String> scenes = {
@@ -415,7 +415,7 @@ abstract final class ArtAssets {
     Artwork.royalArchive: '$_scenes/royal_archive/royal_archive.png',
   };
 
-  static const _scenes = 'assets/art/scenes';
+  static const _scenes = 'assets/seasons/season_01_london/locations';
 
   /// How the scene pictures are printed (about 400×256, a thin paper frame;
   /// the landmark set also has the place's name plate along the bottom).
