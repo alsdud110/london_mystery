@@ -39,10 +39,10 @@ void main() {
 
   group('the picture', () {
     test('the room is in the app, at the size its exhibits are measured on', () {
-      expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/images/case01/'));
-      expect(scene.picture, 'assets/images/case01/british_museum_room4_night.png');
+      expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/seasons/season_01_london/cases/case_01/'));
+      expect(scene.picture, 'assets/seasons/season_01_london/cases/case_01/british_museum_room4_night.png');
       expect(pngSize(scene.picture), Size(scene.pixels.width, scene.pixels.height));
-      expect(File('assets/images/case01/poster_british_museum.png').existsSync(), isTrue, reason: 'Case 01 M1 kept');
+      expect(File('assets/seasons/season_01_london/cases/case_01/poster_british_museum.png').existsSync(), isTrue, reason: 'Case 01 M1 kept');
     });
 
     test('every exhibit is in the picture, inside its paper edge, apart from the others', () {

@@ -79,7 +79,8 @@ class GameMasterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final episode = ref.watch(currentEpisodeProvider);
-    final catalog = ref.watch(episodeCatalogProvider);
+    // The cases a playtest can start at: the first season's (see startPlaytestAt).
+    final catalog = SeasonAvailability.casesOf(ref.watch(seasonsProvider).first.id, ref.watch(allEpisodesProvider));
     final operatorOn = ref.watch(operatorAccessProvider);
 
     return Scaffold(
@@ -176,6 +177,14 @@ class GameMasterScreen extends ConsumerWidget {
                     onPressed: () => context.go(Routes.episodes),
                     child: const Text('CASE FILES로 이동'),
                   ),
+                const SizedBox(height: 12),
+                // Season 2's opening, to check it before the season opens: it
+                // changes nothing and opens no case (not in a release build).
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                  onPressed: () => context.go(Routes.parisPrologue),
+                  child: const Text('SEASON 2 프롤로그 미리보기'),
+                ),
               ],
               // The one destructive action, set apart from the test tools below a
               // rule and in the try-again ink, so it is never tapped by mistake.

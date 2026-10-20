@@ -51,47 +51,47 @@ void main() {
 
   test('the nine landmarks and the places inside them each have their own picture', () {
     const landmarks = {
-      Artwork.kingsCross: 'assets/art/scenes/landmarks/kings_cross.png',
-      Artwork.britishMuseum: 'assets/art/scenes/landmarks/british_museum.png',
-      Artwork.coventGarden: 'assets/art/scenes/landmarks/covent_garden.png',
-      Artwork.bigBen: 'assets/art/scenes/landmarks/big_ben.png',
-      Artwork.hydePark: 'assets/art/scenes/landmarks/hyde_park.png',
-      Artwork.buckinghamPalace: 'assets/art/scenes/landmarks/buckingham_palace.png',
-      Artwork.towerBridge: 'assets/art/scenes/landmarks/tower_bridge.png',
-      Artwork.towerOfLondon: 'assets/art/scenes/landmarks/tower_of_london.png',
-      Artwork.londonEye: 'assets/art/scenes/landmarks/london_eye.png',
+      Artwork.kingsCross: 'assets/seasons/season_01_london/locations/landmarks/kings_cross.png',
+      Artwork.britishMuseum: 'assets/seasons/season_01_london/locations/landmarks/british_museum.png',
+      Artwork.coventGarden: 'assets/seasons/season_01_london/locations/landmarks/covent_garden.png',
+      Artwork.bigBen: 'assets/seasons/season_01_london/locations/landmarks/big_ben.png',
+      Artwork.hydePark: 'assets/seasons/season_01_london/locations/landmarks/hyde_park.png',
+      Artwork.buckinghamPalace: 'assets/seasons/season_01_london/locations/landmarks/buckingham_palace.png',
+      Artwork.towerBridge: 'assets/seasons/season_01_london/locations/landmarks/tower_bridge.png',
+      Artwork.towerOfLondon: 'assets/seasons/season_01_london/locations/landmarks/tower_of_london.png',
+      Artwork.londonEye: 'assets/seasons/season_01_london/locations/landmarks/london_eye.png',
     };
     const inside = {
-      Artwork.greatCourt: 'assets/art/scenes/british_museum/british_museum_great_court.png',
-      Artwork.egyptRoom: 'assets/art/scenes/british_museum/british_museum_egypt_room.png',
-      Artwork.boathouse: 'assets/art/scenes/hyde_park/hyde_park_boathouse.png',
-      Artwork.roseGarden: 'assets/art/scenes/hyde_park/hyde_park_rose_garden.png',
-      Artwork.staffRoom: 'assets/art/scenes/buckingham_palace/buckingham_palace_palace_staff_room.png',
-      Artwork.courtyard: 'assets/art/scenes/buckingham_palace/buckingham_palace_palace_courtyard.png',
-      Artwork.dressingRoom: 'assets/art/scenes/covent_garden/covent_garden_dressing_room.png',
-      Artwork.waitingRoom: 'assets/art/scenes/kings_cross/kings_cross_waiting_hall.png',
-      Artwork.gallery: 'assets/art/scenes/british_museum/british_museum_gallery_8.png',
-      Artwork.auditorium: 'assets/art/scenes/covent_garden/covent_garden_theatre.png',
-      Artwork.theatreDoor: 'assets/art/scenes/covent_garden/theatre_door_dark.png',
-      Artwork.royalArchive: 'assets/art/scenes/royal_archive/royal_archive.png',
+      Artwork.greatCourt: 'assets/seasons/season_01_london/locations/british_museum/british_museum_great_court.png',
+      Artwork.egyptRoom: 'assets/seasons/season_01_london/locations/british_museum/british_museum_egypt_room.png',
+      Artwork.boathouse: 'assets/seasons/season_01_london/locations/hyde_park/hyde_park_boathouse.png',
+      Artwork.roseGarden: 'assets/seasons/season_01_london/locations/hyde_park/hyde_park_rose_garden.png',
+      Artwork.staffRoom: 'assets/seasons/season_01_london/locations/buckingham_palace/buckingham_palace_palace_staff_room.png',
+      Artwork.courtyard: 'assets/seasons/season_01_london/locations/buckingham_palace/buckingham_palace_palace_courtyard.png',
+      Artwork.dressingRoom: 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_dressing_room.png',
+      Artwork.waitingRoom: 'assets/seasons/season_01_london/locations/kings_cross/kings_cross_waiting_hall.png',
+      Artwork.gallery: 'assets/seasons/season_01_london/locations/british_museum/british_museum_gallery_8.png',
+      Artwork.auditorium: 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_theatre.png',
+      Artwork.theatreDoor: 'assets/seasons/season_01_london/locations/covent_garden/theatre_door_dark.png',
+      Artwork.royalArchive: 'assets/seasons/season_01_london/locations/royal_archive/royal_archive.png',
     };
     expect(ArtAssets.landmarkScenes, landmarks);
     expect(ArtAssets.insideScenes, inside);
     const objectScenes = {
-      Artwork.raven: 'assets/art/characters/raven_master.png',
-      Artwork.oldSuitcase: 'assets/art/objects/suitcase.png',
+      Artwork.raven: 'assets/seasons/season_01_london/characters/raven_master.png',
+      Artwork.oldSuitcase: 'assets/shared/objects/suitcase.png',
       // The Royal Box once found (case photo): open, never the theatre box.
-      Artwork.royalBox: 'assets/art/special/royal_box_open.png',
+      Artwork.royalBox: 'assets/seasons/season_01_london/special/royal_box_open.png',
       // Case 08's black suitcase.
-      Artwork.blackSuitcase: 'assets/art/objects/suitcase_black.png',
+      Artwork.blackSuitcase: 'assets/seasons/season_01_london/objects/suitcase_black.png',
       // Case 09's empty glass case; Case 05's and Case 12's own doors.
-      Artwork.jewelCase: 'assets/art/objects/empty_glass_jewel_case.png',
-      Artwork.gearDoor: 'assets/art/objects/locked_door_gears.png',
-      Artwork.ironDoor: 'assets/art/objects/small_iron_door.png',
-      Artwork.ironChest: 'assets/art/objects/iron_chest.png',
+      Artwork.jewelCase: 'assets/seasons/season_01_london/objects/empty_glass_jewel_case.png',
+      Artwork.gearDoor: 'assets/seasons/season_01_london/objects/locked_door_gears.png',
+      Artwork.ironDoor: 'assets/seasons/season_01_london/objects/small_iron_door.png',
+      Artwork.ironChest: 'assets/seasons/season_01_london/objects/iron_chest.png',
       // Case 02: Big Ben's clock stopped at 8:17, and the wheels behind it.
-      Artwork.clockFace: 'assets/art/scenes/big_ben/clock_face.png',
-      Artwork.clockMechanism: 'assets/art/scenes/big_ben/clock_mechanism.png',
+      Artwork.clockFace: 'assets/seasons/season_01_london/locations/big_ben/clock_face.png',
+      Artwork.clockMechanism: 'assets/seasons/season_01_london/locations/big_ben/clock_mechanism.png',
     };
     expect(ArtAssets.objectScenes, objectScenes);
     expect(ArtAssets.scenes, {...landmarks, ...inside, ...objectScenes});
@@ -101,7 +101,8 @@ void main() {
     // Each inside place's picture is in its landmark's folder.
     final landmarkFolders = {for (final p in landmarks.values) p.split('/').last.replaceAll('.png', '')};
     for (final MapEntry(key: place, value: path) in inside.entries) {
-      final [_, _, _, folder, file] = path.split('/');
+      // The picture's own folder and name (however deep its season folder is).
+      final [..., folder, file] = path.split('/');
       // The Royal Archive is no map landmark: its own folder.
       if (place != Artwork.royalArchive) expect(landmarkFolders, contains(folder), reason: '$place is grouped under a landmark');
       // The theatre door keeps the name it was delivered with.
@@ -261,24 +262,24 @@ void main() {
 
   test('characters, objects, the Raven mark and special pictures are listed by name', () {
     expect(ArtAssets.characters, {
-      'raven': 'assets/art/characters/raven_master.png',
-      'clockmaker': 'assets/art/characters/clockmaker_master.png',
+      'raven': 'assets/seasons/season_01_london/characters/raven_master.png',
+      'clockmaker': 'assets/seasons/season_01_london/characters/clockmaker_master.png',
       // Wave 2: Case 06's three witnesses (see test/case06_dialogue_test.dart).
-      'flowerSeller': 'assets/art/characters/flower_seller.png',
-      'juggler': 'assets/art/characters/juggler.png',
-      'baker': 'assets/art/characters/baker.png',
+      'flowerSeller': 'assets/seasons/season_01_london/characters/flower_seller.png',
+      'juggler': 'assets/seasons/season_01_london/characters/juggler.png',
+      'baker': 'assets/seasons/season_01_london/characters/baker.png',
     });
-    expect(ArtAssets.marketHall, 'assets/art/scenes/covent_garden/covent_garden_market_hall.png');
+    expect(ArtAssets.marketHall, 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_market_hall.png');
     expect(ArtAssets.objects, {
-      'crown': 'assets/art/objects/crown.png',
-      'key': 'assets/art/objects/key.png',
-      'letter': 'assets/art/objects/letter.png',
-      'map': 'assets/art/objects/map.png',
-      'pocketWatch': 'assets/art/objects/pocket_watch.png',
-      'suitcase': 'assets/art/objects/suitcase.png',
+      'crown': 'assets/seasons/season_01_london/objects/crown.png',
+      'key': 'assets/shared/objects/key.png',
+      'letter': 'assets/shared/objects/letter.png',
+      'map': 'assets/shared/objects/map.png',
+      'pocketWatch': 'assets/shared/objects/pocket_watch.png',
+      'suitcase': 'assets/shared/objects/suitcase.png',
     });
-    expect(ArtAssets.ravenMark, 'assets/art/symbols/raven_mark.png');
-    expect(ArtAssets.special, {'theatreRoyalBox': 'assets/art/special/royal_box.png'});
+    expect(ArtAssets.ravenMark, 'assets/seasons/season_01_london/symbols/raven_mark.png');
+    expect(ArtAssets.special, {'theatreRoyalBox': 'assets/seasons/season_01_london/special/royal_box.png'});
     // Full-colour pictures never go in the tinted one-colour symbol slot.
     expect(ArtAssets.symbols.values, isNot(contains(ArtAssets.ravenMark)));
   });
@@ -292,7 +293,7 @@ void main() {
       // The Crown Symbol card shows a crown (2026-10-19, requested).
       'e05': ArtAssets.objects['crown'],
       'e06': ArtAssets.objects['crown'],
-      'ep03_e1': 'assets/art/objects/red_button.png',
+      'ep03_e1': 'assets/seasons/season_01_london/objects/red_button.png',
       'ep04_e1': ArtAssets.ravenMark,
       'ep05_e3': ArtAssets.objects['key'],
       'ep10_e3': ArtAssets.objects['letter'],

@@ -10,7 +10,8 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
-import '../../data/mock/season1/season1_discoveries.dart';
+import '../../data/mock/season_catalog.dart';
+import '../mission_map/map_world.dart' show SeasonMap;
 import '../../data/models/mission.dart';
 import '../../widgets/evidence_card.dart';
 import '../../widgets/game_button.dart';
@@ -109,7 +110,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
     // The final case: the scene after the case is closed.
     final afterCase = m.isFinal;
     // Evidence this scene hands over (not the puzzle): laid down after its lines.
-    final handed = afterCase ? null : storyEvidenceOf(m);
+    final handed = afterCase ? null : SeasonCatalog.storyEvidence(m);
     final lines = _lines;
     if (lines.isEmpty) _done = true;
 
@@ -127,6 +128,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                 : next == null
                 ? null
                 : PlaceArt.sceneryOf(next),
+            map: SeasonMap.ofMission(m.id),
           ),
           InkSurface(
             night: true,

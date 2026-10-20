@@ -55,8 +55,8 @@ void main() {
 
   group('the scene', () {
     test('the new picture is in the app, at the size its places are measured on', () {
-      expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/images/case01/'));
-      expect(scene.picture, 'assets/images/case01/buckingham_palace_crown_card.png');
+      expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/seasons/season_01_london/cases/case_01/'));
+      expect(scene.picture, 'assets/seasons/season_01_london/cases/case_01/buckingham_palace_crown_card.png');
       expect(File(scene.picture).existsSync(), isTrue);
       expect(pngSize(scene.picture), Size(scene.pixels.width, scene.pixels.height));
       expect(scene.pixels.width, 1536);

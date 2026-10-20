@@ -11,13 +11,13 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/episode.dart';
-import '../../widgets/art_assets.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/typewriter_text.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
+import '../mission_map/map_world.dart' show SeasonMap;
 
 /// Cinematic story intro: lines are "typed" one after another.
 class StoryIntroScreen extends ConsumerStatefulWidget {
@@ -232,9 +232,10 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
 }
 
 /// The place the case opens on, filling the screen in the dark under the
-/// narration: the case's [Episode.introScene] picture, or the London map
-/// while the place has none (Case 01's Royal Archive). Dimmed so the words
-/// lead, never so dark that the place is lost.
+/// narration: the case's [Episode.introScene] picture, or its season's map
+/// while the place has none (Case 01's Royal Archive: the London map), or
+/// only the night while the season has no map. Dimmed so the words lead,
+/// never so dark that the place is lost.
 class _IntroScene extends StatelessWidget {
   const _IntroScene(this.episode);
 
@@ -243,20 +244,21 @@ class _IntroScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scene = episode.introScene;
+    final map = SeasonMap.forSeason(episode.seasonId);
     final picture = scene != null && LandmarkArt.hasPicture(scene)
         // The print without its paper edge and name plate, as the whole scene.
         ? LandmarkArt(scene, showName: false, borderRadius: 0)
+        : map == null
+        ? const SizedBox.expand()
         : LayoutBuilder(
             builder: (context, box) => Image.asset(
-              ArtAssets.londonMap,
+              map.artwork,
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
               cacheWidth: math.min(
-                (math.max(box.maxWidth, box.maxHeight * ArtAssets.londonMapAspect) *
-                        MediaQuery.devicePixelRatioOf(context))
-                    .ceil(),
-                ArtAssets.londonMapPixels.width.toInt(),
+                (math.max(box.maxWidth, box.maxHeight * map.aspect) * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                map.pixels.width.toInt(),
               ),
               excludeFromSemantics: true,
               errorBuilder: (context, error, stack) => const SizedBox.expand(),

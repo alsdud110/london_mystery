@@ -16,6 +16,7 @@ import '../../../widgets/paper.dart';
 import '../../../widgets/place_art.dart';
 import '../../../widgets/place_scenery.dart';
 import '../../game/scoring.dart';
+import '../../mission_map/map_world.dart' show SeasonMap;
 
 /// The Discovery Moment, after a regular mission's correct answer: in the
 /// place the puzzle was solved, a short cheer ("Brilliant Deduction!"), what
@@ -196,7 +197,9 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
         child: Stack(
           children: [
             // Still at the scene: the place of the puzzle, in the dark.
-            Positioned.fill(child: IgnorePointer(child: PlaceScenery(PlaceArt.sceneryOf(m)))),
+            Positioned.fill(
+              child: IgnorePointer(child: PlaceScenery(PlaceArt.sceneryOf(m), map: SeasonMap.ofMission(m.id))),
+            ),
             SafeArea(
               child: Center(
                 child: SingleChildScrollView(

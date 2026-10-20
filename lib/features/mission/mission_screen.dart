@@ -10,14 +10,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/mission.dart';
-import '../../data/mock/season1/season1_discoveries.dart';
-import '../../data/mock/season1/season1_investigations.dart';
-import '../../data/mock/season1/season1_dialogues.dart';
-import '../../data/mock/season1/season1_clocks.dart';
-import '../../data/mock/season1/season1_explores.dart';
-import '../../data/mock/season1/season1_inspections.dart';
-import '../../data/mock/season1/season1_deductions.dart';
-import '../../data/mock/season1/season1_decodes.dart';
+import '../../data/mock/season_catalog.dart';
 import '../../data/models/scene_deduction.dart';
 import '../../data/models/scene_decode.dart';
 import '../../data/models/scene_explore.dart';
@@ -144,9 +137,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       return;
     }
     final exploring =
-        _stage == MissionStage.puzzle && exploreOf(_mission) != null;
+        _stage == MissionStage.puzzle && SeasonCatalog.explore(_mission) != null;
     final inspecting =
-        _stage == MissionStage.puzzle && inspectionOf(_mission) != null;
+        _stage == MissionStage.puzzle && SeasonCatalog.inspection(_mission) != null;
     // Looking round a place, or examining its exhibits: back first closes
     // what is open over it.
     if (exploring && _explore.open != null) {
@@ -160,7 +153,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // A thing brought closer, its code not yet decoded (or half-scanned):
     // back first puts it back in its place.
     final examining =
-        _stage == MissionStage.puzzle && decodeOf(_mission) != null;
+        _stage == MissionStage.puzzle && SeasonCatalog.decode(_mission) != null;
     if (examining && _decode.step == DecodeStep.closer) {
       setState(() => _decode.step = DecodeStep.look);
       return;
@@ -168,9 +161,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // A talk, a look round, a place read for its traces and a thing
     // examined have no letter step: back from them is the place.
     final talking =
-        _stage == MissionStage.puzzle && dialogueOf(_mission) != null;
+        _stage == MissionStage.puzzle && SeasonCatalog.dialogue(_mission) != null;
     final reading =
-        _stage == MissionStage.puzzle && deductionOf(_mission) != null;
+        _stage == MissionStage.puzzle && SeasonCatalog.deduction(_mission) != null;
     setState(() {
       if (_stage == MissionStage.puzzle) _letterOpened = true;
       _stage =
@@ -376,7 +369,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         await showDiscoveryMoment(
           context,
           mission: m,
-          discovery: discoveryOf(m),
+          discovery: SeasonCatalog.discovery(m),
           xp: XpBreakdown.of(m, progress),
           coins: outcome.coins,
           firstSolve: outcome.firstSolve,
@@ -423,13 +416,14 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final m = episode.missionById(widget.missionId);
     if (m == null) return const SizedBox.shrink(); // router guard prevents this
     final solved = progress.isCompleted(m.id);
-    final scene = investigationOf(m);
-    final talk = dialogueOf(m);
-    final clock = clockPuzzleOf(m);
-    final explore = exploreOf(m);
-    final inspect = inspectionOf(m);
-    final deduction = deductionOf(m);
-    final decode = decodeOf(m);
+    // The mission's own scene, from its season's content.
+    final scene = SeasonCatalog.investigation(m);
+    final talk = SeasonCatalog.dialogue(m);
+    final clock = SeasonCatalog.clock(m);
+    final explore = SeasonCatalog.explore(m);
+    final inspect = SeasonCatalog.inspection(m);
+    final deduction = SeasonCatalog.deduction(m);
+    final decode = SeasonCatalog.decode(m);
 
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)

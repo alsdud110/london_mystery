@@ -1,4 +1,4 @@
-import '../../data/mock/season1/season1_learning.dart';
+import '../../data/mock/season_catalog.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/learning.dart';
@@ -64,7 +64,7 @@ class DetectiveReport {
     wrongAnswers: progress.wrongCount(m.id),
     hints: progress.hintsFor(m.id),
     xp: XpBreakdown.of(m, progress),
-    learning: learningOf(m),
+    learning: SeasonCatalog.learning(m),
     solveSeconds: progress.solveSeconds[m.id],
   );
 
@@ -123,7 +123,7 @@ class DetectiveReport {
 
   // ── Learning design (content, not a result) ────────────────────────
 
-  CaseLanguageTopic? get languageTopic => languageTopicOf(episode.id);
+  CaseLanguageTopic? get languageTopic => SeasonCatalog.languageTopic(episode.id);
 
   /// Solved missions designed so the answer depends on the English.
   int get englishEssentialCount =>

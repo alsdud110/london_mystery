@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/audio_service.dart';
-import '../../data/mock/season1/season1_mock.dart';
+import '../../data/mock/season_catalog.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/profile.dart';
 import '../../data/models/season.dart';
@@ -12,6 +12,7 @@ import '../../data/models/season_progress.dart';
 import '../../data/repositories/episode_repository.dart';
 import '../../data/repositories/profile_store.dart';
 import '../../data/repositories/progress_repository.dart';
+import '../mission_map/map_world.dart' show SeasonMap;
 
 // These are overridden in main() once async setup (prefs, content) is done.
 
@@ -68,9 +69,19 @@ final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
   );
 });
 
-/// Every case of the season in case order (pre-loaded before the app starts;
-/// defaults to the bundled content).
-final episodeCatalogProvider = Provider<List<Episode>>((ref) => MockEpisodeRepository.bundled());
+/// Every case of every season, season by season in case order (pre-loaded
+/// before the app starts; defaults to the bundled content).
+final allEpisodesProvider = Provider<List<Episode>>((ref) => MockEpisodeRepository.bundled());
+
+/// Every season of the game, in play order.
+final seasonsProvider = Provider<List<Season>>((ref) => [for (final s in SeasonCatalog.all) s.season]);
+
+/// Every case of the season being played, in case order. Every page of a
+/// case (case files, map, notebook, report) reads its cases here.
+final episodeCatalogProvider = Provider<List<Episode>>((ref) {
+  final seasonId = ref.watch(selectedSeasonIdProvider);
+  return [for (final e in ref.watch(allEpisodesProvider)) if (e.seasonId == seasonId) e];
+});
 
 /// The case [evidenceId] was found in (its glossary explains its words), or
 /// null when no case has it.
@@ -91,23 +102,190 @@ Episode? caseOfClue(List<Episode> catalog, String clueId) {
 
 /// The season the catalog's cases belong to (its title, casebook lines and
 /// who is behind it).
-final seasonInfoProvider = Provider<Season>((ref) => Season.fromJson(season1InfoJson));
+final seasonInfoProvider = Provider<Season>((ref) {
+  final id = ref.watch(selectedSeasonIdProvider);
+  return ref.watch(seasonsProvider).firstWhere((s) => s.id == id);
+});
 
-/// Which case file is open and which cases are solved. Persisted.
-class SeasonNotifier extends Notifier<SeasonProgress> {
+/// Whether a season can be played yet.
+enum SeasonStatus {
+  /// The season before it is not finished (its last case is not solved).
+  locked,
+
+  /// Unlocked, but not ready: its cases or its map are not in the game yet
+  /// (see [SeasonAvailability.hasCases], [SeasonAvailability.hasMap]). It
+  /// cannot be entered.
+  comingSoon,
+
+  /// Unlocked, with its cases and its map: it can be played.
+  open,
+}
+
+/// Every season's map by season id (see [SeasonMap.bySeason]); a season
+/// missing here is not ready to be played.
+final seasonMapsProvider = Provider<Map<String, SeasonMap>>((ref) => SeasonMap.bySeason);
+
+/// Where the detective stands with one season. Worked out from the saves
+/// every time (nothing of it is saved itself).
+@immutable
+class SeasonAvailability {
+  const SeasonAvailability({
+    required this.season,
+    required this.status,
+    required this.caseCount,
+    required this.solvedCount,
+    required this.hasMap,
+  });
+
+  final Season season;
+  final SeasonStatus status;
+  final int caseCount;
+  final int solvedCount;
+
+  /// Whether the season's map is in the game (see [seasonMapsProvider]).
+  final bool hasMap;
+
+  bool get hasCases => caseCount > 0;
+
+  bool get isUnlocked => status != SeasonStatus.locked;
+
+  /// Whether the detective may play it now (see [SelectedSeasonNotifier]).
+  bool get canEnter => status == SeasonStatus.open;
+
+  /// Every case of the season solved.
+  bool get isCompleted => caseCount > 0 && solvedCount == caseCount;
+
+  /// The season's cases (of [allEpisodes]), in case order.
+  static List<Episode> casesOf(String seasonId, List<Episode> allEpisodes) => [
+    for (final e in allEpisodes) if (e.seasonId == seasonId) e,
+  ];
+
+  /// The one rule: the first season is always unlocked; every later season
+  /// unlocks once the last case of the season before it is solved (Season 2:
+  /// Season 1's Case 12). A season needs its cases and its map to be entered:
+  /// without them it is not ready, never shown on another season's map.
+  /// Operator access does not open a season (it opens the cases of the
+  /// season played). Null for a season the game does not have.
+  static SeasonAvailability? of(
+    String seasonId, {
+    required List<Season> seasons,
+    required List<Episode> allEpisodes,
+    required SeasonProgress Function(String seasonId) record,
+    required Map<String, SeasonMap> maps,
+  }) {
+    final i = seasons.indexWhere((s) => s.id == seasonId);
+    if (i < 0) return null;
+    final cases = casesOf(seasonId, allEpisodes);
+    final own = record(seasonId);
+    var unlocked = i == 0;
+    if (!unlocked) {
+      final before = casesOf(seasons[i - 1].id, allEpisodes);
+      unlocked = before.isNotEmpty && record(seasons[i - 1].id).isSolved(before.last.id);
+    }
+    final hasMap = maps.containsKey(seasonId);
+    return SeasonAvailability(
+      season: seasons[i],
+      status: !unlocked
+          ? SeasonStatus.locked
+          : cases.isEmpty || !hasMap
+          ? SeasonStatus.comingSoon
+          : SeasonStatus.open,
+      caseCount: cases.length,
+      solvedCount: cases.where((e) => own.isSolved(e.id)).length,
+      hasMap: hasMap,
+    );
+  }
+}
+
+/// [SeasonAvailability.of] [seasonId] from the saves, read now.
+SeasonAvailability? _availabilityNow(Ref ref, String seasonId) {
+  final repo = ref.read(progressRepositoryProvider);
+  return SeasonAvailability.of(
+    seasonId,
+    seasons: ref.read(seasonsProvider),
+    allEpisodes: ref.read(allEpisodesProvider),
+    record: repo.loadSeason,
+    maps: ref.read(seasonMapsProvider),
+  );
+}
+
+/// [SeasonAvailability] of every season by id (null: no such season),
+/// worked out again whenever the season played changes.
+final seasonAvailabilityProvider = Provider.family<SeasonAvailability?, String>((ref, seasonId) {
+  final playing = ref.watch(selectedSeasonIdProvider);
+  final playingRecord = ref.watch(seasonProvider);
+  final repo = ref.watch(progressRepositoryProvider);
+  return SeasonAvailability.of(
+    seasonId,
+    seasons: ref.watch(seasonsProvider),
+    allEpisodes: ref.watch(allEpisodesProvider),
+    // The season played as it is now; the others as saved.
+    record: (id) => id == playing ? playingRecord : repo.loadSeason(id),
+    maps: ref.watch(seasonMapsProvider),
+  );
+});
+
+/// How many seasons can be entered now (unlocked, with cases and a map).
+/// Only Season 1 today: the title then goes straight to its board.
+final playableSeasonCountProvider = Provider<int>((ref) => [
+  for (final s in ref.watch(seasonsProvider))
+    if (ref.watch(seasonAvailabilityProvider(s.id))?.canEnter ?? false) s,
+].length);
+
+/// The season the detective is playing: its cases are the case files, its
+/// map and notebook. Season 1 until another is chosen; persisted, so the
+/// app reopens on it. Only a season that can be entered is ever chosen (see
+/// [select]), and a saved choice that cannot be entered (yet) is not resumed.
+class SelectedSeasonNotifier extends Notifier<String> {
   @override
-  SeasonProgress build() => _fromSaves();
+  String build() {
+    final saved = ref.read(progressRepositoryProvider).loadSelectedSeason();
+    if (saved != null && (_availabilityNow(ref, saved)?.canEnter ?? false)) return saved;
+    return SeasonIds.london;
+  }
+
+  /// Plays season [seasonId]. Refused (false) for a season that is locked,
+  /// has no cases yet or does not exist: the check lives here, not only in
+  /// the UI. Use `GameController.openSeason`, which also banks the play time.
+  bool select(String seasonId) {
+    if (seasonId == state) return true;
+    if (!(_availabilityNow(ref, seasonId)?.canEnter ?? false)) return false;
+    state = seasonId;
+    ref.read(progressRepositoryProvider).saveSelectedSeason(seasonId);
+    return true;
+  }
+
+  /// Back to Season 1 in memory (storage is cleared by the repository).
+  void reset() => state = SeasonIds.london;
+}
+
+final selectedSeasonIdProvider = NotifierProvider<SelectedSeasonNotifier, String>(SelectedSeasonNotifier.new);
+
+/// Which case file is open and which cases are solved, of the season being
+/// played. Persisted: each season keeps its own record.
+class SeasonNotifier extends Notifier<SeasonProgress> {
+  /// The season this record belongs to.
+  late String _seasonId;
+
+  @override
+  SeasonProgress build() {
+    // Rebuilt when another season is played: that season's own record loads.
+    _seasonId = ref.watch(selectedSeasonIdProvider);
+    return _fromSaves();
+  }
 
   /// The season as saved (with the fix-ups of older saves).
   SeasonProgress _fromSaves() {
     final repo = ref.read(progressRepositoryProvider);
-    var season = repo.loadSeason();
+    var season = repo.loadSeason(_seasonId);
     // Saves from before the season existed: a solved Episode 01 still opens Case 02.
-    if (!season.isSolved(AppConstants.currentEpisodeId) && repo.load().isCaseSolved) {
+    if (_seasonId == SeasonIds.london &&
+        !season.isSolved(AppConstants.currentEpisodeId) &&
+        repo.load().isCaseSolved) {
       season = season.markSolved(AppConstants.currentEpisodeId);
     }
     final catalog = ref.read(episodeCatalogProvider);
-    if (!catalog.any((e) => e.id == season.activeEpisodeId)) {
+    if (catalog.isNotEmpty && !catalog.any((e) => e.id == season.activeEpisodeId)) {
       season = season.copyWith(activeEpisodeId: catalog.first.id);
     }
     return season;
@@ -115,7 +293,7 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
 
   void _set(SeasonProgress next) {
     state = next;
-    ref.read(progressRepositoryProvider).saveSeason(next);
+    ref.read(progressRepositoryProvider).saveSeason(next, _seasonId);
   }
 
   void open(String episodeId) => _set(state.copyWith(activeEpisodeId: episodeId));

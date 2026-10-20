@@ -52,9 +52,9 @@ void main() {
       expect(ArtAssets.badges.keys.toSet(), GameBadge.values.toSet());
       expect(ArtAssets.badges.values.toSet(), hasLength(GameBadge.values.length), reason: 'no shared picture');
       for (final b in GameBadge.values) {
-        expect(ArtAssets.badges[b], 'assets/images/badges/badge_${snake(b.name)}.png', reason: b.name);
+        expect(ArtAssets.badges[b], 'assets/shared/badges/badge_${snake(b.name)}.png', reason: b.name);
       }
-      expect(ArtAssets.badgeFrame, 'assets/images/badges/badge_frame.png');
+      expect(ArtAssets.badgeFrame, 'assets/shared/badges/badge_frame.png');
       expect(ArtAssets.badges.values, isNot(contains(ArtAssets.badgeFrame)));
     });
 
@@ -83,7 +83,7 @@ void main() {
     });
 
     test('the badges folder is bundled', () {
-      expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/images/badges/'));
+      expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/shared/badges/'));
     });
   });
 

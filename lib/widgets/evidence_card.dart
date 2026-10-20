@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
-import '../data/mock/season1/season1_dialogues.dart';
+import '../data/mock/season_catalog.dart';
 import '../data/models/mission.dart';
 import '../features/game/game_controller.dart';
 import '../features/game/game_providers.dart';
@@ -399,7 +399,7 @@ class _WitnessesSaid extends ConsumerWidget {
     final episode = ref.watch(currentEpisodeProvider);
     final progress = ref.watch(gameControllerProvider);
     final mission = episode.allMissions.where((m) => m.evidence?.id == evidenceId).firstOrNull;
-    final scene = mission == null ? null : dialogueOf(mission);
+    final scene = mission == null ? null : SeasonCatalog.dialogue(mission);
     if (mission == null || scene == null || !progress.isCompleted(mission.id)) return const SizedBox.shrink();
     final where = 'Heard at the ${scene.place.toLowerCase().split(' ').map((w) => '${w[0].toUpperCase()}${w.substring(1)}').join(' ')} · Mission ${mission.number}';
     return Padding(

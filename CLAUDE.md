@@ -773,3 +773,71 @@ were handed and what counts as done. If you are setting up a world pack for your
 `rig context get world-example` has a fill-in template.
 
 <!-- END OpenRig MANAGED BLOCK: openrig-onboarding-02.md -->
+
+# 20. Core Gameplay Philosophy
+
+World Mystery is a detective adventure game in which players use English to solve mysteries.
+
+**English is the tool. Solving the mystery is the goal. The experience must feel like a real game.**
+
+- Do not design gameplay as a sequence of educational quizzes.
+- English clues, dialogue, letters, signs, and instructions must contribute meaningfully to solving the case.
+- Favor investigation, exploration, evidence collection, physical interactions, and deduction.
+- Target approximately 60–70% reading/deduction puzzles and 30–40% observation/manipulation puzzles across the season.
+- Every Case should include at least one meaningful interactive puzzle.
+- Vary puzzle mechanics between Cases.
+- Include occasional Final Missions where players collect letters during investigations and arrange them into a meaningful word.
+- Evidence discovered earlier must matter in later missions or the Final Mission.
+- Avoid generic multiple-choice layouts when a more immersive interaction is appropriate.
+- Design screens as game scenes, not worksheets or educational app interfaces.
+- Never introduce placeholder artwork or arbitrary shapes as substitutes for required game assets. Request the necessary asset specifications from the user before implementation.
+
+For each puzzle, verify:
+1. What mystery is the player solving?
+2. How does the player use English?
+3. What does the player physically do in the game?
+
+# 21. Flutter Testing and Token Efficiency
+
+Use risk-based testing instead of running the entire test suite after every change.
+
+## During implementation
+- Run only tests directly related to changed functionality.
+- Identify actual test file paths before executing commands.
+- After a failed test, fix the cause and rerun the affected tests.
+- Do not repeatedly rerun unchanged, passing tests without a reason.
+- Never delete, weaken, or skip tests merely to obtain a passing result.
+
+## At feature completion
+- Run `flutter analyze` and the relevant feature tests.
+- Include affected regression tests when shared components or behavior change.
+- For small text or visual adjustments, run focused widget tests when available.
+
+## Full regression testing
+Run the complete `flutter test` suite when:
+- The user explicitly requests it.
+- A major shared architecture, routing, persistence, or game-state change creates broad regression risk.
+- Several Cases are integrated into a release milestone.
+- A season is completed.
+- A release candidate is being validated.
+
+As a normal development cadence, consider one full regression run after approximately 2–3 completed Cases, adjusting for risk.
+
+## Output and token management
+- Prefer compact test reporters and redirect verbose output to a local log file when appropriate.
+- On success, report only test scope, pass/fail counts, and elapsed time.
+- On failure, inspect and report only relevant error details.
+- Do not paste hundreds of successful test lines into the conversation.
+- Do not repeatedly inspect full test logs when targeted searches are sufficient.
+- Distinguish clearly between tests executed and tests not executed.
+
+## Completion report
+Report concisely:
+- Changed files and behavior
+- Tests actually executed
+- Test results
+- Analyze result, if executed
+- Whether full regression was performed
+- Remaining risks or unverified areas
+
+Never claim that the full test suite passed unless it was actually executed.

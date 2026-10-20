@@ -115,17 +115,17 @@ void main() {
 
   group('the guide\'s pictures', () {
     test('boy and girl, welcome and ready (a detective made before avatars: the boy)', () {
-      expect(ArtAssets.onboardingWelcome(DetectiveAvatar.boy), 'assets/art/onboarding/detective_welcome_boy.png');
-      expect(ArtAssets.onboardingWelcome(DetectiveAvatar.girl), 'assets/art/onboarding/detective_welcome_girl.png');
-      expect(ArtAssets.onboardingReady(DetectiveAvatar.boy), 'assets/art/onboarding/detective_ready_boy.png');
-      expect(ArtAssets.onboardingReady(DetectiveAvatar.girl), 'assets/art/onboarding/detective_ready_girl.png');
+      expect(ArtAssets.onboardingWelcome(DetectiveAvatar.boy), 'assets/shared/onboarding/detective_welcome_boy.png');
+      expect(ArtAssets.onboardingWelcome(DetectiveAvatar.girl), 'assets/shared/onboarding/detective_welcome_girl.png');
+      expect(ArtAssets.onboardingReady(DetectiveAvatar.boy), 'assets/shared/onboarding/detective_ready_boy.png');
+      expect(ArtAssets.onboardingReady(DetectiveAvatar.girl), 'assets/shared/onboarding/detective_ready_girl.png');
       expect(ArtAssets.onboardingWelcome(null), ArtAssets.onboardingWelcome(DetectiveAvatar.boy));
       expect(ArtAssets.onboardingReady(null), ArtAssets.onboardingReady(DetectiveAvatar.boy));
     });
 
     test('all four are in the app, decode, 2:3 at the same size, with a transparent background', () async {
       final pubspec = File('pubspec.yaml').readAsStringSync();
-      expect(pubspec, contains('- assets/art/onboarding/'));
+      expect(pubspec, contains('- assets/shared/onboarding/'));
       for (final a in DetectiveAvatar.values) {
         for (final path in [ArtAssets.onboardingWelcome(a), ArtAssets.onboardingReady(a)]) {
           final bytes = File(path).readAsBytesSync();

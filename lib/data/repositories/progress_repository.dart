@@ -16,9 +16,16 @@ abstract interface class ProgressRepository {
 
   Future<void> save(GameProgress progress, [String episodeId = AppConstants.currentEpisodeId]);
 
-  SeasonProgress loadSeason();
+  /// The record of season [seasonId] (Season 1 by default), or an empty
+  /// record when that season was never saved.
+  SeasonProgress loadSeason([String seasonId = AppConstants.firstSeasonId]);
 
-  Future<void> saveSeason(SeasonProgress season);
+  Future<void> saveSeason(SeasonProgress season, [String seasonId = AppConstants.firstSeasonId]);
+
+  /// The season the detective was playing, or null when never saved (Season 1).
+  String? loadSelectedSeason();
+
+  Future<void> saveSelectedSeason(String seasonId);
 
   /// The coins, or null when no wallet was ever saved (a new player, or a
   /// save from before coins existed).
@@ -98,11 +105,13 @@ class SharedPrefsProgressRepository implements ProgressRepository {
     return cleared != true && cleared != 'true';
   }
 
-  /// Plain JSON only — never a polymorphic/object deserializer.
-  Map<String, dynamic>? _read(String legacyKey) {
+  /// Plain JSON only — never a polymorphic/object deserializer. Without
+  /// [originals], a save made before profiles is never read (a save that
+  /// only profiles have, e.g. a later season's).
+  Map<String, dynamic>? _read(String legacyKey, {bool originals = true}) {
     var key = _key(legacyKey);
     var raw = _get(key);
-    if (raw == null && _readsOriginals) {
+    if (raw == null && originals && _readsOriginals) {
       key = legacyKey;
       final original = _prefs.get(key);
       raw = original is String ? original : null;
@@ -138,14 +147,28 @@ class SharedPrefsProgressRepository implements ProgressRepository {
   }
 
   @override
-  SeasonProgress loadSeason() {
-    final json = _read(AppConstants.seasonStorageKey);
+  SeasonProgress loadSeason([String seasonId = AppConstants.firstSeasonId]) {
+    final key = AppConstants.seasonKeyFor(seasonId);
+    // Only Season 1 has saves from before profiles (safe mode reads those).
+    final json = _read(key, originals: seasonId == AppConstants.firstSeasonId);
     return json == null ? SeasonProgress.empty : SeasonProgress.fromJson(json);
   }
 
   @override
-  Future<void> saveSeason(SeasonProgress season) {
-    _write(AppConstants.seasonStorageKey, season.toJson());
+  Future<void> saveSeason(SeasonProgress season, [String seasonId = AppConstants.firstSeasonId]) {
+    _write(AppConstants.seasonKeyFor(seasonId), season.toJson());
+    return Future.value();
+  }
+
+  @override
+  String? loadSelectedSeason() {
+    final id = _read(AppConstants.selectedSeasonKey, originals: false)?['seasonId'];
+    return id is String && id.isNotEmpty ? id : null;
+  }
+
+  @override
+  Future<void> saveSelectedSeason(String seasonId) {
+    _write(AppConstants.selectedSeasonKey, {'seasonId': seasonId});
     return Future.value();
   }
 
@@ -184,7 +207,8 @@ class InMemoryProgressRepository implements ProgressRepository {
       : _progress = {AppConstants.currentEpisodeId: progress};
 
   final Map<String, GameProgress> _progress;
-  SeasonProgress _season = SeasonProgress.empty;
+  final Map<String, SeasonProgress> _seasons = {};
+  String? _selectedSeason;
   Wallet? _wallet;
 
   @override
@@ -195,10 +219,18 @@ class InMemoryProgressRepository implements ProgressRepository {
       _progress[episodeId] = progress;
 
   @override
-  SeasonProgress loadSeason() => _season;
+  SeasonProgress loadSeason([String seasonId = AppConstants.firstSeasonId]) =>
+      _seasons[seasonId] ?? SeasonProgress.empty;
 
   @override
-  Future<void> saveSeason(SeasonProgress season) async => _season = season;
+  Future<void> saveSeason(SeasonProgress season, [String seasonId = AppConstants.firstSeasonId]) async =>
+      _seasons[seasonId] = season;
+
+  @override
+  String? loadSelectedSeason() => _selectedSeason;
+
+  @override
+  Future<void> saveSelectedSeason(String seasonId) async => _selectedSeason = seasonId;
 
   @override
   Wallet? loadWallet() => _wallet;
@@ -209,7 +241,8 @@ class InMemoryProgressRepository implements ProgressRepository {
   @override
   Future<void> clear() async {
     _progress.clear();
-    _season = SeasonProgress.empty;
+    _seasons.clear();
+    _selectedSeason = null;
     _wallet = null;
   }
 

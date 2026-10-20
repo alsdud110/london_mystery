@@ -10,6 +10,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/models/season.dart' show SeasonIds;
 import '../../widgets/art_assets.dart';
 import '../../widgets/desk_background.dart';
 import '../../widgets/game_button.dart';
@@ -36,7 +37,10 @@ import 'widgets/investigation_board.dart';
 /// Nothing here decides progress: cases open through
 /// [GameController.openEpisode] and the case's own flow ([SeasonActions]).
 class SeasonScreen extends ConsumerStatefulWidget {
-  const SeasonScreen({super.key});
+  const SeasonScreen({super.key, this.backTo = Routes.start});
+
+  /// Where back goes: the title, or the archives the board was opened from.
+  final String backTo;
 
   @override
   ConsumerState<SeasonScreen> createState() => _SeasonScreenState();
@@ -145,7 +149,9 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
   Future<void> _begin() async {
     if (_leave.isAnimating || _leave.isCompleted) return;
     if (!_still) await _leave.forward();
-    if (mounted) context.go(Routes.prologue);
+    if (!mounted) return;
+    // Each season's own opening (Season 2's has its own page).
+    context.go(ref.read(seasonInfoProvider).id == SeasonIds.paris ? Routes.parisPrologue : Routes.prologue);
   }
 
   @override
@@ -164,7 +170,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
           icon: const InkIcon(InkGlyph.back),
           // Over the painting, a faint dark disc keeps the arrow readable.
           style: _casebook ? IconButton.styleFrom(backgroundColor: AppColors.navyDeep.withValues(alpha: 0.45)) : null,
-          onPressed: () => context.go(Routes.start),
+          onPressed: () => context.go(widget.backTo),
         ),
         title: _casebook ? null : _Heading(overview),
       ),
@@ -200,7 +206,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
           fit: StackFit.expand,
           children: [
             const ColoredBox(color: AppColors.nightBottom),
-            _CoverPanorama(scale: 1 + 0.025 * iv(0, 1) + 0.14 * leave),
+            _CoverPanorama(scale: 1 + 0.025 * iv(0, 1) + 0.14 * leave, seasonId: overview.info.id),
             // Shade only where words stand, and only a little (the painting
             // is lit, not dark): the sky under the title, the balcony under
             // the button. The city between stays as painted.
@@ -315,27 +321,39 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
 /// The cover painting: London at night from above, filling the screen.
 /// [scale] pushes the camera in, towards Westminster.
 class _CoverPanorama extends StatelessWidget {
-  const _CoverPanorama({required this.scale});
+  const _CoverPanorama({required this.scale, required this.seasonId});
 
   final double scale;
 
-  /// When the phone is narrower than the painting (9:16), the crop leans
-  /// right: Big Ben stands near the right edge; the gas lamp on the left
-  /// gives up a little of its edge instead.
-  static const _focus = Alignment(0.6, 0);
+  /// The season whose cover this is (see [ArtAssets.seasonCovers]).
+  final String seasonId;
+
+  /// Each cover's crop when the phone is narrower than the painting (9:16),
+  /// and where the camera pushes in. London leans right: Big Ben stands
+  /// near the right edge; the gas lamp on the left gives up a little of its
+  /// edge instead. Paris keeps the Eiffel Tower on the left and Notre-Dame
+  /// on the right, the push towards the river between them.
+  static const _looks = {
+    SeasonIds.london: (Alignment(0.6, 0), Alignment(0.7, -0.15)),
+    SeasonIds.paris: (Alignment(0.3, 0), Alignment(0.2, -0.2)),
+  };
 
   @override
   Widget build(BuildContext context) {
-    const pixels = ArtAssets.season1CoverLondonPanoramaPixels;
+    final cover = ArtAssets.seasonCovers[seasonId];
+    // A season without a cover: the night only (never another season's).
+    if (cover == null) return const PaperBackground(night: true, child: SizedBox.expand());
+    final (file, pixels, _) = cover;
+    final (focus, push) = _looks[seasonId] ?? (Alignment.center, Alignment.center);
     return ClipRect(
       child: LayoutBuilder(
         builder: (context, box) => Transform.scale(
           scale: scale,
-          alignment: const Alignment(0.7, -0.15),
+          alignment: push,
           child: Image.asset(
-            ArtAssets.season1CoverLondonPanorama,
+            file,
             fit: BoxFit.cover,
-            alignment: _focus,
+            alignment: focus,
             width: double.infinity,
             height: double.infinity,
             // Decoded at the width it covers (with room for the push),
@@ -502,7 +520,15 @@ class _Dossier extends StatelessWidget {
               tap: TapRole.secondary,
               onPressed: () => context.go(Routes.episodes),
             ),
-            const SizedBox(height: AppSpace.md),
+            // The next file waits in the archives (named there, not here).
+            Center(
+              child: InkTextButton(
+                label: 'OPEN THE ARCHIVE',
+                glyph: InkGlyph.seal,
+                color: AppColors.inkBrown,
+                onPressed: () => context.go(Routes.seasons),
+              ),
+            ),
           ] else ...[
             if (overview.currentCase != null) _CurrentCase(overview: overview, onTap: onCurrent),
             const SizedBox(height: AppSpace.sm),

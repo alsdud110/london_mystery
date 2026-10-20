@@ -109,8 +109,10 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     } else if (progress.hasDetective) {
       // No case under way: the season (its casebook the very first time,
       // then the board with the case to work on) — after How to Play, for a
-      // detective who left it unfinished before the season began.
-      context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season);
+      // detective who left it unfinished before the season began. Once more
+      // than one season can be played, the archives first, to choose.
+      final archives = ref.read(playableSeasonCountProvider) > 1;
+      context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : archives ? Routes.seasons : Routes.season);
     } else {
       context.go(Routes.register);
     }

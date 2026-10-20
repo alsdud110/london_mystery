@@ -1,5 +1,6 @@
 import 'dart:ui' show Offset, Rect, Size;
 
+import '../core/constants/app_constants.dart';
 import '../data/models/mission.dart';
 import '../data/models/profile.dart';
 import '../features/game/scoring.dart';
@@ -80,6 +81,18 @@ abstract final class ArtAssets {
   /// Pixel size of [londonMap]: it is never decoded larger than this.
   static const londonMapPixels = Size(1536, 1024);
 
+  /// Season 2's Mission Map: a 3:2 Paris map in the London map's style.
+  /// Streets, the Seine and ten landmarks only (landmark positions:
+  /// `ParisLandmark` in `map_world.dart`). A missing or broken file shows
+  /// plain parchment, never London.
+  static const parisMap = 'assets/seasons/season_02_paris/locations/map/paris_mystery.png';
+
+  /// Width / height of [parisMap] (the same ratio as London's).
+  static const parisMapAspect = 3 / 2;
+
+  /// Pixel size of [parisMap].
+  static const parisMapPixels = Size(1536, 1024);
+
   /// The title screen: the detective's study on a London evening, in warm
   /// watercolour — bookshelves and the lamp on the left, the desk with a
   /// sealed letter, map and magnifying glass below, and a wide window over
@@ -94,12 +107,42 @@ abstract final class ArtAssets {
   /// The Season 1 cover: London from above at dusk — the Thames and its
   /// bridges, Westminster and Big Ben on the right, St Paul's far off, a
   /// stone balcony and a gas lamp in front (portrait, no text). The cover
-  /// only: the opening's first scene has its own picture
-  /// ([season1LondonNight]), closer in.
+  /// only (and the season's file in the archive, [seasonCovers]): the
+  /// opening's first scene has its own picture ([season1LondonNight]),
+  /// closer in.
   static const season1CoverLondonPanorama = 'assets/seasons/season_01_london/cover/season1_cover_london_panorama.png';
 
   /// Pixel size of [season1CoverLondonPanorama] (never decoded larger).
   static const season1CoverLondonPanoramaPixels = Size(941, 1672);
+
+  /// The Season 2 cover: Paris from a café balcony at dusk — the Seine and
+  /// its bridges, the Eiffel Tower on the left, Notre-Dame on the right, a
+  /// gas lamp and a pocket watch on the table in front (portrait, no text).
+  /// It names the city: shown only once Season 2 is unsealed.
+  static const season2CoverParisPanorama = 'assets/seasons/season_02_paris/cover/season2_cover_paris_panorama.png';
+
+  /// Pixel size of [season2CoverParisPanorama].
+  static const season2CoverParisPanoramaPixels = Size(941, 1671);
+
+  /// Season 2's opening, at Gare du Nord: the iron-and-glass hall in the
+  /// morning light, a train on the left, great station clocks on the right
+  /// (portrait, no text). Shown full screen once, in the opening's third
+  /// scene. Missing → only the night.
+  static const season2GareDuNord = 'assets/seasons/season_02_paris/cover/season2_gare_du_nord.png';
+
+  /// Pixel size of [season2GareDuNord] (never decoded larger).
+  static const season2GareDuNordPixels = Size(941, 1671);
+
+  /// Each season's cover by season id: its picture, its pixel size, and
+  /// where its file's strip in the Detective Archives looks (an alignment,
+  /// -1..1 each way). A season without one shows its file without a
+  /// picture (never another season's).
+  static const seasonCovers = <String, (String, Size, Offset)>{
+    // The city under the evening sky, not the balcony.
+    AppConstants.firstSeasonId: (season1CoverLondonPanorama, season1CoverLondonPanoramaPixels, Offset(0, 0.1)),
+    // The Eiffel Tower and Notre-Dame over the Seine, not the café table.
+    's2_paris': (season2CoverParisPanorama, season2CoverParisPanoramaPixels, Offset(0.1, -0.25)),
+  };
 
   /// The first scene of the Season 1 opening: a warm London night on the
   /// embankment — Big Ben, Westminster, the bridge and the Thames, a gas
@@ -376,7 +419,6 @@ abstract final class ArtAssets {
   /// its square's inscribed circle, so it is shown a little smaller, whole.
   static const evidencePictureZoom = <String, double>{'e05': 1.5, 'e03': 0.95};
 
-  static const _art = 'assets/art/';
   static const _london = 'assets/seasons/season_01_london/';
   static const _case01 = 'assets/images/case01';
   static const _case01PocketWatch = '$_case01/symbols/symbol_pocket_watch.png';

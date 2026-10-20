@@ -19,11 +19,13 @@ const playtestDetectiveName = 'TESTER';
 /// XP-relevant history (no hints, no badges). Everything else of the
 /// detective is wiped (the saves from before profiles stay); the detective
 /// keeps its name and picture. Only the saves change; the game rules are the
-/// same as in play.
+/// same as in play. A case of the first season only: the wipe starts the
+/// game over in it (refused before anything is wiped otherwise).
 Future<void> startPlaytestAt(WidgetRef ref, String episodeId) async {
-  final catalog = ref.read(episodeCatalogProvider);
+  final firstSeason = ref.read(seasonsProvider).first.id;
+  final catalog = SeasonAvailability.casesOf(firstSeason, ref.read(allEpisodesProvider));
   final at = catalog.indexWhere((e) => e.id == episodeId);
-  if (at < 0) throw ArgumentError.value(episodeId, 'episodeId', 'not in the season');
+  if (at < 0) throw ArgumentError.value(episodeId, 'episodeId', 'not a case of the first season');
   final name = ref.read(gameControllerProvider).detectiveName ?? playtestDetectiveName;
   final avatar = ref.read(detectiveProfileProvider).avatar ?? DetectiveAvatar.boy;
 

@@ -182,8 +182,8 @@ void main() {
     final c = AnimationController(vsync: const TestVSync());
     addTearDown(c.dispose);
     final art = (
-      closed: 'assets/art/objects/suitcase.png',
-      open: 'assets/art/objects/crown.png',
+      closed: 'assets/shared/objects/suitcase.png',
+      open: 'assets/seasons/season_01_london/objects/crown.png',
       dials: const <Rect>[],
       shut: ArtAssets.royalBox.shut,
       opened: ArtAssets.royalBox.opened,

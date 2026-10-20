@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../../core/constants/app_constants.dart';
+
 /// Who stands behind the season's cases, as far as the detective knows.
 ///
 /// A figure is revealed only once the case that names it in the story has
@@ -80,12 +82,23 @@ class SeasonPrologue {
   }
 }
 
+/// The seasons' ids. Saved with a season's own records (Season 2 on), so they
+/// never change once released.
+abstract final class SeasonIds {
+  /// Season 1. Its saves were made before seasons had ids: they keep their
+  /// keys, and its content needs no id (it is the default).
+  static const london = AppConstants.firstSeasonId;
+
+  static const paris = 's2_paris';
+}
+
 /// A season: the bigger story the cases belong to. Its cases are the
 /// episode catalog, in order; this holds what is told about the season as a
 /// whole. Content, like an episode: plain JSON-shaped data.
 @immutable
 class Season {
   const Season({
+    this.id = SeasonIds.london,
     required this.number,
     required this.title,
     required this.tagline,
@@ -93,6 +106,9 @@ class Season {
     required this.outro,
     required this.figures,
   });
+
+  /// [SeasonIds]: which season this is.
+  final String id;
 
   final int number;
 
@@ -128,9 +144,12 @@ class Season {
   /// Tolerant decoding, like the episodes: malformed lines are skipped.
   factory Season.fromJson(Map<String, dynamic> json) {
     List<String> lines(Object? v) => v is List ? v.whereType<String>().toList() : const [];
+    final id = json['id'];
     final number = json['number'];
     final figures = json['figures'];
     return Season(
+      // Season 1's content has no id: it is the default.
+      id: id is String && id.isNotEmpty ? id : SeasonIds.london,
       number: number is int ? number : 1,
       title: json['title'] as String? ?? '',
       tagline: json['tagline'] as String? ?? '',

@@ -31,31 +31,31 @@ void main() {
   Mission mission(String id) => catalog.expand((e) => e.allMissions).firstWhere((m) => m.id == id);
   String? fileOf(String id) => ArtAssets.scene(PlaceArt.sceneOf(mission(id)));
 
-  const gallery = 'assets/art/scenes/british_museum/british_museum_gallery_8.png';
-  const theatre = 'assets/art/scenes/covent_garden/covent_garden_theatre.png';
-  const blackSuitcase = 'assets/art/objects/suitcase_black.png';
-  const brownSuitcase = 'assets/art/objects/suitcase.png';
-  const jewelCase = 'assets/art/objects/jewel_case.png';
-  const door = 'assets/art/objects/locked_door.png';
-  const stranger = 'assets/art/characters/mysterious_stranger.png';
-  const gearDoor = 'assets/art/objects/locked_door_gears.png';
-  const ironDoor = 'assets/art/objects/small_iron_door.png';
-  const theatreDoor = 'assets/art/scenes/covent_garden/theatre_door_dark.png';
-  const emptyCase = 'assets/art/objects/empty_glass_jewel_case.png';
-  const ironChest = 'assets/art/objects/iron_chest.png';
-  const archive = 'assets/art/scenes/royal_archive/royal_archive.png';
-  const royalBoxOpen = 'assets/art/special/royal_box_open.png';
+  const gallery = 'assets/seasons/season_01_london/locations/british_museum/british_museum_gallery_8.png';
+  const theatre = 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_theatre.png';
+  const blackSuitcase = 'assets/seasons/season_01_london/objects/suitcase_black.png';
+  const brownSuitcase = 'assets/shared/objects/suitcase.png';
+  const jewelCase = 'assets/seasons/season_01_london/objects/jewel_case.png';
+  const door = 'assets/shared/objects/locked_door.png';
+  const stranger = 'assets/seasons/season_01_london/characters/mysterious_stranger.png';
+  const gearDoor = 'assets/seasons/season_01_london/objects/locked_door_gears.png';
+  const ironDoor = 'assets/seasons/season_01_london/objects/small_iron_door.png';
+  const theatreDoor = 'assets/seasons/season_01_london/locations/covent_garden/theatre_door_dark.png';
+  const emptyCase = 'assets/seasons/season_01_london/objects/empty_glass_jewel_case.png';
+  const ironChest = 'assets/seasons/season_01_london/objects/iron_chest.png';
+  const archive = 'assets/seasons/season_01_london/locations/royal_archive/royal_archive.png';
+  const royalBoxOpen = 'assets/seasons/season_01_london/special/royal_box_open.png';
 
   group('which mission shows which picture', () {
     test('Case 03: Gallery 8 has its picture; the Egypt Room and the Great Court keep theirs', () {
       expect(fileOf('ep03_m1'), gallery);
-      expect(fileOf('ep03_m2'), 'assets/art/scenes/british_museum/british_museum_egypt_room.png');
-      expect(fileOf('ep03_m3'), 'assets/art/scenes/british_museum/british_museum_great_court.png');
+      expect(fileOf('ep03_m2'), 'assets/seasons/season_01_london/locations/british_museum/british_museum_egypt_room.png');
+      expect(fileOf('ep03_m3'), 'assets/seasons/season_01_london/locations/british_museum/british_museum_great_court.png');
     });
 
     test("Case 11's theatre is the auditorium; its dressing room keeps its own picture", () {
       expect(fileOf('ep11_m1'), theatre);
-      expect(fileOf('ep11_m2'), 'assets/art/scenes/covent_garden/covent_garden_dressing_room.png');
+      expect(fileOf('ep11_m2'), 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_dressing_room.png');
       // Case 06: THE THEATRE DOOR, in the dark — its own picture.
       expect(mission('ep06_m3').story.join(' '), contains('Only the stage light is on.'));
       expect(PlaceArt.sceneOf(mission('ep06_m3')), Artwork.theatreDoor);
@@ -96,17 +96,17 @@ void main() {
     });
 
     test('earlier choices hold: Big Ben, the open Royal Box, the clock; no Clockmaker, map or theatre box', () {
-      expect(fileOf('ep12_m1'), 'assets/art/scenes/landmarks/big_ben.png');
-      expect(ArtAssets.scene(Artwork.royalBox), 'assets/art/special/royal_box_open.png');
+      expect(fileOf('ep12_m1'), 'assets/seasons/season_01_london/locations/landmarks/big_ben.png');
+      expect(ArtAssets.scene(Artwork.royalBox), 'assets/seasons/season_01_london/special/royal_box_open.png');
       expect(PlaceArt.sceneOf(mission('ep02_m1')), Artwork.bigBen);
       expect(PlaceArt.sceneOf(mission('ep02_m2')), Artwork.clockMechanism);
       expect(PlaceArt.sceneOf(mission('ep02_m3')), Artwork.clockFace);
       expect(PlaceArt.sceneOf(mission('ep02_final')), Artwork.clockFace);
       final used = {...ArtAssets.scenes.values, ArtAssets.mysteriousStranger, ArtAssets.lockedDoor};
       for (final never in [
-        'assets/art/characters/clockmaker_master.png',
-        'assets/art/objects/map.png',
-        'assets/art/special/royal_box.png',
+        'assets/seasons/season_01_london/characters/clockmaker_master.png',
+        'assets/shared/objects/map.png',
+        'assets/seasons/season_01_london/special/royal_box.png',
       ]) {
         expect(used, isNot(contains(never)), reason: never);
       }
@@ -211,9 +211,9 @@ void main() {
       expect(drawn(Artwork.gallery), findsOneWidget, reason: 'its picture, through the same LandmarkArt');
       await capture(t, 'art_case03_gallery_$tag');
       await openMission(t, size, 'ep03_m2');
-      expect(picture('assets/art/scenes/british_museum/british_museum_egypt_room.png'), findsOneWidget);
+      expect(picture('assets/seasons/season_01_london/locations/british_museum/british_museum_egypt_room.png'), findsOneWidget);
       await openMission(t, size, 'ep03_m3');
-      expect(picture('assets/art/scenes/british_museum/british_museum_great_court.png'), findsOneWidget);
+      expect(picture('assets/seasons/season_01_london/locations/british_museum/british_museum_great_court.png'), findsOneWidget);
     });
 
     testWidgets("Case 08 $tag: Mrs Robin's black suitcase, never the brown one", (t) async {
@@ -234,7 +234,7 @@ void main() {
       expect(picture(theatre), findsOneWidget);
       await capture(t, 'art_case11_theatre_$tag');
       await openMission(t, size, 'ep11_m2');
-      expect(picture('assets/art/scenes/covent_garden/covent_garden_dressing_room.png'), findsOneWidget);
+      expect(picture('assets/seasons/season_01_london/locations/covent_garden/covent_garden_dressing_room.png'), findsOneWidget);
       expect(picture(theatre), findsNothing);
       await openMission(t, size, 'ep11_final');
       expect(drawn(Artwork.suitcase), findsOneWidget);
@@ -264,7 +264,7 @@ void main() {
       }
       // Case 12's first mission is still Big Ben.
       await openMission(t, size, 'ep12_m1');
-      expect(picture('assets/art/scenes/landmarks/big_ben.png'), findsOneWidget);
+      expect(picture('assets/seasons/season_01_london/locations/landmarks/big_ben.png'), findsOneWidget);
     });
 
     testWidgets('story scenes, reports and the board $tag: the same doors and theatre door', (t) async {
@@ -305,7 +305,7 @@ void main() {
       await settle(t, const Duration(milliseconds: 1200));
       expect(find.text('THE ROYAL ARCHIVE'), findsOneWidget);
       expect(picture(archive), findsNWidgets(2), reason: 'the scenery and the unlocked card');
-      expect(picture('assets/art/scenes/landmarks/buckingham_palace.png'), findsNothing);
+      expect(picture('assets/seasons/season_01_london/locations/landmarks/buckingham_palace.png'), findsNothing);
       expect(picture('assets/seasons/season_01_london/locations/map/london_mystery.png'), findsNothing, reason: 'no London map fallback');
       await capture(t, 'art3_case01_unlock_$tag');
 
@@ -313,7 +313,7 @@ void main() {
       router = await start(t, size, await prefsFor('ep01', done: 5));
       router.go(Routes.finalMission);
       await settle(t);
-      expect(picture('assets/art/special/royal_box_closed_blank.png'), findsOneWidget);
+      expect(picture('assets/seasons/season_01_london/special/royal_box_closed_blank.png'), findsOneWidget);
       expect(picture(archive), findsNothing);
 
       // After the case: the archive; then the report keeps the open Royal Box.
@@ -329,7 +329,7 @@ void main() {
       await settle(t, const Duration(milliseconds: 3200));
       // The file shows the Crown itself (2026-10-19); the board still pins
       // the open box as the case photo (below, Case 12's board).
-      expect(picture('assets/art/objects/crown_cutout.png'), findsOneWidget);
+      expect(picture('assets/seasons/season_01_london/objects/crown_cutout.png'), findsOneWidget);
       expect(picture(archive), findsNothing);
 
       // The board: Case 01 is the open Royal Box.
@@ -371,8 +371,8 @@ void main() {
     });
 
     testWidgets('Case 02 $tag: Big Ben, the clock room, then 8:17, then 9:17 once the clock is set', (t) async {
-      const mechanism = 'assets/art/scenes/big_ben/clock_mechanism.png';
-      const face = 'assets/art/scenes/big_ben/clock_face.png';
+      const mechanism = 'assets/seasons/season_01_london/locations/big_ben/clock_mechanism.png';
+      const face = 'assets/seasons/season_01_london/locations/big_ben/clock_face.png';
       // The hands drawn over the face, clockwise from 12.
       Finder hands() => find.byWidgetPredicate((w) => w is CustomPaint && w.painter is ClockHandsPainter);
       ClockHandsPainter painter() => t.widget<CustomPaint>(hands()).painter! as ClockHandsPainter;
@@ -380,7 +380,7 @@ void main() {
       const at917 = 278.5; // at 9:17: past IX, toward X
       // m1: from Westminster Bridge, the tower; the stopped time is its puzzle.
       await openMission(t, size, 'ep02_m1');
-      expect(picture('assets/art/scenes/landmarks/big_ben.png'), findsOneWidget);
+      expect(picture('assets/seasons/season_01_london/locations/landmarks/big_ben.png'), findsOneWidget);
       expect(picture(mechanism), findsNothing);
       expect(picture(face), findsNothing, reason: 'm1 must not show the answer');
       expect(hands(), findsNothing);
@@ -434,7 +434,7 @@ void main() {
     });
 
     testWidgets('Case 02 $tag: the report and the board show the face at 9:17', (t) async {
-      const face = 'assets/art/scenes/big_ben/clock_face.png';
+      const face = 'assets/seasons/season_01_london/locations/big_ben/clock_face.png';
       List<double> times() => [
             for (final w in t.widgetList<CustomPaint>(
               find.byWidgetPredicate((w) => w is CustomPaint && w.painter is ClockHandsPainter),
@@ -475,10 +475,10 @@ void main() {
       await t.tap(find.text('NEXT ›'));
       await settle(t, const Duration(milliseconds: 2800));
       expect(find.text('And strangers are hiding secrets.'), findsOneWidget);
-      for (final file in [stranger, door, 'assets/art/objects/crown.png', 'assets/art/objects/letter.png']) {
+      for (final file in [stranger, door, 'assets/seasons/season_01_london/objects/crown.png', 'assets/shared/objects/letter.png']) {
         expect(picture(file), findsOneWidget, reason: file);
       }
-      expect(picture('assets/art/characters/clockmaker_master.png'), findsNothing);
+      expect(picture('assets/seasons/season_01_london/characters/clockmaker_master.png'), findsNothing);
       expect(drawn(Artwork.lockedDoor), findsNothing, reason: 'the drawn door is only the fallback now');
       await capture(t, 'art_opening_$tag');
     });

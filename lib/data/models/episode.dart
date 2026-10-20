@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'mission.dart';
+import 'season.dart' show SeasonIds;
 
 @immutable
 class Episode {
@@ -18,9 +19,14 @@ class Episode {
     this.keyWords = const [],
     this.hook,
     this.introScene,
+    this.seasonId = SeasonIds.london,
   });
 
   final String id;
+
+  /// The season the case belongs to ([SeasonIds]). Season 1's cases do not
+  /// say it: it is the default.
+  final String seasonId;
   final int number;
   final String title;
   final List<String> synopsis;
@@ -91,6 +97,7 @@ class Episode {
         keyWords: (json['keyWords'] as List? ?? const []).cast<String>(),
         hook: json['hook'] as String?,
         introScene: json['introScene'] is String ? Artwork.fromJson(json['introScene'] as String) : null,
+        seasonId: json['seasonId'] is String ? json['seasonId'] as String : SeasonIds.london,
       );
 
   Map<String, dynamic> toJson() => {
@@ -107,5 +114,6 @@ class Episode {
         if (keyWords.isNotEmpty) 'keyWords': keyWords,
         if (hook != null) 'hook': hook,
         if (introScene != null) 'introScene': introScene!.name,
+        if (seasonId != SeasonIds.london) 'seasonId': seasonId,
       };
 }

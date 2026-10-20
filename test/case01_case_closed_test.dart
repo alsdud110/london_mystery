@@ -28,7 +28,7 @@ void main() {
 
   test('the crown cut out: transparent around it, the source kept', () async {
     final file = ArtAssets.caseClosedEmblems['ep01']!;
-    expect(file, 'assets/art/objects/crown_cutout.png');
+    expect(file, 'assets/seasons/season_01_london/objects/crown_cutout.png');
     expect(ArtAssets.caseClosedEmblems.keys, ['ep01'], reason: 'Case 01 only');
     expect(File(ArtAssets.objects['crown']!).lengthSync(), 2101713, reason: 'the source as it was');
     final codec = await ui.instantiateImageCodec(File(file).readAsBytesSync());

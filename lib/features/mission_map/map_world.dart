@@ -1,9 +1,164 @@
 import 'dart:math' as math;
-import 'dart:ui' show Offset;
+import 'dart:ui' show Offset, Size;
 
+import '../../data/mock/season_catalog.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/mission.dart';
+import '../../data/models/season.dart';
 import '../../widgets/art_assets.dart';
+
+/// A landmark drawn on a season's map artwork, lettered by the app.
+abstract interface class MapLandmark {
+  String get name;
+
+  /// Where it stands on the artwork (fractions of its width / height).
+  Offset get at;
+
+  /// Its scene picture key (see `ArtAssets.scenes`), or null while the
+  /// landmark has no scene picture (the place's own scene is shown then).
+  Artwork? get artwork;
+}
+
+/// A season's map: its artwork, the landmarks lettered on it, and the
+/// landmark each of its missions happens at. Each season has its own; a
+/// season without one has no map yet (see [forSeason]).
+class SeasonMap {
+  const SeasonMap({
+    required this.artwork,
+    required this.pixels,
+    required this.aspect,
+    required this.landmarks,
+    this.missionLandmarks = const {},
+    this.caseLandmarks = const {},
+    this.groupHeights = const {},
+  });
+
+  /// The map artwork asset.
+  final String artwork;
+
+  /// Its pixel size: it is never decoded larger than this.
+  final Size pixels;
+
+  /// Width / height of the artwork: the map world keeps this ratio.
+  final double aspect;
+
+  final List<MapLandmark> landmarks;
+
+  /// The landmark of a mission, by mission id: every mission of Season 1;
+  /// in a season mapped by case, only a mission away from its case's place.
+  final Map<String, MapLandmark> missionLandmarks;
+
+  /// The landmark every mission of a case happens at, by case id (a mission
+  /// in [missionLandmarks] is placed there instead). Several cases may share
+  /// a landmark: the map shows the missions of the case being played only.
+  final Map<String, MapLandmark> caseLandmarks;
+
+  /// How tall the group of places around a landmark is, as a share of
+  /// [MapWorld.groupRadius] (its width stays the same). Only for a landmark
+  /// drawn at the very top of the artwork: its group must stay below the
+  /// top margin, and a full-height group would be pushed far below the
+  /// landmark. None on London's map.
+  final Map<MapLandmark, double> groupHeights;
+
+  /// Where mission [missionId] of case [episodeId] happens on this map: its
+  /// own landmark, else its case's, else none.
+  MapLandmark? landmarkFor(String missionId, String episodeId) =>
+      missionLandmarks[missionId] ?? caseLandmarks[episodeId];
+
+  /// Season 1's London map, as it always was.
+  static const london = SeasonMap(
+    artwork: ArtAssets.londonMap,
+    pixels: ArtAssets.londonMapPixels,
+    aspect: ArtAssets.londonMapAspect,
+    landmarks: Landmark.values,
+    missionLandmarks: MapWorld.missionLandmarks,
+  );
+
+  /// Season 2's Paris map: its twelve cases at ten landmarks, by case.
+  static const paris = SeasonMap(
+    artwork: ArtAssets.parisMap,
+    pixels: ArtAssets.parisMapPixels,
+    aspect: ArtAssets.parisMapAspect,
+    landmarks: ParisLandmark.values,
+    caseLandmarks: ParisLandmark.cases,
+    // Sacré-Cœur stands above the top margin: a full-height group there was
+    // pushed 0.17 down, off the hill. At 0.6 of the height its places stay
+    // between the basilica's steps and the foot of the hill, still apart.
+    groupHeights: {ParisLandmark.montmartre: 0.6},
+  );
+
+  /// Every season's map by season id. A season without one is not ready:
+  /// it cannot be entered (see `SeasonAvailability`), and no other season's
+  /// map ever stands in for it. A map alone opens no season: it needs its
+  /// cases too.
+  static const bySeason = {SeasonIds.london: london, SeasonIds.paris: paris};
+
+  /// The map of season [seasonId], or null while it has none.
+  static SeasonMap? forSeason(String seasonId) => bySeason[seasonId];
+
+  /// The map of the season mission [missionId] belongs to (Season 1 for a
+  /// mission no season has), or null while that season has none.
+  static SeasonMap? ofMission(String missionId) =>
+      forSeason(SeasonCatalog.ofMission(missionId)?.id ?? SeasonIds.london);
+
+  /// The landmark mission [missionId] happens at, on its season's map (mission
+  /// ids are never shared between seasons), or null.
+  static MapLandmark? landmarkOf(String missionId) {
+    final episodeId = SeasonCatalog.episodeOfMission(missionId);
+    for (final map in bySeason.values) {
+      final l = episodeId == null ? map.missionLandmarks[missionId] : map.landmarkFor(missionId, episodeId);
+      if (l != null) return l;
+    }
+    return null;
+  }
+}
+
+/// The landmarks drawn on the Paris map artwork (`ArtAssets.parisMap`), at
+/// the centre of each one's drawing, measured on the artwork (fractions of
+/// its width / height). The names are lettered by the app. No scene
+/// pictures yet: each place shows its own scene.
+enum ParisLandmark implements MapLandmark {
+  gareDuNord('Gare du Nord', Offset(0.768, 0.200)),
+  // Sacré-Cœur, above the top margin: its places sit just below it, on the hill.
+  montmartre('Montmartre', Offset(0.555, 0.098)),
+  // The west end of the green bookstalls, clear of Notre-Dame's name.
+  seineQuays('Seine Quays', Offset(0.602, 0.596)),
+  louvre('Louvre', Offset(0.501, 0.441)),
+  notreDame('Notre-Dame', Offset(0.732, 0.566)),
+  eiffelTower('Eiffel Tower', Offset(0.120, 0.562)),
+  palaisGarnier('Palais Garnier', Offset(0.391, 0.273)),
+  luxembourgGardens('Luxembourg Gardens', Offset(0.475, 0.771)),
+  arcDeTriomphe('Arc de Triomphe', Offset(0.128, 0.246)),
+  artsEtMetiers('Arts et Métiers', Offset(0.684, 0.381));
+
+  const ParisLandmark(this.name, this.at);
+
+  @override
+  final String name;
+  @override
+  final Offset at;
+
+  @override
+  Artwork? get artwork => null;
+
+  /// Season 2's cases at their landmarks. Montmartre has Case 02 and Case 08
+  /// (Abbesses is on its hill); the Luxembourg Gardens Case 09 and Case 11
+  /// (Saint-Sulpice is at their north edge).
+  static const cases = <String, MapLandmark>{
+    's2_ep01': gareDuNord,
+    's2_ep02': montmartre,
+    's2_ep03': seineQuays,
+    's2_ep04': louvre,
+    's2_ep05': notreDame,
+    's2_ep06': eiffelTower,
+    's2_ep07': palaisGarnier,
+    's2_ep08': montmartre,
+    's2_ep09': luxembourgGardens,
+    's2_ep10': arcDeTriomphe,
+    's2_ep11': luxembourgGardens,
+    's2_ep12': artsEtMetiers,
+  };
+}
 
 /// The landmarks drawn on the London map artwork (`ArtAssets.londonMap`),
 /// with where each one stands on it (fractions of the artwork's width /
@@ -12,7 +167,7 @@ import '../../widgets/art_assets.dart';
 /// These are *visual* positions only. A mission's `mapX` / `mapY` is its
 /// place in the case's own layout and is left as it is; [MapWorld] puts the
 /// mission on the landmark it happens at.
-enum Landmark {
+enum Landmark implements MapLandmark {
   kingsCross("King's Cross", Offset(0.53, 0.17)),
   britishMuseum('British Museum', Offset(0.385, 0.30)),
   coventGarden('Covent Garden', Offset(0.645, 0.34)),
@@ -25,10 +180,13 @@ enum Landmark {
 
   const Landmark(this.name, this.at);
 
+  @override
   final String name;
+  @override
   final Offset at;
 
   /// The landmark's scene picture key (its picture: `ArtAssets.scenes`).
+  @override
   Artwork get artwork => switch (this) {
     kingsCross => Artwork.kingsCross,
     britishMuseum => Artwork.britishMuseum,
@@ -42,7 +200,7 @@ enum Landmark {
   };
 }
 
-/// Where every mission of a case is on the London map.
+/// Where every mission of a case is on its season's map (London by default).
 ///
 /// Most cases happen inside one landmark (the rooms of Big Ben, the galleries
 /// of the British Museum), so a mission is placed on its [Landmark]; missions
@@ -61,7 +219,7 @@ abstract final class MapWorld {
   /// as a whole, keeping its shape.
   static const topMargin = 0.15;
 
-  /// The landmark each mission happens at.
+  /// The landmark each mission of Season 1 happens at (see [SeasonMap.london]).
   static const missionLandmarks = <String, Landmark>{
     // Case 01 — a tour of London.
     'm01': Landmark.kingsCross,
@@ -127,24 +285,25 @@ abstract final class MapWorld {
     'ep12_final': Landmark.bigBen, // under Big Ben
   };
 
-  /// Each mission of [episode] (by id) at its place on the map.
-  static Map<String, Offset> places(Episode episode) {
+  /// Each mission of [episode] (by id) at its place on [map].
+  static Map<String, Offset> places(Episode episode, {SeasonMap map = SeasonMap.london}) {
+    MapLandmark? landmarkOf(Mission m) => map.landmarkFor(m.id, episode.id);
     final missions = episode.allMissions;
-    final groups = <Landmark, List<Mission>>{};
+    final groups = <MapLandmark, List<Mission>>{};
     for (final m in missions) {
-      final l = missionLandmarks[m.id];
+      final l = landmarkOf(m);
       if (l != null) (groups[l] ??= []).add(m);
     }
     final raw = {
       for (final m in missions)
-        m.id: switch (missionLandmarks[m.id]) {
+        m.id: switch (landmarkOf(m)) {
           null => Offset(m.mapX, m.mapY),
-          final l => l.at + _inGroup(m, groups[l]!),
+          final l => l.at + _inGroup(m, groups[l]!, map.aspect, height: map.groupHeights[l] ?? 1),
         },
     };
     // Move a group (or a lone place) down from the top edge, all together.
     final drop = <String, double>{};
-    for (final group in [...groups.values, for (final m in missions) if (missionLandmarks[m.id] == null) [m]]) {
+    for (final group in [...groups.values, for (final m in missions) if (landmarkOf(m) == null) [m]]) {
       final top = group.map((m) => raw[m.id]!.dy).reduce(math.min);
       for (final m in group) {
         drop[m.id] = math.max(0, topMargin - top);
@@ -154,13 +313,14 @@ abstract final class MapWorld {
   }
 
   /// [m]'s offset from its landmark: the group's `mapX` / `mapY` layout,
-  /// centred on the landmark and scaled to [groupRadius].
-  static Offset _inGroup(Mission m, List<Mission> group) {
+  /// centred on the landmark and scaled to [groupRadius] ([height] of it
+  /// up and down: see [SeasonMap.groupHeights]).
+  static Offset _inGroup(Mission m, List<Mission> group, double aspect, {double height = 1}) {
     if (group.length < 2) return Offset.zero;
     final centre = group.fold(Offset.zero, (s, g) => s + Offset(g.mapX, g.mapY)) / group.length.toDouble();
     final reach = group.map((g) => (Offset(g.mapX, g.mapY) - centre).distance).reduce(math.max);
     if (reach == 0) return Offset.zero;
     final d = (Offset(m.mapX, m.mapY) - centre) / reach;
-    return Offset(d.dx * groupRadius / ArtAssets.londonMapAspect, d.dy * groupRadius);
+    return Offset(d.dx * groupRadius / aspect, height == 1 ? d.dy * groupRadius : d.dy * groupRadius * height);
   }
 }
