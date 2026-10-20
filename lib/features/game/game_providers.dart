@@ -255,6 +255,16 @@ final seasonAvailabilityProvider = Provider.family<SeasonAvailability?, String>(
   );
 });
 
+/// The season after the one being played, and whether it can be played now
+/// (null: none). Its availability is [seasonAvailabilityProvider]'s: released
+/// (or an operator build's season preview) and unlocked, never less.
+final nextSeasonProvider = Provider<SeasonAvailability?>((ref) {
+  final seasons = ref.watch(seasonsProvider);
+  final i = seasons.indexWhere((s) => s.id == ref.watch(selectedSeasonIdProvider));
+  if (i < 0 || i + 1 >= seasons.length) return null;
+  return ref.watch(seasonAvailabilityProvider(seasons[i + 1].id));
+});
+
 /// How many seasons can be entered now (unlocked, with cases and a map).
 /// Only Season 1 today: the title then goes straight to its board.
 final playableSeasonCountProvider = Provider<int>((ref) => [

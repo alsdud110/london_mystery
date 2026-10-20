@@ -293,7 +293,7 @@ void main() {
         await wait(t, const Duration(seconds: 3));
       });
 
-      testWidgets('${size.width.toInt()}x${size.height.toInt()}: the completed board, Season 2 out: BEGIN SEASON TWO opens its cover, no archive between', (t) async {
+      testWidgets('${size.width.toInt()}x${size.height.toInt()}: the completed board, Season 2 out: GO TO PARIS opens its cover, no archive between', (t) async {
         await pumpApp(t, seasonSaves(12), size: size, extra: [
           allEpisodesProvider.overrideWithValue(withParis),
           seasonMapsProvider.overrideWithValue(withParisMap),
@@ -307,20 +307,23 @@ void main() {
         final begin = find.byKey(const ValueKey('begin-next-season'));
         expect(begin, findsOneWidget);
         expect(t.getRect(begin).bottom, lessThanOrEqualTo(size.height), reason: 'the main action, on screen');
+        expect(find.text('GO TO PARIS'), findsOneWidget, reason: 'named by the city');
+        expect(find.text('BEGIN SEASON TWO'), findsNothing);
         expect(t.getRect(find.text('View Case Files')).height, lessThan(t.getRect(begin).height), reason: 'the quiet one');
         await t.tap(begin);
         await wait(t, const Duration(milliseconds: 1600));
         expect(path(), Routes.seasonOf(SeasonIds.paris));
         expect(appRef.read(selectedSeasonIdProvider), SeasonIds.paris);
-        // Paris's cover, its own BEGIN SEASON TWO leading to its opening.
+        // Paris's cover, its BEGIN INVESTIGATION leading to its opening.
         expect(find.byKey(const ValueKey('begin-next-season')), findsNothing);
-        expect(find.text('BEGIN SEASON TWO'), findsOneWidget);
+        expect(find.text('BEGIN INVESTIGATION'), findsOneWidget);
+        expect(find.text('BEGIN SEASON TWO'), findsNothing);
         expect(prefs.getString(savedKey(prefs, AppConstants.seasonStorageKey)), season1, reason: 'Season 1 kept');
         await wait(t, const Duration(seconds: 3));
       });
     }
 
-    testWidgets('the completed board, in an operator build\'s season preview: BEGIN SEASON TWO', (t) async {
+    testWidgets('the completed board, in an operator build\'s season preview: GO TO PARIS', (t) async {
       await pumpApp(t, seasonSaves(12), extra: [seasonPreviewProvider.overrideWithValue(true)]);
       appRef.read(routerProvider).go(Routes.season);
       await wait(t, const Duration(milliseconds: 2400));

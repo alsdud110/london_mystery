@@ -219,7 +219,8 @@ void main() {
         if (e.hook != null) expect(find.text(e.hook!), findsNothing, reason: 'no hook on the report');
         expect(find.textContaining('Find the Shadow'), findsNothing);
         expect(find.textContaining('under Big Ben'), findsNothing);
-        expect(find.text('London needs you again.'), findsOneWidget);
+        // The season's last report points on to Paris instead.
+        expect(find.text(last ? 'But the watch says PARIS.' : 'London needs you again.'), findsOneWidget);
         await t.tap(find.text(next));
         await wait(t, const Duration(milliseconds: 1500));
         expect(app.location, Routes.season, reason: 'the investigation board (completed after the last case)');

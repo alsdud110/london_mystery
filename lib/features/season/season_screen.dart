@@ -73,7 +73,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
   /// Decided once on arrival, so the page does not switch under the player.
   late final bool _casebook;
 
-  /// The season this page was built for. BEGIN SEASON TWO plays another one
+  /// The season this page was built for. GO TO PARIS plays another one
   /// a moment before the page for it replaces this one: meanwhile this page
   /// shows only its night, never one season's board with the other's cases.
   late final String _seasonId = ref.read(seasonInfoProvider).id;
@@ -143,28 +143,6 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
     }
     playUiTap(context, TapRole.select); // a sealed file only answers with its note
     context.go(Routes.caseFile(overview.cases[index].id));
-  }
-
-  /// The season after this one, and whether it can be played now (null:
-  /// none). Released, or opened by an operator build's season preview; a
-  /// season still being written stays COMING SOON.
-  SeasonAvailability? _nextSeason(SeasonOverview overview) {
-    final seasons = ref.watch(seasonsProvider);
-    final i = seasons.indexWhere((s) => s.id == overview.info.id);
-    if (i < 0 || i + 1 >= seasons.length) return null;
-    return ref.watch(seasonAvailabilityProvider(seasons[i + 1].id));
-  }
-
-  /// BEGIN SEASON TWO: the next season is played from where its record is
-  /// (its cover and opening when it has not begun, its board when it has),
-  /// on this page, as the archives would open it. Refused while it cannot be
-  /// entered (the button is not offered then).
-  void _beginNextSeason(SeasonAvailability next) {
-    if (!ref.read(gameControllerProvider.notifier).openSeason(next.season.id)) {
-      showGameToast(context, 'This file is still being prepared.', glyph: InkGlyph.seal);
-      return;
-    }
-    context.go(Routes.seasonOf(next.season.id));
   }
 
   /// A touch finishes whatever is still coming in.
@@ -275,7 +253,10 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
                           child: IgnorePointer(
                             ignoring: ready < 0.5 || _leave.value > 0,
                             child: GameButton(
-                              label: 'BEGIN ${overview.info.label}',
+                              // A later season's cover comes after the one
+                              // before it was begun (GO TO PARIS): its own
+                              // investigation, not another BEGIN SEASON.
+                              label: overview.info.number > 1 ? 'BEGIN INVESTIGATION' : 'BEGIN ${overview.info.label}',
                               arrow: true,
                               singleLine: true,
                               // The title page's button: the same storybook, turned a page.
@@ -334,8 +315,10 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
                     const SizedBox(height: AppSpace.md),
                     _Dossier(
                       overview: overview,
-                      next: _nextSeason(overview),
-                      onNextSeason: _beginNextSeason,
+                      // Released, or opened by an operator build's season
+                      // preview; a season still being written stays COMING SOON.
+                      next: ref.watch(nextSeasonProvider),
+                      onNextSeason: (next) => SeasonActions.goToSeason(context, ref, next),
                       completeReveal: _before != null && !_before!.complete ? ((t - 0.8) / 0.2).clamp(0.0, 1.0) : 1,
                       onCurrent: () => _openFile(overview, overview.current!),
                       onInvestigate: () => SeasonActions.investigate(context, ref, overview.current!),
@@ -555,9 +538,11 @@ class _Dossier extends StatelessWidget {
             const SizedBox(height: AppSpace.md),
             if (next case final n? when n.canEnter)
               // The next season, begun from here: no archive to look through.
+              // Named by its city (GO TO PARIS), as on the last case's report.
               GameButton(
                 key: const ValueKey('begin-next-season'),
-                label: 'BEGIN ${n.season.label}',
+                label: 'GO TO ${n.season.city.toUpperCase()}',
+                glyph: InkGlyph.train,
                 arrow: true,
                 singleLine: true,
                 tap: TapRole.primary,

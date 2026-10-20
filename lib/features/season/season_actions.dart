@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
 import '../../widgets/game_toast.dart';
+import '../../widgets/ink_icon.dart';
 import '../game/game_controller.dart';
+import '../game/game_providers.dart';
 import 'season_overview.dart';
 
 /// What the season pages do with a case. They decide no progress
@@ -27,5 +29,17 @@ abstract final class SeasonActions {
           ? Routes.map
           : Routes.intro,
     );
+  }
+
+  /// GO TO PARIS: season [next] is played from where its record is (its
+  /// cover and opening when it has not begun, its board when it has), as the
+  /// archives would open it. Refused while it cannot be entered (locked, not
+  /// released, no cases): the controller checks, not only the button.
+  static void goToSeason(BuildContext context, WidgetRef ref, SeasonAvailability next) {
+    if (!ref.read(gameControllerProvider.notifier).openSeason(next.season.id)) {
+      showGameToast(context, 'This file is still being prepared.', glyph: InkGlyph.seal);
+      return;
+    }
+    context.go(Routes.seasonOf(next.season.id));
   }
 }

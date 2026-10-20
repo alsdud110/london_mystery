@@ -43,9 +43,9 @@ abstract final class Routes {
   /// back to the archives (the board opened any other way goes to the title).
   static const seasonFromArchive = '/season?from=archive';
 
-  /// The season page of season [seasonId], just chosen on the page itself
-  /// (BEGIN SEASON TWO on the completed board): a location of its own, so
-  /// the page is built anew for that season.
+  /// The season page of season [seasonId], just chosen (GO TO PARIS on the
+  /// completed board or on the last case's report): a location of its own,
+  /// so the page is built anew for that season.
   static String seasonOf(String seasonId) => '/season?season=$seasonId';
 
   /// The Detective Archives: every season's file, to choose the next one.
@@ -62,6 +62,10 @@ abstract final class Routes {
   static const archive = '/notebook?view=archive';
   static const finalMission = '/final';
   static const solved = '/solved';
+
+  /// The report of a case solved before, come back to (the app reopened on
+  /// it): already closed and stamped, nothing comes down or counts up again.
+  static const solvedSettled = '/solved?settled=1';
   static const report = '/report';
   static const gameMaster = '/game-master';
 
@@ -183,7 +187,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.season,
         pageBuilder: (c, s) {
           final back = s.uri.queryParameters['from'] == 'archive' ? Routes.seasons : Routes.start;
-          // Its own state per season: BEGIN SEASON TWO on the completed
+          // Its own state per season: GO TO PARIS on the completed
           // board opens the next season on this same page, from its cover.
           return _fade(s, _backTo(c, back, SeasonScreen(key: ValueKey(ref.read(selectedSeasonIdProvider)), backTo: back)));
         },
@@ -223,7 +227,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(path: Routes.finalMission, pageBuilder: (c, s) => _fade(s, const FinalMissionScreen())),
-      GoRoute(path: Routes.solved, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.map, const CaseSolvedScreen()))),
+      GoRoute(
+        path: Routes.solved,
+        pageBuilder: (c, s) =>
+            _fade(s, _backTo(c, Routes.map, CaseSolvedScreen(settled: s.uri.queryParameters['settled'] == '1'))),
+      ),
       GoRoute(path: Routes.report, pageBuilder: (c, s) => _fade(s, const ParentReportScreen())),
       GoRoute(path: Routes.gameMaster, pageBuilder: (c, s) => _fade(s, const GameMasterScreen())),
     ],

@@ -417,46 +417,7 @@ class _Ticket extends StatelessWidget {
               offset: Offset(-40 * (1 - appear), 0),
               child: Transform.rotate(
                 angle: -0.04,
-                child: SizedBox(
-                  width: 300,
-                  child: PaperSheet(
-                    ruled: true,
-                    padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.lg, AppSpace.xl, AppSpace.lg),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const InkIcon(InkGlyph.train, size: AppIconSize.medium, color: AppColors.burgundy),
-                            const SizedBox(width: AppSpace.sm),
-                            Text('TRAIN TICKET', style: AppText.mark(color: AppColors.burgundy)),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpace.md),
-                        // The route, on one line: smaller rather than cut with larger text.
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(from, style: AppText.logo(size: 24, color: AppColors.navy)),
-                              const SizedBox(width: AppSpace.sm),
-                              Container(width: 40, height: AppLine.rule, color: AppColors.inkBrown.withValues(alpha: 0.5)),
-                              const SizedBox(width: AppSpace.sm),
-                              Text(to, style: AppText.logo(size: 24, color: AppColors.navy)),
-                            ],
-                          ),
-                        ),
-                        if (passenger != null) ...[
-                          const SizedBox(height: AppSpace.md),
-                          Text('PASSENGER', style: AppText.eyebrow(color: AppColors.inkBrown)),
-                          Text(passenger!, style: AppText.title(size: 18, color: AppColors.navy)),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
+                child: TrainTicket(from: from, to: to, passenger: passenger),
               ),
             ),
           ),

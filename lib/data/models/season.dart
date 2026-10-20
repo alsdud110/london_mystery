@@ -104,6 +104,7 @@ class Season {
     required this.tagline,
     required this.prologue,
     required this.outro,
+    this.finale = const [],
     required this.figures,
     this.city = 'London',
     this.plannedCases,
@@ -133,6 +134,10 @@ class Season {
 
   /// The lines once every case is solved.
   final List<String> outro;
+
+  /// The lines on the last case's report, pointing on to the next season
+  /// ("London is safe." / "But the watch says PARIS."); empty: none.
+  final List<String> finale;
 
   /// What the detective learns about who is behind it, in story order.
   final List<SeasonFigure> figures;
@@ -170,6 +175,7 @@ class Season {
       tagline: json['tagline'] as String? ?? '',
       prologue: SeasonPrologue.fromJson(json['prologue']),
       outro: lines(json['outro']),
+      finale: lines(json['finale']),
       figures: figures is List ? figures.map(SeasonFigure.fromJson).whereType<SeasonFigure>().toList() : const [],
     );
   }

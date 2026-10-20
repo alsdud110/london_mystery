@@ -77,11 +77,23 @@ void main() {
         await wait(t, const Duration(milliseconds: 300));
         final button = t.widget<GameButton>(find.ancestor(of: find.text(next), matching: find.byType(GameButton)));
         expect(button.style, GameButtonStyle.glass);
-        expect(find.text('VIEW MY DETECTIVE REPORT'), findsOneWidget, reason: 'the grown-ups\' report, as before');
         expect(find.text('Play again'), findsOneWidget);
         // The hook is told by the post-case scene before the report, not here.
         if (e.hook != null) expect(find.text(e.hook!), findsNothing, reason: 'no hook on the report');
-        if (id == 'ep12') expect(find.textContaining('PARIS'), findsNothing, reason: 'PARIS is the post-case scene\'s');
+        if (id == 'ep12') {
+          // The season's finale: on to Paris, still coming soon in a release
+          // build — the ticket says so, and the board leads.
+          expect(find.text('But the watch says PARIS.'), findsOneWidget);
+          expect(find.text('London needs you again.'), findsNothing);
+          expect(find.byKey(const ValueKey('finale-ticket')), findsOneWidget);
+          expect(find.text('COMING SOON'), findsOneWidget, reason: 'stamped on the ticket');
+          expect(find.byKey(const ValueKey('go-to-next-season')), findsNothing, reason: 'nothing to press for Paris yet');
+          expect(find.text('View my detective report'), findsOneWidget, reason: 'the grown-ups\' report, quieter');
+          expect(find.byType(GameButton), findsOneWidget, reason: 'one boxed button: the board');
+        } else {
+          expect(find.text('VIEW MY DETECTIVE REPORT'), findsOneWidget, reason: 'the grown-ups\' report, as before');
+          expect(find.textContaining('PARIS'), findsNothing);
+        }
         await capture(t, 'case_closed_${tag}_actions');
 
         await t.tap(find.text(next));

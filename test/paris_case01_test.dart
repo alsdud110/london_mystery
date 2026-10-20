@@ -551,7 +551,7 @@ void main() {
           await wait(t, const Duration(milliseconds: 3200)); // LOCKED → UNLOCKED ceremony
         }
 
-        // ── Season 1 completed: BEGIN SEASON TWO, no archive between ────
+        // ── Season 1 completed: GO TO PARIS, no archive between ─────────
         router.go(Routes.season);
         await wait(t, const Duration(milliseconds: 2400));
         expect(find.text('COMPLETED'), findsOneWidget);
@@ -567,7 +567,8 @@ void main() {
         expect(prefs.getString(savedKey(prefs, AppConstants.seasonStorageKey)), season1Saved, reason: 'Season 1 kept');
         // The cover, then the opening: SKIP to the promise, then Case 01's file.
         await shot('cover');
-        await tapText(t, 'BEGIN SEASON TWO', after: const Duration(milliseconds: 1400));
+        expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'begun once, on the board');
+        await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 1400));
         expect(path(), Routes.parisPrologue);
         await tapText(t, 'SKIP ›', after: const Duration(milliseconds: 1400));
         // Left before the end of the opening: it is not seen yet, the cover
@@ -583,7 +584,7 @@ void main() {
         router.go(Routes.season);
         await wait(t, const Duration(milliseconds: 2400));
         expect(find.text('BEGIN INVESTIGATION'), findsOneWidget, reason: 'the board, Case 01 to begin');
-        expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'not the cover again');
+        expect(find.text('CASES SOLVED'), findsOneWidget, reason: 'the board, not the cover again');
         await shot('paris_board_begun');
         router.go(Routes.caseFile('s2_ep01'));
         await wait(t, const Duration(milliseconds: 1400));
@@ -944,7 +945,7 @@ void main() {
         expect(find.textContaining('COMING SOON'), findsNothing);
         expect(find.text('SEASON COMPLETE'), findsNothing);
 
-        // Back to Season 1 and, from its completed board, BEGIN SEASON TWO
+        // Back to Season 1 and, from its completed board, GO TO PARIS
         // again: Paris's board (Case 01 solved), not its cover or opening.
         expect(ref.read(gameControllerProvider.notifier).openSeason(SeasonIds.london), isTrue);
         router.go(Routes.seasonOf(SeasonIds.london));
@@ -954,7 +955,7 @@ void main() {
         expect(ref.read(selectedSeasonIdProvider), SeasonIds.paris);
         await reveal(t, find.text('BEGIN INVESTIGATION'));
         expect(find.text('BEGIN INVESTIGATION'), findsOneWidget, reason: 'its board, as left: Case 02 to begin');
-        expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'no cover again');
+        expect(find.text('CASES SOLVED'), findsOneWidget, reason: 'no cover again');
         await wait(t, const Duration(seconds: 3));
       });
     }

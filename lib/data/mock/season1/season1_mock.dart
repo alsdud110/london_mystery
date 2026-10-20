@@ -20,7 +20,8 @@ import 'episode12_mock.dart';
 /// - Case 12: the Clockmaker is gone; his pocket watch is left behind
 ///
 /// Never named here: Inspector Grey, Miss Rose / Mrs Robin, the Shadow's
-/// part, or where the watch points (the Season 2 hook stays in Case 12).
+/// part, or where the watch points (the Season 2 hook stays in Case 12 and
+/// in `finale`, said only on Case 12's report).
 const Map<String, dynamic> season1InfoJson = {
   'number': 1,
   'title': 'Shadows over London',
@@ -45,6 +46,8 @@ const Map<String, dynamic> season1InfoJson = {
     'firstCase': {'picture': 'crown', 'line': 'Your first investigation\nbegins tonight.'},
   },
   'outro': ['All the pieces have come together.', 'But this is not the end...'],
+  // On the last case's report, once the season is complete: on to Season 2.
+  'finale': ['London is safe.', 'But the watch says PARIS.'],
   'figures': [
     {'after': 'ep02', 'figure': 'ravens', 'label': 'Who are the ravens?'},
     {'after': 'ep04', 'figure': 'ravenSociety', 'label': 'The Raven Society'},

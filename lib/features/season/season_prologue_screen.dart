@@ -19,6 +19,7 @@ import '../../widgets/game_button.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
+import '../../widgets/train_ticket.dart';
 import '../game/game_providers.dart';
 import 'season_actions.dart';
 import 'season_overview.dart';

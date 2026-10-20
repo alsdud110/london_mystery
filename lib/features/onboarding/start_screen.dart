@@ -103,7 +103,10 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
   void _continue() {
     final progress = ref.read(gameControllerProvider);
     if (progress.isCaseSolved) {
-      context.go(Routes.solved);
+      // The case's report as it was left (Season 1's last case: on to Paris,
+      // or Paris coming soon): the stamp and the XP were shown when it was
+      // solved, and are not played again on every return.
+      context.go(Routes.solvedSettled);
     } else if (progress.introSeen) {
       context.go(Routes.map);
     } else if (progress.hasDetective) {

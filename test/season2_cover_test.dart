@@ -125,7 +125,9 @@ void main() {
         expect(shows(t, london), isFalse);
         expect(find.text('PARIS STANDS STILL'), findsOneWidget);
         expect(find.text('SEASON TWO'), findsOneWidget);
-        final begin = find.text('BEGIN SEASON TWO');
+        // Begun once already (GO TO PARIS): the cover begins its investigation.
+        expect(find.text('BEGIN SEASON TWO'), findsNothing);
+        final begin = find.text('BEGIN INVESTIGATION');
         expect(begin, findsOneWidget);
         expect(t.getRect(begin).bottom, lessThanOrEqualTo(size.height));
         expect(t.takeException(), isNull);

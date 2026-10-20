@@ -12,6 +12,7 @@ import '../../core/utils/audio_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/mission.dart';
+import '../../data/models/season.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/badge_medal.dart';
 import '../../widgets/detective_character.dart';
@@ -23,9 +24,11 @@ import '../../widgets/place_art.dart';
 import '../../widgets/desk_background.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/game_dialog.dart';
+import '../../widgets/train_ticket.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
+import '../season/season_actions.dart';
 import '../season/season_overview.dart';
 import 'detective_report.dart';
 import '../../data/models/detective_name.dart';
@@ -33,7 +36,11 @@ import '../../data/models/detective_name.dart';
 /// Kid-facing result, designed as a detective's case file rather than a
 /// score sheet — pretty enough that parents want to share a screenshot.
 class CaseSolvedScreen extends ConsumerStatefulWidget {
-  const CaseSolvedScreen({super.key});
+  const CaseSolvedScreen({super.key, this.settled = false});
+
+  /// Come back to (the app reopened on it), not just solved: the file is
+  /// already closed and stamped, and nothing is played again.
+  final bool settled;
 
   @override
   ConsumerState<CaseSolvedScreen> createState() => _CaseSolvedScreenState();
@@ -47,6 +54,11 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
   /// its end (about 1.26 s in).
   static const _stampLands = 0.45;
   bool _stamped = false;
+
+  /// The season this report was opened in. GO TO PARIS plays another one a
+  /// moment before the next page replaces this one: meanwhile only the desk
+  /// shows, never this file with the other season's case.
+  late final String _seasonId = ref.read(seasonInfoProvider).id;
 
   /// Once, as the stamp meets the paper (at once with reduced motion, when
   /// the closed file is simply there).
@@ -66,7 +78,13 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
   @override
   void initState() {
     super.initState();
-    _c.forward();
+    _seasonId; // the season it shows, fixed now
+    if (widget.settled) {
+      _stamped = true; // the stamp came down when the case was solved
+      _c.value = 1;
+    } else {
+      _c.forward();
+    }
   }
 
   @override
@@ -105,6 +123,9 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
 
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(seasonInfoProvider).id != _seasonId) {
+      return const Scaffold(body: DeskBackground(child: SizedBox.expand()));
+    }
     final report = DetectiveReport.from(ref.watch(currentEpisodeProvider), ref.watch(gameControllerProvider));
     final catalog = ref.watch(episodeCatalogProvider);
     final at = catalog.indexWhere((e) => e.id == report.episode.id);
@@ -118,6 +139,11 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     // The season goes on, but its next case is not in the game yet: said so
     // plainly, never offered as a case to open.
     final comingNext = nextCase == null && catalog.length < (season.plannedCases ?? 0) ? catalog.length + 1 : null;
+    // The season's last case, and the season complete: its report points on
+    // to the next season (GO TO PARIS, or Paris coming soon). Every other
+    // report is as it always was.
+    final next = ref.watch(nextSeasonProvider);
+    final finale = nextCase == null && next != null && ref.watch(seasonOverviewProvider).complete ? next : null;
     final paper = _iv(0, 0.25);
     // The detective who closed it rises behind the file as it lands, just
     // before the stamp comes down.
@@ -159,67 +185,80 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                       opacity: footer.value,
                       child: Column(
                         children: [
-                          // What the case left unanswered is told by the post-case
-                          // scene before this report (Episode.hook is not repeated
-                          // here: it would echo that scene, or spoil the next case).
-                          Text(
-                            '${season.city} needs you again.',
-                            style: AppText.cinematicPrompt(size: 22),
-                            textAlign: TextAlign.center,
-                          ),
-                          if (comingNext != null) ...[
-                            const SizedBox(height: AppSpace.sm),
+                          if (finale != null)
+                            _SeasonFinale(
+                              season: season,
+                              next: finale,
+                              ticketIn: footer.value,
+                              onGo: () => SeasonActions.goToSeason(context, ref, finale),
+                              onBoard: () => context.go(Routes.season),
+                              onReport: _openParentReport,
+                              onNotebook: () => context.push(Routes.notebook),
+                              onPlayAgain: _playAgain,
+                            )
+                          else ...[
+                            // What the case left unanswered is told by the post-case
+                            // scene before this report (Episode.hook is not repeated
+                            // here: it would echo that scene, or spoil the next case).
                             Text(
-                              'CASE ${comingNext.toString().padLeft(2, '0')} · COMING SOON',
-                              key: const ValueKey('next-case-coming-soon'),
-                              style: AppText.eyebrow(color: AppColors.goldLight),
+                              '${season.city} needs you again.',
+                              style: AppText.cinematicPrompt(size: 22),
                               textAlign: TextAlign.center,
                             ),
-                          ],
-                          const SizedBox(height: 16),
-                          // The child's next step is the primary action: on to the
-                          // next case (after the last case of the season, the
-                          // season's completed investigation board).
-                          GameButton(
-                            label: nextCase != null ? 'OPEN CASE ${nextCase.numberLabel}' : 'INVESTIGATION BOARD',
-                            glyph: nextCase != null ? InkGlyph.folder : InkGlyph.pin,
-                            arrow: true,
-                            singleLine: true,
-                            style: GameButtonStyle.glass,
-                            tap: TapRole.primary,
-                            onPressed: () => context.go(toBoard ? Routes.season : Routes.caseFile(nextCase.id)),
-                          ),
-                          const SizedBox(height: AppSpace.md),
-                          // For grown-ups (behind the parent gate): secondary, and
-                          // the lock says it asks first.
-                          GameButton(
-                            label: 'VIEW MY DETECTIVE REPORT',
-                            glyph: InkGlyph.lock,
-                            singleLine: true, // one line on a 360-wide phone
-                            style: GameButtonStyle.outline,
-                            onPressed: _openParentReport,
-                          ),
-                          const SizedBox(height: AppSpace.sm),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: InkTextButton(
-                                  label: 'Notebook',
-                                  glyph: InkGlyph.notebook,
-                                  color: AppColors.paperLight.withValues(alpha: 0.75),
-                                  onPressed: () => context.push(Routes.notebook),
-                                ),
-                              ),
-                              // Custom Asset Required: a replay glyph.
-                              Expanded(
-                                child: InkTextButton(
-                                  label: 'Play again',
-                                  color: AppColors.paperLight.withValues(alpha: 0.75),
-                                  onPressed: _playAgain,
-                                ),
+                            if (comingNext != null) ...[
+                              const SizedBox(height: AppSpace.sm),
+                              Text(
+                                'CASE ${comingNext.toString().padLeft(2, '0')} · COMING SOON',
+                                key: const ValueKey('next-case-coming-soon'),
+                                style: AppText.eyebrow(color: AppColors.goldLight),
+                                textAlign: TextAlign.center,
                               ),
                             ],
-                          ),
+                            const SizedBox(height: 16),
+                            // The child's next step is the primary action: on to the
+                            // next case (after the last case of the season, the
+                            // season's completed investigation board).
+                            GameButton(
+                              label: nextCase != null ? 'OPEN CASE ${nextCase.numberLabel}' : 'INVESTIGATION BOARD',
+                              glyph: nextCase != null ? InkGlyph.folder : InkGlyph.pin,
+                              arrow: true,
+                              singleLine: true,
+                              style: GameButtonStyle.glass,
+                              tap: TapRole.primary,
+                              onPressed: () => context.go(toBoard ? Routes.season : Routes.caseFile(nextCase.id)),
+                            ),
+                            const SizedBox(height: AppSpace.md),
+                            // For grown-ups (behind the parent gate): secondary, and
+                            // the lock says it asks first.
+                            GameButton(
+                              label: 'VIEW MY DETECTIVE REPORT',
+                              glyph: InkGlyph.lock,
+                              singleLine: true, // one line on a 360-wide phone
+                              style: GameButtonStyle.outline,
+                              onPressed: _openParentReport,
+                            ),
+                            const SizedBox(height: AppSpace.sm),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: InkTextButton(
+                                    label: 'Notebook',
+                                    glyph: InkGlyph.notebook,
+                                    color: AppColors.paperLight.withValues(alpha: 0.75),
+                                    onPressed: () => context.push(Routes.notebook),
+                                  ),
+                                ),
+                                // Custom Asset Required: a replay glyph.
+                                Expanded(
+                                  child: InkTextButton(
+                                    label: 'Play again',
+                                    color: AppColors.paperLight.withValues(alpha: 0.75),
+                                    onPressed: _playAgain,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -230,6 +269,128 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Under the last case's report, once its season is complete: the season's
+/// finale lines, the train ticket on to the next season's city (the same
+/// ticket as in that season's opening), and the way there. GO TO PARIS is
+/// the one strong action while the next season can be played; while it
+/// cannot (not released, and no operator preview), the ticket is stamped
+/// COMING SOON and the completed board leads instead. The report for
+/// grown-ups, the notebook and Play again stay, quieter.
+class _SeasonFinale extends ConsumerWidget {
+  const _SeasonFinale({
+    required this.season,
+    required this.next,
+    required this.ticketIn,
+    required this.onGo,
+    required this.onBoard,
+    required this.onReport,
+    required this.onNotebook,
+    required this.onPlayAgain,
+  });
+
+  final Season season;
+  final SeasonAvailability next;
+
+  /// How far the ticket has come in (0..1).
+  final double ticketIn;
+  final VoidCallback onGo;
+  final VoidCallback onBoard;
+  final VoidCallback onReport;
+  final VoidCallback onNotebook;
+  final VoidCallback onPlayAgain;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final open = next.canEnter;
+    final to = next.season.city.toUpperCase();
+    final name = ref.watch(detectiveProfileProvider).detectiveName;
+    final quiet = AppColors.paperLight.withValues(alpha: 0.75);
+    final lines = season.finale.isEmpty ? ['${season.city} needs you again.'] : season.finale;
+    return Column(
+      children: [
+        for (final line in lines)
+          Text(line, style: AppText.cinematicPrompt(size: 22), textAlign: TextAlign.center),
+        const SizedBox(height: AppSpace.md),
+        // Small beside the case file: held out, not a second certificate.
+        Semantics(
+          label: 'Train ticket, ${season.city} to ${next.season.city}${open ? '' : ', coming soon'}',
+          excludeSemantics: true,
+          child: Transform.translate(
+            offset: Offset(-24 * (1 - ticketIn), 0),
+            child: Transform.rotate(
+              angle: -0.04,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: TrainTicket(
+                  key: const ValueKey('finale-ticket'),
+                  from: season.city.toUpperCase(),
+                  to: to,
+                  passenger: name == null || name.isEmpty ? null : 'DETECTIVE ${name.toUpperCase()}',
+                  stamp: open ? null : 'COMING SOON',
+                  width: 240,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpace.md),
+        Text(
+          '${next.season.label} · ${next.season.title.toUpperCase()}',
+          key: const ValueKey('finale-next-season'),
+          style: AppText.eyebrow(color: AppColors.goldLight),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 16),
+        if (open) ...[
+          GameButton(
+            key: const ValueKey('go-to-next-season'),
+            label: 'GO TO $to',
+            glyph: InkGlyph.train,
+            arrow: true,
+            singleLine: true,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: onGo,
+          ),
+          const SizedBox(height: AppSpace.md),
+          // The season's completed board: its twelve cases, looked back on.
+          GameButton(
+            label: 'INVESTIGATION BOARD',
+            glyph: InkGlyph.pin,
+            singleLine: true,
+            style: GameButtonStyle.outline,
+            onPressed: onBoard,
+          ),
+        ] else
+          // Nothing to press for the city still to come: the board leads.
+          GameButton(
+            label: 'INVESTIGATION BOARD',
+            glyph: InkGlyph.pin,
+            arrow: true,
+            singleLine: true,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: onBoard,
+          ),
+        const SizedBox(height: AppSpace.sm),
+        // For grown-ups (behind the parent gate, as the lock says).
+        InkTextButton(label: 'View my detective report', glyph: InkGlyph.lock, color: quiet, onPressed: onReport),
+        Row(
+          children: [
+            Expanded(
+              child: InkTextButton(label: 'Notebook', glyph: InkGlyph.notebook, color: quiet, onPressed: onNotebook),
+            ),
+            // Custom Asset Required: a replay glyph.
+            Expanded(
+              child: InkTextButton(label: 'Play again', color: quiet, onPressed: onPlayAgain),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
