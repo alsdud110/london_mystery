@@ -20,6 +20,7 @@ import '../../features/onboarding/story_intro_screen.dart';
 import '../../features/result/case_solved_screen.dart';
 import '../../features/result/parent_report_screen.dart';
 import '../../features/season/season_prologue_screen.dart';
+import '../../features/season/paris_case01_screen.dart';
 import '../../features/season/season_screen.dart';
 import '../../features/season/world_archive_screen.dart';
 import '../../widgets/back_to.dart';
@@ -50,6 +51,7 @@ abstract final class Routes {
   /// Season 2's opening sequence: for the season being played, or as a
   /// preview in a build with operator tools (never in a release build).
   static const parisPrologue = '/season/paris-prologue';
+  static const parisCase01Preview = '/season/paris-case01-preview';
   static const episodes = '/episodes';
   static const intro = '/intro';
   static const map = '/map';
@@ -117,6 +119,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (path == Routes.register) return progress.hasDetective ? Routes.start : null;
 
       if (!progress.hasDetective) return Routes.register;
+
+      if (path == Routes.parisCase01Preview) {
+        return ref.read(operatorToolsAvailableProvider) ? null : Routes.seasons;
+      }
 
       if (path == Routes.parisPrologue) {
         // Season 2 is not unlocked for anyone by its opening: only the season
@@ -189,6 +195,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.prologue, pageBuilder: (c, s) => _fade(s, const SeasonPrologueScreen())),
       // Season 2's opening (it handles back itself, as Season 1's does).
       GoRoute(path: Routes.parisPrologue, pageBuilder: (c, s) => _fade(s, const ParisPrologueScreen())),
+      GoRoute(path: Routes.parisCase01Preview, pageBuilder: (c, s) => _fade(s, const ParisCase01Screen())),
       GoRoute(
         path: Routes.episodes,
         // The case files sit under the season: back goes up to it.
