@@ -19,8 +19,18 @@ abstract final class AnswerChecker {
     switch (mission.type) {
       case MissionType.multipleChoice:
       case MissionType.imageChoice:
+      case MissionType.canvasChoice:
         for (final o in mission.options) {
           if (o.id == submission) return o.feedback;
+        }
+        return null;
+      // The first part given that is not in the answer, and its line.
+      case MissionType.spotDifferences:
+      case MissionType.matchPairs:
+      case MissionType.revealLayer:
+        final expected = Mission.sequenceIds(mission.answer).toSet();
+        for (final part in Mission.sequenceIds(submission)) {
+          if (!expected.contains(part)) return mission.feedback[part];
         }
         return null;
       case MissionType.sequence:
@@ -50,7 +60,15 @@ abstract final class AnswerChecker {
     switch (mission.type) {
       case MissionType.multipleChoice:
       case MissionType.imageChoice:
+      case MissionType.canvasChoice:
         return submission == mission.answer;
+      // Every part found, each once, in any order.
+      case MissionType.spotDifferences:
+      case MissionType.matchPairs:
+      case MissionType.revealLayer:
+        final given = Mission.sequenceIds(submission);
+        final expected = Mission.sequenceIds(mission.answer);
+        return given.isNotEmpty && given.length == expected.length && _sameItems(given, expected);
       case MissionType.sequence:
         final given = Mission.sequenceIds(submission);
         final expected = Mission.sequenceIds(mission.answer);

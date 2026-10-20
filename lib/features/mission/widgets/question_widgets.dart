@@ -937,6 +937,13 @@ Widget questionFor(Mission mission, AnswerCallback onSubmit) =>
         mission: mission,
         onSubmit: onSubmit,
       ),
+      // Played on their pictures only, never as a list or a field (Paris
+      // Case 02: `SpotDifferences`, `StudioMatch`, `RevealLayer` and the
+      // final's `CanvasPicker`), so there is nothing to show here.
+      MissionType.spotDifferences ||
+      MissionType.matchPairs ||
+      MissionType.revealLayer ||
+      MissionType.canvasChoice => const SizedBox.shrink(),
     };
 
 /// The curve of a number wheel: darker towards its top and bottom edges.

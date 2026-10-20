@@ -22,6 +22,7 @@ class GameProgress {
     this.xpRules = const {},
     this.behavior = BehaviorLog.empty,
     this.examined = const [],
+    this.revealed = const {},
     this.startedAt,
     this.completedAt,
     this.playMillis,
@@ -85,6 +86,15 @@ class GameProgress {
 
   /// The [examined] key of [thing] looked at in mission [missionId].
   static String examinedKey(String missionId, String thing) => '$missionId:$thing';
+
+  /// How far a painted-over picture's top layer is slid away, by mission id
+  /// (0: covered, 1: all slid away), so it stays where it was left after a
+  /// restart. Kept apart from the marks found underneath ([examined]):
+  /// sliding the paint away finds nothing by itself. Never XP.
+  final Map<String, double> revealed;
+
+  /// How far mission [missionId]'s top layer is slid away (0 when never).
+  double revealedOf(String missionId) => revealed[missionId] ?? 0;
 
   final DateTime? startedAt;
   final DateTime? completedAt;
@@ -167,6 +177,7 @@ class GameProgress {
     Map<String, int>? xpRules,
     BehaviorLog? behavior,
     List<String>? examined,
+    Map<String, double>? revealed,
     DateTime? startedAt,
     DateTime? completedAt,
     int? playMillis,
@@ -187,6 +198,7 @@ class GameProgress {
       xpRules: xpRules ?? this.xpRules,
       behavior: behavior ?? this.behavior,
       examined: examined ?? this.examined,
+      revealed: revealed ?? this.revealed,
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
       playMillis: playMillis ?? this.playMillis,
@@ -250,6 +262,13 @@ class GameProgress {
       xpRules: intMap(json['xpRules']),
       behavior: json['behavior'] is Map ? BehaviorLog.fromJson(json['behavior'] as Map) : null,
       examined: strList(json['examined']),
+      revealed: json['revealed'] is Map
+          ? {
+              for (final e in (json['revealed'] as Map).entries)
+                if (e.value is num && (e.value as num).isFinite)
+                  e.key.toString(): (e.value as num).toDouble().clamp(0.0, 1.0),
+            }
+          : const {},
       startedAt: startedAt,
       completedAt: completedAt,
       playMillis: playMillis,
@@ -273,6 +292,7 @@ class GameProgress {
         // Written whenever actions are recorded: an absent key means "not recorded".
         if (behavior != null) 'behavior': behavior!.toJson(),
         if (examined.isNotEmpty) 'examined': examined,
+        if (revealed.isNotEmpty) 'revealed': revealed,
         'startedAt': startedAt?.toIso8601String(),
         'completedAt': completedAt?.toIso8601String(),
         if (playMillis != null) 'playMillis': playMillis,

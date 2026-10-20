@@ -99,8 +99,15 @@ void main() {
       Artwork.gareDuNord: 'assets/seasons/season_02_paris/cover/season2_gare_du_nord.png',
       // Case 01 M3: the old clock's face, its hands set by the detective.
       Artwork.oldClockFace: 'assets/seasons/season_02_paris/cases/case_01/old_clock_face.png',
+      // Case 02 begins on the painting from Case 01's brass box; its street
+      // (as it really is) and the painter's studio.
+      Artwork.montmartrePainting: 'assets/seasons/season_02_paris/cases/case_01/montmartre_painting.png',
+      Artwork.montmartreStreet: 'assets/seasons/season_02_paris/cases/case_02/montmartre_street_real.png',
+      Artwork.paintersStudio: 'assets/seasons/season_02_paris/cases/case_02/painters_studio.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
+    expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
+    expect(LandmarkArt.hasPicture(Artwork.paintersStudio), isTrue);
     expect(ArtAssets.scenes, {...landmarks, ...inside, ...objectScenes, ...parisScenes});
     for (final a in Artwork.values) {
       expect(
@@ -126,8 +133,9 @@ void main() {
   });
 
   testWidgets('every scene picture is in the app bundle', (t) async {
-    // Season 1's 31, and Season 2's Gare du Nord and old clock face.
-    expect(ArtAssets.scenes, hasLength(33));
+    // Season 1's 31, and Season 2's Gare du Nord, old clock face, the
+    // Montmartre painting (Case 02's first scene), Case 02's street and studio.
+    expect(ArtAssets.scenes, hasLength(36));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,
@@ -313,6 +321,10 @@ void main() {
       // Paris Case 01: the lost ticket and the painting, their own pictures.
       's2_ep01_e2': 'assets/seasons/season_02_paris/cases/case_01/lost_ticket.png',
       's2_ep01_e4': 'assets/seasons/season_02_paris/cases/case_01/montmartre_painting.png',
+      // Paris Case 02: the painted street (its clock above the door). The
+      // notes, the sketch and the message keep their marks: no picture shows
+      // them as the evidence says.
+      's2_ep02_e1': 'assets/seasons/season_02_paris/cases/case_02/montmartre_street_painted.png',
     });
     final evidence = {for (final e in MockEpisodeRepository.bundled()) for (final x in e.allEvidence) x.id: x};
     expect(evidence.keys, containsAll(ArtAssets.evidencePictures.keys), reason: 'real evidence ids');

@@ -14,6 +14,7 @@ import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
+import '../../data/models/painter_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/coin_balance.dart';
@@ -33,6 +34,7 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
+import 'widgets/canvas_choice.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
 import 'widgets/lock_box.dart';
 import 'widgets/question_widgets.dart';
@@ -69,6 +71,44 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   /// or null: the case's place behind the lock.
   LockBoxArt? get _box => SeasonCatalog.lockBox(_mission);
 
+  /// Canvases to look at and turn round (Paris Case 02), or null.
+  CanvasScene? get _canvases => SeasonCatalog.canvasChoice(_mission);
+
+  /// The canvas looked at, and the canvases looked at (saved, so they stay
+  /// looked at after a restart).
+  String _looking = '';
+  final Set<String> _looked = {};
+  bool _checking = false;
+
+  String _canvasKey(String id) => GameProgress.examinedKey(_mission.id, id);
+
+  /// Where the back of the right canvas counts as read.
+  String get _backKey => GameProgress.examinedKey(_mission.id, 'back');
+
+  void _lookAt(String id) {
+    setState(() {
+      _looking = id;
+      _looked.add(id);
+    });
+    ref.read(gameControllerProvider.notifier).recordExamined(_canvasKey(id));
+  }
+
+  Future<void> _turnCanvas() async {
+    if (_checking) return;
+    setState(() => _checking = true);
+    try {
+      await _submit(_looking);
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
+  Future<void> _readBack() async {
+    ref.read(gameControllerProvider.notifier).recordExamined(_backKey);
+    await showCanvasBack(context, scene: _canvases!, evidence: _mission.evidence);
+    if (mounted) setState(() {});
+  }
+
   /// The letters in the lock's slots, as the box shows them.
   List<String?> _lockLetters = const [];
 
@@ -81,6 +121,20 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final length = _mission.codeLength ?? _mission.answer.length;
     _digits = List.filled(length, 0);
     final progress = ref.read(gameControllerProvider);
+    final canvases = _canvases;
+    if (canvases != null) {
+      for (final c in canvases.canvases) {
+        if (progress.hasExamined(_canvasKey(c.id))) _looked.add(c.id);
+      }
+      // Solved: the right one, turned round. Otherwise the first canvas is
+      // looked at.
+      _looking = progress.isCaseSolved ? _mission.answer : canvases.canvases.first.id;
+      if (!progress.isCaseSolved && _looked.add(_looking)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) ref.read(gameControllerProvider.notifier).recordExamined(_canvasKey(_looking));
+        });
+      }
+    }
     if (progress.isCaseSolved) {
       _open.value = 1;
     } else {
@@ -104,9 +158,15 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     // The Royal Box's pictures decoded ahead: shut on arrival, and open the
     // moment the code is right (never a blank frame as the lid swings).
     final box = _box;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null)) return;
+    final canvases = _canvases;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null)) return;
     _precached = true;
-    for (final file in box == null ? [ArtAssets.royalBox.closed, ArtAssets.royalBox.open] : [box.closed, box.open, box.found]) {
+    final files = canvases != null
+        ? [for (final c in canvases.canvases) c.file, canvases.back]
+        : box == null
+        ? [ArtAssets.royalBox.closed, ArtAssets.royalBox.open]
+        : [box.closed, box.open, box.found];
+    for (final file in files) {
       precacheImage(AssetImage(file), context, onError: (_, _) {});
     }
   }
@@ -380,6 +440,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final progress = ref.watch(gameControllerProvider);
     final solved = progress.isCaseSolved;
     final box = _box;
+    final canvases = _canvases;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -432,16 +493,30 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                     // A smaller stage on a small phone, so the story and the locks
                     // come sooner; the full 250 on taller screens. The Royal Box
                     // gets the height its picture needs at this width (the open
-                    // box, looked at a little closer, the Crown large).
+                    // box, looked at a little closer, the Crown large). Canvases
+                    // are looked at by their choice, the clues in view above
+                    // them: the stage shows the right one, turned round.
+                    if (canvases == null || solved)
                     LayoutBuilder(
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : canvases != null
+                            ? (stage.maxWidth / canvases.pixels.aspect)
+                                .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : box != null
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: box != null
+                          child: canvases != null
+                              ? CanvasStage(
+                                  key: const ValueKey('canvas-stage'),
+                                  scene: canvases,
+                                  looking: _looking,
+                                  turn: _open,
+                                  turned: true,
+                                )
+                              : box != null
                               // The box itself: the lock's letters in its slots,
                               // opening round them with the solve.
                               ? LockBoxStage(
@@ -563,6 +638,35 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           onPressed: _rereadLetter,
         ),
       ),
+    ] else if (_canvases case final canvases?) ...[
+      // The canvas looked at, whole (a tap looks closer), over the four.
+      LayoutBuilder(
+        builder: (context, box) => SizedBox(
+          height: (box.maxWidth / canvases.pixels.aspect).clamp(150.0, 340.0),
+          child: CanvasStage(
+            key: const ValueKey('canvas-stage'),
+            scene: canvases,
+            looking: _looking,
+            turn: _open,
+            turned: false,
+            onCloser: () => showCanvasCloser(context, canvases, _looking, m.options.firstWhere((o) => o.id == _looking).label),
+          ),
+        ),
+      ),
+      const SizedBox(height: AppSpace.md),
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: CanvasPicker(
+          key: const ValueKey('canvas-picker'),
+          scene: canvases,
+          mission: m,
+          looking: _looking,
+          looked: _looked,
+          checking: _checking,
+          onLook: _lookAt,
+          onTurn: _turnCanvas,
+        ),
+      ),
     ] else if (_box != null && m.type == MissionType.letterLock)
       // The box's lock: what is set in it shows on the box above.
       ShakeOnChange(
@@ -644,7 +748,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         ],
         // A box with something in it: looked at first (its back holds the
         // case's last words), then the story goes on.
-        if (_box != null && !ref.watch(gameControllerProvider).hasExamined(_insideKey!))
+        if (_canvases != null && !ref.watch(gameControllerProvider).hasExamined(_backKey))
+          GameButton(
+            key: const ValueKey('final-read-back'),
+            label: 'READ THE BACK',
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _readBack,
+          )
+        else if (_box != null && !ref.watch(gameControllerProvider).hasExamined(_insideKey!))
           GameButton(
             key: const ValueKey('final-look-inside'),
             label: 'LOOK INSIDE THE BOX',

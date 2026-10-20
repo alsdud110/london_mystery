@@ -242,6 +242,13 @@ class MissionPlay {
         return;
       case MissionType.examine || MissionType.finalCode:
         fail('not used here');
+      // Played on their pictures (Paris Case 02 only): played through in
+      // `paris_case02_test.dart`, never by this Season 1 helper.
+      case MissionType.spotDifferences ||
+          MissionType.matchPairs ||
+          MissionType.revealLayer ||
+          MissionType.canvasChoice:
+        fail('${m.type} is played on its pictures: see paris_case02_test.dart');
     }
     await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 400));
   }

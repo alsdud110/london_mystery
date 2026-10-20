@@ -19,6 +19,7 @@ import '../../data/models/scene_explore.dart';
 import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
 import '../../data/models/game_progress.dart';
+import '../../data/models/painter_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
 import '../../data/models/station_clocks.dart';
 import '../../data/models/story_picture.dart';
@@ -55,6 +56,9 @@ import 'widgets/scene_explore.dart';
 import 'widgets/station_clocks.dart';
 import 'widgets/story_picture_view.dart';
 import 'widgets/question_widgets.dart';
+import 'widgets/reveal_layer.dart';
+import 'widgets/spot_differences.dart';
+import 'widgets/studio_match.dart';
 import 'widgets/tip_shop.dart';
 import '../../data/models/detective_name.dart';
 
@@ -117,10 +121,27 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// (saved too: [GameProgress.examined]), what is open over the hall.
   final StationClocksProgress _station = StationClocksProgress();
 
+  /// A mission played on its pictures (a street and its painting, a studio,
+  /// a painted-over sketch): what was found (saved too:
+  /// [GameProgress.examined]), what is open or joined on the page.
+  final PicturePuzzleProgress _picture = PicturePuzzleProgress();
+
   @override
   void initState() {
     super.initState();
     final progress = ref.read(gameControllerProvider);
+    // What was found on the pictures before (an earlier visit, or before a
+    // restart) stays found.
+    final m = _mission;
+    final things = [
+      ...?SeasonCatalog.compare(m)?.changes.map((c) => c.id),
+      ...?SeasonCatalog.studio(m)?.paintings.map((p) => p.id),
+      if (SeasonCatalog.studio(m) != null) deskId,
+      ...?SeasonCatalog.layer(m)?.marks.map((x) => x.id),
+    ];
+    for (final id in things) {
+      if (progress.hasExamined(GameProgress.examinedKey(widget.missionId, id))) _picture.found.add(id);
+    }
     // The clocks and the board looked at before (an earlier visit, or
     // before a restart) stay looked at.
     final hall = SeasonCatalog.stationClocks(_mission);
@@ -179,6 +200,13 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       setState(() => _station.open = null);
       return;
     }
+    // The studio: back first closes the painting, the notes or the matching
+    // page over it.
+    final inStudio = _stage == MissionStage.puzzle && SeasonCatalog.studio(_mission) != null;
+    if (inStudio && _picture.open != null) {
+      setState(() => _picture.open = null);
+      return;
+    }
     // Looking round a place, or examining its exhibits: back first closes
     // what is open over it.
     if (exploring && _explore.open != null) {
@@ -213,6 +241,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               !exploring &&
               !inspecting &&
               !comparing &&
+              !inStudio &&
               !reading &&
               !examining
           ? MissionStage.letter
@@ -281,6 +310,57 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         hintsShown: hintsShown,
         onHint: () => _showHint(m),
         wrongPulse: _wrongPulse,
+      );
+
+  /// A thing found on a mission's pictures: saved, so it stays found.
+  void _recordFound(Mission m, String id) =>
+      ref.read(gameControllerProvider.notifier).recordExamined(GameProgress.examinedKey(m.id, id));
+
+  /// A street compared with its painting (every change found answers the
+  /// mission's puzzle).
+  Widget _compareStage(Mission m, CompareScene scene, int hintsShown) => SpotDifferences(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        mission: m,
+        progress: _picture,
+        onChanged: () => setState(() {}),
+        onFound: (id) => _recordFound(m, id),
+        onComplete: () => _submit(m, m.answer),
+        onReread: () => _rereadLetter(m),
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+      );
+
+  /// A studio looked round, its notes joined to its paintings (the pairs
+  /// answer the mission's puzzle).
+  Widget _studioStage(Mission m, StudioScene scene, int hintsShown) => StudioMatch(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        mission: m,
+        progress: _picture,
+        onChanged: () => setState(() {}),
+        onFound: (id) => _recordFound(m, id),
+        onSubmit: (a) => _submit(m, a),
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+        wrongPulse: _wrongPulse,
+      );
+
+  /// A sketch uncovered under its paint (every thing found on it answers the
+  /// mission's puzzle).
+  Widget _layerStage(Mission m, LayerScene scene, GameProgress progress) => RevealLayer(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        mission: m,
+        progress: _picture,
+        revealed: progress.revealedOf(m.id),
+        onChanged: () => setState(() {}),
+        onReveal: (v) => ref.read(gameControllerProvider.notifier).recordReveal(m.id, v),
+        onFound: (id) => _recordFound(m, id),
+        onComplete: () => _submit(m, m.answer),
+        onReread: () => _rereadLetter(m),
+        hintsShown: progress.hintsFor(m.id),
+        onHint: () => _showHint(m),
       );
 
   /// The thing handed over with the letter, looked at closer (kept as seen).
@@ -494,6 +574,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final deduction = SeasonCatalog.deduction(m);
     final decode = SeasonCatalog.decode(m);
     final hall = SeasonCatalog.stationClocks(m);
+    final compare = SeasonCatalog.compare(m);
+    final studio = SeasonCatalog.studio(m);
+    final layer = SeasonCatalog.layer(m);
     final exhibit = SeasonCatalog.exhibit(m);
 
     final Widget body = solved
@@ -523,6 +606,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                 onInvestigate: () => _goTo(
                   talk != null ||
                           hall != null ||
+                          studio != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -568,6 +652,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               hall,
               progress.hintsFor(m.id),
             ),
+            MissionStage.puzzle when compare != null => _compareStage(m, compare, progress.hintsFor(m.id)),
+            MissionStage.puzzle when studio != null => _studioStage(m, studio, progress.hintsFor(m.id)),
+            MissionStage.puzzle when layer != null => _layerStage(m, layer, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,

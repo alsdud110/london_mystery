@@ -22,7 +22,33 @@ enum MissionType {
   /// A letter lock: the options are letter tiles, each used once, set into
   /// as many slots to spell [Mission.answer] (a word, checked like a typed
   /// one). Season 2's first final (TIME).
-  letterLock;
+  letterLock,
+
+  // Played on their pictures only (Season 2, Case 02): the answer is what
+  // the detective finds or joins there, never typed or picked from a list.
+
+  /// Two pictures side by side (a place and a painting of it): the options
+  /// are the differences, all found in any order ([Mission.answer]: their
+  /// ids joined by commas).
+  spotDifferences,
+
+  /// Notes joined to pictures: the options are the notes; the answer pairs
+  /// each note with its picture (`note:picture`, joined by commas), in any
+  /// order.
+  matchPairs,
+
+  /// A picture painted over another: the top one slid away, the options are
+  /// the marks to find underneath, all of them, in any order.
+  revealLayer,
+
+  /// Canvases to choose from by every clue found: the options are the
+  /// canvases (each wrong one says which clue it misses); the right one is
+  /// turned round.
+  canvasChoice;
+
+  /// The ids an answer of a set ([spotDifferences], [matchPairs],
+  /// [revealLayer]) is made of, in any order.
+  bool get answersASet => this == spotDifferences || this == matchPairs || this == revealLayer;
 
   static MissionType fromJson(String value) => MissionType.values.firstWhere(
     (t) => t.name == value,
@@ -115,7 +141,14 @@ enum Artwork {
   gareDuNord,
   // The old clock's face at Gare du Nord, without hands (Case 01 M3: the
   // detective sets them). Named by the presentation (`season2Clocks`).
-  oldClockFace;
+  oldClockFace,
+  // The painting of Montmartre found in Case 01's brass box: where Case 02
+  // begins.
+  montmartrePainting,
+  // Case 02's places, waiting for their pictures (the case is not in the
+  // game until they are): a street in Montmartre, and the painter's studio.
+  montmartreStreet,
+  paintersStudio;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));
@@ -342,6 +375,12 @@ class Mission {
     MissionType.multipleChoice || MissionType.imageChoice => _optionLabel(answer),
     MissionType.sequence => sequenceIds(answer).map(_optionLabel).join(' → '),
     MissionType.examine => 'Examine it in the scene (nothing to type)',
+    MissionType.spotDifferences || MissionType.revealLayer => sequenceIds(answer).map(_optionLabel).join(' · '),
+    MissionType.matchPairs => [
+      for (final pair in sequenceIds(answer))
+        if (pair.split(':') case [final note, final picture]) '${_optionLabel(note)} → $picture',
+    ].join(' · '),
+    MissionType.canvasChoice => _optionLabel(answer),
     _ => answer,
   };
 

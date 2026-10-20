@@ -312,7 +312,11 @@ class _LandmarkPainter extends CustomPainter {
       case Artwork.parkMapD:
         _parkMap(canvas, const Offset(43, 15));
       // Season 2's places: their own pictures only, no London drawing.
-      case Artwork.gareDuNord || Artwork.oldClockFace:
+      case Artwork.gareDuNord ||
+          Artwork.oldClockFace ||
+          Artwork.montmartrePainting ||
+          Artwork.montmartreStreet ||
+          Artwork.paintersStudio:
         break;
     }
     canvas.restore();

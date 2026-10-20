@@ -1,4 +1,5 @@
 import 'episode01_mock.dart';
+import 'episode02_mock.dart';
 
 /// Season 2 as a whole: who the season is. Its cases, casebook lines and
 /// board figures come with its content; until then the season has no cases,
@@ -19,7 +20,16 @@ const Map<String, dynamic> season2InfoJson = {
 /// Season 2's cases in case order, by id. The season is not released yet
 /// (see `season2Content`): its cases are played only in an operator
 /// build's season preview.
-const Map<String, Map<String, dynamic>> season2Json = {'s2_ep01': season2Episode01Json};
+const Map<String, Map<String, dynamic>> season2Json = {
+  's2_ep01': season2Episode01Json,
+  's2_ep02': season2Episode02Json,
+};
+
+/// Season 2's cases written but waiting for their pictures, in case order:
+/// never in the game (no case file, board, map or save shows them) until
+/// their pictures are, then moved into [season2Json]. None now: Case 02's
+/// pictures are in (2026-10-21).
+const Map<String, Map<String, dynamic>> season2AwaitingArtJson = {};
 
 /// Season 2's opening sequence, played once before its Case 01: five short
 /// scenes and the first case's file. It picks up where Season 1 ended

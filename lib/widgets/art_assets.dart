@@ -246,14 +246,20 @@ abstract final class ArtAssets {
     ...parisScenes,
   };
 
-  /// Season 2's scenes: Gare du Nord's hall (Case 01), and the old clock's
-  /// face (no hands: [clockHands]).
+  /// Season 2's scenes: Gare du Nord's hall (Case 01), the old clock's face
+  /// (no hands: [clockHands]), the painting of Montmartre from the brass
+  /// box, where Case 02 begins, and Case 02's street (as it really is) and
+  /// the painter's studio.
   static const parisScenes = <Artwork, String>{
     Artwork.gareDuNord: season2GareDuNord,
     Artwork.oldClockFace: '$_paris01/old_clock_face.png',
+    Artwork.montmartrePainting: '$_paris01/montmartre_painting.png',
+    Artwork.montmartreStreet: '$_paris02/montmartre_street_real.png',
+    Artwork.paintersStudio: '$_paris02/painters_studio.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
+  static const _paris02 = 'assets/seasons/season_02_paris/cases/case_02';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -318,6 +324,10 @@ abstract final class ArtAssets {
     // Season 2: Gare du Nord's hall, a portrait picture.
     Artwork.gareDuNord: 941 / 1671,
     Artwork.oldClockFace: 1,
+    Artwork.montmartrePainting: 1774 / 887,
+    Artwork.montmartreStreet: 1536 / 1024,
+    // The studio: a portrait picture.
+    Artwork.paintersStudio: 1024 / 1536,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).
@@ -421,6 +431,8 @@ abstract final class ArtAssets {
     // [evidencePrints]).
     's2_ep01_e2': '$_paris01/lost_ticket.png',
     's2_ep01_e4': '$_paris01/montmartre_painting.png',
+    // Paris Case 02: the painting of the street, its clock above the door.
+    's2_ep02_e1': '$_paris02/montmartre_street_painted.png',
   };
 
   /// Evidence pictures too wide for the round frame's close look: shown
@@ -428,6 +440,7 @@ abstract final class ArtAssets {
   static const evidencePrints = <String, double>{
     's2_ep01_e2': 1774 / 887,
     's2_ep01_e4': 1774 / 887,
+    's2_ep02_e1': 1536 / 1024,
   };
 
   /// What a case's Case Closed file shows under its title in place of the

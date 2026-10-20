@@ -67,7 +67,7 @@ void main() {
 
   group('the case', () {
     test('Case 01 of Paris: its id, season, place and four puzzles', () {
-      expect([for (final e in all.where((e) => e.seasonId == SeasonIds.paris)) e.id], ['s2_ep01']);
+      expect([for (final e in all.where((e) => e.seasonId == SeasonIds.paris)) e.id], ['s2_ep01', 's2_ep02']);
       expect(paris.number, 1);
       expect(paris.title, 'The Ticking Watch');
       expect(paris.introScene, Artwork.gareDuNord);
@@ -181,8 +181,10 @@ void main() {
             for (final o in m.options) o.label,
             ...m.hints,
           ].join(' \n '));
-      expect(season2Learning.keys.toSet(), {for (final m in paris.allMissions) m.id});
-      expect(season2LanguageTopics.keys, ['s2_ep01']);
+      // Case 01's own (Case 02's are checked in paris_case02_test.dart).
+      expect(season2Learning.keys.where((id) => id.startsWith('s2_ep01_')).toSet(), {for (final m in paris.allMissions) m.id});
+      expect(season2LanguageTopics.keys.first, 's2_ep01');
+      expect(season2LanguageTopics.keys.toSet(), {'s2_ep01', 's2_ep02'});
       for (final m in paris.allMissions) {
         final l = SeasonCatalog.learning(m)!;
         expect(l.isHonest, isTrue, reason: m.id);
@@ -915,8 +917,9 @@ void main() {
         await shot('case_closed_footer');
         expect(find.text('Paris needs you again.'), findsOneWidget);
         expect(find.text('London needs you again.'), findsNothing);
-        expect(find.text('CASE 02 · COMING SOON'), findsOneWidget);
-        expect(find.textContaining('OPEN CASE'), findsNothing, reason: 'no Case 02 to open');
+        // Case 02 is in the game: it is next, nothing COMING SOON.
+        expect(find.text('OPEN CASE 02'), findsOneWidget);
+        expect(find.textContaining('COMING SOON'), findsNothing, reason: 'Case 02 is open now');
 
         // Saved in Paris's own record; Season 1 and its saves untouched.
         expect(ref.read(seasonProvider).solvedEpisodeIds, ['s2_ep01']);
@@ -930,12 +933,15 @@ void main() {
         expect([for (final c in progress.collectedClues(paris)) c.value], ['T', 'I', 'M']);
         expect([for (final e in progress.collectedEvidence(paris)) e.name], ['Station Notice', 'Lost Ticket', "The Clockmaker's Mark", 'Montmartre Painting']);
 
-        // The board: Case 02 is coming, nothing to begin.
-        await tapText(t, 'INVESTIGATION BOARD', after: const Duration(milliseconds: 3000));
+        // The board: Case 02 is the case to begin now (its case is the
+        // board's current one, so OPEN CASE 02 goes there).
+        await tapText(t, 'OPEN CASE 02', after: const Duration(milliseconds: 3000));
         expect(path(), Routes.season);
-        await reveal(t, find.text('CASE 02 · COMING SOON'));
+        expect(ref.read(seasonOverviewProvider).currentCase?.id, 's2_ep02');
+        await reveal(t, find.text('BEGIN INVESTIGATION'));
         await shot('board');
-        expect(find.text('BEGIN INVESTIGATION'), findsNothing);
+        expect(find.text('BEGIN INVESTIGATION'), findsOneWidget);
+        expect(find.textContaining('COMING SOON'), findsNothing);
         expect(find.text('SEASON COMPLETE'), findsNothing);
 
         // Back to Season 1 and, from its completed board, BEGIN SEASON TWO
@@ -946,8 +952,8 @@ void main() {
         await t.tap(find.byKey(const ValueKey('begin-next-season')));
         await wait(t, const Duration(milliseconds: 2400));
         expect(ref.read(selectedSeasonIdProvider), SeasonIds.paris);
-        await reveal(t, find.text('CASE 02 · COMING SOON'));
-        expect(find.text('CASE 02 · COMING SOON'), findsOneWidget, reason: 'its board, as left');
+        await reveal(t, find.text('BEGIN INVESTIGATION'));
+        expect(find.text('BEGIN INVESTIGATION'), findsOneWidget, reason: 'its board, as left: Case 02 to begin');
         expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'no cover again');
         await wait(t, const Duration(seconds: 3));
       });

@@ -433,6 +433,10 @@ class _MissionRow extends StatelessWidget {
       MissionType.finalCode => '최종 암호',
       MissionType.sequence => '순서 맞추기',
       MissionType.letterLock => '글자 자물쇠',
+      MissionType.spotDifferences => '그림 비교',
+      MissionType.matchPairs => '메모와 그림 연결',
+      MissionType.revealLayer => '숨은 밑그림 조사',
+      MissionType.canvasChoice => '단서로 캔버스 고르기',
     };
     final role = p.learning?.dependency.labelKo;
     final String record;

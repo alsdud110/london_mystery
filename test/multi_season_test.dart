@@ -44,9 +44,10 @@ Episode parisCase(int n) {
   return Episode.fromJson({...jsonDecode(text) as Map<String, dynamic>, 'number': n, 'seasonId': SeasonIds.paris});
 }
 
-/// The game as bundled (Season 1, and Paris's Case 01), with a stand-in
-/// Paris Case 02 after it.
-final withParis = [...MockEpisodeRepository.bundled(), parisCase(2)];
+/// The game as bundled: Season 1, and Paris's Case 01 with its Case 02
+/// after it (in the game since its pictures came in; before, a stand-in
+/// Case 02 stood here).
+final withParis = MockEpisodeRepository.bundled();
 
 /// Every season played as if released. Season 2 is not released yet (only an
 /// operator build's season preview plays it: see `paris_case01_test.dart`);
@@ -116,7 +117,7 @@ void main() {
   tearDown(() => container.dispose());
 
   group('season ids and content', () {
-    test('Season 1 keeps its cases, ids and content; Season 2 has its Case 01, not released', () {
+    test('Season 1 keeps its cases, ids and content; Season 2 has its Cases 01 and 02, not released', () {
       final seasons = container.read(seasonsProvider);
       expect([for (final s in seasons) s.id], [SeasonIds.london, SeasonIds.paris]);
       expect(seasons.first.title, 'Shadows over London');
@@ -130,7 +131,7 @@ void main() {
       expect(container.read(seasonInfoProvider).id, SeasonIds.london);
       expect([for (final e in container.read(episodeCatalogProvider)) e.id], season1Ids);
       expect(container.read(episodeCatalogProvider).every((e) => e.seasonId == SeasonIds.london), isTrue);
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02']);
       expect(SeasonCatalog.byId(SeasonIds.paris)!.released, isFalse);
       expect(SeasonCatalog.byId(SeasonIds.london)!.released, isTrue);
     });
@@ -146,8 +147,8 @@ void main() {
     });
 
     test('every season orders its own cases from 01, season by season', () {
-      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(2), ...MockEpisodeRepository.bundled()]);
-      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02']);
+      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(3), ...MockEpisodeRepository.bundled()]);
+      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02', 's2_ep03']);
     });
 
     test('mission ids are never shared between seasons, so no reward is paid twice', () {
@@ -191,16 +192,19 @@ void main() {
       expect(SeasonCatalog.ofMission(s2m1.id)!.id, SeasonIds.paris);
       expect(SeasonCatalog.learning(s2m1), same(season2Learning[s2m1.id]));
       expect(SeasonCatalog.languageTopic('s2_ep01'), same(season2LanguageTopics['s2_ep01']));
-      // A mission no season has (a stand-in Paris mission): no scene, the
-      // plain Discovery Moment, no learning note.
-      final paris = parisCase(2).missions.first;
+      // Paris's Case 02: its own season's notes.
+      expect(SeasonCatalog.ofMission('s2_ep02_m1')!.id, SeasonIds.paris);
+      expect(SeasonCatalog.languageTopic('s2_ep02'), same(season2LanguageTopics['s2_ep02']));
+      // A mission no season has (a stand-in Paris mission, of a case not
+      // written yet): no scene, the plain Discovery Moment, no learning note.
+      final paris = parisCase(12).missions.first;
       expect(SeasonCatalog.ofMission(paris.id), isNull);
       expect(SeasonCatalog.explore(paris), isNull);
       expect(SeasonCatalog.dialogue(paris), isNull);
       expect(SeasonCatalog.learning(paris), isNull);
       expect(SeasonCatalog.discovery(paris).type, Discovery.fallback(paris).type);
       expect(SeasonCatalog.byId('s9_nowhere'), isNull);
-      expect(SeasonCatalog.languageTopic('s2_ep02'), isNull);
+      expect(SeasonCatalog.languageTopic('s2_ep12'), isNull);
     });
   });
 
@@ -471,8 +475,9 @@ void main() {
           expect(SeasonMap.landmarkOf(m.id), MapWorld.missionLandmarks[m.id], reason: m.id);
         }
       }
-      // A mission of no map stands at its own layout place.
-      final paris = parisCase(2);
+      // A mission of no map stands at its own layout place (a stand-in case
+      // no season has written).
+      final paris = parisCase(12);
       final places = MapWorld.places(paris);
       for (final m in paris.allMissions) {
         expect(SeasonMap.landmarkOf(m.id), isNull);

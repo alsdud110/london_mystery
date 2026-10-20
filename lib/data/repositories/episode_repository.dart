@@ -24,6 +24,15 @@ class MockEpisodeRepository implements EpisodeRepository {
   /// app). Used as the default catalog, e.g. in tests.
   static List<Episode> bundled() => inPlayOrder([for (final json in _episodes.values) Episode.fromJson(json)]);
 
+  /// The cases written but waiting for their pictures (see
+  /// `SeasonContent.awaitingArt`), each told its season: never part of
+  /// [bundled] or of any catalog the game plays. Checked by tests, and played
+  /// by them as if in the game (with [bundled]) to try the case's rules.
+  static List<Episode> awaitingArt() => inPlayOrder([
+    for (final season in SeasonCatalog.all)
+      for (final json in season.awaitingArt.values) Episode.fromJson({...json, 'seasonId': season.id}),
+  ]);
+
   static List<Episode> sortedByNumber(List<Episode> episodes) =>
       [...episodes]..sort((a, b) => a.number.compareTo(b.number));
 

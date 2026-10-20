@@ -5,6 +5,7 @@ import '../models/episode.dart';
 import '../models/investigation.dart';
 import '../models/learning.dart';
 import '../models/mission.dart';
+import '../models/painter_puzzles.dart';
 import '../models/scene_decode.dart';
 import '../models/scene_deduction.dart';
 import '../models/scene_exhibit.dart';
@@ -39,6 +40,7 @@ class SeasonContent {
   const SeasonContent({
     required this.info,
     required this.episodes,
+    this.awaitingArt = const {},
     this.released = true,
     this.investigations = const {},
     this.explores = const {},
@@ -48,6 +50,10 @@ class SeasonContent {
     this.dialogues = const {},
     this.clocks = const {},
     this.stationClocks = const {},
+    this.compares = const {},
+    this.studios = const {},
+    this.layers = const {},
+    this.canvases = const {},
     this.exhibits = const {},
     this.lockBoxes = const {},
     this.evidenceLinks = const {},
@@ -63,6 +69,14 @@ class SeasonContent {
 
   /// The season's cases as JSON, in case order, by case id.
   final Map<String, Map<String, dynamic>> episodes;
+
+  /// Cases written but waiting for their pictures (as JSON, in case order,
+  /// by case id): never in the game — no case file, board, map or save
+  /// shows them, whatever is solved and whoever plays (operator access and
+  /// season preview included). A case is never played without the
+  /// pictures its puzzles are played on. Their missions' content (learning,
+  /// links) is still found by mission id, so it can be checked.
+  final Map<String, Map<String, dynamic>> awaitingArt;
 
   /// Whether the season is out for players. An unreleased season stays
   /// COMING SOON for everyone, whatever is solved and whatever is in the
@@ -80,6 +94,14 @@ class SeasonContent {
 
   /// Missions played by comparing a place's clocks (Season 2, Case 01 M1).
   final Map<String, StationClocksScene> stationClocks;
+
+  /// Missions played on Case 02's pictures (Season 2): a place compared with
+  /// its painting, a studio looked round and its notes joined to its
+  /// paintings, a sketch uncovered under paint, the canvases of the final.
+  final Map<String, CompareScene> compares;
+  final Map<String, StudioScene> studios;
+  final Map<String, LayerScene> layers;
+  final Map<String, CanvasScene> canvases;
 
   /// Things handed over with a mission's document, to look at closer.
   final Map<String, Exhibit> exhibits;
@@ -131,13 +153,18 @@ final season1Content = SeasonContent(
 final season2Content = SeasonContent(
   info: season2InfoJson,
   episodes: season2Json,
+  awaitingArt: season2AwaitingArtJson,
   released: false,
   clocks: season2Clocks,
   stationClocks: season2StationClocks,
+  compares: season2Compares,
+  studios: season2Studios,
+  layers: season2Layers,
+  canvases: season2Canvases,
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
   evidenceLinks: season2EvidenceLinks,
-  storyScenes: season2StoryScenes,
+  storyScenes: {...season2StoryScenes, ...season2Case02StoryScenes},
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
 );
@@ -162,19 +189,25 @@ abstract final class SeasonCatalog {
   /// Where [seasonId] is in play order (-1: no such season).
   static int indexOf(String seasonId) => all.indexWhere((s) => s.id == seasonId);
 
-  /// The season whose cases include [episodeId], or null.
+  /// The season whose cases include [episodeId] (in the game or awaiting
+  /// their pictures), or null.
   static SeasonContent? ofEpisode(String episodeId) {
     for (final s in all) {
-      if (s.episodes.containsKey(episodeId)) return s;
+      if (s.episodes.containsKey(episodeId) || s.awaitingArt.containsKey(episodeId)) return s;
     }
     return null;
   }
 
-  /// Mission id → its season and case, from the cases' own missions.
+  /// Whether case [episodeId] is written but waiting for its pictures (see
+  /// [SeasonContent.awaitingArt]): never in the game until they are.
+  static bool isAwaitingArt(String episodeId) => all.any((s) => s.awaitingArt.containsKey(episodeId));
+
+  /// Mission id → its season and case, from the cases' own missions (the
+  /// cases awaiting their pictures too: their content is checked by id).
   static final Map<String, (SeasonContent, String)> _missionSeason = {
     for (final s in all)
-      for (final MapEntry(key: caseId, value: json) in s.episodes.entries)
-        for (final m in Episode.fromJson(json).allMissions) m.id: (s, caseId),
+      for (final MapEntry(key: caseId, value: json) in {...s.episodes, ...s.awaitingArt}.entries)
+        for (final m in Episode.fromJson({...json, 'seasonId': s.id}).allMissions) m.id: (s, caseId),
   };
 
   /// The season of the mission with [missionId], or null.
@@ -198,6 +231,14 @@ abstract final class SeasonCatalog {
   static ClockPuzzle? clock(Mission m) => ofMission(m.id)?.clocks[m.id];
 
   static StationClocksScene? stationClocks(Mission m) => ofMission(m.id)?.stationClocks[m.id];
+
+  static CompareScene? compare(Mission m) => ofMission(m.id)?.compares[m.id];
+
+  static StudioScene? studio(Mission m) => ofMission(m.id)?.studios[m.id];
+
+  static LayerScene? layer(Mission m) => ofMission(m.id)?.layers[m.id];
+
+  static CanvasScene? canvasChoice(Mission m) => ofMission(m.id)?.canvases[m.id];
 
   static Exhibit? exhibit(Mission m) => ofMission(m.id)?.exhibits[m.id];
 

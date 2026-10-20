@@ -283,6 +283,14 @@ class GameController extends Notifier<GameProgress> {
     _update(state.copyWith(examined: [...state.examined, key]));
   }
 
+  /// How far mission [missionId]'s top layer is slid away (0..1), saved where
+  /// the detective lets go (see [GameProgress.revealed]).
+  void recordReveal(String missionId, double amount) {
+    final at = amount.clamp(0.0, 1.0);
+    if (state.revealedOf(missionId) == at) return;
+    _update(state.copyWith(revealed: {...state.revealed, missionId: at}));
+  }
+
   /// Checks [answer], records the attempt, and on success completes the
   /// mission (unlocking the next one) and awards badges. The solve, its
   /// coins and the season record are saved together.
