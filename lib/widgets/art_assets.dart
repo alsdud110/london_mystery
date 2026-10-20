@@ -116,8 +116,8 @@ abstract final class ArtAssets {
   /// shoulders on transparency, 4:5. Custom Asset Required: the folder is
   /// already in pubspec.yaml, so dropping the two files in is enough; until
   /// then the choice shows the cap icon and its word.
-  static const avatarBoy = 'assets/art/avatars/detective_boy.png';
-  static const avatarGirl = 'assets/art/avatars/detective_girl.png';
+  static const avatarBoy = 'assets/shared/detectives/avatars/detective_boy.png';
+  static const avatarGirl = 'assets/shared/detectives/avatars/detective_girl.png';
 
   /// The player's detective through the cases, one picture per
   /// [DetectiveExpression]: `detectives/<boy|girl>/<expression>.png`. The
@@ -129,7 +129,7 @@ abstract final class ArtAssets {
   /// files are no longer kept). Shown whole (an illustration) or in a
   /// medallion ([detectiveCrops]).
   static String detective(DetectiveAvatar? avatar, DetectiveExpression expression) =>
-      '${_art}detectives/${(avatar ?? DetectiveAvatar.boy).name}/${expression.name}.png';
+      'assets/shared/detectives/expressions/${(avatar ?? DetectiveAvatar.boy).name}/${expression.name}.png';
 
   /// The medallion of each detective picture (its pixel size, and the
   /// circle round the face with the hands and what they hold).
@@ -168,15 +168,15 @@ abstract final class ArtAssets {
   /// figure on transparency, 2:3. One rule for every page: see
   /// [onboardingReady].
   static String onboardingWelcome(DetectiveAvatar? avatar) => switch (avatar) {
-        DetectiveAvatar.girl => 'assets/art/onboarding/detective_welcome_girl.png',
-        DetectiveAvatar.boy || null => 'assets/art/onboarding/detective_welcome_boy.png',
+        DetectiveAvatar.girl => 'assets/shared/onboarding/detective_welcome_girl.png',
+        DetectiveAvatar.boy || null => 'assets/shared/onboarding/detective_welcome_boy.png',
       };
 
   /// The same detective setting off, letter and magnifying glass in hand
   /// (the guide's last page). Same size as [onboardingWelcome].
   static String onboardingReady(DetectiveAvatar? avatar) => switch (avatar) {
-        DetectiveAvatar.girl => 'assets/art/onboarding/detective_ready_girl.png',
-        DetectiveAvatar.boy || null => 'assets/art/onboarding/detective_ready_boy.png',
+        DetectiveAvatar.girl => 'assets/shared/onboarding/detective_ready_girl.png',
+        DetectiveAvatar.boy || null => 'assets/shared/onboarding/detective_ready_boy.png',
       };
 
   /// Pixel size of the [onboardingWelcome] and [onboardingReady] pictures
@@ -185,11 +185,11 @@ abstract final class ArtAssets {
 
   /// Mrs Moss, the tea seller: the practice witness (no case's), printed
   /// like the witnesses of the cases (4:5 on parchment, [witnessPortraitAspect]).
-  static const onboardingWitness = 'assets/art/onboarding/witness_tea_seller.png';
+  static const onboardingWitness = 'assets/shared/onboarding/witness_tea_seller.png';
 
   /// Pip, the practice puzzle's lost kitten (red collar): square, on
   /// transparency.
-  static const onboardingCat = 'assets/art/onboarding/lost_cat.png';
+  static const onboardingCat = 'assets/shared/onboarding/lost_cat.png';
 
   /// Scene pictures (mission, final, image choices, the arrival at a place,
   /// Case Solved photo), full colour: the nine London landmarks in

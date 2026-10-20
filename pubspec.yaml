@@ -157,14 +157,14 @@ flutter:
     - assets/seasons/season_01_london/symbols/
     - assets/seasons/season_01_london/special/
     # How to Play: the player's detective, the practice witness, the lost cat.
-    - assets/art/onboarding/
+    - assets/shared/onboarding/
     # The player's detective: detective_boy.png and detective_girl.png
     # (until they are added, the choice shows the cap icon and the word).
-    - assets/art/avatars/
+    - assets/shared/detectives/avatars/
     # The player's detective in play, one picture per expression
     # (`ArtAssets.detective`, `DetectiveExpression`).
-    - assets/art/detectives/boy/
-    - assets/art/detectives/girl/
+    - assets/shared/detectives/expressions/boy/
+    - assets/shared/detectives/expressions/girl/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:
