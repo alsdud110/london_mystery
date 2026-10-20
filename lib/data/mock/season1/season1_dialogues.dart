@@ -19,7 +19,7 @@ const Map<String, DialogueScene> season1Dialogues = {
   // not a clue: not every question gives a statement.
   'ep06_m1': DialogueScene(
     place: 'MARKET HALL',
-    background: 'assets/art/scenes/covent_garden/covent_garden_market_hall.png',
+    background: 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_market_hall.png',
     // Wave 2.5: what to do, never which answer — the mission, then how
     // (talk, ask, the clues may differ). The three questions stand alike: the
     // one about what he carried is not marked out.
@@ -36,7 +36,7 @@ const Map<String, DialogueScene> season1Dialogues = {
         id: 'flowerSeller',
         name: 'The flower seller',
         title: 'THE FLOWER SELLER',
-        portrait: 'assets/art/characters/flower_seller.png',
+        portrait: 'assets/seasons/season_01_london/characters/flower_seller.png',
         description: 'a young woman in a straw bonnet and a red shawl, with a basket of flowers',
         face: Offset(0.50, 0.21),
         greeting: 'The man in the dark coat? Oh yes, I saw him.',
@@ -50,7 +50,7 @@ const Map<String, DialogueScene> season1Dialogues = {
         id: 'juggler',
         name: 'The juggler',
         title: 'THE JUGGLER',
-        portrait: 'assets/art/characters/juggler.png',
+        portrait: 'assets/seasons/season_01_london/characters/juggler.png',
         description: 'a young man in a striped waistcoat, juggling three balls',
         face: Offset(0.56, 0.19),
         greeting: 'I saw him while I was juggling!',
@@ -64,7 +64,7 @@ const Map<String, DialogueScene> season1Dialogues = {
         id: 'baker',
         name: 'The baker',
         title: 'THE BAKER',
-        portrait: 'assets/art/characters/baker.png',
+        portrait: 'assets/seasons/season_01_london/characters/baker.png',
         description: 'a bearded baker in a white cap and apron, holding a round loaf',
         face: Offset(0.50, 0.22),
         greeting: 'That stranger? He walked right past my stall.',

@@ -23,7 +23,7 @@ final Map<String, InspectScene> season1Inspections = {
   // 0; its label (ROSETTA, a word worn away) confirms 1 and 2; 3 is the
   // word to write. Every exhibit here is in the picture.
   'm02': InspectScene(
-    picture: 'assets/images/case01/british_museum_room4_night.png',
+    picture: 'assets/seasons/season_01_london/cases/case_01/british_museum_room4_night.png',
     pixels: _room4,
     place: 'Room 4 of the British Museum, at night',
     task: 'Look closely at the exhibits. Which one matches the note?',

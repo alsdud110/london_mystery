@@ -58,7 +58,7 @@ flutter_native_splash:
 # ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS to "AppIcon" and
 # adds pre-iOS 7 iPad sizes. The template Contents.json names the same files.
 flutter_launcher_icons:
-  image_path: "assets/branding/app_icon_launcher_v1.png"
+  image_path: "assets/branding/app_icon_launcher.png"
   android: true
   ios: true
   remove_alpha_ios: true
@@ -66,7 +66,7 @@ flutter_launcher_icons:
   # each side of the 108dp layer), on navyDeep (AppColors) for parallax margins.
   # No monochrome layer: the illustration has no faithful one-colour form, so
   # Android 13+ themed icons fall back to the full-colour icon.
-  adaptive_icon_foreground: "assets/branding/app_icon_launcher_v1.png"
+  adaptive_icon_foreground: "assets/branding/app_icon_launcher.png"
   adaptive_icon_foreground_inset: 16
   adaptive_icon_background: "#151D30"
 
@@ -127,43 +127,44 @@ flutter:
     - assets/sounds/processed/ui_tap_01.wav
     - assets/sounds/processed/ui_tap_02.wav
     - assets/sounds/processed/ui_tap_03.wav
-    - assets/images/london_mystery.png
+    - assets/seasons/season_01_london/locations/map/
     # The title screen (the detective's office).
-    - assets/images/title/
+    - assets/shared/title/
     # Season hero pictures (the opening of Season 1).
-    - assets/images/season1/
+    - assets/seasons/season_01_london/cover/
     # Case 01 Mission 01: King's Cross at night, searched, and its four museum
     # posters (`season1_explores.dart`).
-    - assets/images/case01/
+    - assets/seasons/season_01_london/cases/case_01/
     # Case 01's Royal Box lock pictures (cut out; the delivered files in
     # symbols/original/ are kept out of the app).
     - assets/images/case01/symbols/
     # Badge medals, one per GameBadge, and the empty rosette for locked ones
     # (`ArtAssets.badges`, `ArtAssets.badgeFrame`).
-    - assets/images/badges/
+    - assets/shared/badges/
     # Scene pictures: the nine landmarks, and the places inside them.
-    - assets/art/scenes/landmarks/
-    - assets/art/scenes/british_museum/
-    - assets/art/scenes/hyde_park/
-    - assets/art/scenes/buckingham_palace/
-    - assets/art/scenes/covent_garden/
-    - assets/art/scenes/kings_cross/
-    - assets/art/scenes/royal_archive/
-    - assets/art/scenes/big_ben/
+    - assets/seasons/season_01_london/locations/landmarks/
+    - assets/seasons/season_01_london/locations/british_museum/
+    - assets/seasons/season_01_london/locations/hyde_park/
+    - assets/seasons/season_01_london/locations/buckingham_palace/
+    - assets/seasons/season_01_london/locations/covent_garden/
+    - assets/seasons/season_01_london/locations/kings_cross/
+    - assets/seasons/season_01_london/locations/royal_archive/
+    - assets/seasons/season_01_london/locations/big_ben/
     # Characters, story objects, the Raven Society mark, special pictures.
-    - assets/art/characters/
-    - assets/art/objects/
-    - assets/art/symbols/
-    - assets/art/special/
+    - assets/seasons/season_01_london/characters/
+    - assets/seasons/season_01_london/objects/
+    - assets/shared/objects/
+    - assets/seasons/season_01_london/symbols/
+    - assets/seasons/season_01_london/special/
     # How to Play: the player's detective, the practice witness, the lost cat.
-    - assets/art/onboarding/
+    - assets/shared/onboarding/
     # The player's detective: detective_boy.png and detective_girl.png
     # (until they are added, the choice shows the cap icon and the word).
-    - assets/art/avatars/
+    - assets/shared/detectives/avatars/
     # The player's detective in play, one picture per expression
     # (`ArtAssets.detective`, `DetectiveExpression`).
-    - assets/art/detectives/boy/
-    - assets/art/detectives/girl/
+    - assets/shared/detectives/expressions/boy/
+    - assets/shared/detectives/expressions/girl/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:
