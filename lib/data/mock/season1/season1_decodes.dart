@@ -18,7 +18,7 @@ final Map<String, DecodeScene> season1Decodes = {
   // QR code (a small crown at its middle) on its right. The symbol is only
   // a drawing: the scan over it is the game's.
   'm05': DecodeScene(
-    picture: 'assets/images/case01/buckingham_palace_crown_card.png',
+    picture: 'assets/seasons/season_01_london/cases/case_01/buckingham_palace_crown_card.png',
     pixels: _gate,
     place: 'The gate of Buckingham Palace, at night',
     thing: 'An old card with a crown and a strange square symbol',
@@ -39,7 +39,7 @@ final Map<String, DecodeScene> season1Decodes = {
     // closer (the pictures over 60 dp wide on a 360 dp phone), the crown's
     // edge still in sight. The area is the tool's `_area`: keep the two in
     // step.
-    cleared: 'assets/images/case01/buckingham_palace_crown_card_code_clear.png',
+    cleared: 'assets/seasons/season_01_london/cases/case_01/buckingham_palace_crown_card_code_clear.png',
     clearedArea: _gate.rect(648, 414, 980, 714),
     messageTilt: 0.035,
     revealed: _gate.rect(530, 310, 1040, 780),

@@ -19,7 +19,7 @@ final Map<String, DeductionScene> season1Deductions = {
   // pale scratches around it. Under the bench, behind that stone, under the
   // drain cover: only the stone is where all three point.
   'm03': DeductionScene(
-    picture: 'assets/images/case01/big_ben_base_night.png',
+    picture: 'assets/seasons/season_01_london/cases/case_01/big_ben_base_night.png',
     pixels: _base,
     place: 'The foot of Big Ben, at night',
     task: 'Look for three clues the thief left.',
