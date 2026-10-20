@@ -156,7 +156,8 @@ class ExploreScene {
   final Offset guideAt;
 
   /// The picture inside its own printed paper edge, and the part the page
-  /// opens on (every [spots] in it; pinching out shows the rest).
+  /// opens on, shown whole and full width (every [spots] in it; a drag
+  /// shows the rest).
   final Rect inside;
   final Rect opening;
 

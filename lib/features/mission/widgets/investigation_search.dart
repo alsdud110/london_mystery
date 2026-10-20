@@ -22,6 +22,7 @@ import '../../../widgets/paper.dart';
 import '../../../widgets/paper_background.dart';
 import '../../../widgets/place_scenery.dart';
 import '../../game/game_providers.dart';
+import 'search_stage.dart';
 
 // ---------------------------------------------------------------------------
 // Arriving: the place in the dark, why the document is read, the document.
@@ -409,31 +410,18 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
     _zoomMotion.forward(from: 0);
   }
 
-  /// The view at scale [s] that puts [point] (in the viewer's own,
-  /// unmoved space) at [onScreen], kept inside the picture's bounds.
-  static Matrix4 _view(double s, Offset point, Offset onScreen, Size viewport) {
-    final dx = (onScreen.dx - s * point.dx).clamp(-(s - 1) * viewport.width, 0.0);
-    final dy = (onScreen.dy - s * point.dy).clamp(-(s - 1) * viewport.height, 0.0);
-    return Matrix4.identity()
-      ..translateByDouble(dx, dy, 0, 1)
-      ..scaleByDouble(s, s, 1, 1);
-  }
-
-  /// The opening view: the scene's [InvestigationScene.opening] filling as
-  /// much of the [viewport] as it can, never smaller than the whole picture
-  /// ([size] at [origin]).
-  Matrix4 _homeFor(Size viewport, Size size, Offset origin) {
-    final o = widget.scene.opening;
-    final s = math
-        .min(viewport.width / (size.width * o.width), viewport.height / (size.height * o.height))
-        .clamp(1.0, maxScale);
-    final centre = origin + Offset(o.center.dx * size.width, o.center.dy * size.height);
-    return _view(s, centre, viewport.center(Offset.zero), viewport);
-  }
+  /// Where the picture sits for a screen [width] wide.
+  SearchFrame _frame(double width) => SearchFrame(
+    width: width,
+    aspect: ArtAssets.sceneAspect(widget.scene.artwork),
+    inside: widget.scene.inside,
+    focus: widget.scene.opening,
+    maxScale: maxScale,
+  );
 
   /// A double tap at [at] (in the viewer's own space, [viewport] big):
   /// closer around that spot, or back to the opening view.
-  void _doubleTap(Offset at, Size viewport) {
+  void _doubleTap(Offset at, SearchFrame frame, Size viewport) {
     if (_card != null || _completed) return;
     _guideDone();
     _moved = true;
@@ -445,7 +433,7 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
     final s = math.max(doubleTapScale, home + 0.5).clamp(1.0, maxScale);
     // Keep the spot under the finger, never past the picture's edges.
     final onScreen = MatrixUtils.transformPoint(_zoom.value, at);
-    _zoomAnimated(_view(s, at, onScreen, viewport));
+    _zoomAnimated(frame.view(s, at, onScreen, viewport));
   }
 
   // ── The report ────────────────────────────────────────────────────────
@@ -473,47 +461,37 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
     final card = _card;
     return Stack(
       children: [
-        Column(
-          // The panel spans the screen, however short its lines.
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: ClipRect(
-                child: LayoutBuilder(
-                  builder: (context, box) {
-                    final viewport = box.biggest;
-                    final aspect = ArtAssets.sceneAspect(scene.artwork);
-                    var w = viewport.width;
-                    var h = w / aspect;
-                    if (h > viewport.height) {
-                      h = viewport.height;
-                      w = h * aspect;
-                    }
-                    final origin = Offset((viewport.width - w) / 2, (viewport.height - h) / 2);
+        SearchStage(
+          idealHeight: (width) => _frame(width).idealHeight,
+          picture: (context, viewport) {
+                    final frame = _frame(viewport.width);
+                    final size = frame.picture;
+                    final origin = frame.origin;
                     // The opening view, for this screen (again if the screen
-                    // changes before the picture was moved).
-                    if (!_moved && _homeViewport != viewport) {
+                    // changes before the picture was moved); once moved, the
+                    // view stays where it was, still covering the screen
+                    // (a hint opened makes the picture's place shorter).
+                    if (_homeViewport != viewport) {
                       _homeViewport = viewport;
-                      _home = _homeFor(viewport, Size(w, h), origin);
+                      _home = frame.home(viewport);
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (!mounted || _moved) return;
-                        _zoom.value = _home;
-                        setState(() => _homeShown = true);
+                        if (!mounted) return;
+                        _zoomMotion.stop();
+                        _zoom.value = _moved ? frame.keep(_zoom.value, viewport) : _home;
+                        if (!_homeShown) setState(() => _homeShown = true);
                       });
                     }
-                    return Stack(
-                      children: [
-                        // The room itself, dimmed and soft, all around the
-                        // picture: the screen is the gallery, not a frame on navy.
-                        Positioned.fill(child: PlaceScenery(scene.artwork)),
-                        Opacity(
+                    return Opacity(
                           // Hidden for the one frame before the opening view is set.
                           opacity: _homeShown ? 1 : 0,
                           child: Listener(
                           onPointerDown: (_) => _guideDone(),
                           child: InteractiveViewer(
                             transformationController: _zoom,
-                            minScale: 1,
+                            // The room inside its paper edge, never smaller
+                            // than the screen: no band around it, ever.
+                            constrained: false,
+                            minScale: frame.minScale(viewport),
                             maxScale: maxScale,
                             boundaryMargin: EdgeInsets.zero,
                             onInteractionStart: (d) {
@@ -536,14 +514,14 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
                               _lookTimer = Timer(const Duration(milliseconds: 120), () => _justLooked = false);
                             },
                             child: SizedBox.fromSize(
-                              size: viewport,
+                              size: frame.content,
                               child: Stack(
                                 children: [
                                   Positioned(
                                     left: origin.dx,
                                     top: origin.dy,
-                                    width: w,
-                                    height: h,
+                                    width: size.width,
+                                    height: size.height,
                                     child: _SearchPicture(
                                       key: const ValueKey('investigation-picture'),
                                       scene: scene,
@@ -552,13 +530,13 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
                                       tapCount: _tapCount,
                                       guide: !widget.guideShown && !still,
                                       onGuideEnd: _guideDone,
-                                      onTap: (point) => _tap(
-                                        point,
-                                        Size(w * _zoom.value.getMaxScaleOnAxis(), h * _zoom.value.getMaxScaleOnAxis()),
-                                      ),
+                                      onTap: (point) => _tap(point, size * _zoom.value.getMaxScaleOnAxis()),
                                       onDoubleTapDown: (local) => _doubleTapAt = origin + local,
-                                      onDoubleTap: () =>
-                                          _doubleTap(_doubleTapAt ?? viewport.center(Offset.zero), viewport),
+                                      onDoubleTap: () => _doubleTap(
+                                        _doubleTapAt ?? frame.focusRect.center,
+                                        frame,
+                                        viewport,
+                                      ),
                                       onSpot: _investigate,
                                     ),
                                   ),
@@ -567,36 +545,22 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
                             ),
                           ),
                         ),
-                        ),
-                        // What the last tap found, pencilled on a slip over the room.
-                        Positioned(
-                          left: AppSpace.md,
-                          right: AppSpace.md,
-                          top: AppSpace.sm,
-                          child: IgnorePointer(
-                            child: PencilSlip(
-                              line: _line,
-                              nudge: !_allFound && _misses >= _nudgeAfter
-                                  ? 'Stuck? Read the report again, or get a hint.'
-                                  : null,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-            _SearchPanel(
-              scene: scene,
-              tipLabel: nextTipLabel(widget.hints, widget.hintsShown),
-              hints: widget.hints,
-              hintsShown: widget.hintsShown,
-              onReport: _openReport,
-              onTip: _askTip,
-            ),
-          ],
+                        );
+          },
+          caption: _SearchCaption(scene: scene),
+          // What the last tap found, pencilled on a slip.
+          note: PencilSlip(
+            line: _line,
+            nudge: !_allFound && _misses >= _nudgeAfter ? 'Stuck? Read the report again, or get a hint.' : null,
+          ),
+          actions: _SearchActions(
+            scene: scene,
+            tipLabel: nextTipLabel(widget.hints, widget.hintsShown),
+            hints: widget.hints,
+            hintsShown: widget.hintsShown,
+            onReport: _openReport,
+            onTip: _askTip,
+          ),
         ),
         if (card != null)
           Positioned.fill(
@@ -953,10 +917,52 @@ class PencilSlip extends StatelessWidget {
   }
 }
 
-/// Under the picture: what to find, how to search (the main line: tap the
-/// picture), how to look closer, and the report and the tips.
-class _SearchPanel extends StatelessWidget {
-  const _SearchPanel({
+/// Under the picture, read with it: what to find, how to search (the main
+/// line: tap the picture) and how to look closer.
+class _SearchCaption extends StatelessWidget {
+  const _SearchCaption({required this.scene});
+
+  final InvestigationScene scene;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GlossaryText(scene.task, textAlign: TextAlign.center, style: AppText.title(size: 19)),
+          const SizedBox(height: AppSpace.sm),
+          // The main line: the glass sits with the words, also when they wrap.
+          Text.rich(
+            TextSpan(
+              children: [
+                const WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: AppSpace.sm),
+                    child: InkIcon(InkGlyph.search, size: AppIconSize.small, color: AppColors.burgundy),
+                  ),
+                ),
+                TextSpan(text: scene.tapGuide),
+              ],
+            ),
+            key: const ValueKey('tap-guide-line'),
+            textAlign: TextAlign.center,
+            style: AppText.bodyText(size: 17, weight: FontWeight.w700, color: AppColors.burgundy),
+          ),
+          const SizedBox(height: 2),
+          Text(scene.zoomGuide, textAlign: TextAlign.center, style: AppText.caption()),
+        ],
+      ),
+    );
+  }
+}
+
+/// At the bottom of the page, in reach of the thumb: the hints opened so
+/// far, then the report and the tips.
+class _SearchActions extends StatelessWidget {
+  const _SearchActions({
     required this.scene,
     required this.tipLabel,
     required this.hints,
@@ -977,68 +983,29 @@ class _SearchPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    return Padding(
       key: const ValueKey('search-panel'),
-      decoration: BoxDecoration(
-        color: AppColors.paperLight,
-        border: Border(
-          top: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.7), width: AppLine.rule),
-        ),
-        boxShadow: const [BoxShadow(color: Color(0x59000000), blurRadius: 12, offset: Offset(0, -2))],
-      ),
-      child: InkSurface(
-        night: false,
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GlossaryText(scene.task, textAlign: TextAlign.center, style: AppText.title(size: 19)),
-                const SizedBox(height: AppSpace.sm),
-                // The main line: the glass sits with the words, also when
-                // they wrap.
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      const WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: AppSpace.sm),
-                          child: InkIcon(InkGlyph.search, size: AppIconSize.small, color: AppColors.burgundy),
-                        ),
-                      ),
-                      TextSpan(text: scene.tapGuide),
-                    ],
-                  ),
-                  key: const ValueKey('tap-guide-line'),
-                  textAlign: TextAlign.center,
-                  style: AppText.bodyText(size: 17, weight: FontWeight.w700, color: AppColors.burgundy),
-                ),
-                const SizedBox(height: 2),
-                Text(scene.zoomGuide, textAlign: TextAlign.center, style: AppText.caption()),
-                if (hintsShown > 0) const SizedBox(height: AppSpace.sm),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.2),
-                  child: SingleChildScrollView(
-                    key: const ValueKey('search-hints'),
-                    child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
-                  ),
-                ),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: AppSpace.sm,
-                  children: [
-                    InkTextButton(label: scene.documentLabel, glyph: InkGlyph.letter, onPressed: onReport),
-                    if (tipLabel != null)
-                      InkTextButton(label: tipLabel!, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
-                  ],
-                ),
-              ],
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xs),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.2),
+            child: SingleChildScrollView(
+              key: const ValueKey('search-hints'),
+              child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
             ),
           ),
-        ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: AppSpace.sm,
+            children: [
+              InkTextButton(label: scene.documentLabel, glyph: InkGlyph.letter, onPressed: onReport),
+              if (tipLabel != null)
+                InkTextButton(label: tipLabel!, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
+            ],
+          ),
+        ],
       ),
     );
   }

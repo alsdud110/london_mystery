@@ -133,7 +133,8 @@ class InvestigationScene {
 
   /// The part of the picture the search opens on (fractions): every thing
   /// to find is in it, so the opening view is as close as it can be while
-  /// none of them is off the screen. Pinching out shows the whole picture.
+  /// none of them is off the screen. It also sets how tall the picture's
+  /// place is: this part full width (a drag shows the rest).
   final Rect opening;
 
   /// The picture inside its own printed paper edge (fractions): only this

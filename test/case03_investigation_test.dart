@@ -188,6 +188,21 @@ void main() {
   bool titleCut(WidgetTester t) => t.renderObject<RenderParagraph>(find.text('GALLERY 8')).didExceedMaxLines;
   double zoomOf(WidgetTester t) => t.widget<InteractiveViewer>(find.byType(InteractiveViewer)).transformationController!.value.getMaxScaleOnAxis();
 
+  /// Whether the room inside its paper edge covers the whole viewer: no
+  /// band of anything else above, below or beside it.
+  bool covers(WidgetTester t) {
+    final viewer = t.getRect(find.byType(InteractiveViewer));
+    final p = t.getRect(find.byKey(const ValueKey('investigation-picture')));
+    final i = scene.inside;
+    final room = Rect.fromLTRB(
+      p.left + i.left * p.width,
+      p.top + i.top * p.height,
+      p.left + i.right * p.width,
+      p.top + i.bottom * p.height,
+    );
+    return room.inflate(0.5).contains(viewer.topLeft) && room.inflate(0.5).contains(viewer.bottomRight - const Offset(0.01, 0.01));
+  }
+
   /// Screenshots only: the pictures decoded before the shot (a test's
   /// clock does not wait for image decoding).
   Future<void> shot(WidgetTester t, String name) async {
@@ -389,9 +404,9 @@ void main() {
       testWidgets('looking closer: double tap, drag and pinch move the picture, never find; a tap still lands true', (t) async {
         final play = MissionPlay();
         await play.openPuzzle(t, size, 'ep03_m1');
-        // The opening view: closer than the whole print (a portrait screen).
+        // The opening view: the room covers its whole place, no band.
         final home = zoomOf(t);
-        expect(home, greaterThan(1.1));
+        expect(covers(t), isTrue, reason: 'the room fills its place at the opening');
 
         // Double tap on the cloth: closer around it; nothing found by it.
         final at = play.pictureAt(t, thing('cloth').areas.first.center);
@@ -441,7 +456,8 @@ void main() {
         expect(zoomOf(t), greaterThan(home + 0.2));
         expect(find.text('BLUE CLOTH'), findsNothing);
 
-        // Fingers together: out to the whole room, never smaller.
+        // Fingers together: out as far as the room still fills its place
+        // (the opening view here), never a band around it.
         final c2 = t.getRect(find.byType(InteractiveViewer)).center;
         final p = await t.startGesture(c2 - const Offset(120, 0), pointer: 9);
         final q = await t.startGesture(c2 + const Offset(120, 0), pointer: 10);
@@ -453,7 +469,8 @@ void main() {
         await p.up();
         await q.up();
         await wait(t, const Duration(milliseconds: 500));
-        expect(zoomOf(t), closeTo(1, 0.01));
+        expect(zoomOf(t), closeTo(home, 0.01));
+        expect(covers(t), isTrue, reason: 'pinched out, the room still fills its place');
         expect(play.ref.read(gameControllerProvider).attempts['ep03_m1'] ?? 0, 0);
       });
 

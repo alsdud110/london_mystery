@@ -103,7 +103,7 @@ class DeductionScene {
   final Offset guideAt;
 
   /// The picture inside its own printed paper edge, and the part the page
-  /// opens on (pinching out shows the rest).
+  /// opens on, shown whole and full width (a drag shows the rest).
   final Rect inside;
   final Rect opening;
 

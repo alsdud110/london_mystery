@@ -22,6 +22,7 @@ import '../../../widgets/paper_background.dart';
 import '../../game/game_providers.dart';
 import 'investigation_search.dart' show PencilSlip, SearchTapRing, TapGuide;
 import 'question_widgets.dart' show ShakeOnChange;
+import 'search_stage.dart';
 
 /// A place looked round ([ExploreScene]): its picture fills the screen and
 /// can be looked at closer (pinch, drag); a tap on it looks at that spot.
@@ -84,7 +85,6 @@ class _SceneExploreState extends ConsumerState<SceneExplore> with TickerProvider
   int _tapCount = 0;
 
   final _zoom = TransformationController();
-  Matrix4 _home = Matrix4.identity();
   Size? _homeViewport;
   bool _homeShown = false;
   bool _moved = false;
@@ -155,22 +155,16 @@ class _SceneExploreState extends ConsumerState<SceneExplore> with TickerProvider
     widget.onChanged();
   }
 
-  /// The opening view: the scene's [ExploreScene.opening] filling as much
-  /// of the [viewport] as it can, never smaller than the whole picture
-  /// ([size] at [origin]).
-  Matrix4 _homeFor(Size viewport, Size size, Offset origin) {
-    final o = _scene.opening;
-    final s = math
-        .min(viewport.width / (size.width * o.width), viewport.height / (size.height * o.height))
-        .clamp(1.0, maxScale);
-    final centre = origin + Offset(o.center.dx * size.width, o.center.dy * size.height);
-    final onScreen = viewport.center(Offset.zero);
-    final dx = (onScreen.dx - s * centre.dx).clamp(-(s - 1) * viewport.width, 0.0);
-    final dy = (onScreen.dy - s * centre.dy).clamp(-(s - 1) * viewport.height, 0.0);
-    return Matrix4.identity()
-      ..translateByDouble(dx, dy, 0, 1)
-      ..scaleByDouble(s, s, 1, 1);
-  }
+  /// Where the picture sits for a screen [width] wide: the opening view
+  /// ([ExploreScene.opening]) as large as it can be, the picture always
+  /// covering its place.
+  SearchFrame _frame(double width) => SearchFrame(
+    width: width,
+    aspect: _scene.pixels.aspect,
+    inside: _scene.inside,
+    focus: _scene.opening,
+    maxScale: maxScale,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -179,109 +173,82 @@ class _SceneExploreState extends ConsumerState<SceneExplore> with TickerProvider
     final open = _p.open == null ? null : scene.spot(_p.open!);
     return Stack(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: ClipRect(
-                child: LayoutBuilder(
-                  builder: (context, box) {
-                    final viewport = box.biggest;
-                    final aspect = scene.pixels.aspect;
-                    var w = viewport.width;
-                    var h = w / aspect;
-                    if (h > viewport.height) {
-                      h = viewport.height;
-                      w = h * aspect;
-                    }
-                    final origin = Offset((viewport.width - w) / 2, (viewport.height - h) / 2);
-                    if (!_moved && _homeViewport != viewport) {
-                      _homeViewport = viewport;
-                      _home = _homeFor(viewport, Size(w, h), origin);
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (!mounted || _moved) return;
-                        _zoom.value = _home;
-                        setState(() => _homeShown = true);
-                      });
-                    }
-                    return Stack(
-                      children: [
-                        // The station itself, dim, all around the picture.
-                        Positioned.fill(
-                          child: ExcludeSemantics(
-                            child: Opacity(
-                              opacity: 0.35,
-                              child: Image.asset(scene.picture, fit: BoxFit.cover),
+        SearchStage(
+          idealHeight: (width) => _frame(width).idealHeight,
+          picture: (context, viewport) {
+            final frame = _frame(viewport.width);
+            final size = frame.picture;
+            final origin = frame.origin;
+            // The opening view for this screen; once moved, the view stays
+            // where it was, still covering the screen (a hint opened makes
+            // the picture's place shorter).
+            if (_homeViewport != viewport) {
+              _homeViewport = viewport;
+              final home = frame.home(viewport);
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                _zoom.value = _moved ? frame.keep(_zoom.value, viewport) : home;
+                if (!_homeShown) setState(() => _homeShown = true);
+              });
+            }
+            return Opacity(
+                  opacity: _homeShown ? 1 : 0,
+                  child: InteractiveViewer(
+                    transformationController: _zoom,
+                    // The station inside its paper edge, never smaller than
+                    // the screen: no band around it, ever.
+                    constrained: false,
+                    minScale: frame.minScale(viewport),
+                    maxScale: maxScale,
+                    boundaryMargin: EdgeInsets.zero,
+                    onInteractionStart: (_) {
+                      _moved = true;
+                      _guideDone();
+                    },
+                    child: SizedBox.fromSize(
+                      size: frame.content,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: origin.dx,
+                            top: origin.dy,
+                            width: size.width,
+                            height: size.height,
+                            child: _ExplorePicture(
+                              key: const ValueKey('explore-picture'),
+                              scene: scene,
+                              progress: _p,
+                              tapAt: _tapAt,
+                              tapCount: _tapCount,
+                              guide: !_p.guideShown && !still,
+                              onGuideEnd: _guideDone,
+                              onTap: (point) => _tap(point, size * _zoom.value.getMaxScaleOnAxis()),
+                              onSpot: _look,
                             ),
                           ),
-                        ),
-                        Positioned.fill(child: ColoredBox(color: AppColors.navyDeep.withValues(alpha: 0.55))),
-                        Opacity(
-                          opacity: _homeShown ? 1 : 0,
-                          child: InteractiveViewer(
-                            transformationController: _zoom,
-                            minScale: 1,
-                            maxScale: maxScale,
-                            boundaryMargin: EdgeInsets.zero,
-                            onInteractionStart: (_) {
-                              _moved = true;
-                              _guideDone();
-                            },
-                            child: SizedBox.fromSize(
-                              size: viewport,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: origin.dx,
-                                    top: origin.dy,
-                                    width: w,
-                                    height: h,
-                                    child: _ExplorePicture(
-                                      key: const ValueKey('explore-picture'),
-                                      scene: scene,
-                                      progress: _p,
-                                      tapAt: _tapAt,
-                                      tapCount: _tapCount,
-                                      guide: !_p.guideShown && !still,
-                                      onGuideEnd: _guideDone,
-                                      onTap: (point) {
-                                        final s = _zoom.value.getMaxScaleOnAxis();
-                                        _tap(point, Size(w * s, h * s));
-                                      },
-                                      onSpot: _look,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: AppSpace.md,
-                          right: AppSpace.md,
-                          top: AppSpace.sm,
-                          child: IgnorePointer(child: PencilSlip(line: _line)),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-            ExplorePanel(
-              task: _p.documentOpened ? scene.nextTask : scene.task,
-              tapGuide: scene.tapGuide,
-              zoomGuide: scene.zoomGuide,
-              hints: widget.mission.hints,
-              hintsShown: widget.hintsShown,
-              documentLabel: _p.documentOpened ? scene.documentLabel : null,
-              onDocument: () {
-                final doc = scene.document;
-                if (doc != null) _open(doc);
-              },
-              onTip: widget.onHint,
-            ),
-          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+          },
+          note: PencilSlip(line: _line),
+          caption: ExploreCaption(
+            task: _p.documentOpened ? scene.nextTask : scene.task,
+            tapGuide: scene.tapGuide,
+            zoomGuide: scene.zoomGuide,
+          ),
+          actions: ExploreActions(
+            key: const ValueKey('explore-panel'),
+            hints: widget.mission.hints,
+            hintsShown: widget.hintsShown,
+            documentLabel: _p.documentOpened ? scene.documentLabel : null,
+            onDocument: () {
+              final doc = scene.document;
+              if (doc != null) _open(doc);
+            },
+            onTip: widget.onHint,
+          ),
         ),
         if (open != null)
           Positioned.fill(
@@ -467,7 +434,9 @@ class LookMark extends StatelessWidget {
 }
 
 /// Under the picture: what to do now, how to look (the main line: tap the
-/// picture), how to look closer, the hints opened, and the letter and tips.
+/// picture), how to look closer, the hints opened, and the letter and tips,
+/// as one paper strip ([ExploreCaption] over [ExploreActions]). A place
+/// looked round lays the two on its page apart instead ([SearchStage]).
 class ExplorePanel extends StatelessWidget {
   const ExplorePanel({
     super.key,
@@ -499,7 +468,6 @@ class ExplorePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tipLabel = nextTipLabel(hints, hintsShown);
     return DecoratedBox(
       key: const ValueKey('explore-panel'),
       decoration: BoxDecoration(
@@ -511,65 +479,146 @@ class ExplorePanel extends StatelessWidget {
         night: false,
         child: SafeArea(
           top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: Semantics(
-                    key: ValueKey(task),
-                    liveRegion: true,
-                    child: GlossaryText(
-                      task,
-                      key: const ValueKey('explore-task'),
-                      textAlign: TextAlign.center,
-                      style: AppText.title(size: 19),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpace.sm),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      const WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: AppSpace.sm),
-                          child: InkIcon(InkGlyph.search, size: AppIconSize.small, color: AppColors.burgundy),
-                        ),
-                      ),
-                      TextSpan(text: tapGuide),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                  style: AppText.bodyText(size: 16, weight: FontWeight.w700, color: AppColors.burgundy),
-                ),
-                const SizedBox(height: 2),
-                Text(zoomGuide, textAlign: TextAlign.center, style: AppText.caption()),
-                if (hintsShown > 0) const SizedBox(height: AppSpace.sm),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * hintsHeight),
-                  child: SingleChildScrollView(
-                    key: const ValueKey('explore-hints'),
-                    child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
-                  ),
-                ),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: AppSpace.sm,
-                  children: [
-                    if (documentLabel != null)
-                      InkTextButton(label: documentLabel!, glyph: InkGlyph.letter, onPressed: onDocument),
-                    if (tipLabel != null)
-                      InkTextButton(label: tipLabel, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
-                  ],
-                ),
-              ],
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ExploreCaption(
+                task: task,
+                tapGuide: tapGuide,
+                zoomGuide: zoomGuide,
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
+              ),
+              if (hintsShown > 0) const SizedBox(height: AppSpace.sm),
+              ExploreActions(
+                hints: hints,
+                hintsShown: hintsShown,
+                documentLabel: documentLabel,
+                onDocument: onDocument,
+                onTip: onTip,
+                hintsHeight: hintsHeight,
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xs),
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Read with the picture: what to do now, how to look (the main line: tap
+/// the picture) and how to look closer.
+class ExploreCaption extends StatelessWidget {
+  const ExploreCaption({
+    super.key,
+    required this.task,
+    required this.tapGuide,
+    required this.zoomGuide,
+    this.padding = const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
+  });
+
+  final String task;
+  final String tapGuide;
+  final String zoomGuide;
+  final EdgeInsetsGeometry padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: padding,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            child: Semantics(
+              key: ValueKey(task),
+              liveRegion: true,
+              child: GlossaryText(
+                task,
+                key: const ValueKey('explore-task'),
+                textAlign: TextAlign.center,
+                style: AppText.title(size: 19),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpace.sm),
+          Text.rich(
+            TextSpan(
+              children: [
+                const WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: AppSpace.sm),
+                    child: InkIcon(InkGlyph.search, size: AppIconSize.small, color: AppColors.burgundy),
+                  ),
+                ),
+                TextSpan(text: tapGuide),
+              ],
+            ),
+            textAlign: TextAlign.center,
+            style: AppText.bodyText(size: 16, weight: FontWeight.w700, color: AppColors.burgundy),
+          ),
+          const SizedBox(height: 2),
+          Text(zoomGuide, textAlign: TextAlign.center, style: AppText.caption()),
+        ],
+      ),
+    );
+  }
+}
+
+/// In reach of the thumb: the hints opened, then the letter and the tips.
+class ExploreActions extends StatelessWidget {
+  const ExploreActions({
+    super.key,
+    required this.hints,
+    required this.hintsShown,
+    required this.documentLabel,
+    required this.onDocument,
+    required this.onTip,
+    this.hintsHeight = 0.2,
+    this.padding = const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xs),
+  });
+
+  final List<String> hints;
+  final int hintsShown;
+
+  /// The document's link, once it is read (null before).
+  final String? documentLabel;
+  final VoidCallback onDocument;
+  final VoidCallback onTip;
+
+  /// The most the opened hints take, as a fraction of the screen's height
+  /// (they scroll beyond it).
+  final double hintsHeight;
+  final EdgeInsetsGeometry padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final tipLabel = nextTipLabel(hints, hintsShown);
+    return Padding(
+      padding: padding,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * hintsHeight),
+            child: SingleChildScrollView(
+              key: const ValueKey('explore-hints'),
+              child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
+            ),
+          ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: AppSpace.sm,
+            children: [
+              if (documentLabel != null)
+                InkTextButton(label: documentLabel!, glyph: InkGlyph.letter, onPressed: onDocument),
+              if (tipLabel != null)
+                InkTextButton(label: tipLabel, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
+            ],
+          ),
+        ],
       ),
     );
   }

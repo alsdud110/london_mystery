@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'app_colors.dart';
 import 'app_text.dart';
 import 'app_tokens.dart';
 
 abstract final class AppTheme {
+  /// The status bar over a paper bar: dark icons. An app bar works its
+  /// icons out from its own colour, and a see-through one (the theme's,
+  /// over paper) reads as dark, so it would ask for white icons on paper;
+  /// a paper page's bar says so itself.
+  static const statusOnPaper = SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark, // Android
+    statusBarBrightness: Brightness.light, // iOS: a light background
+  );
+
+  /// The status bar over a navy bar: light icons.
+  static const statusOnNight = SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
+  );
+
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
       seedColor: AppColors.navy,

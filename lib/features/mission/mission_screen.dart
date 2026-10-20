@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
@@ -547,6 +548,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         appBar: AppBar(
           backgroundColor: dark ? AppColors.navyDeep : null,
           foregroundColor: dark ? AppColors.paperLight : null,
+          systemOverlayStyle: dark ? AppTheme.statusOnNight : AppTheme.statusOnPaper,
           leading: IconButton(
             tooltip: solved || _stage == MissionStage.story
                 ? 'Back to map'

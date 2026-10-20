@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,10 +11,10 @@ import '../../../widgets/detective_tips.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
 import '../../../widgets/ink_icon.dart';
-import '../../../widgets/paper_background.dart';
 import 'investigation_search.dart' show PencilSlip, SearchTapRing, TapGuide;
 import 'question_widgets.dart' show ShakeOnChange;
 import 'scene_explore.dart' show LookMark;
+import 'search_stage.dart';
 
 /// A place read for its traces ([DeductionScene]): its picture fills the
 /// screen and can be looked at closer (pinch, drag). Each trace carries a
@@ -134,69 +132,64 @@ class _SceneDeductionState extends State<SceneDeduction> {
 
   String _labelOf(String optionId) => widget.mission.options.firstWhere((o) => o.id == optionId).label;
 
-  /// The opening view: the scene's [DeductionScene.opening] filling as much
-  /// of the [viewport] as it can, never smaller than the whole picture
-  /// ([size] at [origin]).
-  Matrix4 _homeFor(Size viewport, Size size, Offset origin) {
-    final o = _scene.opening;
-    final s = math
-        .min(viewport.width / (size.width * o.width), viewport.height / (size.height * o.height))
-        .clamp(1.0, maxScale);
-    final centre = origin + Offset(o.center.dx * size.width, o.center.dy * size.height);
-    final onScreen = viewport.center(Offset.zero);
-    final dx = (onScreen.dx - s * centre.dx).clamp(-(s - 1) * viewport.width, 0.0);
-    final dy = (onScreen.dy - s * centre.dy).clamp(-(s - 1) * viewport.height, 0.0);
-    return Matrix4.identity()
-      ..translateByDouble(dx, dy, 0, 1)
-      ..scaleByDouble(s, s, 1, 1);
-  }
+  /// Where the picture sits for a screen [width] wide: the opening view
+  /// ([DeductionScene.opening]) as large as it can be, the picture always
+  /// covering its place.
+  SearchFrame _frame(double width) => SearchFrame(
+    width: width,
+    aspect: _scene.pixels.aspect,
+    inside: _scene.inside,
+    focus: _scene.opening,
+    maxScale: maxScale,
+  );
 
   @override
   Widget build(BuildContext context) {
     final scene = _scene;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final chosen = _p.chosen;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: ClipRect(
-            child: LayoutBuilder(
-              builder: (context, box) {
-                final viewport = box.biggest;
-                final aspect = scene.pixels.aspect;
-                var w = viewport.width;
-                var h = w / aspect;
-                if (h > viewport.height) {
-                  h = viewport.height;
-                  w = h * aspect;
-                }
-                final origin = Offset((viewport.width - w) / 2, (viewport.height - h) / 2);
-                if (!_moved && _homeViewport != viewport) {
+    return SearchStage(
+      idealHeight: (width) => _frame(width).idealHeight,
+      caption: _DeductionCaption(
+        scene: scene,
+        progress: _p,
+        choosing: _choosing,
+        chosenLabel: chosen == null ? null : _labelOf(chosen),
+      ),
+      actions: _DeductionActions(
+        scene: scene,
+        choosing: _choosing,
+        hints: widget.mission.hints,
+        hintsShown: widget.hintsShown,
+        onTip: widget.onHint,
+        onSearch: chosen == null ? null : () => widget.onChoose(chosen),
+      ),
+      picture: (context, viewport) {
+                final frame = _frame(viewport.width);
+                final size = frame.picture;
+                final origin = frame.origin;
+                // The opening view for this screen; once moved, the view
+                // stays where it was, still covering the screen (the notes
+                // and hints make the picture's place shorter).
+                if (_homeViewport != viewport) {
                   _homeViewport = viewport;
-                  final home = _homeFor(viewport, Size(w, h), origin);
+                  final home = frame.home(viewport);
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (!mounted || _moved) return;
-                    _zoom.value = home;
-                    setState(() => _homeShown = true);
+                    if (!mounted) return;
+                    _zoom.value = _moved ? frame.keep(_zoom.value, viewport) : home;
+                    if (!_homeShown) setState(() => _homeShown = true);
                   });
                 }
-                return Stack(
-                  children: [
-                    // The place itself, dim, all around the picture.
-                    Positioned.fill(
-                      child: ExcludeSemantics(
-                        child: Opacity(opacity: 0.35, child: Image.asset(scene.picture, fit: BoxFit.cover)),
-                      ),
-                    ),
-                    Positioned.fill(child: ColoredBox(color: AppColors.navyDeep.withValues(alpha: 0.55))),
-                    Opacity(
+                return Opacity(
                       opacity: _homeShown ? 1 : 0,
                       child: ShakeOnChange(
                         trigger: widget.wrongPulse,
                         child: InteractiveViewer(
                           transformationController: _zoom,
-                          minScale: 1,
+                          // The place inside its paper edge, never smaller
+                          // than the screen: no band around it, ever.
+                          constrained: false,
+                          minScale: frame.minScale(viewport),
                           maxScale: maxScale,
                           boundaryMargin: EdgeInsets.zero,
                           onInteractionStart: (_) {
@@ -204,14 +197,14 @@ class _SceneDeductionState extends State<SceneDeduction> {
                             _guideDone();
                           },
                           child: SizedBox.fromSize(
-                            size: viewport,
+                            size: frame.content,
                             child: Stack(
                               children: [
                                 Positioned(
                                   left: origin.dx,
                                   top: origin.dy,
-                                  width: w,
-                                  height: h,
+                                  width: size.width,
+                                  height: size.height,
                                   child: _DeductionPicture(
                                     key: const ValueKey('deduction-picture'),
                                     scene: scene,
@@ -222,10 +215,7 @@ class _SceneDeductionState extends State<SceneDeduction> {
                                     tapCount: _tapCount,
                                     guide: !_p.guideShown && !still,
                                     onGuideEnd: _guideDone,
-                                    onTap: (point) {
-                                      final s = _zoom.value.getMaxScaleOnAxis();
-                                      _tap(point, Size(w * s, h * s));
-                                    },
+                                    onTap: (point) => _tap(point, size * _zoom.value.getMaxScaleOnAxis()),
                                     onClue: _look,
                                     onPlace: _choose,
                                   ),
@@ -235,30 +225,9 @@ class _SceneDeductionState extends State<SceneDeduction> {
                           ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      left: AppSpace.md,
-                      right: AppSpace.md,
-                      top: AppSpace.sm,
-                      child: IgnorePointer(child: PencilSlip(line: _line)),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
-        _DeductionPanel(
-          scene: scene,
-          progress: _p,
-          choosing: _choosing,
-          chosenLabel: chosen == null ? null : _labelOf(chosen),
-          hints: widget.mission.hints,
-          hintsShown: widget.hintsShown,
-          onTip: widget.onHint,
-          onSearch: chosen == null ? null : () => widget.onChoose(chosen),
-        ),
-      ],
+                    );
+      },
+      note: PencilSlip(line: _line),
     );
   }
 }
@@ -458,15 +427,132 @@ class _PlaceMark extends StatelessWidget {
   }
 }
 
-/// Under the picture: how far the reading has got, what to do now, the
-/// detective's notes, and — once choosing — the place chosen and the
-/// search; then the hints opened and the tip link.
-class _DeductionPanel extends StatelessWidget {
-  const _DeductionPanel({
+/// Under the picture, read with it: how far the reading has got, what to do
+/// now, the detective's notes, and how to look (or, once choosing, the
+/// place chosen). Larger text grows it only so far: the picture keeps its
+/// share while the notes are read and the place is chosen.
+class _DeductionCaption extends StatelessWidget {
+  const _DeductionCaption({
     required this.scene,
     required this.progress,
     required this.choosing,
     required this.chosenLabel,
+  });
+
+  final DeductionScene scene;
+  final DeductionProgress progress;
+  final bool choosing;
+  final String? chosenLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final task = choosing ? scene.chooseTask : scene.task;
+    final height = MediaQuery.sizeOf(context).height;
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.15,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              choosing ? 'YOUR NOTES' : 'CLUES ${progress.noted.length} / ${scene.clues.length}',
+              key: const ValueKey('deduction-count'),
+              textAlign: TextAlign.center,
+              style: AppText.eyebrow(),
+            ),
+            const SizedBox(height: 2),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              child: Semantics(
+                key: ValueKey(task),
+                liveRegion: true,
+                child: GlossaryText(
+                  task,
+                  key: const ValueKey('deduction-task'),
+                  textAlign: TextAlign.center,
+                  style: AppText.title(size: 19),
+                ),
+              ),
+            ),
+            // The notes, as the traces are found (they scroll beyond a short
+            // strip on a small screen).
+            if (progress.noted.isNotEmpty) ...[
+              const SizedBox(height: AppSpace.sm),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: height * 0.22),
+                child: SingleChildScrollView(
+                  key: const ValueKey('deduction-notes'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final id in progress.noted)
+                        Padding(
+                          key: ValueKey('note-$id'),
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 3, right: AppSpace.sm),
+                                child: InkIcon(InkGlyph.check, size: AppIconSize.small, color: AppColors.success),
+                              ),
+                              Expanded(
+                                child: GlossaryText(
+                                  scene.clue(id).line,
+                                  style: AppText.letter(size: 15, color: AppColors.inkBrown),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpace.sm),
+            if (!choosing)
+              Text.rich(
+                TextSpan(
+                  children: [
+                    const WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: AppSpace.sm),
+                        child: InkIcon(InkGlyph.search, size: AppIconSize.small, color: AppColors.burgundy),
+                      ),
+                    ),
+                    TextSpan(text: scene.tapGuide),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+                style: AppText.bodyText(size: 16, weight: FontWeight.w700, color: AppColors.burgundy),
+              )
+            // The place chosen, in words (the task says how to choose).
+            else if (chosenLabel != null)
+              Text(
+                'Your choice: $chosenLabel',
+                key: const ValueKey('deduction-choice'),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.bodyText(size: 15, weight: FontWeight.w700, color: AppColors.burgundy),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// At the bottom of the page, in reach of the thumb: once choosing, the
+/// search; then the hints opened and the tip link.
+class _DeductionActions extends StatelessWidget {
+  const _DeductionActions({
+    required this.scene,
+    required this.choosing,
     required this.hints,
     required this.hintsShown,
     required this.onTip,
@@ -474,9 +560,7 @@ class _DeductionPanel extends StatelessWidget {
   });
 
   final DeductionScene scene;
-  final DeductionProgress progress;
   final bool choosing;
-  final String? chosenLabel;
   final List<String> hints;
   final int hintsShown;
   final VoidCallback onTip;
@@ -485,134 +569,31 @@ class _DeductionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tipLabel = nextTipLabel(hints, hintsShown);
-    final task = choosing ? scene.chooseTask : scene.task;
-    final height = MediaQuery.sizeOf(context).height;
-    return DecoratedBox(
-      key: const ValueKey('deduction-panel'),
-      decoration: BoxDecoration(
-        color: AppColors.paperLight,
-        border: Border(top: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.7), width: AppLine.rule)),
-        boxShadow: const [BoxShadow(color: Color(0x59000000), blurRadius: 12, offset: Offset(0, -2))],
-      ),
-      child: InkSurface(
-        night: false,
-        // Larger text grows the panel only so far: the picture keeps its
-        // share while the notes are read and the place is chosen.
-        child: MediaQuery.withClampedTextScaling(
-          maxScaleFactor: 1.15,
-          child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  choosing ? 'YOUR NOTES' : 'CLUES ${progress.noted.length} / ${scene.clues.length}',
-                  key: const ValueKey('deduction-count'),
-                  textAlign: TextAlign.center,
-                  style: AppText.eyebrow(),
-                ),
-                const SizedBox(height: 2),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: Semantics(
-                    key: ValueKey(task),
-                    liveRegion: true,
-                    child: GlossaryText(
-                      task,
-                      key: const ValueKey('deduction-task'),
-                      textAlign: TextAlign.center,
-                      style: AppText.title(size: 19),
-                    ),
-                  ),
-                ),
-                // The notes, as the traces are found (they scroll beyond a
-                // short strip on a small screen).
-                if (progress.noted.isNotEmpty) ...[
-                  const SizedBox(height: AppSpace.sm),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: height * 0.22),
-                    child: SingleChildScrollView(
-                      key: const ValueKey('deduction-notes'),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (final id in progress.noted)
-                            Padding(
-                              key: ValueKey('note-$id'),
-                              padding: const EdgeInsets.only(bottom: 2),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 3, right: AppSpace.sm),
-                                    child: InkIcon(InkGlyph.check, size: AppIconSize.small, color: AppColors.success),
-                                  ),
-                                  Expanded(
-                                    child: GlossaryText(
-                                      scene.clue(id).line,
-                                      style: AppText.letter(size: 15, color: AppColors.inkBrown),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: AppSpace.sm),
-                if (!choosing)
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        const WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: AppSpace.sm),
-                            child: InkIcon(InkGlyph.search, size: AppIconSize.small, color: AppColors.burgundy),
-                          ),
-                        ),
-                        TextSpan(text: scene.tapGuide),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                    style: AppText.bodyText(size: 16, weight: FontWeight.w700, color: AppColors.burgundy),
-                  )
-                else ...[
-                  // The place chosen, in words (the task says how to choose).
-                  if (chosenLabel != null) ...[
-                    Text(
-                      'Your choice: $chosenLabel',
-                      key: const ValueKey('deduction-choice'),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppText.bodyText(size: 15, weight: FontWeight.w700, color: AppColors.burgundy),
-                    ),
-                    const SizedBox(height: AppSpace.sm),
-                  ],
-                  GameButton(key: const ValueKey('deduction-search'), label: scene.action, onPressed: onSearch),
-                ],
-                if (hintsShown > 0) const SizedBox(height: AppSpace.sm),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: height * 0.16),
-                  child: SingleChildScrollView(
-                    key: const ValueKey('deduction-hints'),
-                    child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
-                  ),
-                ),
-                if (tipLabel != null)
-                  Center(
-                    child: InkTextButton(label: tipLabel, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
-                  ),
-              ],
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.15,
+      child: Padding(
+        key: const ValueKey('deduction-panel'),
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xs),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (choosing) ...[
+              GameButton(key: const ValueKey('deduction-search'), label: scene.action, onPressed: onSearch),
+              if (hintsShown > 0) const SizedBox(height: AppSpace.sm),
+            ],
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.16),
+              child: SingleChildScrollView(
+                key: const ValueKey('deduction-hints'),
+                child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
+              ),
             ),
-          ),
-        ),
+            if (tipLabel != null)
+              Center(
+                child: InkTextButton(label: tipLabel, glyph: InkGlyph.hint, color: tipLinkColor, onPressed: onTip),
+              ),
+          ],
         ),
       ),
     );
