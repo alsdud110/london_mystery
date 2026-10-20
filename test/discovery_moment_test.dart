@@ -9,7 +9,6 @@ import 'package:london_mystery/data/mock/season1/season1_discoveries.dart';
 import 'package:london_mystery/data/models/discovery.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/scoring.dart';
 import 'package:london_mystery/features/game/wallet_controller.dart';
@@ -24,7 +23,7 @@ import 'title_screen_test.dart' show capture;
 /// detective just found or worked out, in the place it happened, then the
 /// XP, then CONTINUE (only when the detective taps it).
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   Episode caseOf(String missionId) => season.firstWhere((e) => e.missions.any((m) => m.id == missionId));
   Mission mission(String id) => caseOf(id).missionById(id)!;
   final regular = [for (final e in season) ...e.missions];

@@ -87,7 +87,14 @@ class SeasonOverview {
 
   int get solvedCount => marks.where((m) => m == CaseMark.solved).length;
 
-  bool get complete => total > 0 && solvedCount == total;
+  /// Every case of the season solved: the ones in the game, and as many as
+  /// the season plans (a season still being written is never complete).
+  bool get complete => total > 0 && solvedCount == total && total >= (info.plannedCases ?? 0);
+
+  /// Every case in the game solved, but the season plans more: the next
+  /// one is coming (its number), not yet to be played.
+  int? get comingSoonCase =>
+      total > 0 && solvedCount == total && total < (info.plannedCases ?? 0) ? total + 1 : null;
 
   Episode? get currentCase => current == null ? null : cases[current!];
 

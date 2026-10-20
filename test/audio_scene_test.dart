@@ -13,7 +13,6 @@ import 'package:london_mystery/data/mock/season1/season1_sounds.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/audio_scenes.dart';
 
 import 'full_playthrough_test.dart' show wait;
@@ -23,7 +22,7 @@ import 'helpers.dart';
 /// layer, the loop players' lifecycle, Season 1's places and the flow of
 /// the music through a case.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   Episode episode(String id) => season.firstWhere((e) => e.id == id);
 
   group('scene diff, layer by layer', () {

@@ -17,7 +17,6 @@ import 'package:london_mystery/data/mock/season1/season1_investigations.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/widgets/centered_scroll.dart';
 import 'package:london_mystery/widgets/game_button.dart';
 import 'package:london_mystery/widgets/letter_card.dart';
@@ -31,7 +30,7 @@ import 'title_screen_test.dart' show capture;
 /// under the bar when it fits, read from the top and scrolled when it does
 /// not — whatever the case, the puzzle type, the phone or the text size.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   final plain = [
     for (final e in season)
       for (final m in e.missions)

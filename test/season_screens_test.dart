@@ -13,7 +13,6 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/mission_map/map_camera.dart';
 import 'package:london_mystery/features/mission_map/map_world.dart';
 import 'package:london_mystery/features/mission_map/widgets/map_pin.dart';
@@ -27,7 +26,7 @@ import 'helpers.dart';
 /// layout error (overflow, clipping exceptions). Set LM_SCREENSHOTS to a
 /// folder to also save a picture of each screen for visual review.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   final shots = Platform.environment['LM_SCREENSHOTS'];
 
   setUpAll(() async {

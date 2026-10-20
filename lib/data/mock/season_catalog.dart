@@ -21,6 +21,7 @@ import 'season1/season1_inspections.dart';
 import 'season1/season1_investigations.dart';
 import 'season1/season1_learning.dart';
 import 'season1/season1_mock.dart';
+import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 
 /// One season's bundled content: who the season is, its cases, and the
@@ -34,6 +35,7 @@ class SeasonContent {
   const SeasonContent({
     required this.info,
     required this.episodes,
+    this.released = true,
     this.investigations = const {},
     this.explores = const {},
     this.inspections = const {},
@@ -52,6 +54,12 @@ class SeasonContent {
 
   /// The season's cases as JSON, in case order, by case id.
   final Map<String, Map<String, dynamic>> episodes;
+
+  /// Whether the season is out for players. An unreleased season stays
+  /// COMING SOON for everyone, whatever is solved and whatever is in the
+  /// game; only an operator build's season preview plays it (see
+  /// `SeasonAvailability`).
+  final bool released;
 
   final Map<String, InvestigationScene> investigations;
   final Map<String, ExploreScene> explores;
@@ -92,8 +100,18 @@ final season1Content = SeasonContent(
   languageTopics: season1LanguageTopics,
 );
 
-/// Season 2 — Paris Stands Still: who it is; no cases yet.
-const season2Content = SeasonContent(info: season2InfoJson, episodes: season2Json);
+/// Season 2 — Paris Stands Still: in the making, not released (its cases
+/// are played only in an operator build's season preview).
+final season2Content = SeasonContent(
+  info: season2InfoJson,
+  episodes: season2Json,
+  released: false,
+  learning: season2Learning,
+  languageTopics: season2LanguageTopics,
+);
+
+/// Whether season [seasonId] is out for players (an unknown season is not).
+bool seasonReleased(String seasonId) => SeasonCatalog.byId(seasonId)?.released ?? false;
 
 /// Every season of the game, in play order, and the one place that finds a
 /// mission's or a case's season content. A mission's content is looked up in

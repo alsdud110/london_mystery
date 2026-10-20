@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../data/models/mission.dart';
+import '../../../data/models/season.dart' show SeasonIds;
 import '../../../widgets/art_assets.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/landmark_art.dart';
@@ -13,13 +14,27 @@ import '../../../widgets/landmark_art.dart';
 /// old London map, photo prints, push-pins and paper tags. Built from the
 /// game's own pictures and ink, so they change with the story.
 
-/// The game's London map as an old print: warm sepia on parchment.
-/// [strength] is how much of the print shows through (0..1).
+/// A season's city map as an old print: warm sepia on parchment (London's
+/// unless [file] names another). [strength] is how much of the print shows
+/// through (0..1).
 class MapPrint extends StatelessWidget {
-  const MapPrint({super.key, this.strength = 0.6, this.alignment = Alignment.center});
+  const MapPrint({
+    super.key,
+    this.strength = 0.6,
+    this.alignment = Alignment.center,
+    this.file = ArtAssets.londonMap,
+    this.pixels = ArtAssets.londonMapPixels,
+  });
 
   final double strength;
   final Alignment alignment;
+  final String file;
+  final Size pixels;
+
+  /// The print of season [seasonId]'s map: London's, or Paris's.
+  factory MapPrint.ofSeason(String seasonId, {double strength = 0.6}) => seasonId == SeasonIds.paris
+      ? MapPrint(strength: strength, file: ArtAssets.parisMap, pixels: ArtAssets.parisMapPixels)
+      : MapPrint(strength: strength);
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +47,14 @@ class MapPrint extends StatelessWidget {
             child: ColorFiltered(
               colorFilter: const ColorFilter.mode(AppColors.inkBrown, BlendMode.color),
               child: Image.asset(
-                ArtAssets.londonMap,
+                file,
                 fit: BoxFit.cover,
                 alignment: alignment,
                 width: double.infinity,
                 height: double.infinity,
                 cacheWidth: math.min(
                   (box.maxWidth * MediaQuery.devicePixelRatioOf(context)).ceil(),
-                  ArtAssets.londonMapPixels.width.toInt(),
+                  pixels.width.toInt(),
                 ),
                 excludeFromSemantics: true,
                 errorBuilder: (context, error, stack) => const SizedBox.expand(),

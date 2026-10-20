@@ -230,6 +230,16 @@ class MissionPlay {
           await t.tap(tile);
           await t.pump(const Duration(milliseconds: 150));
         }
+      case MissionType.letterLock:
+        // Each letter of the word, tapped from the loose tiles into the next slot.
+        for (final letter in m.answer.split('')) {
+          final tile = find.bySemanticsLabel('Letter $letter');
+          await reveal(t, tile);
+          await t.tap(tile.first);
+          await t.pump(const Duration(milliseconds: 150));
+        }
+        await tapText(t, 'OPEN THE LOCK', after: const Duration(milliseconds: 400));
+        return;
       case MissionType.examine || MissionType.finalCode:
         fail('not used here');
     }

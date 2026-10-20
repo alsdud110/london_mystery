@@ -30,6 +30,7 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
+import 'widgets/letter_lock.dart' show LetterLockReveal;
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
 import '../../data/models/detective_name.dart';
@@ -407,6 +408,13 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                               // The numbers on its drums follow the locks below
                               // until it opens.
                               ? RoyalBoxAnimation(animation: _open, digits: solved ? const [] : _digits)
+                              : m.type == MissionType.letterLock
+                              // The lock over its place, opening with the solve.
+                              ? LetterLockReveal(
+                                  animation: _open,
+                                  word: m.answer,
+                                  place: _SceneReveal(scene: PlaceArt.sceneOf(m), animation: _open),
+                                )
                               : _SceneReveal(
                                   scene: PlaceArt.sceneOf(m),
                                   animation: _open,

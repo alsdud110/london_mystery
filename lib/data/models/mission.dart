@@ -17,7 +17,12 @@ enum MissionType {
   /// Tap the options in the right order (ids joined by commas). An option
   /// can be used again when there are fewer options than [Mission.codeLength]
   /// (e.g. LEFT / RIGHT turns); otherwise each is used once.
-  sequence;
+  sequence,
+
+  /// A letter lock: the options are letter tiles, each used once, set into
+  /// as many slots to spell [Mission.answer] (a word, checked like a typed
+  /// one). Season 2's first final (TIME).
+  letterLock;
 
   static MissionType fromJson(String value) => MissionType.values.firstWhere(
     (t) => t.name == value,
@@ -102,7 +107,12 @@ enum Artwork {
   parkMapA,
   parkMapB,
   parkMapC,
-  parkMapD;
+  parkMapD,
+
+  // Season 2 — Paris. Each has its own picture only: never drawn as, or
+  // standing in for, a London scene.
+  // Gare du Nord's hall (Case 01).
+  gareDuNord;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

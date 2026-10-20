@@ -369,7 +369,7 @@ class _OpenFile extends StatelessWidget {
 
   /// "12 CASES • ONE MYSTERY".
   static String _tagline(SeasonAvailability a) =>
-      a.hasCases ? '${a.caseCount} CASES • ${a.season.tagline}' : a.season.tagline;
+      a.hasCases ? '${a.plannedCount} CASES • ${a.season.tagline}' : a.season.tagline;
 }
 
 /// How many of the season's cases are solved, as on the board.
@@ -381,7 +381,7 @@ class _Progress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: '${a.solvedCount} of ${a.caseCount} cases solved',
+      label: '${a.solvedCount} of ${a.plannedCount} cases solved',
       excludeSemantics: true,
       child: Row(
         children: [
@@ -390,7 +390,7 @@ class _Progress extends StatelessWidget {
               spacing: 5,
               runSpacing: 5,
               children: [
-                for (var i = 0; i < a.caseCount; i++)
+                for (var i = 0; i < a.plannedCount; i++)
                   Container(
                     width: 9,
                     height: 9,
@@ -405,7 +405,7 @@ class _Progress extends StatelessWidget {
           ),
           const SizedBox(width: AppSpace.sm),
           Text(
-            '${a.solvedCount} / ${a.caseCount}',
+            '${a.solvedCount} / ${a.plannedCount}',
             style: AppText.title(
               size: 18,
               color: AppColors.navy,

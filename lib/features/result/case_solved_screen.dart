@@ -111,6 +111,10 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     // the case files). Only when the board's current case is the next case:
     // a case played again keeps OPEN CASE NN opening case NN's file.
     final toBoard = nextCase == null || ref.watch(seasonOverviewProvider).currentCase?.id == nextCase.id;
+    final season = ref.watch(seasonInfoProvider);
+    // The season goes on, but its next case is not in the game yet: said so
+    // plainly, never offered as a case to open.
+    final comingNext = nextCase == null && catalog.length < (season.plannedCases ?? 0) ? catalog.length + 1 : null;
     final paper = _iv(0, 0.25);
     // The detective who closed it rises behind the file as it lands, just
     // before the stamp comes down.
@@ -155,10 +159,19 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                           // scene before this report (Episode.hook is not repeated
                           // here: it would echo that scene, or spoil the next case).
                           Text(
-                            'London needs you again.',
+                            '${season.city} needs you again.',
                             style: AppText.cinematicPrompt(size: 22),
                             textAlign: TextAlign.center,
                           ),
+                          if (comingNext != null) ...[
+                            const SizedBox(height: AppSpace.sm),
+                            Text(
+                              'CASE ${comingNext.toString().padLeft(2, '0')} · COMING SOON',
+                              key: const ValueKey('next-case-coming-soon'),
+                              style: AppText.eyebrow(color: AppColors.goldLight),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                           const SizedBox(height: 16),
                           // The child's next step is the primary action: on to the
                           // next case (after the last case of the season, the

@@ -14,7 +14,6 @@ import 'package:london_mystery/data/mock/season1/season1_mock.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/season.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/season/season_overview.dart';
@@ -26,7 +25,7 @@ import 'helpers.dart';
 /// it is reached and left, and that it never tells more than the story.
 /// Set LM_SCREENSHOTS to a folder to save a picture of each state.
 void main() {
-  final catalog = MockEpisodeRepository.bundled();
+  final catalog = season1Cases();
   final info = Season.fromJson(season1InfoJson);
   final ids = [for (final e in catalog) e.id];
   final shots = Platform.environment['LM_SCREENSHOTS'];

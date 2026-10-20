@@ -94,9 +94,18 @@ void main() {
       Artwork.clockMechanism: 'assets/seasons/season_01_london/locations/big_ben/clock_mechanism.png',
     };
     expect(ArtAssets.objectScenes, objectScenes);
-    expect(ArtAssets.scenes, {...landmarks, ...inside, ...objectScenes});
+    // Season 2's places: Gare du Nord (Case 01), its own picture.
+    const parisScenes = {
+      Artwork.gareDuNord: 'assets/seasons/season_02_paris/cover/season2_gare_du_nord.png',
+    };
+    expect(ArtAssets.parisScenes, parisScenes);
+    expect(ArtAssets.scenes, {...landmarks, ...inside, ...objectScenes, ...parisScenes});
     for (final a in Artwork.values) {
-      expect(LandmarkArt.hasPicture(a), landmarks.containsKey(a) || inside.containsKey(a) || objectScenes.containsKey(a), reason: '$a');
+      expect(
+        LandmarkArt.hasPicture(a),
+        landmarks.containsKey(a) || inside.containsKey(a) || objectScenes.containsKey(a) || parisScenes.containsKey(a),
+        reason: '$a',
+      );
     }
     // Each inside place's picture is in its landmark's folder.
     final landmarkFolders = {for (final p in landmarks.values) p.split('/').last.replaceAll('.png', '')};
@@ -115,7 +124,8 @@ void main() {
   });
 
   testWidgets('every scene picture is in the app bundle', (t) async {
-    expect(ArtAssets.scenes, hasLength(31));
+    // Season 1's 31, and Season 2's Gare du Nord.
+    expect(ArtAssets.scenes, hasLength(32));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,

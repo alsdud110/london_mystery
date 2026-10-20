@@ -6,7 +6,6 @@ import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/mock/season1/season1_learning.dart';
 import 'package:london_mystery/data/models/learning.dart';
 import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
@@ -20,7 +19,7 @@ import 'title_screen_test.dart' show capture;
 /// is read from the driver's description, and pictures shown without a name
 /// are described to screen readers (never named).
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   final all = {for (final e in season) for (final m in e.allMissions) m.id: m};
   final cases = [for (final id in ['ep09', 'ep10', 'ep11']) season.firstWhere((e) => e.id == id)];
   final missions = {for (final e in cases) for (final m in e.allMissions) m.id: m};

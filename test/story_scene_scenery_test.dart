@@ -10,7 +10,6 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/landmark_art.dart';
 import 'package:london_mystery/widgets/place_art.dart';
@@ -24,7 +23,7 @@ import 'title_screen_test.dart' show capture;
 void main() {
   test('every story scene has the picture of the place it unlocks', () {
     var scenes = 0;
-    for (final e in MockEpisodeRepository.bundled()) {
+    for (final e in season1Cases()) {
       for (final m in e.missions) {
         final next = m.nextMissionId == null ? null : e.missionById(m.nextMissionId!);
         if (next == null) continue;
@@ -41,7 +40,7 @@ void main() {
     }
     expect(scenes, 38, reason: 'Case 01: 5, Cases 02-12: 3 each');
     // Case 01's first scene opens on the British Museum.
-    final e1 = MockEpisodeRepository.bundled().first;
+    final e1 = season1Cases().first;
     expect(PlaceArt.sceneryOf(e1.missionById('m02')!), Artwork.britishMuseum);
   });
 
@@ -60,7 +59,7 @@ void main() {
   });
 
   // On screen: the scene's place behind the words, the unlocked card, TO THE MAP.
-  final catalog = MockEpisodeRepository.bundled();
+  final catalog = season1Cases();
   for (final size in const [Size(360, 640), Size(390, 844)]) {
     for (final (episodeId, missionId) in const [('ep01', 'm01'), ('ep01', 'm02'), ('ep01', 'm05'), ('ep03', 'ep03_m1'), ('ep07', 'ep07_m2')]) {
       final tag = '${missionId}_${size.width.toInt()}x${size.height.toInt()}';

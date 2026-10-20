@@ -6,6 +6,8 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../data/models/episode.dart';
+import '../../data/models/season.dart' show SeasonIds;
+import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../../widgets/game_dialog.dart';
 import '../../widgets/ink_icon.dart';
@@ -82,6 +84,7 @@ class GameMasterScreen extends ConsumerWidget {
     // The cases a playtest can start at: the first season's (see startPlaytestAt).
     final catalog = SeasonAvailability.casesOf(ref.watch(seasonsProvider).first.id, ref.watch(allEpisodesProvider));
     final operatorOn = ref.watch(operatorAccessProvider);
+    final previewOn = ref.watch(seasonPreviewProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -176,6 +179,32 @@ class GameMasterScreen extends ConsumerWidget {
                     style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                     onPressed: () => context.go(Routes.episodes),
                     child: const Text('CASE FILES로 이동'),
+                  ),
+                const SizedBox(height: 12),
+                // An unreleased season, played before its release (session only).
+                SwitchListTile(
+                  key: const ValueKey('season-preview-switch'),
+                  contentPadding: EdgeInsets.zero,
+                  title: Text('출시 전 시즌 플레이 (SEASON PREVIEW)', style: AppText.subtitle()),
+                  subtitle: Text(
+                    '테스트 빌드에서만 켤 수 있습니다. 출시 전 시즌(SEASON 2)이 보관함에서 열리고, '
+                    '푼 기록은 그 시즌에 따로 저장됩니다. 끄거나 앱을 다시 시작하면 SEASON 1로 돌아갑니다.',
+                    style: AppText.caption(),
+                  ),
+                  value: previewOn,
+                  onChanged: (on) {
+                    // Off: back to Season 1 first, while the season played can still be left.
+                    if (!on && ref.read(selectedSeasonIdProvider) != SeasonIds.london) {
+                      ref.read(gameControllerProvider.notifier).openSeason(SeasonIds.london);
+                    }
+                    ref.read(seasonPreviewSwitchProvider.notifier).set(on);
+                  },
+                ),
+                if (previewOn)
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    onPressed: () => context.go(Routes.seasons),
+                    child: const Text('DETECTIVE ARCHIVES로 이동'),
                   ),
                 const SizedBox(height: 12),
                 // Season 2's opening, to check it before the season opens: it

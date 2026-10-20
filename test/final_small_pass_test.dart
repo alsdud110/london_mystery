@@ -12,7 +12,6 @@ import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
@@ -24,7 +23,7 @@ import 'personalized_lines.dart';
 /// Case 06 matches the man by the fountain to the one who dropped the card;
 /// Case 08 answers Mrs Robin's lie with the Red Button from Case 03.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   Episode byId(String id) => season.firstWhere((e) => e.id == id);
 
   /// What the final page shows before it is solved (not its options).

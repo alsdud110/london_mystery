@@ -417,7 +417,7 @@ class _CoverTitle extends StatelessWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                '${overview.total} CASES • ${season.tagline}',
+                '${season.plannedCases ?? overview.total} CASES • ${season.tagline}',
                 // A little lighter than the gold and a firmer shade under it:
                 // it stands over the first lights of the city.
                 style: AppText.eyebrow(color: Color.lerp(AppColors.goldLight, AppColors.paperLight, 0.35)!).copyWith(
@@ -486,7 +486,7 @@ class _Dossier extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Semantics(
-            label: '${overview.solvedCount} of ${overview.total} cases solved',
+            label: '${overview.solvedCount} of ${overview.info.plannedCases ?? overview.total} cases solved',
             excludeSemantics: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -495,7 +495,8 @@ class _Dossier extends StatelessWidget {
                   children: [
                     Expanded(child: Text('CASES SOLVED', style: AppText.eyebrow(color: AppColors.inkBrown))),
                     Text(
-                      '${overview.solvedCount} / ${overview.total}',
+                      // Out of the season's planned cases, not only those in the game.
+                      '${overview.solvedCount} / ${overview.info.plannedCases ?? overview.total}',
                       style: AppText.title(size: 22, color: AppColors.navy)
                           .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
                     ),
@@ -527,6 +528,37 @@ class _Dossier extends StatelessWidget {
                 glyph: InkGlyph.seal,
                 color: AppColors.inkBrown,
                 onPressed: () => context.go(Routes.seasons),
+              ),
+            ),
+          ] else if (overview.comingSoonCase case final next?) ...[
+            // Every case in the game is solved; the season's next one is not
+            // written yet. Nothing here looks like a case to begin.
+            Text(
+              'CASE ${next.toString().padLeft(2, '0')} · COMING SOON',
+              key: const ValueKey('dossier-coming-soon'),
+              textAlign: TextAlign.center,
+              style: AppText.eyebrow(color: AppColors.burgundy),
+            ),
+            const SizedBox(height: AppSpace.xs),
+            Text(
+              'The next file is still being written.',
+              textAlign: TextAlign.center,
+              style: AppText.caption(color: AppColors.inkBrown),
+            ),
+            const SizedBox(height: AppSpace.md),
+            GameButton(
+              label: 'OPEN THE ARCHIVE',
+              glyph: InkGlyph.seal,
+              singleLine: true,
+              tap: TapRole.secondary,
+              onPressed: () => context.go(Routes.seasons),
+            ),
+            Center(
+              child: InkTextButton(
+                label: 'View all case files',
+                glyph: InkGlyph.folder,
+                color: AppColors.inkBrown,
+                onPressed: () => context.go(Routes.episodes),
               ),
             ),
           ] else ...[

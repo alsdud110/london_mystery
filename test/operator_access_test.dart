@@ -8,7 +8,6 @@ import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
@@ -19,7 +18,7 @@ import 'helpers.dart';
 /// Operator full case access (QA): every case opens in a test build, while
 /// a child's game keeps its rules, and opening a case marks nothing solved.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   final ids = [for (final e in season) e.id];
 
   /// A detective with Case 01 solved (so Case 02 is open, the rest sealed).

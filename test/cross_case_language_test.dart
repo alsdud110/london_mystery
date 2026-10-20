@@ -7,7 +7,6 @@ import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/mock/season1/season1_learning.dart';
 import 'package:london_mystery/data/models/learning.dart';
 import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
@@ -23,7 +22,7 @@ import 'title_screen_test.dart' show capture;
 /// in Case 11 Mission 03 — with every answer, piece of evidence and ending
 /// as before, and a way on for a child who cannot open the archive.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   Mission m(String id) => season.expand((e) => e.allMissions).firstWhere((x) => x.id == id);
   bool word(String text, String w) => RegExp('\\b$w\\b', caseSensitive: false).hasMatch(text);
 

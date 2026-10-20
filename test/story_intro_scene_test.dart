@@ -10,7 +10,6 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/landmark_art.dart';
 
@@ -22,7 +21,7 @@ import 'title_screen_test.dart' show capture;
 /// (or the London map), the I'M READY button in the game's cinematic style.
 /// Set LM_SCREENSHOTS to a folder to save pictures.
 void main() {
-  final catalog = MockEpisodeRepository.bundled();
+  final catalog = season1Cases();
 
   setUpAll(() async {
     for (final (family, files) in [

@@ -319,7 +319,9 @@ class _ParisPrologueScreenState extends ConsumerState<ParisPrologueScreen> with 
                       arrow: true,
                       singleLine: true,
                       style: GameButtonStyle.glass,
-                      onPressed: () => SeasonActions.investigate(context, ref, index),
+                      // Into the case's file first (what happened, what to
+                      // find out, BEGIN INVESTIGATION), as from the case files.
+                      onPressed: () => context.go(Routes.caseFile(overview.cases[index].id)),
                     )
                   // The case is not in the game yet: no way into it, only back.
                   : GameButton(

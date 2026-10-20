@@ -311,6 +311,9 @@ class _LandmarkPainter extends CustomPainter {
         _parkMap(canvas, const Offset(34, 87));
       case Artwork.parkMapD:
         _parkMap(canvas, const Offset(43, 15));
+      // Season 2's places: their own pictures only, no London drawing.
+      case Artwork.gareDuNord:
+        break;
     }
     canvas.restore();
   }

@@ -2,13 +2,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/data/mock/season1/season1_learning.dart';
 import 'package:london_mystery/data/models/learning.dart';
 import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
+import 'helpers.dart';
 
 /// The learning design of Season 1 (TYPE B P0-C) is tied to the real
 /// content: every mission has one, it only names English the child sees, and
 /// it never records a picture or symbol match as understanding English.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   final missions = {for (final e in season) for (final m in e.allMissions) m.id: m};
 
   String norm(String s) => s.toLowerCase().replaceAll(RegExp(r'\s+'), ' ').trim();

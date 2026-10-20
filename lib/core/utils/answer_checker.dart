@@ -32,6 +32,7 @@ abstract final class AnswerChecker {
       case MissionType.numberCode:
       case MissionType.examine:
       case MissionType.finalCode:
+      case MissionType.letterLock:
         final given = normalize(submission);
         if (given.isEmpty) return null;
         for (final e in mission.feedback.entries) {
@@ -58,6 +59,7 @@ abstract final class AnswerChecker {
       case MissionType.numberCode:
       case MissionType.examine:
       case MissionType.finalCode:
+      case MissionType.letterLock:
         final given = normalize(submission);
         if (given.isEmpty) return false;
         return [mission.answer, ...mission.acceptedAnswers].any((a) => normalize(a) == given);

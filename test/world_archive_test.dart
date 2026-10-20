@@ -20,7 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
-import 'multi_season_test.dart' show withParis, withParisMap;
+import 'multi_season_test.dart' show asReleased, withParis, withParisMap;
 
 void main() {
   final catalog = MockEpisodeRepository.bundled();
@@ -151,7 +151,7 @@ void main() {
       expect(find.text('ONE STOLEN HOUR'), findsOneWidget);
       expect(find.text('COMING SOON'), findsOneWidget);
       expect(find.text('SEALED FILE'), findsNothing);
-      expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'no cases and no map yet');
+      expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'not released yet');
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -255,10 +255,11 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('Season 2 playable (stand-in cases and map): BEGIN SEASON TWO plays it; Season 1 kept', (t) async {
+    testWidgets('Season 2 playable (as released, a stand-in Case 02): BEGIN SEASON TWO plays it; Season 1 kept', (t) async {
       await pumpApp(t, seasonSaves(12), extra: [
         allEpisodesProvider.overrideWithValue(withParis),
         seasonMapsProvider.overrideWithValue(withParisMap),
+        asReleased,
       ]);
       final prefs = appRef.read(sharedPreferencesProvider);
       final season1 = prefs.getString(savedKey(prefs, AppConstants.seasonStorageKey));
@@ -317,6 +318,7 @@ void main() {
       await pumpApp(t, seasonSaves(12), extra: [
         allEpisodesProvider.overrideWithValue(withParis),
         seasonMapsProvider.overrideWithValue(withParisMap),
+        asReleased,
       ]);
       // A solved case is shown again first, as always: from its last case's
       // result, Season 1 has no case under way.

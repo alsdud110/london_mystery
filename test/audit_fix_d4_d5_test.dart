@@ -13,7 +13,6 @@ import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/widgets/glossary_text.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -25,7 +24,7 @@ import 'personalized_lines.dart';
 /// cards, tips, the try-again line, the final case's question) and D5 (the
 /// words a deduction turns on are in the glossary).
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   Episode byId(String id) => season.firstWhere((e) => e.id == id);
 
   group('D5 — the words a deduction turns on have a meaning', () {

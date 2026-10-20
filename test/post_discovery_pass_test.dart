@@ -5,7 +5,6 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/mock/season1/season1_discoveries.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/game/scoring.dart';
@@ -13,7 +12,7 @@ import 'package:london_mystery/features/game/wallet_controller.dart';
 import 'package:london_mystery/widgets/evidence_card.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
-import 'helpers.dart' show findReadable;
+import 'helpers.dart' show findReadable, season1Cases;
 import 'mission_play.dart';
 import 'title_screen_test.dart' show capture;
 
@@ -23,7 +22,7 @@ import 'title_screen_test.dart' show capture;
 /// (Case 06's theatre ticket, Case 10's letter) is laid down there as a card.
 /// The answers save everything, as before.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   Episode byId(String id) => season.firstWhere((e) => e.id == id);
 
   group('content', () {

@@ -11,6 +11,7 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/mock/season1/episode02_mock.dart';
 import 'package:london_mystery/data/mock/season1/season1_explores.dart';
 import 'package:london_mystery/data/mock/season1/season1_learning.dart';
+import 'package:london_mystery/data/mock/season2/season2_learning.dart';
 import 'package:london_mystery/data/mock/season_catalog.dart';
 import 'package:london_mystery/data/models/discovery.dart';
 import 'package:london_mystery/data/models/episode.dart';
@@ -33,16 +34,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
 
-/// A stand-in Paris case for these tests only (Season 2 has no cases in the
-/// game yet): Case 02's content under Season 2's ids.
+/// A stand-in Paris case for these tests only (Season 2 has only its Case 01
+/// in the game): Case 02's content under Season 2's ids. Never Case 01, the
+/// real one.
 Episode parisCase(int n) {
+  assert(n > 1, 'Paris Case 01 is in the game');
   final id = 's2_ep${n.toString().padLeft(2, '0')}';
   final text = jsonEncode(episode02Json).replaceAll('"ep02_', '"${id}_').replaceAll('"ep02"', '"$id"');
   return Episode.fromJson({...jsonDecode(text) as Map<String, dynamic>, 'number': n, 'seasonId': SeasonIds.paris});
 }
 
-/// Season 1 as bundled, with two stand-in Paris cases after it.
-final withParis = [...MockEpisodeRepository.bundled(), parisCase(1), parisCase(2)];
+/// The game as bundled (Season 1, and Paris's Case 01), with a stand-in
+/// Paris Case 02 after it.
+final withParis = [...MockEpisodeRepository.bundled(), parisCase(2)];
+
+/// Every season played as if released. Season 2 is not released yet (only an
+/// operator build's season preview plays it: see `paris_case01_test.dart`);
+/// these tests check the rules a released season follows.
+final asReleased = seasonReleasedProvider.overrideWithValue((_) => true);
 
 /// The game's maps, Paris's included (a season is entered only with its map).
 const withParisMap = SeasonMap.bySeason;
@@ -75,12 +84,13 @@ void main() {
   SeasonAvailability paris() => container.read(seasonAvailabilityProvider(SeasonIds.paris))!;
 
   /// A container on [prefs] (a restart when it is the same storage). With
-  /// [episodes] (stand-in Paris cases), Paris has its stand-in map too unless
-  /// [maps] says otherwise.
+  /// [episodes] (a stand-in Paris case), Paris is played as released and has
+  /// its map unless [maps] says otherwise. Without, the game as it ships:
+  /// Paris not released.
   Future<ProviderContainer> open({List<Episode>? episodes, Map<String, SeasonMap>? maps}) async => ProviderContainer(
     overrides: [
       ...await testOverridesFor(prefs),
-      if (episodes != null) allEpisodesProvider.overrideWithValue(episodes),
+      if (episodes != null) ...[allEpisodesProvider.overrideWithValue(episodes), asReleased],
       if (maps != null || episodes != null) seasonMapsProvider.overrideWithValue(maps ?? withParisMap),
     ],
   );
@@ -106,7 +116,7 @@ void main() {
   tearDown(() => container.dispose());
 
   group('season ids and content', () {
-    test('Season 1 keeps its cases, ids and content; Season 2 is registered with no cases', () {
+    test('Season 1 keeps its cases, ids and content; Season 2 has its Case 01, not released', () {
       final seasons = container.read(seasonsProvider);
       expect([for (final s in seasons) s.id], [SeasonIds.london, SeasonIds.paris]);
       expect(seasons.first.title, 'Shadows over London');
@@ -120,7 +130,9 @@ void main() {
       expect(container.read(seasonInfoProvider).id, SeasonIds.london);
       expect([for (final e in container.read(episodeCatalogProvider)) e.id], season1Ids);
       expect(container.read(episodeCatalogProvider).every((e) => e.seasonId == SeasonIds.london), isTrue);
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes, isEmpty);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.released, isFalse);
+      expect(SeasonCatalog.byId(SeasonIds.london)!.released, isTrue);
     });
 
     test('a case says its season; Season 1 content without one is Season 1', () {
@@ -134,7 +146,7 @@ void main() {
     });
 
     test('every season orders its own cases from 01, season by season', () {
-      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(2), ...MockEpisodeRepository.bundled(), parisCase(1)]);
+      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(2), ...MockEpisodeRepository.bundled()]);
       expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02']);
     });
 
@@ -169,21 +181,26 @@ void main() {
       expect(SeasonCatalog.ofMission('m01')!.id, SeasonIds.london);
       expect(SeasonCatalog.explore(m01), same(season1Explores['m01']));
       expect(SeasonCatalog.languageTopic('ep01'), same(season1LanguageTopics['ep01']));
-      for (final e in MockEpisodeRepository.bundled()) {
+      for (final e in season1Cases()) {
         for (final m in e.allMissions) {
           expect(SeasonCatalog.learning(m), same(season1Learning[m.id]), reason: m.id);
         }
       }
+      // Paris's Case 01: its own season's notes.
+      final s2m1 = MockEpisodeRepository.bundled().firstWhere((e) => e.id == 's2_ep01').missions.first;
+      expect(SeasonCatalog.ofMission(s2m1.id)!.id, SeasonIds.paris);
+      expect(SeasonCatalog.learning(s2m1), same(season2Learning[s2m1.id]));
+      expect(SeasonCatalog.languageTopic('s2_ep01'), same(season2LanguageTopics['s2_ep01']));
       // A mission no season has (a stand-in Paris mission): no scene, the
       // plain Discovery Moment, no learning note.
-      final paris = parisCase(1).missions.first;
+      final paris = parisCase(2).missions.first;
       expect(SeasonCatalog.ofMission(paris.id), isNull);
       expect(SeasonCatalog.explore(paris), isNull);
       expect(SeasonCatalog.dialogue(paris), isNull);
       expect(SeasonCatalog.learning(paris), isNull);
       expect(SeasonCatalog.discovery(paris).type, Discovery.fallback(paris).type);
       expect(SeasonCatalog.byId('s9_nowhere'), isNull);
-      expect(SeasonCatalog.languageTopic('s2_ep01'), isNull);
+      expect(SeasonCatalog.languageTopic('s2_ep02'), isNull);
     });
   });
 
@@ -294,12 +311,12 @@ void main() {
       expect(current().id, 'ep04', reason: 'Season 1 reopens on its own open case');
     });
 
-    test('a saved season that cannot be entered (gone, locked, no cases) reopens on Season 1', () async {
+    test('a saved season that cannot be entered (gone, locked, not released) reopens on Season 1', () async {
       ctrl().createDetective('Kim', DetectiveAvatar.boy);
       for (final saved in ['s9_nowhere', SeasonIds.paris]) {
         prefs.setString(savedKey(prefs, AppConstants.selectedSeasonKey), jsonEncode({'seasonId': saved}));
         container.dispose();
-        container = await open(); // Paris has no cases in the game
+        container = await open(); // the game as it ships: Paris not released
         expect(container.read(selectedSeasonIdProvider), SeasonIds.london, reason: saved);
         expect(current().seasonId, SeasonIds.london);
       }
@@ -387,14 +404,18 @@ void main() {
       expect(ctrl().openSeason(SeasonIds.paris), isTrue);
     });
 
-    test('unlocked with no cases yet, Season 2 is coming soon and is never entered', () async {
+    test('unlocked but not released, Season 2 is coming soon and is never entered, its Case 01 in the game or not', () async {
       ctrl().createDetective('Kim', DetectiveAvatar.boy);
       saveSeason1(season1Finished);
       container.dispose();
-      container = await open(); // the game as bundled: Paris has no cases
+      container = await open(); // the game as it ships: Paris's Case 01 and map, not released
+      expect(paris().hasCases, isTrue);
+      expect(paris().hasMap, isTrue);
+      expect(paris().released, isFalse);
       expect(paris().status, SeasonStatus.comingSoon);
       expect(paris().isUnlocked, isTrue);
       expect(paris().canEnter, isFalse);
+      expect(container.read(selectedSeasonIdProvider.notifier).select(SeasonIds.paris), isFalse);
       expect(ctrl().openSeason(SeasonIds.paris), isFalse);
       expect(container.read(selectedSeasonIdProvider), SeasonIds.london);
       expect(current().seasonId, SeasonIds.london);
@@ -445,13 +466,13 @@ void main() {
       // Case 01's first place, as placed before seasons: King's Cross, its group of one.
       final ep01 = MockEpisodeRepository.bundled().first;
       expect(MapWorld.places(ep01)['m01'], Landmark.kingsCross.at + Offset(0, math.max(0, MapWorld.topMargin - Landmark.kingsCross.at.dy)));
-      for (final e in MockEpisodeRepository.bundled()) {
+      for (final e in season1Cases()) {
         for (final m in e.allMissions) {
           expect(SeasonMap.landmarkOf(m.id), MapWorld.missionLandmarks[m.id], reason: m.id);
         }
       }
       // A mission of no map stands at its own layout place.
-      final paris = parisCase(1);
+      final paris = parisCase(2);
       final places = MapWorld.places(paris);
       for (final m in paris.allMissions) {
         expect(SeasonMap.landmarkOf(m.id), isNull);
@@ -469,6 +490,7 @@ void main() {
           ...await testOverridesFor(prefs),
           allEpisodesProvider.overrideWithValue(withParis),
           seasonMapsProvider.overrideWith((ref) => maps),
+          asReleased,
         ],
       );
       addTearDown(c.dispose);

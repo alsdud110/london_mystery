@@ -351,7 +351,7 @@ class _SeasonPrologueScreenState extends ConsumerState<SeasonPrologueScreen>
                           child: Column(
                             children: [
                               Text(
-                                '${overview.total} CASES',
+                                '${overview.info.plannedCases ?? overview.total} CASES',
                                 style: AppText.logo(
                                   size: 38,
                                   color: AppColors.goldLight,

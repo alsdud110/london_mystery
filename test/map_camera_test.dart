@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/data/models/profile.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:london_mystery/features/mission_map/map_camera.dart';
@@ -67,7 +66,7 @@ void main() {
 
   group('map world', () {
     test('every mission of the season stands on a landmark of the map', () {
-      for (final e in MockEpisodeRepository.bundled()) {
+      for (final e in season1Cases()) {
         final places = MapWorld.places(e);
         for (final m in e.allMissions) {
           expect(MapWorld.missionLandmarks[m.id], isNotNull, reason: m.id);
@@ -82,7 +81,7 @@ void main() {
     });
 
     test('places that share a landmark do not sit on top of each other', () {
-      for (final e in MockEpisodeRepository.bundled()) {
+      for (final e in season1Cases()) {
         final places = MapWorld.places(e).values.toList();
         for (var i = 0; i < places.length; i++) {
           for (var j = i + 1; j < places.length; j++) {

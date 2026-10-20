@@ -105,10 +105,20 @@ class Season {
     required this.prologue,
     required this.outro,
     required this.figures,
+    this.city = 'London',
+    this.plannedCases,
   });
 
   /// [SeasonIds]: which season this is.
   final String id;
+
+  /// The city the season's cases happen in ("London"), as the pages name it.
+  final String city;
+
+  /// How many cases the season will have once it is all in the game (12),
+  /// or null: as many as are in the game. A season is complete only once
+  /// all of them are solved.
+  final int? plannedCases;
 
   final int number;
 
@@ -147,7 +157,12 @@ class Season {
     final id = json['id'];
     final number = json['number'];
     final figures = json['figures'];
+    final city = json['city'];
+    final planned = json['cases'];
     return Season(
+      // Season 1's content names no city: it is London.
+      city: city is String && city.isNotEmpty ? city : 'London',
+      plannedCases: planned is int && planned > 0 ? planned : null,
       // Season 1's content has no id: it is the default.
       id: id is String && id.isNotEmpty ? id : SeasonIds.london,
       number: number is int ? number : 1,

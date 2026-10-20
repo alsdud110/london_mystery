@@ -243,6 +243,12 @@ abstract final class ArtAssets {
     ...landmarkScenes,
     ...insideScenes,
     ...objectScenes,
+    ...parisScenes,
+  };
+
+  /// Season 2's scenes: Gare du Nord's hall (Case 01).
+  static const parisScenes = <Artwork, String>{
+    Artwork.gareDuNord: season2GareDuNord,
   };
 
   /// Scenes shown by a character or object picture: the Tower raven (Poppy)
@@ -301,6 +307,8 @@ abstract final class ArtAssets {
     Artwork.royalArchive: 1536 / 1024,
     Artwork.clockFace: 1,
     Artwork.clockMechanism: 1536 / 1024,
+    // Season 2: Gare du Nord's hall, a portrait picture.
+    Artwork.gareDuNord: 941 / 1671,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).

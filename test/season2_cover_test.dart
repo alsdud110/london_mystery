@@ -18,7 +18,7 @@ import 'package:london_mystery/widgets/art_assets.dart';
 
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
-import 'multi_season_test.dart' show assetOf, withParis, withParisMap;
+import 'multi_season_test.dart' show asReleased, assetOf, withParis, withParisMap;
 
 void main() {
   final ids = [for (final e in MockEpisodeRepository.bundled()) e.id];
@@ -110,12 +110,13 @@ void main() {
     }
   });
 
-  group('the Season 2 cover page (stand-in cases and map: tests only)', () {
+  group('the Season 2 cover page (played as released, its map, a stand-in Case 02: tests only)', () {
     for (final size in const [Size(360, 640), Size(390, 844), Size(430, 932)]) {
       testWidgets('${size.width.toInt()}: Paris\'s cover, its title, BEGIN into its own opening', (t) async {
         await pumpApp(t, size: size, solved: 12, extra: [
           allEpisodesProvider.overrideWithValue(withParis),
           seasonMapsProvider.overrideWithValue(withParisMap),
+          asReleased,
         ]);
         expect(appRef.read(gameControllerProvider.notifier).openSeason(SeasonIds.paris), isTrue);
         appRef.read(routerProvider).go(Routes.season);

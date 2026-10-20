@@ -3,13 +3,13 @@ import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
+import 'helpers.dart';
 import 'package:london_mystery/widgets/symbol_icon.dart';
 
 /// Checks every case of the season with the same rules, so a new case is
 /// validated as soon as it is added to the catalog.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   final later = season.where((e) => e.id != 'ep01').toList();
 
   test('cases are numbered 1..n in order, with unique ids', () {

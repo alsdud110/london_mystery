@@ -1,3 +1,5 @@
+import 'episode01_mock.dart';
+
 /// Season 2 as a whole: who the season is. Its cases, casebook lines and
 /// board figures come with its content; until then the season has no cases,
 /// so it can be unlocked but not entered (see `SeasonAvailability`).
@@ -9,10 +11,15 @@ const Map<String, dynamic> season2InfoJson = {
   'number': 2,
   'title': 'Paris Stands Still',
   'tagline': 'ONE STOLEN HOUR',
+  'city': 'Paris',
+  // Twelve cases planned; the season is complete only once all are solved.
+  'cases': 12,
 };
 
-/// Season 2's cases in case order, by id (none yet).
-const Map<String, Map<String, dynamic>> season2Json = {};
+/// Season 2's cases in case order, by id. The season is not released yet
+/// (see `season2Content`): its cases are played only in an operator
+/// build's season preview.
+const Map<String, Map<String, dynamic>> season2Json = {'s2_ep01': season2Episode01Json};
 
 /// Season 2's opening sequence, played once before its Case 01: five short
 /// scenes and the first case's file. It picks up where Season 1 ended

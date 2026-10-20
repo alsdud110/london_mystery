@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/mission/widgets/answer_feedback.dart';
 
 import 'helpers.dart';
@@ -12,7 +11,7 @@ import 'helpers.dart';
 /// line about what was misread, never the answer; the finals of Case 05 and
 /// 12 are read, not matched by picture; answers are unchanged.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = season1Cases();
   final missions = {for (final e in season) for (final m in e.allMissions) m.id: m};
   Mission m(String id) => missions[id]!;
 

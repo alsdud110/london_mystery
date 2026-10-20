@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -135,7 +137,11 @@ class SeasonAvailability {
     required this.caseCount,
     required this.solvedCount,
     required this.hasMap,
+    this.released = true,
   });
+
+  /// Whether the season is out for players (see [SeasonContent.released]).
+  final bool released;
 
   final Season season;
   final SeasonStatus status;
@@ -147,13 +153,17 @@ class SeasonAvailability {
 
   bool get hasCases => caseCount > 0;
 
+  /// How many cases the season has, planned ones included (a season still
+  /// being written has fewer in the game).
+  int get plannedCount => math.max(caseCount, season.plannedCases ?? 0);
+
   bool get isUnlocked => status != SeasonStatus.locked;
 
   /// Whether the detective may play it now (see [SelectedSeasonNotifier]).
   bool get canEnter => status == SeasonStatus.open;
 
-  /// Every case of the season solved.
-  bool get isCompleted => caseCount > 0 && solvedCount == caseCount;
+  /// Every case of the season solved, and as many as planned.
+  bool get isCompleted => caseCount > 0 && solvedCount == caseCount && caseCount >= (season.plannedCases ?? 0);
 
   /// The season's cases (of [allEpisodes]), in case order.
   static List<Episode> casesOf(String seasonId, List<Episode> allEpisodes) => [
@@ -166,36 +176,52 @@ class SeasonAvailability {
   /// without them it is not ready, never shown on another season's map.
   /// Operator access does not open a season (it opens the cases of the
   /// season played). Null for a season the game does not have.
+  ///
+  /// A season not [released] stays COMING SOON for everyone, whatever is
+  /// solved or in the game. Only [preview] (an operator build's season
+  /// preview: never a release build) opens it, unsealed, to be played.
   static SeasonAvailability? of(
     String seasonId, {
     required List<Season> seasons,
     required List<Episode> allEpisodes,
     required SeasonProgress Function(String seasonId) record,
     required Map<String, SeasonMap> maps,
+    bool Function(String seasonId) released = seasonReleased,
+    bool preview = false,
   }) {
     final i = seasons.indexWhere((s) => s.id == seasonId);
     if (i < 0) return null;
     final cases = casesOf(seasonId, allEpisodes);
     final own = record(seasonId);
-    var unlocked = i == 0;
+    var unlocked = i == 0 || preview;
     if (!unlocked) {
       final before = casesOf(seasons[i - 1].id, allEpisodes);
-      unlocked = before.isNotEmpty && record(seasons[i - 1].id).isSolved(before.last.id);
+      // The season before is all in the game (as many cases as planned), and
+      // its last case is solved.
+      unlocked = before.isNotEmpty &&
+          before.length >= (seasons[i - 1].plannedCases ?? 0) &&
+          record(seasons[i - 1].id).isSolved(before.last.id);
     }
     final hasMap = maps.containsKey(seasonId);
+    final out = released(seasonId) || preview;
     return SeasonAvailability(
       season: seasons[i],
       status: !unlocked
           ? SeasonStatus.locked
-          : cases.isEmpty || !hasMap
+          : cases.isEmpty || !hasMap || !out
           ? SeasonStatus.comingSoon
           : SeasonStatus.open,
       caseCount: cases.length,
       solvedCount: cases.where((e) => own.isSolved(e.id)).length,
       hasMap: hasMap,
+      released: released(seasonId),
     );
   }
 }
+
+/// Whether a season is out for players: the catalog's word
+/// ([seasonReleased]). A provider so tests can play a season as released.
+final seasonReleasedProvider = Provider<bool Function(String seasonId)>((ref) => seasonReleased);
 
 /// [SeasonAvailability.of] [seasonId] from the saves, read now.
 SeasonAvailability? _availabilityNow(Ref ref, String seasonId) {
@@ -206,6 +232,8 @@ SeasonAvailability? _availabilityNow(Ref ref, String seasonId) {
     allEpisodes: ref.read(allEpisodesProvider),
     record: repo.loadSeason,
     maps: ref.read(seasonMapsProvider),
+    released: ref.read(seasonReleasedProvider),
+    preview: ref.read(seasonPreviewProvider),
   );
 }
 
@@ -222,6 +250,8 @@ final seasonAvailabilityProvider = Provider.family<SeasonAvailability?, String>(
     // The season played as it is now; the others as saved.
     record: (id) => id == playing ? playingRecord : repo.loadSeason(id),
     maps: ref.watch(seasonMapsProvider),
+    released: ref.watch(seasonReleasedProvider),
+    preview: ref.watch(seasonPreviewProvider),
   );
 });
 
@@ -409,6 +439,27 @@ class OperatorAccessNotifier extends Notifier<bool> {
 
   void set(bool on) => state = on && ref.read(operatorToolsAvailableProvider);
 }
+
+/// Operator season preview, for building a season before its release: an
+/// unreleased season opens, unsealed, to be played from its first case
+/// (see [SeasonAvailability.of]). Switched on in the Game Master tools,
+/// behind the parent gate; never on in a build without operator tools.
+/// Session-only, never saved, so a restart turns it off and a season it
+/// opened is no longer resumed (Season 1 is played again). Players are
+/// never shown an unreleased season.
+class SeasonPreviewNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool on) => state = on && ref.read(operatorToolsAvailableProvider);
+}
+
+final seasonPreviewSwitchProvider = NotifierProvider<SeasonPreviewNotifier, bool>(SeasonPreviewNotifier.new);
+
+/// True while the operator season preview is on (and allowed in this build).
+final seasonPreviewProvider = Provider<bool>(
+  (ref) => ref.watch(operatorToolsAvailableProvider) && ref.watch(seasonPreviewSwitchProvider),
+);
 
 /// The operator access switch (see [operatorAccessProvider] for the effect).
 final operatorAccessSwitchProvider = NotifierProvider<OperatorAccessNotifier, bool>(OperatorAccessNotifier.new);

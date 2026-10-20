@@ -14,7 +14,6 @@ import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart';
 import 'package:london_mystery/data/models/season.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_providers.dart' show sharedPreferencesProvider;
 import 'package:london_mystery/widgets/evidence_card.dart';
 import 'package:london_mystery/widgets/game_button.dart';
@@ -28,7 +27,7 @@ import 'title_screen_test.dart' show capture;
 /// After each final case: the post-case story scene (the story scene in its
 /// after-the-case mode), the case's last evidence, then the case report.
 void main() {
-  final catalog = MockEpisodeRepository.bundled();
+  final catalog = season1Cases();
   Episode byId(String id) => catalog.firstWhere((e) => e.id == id);
   String story(String id) => byId(id).finalMission.transition.join(' ');
 

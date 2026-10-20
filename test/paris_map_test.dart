@@ -51,6 +51,11 @@ const caseMap = <String, ParisLandmark>{
   's2_ep12': ParisLandmark.artsEtMetiers,
 };
 
+/// Paris Case [n]: Case 01 as it is in the game, a stand-in for the others
+/// (tests only).
+Episode caseOf(int n) =>
+    n == 1 ? MockEpisodeRepository.bundled().firstWhere((e) => e.id == 's2_ep01') : parisCase(n);
+
 /// Every mission of [e] is in the group around [l] on the map (its group is
 /// moved down from the top edge as a whole).
 void expectAround(Episode e, MapLandmark l, Map<String, Offset> places) {
@@ -121,18 +126,18 @@ void main() {
 
     test('a case\'s missions gather at its landmark; cases sharing one keep their own missions', () {
       for (final n in [1, 2, 3, 8, 9, 11, 12]) {
-        final e = parisCase(n);
+        final e = caseOf(n);
         final places = MapWorld.places(e, map: SeasonMap.paris);
         expect(places.keys, [for (final m in e.allMissions) m.id], reason: e.id);
         expectAround(e, caseMap[e.id]!, places);
       }
       // Montmartre is above the top margin: its missions are brought down to it.
-      final m2 = MapWorld.places(parisCase(2), map: SeasonMap.paris);
+      final m2 = MapWorld.places(caseOf(2), map: SeasonMap.paris);
       for (final p in m2.values) {
         expect(p.dy, greaterThanOrEqualTo(MapWorld.topMargin - 1e-9));
       }
       // Case 02 and Case 08 at Montmartre: the same place, their own pins.
-      expect(MapWorld.places(parisCase(8), map: SeasonMap.paris).keys.toSet().intersection(m2.keys.toSet()), isEmpty);
+      expect(MapWorld.places(caseOf(8), map: SeasonMap.paris).keys.toSet().intersection(m2.keys.toSet()), isEmpty);
     });
 
     test('a mission of its own goes to its own landmark before its case\'s', () {
@@ -147,7 +152,7 @@ void main() {
       expect(map.landmarkFor('s2_ep01_final', 's2_ep01'), ParisLandmark.louvre);
       expect(map.landmarkFor('s2_ep01_m1', 's2_ep01'), ParisLandmark.gareDuNord);
       expect(map.landmarkFor('s2_ep99_m1', 's2_ep99'), isNull);
-      final e = parisCase(1);
+      final e = caseOf(1);
       final places = MapWorld.places(e, map: map);
       expect((places['s2_ep01_final']! - ParisLandmark.louvre.at).distance, lessThan(1e-9), reason: 'alone at the Louvre');
       // The others gather at Gare du Nord (brought down from the top margin as a group).
@@ -161,7 +166,7 @@ void main() {
     test('each season keeps to its own map; London as it was', () {
       expect(SeasonMap.london.caseLandmarks, isEmpty);
       expect(SeasonMap.london.missionLandmarks.keys.where((id) => id.startsWith('s2_')), isEmpty);
-      for (final e in MockEpisodeRepository.bundled()) {
+      for (final e in season1Cases()) {
         for (final m in e.allMissions) {
           expect(SeasonMap.paris.landmarkFor(m.id, e.id), isNull, reason: '${m.id} is not in Paris');
           expect(SeasonMap.london.landmarkFor(m.id, e.id), MapWorld.missionLandmarks[m.id], reason: m.id);
@@ -180,7 +185,7 @@ void main() {
       expect(SeasonMap.london.groupHeights, isEmpty);
       expect(ParisLandmark.montmartre.at, const Offset(0.555, 0.098), reason: 'the landmark stays where it is drawn');
       for (final n in [2, 8]) {
-        final e = parisCase(n);
+        final e = caseOf(n);
         final places = MapWorld.places(e, map: SeasonMap.paris);
         final ys = [for (final p in places.values) p.dy];
         // Below the top margin (room for YOU'RE HERE), within 0.6 of a group's height.
@@ -208,8 +213,8 @@ void main() {
         }
       }
       // Case 02 and Case 08 put their places at the same spots of the hill.
-      final c2 = MapWorld.places(parisCase(2), map: SeasonMap.paris).values.toList();
-      final c8 = MapWorld.places(parisCase(8), map: SeasonMap.paris).values.toList();
+      final c2 = MapWorld.places(caseOf(2), map: SeasonMap.paris).values.toList();
+      final c8 = MapWorld.places(caseOf(8), map: SeasonMap.paris).values.toList();
       expect(c8, c2);
     });
 
@@ -223,7 +228,7 @@ void main() {
       );
       for (var n = 1; n <= 12; n++) {
         if (n == 2 || n == 8) continue;
-        final e = parisCase(n);
+        final e = caseOf(n);
         expect(MapWorld.places(e, map: SeasonMap.paris), MapWorld.places(e, map: full), reason: e.id);
       }
     });
@@ -258,7 +263,7 @@ void main() {
   });
 
   group('Season 2 stays coming soon', () {
-    test('a map alone opens no season: no cases yet', () async {
+    test('its map and Case 01 open no season: not released yet', () async {
       SharedPreferences.setMockInitialValues({});
       final c = ProviderContainer(overrides: await testOverridesFor(await SharedPreferences.getInstance()));
       addTearDown(c.dispose);
@@ -267,7 +272,8 @@ void main() {
       c.invalidate(seasonProvider);
       final paris = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect(paris.hasMap, isTrue);
-      expect(paris.hasCases, isFalse);
+      expect(paris.hasCases, isTrue);
+      expect(paris.released, isFalse);
       expect(paris.status, SeasonStatus.comingSoon);
       expect(paris.canEnter, isFalse);
       expect(c.read(gameControllerProvider.notifier).openSeason(SeasonIds.paris), isFalse);
@@ -277,14 +283,16 @@ void main() {
   });
 
   group('on the map page', () {
-    /// Season 2 played with stand-in cases (tests only) on [maps].
+    /// Season 2 played as released, its Case 01 and stand-in later cases
+    /// (tests only), on [maps].
     Future<ProviderContainer> playParis(Map<String, SeasonMap> maps, {int caseNumber = 1}) async {
       SharedPreferences.setMockInitialValues({});
       final c = ProviderContainer(
         overrides: [
           ...await testOverridesFor(await SharedPreferences.getInstance()),
-          allEpisodesProvider.overrideWithValue([...MockEpisodeRepository.bundled(), for (var n = 1; n <= 12; n++) parisCase(n)]),
+          allEpisodesProvider.overrideWithValue([...MockEpisodeRepository.bundled(), for (var n = 2; n <= 12; n++) parisCase(n)]),
           seasonMapsProvider.overrideWithValue(maps),
+          seasonReleasedProvider.overrideWithValue((_) => true),
         ],
       );
       final ctrl = c.read(gameControllerProvider.notifier);

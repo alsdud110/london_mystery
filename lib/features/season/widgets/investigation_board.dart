@@ -63,7 +63,7 @@ class InvestigationBoard extends StatelessWidget {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  const Positioned.fill(child: MapPrint(strength: 0.62)),
+                  Positioned.fill(child: MapPrint.ofSeason(overview.info.id, strength: 0.62)),
                   // The lamp falls on the middle of the board; its edges are in shadow.
                   const Positioned.fill(
                     child: DecoratedBox(
@@ -104,7 +104,7 @@ class InvestigationBoard extends StatelessWidget {
     return [
       at(0.27, 0.29, _Scrap(Size(n.width * 0.85, n.height * 0.62)), -0.14),
       at(0.73, 0.73, _Scrap(Size(n.width * 0.8, n.height * 0.7), lines: 4), 0.1),
-      at(0.3, 0.72, _Postmark(n.height * 0.62), -0.3),
+      at(0.3, 0.72, _Postmark(n.height * 0.62, city: overview.info.city), -0.3),
     ];
   }
 
@@ -507,9 +507,12 @@ class _ScrapPainter extends CustomPainter {
 
 /// A faint round postmark inked on the map.
 class _Postmark extends StatelessWidget {
-  const _Postmark(this.size);
+  const _Postmark(this.size, {required this.city});
 
   final double size;
+
+  /// The season's city, inked in the ring.
+  final String city;
 
   @override
   Widget build(BuildContext context) {
@@ -523,7 +526,7 @@ class _Postmark extends StatelessWidget {
         fit: BoxFit.scaleDown,
         child: Padding(
           padding: const EdgeInsets.all(AppSpace.xs),
-          child: Text('LONDON', style: AppText.eyebrow(color: ink).copyWith(fontSize: 9, letterSpacing: 1)),
+          child: Text(city.toUpperCase(), style: AppText.eyebrow(color: ink).copyWith(fontSize: 9, letterSpacing: 1)),
         ),
       ),
     );

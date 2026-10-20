@@ -7,10 +7,17 @@ import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/data/repositories/profile_store.dart';
 import 'package:london_mystery/data/mock/season1/episode01_mock.dart';
 import 'package:london_mystery/data/models/episode.dart';
+import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final episode01 = Episode.fromJson(episode01Json);
+
+/// Season 1's cases, in case order: what a test of London's content, saves
+/// and screens plays. (`MockEpisodeRepository.bundled()` has every season's
+/// cases; Season 2's are tested in their own files.)
+List<Episode> season1Cases() =>
+    [for (final e in MockEpisodeRepository.bundled()) if (e.seasonId == AppConstants.firstSeasonId) e];
 
 /// Overrides that make the app run without platform plugins.
 ///

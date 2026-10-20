@@ -140,7 +140,9 @@ enum GameBadge {
   /// The badges a case can still give: the shared ones, then its own case
   /// badge (retired badges are never given again).
   static List<GameBadge> forEpisode(Episode e) => [
-        for (final b in values) if (!b.retired && b.episodeId == null) b,
+        // London Explorer is London's own: no other city gives it.
+        for (final b in values)
+          if (!b.retired && b.episodeId == null && (b != londonExplorer || e.seasonId == AppConstants.firstSeasonId)) b,
         for (final b in values) if (!b.retired && b.episodeId == e.id) b,
       ];
 
