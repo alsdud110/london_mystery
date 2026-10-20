@@ -83,6 +83,6 @@ abstract final class PlaceArt {
     if (own != null) return own;
     final scene = sceneOf(m);
     if (inside.contains(scene)) return scene;
-    return MapWorld.missionLandmarks[m.id]?.artwork ?? scene;
+    return SeasonMap.landmarkOf(m.id)?.artwork ?? scene;
   }
 }

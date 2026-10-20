@@ -104,12 +104,12 @@ void main() {
     });
 
     test('its pictures: Gallery 8 as the theft left it, and the three things on transparency', () {
-      expect(ArtAssets.scenes[scene.artwork], 'assets/art/scenes/british_museum/british_museum_gallery_8.png');
+      expect(ArtAssets.scenes[scene.artwork], 'assets/seasons/season_01_london/locations/british_museum/british_museum_gallery_8.png');
       expect(ArtAssets.sceneAspect(scene.artwork), 1536 / 1024);
       for (final f in scene.finds) {
         expect(File(f.picture).existsSync(), isTrue, reason: f.picture);
       }
-      expect(File('assets/art/scenes/british_museum/british_museum_gallery_8.png').existsSync(), isTrue);
+      expect(File('assets/seasons/season_01_london/locations/british_museum/british_museum_gallery_8.png').existsSync(), isTrue);
     });
   });
 

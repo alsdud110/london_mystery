@@ -577,7 +577,7 @@ void main() {
       ArtAssets.onboardingCat,
     ];
     for (final f in own) {
-      expect(f, startsWith('assets/art/onboarding/'));
+      expect(f, startsWith('assets/shared/onboarding/'));
     }
     final caseArt = {...ArtAssets.characters.values, ...ArtAssets.objects.values, ...ArtAssets.evidencePictures.values};
     expect(caseArt.intersection(own.toSet()), isEmpty);

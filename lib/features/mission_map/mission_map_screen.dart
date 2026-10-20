@@ -13,7 +13,6 @@ import '../../core/utils/formatters.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
-import '../../widgets/art_assets.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/game_button.dart';
 import '../../widgets/game_dialog.dart';
@@ -248,6 +247,11 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                     Navigator.of(sheetContext).pop();
                     context.go(Routes.season);
                   }),
+                  // Every season's file, to choose the next adventure.
+                  item(InkGlyph.seal, 'World Archive', () {
+                    Navigator.of(sheetContext).pop();
+                    context.go(Routes.seasons);
+                  }),
                   item(InkGlyph.folder, 'Case files', () {
                     Navigator.of(sheetContext).pop();
                     context.go(Routes.episodes);
@@ -279,7 +283,12 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
     final recentUnlock = ref.watch(recentUnlockProvider);
     final current = progress.currentMission(episode);
     final all = episode.allMissions;
-    final places = MapWorld.places(episode);
+    // The case's own season's map. A season without one is not entered (see
+    // SeasonAvailability); should it ever be open, the page says its map is
+    // not ready rather than show another city's.
+    final seasonMap = ref.watch(seasonMapsProvider)[episode.seasonId];
+    if (seasonMap == null) return const _MapNotReady();
+    final places = MapWorld.places(episode, map: seasonMap);
     // Back from solving a place: the map opens on the place it unlocked.
     final unlockedAt = all.indexWhere((m) => m.id == recentUnlock);
     final arrivedFrom = unlockedAt > 0 && current?.id == recentUnlock ? all[unlockedAt - 1] : null;
@@ -349,13 +358,15 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                               // GO TO: the camera moves in on the place.
                               zoomIn: going != null,
                               onArriving: _onArriving,
+                              aspect: seasonMap.aspect,
                               world: (size, heading) => _MapWorldView(
+                                map: seasonMap,
                                 heading: heading,
                                 size: size,
                                 route: [for (final m in all) places[m.id]!],
                                 completedLegs: progress.completedMissionIds.length,
                                 // The current place's own name is on its pin.
-                                hideName: current == null ? null : MapWorld.missionLandmarks[current.id],
+                                hideName: current == null ? null : seasonMap.landmarkFor(current.id, episode.id),
                                 pins: [
                                   // The current place last, so its note is on top.
                                   for (final m in [...all.where((m) => m != current), ?current])
@@ -454,9 +465,13 @@ class _MapViewport extends StatefulWidget {
     required this.focus,
     required this.arriveFrom,
     required this.world,
+    required this.aspect,
     this.zoomIn = false,
     this.onArriving,
   });
+
+  /// Width / height of the map world (its artwork's ratio).
+  final double aspect;
 
   /// Moves the camera in on [focus] (GO TO); false puts it back at once.
   final bool zoomIn;
@@ -573,7 +588,7 @@ class _MapViewportState extends State<_MapViewport> with TickerProviderStateMixi
         const f = _MapViewport.inset;
         final width = box.maxWidth;
         final height = math.min(box.maxHeight, width * _MapViewport.tallness);
-        final camera = MapCamera.cover(Size(width - 2 * f, height - 2 * f), aspect: ArtAssets.londonMapAspect);
+        final camera = MapCamera.cover(Size(width - 2 * f, height - 2 * f), aspect: widget.aspect);
         // Between the header and the buttons, with the spare height shared.
         return Center(
           child: Container(
@@ -617,11 +632,47 @@ class _MapViewportState extends State<_MapViewport> with TickerProviderStateMixi
   }
 }
 
-/// The London map world: the artwork, the route inked on it, the landmark
+/// The map page of a season whose map is not in the game yet: said plainly,
+/// with the way back to the case files (never another city's map).
+class _MapNotReady extends StatelessWidget {
+  const _MapNotReady();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: PaperBackground(
+        child: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpace.screen),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('THE MAP IS NOT READY', style: AppText.eyebrow(), textAlign: TextAlign.center),
+                  const SizedBox(height: AppSpace.sm),
+                  Text(
+                    "This city's map is still being drawn.",
+                    style: AppText.bodyText(),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpace.xl),
+                  GameButton(label: 'BACK TO CASE FILES', onPressed: () => context.go(Routes.episodes)),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The season's map world: the artwork, the route inked on it, the landmark
 /// names, and the pins of the places found so far — all at map positions,
 /// so they all move together with the camera.
 class _MapWorldView extends StatelessWidget {
   const _MapWorldView({
+    required this.map,
     required this.size,
     required this.route,
     required this.completedLegs,
@@ -629,6 +680,9 @@ class _MapWorldView extends StatelessWidget {
     required this.pins,
     required this.hideName,
   });
+
+  /// The season's map: its artwork and landmarks.
+  final SeasonMap map;
 
   final Size size;
 
@@ -645,7 +699,7 @@ class _MapWorldView extends StatelessWidget {
   final List<({Offset at, MapPin pin})> pins;
 
   /// A landmark whose name is not lettered (the current pin names it).
-  final Landmark? hideName;
+  final MapLandmark? hideName;
 
   static const _nameWidth = 140.0;
 
@@ -697,18 +751,21 @@ class _MapWorldView extends StatelessWidget {
       children: [
         Positioned.fill(
           child: Image.asset(
-            ArtAssets.londonMap,
+            map.artwork,
             // The world has the artwork's ratio: nothing is stretched or cut.
             fit: BoxFit.cover,
             // Decode once at display size (never above the source size); the
             // world keeps its size while the camera pans, so no re-decode.
-            cacheWidth: math.min(w * dpr, ArtAssets.londonMapPixels.width).round(),
+            cacheWidth: math.min(w * dpr, map.pixels.width).round(),
             excludeFromSemantics: true,
-            errorBuilder: (context, error, stack) =>
-                CustomPaint(painter: LondonMapPainter(route: const [], completedLegs: 0)),
+            // A missing artwork: London's map is drawn in code; any other
+            // season's shows plain parchment (never London's map).
+            errorBuilder: (context, error, stack) => identical(map, SeasonMap.london)
+                ? CustomPaint(painter: LondonMapPainter(route: const [], completedLegs: 0))
+                : const ColoredBox(key: ValueKey('map-artwork-missing'), color: AppColors.parchment),
           ),
         ),
-        for (final l in Landmark.values)
+        for (final l in map.landmarks)
           if (l != hideName)
             Positioned(
               left: l.at.dx * w - _nameWidth / 2,

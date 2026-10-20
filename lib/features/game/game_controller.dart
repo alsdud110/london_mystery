@@ -101,6 +101,30 @@ class GameController extends Notifier<GameProgress> {
     return true;
   }
 
+  /// Plays another season: its own open case file and records load, and the
+  /// season left keeps everything (its record, its case saves). Refused
+  /// (false) while the season cannot be entered: locked, or no cases yet.
+  /// Profile, coins and badges are the detective's, in every season.
+  bool openSeason(String seasonId) {
+    if (seasonId == ref.read(selectedSeasonIdProvider)) return true;
+    if (!(ref.read(seasonAvailabilityProvider(seasonId))?.canEnter ?? false)) return false;
+    final repo = ref.read(progressRepositoryProvider);
+    return repo.transaction(() {
+      _update(state); // bank the play time of the case being left
+      // The case that season opens on (its open case file, or its Case 01)
+      // takes the detective's name, as a case file opened does.
+      final cases = SeasonAvailability.casesOf(seasonId, ref.read(allEpisodesProvider));
+      final open = repo.loadSeason(seasonId).activeEpisodeId;
+      final target = cases.any((e) => e.id == open) ? open : cases.first.id;
+      final saved = repo.load(target);
+      final name = state.detectiveName ?? sessionProfile(ref).detectiveName;
+      if (name != null && saved.detectiveName != name) repo.save(saved.copyWith(detectiveName: name), target);
+      ref.read(recentUnlockProvider.notifier).set(null);
+      // Rebuilds the season record and this controller with that season's case.
+      return ref.read(selectedSeasonIdProvider.notifier).select(seasonId);
+    });
+  }
+
   /// The app went to the background (or is closing): stop and save the clock.
   void pausePlayClock() {
     if (_activeSince == null) return;
@@ -138,7 +162,8 @@ class GameController extends Notifier<GameProgress> {
     final name = cleanName(rawName);
     final repo = ref.read(progressRepositoryProvider);
     repo.transaction(() {
-      for (final e in ref.read(episodeCatalogProvider)) {
+      // Every season's saves take the name, not only those of the season played.
+      for (final e in ref.read(allEpisodesProvider)) {
         if (e.id == _episodeId) continue;
         final saved = repo.load(e.id);
         if (saved.hasDetective && saved.detectiveName != name) repo.save(saved.copyWith(detectiveName: name), e.id);
@@ -351,6 +376,7 @@ class GameController extends Notifier<GameProgress> {
       if (keepName != null) repo.save(fresh, AppConstants.currentEpisodeId);
     });
     state = fresh;
+    ref.read(selectedSeasonIdProvider.notifier).reset(); // back to Season 1
     ref.read(seasonProvider.notifier).reset(); // back to Case 01
   }
 }

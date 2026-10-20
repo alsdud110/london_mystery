@@ -5,27 +5,32 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../data/models/mission.dart';
-import 'art_assets.dart';
+import '../features/mission_map/map_world.dart' show SeasonMap;
 import 'landmark_art.dart';
 
 /// The unlocked place filling the screen in the dark under the story (the
 /// same treatment as the story intro): its picture without its paper edge
 /// and name plate, softened a touch and dimmed so the words lead. A place
-/// with no picture of its own shows the London map instead.
+/// with no picture of its own shows its season's [map] instead (London by
+/// default), or only the night when that season has no map.
 class PlaceScenery extends StatelessWidget {
-  const PlaceScenery(this.place, {super.key}) : file = null;
+  const PlaceScenery(this.place, {super.key, this.map = SeasonMap.london}) : file = null;
 
   /// A place's own picture file that is no scene of the map (a room the
   /// people of a mission stand in), with the same treatment.
-  const PlaceScenery.file(String this.file, {super.key}) : place = null;
+  const PlaceScenery.file(String this.file, {super.key}) : place = null, map = null;
 
   final Artwork? place;
   final String? file;
+
+  /// The map shown when the place has no picture (null: none, the night).
+  final SeasonMap? map;
 
   @override
   Widget build(BuildContext context) {
     final scene = place;
     final own = file;
+    final map = this.map;
     final picture = own != null
         ? LayoutBuilder(
             builder: (context, box) => Image.asset(
@@ -40,17 +45,17 @@ class PlaceScenery extends StatelessWidget {
           )
         : scene != null && LandmarkArt.hasPicture(scene)
         ? LandmarkArt(scene, showName: false, borderRadius: 0)
+        : map == null
+        ? const SizedBox.expand()
         : LayoutBuilder(
             builder: (context, box) => Image.asset(
-              ArtAssets.londonMap,
+              map.artwork,
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
               cacheWidth: math.min(
-                (math.max(box.maxWidth, box.maxHeight * ArtAssets.londonMapAspect) *
-                        MediaQuery.devicePixelRatioOf(context))
-                    .ceil(),
-                ArtAssets.londonMapPixels.width.toInt(),
+                (math.max(box.maxWidth, box.maxHeight * map.aspect) * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                map.pixels.width.toInt(),
               ),
               excludeFromSemantics: true,
               errorBuilder: (context, error, stack) => const SizedBox.expand(),

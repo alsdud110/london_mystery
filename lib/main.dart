@@ -26,9 +26,9 @@ Future<void> main() async {
   final store = ProfileStore(prefs);
   final start = await store.bootstrap();
   const episodes = MockEpisodeRepository();
-  // The whole season is loaded up front; the open case is chosen in the
-  // case files (see `seasonProvider` / `currentEpisodeProvider`).
-  final catalog = MockEpisodeRepository.sortedByNumber([
+  // Every season is loaded up front; the season played and its open case are
+  // chosen in the game (see `selectedSeasonIdProvider` / `seasonProvider`).
+  final catalog = MockEpisodeRepository.inPlayOrder([
     for (final id in await episodes.availableEpisodeIds())
       await episodes.fetchEpisode(id),
   ]);
@@ -40,7 +40,7 @@ Future<void> main() async {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
         episodeRepositoryProvider.overrideWithValue(episodes),
-        episodeCatalogProvider.overrideWithValue(catalog),
+        allEpisodesProvider.overrideWithValue(catalog),
       ],
       child: const LondonMysteryApp(),
     ),

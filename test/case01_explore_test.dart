@@ -39,14 +39,14 @@ void main() {
   group('the pictures', () {
     test('the five pictures are in the app, at the sizes the scene is measured on', () {
       final pubspec = File('pubspec.yaml').readAsStringSync();
-      expect(pubspec, contains('- assets/images/case01/'));
+      expect(pubspec, contains('- assets/seasons/season_01_london/cases/case_01/'));
       expect(pngSize(scene.picture), Size(scene.pixels.width, scene.pixels.height));
       expect(scene.choices, hasLength(4));
       for (final c in scene.choices) {
         final s = pngSize(c.picture);
         expect(s.width / s.height, closeTo(scene.pictureAspect, 0.001), reason: c.picture);
       }
-      expect(File('assets/art/scenes/kings_cross/kings_cross_waiting_hall.png').existsSync(), isTrue, reason: 'kept');
+      expect(File('assets/seasons/season_01_london/locations/kings_cross/kings_cross_waiting_hall.png').existsSync(), isTrue, reason: 'kept');
     });
 
     test('the suitcase, the sign and the board: inside the picture, apart, a fingertip wide', () {

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/mock/season2/season2_mock.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/season.dart';
 import '../../widgets/art_assets.dart';
@@ -21,6 +24,8 @@ import 'season_actions.dart';
 import 'season_overview.dart';
 import 'widgets/prologue_art.dart';
 import 'widgets/season_props.dart';
+
+part 'paris_prologue.dart';
 
 /// The season's opening sequence, played once — from the casebook (or from
 /// How to Play's START FIRST CASE), before the first case. Short scenes, one message each, the picture first:

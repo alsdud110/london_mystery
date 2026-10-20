@@ -11,7 +11,20 @@ abstract final class AppConstants {
   static const progressStorageKey = 'lm.progress.v1';
 
   /// Which case is open and which cases are solved (see `SeasonProgress`).
+  /// Season 1's record; each later season keeps its own ([seasonKeyFor]).
   static const seasonStorageKey = 'lm.season.v1';
+
+  /// Season 1's id (`SeasonIds.london`): its record keeps [seasonStorageKey].
+  static const firstSeasonId = 's1_london';
+
+  /// The key of a season's record: Season 1 keeps the key it was saved under
+  /// before seasons had ids; a later season adds its id
+  /// (`lm.season.v1.s2_paris`).
+  static String seasonKeyFor(String seasonId) =>
+      seasonId == firstSeasonId ? seasonStorageKey : '$seasonStorageKey.$seasonId';
+
+  /// The season the detective is playing (Season 1 when never saved).
+  static const selectedSeasonKey = 'lm.selectedSeason.v1';
 
   /// The detective's coins (see `Wallet`): one wallet per profile.
   static const walletStorageKey = 'lm.wallet.v1';

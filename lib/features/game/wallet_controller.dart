@@ -62,7 +62,7 @@ class WalletController extends Notifier<Wallet> {
     );
     if (!backfill) return wallet;
     final repo = ref.read(progressRepositoryProvider);
-    for (final e in ref.read(episodeCatalogProvider)) {
+    for (final e in ref.read(allEpisodesProvider)) {
       final p = repo.load(e.id);
       for (final m in e.allMissions) {
         if (p.isCompleted(m.id)) {

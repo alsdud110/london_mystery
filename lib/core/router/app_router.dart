@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/models/season.dart' show SeasonIds;
 import '../../features/game/game_controller.dart';
 import '../../features/game/game_providers.dart';
 import '../../features/game_master/game_master_screen.dart';
@@ -20,6 +21,7 @@ import '../../features/result/case_solved_screen.dart';
 import '../../features/result/parent_report_screen.dart';
 import '../../features/season/season_prologue_screen.dart';
 import '../../features/season/season_screen.dart';
+import '../../features/season/world_archive_screen.dart';
 import '../../widgets/back_to.dart';
 
 abstract final class Routes {
@@ -36,7 +38,18 @@ abstract final class Routes {
   static const howToPlay = '/how-to-play';
   static const howToPlayAgain = '/how-to-play?again=1';
   static const season = '/season';
+
+  /// The season board opened from the Detective Archives: its back goes
+  /// back to the archives (the board opened any other way goes to the title).
+  static const seasonFromArchive = '/season?from=archive';
+
+  /// The Detective Archives: every season's file, to choose the next one.
+  static const seasons = '/seasons';
   static const prologue = '/season/prologue';
+
+  /// Season 2's opening sequence: for the season being played, or as a
+  /// preview in a build with operator tools (never in a release build).
+  static const parisPrologue = '/season/paris-prologue';
   static const episodes = '/episodes';
   static const intro = '/intro';
   static const map = '/map';
@@ -105,6 +118,20 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (!progress.hasDetective) return Routes.register;
 
+      if (path == Routes.parisPrologue) {
+        // Season 2 is not unlocked for anyone by its opening: only the season
+        // being played, or an operator build's preview, may show it.
+        final playing = ref.read(selectedSeasonIdProvider) == SeasonIds.paris;
+        return playing || ref.read(operatorToolsAvailableProvider) ? null : Routes.seasons;
+      }
+
+      if (path == Routes.episodes) {
+        // A case file of another season (one not played, or still locked)
+        // never opens from a link: the case files of the season played do.
+        final focus = state.uri.queryParameters['case'];
+        if (focus == null || ref.read(episodeCatalogProvider).any((e) => e.id == focus)) return null;
+        return Routes.episodes;
+      }
       if (path == Routes.map || path == Routes.notebook) {
         return progress.introSeen ? null : Routes.episodes;
       }
@@ -146,11 +173,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (c, s) => _fade(s, HowToPlayScreen(again: s.uri.queryParameters['again'] == '1')),
       ),
       // The season above its cases (needs a detective, like every page below).
-      GoRoute(path: Routes.season, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const SeasonScreen()))),
+      // Back goes where it was opened from: the archives, else the title.
+      GoRoute(
+        path: Routes.season,
+        pageBuilder: (c, s) {
+          final back = s.uri.queryParameters['from'] == 'archive' ? Routes.seasons : Routes.start;
+          return _fade(s, _backTo(c, back, SeasonScreen(backTo: back)));
+        },
+      ),
+      // The Detective Archives: the seasons' files (back: the title).
+      GoRoute(path: Routes.seasons, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const WorldArchiveScreen()))),
       // The season's opening, before Case 01: from the casebook, or straight
       // from How to Play's START FIRST CASE. It handles back itself: the
       // scene before, or the casebook.
       GoRoute(path: Routes.prologue, pageBuilder: (c, s) => _fade(s, const SeasonPrologueScreen())),
+      // Season 2's opening (it handles back itself, as Season 1's does).
+      GoRoute(path: Routes.parisPrologue, pageBuilder: (c, s) => _fade(s, const ParisPrologueScreen())),
       GoRoute(
         path: Routes.episodes,
         // The case files sit under the season: back goes up to it.

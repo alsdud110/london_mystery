@@ -128,6 +128,9 @@ flutter:
     - assets/sounds/processed/ui_tap_02.wav
     - assets/sounds/processed/ui_tap_03.wav
     - assets/seasons/season_01_london/locations/map/
+    # Season 2 Paris: its Mission Map and its cover pictures.
+    - assets/seasons/season_02_paris/locations/map/
+    - assets/seasons/season_02_paris/cover/
     # The title screen (the detective's office).
     - assets/shared/title/
     # Season hero pictures (the opening of Season 1).
