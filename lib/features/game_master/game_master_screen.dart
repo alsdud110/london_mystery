@@ -185,6 +185,12 @@ class GameMasterScreen extends ConsumerWidget {
                   onPressed: () => context.go(Routes.parisPrologue),
                   child: const Text('SEASON 2 프롤로그 미리보기'),
                 ),
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                  onPressed: () => context.go(Routes.parisCase01Preview),
+                  child: const Text('PARIS CASE 01 플레이 미리보기'),
+                ),
               ],
               // The one destructive action, set apart from the test tools below a
               // rule and in the try-again ink, so it is never tapped by mistake.
