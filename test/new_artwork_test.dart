@@ -306,7 +306,7 @@ void main() {
       expect(find.text('THE ROYAL ARCHIVE'), findsOneWidget);
       expect(picture(archive), findsNWidgets(2), reason: 'the scenery and the unlocked card');
       expect(picture('assets/art/scenes/landmarks/buckingham_palace.png'), findsNothing);
-      expect(picture('assets/images/london_mystery.png'), findsNothing, reason: 'no London map fallback');
+      expect(picture('assets/seasons/season_01_london/locations/map/london_mystery.png'), findsNothing, reason: 'no London map fallback');
       await capture(t, 'art3_case01_unlock_$tag');
 
       // The final case still opens the Royal Box.
@@ -323,7 +323,7 @@ void main() {
       await t.tapAt(Offset(size.width / 2, size.height / 2));
       await settle(t, const Duration(milliseconds: 1200));
       expect(picture(archive), findsOneWidget);
-      expect(picture('assets/images/london_mystery.png'), findsNothing);
+      expect(picture('assets/seasons/season_01_london/locations/map/london_mystery.png'), findsNothing);
       await capture(t, 'art3_case01_postcase_$tag');
       router.go(Routes.solved);
       await settle(t, const Duration(milliseconds: 3200));

@@ -71,7 +71,7 @@ abstract final class ArtAssets {
   /// Streets, river and landmarks only; pins and place names are drawn by
   /// the app (landmark positions: `Landmark` in `map_world.dart`). A missing
   /// or broken file falls back to the map drawn in code (`LondonMapPainter`).
-  static const londonMap = 'assets/images/london_mystery.png';
+  static const londonMap = 'assets/seasons/season_01_london/locations/map/london_mystery.png';
 
   /// Width / height of [londonMap]: the map world keeps this ratio (never
   /// stretched); the map camera shows one part of it at a time.
