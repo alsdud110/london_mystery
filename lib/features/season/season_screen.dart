@@ -73,12 +73,18 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
   /// Decided once on arrival, so the page does not switch under the player.
   late final bool _casebook;
 
+  /// The season this page was built for. BEGIN SEASON TWO plays another one
+  /// a moment before the page for it replaces this one: meanwhile this page
+  /// shows only its night, never one season's board with the other's cases.
+  late final String _seasonId = ref.read(seasonInfoProvider).id;
+
   /// The board as it was before the cases just solved, while they play.
   SeasonOverview? _before;
 
   @override
   void initState() {
     super.initState();
+    _seasonId; // the season it shows, fixed now
     final overview = ref.read(seasonOverviewProvider);
     _casebook = !overview.begun;
     if (_casebook) {
@@ -139,6 +145,28 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
     context.go(Routes.caseFile(overview.cases[index].id));
   }
 
+  /// The season after this one, and whether it can be played now (null:
+  /// none). Released, or opened by an operator build's season preview; a
+  /// season still being written stays COMING SOON.
+  SeasonAvailability? _nextSeason(SeasonOverview overview) {
+    final seasons = ref.watch(seasonsProvider);
+    final i = seasons.indexWhere((s) => s.id == overview.info.id);
+    if (i < 0 || i + 1 >= seasons.length) return null;
+    return ref.watch(seasonAvailabilityProvider(seasons[i + 1].id));
+  }
+
+  /// BEGIN SEASON TWO: the next season is played from where its record is
+  /// (its cover and opening when it has not begun, its board when it has),
+  /// on this page, as the archives would open it. Refused while it cannot be
+  /// entered (the button is not offered then).
+  void _beginNextSeason(SeasonAvailability next) {
+    if (!ref.read(gameControllerProvider.notifier).openSeason(next.season.id)) {
+      showGameToast(context, 'This file is still being prepared.', glyph: InkGlyph.seal);
+      return;
+    }
+    context.go(Routes.seasonOf(next.season.id));
+  }
+
   /// A touch finishes whatever is still coming in.
   void _finish() {
     if (_book.isAnimating) _book.value = 1;
@@ -156,6 +184,9 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(seasonInfoProvider).id != _seasonId) {
+      return const Scaffold(backgroundColor: AppColors.nightBottom);
+    }
     final overview = ref.watch(seasonOverviewProvider);
     return Scaffold(
       backgroundColor: AppColors.nightBottom,
@@ -303,6 +334,8 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
                     const SizedBox(height: AppSpace.md),
                     _Dossier(
                       overview: overview,
+                      next: _nextSeason(overview),
+                      onNextSeason: _beginNextSeason,
                       completeReveal: _before != null && !_before!.complete ? ((t - 0.8) / 0.2).clamp(0.0, 1.0) : 1,
                       onCurrent: () => _openFile(overview, overview.current!),
                       onInvestigate: () => SeasonActions.investigate(context, ref, overview.current!),
@@ -464,12 +497,18 @@ class _Heading extends StatelessWidget {
 class _Dossier extends StatelessWidget {
   const _Dossier({
     required this.overview,
+    required this.next,
+    required this.onNextSeason,
     required this.completeReveal,
     required this.onCurrent,
     required this.onInvestigate,
   });
 
   final SeasonOverview overview;
+
+  /// The season after this one (null: none), begun from the completed board.
+  final SeasonAvailability? next;
+  final ValueChanged<SeasonAvailability> onNextSeason;
 
   /// 0 → 1 while the season's completion is being revealed.
   final double completeReveal;
@@ -514,20 +553,38 @@ class _Dossier extends StatelessWidget {
           if (overview.complete) ...[
             Opacity(opacity: completeReveal, child: _Completed(overview)),
             const SizedBox(height: AppSpace.md),
-            GameButton(
-              label: 'VIEW ALL CASE FILES',
-              glyph: InkGlyph.folder,
-              singleLine: true,
-              tap: TapRole.secondary,
-              onPressed: () => context.go(Routes.episodes),
-            ),
-            // The next file waits in the archives (named there, not here).
+            if (next case final n? when n.canEnter)
+              // The next season, begun from here: no archive to look through.
+              GameButton(
+                key: const ValueKey('begin-next-season'),
+                label: 'BEGIN ${n.season.label}',
+                arrow: true,
+                singleLine: true,
+                tap: TapRole.primary,
+                onPressed: () => onNextSeason(n),
+              )
+            else if (next case final n?) ...[
+              // Not out yet (and no preview): said so, nothing to press.
+              Text(
+                '${n.season.label} · COMING SOON',
+                key: const ValueKey('next-season-coming-soon'),
+                textAlign: TextAlign.center,
+                style: AppText.eyebrow(color: AppColors.burgundy),
+              ),
+              const SizedBox(height: AppSpace.xs),
+              Text(
+                'The next file is still being prepared.',
+                textAlign: TextAlign.center,
+                style: AppText.caption(color: AppColors.inkBrown),
+              ),
+              const SizedBox(height: AppSpace.xs),
+            ],
             Center(
               child: InkTextButton(
-                label: 'OPEN THE ARCHIVE',
-                glyph: InkGlyph.seal,
+                label: 'View Case Files',
+                glyph: InkGlyph.folder,
                 color: AppColors.inkBrown,
-                onPressed: () => context.go(Routes.seasons),
+                onPressed: () => context.go(Routes.episodes),
               ),
             ),
           ] else if (overview.comingSoonCase case final next?) ...[

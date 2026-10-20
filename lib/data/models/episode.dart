@@ -19,6 +19,7 @@ class Episode {
     this.keyWords = const [],
     this.hook,
     this.introScene,
+    this.place,
     this.seasonId = SeasonIds.london,
   });
 
@@ -56,6 +57,11 @@ class Episode {
   /// The place the story intro opens on, shown behind its lines (the
   /// picture of that place, or the London map while it has none).
   final Artwork? introScene;
+
+  /// Where the case happens, as its case file prints it ("GARE DU NORD ·
+  /// PARIS"). A case with one shows its whole briefing in its file (the
+  /// place, the story so far, the objectives); without, its first line.
+  final String? place;
 
   List<Mission> get allMissions => [...missions, finalMission];
 
@@ -97,6 +103,7 @@ class Episode {
         keyWords: (json['keyWords'] as List? ?? const []).cast<String>(),
         hook: json['hook'] as String?,
         introScene: json['introScene'] is String ? Artwork.fromJson(json['introScene'] as String) : null,
+        place: json['place'] as String?,
         seasonId: json['seasonId'] is String ? json['seasonId'] as String : SeasonIds.london,
       );
 
@@ -114,6 +121,7 @@ class Episode {
         if (keyWords.isNotEmpty) 'keyWords': keyWords,
         if (hook != null) 'hook': hook,
         if (introScene != null) 'introScene': introScene!.name,
+        if (place != null) 'place': place,
         if (seasonId != SeasonIds.london) 'seasonId': seasonId,
       };
 }

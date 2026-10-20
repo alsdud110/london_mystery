@@ -19,6 +19,8 @@ import '../../widgets/glossary_text.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/place_art.dart';
+import '../../data/models/story_picture.dart';
+import 'widgets/story_picture_view.dart';
 import '../../widgets/place_scenery.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
@@ -111,6 +113,8 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
     final afterCase = m.isFinal;
     // Evidence this scene hands over (not the puzzle): laid down after its lines.
     final handed = afterCase ? null : SeasonCatalog.storyEvidence(m);
+    // A season with pictures for its story (Paris): what this moment shows.
+    final story = SeasonCatalog.storyScenes(m);
     final lines = _lines;
     if (lines.isEmpty) _done = true;
 
@@ -122,14 +126,17 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          PlaceScenery(
-            afterCase
-                ? PlaceArt.sceneryOf(m)
-                : next == null
-                ? null
-                : PlaceArt.sceneryOf(next),
-            map: SeasonMap.ofMission(m.id),
-          ),
+          if (story?.after case final after?)
+            PlaceScenery.picture(StoryPictureView(after, imageKey: const ValueKey('scene-backdrop')))
+          else
+            PlaceScenery(
+              afterCase
+                  ? PlaceArt.sceneryOf(m)
+                  : next == null
+                  ? null
+                  : PlaceArt.sceneryOf(next),
+              map: SeasonMap.ofMission(m.id),
+            ),
           InkSurface(
             night: true,
             child: SafeArea(
@@ -218,6 +225,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                           nextLocation: next.location,
                                           isFinal: next.isFinal,
                                           art: PlaceArt.placeOf(next),
+                                          picture: story?.next,
                                         ),
                                       const SizedBox(height: 18),
                                       if (afterCase)
@@ -269,11 +277,14 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
 }
 
 class _UnlockedCard extends StatelessWidget {
-  const _UnlockedCard({required this.nextLocation, required this.isFinal, required this.art});
+  const _UnlockedCard({required this.nextLocation, required this.isFinal, required this.art, this.picture});
 
   final String nextLocation;
   final bool isFinal;
   final Artwork art;
+
+  /// The next place as the story will find it (Paris), in place of [art].
+  final StoryPicture? picture;
 
   @override
   Widget build(BuildContext context) {
@@ -286,11 +297,21 @@ class _UnlockedCard extends StatelessWidget {
         child: Row(
           children: [
             // A picture shows whole at its own ratio; a drawing stays square.
-            SizedBox(
-              width: LandmarkArt.hasPicture(art) ? 72 * LandmarkArt.aspectOf(art) : 72,
-              height: 72,
-              child: LandmarkArt(art, borderRadius: LandmarkArt.hasPicture(art) ? 2 : 6),
-            ),
+            if (picture case final p?)
+              SizedBox(
+                key: const ValueKey('unlocked-picture'),
+                width: p.frame == StoryFrame.lens ? 72 : (72 * p.aspect).clamp(56.0, 120.0),
+                height: 72,
+                child: p.frame == StoryFrame.lens
+                    ? ClipOval(child: StoryPictureView(p))
+                    : ClipRRect(borderRadius: BorderRadius.circular(2), child: StoryPictureView(p)),
+              )
+            else
+              SizedBox(
+                width: LandmarkArt.hasPicture(art) ? 72 * LandmarkArt.aspectOf(art) : 72,
+                height: 72,
+                child: LandmarkArt(art, borderRadius: LandmarkArt.hasPicture(art) ? 2 : 6),
+              ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(

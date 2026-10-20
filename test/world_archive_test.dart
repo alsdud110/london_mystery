@@ -276,20 +276,58 @@ void main() {
 
   group('the ways in', () {
     for (final size in const [Size(360, 640), Size(390, 844)]) {
-      testWidgets('${size.width.toInt()}x${size.height.toInt()}: the completed board opens the archives', (t) async {
+      testWidgets('${size.width.toInt()}x${size.height.toInt()}: the completed board, Season 2 not out: coming soon, nothing to begin', (t) async {
         await pumpApp(t, seasonSaves(12), size: size);
         appRef.read(routerProvider).go(Routes.season);
         await wait(t, const Duration(milliseconds: 2400));
-        // The case files stay on screen; on a larger phone the archives too.
-        // On the smallest the board page scrolls to them (it always scrolls).
-        expect(t.getRect(find.text('VIEW ALL CASE FILES')).bottom, lessThanOrEqualTo(size.height));
-        if (size.height > 640) expect(t.getRect(find.text('OPEN THE ARCHIVE')).bottom, lessThanOrEqualTo(size.height));
+        expect(find.text('SEASON TWO · COMING SOON'), findsOneWidget);
+        expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'never a button that cannot start it');
+        expect(find.text('OPEN THE ARCHIVE'), findsNothing);
+        expect(t.getRect(find.text('SEASON TWO · COMING SOON')).bottom, lessThanOrEqualTo(size.height));
+        // The case files: on screen on a larger phone; on the smallest the
+        // board page scrolls to them (it always scrolls).
+        if (size.height > 640) expect(t.getRect(find.text('View Case Files')).bottom, lessThanOrEqualTo(size.height));
         expect(t.takeException(), isNull);
-        await tapText(t, 'OPEN THE ARCHIVE');
-        expect(path(), Routes.seasons);
+        await tapText(t, 'View Case Files');
+        expect(path(), Routes.episodes);
+        await wait(t, const Duration(seconds: 3));
+      });
+
+      testWidgets('${size.width.toInt()}x${size.height.toInt()}: the completed board, Season 2 out: BEGIN SEASON TWO opens its cover, no archive between', (t) async {
+        await pumpApp(t, seasonSaves(12), size: size, extra: [
+          allEpisodesProvider.overrideWithValue(withParis),
+          seasonMapsProvider.overrideWithValue(withParisMap),
+          asReleased,
+        ]);
+        final prefs = appRef.read(sharedPreferencesProvider);
+        final season1 = prefs.getString(savedKey(prefs, AppConstants.seasonStorageKey));
+        appRef.read(routerProvider).go(Routes.season);
+        await wait(t, const Duration(milliseconds: 2400));
+        expect(find.text('OPEN THE ARCHIVE'), findsNothing);
+        final begin = find.byKey(const ValueKey('begin-next-season'));
+        expect(begin, findsOneWidget);
+        expect(t.getRect(begin).bottom, lessThanOrEqualTo(size.height), reason: 'the main action, on screen');
+        expect(t.getRect(find.text('View Case Files')).height, lessThan(t.getRect(begin).height), reason: 'the quiet one');
+        await t.tap(begin);
+        await wait(t, const Duration(milliseconds: 1600));
+        expect(path(), Routes.seasonOf(SeasonIds.paris));
+        expect(appRef.read(selectedSeasonIdProvider), SeasonIds.paris);
+        // Paris's cover, its own BEGIN SEASON TWO leading to its opening.
+        expect(find.byKey(const ValueKey('begin-next-season')), findsNothing);
+        expect(find.text('BEGIN SEASON TWO'), findsOneWidget);
+        expect(prefs.getString(savedKey(prefs, AppConstants.seasonStorageKey)), season1, reason: 'Season 1 kept');
         await wait(t, const Duration(seconds: 3));
       });
     }
+
+    testWidgets('the completed board, in an operator build\'s season preview: BEGIN SEASON TWO', (t) async {
+      await pumpApp(t, seasonSaves(12), extra: [seasonPreviewProvider.overrideWithValue(true)]);
+      appRef.read(routerProvider).go(Routes.season);
+      await wait(t, const Duration(milliseconds: 2400));
+      expect(find.byKey(const ValueKey('begin-next-season')), findsOneWidget);
+      expect(find.text('SEASON TWO · COMING SOON'), findsNothing);
+      await wait(t, const Duration(seconds: 3));
+    });
 
     testWidgets('the map menu opens the archives', (t) async {
       await pumpApp(t, seasonSaves(0, activeBegun: true));

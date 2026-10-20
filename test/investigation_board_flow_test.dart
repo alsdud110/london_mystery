@@ -162,7 +162,7 @@ void main() {
     expect(path(), Routes.season);
     expect(find.text('12 / 12'), findsOneWidget);
     expect(find.text('COMPLETED'), findsOneWidget);
-    expect(find.text('VIEW ALL CASE FILES'), findsOneWidget);
+    expect(find.text('View Case Files'), findsOneWidget);
     expect(find.textContaining('PARIS'), findsNothing, reason: 'PARIS is the post-case scene\'s');
     expect(byNumber(12).finalMission.transition.last, 'PARIS.');
     await wait(t, const Duration(seconds: 3));

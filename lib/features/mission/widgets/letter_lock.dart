@@ -20,10 +20,14 @@ import '../../../widgets/ink_icon.dart';
 /// Nothing here knows the answer: a wrong word comes back from the check,
 /// and the tiles stay where they are to be moved again.
 class LetterLockQuestion extends StatefulWidget {
-  const LetterLockQuestion({super.key, required this.mission, required this.onSubmit});
+  const LetterLockQuestion({super.key, required this.mission, required this.onSubmit, this.onChanged});
 
   final Mission mission;
   final void Function(String answer) onSubmit;
+
+  /// The letter in each slot (null: empty), after every move: the box the
+  /// lock is on shows them in its own slots.
+  final ValueChanged<List<String?>>? onChanged;
 
   @override
   State<LetterLockQuestion> createState() => _LetterLockQuestionState();
@@ -42,6 +46,8 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
 
   bool get _full => !_slots.contains(null);
 
+  void _report() => widget.onChanged?.call([for (final id in _slots) id == null ? null : _letter(id)]);
+
   /// [id] into slot [slot]: a tile already there goes where [id] came from
   /// (another slot, or back to the loose tiles).
   void _place(String id, int slot) {
@@ -52,6 +58,7 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
       if (from >= 0) _slots[from] = there;
       _slots[slot] = id;
     });
+    _report();
   }
 
   /// A loose tile tapped: into the first empty slot.
@@ -65,6 +72,7 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
     if (_slots[slot] == null) return;
     HapticFeedback.selectionClick();
     setState(() => _slots[slot] = null);
+    _report();
   }
 
   @override

@@ -166,7 +166,11 @@ class _EvidenceZoom extends StatelessWidget {
                           children: [
                             Hero(
                               tag: 'evidence-${evidence.id}',
-                              child: _EvidenceArt(evidence: evidence, size: 150),
+                              // A wide picture (a ticket, a painting) whole;
+                              // anything else in its round frame.
+                              child: ArtAssets.evidencePrints[evidence.id] == null
+                                  ? _EvidenceArt(evidence: evidence, size: 150)
+                                  : _EvidencePrint(evidence: evidence),
                             ),
                             const SizedBox(height: 18),
                             Text(evidence.name, style: AppText.placeTitle(size: 28), textAlign: TextAlign.center),
@@ -192,6 +196,7 @@ class _EvidenceZoom extends StatelessWidget {
                               SymbolSequence(symbols: evidence.symbols),
                             ],
                             _WitnessesSaid(evidenceId: evidence.id),
+                            EvidenceLinkRow(evidenceId: evidence.id),
                           ],
                         ),
                       ),
@@ -328,6 +333,97 @@ class _EvidenceArt extends StatelessWidget {
                 ),
               ),
             ),
+    );
+  }
+}
+
+/// A wide evidence picture ([ArtAssets.evidencePrints]) shown whole, as wide
+/// as the card: the ticket's print, the painting in its frame. Its symbol if
+/// the picture fails.
+class _EvidencePrint extends StatelessWidget {
+  const _EvidencePrint({required this.evidence});
+
+  final Evidence evidence;
+
+  @override
+  Widget build(BuildContext context) {
+    final mark = GameSymbol.of(evidence.icon).mark(size: 80);
+    return AspectRatio(
+      aspectRatio: ArtAssets.evidencePrints[evidence.id]!,
+      child: Image.asset(
+        ArtAssets.evidencePictures[evidence.id]!,
+        key: ValueKey('evidence-print-${evidence.id}'),
+        fit: BoxFit.contain,
+        excludeFromSemantics: true,
+        errorBuilder: (context, error, stack) => Center(child: mark),
+      ),
+    );
+  }
+}
+
+/// Under a piece of evidence that matches another of its case
+/// (`SeasonCatalog.evidenceLink`: the painting's church is the one on the
+/// lost ticket): the other one, small, and how they match; a tap looks at
+/// it. Only once the other one is found too (in the case being played: its
+/// mission solved; a closed case's file has all of its evidence), so it
+/// never tells what is still to come. Nothing for other evidence.
+class EvidenceLinkRow extends ConsumerWidget {
+  const EvidenceLinkRow({super.key, required this.evidenceId, this.dark = false});
+
+  final String evidenceId;
+
+  /// On the night shade (the painting looked at in the final case), not on
+  /// the evidence card's paper.
+  final bool dark;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final link = SeasonCatalog.evidenceLink(evidenceId);
+    final episode = link == null ? null : caseOfEvidence(ref.watch(episodeCatalogProvider), link.to);
+    if (link == null || episode == null) return const SizedBox.shrink();
+    final mission = episode.allMissions.firstWhere((m) => m.evidence?.id == link.to);
+    final playing = ref.watch(currentEpisodeProvider).id == episode.id;
+    if (playing && !ref.watch(gameControllerProvider).isCompleted(mission.id)) return const SizedBox.shrink();
+    final other = mission.evidence!;
+    final ink = dark ? AppColors.paperLight : AppColors.ink;
+    return Padding(
+      key: ValueKey('evidence-link-${link.to}'),
+      padding: const EdgeInsets.only(top: 18),
+      child: Semantics(
+        button: true,
+        label: 'Matches your evidence: ${other.name}. ${link.line} Tap to look at it.',
+        excludeSemantics: true,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => showEvidenceZoom(context, other, location: mission.location),
+          child: Container(
+            padding: const EdgeInsets.all(AppSpace.sm),
+            decoration: BoxDecoration(
+              color: dark ? AppColors.navy.withValues(alpha: 0.6) : AppColors.parchment.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(AppRadius.paper),
+              border: Border.all(color: dark ? AppColors.gold.withValues(alpha: 0.6) : AppColors.parchmentDark, width: AppLine.hairline),
+            ),
+            child: Row(
+              children: [
+                _EvidenceArt(evidence: other, size: 52),
+                const SizedBox(width: AppSpace.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('MATCHES YOUR EVIDENCE', style: AppText.eyebrow(color: dark ? AppColors.goldLight : AppColors.inkBrown)),
+                      Text(other.name, style: AppText.title(size: 17, color: dark ? AppColors.goldLight : AppColors.navy)),
+                      const SizedBox(height: 2),
+                      Text(link.line, style: AppText.letter(size: 15, color: ink)),
+                    ],
+                  ),
+                ),
+                InkIcon(InkGlyph.search, size: AppIconSize.small, color: dark ? AppColors.goldLight : AppColors.burgundy),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

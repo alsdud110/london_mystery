@@ -291,7 +291,7 @@ void main() {
     // After the last case, the season's completed board (the case files are one tap on).
     await tapText(t, 'INVESTIGATION BOARD', after: const Duration(milliseconds: 2600));
     expect(pathOf(ref), Routes.season);
-    await tapText(t, 'VIEW ALL CASE FILES', after: const Duration(milliseconds: 1000));
+    await tapText(t, 'View Case Files', after: const Duration(milliseconds: 1000));
     expect(pathOf(ref), Routes.episodes);
     await wait(t, const Duration(seconds: 3));
   });

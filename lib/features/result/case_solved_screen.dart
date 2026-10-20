@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,7 @@ import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../core/utils/formatters.dart';
+import '../../data/mock/season_catalog.dart';
 import '../../data/models/mission.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/badge_medal.dart';
@@ -143,6 +146,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                         offset: Offset(0, 60 * (1 - paper.value)),
                         child: _CaseFile(
                           report: report,
+                          city: season.city,
                           detective: detective.value,
                           stamp: stamp.value,
                           xpShown: (report.xp * xp.value).round(),
@@ -235,6 +239,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
 class _CaseFile extends StatelessWidget {
   const _CaseFile({
     required this.report,
+    required this.city,
     required this.detective,
     required this.stamp,
     required this.xpShown,
@@ -242,6 +247,9 @@ class _CaseFile extends StatelessWidget {
   });
 
   final DetectiveReport report;
+
+  /// The case's city: its file says whose mystery it is.
+  final String city;
 
   /// How far the detective has come in (0..1).
   final double detective;
@@ -304,7 +312,7 @@ class _CaseFile extends StatelessWidget {
             children: [
               // Custom Asset Required: a brass push-pin for the file corner.
               Text(
-                'LONDON MYSTERY · FILE ${report.episode.numberLabel}',
+                '${city.toUpperCase()} MYSTERY · FILE ${report.episode.numberLabel}',
                 style: AppText.eyebrow(color: AppColors.inkBrown),
               ),
               const SizedBox(height: 10),
@@ -367,14 +375,32 @@ class _CaseFile extends StatelessWidget {
                     child: LayoutBuilder(
                       builder: (context, box) {
                         final side = (box.maxWidth * 0.42).clamp(96.0, 150.0);
-                        return Image.asset(
-                          emblem,
-                          key: const ValueKey('case-closed-emblem'),
-                          width: side,
-                          height: side,
-                          fit: BoxFit.contain,
-                          semanticLabel: report.episode.allEvidence.last.name,
-                          errorBuilder: (context, error, stack) => const SizedBox.shrink(),
+                        // A wide emblem (Paris Case 01's painting) as wide as
+                        // it reads, and what its back says under it.
+                        final aspect = ArtAssets.caseClosedEmblemAspects[report.episode.id] ?? 1;
+                        final width = aspect > 1 ? math.min(box.maxWidth * 0.86, 300.0) : side;
+                        final back = SeasonCatalog.lockBox(report.episode.finalMission)?.back;
+                        return Column(
+                          children: [
+                            Image.asset(
+                              emblem,
+                              key: const ValueKey('case-closed-emblem'),
+                              width: width,
+                              height: aspect > 1 ? width / aspect : side,
+                              fit: BoxFit.contain,
+                              semanticLabel: report.episode.allEvidence.last.name,
+                              errorBuilder: (context, error, stack) => const SizedBox.shrink(),
+                            ),
+                            if (back != null) ...[
+                              const SizedBox(height: AppSpace.xs),
+                              Text(
+                                'On the back: $back',
+                                key: const ValueKey('case-closed-emblem-back'),
+                                textAlign: TextAlign.center,
+                                style: AppText.letter(size: 16, color: AppColors.burgundy),
+                              ),
+                            ],
+                          ],
                         );
                       },
                     ),

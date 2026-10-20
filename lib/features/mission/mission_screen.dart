@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +18,10 @@ import '../../data/models/scene_decode.dart';
 import '../../data/models/scene_explore.dart';
 import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
+import '../../data/models/game_progress.dart';
+import '../../data/models/scene_exhibit.dart';
+import '../../data/models/station_clocks.dart';
+import '../../data/models/story_picture.dart';
 import '../../data/models/dialogue.dart';
 import '../../data/models/investigation.dart';
 import '../../data/mock/season1/season1_sounds.dart';
@@ -40,11 +46,14 @@ import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/clock_question.dart';
 import 'widgets/dialogue_investigation.dart';
+import 'widgets/exhibit.dart';
 import 'widgets/investigation_search.dart';
 import 'widgets/lens_inspect.dart';
 import 'widgets/scene_deduction.dart';
 import 'widgets/scene_decode.dart';
 import 'widgets/scene_explore.dart';
+import 'widgets/station_clocks.dart';
+import 'widgets/story_picture_view.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
 import '../../data/models/detective_name.dart';
@@ -104,10 +113,30 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// detective has got with it (kept while the page is open; not saved).
   final DecodeProgress _decode = DecodeProgress();
 
+  /// A mission played by comparing a station's clocks: what was looked at
+  /// (saved too: [GameProgress.examined]), what is open over the hall.
+  final StationClocksProgress _station = StationClocksProgress();
+
   @override
   void initState() {
     super.initState();
     final progress = ref.read(gameControllerProvider);
+    // The clocks and the board looked at before (an earlier visit, or
+    // before a restart) stay looked at.
+    final hall = SeasonCatalog.stationClocks(_mission);
+    if (hall != null) {
+      for (final id in [
+        for (final c in hall.clocks) c.optionId,
+        hall.board.id,
+        hall.desk.id,
+      ]) {
+        if (progress.hasExamined(
+          GameProgress.examinedKey(widget.missionId, id),
+        )) {
+          _station.looked.add(id);
+        }
+      }
+    }
     // Returning players skip straight to the puzzle they were on.
     _stage =
         progress.isCompleted(widget.missionId) ||
@@ -137,9 +166,19 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       return;
     }
     final exploring =
-        _stage == MissionStage.puzzle && SeasonCatalog.explore(_mission) != null;
+        _stage == MissionStage.puzzle &&
+        SeasonCatalog.explore(_mission) != null;
     final inspecting =
-        _stage == MissionStage.puzzle && SeasonCatalog.inspection(_mission) != null;
+        _stage == MissionStage.puzzle &&
+        SeasonCatalog.inspection(_mission) != null;
+    final comparing =
+        _stage == MissionStage.puzzle &&
+        SeasonCatalog.stationClocks(_mission) != null;
+    // The station hall: back first closes the clock, board or desk over it.
+    if (comparing && _station.open != null) {
+      setState(() => _station.open = null);
+      return;
+    }
     // Looking round a place, or examining its exhibits: back first closes
     // what is open over it.
     if (exploring && _explore.open != null) {
@@ -161,9 +200,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // A talk, a look round, a place read for its traces and a thing
     // examined have no letter step: back from them is the place.
     final talking =
-        _stage == MissionStage.puzzle && SeasonCatalog.dialogue(_mission) != null;
+        _stage == MissionStage.puzzle &&
+        SeasonCatalog.dialogue(_mission) != null;
     final reading =
-        _stage == MissionStage.puzzle && SeasonCatalog.deduction(_mission) != null;
+        _stage == MissionStage.puzzle &&
+        SeasonCatalog.deduction(_mission) != null;
     setState(() {
       if (_stage == MissionStage.puzzle) _letterOpened = true;
       _stage =
@@ -171,6 +212,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               !talking &&
               !exploring &&
               !inspecting &&
+              !comparing &&
               !reading &&
               !examining
           ? MissionStage.letter
@@ -222,6 +264,33 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         onHint: () => _showHint(m),
         wrongPulse: _wrongPulse,
       );
+
+  /// A station hall's clocks compared (the clock reported answers the
+  /// mission's puzzle).
+  Widget _stationStage(Mission m, StationClocksScene scene, int hintsShown) =>
+      StationClocks(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        mission: m,
+        progress: _station,
+        onChanged: () => setState(() {}),
+        onExamined: (id) => ref
+            .read(gameControllerProvider.notifier)
+            .recordExamined(GameProgress.examinedKey(m.id, id)),
+        onChoose: (id) => _submit(m, id),
+        hintsShown: hintsShown,
+        onHint: () => _showHint(m),
+        wrongPulse: _wrongPulse,
+      );
+
+  /// The thing handed over with the letter, looked at closer (kept as seen).
+  void _lookAtExhibit(Mission m, Exhibit exhibit) {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
+    ref
+        .read(gameControllerProvider.notifier)
+        .recordExamined(GameProgress.examinedKey(m.id, exhibit.id));
+    showExhibitZoom(context, exhibit);
+  }
 
   /// A place looked round (its choice answers the mission's puzzle).
   Widget _exploreStage(Mission m, ExploreScene scene, int hintsShown) =>
@@ -424,6 +493,8 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final inspect = SeasonCatalog.inspection(m);
     final deduction = SeasonCatalog.deduction(m);
     final decode = SeasonCatalog.decode(m);
+    final hall = SeasonCatalog.stationClocks(m);
+    final exhibit = SeasonCatalog.exhibit(m);
 
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)
@@ -442,12 +513,16 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                     : deduction != null
                     ? (deduction.picture, deduction.pixels.aspect)
                     : null,
+                // A station hall: its clocks' hands drawn on it.
+                // A season with pictures for its story (Paris): this place's.
+                placePicture: SeasonCatalog.storyScenes(m)?.place,
                 // A place read for its traces starts at once too: the notes
                 // are written as the traces are found. So does a thing to
                 // examine: what it hides is shown on it. (Its place keeps
                 // the place's own scene: the thing is found after.)
                 onInvestigate: () => _goTo(
                   talk != null ||
+                          hall != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -469,6 +544,15 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.letter => _LetterStage(
               key: const ValueKey('letter'),
               mission: m,
+              exhibit: exhibit,
+              exhibitLooked:
+                  exhibit != null &&
+                  progress.hasExamined(
+                    GameProgress.examinedKey(m.id, exhibit.id),
+                  ),
+              onExhibit: exhibit == null
+                  ? null
+                  : () => _lookAtExhibit(m, exhibit),
               opened: _letterOpened,
               onOpening: _onLetterOpening,
               onOpened: _onLetterOpened,
@@ -477,6 +561,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when scene != null => _search(
               m,
               scene,
+              progress.hintsFor(m.id),
+            ),
+            MissionStage.puzzle when hall != null => _stationStage(
+              m,
+              hall,
               progress.hintsFor(m.id),
             ),
             MissionStage.puzzle when explore != null => _exploreStage(
@@ -542,7 +631,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         appBar: AppBar(
           backgroundColor: dark ? AppColors.navyDeep : null,
           foregroundColor: dark ? AppColors.paperLight : null,
-          systemOverlayStyle: dark ? AppTheme.statusOnNight : AppTheme.statusOnPaper,
+          systemOverlayStyle: dark
+              ? AppTheme.statusOnNight
+              : AppTheme.statusOnPaper,
           leading: IconButton(
             tooltip: solved || _stage == MissionStage.story
                 ? 'Back to map'
@@ -633,6 +724,68 @@ class _PlaceHeading extends StatelessWidget {
   }
 }
 
+/// A place's story picture ([StoryPicture]) on its page: a print, a little
+/// askew, no taller than about two fifths of the screen (a tall part of a
+/// scene is printed narrower); or a thing seen up close through a brass
+/// lens.
+class _PlacePicture extends StatelessWidget {
+  const _PlacePicture({required this.picture});
+
+  final StoryPicture picture;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = picture;
+    final tallest = MediaQuery.sizeOf(context).height * 0.4;
+    return LayoutBuilder(
+      builder: (context, box) {
+        if (p.frame == StoryFrame.lens) {
+          final side = math.min(math.min(box.maxWidth * 0.72, tallest), 260.0);
+          return Center(
+            child: Container(
+              key: const ValueKey('story-lens'),
+              width: side,
+              height: side,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.goldDeep, width: 6),
+                boxShadow: AppShadow.paperLift,
+              ),
+              child: ClipOval(
+                child: StoryPictureView(
+                  p,
+                  imageKey: const ValueKey('story-picture'),
+                ),
+              ),
+            ),
+          );
+        }
+        final width = math.min(
+          box.maxWidth - 2 * AppSpace.sm,
+          tallest * p.aspect,
+        );
+        return Center(
+          child: PaperSheet(
+            padding: const EdgeInsets.all(AppSpace.sm),
+            tilt: -0.01,
+            child: SizedBox(
+              width: width,
+              height: width / p.aspect,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: StoryPictureView(
+                  p,
+                  imageKey: const ValueKey('story-picture'),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 // STEP 1 — the place. One action: investigate.
 class _StoryStage extends StatelessWidget {
   const _StoryStage({
@@ -640,10 +793,15 @@ class _StoryStage extends StatelessWidget {
     required this.mission,
     required this.onInvestigate,
     this.picture,
+    this.placePicture,
   });
 
   final Mission mission;
   final VoidCallback onInvestigate;
+
+  /// The place as the story has got to it (Paris: the hall whole, the desk,
+  /// the old clock through a lens), in place of [picture].
+  final StoryPicture? placePicture;
 
   /// The place's own picture (its file and width / height) in place of the
   /// mission's scene: a place looked round shows the place it is looked
@@ -664,31 +822,44 @@ class _StoryStage extends StatelessWidget {
         // The scene, printed like a picture in a storybook.
         // A square picture (the raven, the suitcase) is kept a page-size
         // print, so the story still starts on the first screen.
-        Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: own == null && LandmarkArt.aspectOf(PlaceArt.sceneOf(m)) < 1.2
-                  ? 240
-                  : double.infinity,
-            ),
-            child: PaperSheet(
-              padding: const EdgeInsets.all(AppSpace.sm),
-              tilt: -0.01,
-              child: own == null
-                  ? AspectRatio(
-                      aspectRatio: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)),
-                      child: LandmarkArt(PlaceArt.sceneOf(m), borderRadius: 2),
-                    )
-                  : AspectRatio(
-                      aspectRatio: own.$2,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: Image.asset(own.$1, key: const ValueKey('story-picture'), fit: BoxFit.cover, excludeFromSemantics: true),
+        if (placePicture case final p?)
+          _PlacePicture(picture: p)
+        else
+          Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth:
+                    own == null &&
+                        LandmarkArt.aspectOf(PlaceArt.sceneOf(m)) < 1.2
+                    ? 240
+                    : double.infinity,
+              ),
+              child: PaperSheet(
+                padding: const EdgeInsets.all(AppSpace.sm),
+                tilt: -0.01,
+                child: own == null
+                    ? AspectRatio(
+                        aspectRatio: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)),
+                        child: LandmarkArt(
+                          PlaceArt.sceneOf(m),
+                          borderRadius: 2,
+                        ),
+                      )
+                    : AspectRatio(
+                        aspectRatio: own.$2,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(2),
+                          child: Image.asset(
+                            own.$1,
+                            key: const ValueKey('story-picture'),
+                            fit: BoxFit.cover,
+                            excludeFromSemantics: true,
+                          ),
+                        ),
                       ),
-                    ),
+              ),
             ),
           ),
-        ),
         const SizedBox(height: AppSpace.xl),
         for (final (i, line) in m.story.indexed)
           _FadeIn(
@@ -728,9 +899,17 @@ class _LetterStage extends StatelessWidget {
     required this.onOpening,
     required this.onOpened,
     required this.onDone,
+    this.exhibit,
+    this.exhibitLooked = false,
+    this.onExhibit,
   });
 
   final Mission mission;
+
+  /// A thing handed over with the letter (the lost ticket), laid above it.
+  final Exhibit? exhibit;
+  final bool exhibitLooked;
+  final VoidCallback? onExhibit;
   final bool opened;
   final VoidCallback onOpening;
   final VoidCallback onOpened;
@@ -750,6 +929,14 @@ class _LetterStage extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpace.xl),
+        if (exhibit != null) ...[
+          ExhibitObject(
+            exhibit: exhibit!,
+            looked: exhibitLooked,
+            onOpen: onExhibit!,
+          ),
+          const SizedBox(height: AppSpace.xl),
+        ],
         EnvelopeReveal(
           letterText: mission.letter,
           initiallyOpen: opened,
@@ -892,7 +1079,10 @@ class _SolvedStage extends ConsumerWidget {
         const Center(child: InkStamp('SOLVED', color: AppColors.success)),
         const SizedBox(height: AppSpace.md),
         Text(
-          DetectiveName.address(m.successMessage, ref.watch(gameControllerProvider).detectiveName),
+          DetectiveName.address(
+            m.successMessage,
+            ref.watch(gameControllerProvider).detectiveName,
+          ),
           style: AppText.bodyText(),
           textAlign: TextAlign.center,
         ),

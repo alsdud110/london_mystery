@@ -43,6 +43,11 @@ abstract final class Routes {
   /// back to the archives (the board opened any other way goes to the title).
   static const seasonFromArchive = '/season?from=archive';
 
+  /// The season page of season [seasonId], just chosen on the page itself
+  /// (BEGIN SEASON TWO on the completed board): a location of its own, so
+  /// the page is built anew for that season.
+  static String seasonOf(String seasonId) => '/season?season=$seasonId';
+
   /// The Detective Archives: every season's file, to choose the next one.
   static const seasons = '/seasons';
   static const prologue = '/season/prologue';
@@ -178,7 +183,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.season,
         pageBuilder: (c, s) {
           final back = s.uri.queryParameters['from'] == 'archive' ? Routes.seasons : Routes.start;
-          return _fade(s, _backTo(c, back, SeasonScreen(backTo: back)));
+          // Its own state per season: BEGIN SEASON TWO on the completed
+          // board opens the next season on this same page, from its cover.
+          return _fade(s, _backTo(c, back, SeasonScreen(key: ValueKey(ref.read(selectedSeasonIdProvider)), backTo: back)));
         },
       ),
       // The Detective Archives: the seasons' files (back: the title).

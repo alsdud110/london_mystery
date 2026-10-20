@@ -161,7 +161,7 @@ class SeasonOverview {
       current: current,
       currentStarted: current != null && saves[current].introSeen,
       figure: info.figureFor(season.isSolved),
-      begun: season.solvedEpisodeIds.isNotEmpty || saves.any((p) => p.introSeen),
+      begun: season.solvedEpisodeIds.isNotEmpty || saves.any((p) => p.introSeen) || season.prologueSeen,
     );
   }
 

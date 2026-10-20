@@ -312,7 +312,7 @@ class _LandmarkPainter extends CustomPainter {
       case Artwork.parkMapD:
         _parkMap(canvas, const Offset(43, 15));
       // Season 2's places: their own pictures only, no London drawing.
-      case Artwork.gareDuNord:
+      case Artwork.gareDuNord || Artwork.oldClockFace:
         break;
     }
     canvas.restore();
@@ -1066,23 +1066,28 @@ class ClockHandsPainter extends CustomPainter {
     final picture = Offset((size.width - w) / 2, (size.height - h) / 2) & Size(w, h);
     final pivot = picture.topLeft + Offset(art.pivot.dx * w, art.pivot.dy * h);
 
-    _hand(canvas, pivot, minuteDegrees, length: art.minuteLength * w, width: w * 0.013, tip: 1.1);
-    _hand(canvas, pivot, hourDegrees, length: art.hourLength * w, width: w * 0.021, tip: 1.6);
-    canvas.drawCircle(pivot, w * 0.022, Paint()..color = AppColors.goldDeep);
+    paintHand(canvas, pivot, minuteDegrees, length: art.minuteLength * w, width: w * 0.013, tip: 1.1);
+    paintHand(canvas, pivot, hourDegrees, length: art.hourLength * w, width: w * 0.021, tip: 1.6);
+    paintCap(canvas, pivot, w * 0.022);
+  }
+
+  /// The brass cap over the hands' pivot, [radius] wide.
+  static void paintCap(Canvas canvas, Offset pivot, double radius) {
+    canvas.drawCircle(pivot, radius, Paint()..color = AppColors.goldDeep);
     canvas.drawCircle(
       pivot,
-      w * 0.022,
+      radius,
       Paint()
         ..color = AppColors.ink
         ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.004,
+        ..strokeWidth = radius * 0.18,
     );
-    canvas.drawCircle(pivot, w * 0.007, Paint()..color = AppColors.ink);
+    canvas.drawCircle(pivot, radius * 0.32, Paint()..color = AppColors.ink);
   }
 
   /// One hand, pointing up and turned [degrees] clockwise about [pivot]: a
   /// short tail, a slim blade and a spade tip [tip] times the blade's width.
-  void _hand(
+  static void paintHand(
     Canvas canvas,
     Offset pivot,
     double degrees, {

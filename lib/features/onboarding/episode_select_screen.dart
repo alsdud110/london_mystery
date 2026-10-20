@@ -353,7 +353,9 @@ class _EpisodeRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (playable)
+                if (playable && e.place != null)
+                  _Briefing(episode: e, chosen: chosen)
+                else if (playable)
                   Text(e.synopsis.first, style: AppText.caption(color: chosen ? AppColors.ink : AppColors.muted))
                 else if (previous != null)
                   Text('Solve Case ${previous.numberLabel} to open this file.', style: AppText.caption()),
@@ -372,12 +374,61 @@ class _EpisodeRow extends StatelessWidget {
       ),
     );
     if (!playable) return Semantics(label: '$label, ${e.title}, sealed', excludeSemantics: true, child: row);
+    final briefing = e.place == null
+        ? ''
+        : '. ${e.place}. ${e.synopsis.join(' ')} Your objectives: ${e.objectives.join(' ')}';
     return Semantics(
       button: true,
       selected: chosen,
-      label: '$label, ${e.title}',
+      label: '$label, ${e.title}$briefing',
       excludeSemantics: true,
       child: InkWell(onTap: onChoose, child: row),
+    );
+  }
+}
+
+/// A case's whole briefing in its file ([Episode.place] given): where it
+/// happens, the story so far, and the objectives, ticked off as a
+/// detective's list.
+class _Briefing extends StatelessWidget {
+  const _Briefing({required this.episode, required this.chosen});
+
+  final Episode episode;
+  final bool chosen;
+
+  @override
+  Widget build(BuildContext context) {
+    final e = episode;
+    final ink = chosen ? AppColors.ink : AppColors.muted;
+    return Column(
+      key: ValueKey('briefing-${e.id}'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(e.place!, style: AppText.eyebrow(color: AppColors.burgundy)),
+        const SizedBox(height: AppSpace.sm),
+        for (final line in e.synopsis)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 2),
+            child: Text(line, style: AppText.bodyText(size: 15, color: ink)),
+          ),
+        const SizedBox(height: AppSpace.md),
+        Text('YOUR OBJECTIVES', style: AppText.eyebrow(color: AppColors.inkBrown)),
+        const SizedBox(height: AppSpace.xs),
+        for (final o in e.objectives)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpace.xs),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 3, right: AppSpace.sm),
+                  child: InkIcon(InkGlyph.search, size: AppIconSize.tiny, color: AppColors.burgundy),
+                ),
+                Expanded(child: Text(o, style: AppText.caption(color: ink))),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

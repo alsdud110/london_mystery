@@ -334,6 +334,11 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
     if (!identical(next, state)) _set(next);
   }
 
+  /// The season's opening was watched to its first case's file (once).
+  void markPrologueSeen() {
+    if (!state.prologueSeen) _set(state.copyWith(prologueSeen: true));
+  }
+
   /// Forgets the season in memory (storage is cleared by the repository).
   void reset() => state = SeasonProgress.empty;
 

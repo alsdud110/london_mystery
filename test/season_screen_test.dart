@@ -513,9 +513,14 @@ void main() {
       expect(find.text('CONTINUE INVESTIGATION'), findsNothing);
       expect(find.text('BEGIN INVESTIGATION'), findsNothing);
       expect(screenText(t), isNot(contains('paris')), reason: 'the Season 2 hook stays in Case 12');
-      expectOnScreen(t, find.text('VIEW ALL CASE FILES'), size);
+      // Season Two is not out (no preview here): said so, nothing to begin;
+      // no archive to look through from here.
+      expect(find.text('SEASON TWO · COMING SOON'), findsOneWidget);
+      expect(find.text('BEGIN SEASON TWO'), findsNothing);
+      expect(find.text('OPEN THE ARCHIVE'), findsNothing);
+      expectOnScreen(t, find.text('View Case Files'), size);
       await capture(t, 'board_12_$tag');
-      await tapText(t, 'VIEW ALL CASE FILES');
+      await tapText(t, 'View Case Files');
       expect(path(), Routes.episodes);
       await wait(t, const Duration(seconds: 3));
     });

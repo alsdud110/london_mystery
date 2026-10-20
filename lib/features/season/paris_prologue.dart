@@ -14,8 +14,10 @@ part of 'season_prologue_screen.dart';
 ///     only leads back.
 ///
 /// A tap finishes a scene's animation, then moves on; SKIP goes to the
-/// promise; back goes to the scene before. Nothing is saved here and no
-/// sound is played.
+/// promise; back goes to the scene before. Reaching the case's file while
+/// Season 2 is played is saved (its season record's `prologueSeen`): the
+/// season then opens on its board, never on the opening again. No sound is
+/// played.
 ///
 /// Played when Season 2 is the season being played, or, in a build with
 /// operator tools only (never a release build), as a preview: then it leads
@@ -81,6 +83,8 @@ class _ParisPrologueScreenState extends ConsumerState<ParisPrologueScreen> with 
 
   void _show(int step, {bool complete = false}) {
     setState(() => _step = step);
+    // The opening watched to its end (never in a preview).
+    if (step == _file && _playing) ref.read(seasonProvider.notifier).markPrologueSeen();
     _c.duration = Duration(milliseconds: _durations[step]);
     if (complete) {
       _c.value = 1;

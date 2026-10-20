@@ -97,6 +97,8 @@ void main() {
     // Season 2's places: Gare du Nord (Case 01), its own picture.
     const parisScenes = {
       Artwork.gareDuNord: 'assets/seasons/season_02_paris/cover/season2_gare_du_nord.png',
+      // Case 01 M3: the old clock's face, its hands set by the detective.
+      Artwork.oldClockFace: 'assets/seasons/season_02_paris/cases/case_01/old_clock_face.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(ArtAssets.scenes, {...landmarks, ...inside, ...objectScenes, ...parisScenes});
@@ -124,8 +126,8 @@ void main() {
   });
 
   testWidgets('every scene picture is in the app bundle', (t) async {
-    // Season 1's 31, and Season 2's Gare du Nord.
-    expect(ArtAssets.scenes, hasLength(32));
+    // Season 1's 31, and Season 2's Gare du Nord and old clock face.
+    expect(ArtAssets.scenes, hasLength(33));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,
@@ -308,6 +310,9 @@ void main() {
       'ep05_e3': ArtAssets.objects['key'],
       'ep10_e3': ArtAssets.objects['letter'],
       'ep12_e4': ArtAssets.objects['pocketWatch'],
+      // Paris Case 01: the lost ticket and the painting, their own pictures.
+      's2_ep01_e2': 'assets/seasons/season_02_paris/cases/case_01/lost_ticket.png',
+      's2_ep01_e4': 'assets/seasons/season_02_paris/cases/case_01/montmartre_painting.png',
     });
     final evidence = {for (final e in MockEpisodeRepository.bundled()) for (final x in e.allEvidence) x.id: x};
     expect(evidence.keys, containsAll(ArtAssets.evidencePictures.keys), reason: 'real evidence ids');

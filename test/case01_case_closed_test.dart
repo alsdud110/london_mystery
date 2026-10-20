@@ -29,7 +29,8 @@ void main() {
   test('the crown cut out: transparent around it, the source kept', () async {
     final file = ArtAssets.caseClosedEmblems['ep01']!;
     expect(file, 'assets/seasons/season_01_london/objects/crown_cutout.png');
-    expect(ArtAssets.caseClosedEmblems.keys, ['ep01'], reason: 'Case 01 only');
+    // Of Season 1, Case 01 only; Paris Case 01 shows its painting.
+    expect(ArtAssets.caseClosedEmblems.keys, ['ep01', 's2_ep01']);
     expect(File(ArtAssets.objects['crown']!).lengthSync(), 2101713, reason: 'the source as it was');
     final codec = await ui.instantiateImageCodec(File(file).readAsBytesSync());
     final img = (await codec.getNextFrame()).image;

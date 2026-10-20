@@ -112,7 +112,10 @@ enum Artwork {
   // Season 2 — Paris. Each has its own picture only: never drawn as, or
   // standing in for, a London scene.
   // Gare du Nord's hall (Case 01).
-  gareDuNord;
+  gareDuNord,
+  // The old clock's face at Gare du Nord, without hands (Case 01 M3: the
+  // detective sets them). Named by the presentation (`season2Clocks`).
+  oldClockFace;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

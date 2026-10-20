@@ -14,14 +14,19 @@ import 'landmark_art.dart';
 /// with no picture of its own shows its season's [map] instead (London by
 /// default), or only the night when that season has no map.
 class PlaceScenery extends StatelessWidget {
-  const PlaceScenery(this.place, {super.key, this.map = SeasonMap.london}) : file = null;
+  const PlaceScenery(this.place, {super.key, this.map = SeasonMap.london}) : file = null, picture = null;
 
   /// A place's own picture file that is no scene of the map (a room the
   /// people of a mission stand in), with the same treatment.
-  const PlaceScenery.file(String this.file, {super.key}) : place = null, map = null;
+  const PlaceScenery.file(String this.file, {super.key}) : place = null, map = null, picture = null;
+
+  /// A picture laid out by the caller (a part of a scene, an object), with
+  /// the same treatment.
+  const PlaceScenery.picture(Widget this.picture, {super.key}) : place = null, map = null, file = null;
 
   final Artwork? place;
   final String? file;
+  final Widget? picture;
 
   /// The map shown when the place has no picture (null: none, the night).
   final SeasonMap? map;
@@ -31,7 +36,7 @@ class PlaceScenery extends StatelessWidget {
     final scene = place;
     final own = file;
     final map = this.map;
-    final picture = own != null
+    final picture = this.picture ?? (own != null
         ? LayoutBuilder(
             builder: (context, box) => Image.asset(
               own,
@@ -60,7 +65,7 @@ class PlaceScenery extends StatelessWidget {
               excludeFromSemantics: true,
               errorBuilder: (context, error, stack) => const SizedBox.expand(),
             ),
-          );
+          ));
     const shade = AppColors.navyDeep;
     return RepaintBoundary(
       child: Stack(

@@ -11,7 +11,10 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/mock/season1/season1_sounds.dart';
+import '../../data/mock/season_catalog.dart';
+import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
+import '../../data/models/scene_exhibit.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/coin_balance.dart';
 import '../../widgets/evidence_card.dart';
@@ -30,7 +33,8 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
-import 'widgets/letter_lock.dart' show LetterLockReveal;
+import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
+import 'widgets/lock_box.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/tip_shop.dart';
 import '../../data/models/detective_name.dart';
@@ -61,6 +65,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
 
   Mission get _mission => ref.read(currentEpisodeProvider).finalMission;
 
+  /// A letter lock on a box of its own pictures (Paris Case 01's brass box),
+  /// or null: the case's place behind the lock.
+  LockBoxArt? get _box => SeasonCatalog.lockBox(_mission);
+
+  /// The letters in the lock's slots, as the box shows them.
+  List<String?> _lockLetters = const [];
+
+  /// Where what was found in the box counts as looked at (its back read).
+  String? get _insideKey => _box == null ? null : GameProgress.examinedKey(_mission.id, _box!.examineId);
+
   @override
   void initState() {
     super.initState();
@@ -89,14 +103,20 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     super.didChangeDependencies();
     // The Royal Box's pictures decoded ahead: shut on arrival, and open the
     // moment the code is right (never a blank frame as the lid swings).
-    if (_precached || _mission.scene != Artwork.royalBox) return;
+    final box = _box;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null)) return;
     _precached = true;
-    for (final file in [ArtAssets.royalBox.closed, ArtAssets.royalBox.open]) {
+    for (final file in box == null ? [ArtAssets.royalBox.closed, ArtAssets.royalBox.open] : [box.closed, box.open, box.found]) {
       precacheImage(AssetImage(file), context, onError: (_, _) {});
     }
   }
 
   bool _precached = false;
+
+  /// A lock box's stage height for a page [width] wide: the shut box fitted
+  /// to the width; no taller than a third of the [screen] and 300.
+  static double _boxStage(LockBoxArt box, double width, double screen) =>
+      (width / box.closedPixels.aspect).clamp(150.0, math.min(300.0, math.max(150.0, screen * 0.36)));
 
   /// The Royal Box's stage height for a page [width] wide: the open box,
   /// fitted to the width, on a [screen] at least so tall; no taller than a
@@ -243,6 +263,20 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     );
   }
 
+  /// What lies in the open box, looked at closer; its back read the first
+  /// time is kept (the case goes on from there).
+  Future<void> _lookInside() async {
+    final box = _box!;
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
+    await showFoundInspect(
+      context,
+      art: box,
+      evidence: _mission.evidence,
+      backRead: ref.read(gameControllerProvider).hasExamined(_insideKey!),
+      onBackRead: () => ref.read(gameControllerProvider.notifier).recordExamined(_insideKey!),
+    );
+  }
+
   void _peekNotebook() {
     ref.read(audioServiceProvider).play(GameSound.notebookOpen);
     final episode = ref.read(currentEpisodeProvider);
@@ -345,6 +379,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final m = ref.watch(currentEpisodeProvider).finalMission;
     final progress = ref.watch(gameControllerProvider);
     final solved = progress.isCaseSolved;
+    final box = _box;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -399,12 +434,25 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                     // gets the height its picture needs at this width (the open
                     // box, looked at a little closer, the Crown large).
                     LayoutBuilder(
-                      builder: (context, box) => SizedBox(
+                      builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
-                            ? _royalBoxStage(box.maxWidth, MediaQuery.sizeOf(context).height)
+                            ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : box != null
+                            ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: m.scene == Artwork.royalBox
+                          child: box != null
+                              // The box itself: the lock's letters in its slots,
+                              // opening round them with the solve.
+                              ? LockBoxStage(
+                                  art: box,
+                                  animation: _open,
+                                  letters: solved ? m.answer.split('') : _lockLetters,
+                                  word: m.answer,
+                                  insideLooked: progress.hasExamined(_insideKey!),
+                                  onInside: solved ? _lookInside : null,
+                                )
+                              : m.scene == Artwork.royalBox
                               // The numbers on its drums follow the locks below
                               // until it opens.
                               ? RoyalBoxAnimation(animation: _open, digits: solved ? const [] : _digits)
@@ -515,7 +563,20 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           onPressed: _rereadLetter,
         ),
       ),
-    ] else
+    ] else if (_box != null && m.type == MissionType.letterLock)
+      // The box's lock: what is set in it shows on the box above.
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: PaperSheet(
+          padding: const EdgeInsets.all(AppSpace.lg),
+          child: LetterLockQuestion(
+            mission: m,
+            onSubmit: _submit,
+            onChanged: (letters) => setState(() => _lockLetters = letters),
+          ),
+        ),
+      )
+    else
       // Any other puzzle type: the case's last page, laid on the desk.
       ShakeOnChange(
         trigger: _wrongPulse,
@@ -581,7 +642,19 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                 ),
           const SizedBox(height: AppSpace.md),
         ],
-        _nextButton(),
+        // A box with something in it: looked at first (its back holds the
+        // case's last words), then the story goes on.
+        if (_box != null && !ref.watch(gameControllerProvider).hasExamined(_insideKey!))
+          GameButton(
+            key: const ValueKey('final-look-inside'),
+            label: 'LOOK INSIDE THE BOX',
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _lookInside,
+          )
+        else
+          _nextButton(),
       ],
     ),
   );

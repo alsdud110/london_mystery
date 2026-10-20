@@ -21,6 +21,7 @@ class GameProgress {
     this.lookupsRecorded = true,
     this.xpRules = const {},
     this.behavior = BehaviorLog.empty,
+    this.examined = const [],
     this.startedAt,
     this.completedAt,
     this.playMillis,
@@ -74,6 +75,17 @@ class GameProgress {
 
   /// Whether this run records detective actions.
   bool get recordsBehavior => behavior != null;
+
+  /// What the detective has looked at in a mission's scene, so it stays
+  /// seen after a restart: `missionId:thing` (Paris Case 01: its clocks and
+  /// departure board, the lost ticket, the painting's back). Never XP.
+  final List<String> examined;
+
+  bool hasExamined(String key) => examined.contains(key);
+
+  /// The [examined] key of [thing] looked at in mission [missionId].
+  static String examinedKey(String missionId, String thing) => '$missionId:$thing';
+
   final DateTime? startedAt;
   final DateTime? completedAt;
 
@@ -154,6 +166,7 @@ class GameProgress {
     bool? lookupsRecorded,
     Map<String, int>? xpRules,
     BehaviorLog? behavior,
+    List<String>? examined,
     DateTime? startedAt,
     DateTime? completedAt,
     int? playMillis,
@@ -173,6 +186,7 @@ class GameProgress {
       lookupsRecorded: lookupsRecorded ?? this.lookupsRecorded,
       xpRules: xpRules ?? this.xpRules,
       behavior: behavior ?? this.behavior,
+      examined: examined ?? this.examined,
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
       playMillis: playMillis ?? this.playMillis,
@@ -235,6 +249,7 @@ class GameProgress {
           : json.containsKey('lookedUpWords'),
       xpRules: intMap(json['xpRules']),
       behavior: json['behavior'] is Map ? BehaviorLog.fromJson(json['behavior'] as Map) : null,
+      examined: strList(json['examined']),
       startedAt: startedAt,
       completedAt: completedAt,
       playMillis: playMillis,
@@ -257,6 +272,7 @@ class GameProgress {
         if (xpRules.isNotEmpty) 'xpRules': xpRules,
         // Written whenever actions are recorded: an absent key means "not recorded".
         if (behavior != null) 'behavior': behavior!.toJson(),
+        if (examined.isNotEmpty) 'examined': examined,
         'startedAt': startedAt?.toIso8601String(),
         'completedAt': completedAt?.toIso8601String(),
         if (playMillis != null) 'playMillis': playMillis,

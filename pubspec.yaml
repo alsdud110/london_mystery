@@ -131,6 +131,10 @@ flutter:
     # Season 2 Paris: its Mission Map and its cover pictures.
     - assets/seasons/season_02_paris/locations/map/
     - assets/seasons/season_02_paris/cover/
+    # Case 01 (Gare du Nord): the station hall and its three clocks (no
+    # hands: drawn by the app), the old clock's face, the lost ticket, the
+    # brass box shut and open, and the Montmartre painting.
+    - assets/seasons/season_02_paris/cases/case_01/
     # The title screen (the detective's office).
     - assets/shared/title/
     # Season hero pictures (the opening of Season 1).

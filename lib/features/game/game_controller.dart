@@ -276,6 +276,13 @@ class GameController extends Notifier<GameProgress> {
     ));
   }
 
+  /// The detective looked at [key] (`missionId:thing`) in a mission's
+  /// scene: kept, so it stays seen after a restart. Once only.
+  void recordExamined(String key) {
+    if (state.hasExamined(key)) return;
+    _update(state.copyWith(examined: [...state.examined, key]));
+  }
+
   /// Checks [answer], records the attempt, and on success completes the
   /// mission (unlocking the next one) and awards badges. The solve, its
   /// coins and the season record are saved together.

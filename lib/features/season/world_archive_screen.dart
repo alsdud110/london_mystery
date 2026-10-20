@@ -79,8 +79,10 @@ final seasonFilesProvider = Provider<List<SeasonFile>>((ref) {
             SeasonStatus.comingSoon => SeasonFileState.comingSoon,
             SeasonStatus.open when a.isCompleted => SeasonFileState.completed,
             // Begun: a case solved, or a case whose story has been read.
+            // Its opening watched to its first case counts as begun too.
             SeasonStatus.open
                 when a.solvedCount > 0 ||
+                    repo.loadSeason(seasons[i].id).prologueSeen ||
                     SeasonAvailability.casesOf(seasons[i].id, all).any((e) => repo.load(e.id).introSeen) =>
               SeasonFileState.inProgress,
             SeasonStatus.open => SeasonFileState.notStarted,

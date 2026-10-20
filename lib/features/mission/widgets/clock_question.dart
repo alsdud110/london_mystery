@@ -257,31 +257,30 @@ class _ClockDialState extends State<ClockDial> {
                 onPointerMove: (e) => _moveTo(e, w),
                 onPointerUp: _up,
                 onPointerCancel: _up,
-                child: DecoratedBox(
-                  decoration: const BoxDecoration(boxShadow: AppShadow.paperLift),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.paper),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        ExcludeSemantics(child: Image.asset(file, fit: BoxFit.cover)),
-                        CustomPaint(
-                          painter: _HandRing(
-                            pivot: art.pivot,
-                            degrees: widget.time.degreesOf(widget.selected),
-                            length: _length(widget.selected),
-                          ),
+                child: _FaceCard(
+                  // A face cut out in its own frame (Paris's old clock) sits
+                  // on the page as it is; a square one on a paper card.
+                  cutOut: ArtAssets.cutOutClockFaces.contains(widget.face),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ExcludeSemantics(child: Image.asset(file, fit: BoxFit.cover)),
+                      CustomPaint(
+                        painter: _HandRing(
+                          pivot: art.pivot,
+                          degrees: widget.time.degreesOf(widget.selected),
+                          length: _length(widget.selected),
                         ),
-                        CustomPaint(
-                          painter: ClockHandsPainter(
-                            art,
-                            hourDegrees: widget.time.hourDegrees,
-                            minuteDegrees: widget.time.minuteDegrees,
-                            aspect: 1,
-                          ),
+                      ),
+                      CustomPaint(
+                        painter: ClockHandsPainter(
+                          art,
+                          hourDegrees: widget.time.hourDegrees,
+                          minuteDegrees: widget.time.minuteDegrees,
+                          aspect: 1,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -289,6 +288,24 @@ class _ClockDialState extends State<ClockDial> {
           ),
         );
       },
+    );
+  }
+}
+
+/// The face's card: a paper card with its lift for a square face; nothing
+/// for a face [cutOut] in its own frame (a card would show round it).
+class _FaceCard extends StatelessWidget {
+  const _FaceCard({required this.cutOut, required this.child});
+
+  final bool cutOut;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (cutOut) return child;
+    return DecoratedBox(
+      decoration: const BoxDecoration(boxShadow: AppShadow.paperLift),
+      child: ClipRRect(borderRadius: BorderRadius.circular(AppRadius.paper), child: child),
     );
   }
 }

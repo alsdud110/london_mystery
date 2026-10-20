@@ -246,10 +246,18 @@ abstract final class ArtAssets {
     ...parisScenes,
   };
 
-  /// Season 2's scenes: Gare du Nord's hall (Case 01).
+  /// Season 2's scenes: Gare du Nord's hall (Case 01), and the old clock's
+  /// face (no hands: [clockHands]).
   static const parisScenes = <Artwork, String>{
     Artwork.gareDuNord: season2GareDuNord,
+    Artwork.oldClockFace: '$_paris01/old_clock_face.png',
   };
+
+  static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
+
+  /// Clock faces cut out on transparency (a frame of their own): shown
+  /// without a paper card behind them.
+  static const cutOutClockFaces = {Artwork.oldClockFace};
 
   /// Scenes shown by a character or object picture: the Tower raven (Poppy)
   /// for the raven scenes, the old brown suitcase where the story finds one,
@@ -309,6 +317,7 @@ abstract final class ArtAssets {
     Artwork.clockMechanism: 1536 / 1024,
     // Season 2: Gare du Nord's hall, a portrait picture.
     Artwork.gareDuNord: 941 / 1671,
+    Artwork.oldClockFace: 1,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).
@@ -407,6 +416,18 @@ abstract final class ArtAssets {
     'ep05_e3': 'assets/shared/objects/key.png', // Brass Key
     'ep10_e3': 'assets/shared/objects/letter.png', // Ravenmaster's Letter
     'ep12_e4': 'assets/shared/objects/pocket_watch.png', // The Clockmaker's Watch
+    // Paris Case 01: the lost ticket and the Montmartre painting (wide
+    // pictures: their middle in the round frame, whole in the close look,
+    // [evidencePrints]).
+    's2_ep01_e2': '$_paris01/lost_ticket.png',
+    's2_ep01_e4': '$_paris01/montmartre_painting.png',
+  };
+
+  /// Evidence pictures too wide for the round frame's close look: shown
+  /// whole there, at their width / height.
+  static const evidencePrints = <String, double>{
+    's2_ep01_e2': 1774 / 887,
+    's2_ep01_e4': 1774 / 887,
   };
 
   /// What a case's Case Closed file shows under its title in place of the
@@ -416,7 +437,12 @@ abstract final class ArtAssets {
   /// `tool/crown_cutout/cutout_test.dart`. Other cases keep their photo.
   static const caseClosedEmblems = <String, String>{
     'ep01': 'assets/seasons/season_01_london/objects/crown_cutout.png',
+    // Paris Case 01: the painting found in the brass box.
+    's2_ep01': '$_paris01/montmartre_painting.png',
   };
+
+  /// Width / height of a [caseClosedEmblems] picture that is not square.
+  static const caseClosedEmblemAspects = <String, double>{'s2_ep01': 1774 / 887};
 
   /// How much closer an [evidencePictures] picture is shown in its round
   /// frame, where its object sits small in a wide parchment margin: only
@@ -491,6 +517,16 @@ abstract final class ArtAssets {
       minuteLength: 0.30,
       before: (hour: 8, minute: 17),
       after: (hour: 9, minute: 17),
+    ),
+    // Gare du Nord's old clock (Paris Case 01 M3): the pivot is the brass
+    // ring in the middle of its face; the minute hand reaches the minute
+    // track, the hour hand the inner circle under the numerals.
+    Artwork.oldClockFace: (
+      pivot: Offset(0.498, 0.492),
+      hourLength: 0.18,
+      minuteLength: 0.30,
+      before: (hour: 9, minute: 0),
+      after: (hour: 10, minute: 0),
     ),
   };
 

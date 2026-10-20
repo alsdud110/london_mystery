@@ -12,13 +12,15 @@
 ///    against 10:00). Letter T is scratched on its glass.
 /// 2. At the Lost Property desk, the clerk's notes say what happened FIRST,
 ///    NEXT and AFTER THAT: the man with the pocket watch came before the old
-///    clock went back. A lost ticket (London → Paris) holds the letter I.
+///    clock went back. A lost ticket holds the letter I; its front (printed
+///    MONTMARTRE, a white church on it) says nothing yet of why.
 /// 3. The Clockmaker's own carving on the old clock says to move its hands
 ///    FORWARD ONE HOUR to match the hall clock: 9:00 → 10:00. A little door
 ///    opens on the letter M.
 /// 4. The brass box under the clock has a letter lock and an E carved on it:
 ///    T, I, M and E make TIME. Inside: a painting of Montmartre, FIND THE
-///    PAINTER on its back (Case 02's place).
+///    PAINTER on its back (Case 02's place): the white church of the lost
+///    ticket (the two pieces of evidence are linked: `season2EvidenceLinks`).
 ///
 /// Who the Clockmaker is, and how he steals the hour, stay untold.
 const Map<String, dynamic> season2Episode01Json = {
@@ -26,6 +28,7 @@ const Map<String, dynamic> season2Episode01Json = {
   'seasonId': 's2_paris',
   'number': 1,
   'title': 'The Ticking Watch',
+  'place': 'GARE DU NORD · PARIS',
   'synopsis': [
     'The clocks at Gare du Nord show different times.',
     'Why is one clock an hour behind?',
@@ -126,9 +129,9 @@ const Map<String, dynamic> season2Episode01Json = {
         'Someone dropped it under the old clock this morning.',
       ],
       'letterIntro': 'The clerk gives you the ticket and her notes.',
+      // The ticket itself is its own picture beside the notes
+      // (`season2Exhibits`): nothing here says what is printed on it.
       'letter':
-          'LOST TICKET\n'
-          'LONDON → PARIS\n\n'
           "CLERK'S NOTES\n\n"
           'FIRST, the hall clock struck ten.\n'
           'NEXT, a man with a pocket watch entered the waiting room.\n'
@@ -165,7 +168,7 @@ const Map<String, dynamic> season2Episode01Json = {
         'name': 'Lost Ticket',
         'icon': 'ticket',
         'description': 'Dropped under the old clock this morning.',
-        'inscription': 'LONDON → PARIS. On the back, a small letter: I.',
+        'inscription': 'MONTMARTRE · PARIS · No. 72831. On the back, a small letter: I.',
       },
       'successMessage': 'The man changed the old clock!',
       'transition': [
@@ -288,6 +291,7 @@ const Map<String, dynamic> season2Episode01Json = {
       'Inside is a small painting.',
       'A white church on a hill,\nabove the roofs of Paris.',
       'Montmartre.',
+      'The same white church is on the lost ticket.',
       'You turn it over.',
       'Three words are written on the back.',
       'FIND THE PAINTER.',

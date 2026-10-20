@@ -7,9 +7,12 @@ import '../models/learning.dart';
 import '../models/mission.dart';
 import '../models/scene_decode.dart';
 import '../models/scene_deduction.dart';
+import '../models/scene_exhibit.dart';
 import '../models/scene_explore.dart';
 import '../models/scene_inspect.dart';
 import '../models/season.dart';
+import '../models/station_clocks.dart';
+import '../models/story_picture.dart';
 import 'season1/episode01_mock.dart';
 import 'season1/season1_clocks.dart';
 import 'season1/season1_decodes.dart';
@@ -23,6 +26,7 @@ import 'season1/season1_learning.dart';
 import 'season1/season1_mock.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
+import 'season2/season2_scenes.dart';
 
 /// One season's bundled content: who the season is, its cases, and the
 /// tables that give some of its missions more than their question (a scene
@@ -43,6 +47,11 @@ class SeasonContent {
     this.decodes = const {},
     this.dialogues = const {},
     this.clocks = const {},
+    this.stationClocks = const {},
+    this.exhibits = const {},
+    this.lockBoxes = const {},
+    this.evidenceLinks = const {},
+    this.storyScenes = const {},
     this.discoveries = const {},
     this.storyEvidence = const {},
     this.learning = const {},
@@ -68,6 +77,23 @@ class SeasonContent {
   final Map<String, DecodeScene> decodes;
   final Map<String, DialogueScene> dialogues;
   final Map<String, ClockPuzzle> clocks;
+
+  /// Missions played by comparing a place's clocks (Season 2, Case 01 M1).
+  final Map<String, StationClocksScene> stationClocks;
+
+  /// Things handed over with a mission's document, to look at closer.
+  final Map<String, Exhibit> exhibits;
+
+  /// Final cases opened on a letter-lock box in two pictures.
+  final Map<String, LockBoxArt> lockBoxes;
+
+  /// By evidence id: the evidence of the same case it matches.
+  final Map<String, EvidenceLink> evidenceLinks;
+
+  /// A mission's pictures as the story goes through it (its place page, the
+  /// scene after it): Season 2's own, never the same station each time.
+  final Map<String, StoryScenes> storyScenes;
+
   final Map<String, Discovery> discoveries;
 
   /// Missions whose evidence the scene after the puzzle hands over.
@@ -106,6 +132,12 @@ final season2Content = SeasonContent(
   info: season2InfoJson,
   episodes: season2Json,
   released: false,
+  clocks: season2Clocks,
+  stationClocks: season2StationClocks,
+  exhibits: season2Exhibits,
+  lockBoxes: season2LockBoxes,
+  evidenceLinks: season2EvidenceLinks,
+  storyScenes: season2StoryScenes,
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
 );
@@ -164,6 +196,24 @@ abstract final class SeasonCatalog {
   static DialogueScene? dialogue(Mission m) => ofMission(m.id)?.dialogues[m.id];
 
   static ClockPuzzle? clock(Mission m) => ofMission(m.id)?.clocks[m.id];
+
+  static StationClocksScene? stationClocks(Mission m) => ofMission(m.id)?.stationClocks[m.id];
+
+  static Exhibit? exhibit(Mission m) => ofMission(m.id)?.exhibits[m.id];
+
+  static LockBoxArt? lockBox(Mission m) => ofMission(m.id)?.lockBoxes[m.id];
+
+  static StoryScenes? storyScenes(Mission m) => ofMission(m.id)?.storyScenes[m.id];
+
+  /// The evidence [evidenceId] matches, from its season's content (evidence
+  /// ids are never shared between seasons), or null.
+  static EvidenceLink? evidenceLink(String evidenceId) {
+    for (final s in all) {
+      final link = s.evidenceLinks[evidenceId];
+      if (link != null) return link;
+    }
+    return null;
+  }
 
   /// [m]'s Discovery Moment: its own, or a solved puzzle for one without.
   static Discovery discovery(Mission m) => ofMission(m.id)?.discoveries[m.id] ?? Discovery.fallback(m);
