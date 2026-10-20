@@ -47,7 +47,7 @@ final Map<String, InvestigationScene> season1Investigations = {
         // Between the bench legs, down to the floor just below them.
         areas: [_px(395, 805, 795, 965)],
         foundLine: 'You found a red button under the bench!',
-        picture: 'assets/art/objects/red_button.png',
+        picture: 'assets/seasons/season_01_london/objects/red_button.png',
         at: _at(560, 885),
         width: 72 / _w,
       ),
@@ -60,7 +60,7 @@ final Map<String, InvestigationScene> season1Investigations = {
         // The empty gold frame on the right wall, its gilt edge included.
         areas: [_px(1218, 190, 1392, 550)],
         foundLine: 'A piece of blue cloth was caught on the frame.',
-        picture: 'assets/art/objects/blue_cloth.png',
+        picture: 'assets/seasons/season_01_london/objects/blue_cloth.png',
         at: _at(1262, 592),
         width: 150 / _w,
       ),
@@ -74,7 +74,7 @@ final Map<String, InvestigationScene> season1Investigations = {
         // bust on its left and the bench on its right are their own places).
         areas: [_px(165, 752, 385, 872), _px(306, 300, 362, 752)],
         foundLine: 'A wet footprint was found next to the door.',
-        picture: 'assets/art/objects/wet_footprint.png',
+        picture: 'assets/seasons/season_01_london/objects/wet_footprint.png',
         at: _at(276, 812),
         width: 96 / _w,
         pictureAspect: 1024 / 1536,

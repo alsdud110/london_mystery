@@ -218,15 +218,15 @@ abstract final class ArtAssets {
   /// `objects/locked_door.png` (a plain arched wooden door, neither case's).
   /// That door is the Season opening's "doors found locked" print only.
   static const objectScenes = <Artwork, String>{
-    Artwork.raven: '${_art}characters/raven_master.png',
-    Artwork.oldSuitcase: '${_art}objects/suitcase.png',
-    Artwork.royalBox: '${_art}special/royal_box_open.png',
-    Artwork.blackSuitcase: '${_art}objects/suitcase_black.png',
-    Artwork.jewelCase: '${_art}objects/empty_glass_jewel_case.png',
-    Artwork.gearDoor: '${_art}objects/locked_door_gears.png',
-    Artwork.ironDoor: '${_art}objects/small_iron_door.png',
+    Artwork.raven: '${_london}characters/raven_master.png',
+    Artwork.oldSuitcase: 'assets/shared/objects/suitcase.png',
+    Artwork.royalBox: '${_london}special/royal_box_open.png',
+    Artwork.blackSuitcase: 'assets/seasons/season_01_london/objects/suitcase_black.png',
+    Artwork.jewelCase: 'assets/seasons/season_01_london/objects/empty_glass_jewel_case.png',
+    Artwork.gearDoor: 'assets/seasons/season_01_london/objects/locked_door_gears.png',
+    Artwork.ironDoor: 'assets/seasons/season_01_london/objects/small_iron_door.png',
     // The iron chest behind the White Tower's door (Case 05's final).
-    Artwork.ironChest: '${_art}objects/iron_chest.png',
+    Artwork.ironChest: 'assets/seasons/season_01_london/objects/iron_chest.png',
     // Big Ben's clock (Case 02): its face with no hands (the hands are drawn
     // over it: [clockHands]), and the wheels behind it, no time to read.
     Artwork.clockFace: '$_scenes/big_ben/clock_face.png',
@@ -267,11 +267,11 @@ abstract final class ArtAssets {
   /// witnesses a mission talks to (Case 06's market hall: printed on
   /// parchment, 4:5 portraits, see `season1_dialogues.dart`).
   static const characters = <String, String>{
-    'raven': '${_art}characters/raven_master.png',
-    'clockmaker': '${_art}characters/clockmaker_master.png',
-    'flowerSeller': '${_art}characters/flower_seller.png',
-    'juggler': '${_art}characters/juggler.png',
-    'baker': '${_art}characters/baker.png',
+    'raven': '${_london}characters/raven_master.png',
+    'clockmaker': '${_london}characters/clockmaker_master.png',
+    'flowerSeller': '${_london}characters/flower_seller.png',
+    'juggler': '${_london}characters/juggler.png',
+    'baker': '${_london}characters/baker.png',
   };
 
   /// Width / height of a witness portrait ([characters]: flower seller,
@@ -284,22 +284,22 @@ abstract final class ArtAssets {
 
   /// Story objects (full colour, on parchment, square except the map).
   static const objects = <String, String>{
-    'crown': '${_art}objects/crown.png',
-    'key': '${_art}objects/key.png',
-    'letter': '${_art}objects/letter.png',
-    'map': '${_art}objects/map.png',
-    'pocketWatch': '${_art}objects/pocket_watch.png',
-    'suitcase': '${_art}objects/suitcase.png',
+    'crown': 'assets/seasons/season_01_london/objects/crown.png',
+    'key': 'assets/shared/objects/key.png',
+    'letter': 'assets/shared/objects/letter.png',
+    'map': 'assets/shared/objects/map.png',
+    'pocketWatch': 'assets/shared/objects/pocket_watch.png',
+    'suitcase': 'assets/shared/objects/suitcase.png',
   };
 
   /// The Season opening's prints of trouble, cut out on transparency: a
   /// stranger hiding his face (no one in particular: never the Clockmaker
   /// or the Ravenmaster) and a locked old door (mood only, no case's door).
-  static const mysteriousStranger = '${_art}characters/mysterious_stranger.png';
-  static const lockedDoor = '${_art}objects/locked_door.png';
+  static const mysteriousStranger = '${_london}characters/mysterious_stranger.png';
+  static const lockedDoor = 'assets/shared/objects/locked_door.png';
 
   /// The Raven Society mark (full colour, not a tinted [symbols] glyph).
-  static const ravenMark = '${_art}symbols/raven_mark.png';
+  static const ravenMark = '${_london}symbols/raven_mark.png';
 
   /// Case 01's Royal Box (the final mission's golden box with the Crown
   /// inside), as two pictures on transparency (1659 × 948, in register):
@@ -311,8 +311,8 @@ abstract final class ArtAssets {
   /// is opened. The opening animation crossfades the two; a missing picture
   /// falls back to the box drawn in code (`RoyalBoxAnimation`).
   static const RoyalBoxArt royalBox = (
-    closed: '${_art}special/royal_box_closed_blank.png',
-    open: '${_art}special/royal_box_open.png',
+    closed: '${_london}special/royal_box_closed_blank.png',
+    open: '${_london}special/royal_box_open.png',
     // The drums' digit faces, measured on the picture (pixels 521–552,
     // 709–740, 909–940, 1104–1135 across; 644–688 down).
     dials: [
@@ -330,12 +330,12 @@ abstract final class ArtAssets {
   /// The delivered shut Royal Box, its drums painted 0000: the source of
   /// [royalBox]'s shut picture, never shown (the 0000 would not follow the
   /// locks).
-  static const royalBoxClosedPainted = '${_art}special/royal_box_closed.png';
+  static const royalBoxClosedPainted = '${_london}special/royal_box_closed.png';
 
   /// Special pictures. The theatre royal box: listed, not shown yet — the
   /// game's Royal Box (Case 01) is a golden box with the Crown inside.
   static const special = <String, String>{
-    'theatreRoyalBox': '${_art}special/royal_box.png',
+    'theatreRoyalBox': '${_london}special/royal_box.png',
   };
 
   /// Evidence shown by its real picture (notebook, zoom, celebrations),
@@ -345,17 +345,17 @@ abstract final class ArtAssets {
   /// (2026-10-19, requested), though that picture reads about ten past ten,
   /// not the 7 o'clock its words give.
   static const evidencePictures = <String, String>{
-    'e01': '${_art}objects/letter.png', // Old Letter
-    'e02': '${_art}objects/key.png', // Golden Key
+    'e01': 'assets/shared/objects/letter.png', // Old Letter
+    'e02': 'assets/shared/objects/key.png', // Golden Key
     'e03': _case01PocketWatch, // Pocket Watch: the Royal Box's clock lock
     // Crown Symbol: the card with a crown on it (the crown it shows).
-    'e05': '${_art}objects/crown.png',
-    'e06': '${_art}objects/crown.png', // The Missing Crown
-    'ep03_e1': '${_art}objects/red_button.png', // Red Button (Case 03, again in Case 08)
+    'e05': 'assets/seasons/season_01_london/objects/crown.png',
+    'e06': 'assets/seasons/season_01_london/objects/crown.png', // The Missing Crown
+    'ep03_e1': 'assets/seasons/season_01_london/objects/red_button.png', // Red Button (Case 03, again in Case 08)
     'ep04_e1': ravenMark, // Black Wax Seal: a raven pressed into the wax
-    'ep05_e3': '${_art}objects/key.png', // Brass Key
-    'ep10_e3': '${_art}objects/letter.png', // Ravenmaster's Letter
-    'ep12_e4': '${_art}objects/pocket_watch.png', // The Clockmaker's Watch
+    'ep05_e3': 'assets/shared/objects/key.png', // Brass Key
+    'ep10_e3': 'assets/shared/objects/letter.png', // Ravenmaster's Letter
+    'ep12_e4': 'assets/shared/objects/pocket_watch.png', // The Clockmaker's Watch
   };
 
   /// What a case's Case Closed file shows under its title in place of the
@@ -364,7 +364,7 @@ abstract final class ArtAssets {
   /// `objects/crown.png` (kept, on its parchment) by
   /// `tool/crown_cutout/cutout_test.dart`. Other cases keep their photo.
   static const caseClosedEmblems = <String, String>{
-    'ep01': '${_art}objects/crown_cutout.png',
+    'ep01': 'assets/seasons/season_01_london/objects/crown_cutout.png',
   };
 
   /// How much closer an [evidencePictures] picture is shown in its round
@@ -377,6 +377,7 @@ abstract final class ArtAssets {
   static const evidencePictureZoom = <String, double>{'e05': 1.5, 'e03': 0.95};
 
   static const _art = 'assets/art/';
+  static const _london = 'assets/seasons/season_01_london/';
   static const _case01 = 'assets/images/case01';
   static const _case01PocketWatch = '$_case01/symbols/symbol_pocket_watch.png';
 

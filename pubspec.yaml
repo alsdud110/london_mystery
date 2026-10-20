@@ -151,10 +151,11 @@ flutter:
     - assets/seasons/season_01_london/locations/royal_archive/
     - assets/seasons/season_01_london/locations/big_ben/
     # Characters, story objects, the Raven Society mark, special pictures.
-    - assets/art/characters/
-    - assets/art/objects/
-    - assets/art/symbols/
-    - assets/art/special/
+    - assets/seasons/season_01_london/characters/
+    - assets/seasons/season_01_london/objects/
+    - assets/shared/objects/
+    - assets/seasons/season_01_london/symbols/
+    - assets/seasons/season_01_london/special/
     # How to Play: the player's detective, the practice witness, the lost cat.
     - assets/art/onboarding/
     # The player's detective: detective_boy.png and detective_girl.png
