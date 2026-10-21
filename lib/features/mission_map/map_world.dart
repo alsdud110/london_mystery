@@ -143,14 +143,17 @@ enum ParisLandmark implements MapLandmark {
 
   /// Season 2's cases at their landmarks. Montmartre has Case 02 and Case 08
   /// (Abbesses is on its hill); the Luxembourg Gardens Case 09 and Case 11
-  /// (Saint-Sulpice is at their north edge).
+  /// (Saint-Sulpice is at their north edge). Case 03 climbs the Eiffel
+  /// Tower, the tower drawn on the painter's canvas; its brass plaque
+  /// points Case 04 to the Seine; Case 06 (place only, 2026-10-21) is at
+  /// the Louvre.
   static const cases = <String, MapLandmark>{
     's2_ep01': gareDuNord,
     's2_ep02': montmartre,
-    's2_ep03': seineQuays,
-    's2_ep04': louvre,
+    's2_ep03': eiffelTower,
+    's2_ep04': seineQuays,
     's2_ep05': notreDame,
-    's2_ep06': eiffelTower,
+    's2_ep06': louvre,
     's2_ep07': palaisGarnier,
     's2_ep08': montmartre,
     's2_ep09': luxembourgGardens,

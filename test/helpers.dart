@@ -7,11 +7,18 @@ import 'package:london_mystery/core/utils/audio_service.dart';
 import 'package:london_mystery/data/repositories/profile_store.dart';
 import 'package:london_mystery/data/mock/season1/episode01_mock.dart';
 import 'package:london_mystery/data/models/episode.dart';
+import 'package:london_mystery/data/models/season.dart' show SeasonIds;
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final episode01 = Episode.fromJson(episode01Json);
+
+/// Paris as it was before its release (2026-10-21): the screens and rules
+/// of a season not yet out for players are tested on it. The game itself
+/// ships Paris released (`season2Content.released`), and its own tests
+/// check that.
+final parisNotYetReleased = seasonReleasedProvider.overrideWithValue((id) => id != SeasonIds.paris);
 
 /// Season 1's cases, in case order: what a test of London's content, saves
 /// and screens plays. (`MockEpisodeRepository.bundled()` has every season's

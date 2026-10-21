@@ -7,6 +7,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Where and when: above, beside, missing, before and after',
     titleKo: '위치와 때: above, beside, missing, before, after',
   ),
+  's2_ep03': CaseLanguageTopic(
+    title: 'Reading records: times, routes and first, next, finally',
+    titleKo: '기록 읽기: 시각, 노선, 순서어 first, next, finally',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -83,5 +87,42 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '세 단서(빨간 문이 아닌 곳, 파란 하늘, 계단 옆 검은 문)를 모두 읽고 네 캔버스 중 셋을 모두 만족하는 하나를 고른다.',
     expressions: ['Not the street with the red door', 'One canvas matches all three'],
+  ),
+
+  // ── Case 03 — The Tower's Secret ───────────────────────────────────────
+  // The records are read line by line: only their words say which line is
+  // which, and that the date and the job agree.
+  's2_ep03_m1': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '두 기록(VISITOR NOTICE, MAINTENANCE LOG)의 DATE, JOB, TIME을 한 줄씩 비교해 서로 다른 시각(4:00 PM, 3:00 PM)을 찾는다.',
+    expressions: ['The same day. The same job.', 'Find the two lines that do not match'],
+  ),
+  // The log alone has no answer: S is read on the route plate (SERVICE
+  // RUN), and only the service route has the stop.
+  's2_ep03_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '운행 기록의 S 표시를 노선판의 "S = SERVICE RUN"과 연결하고, 일반 노선(passenger route)에 없는 정차 구역 SERVICE LEVEL을 찾는다.',
+    expressions: ['One stop is not written', 'S = SERVICE RUN'],
+  ),
+  // The order words alone set the dials.
+  's2_ep03_m3': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.grammarInContext,
+    objective: '점검 메모의 순서어 First, Next, Finally를 읽고 세 다이얼을 CLOCK, LIFT, KEY 순서로 맞춘다.',
+    expressions: ['First, check the clock.', 'Next, stop the lift.', 'Finally, turn the key.'],
+  ),
+  // Each question is read for what it asks, and only what the evidence
+  // shows is concluded.
+  's2_ep03_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '세 질문(무엇이 잘못됐나, 승강기는 어디로 갔나, 누가 들어갔다는 근거는)을 읽고 증거를 연결한 뒤, 증거로 증명할 수 있는 결론만 고른다.',
+    expressions: ['What was wrong with the inspection records?', 'What can we conclude?'],
   ),
 };

@@ -195,7 +195,8 @@ void main() {
 
   group('Case 01 not in the game yet', () {
     testWidgets('no way into it: COMING SOON, back to the archives; nothing saved, Season 2 still coming soon', (t) async {
-      await pumpApp(t, solved: 12);
+      // Paris not yet released: the opening shown in an operator build only.
+      await pumpApp(t, solved: 12, extra: [parisNotYetReleased]);
       final before = stored();
       await openPrologue(t);
       await t.tap(find.text('SKIP ›'));

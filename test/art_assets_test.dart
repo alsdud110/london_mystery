@@ -104,6 +104,16 @@ void main() {
       Artwork.montmartrePainting: 'assets/seasons/season_02_paris/cases/case_01/montmartre_painting.png',
       Artwork.montmartreStreet: 'assets/seasons/season_02_paris/cases/case_02/montmartre_street_real.png',
       Artwork.paintersStudio: 'assets/seasons/season_02_paris/cases/case_02/painters_studio.png',
+      // Case 03 begins on the back of Case 02's last canvas (its tower
+      // sketch); then the tower, its entrance, lift, iron door, hidden room
+      // and time-recording machine.
+      Artwork.paintersMessage: 'assets/seasons/season_02_paris/cases/case_02/canvas_back.png',
+      Artwork.eiffelTower: 'assets/seasons/season_02_paris/cases/case_03/eiffel_tower_exterior.png',
+      Artwork.towerEntrance: 'assets/seasons/season_02_paris/cases/case_03/tower_notice_board.png',
+      Artwork.towerLift: 'assets/seasons/season_02_paris/cases/case_03/tower_lift.png',
+      Artwork.serviceDoor: 'assets/seasons/season_02_paris/cases/case_03/service_door.png',
+      Artwork.serviceRoom: 'assets/seasons/season_02_paris/cases/case_03/service_room.png',
+      Artwork.timeMachine: 'assets/seasons/season_02_paris/cases/case_03/time_recording_machine.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -134,8 +144,9 @@ void main() {
 
   testWidgets('every scene picture is in the app bundle', (t) async {
     // Season 1's 31, and Season 2's Gare du Nord, old clock face, the
-    // Montmartre painting (Case 02's first scene), Case 02's street and studio.
-    expect(ArtAssets.scenes, hasLength(36));
+    // Montmartre painting (Case 02's first scene), Case 02's street and studio,
+    // and Case 03's seven (the canvas back and six places at the tower).
+    expect(ArtAssets.scenes, hasLength(43));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,
@@ -325,6 +336,11 @@ void main() {
       // notes, the sketch and the message keep their marks: no picture shows
       // them as the evidence says.
       's2_ep02_e1': 'assets/seasons/season_02_paris/cases/case_02/montmartre_street_painted.png',
+      // Paris Case 03: the hidden room, and the plaque (blank brass: its
+      // message is in its words). The records and the log keep their marks:
+      // their pictures are blank paper.
+      's2_ep03_e3': 'assets/seasons/season_02_paris/cases/case_03/service_room.png',
+      's2_ep03_e4': 'assets/seasons/season_02_paris/cases/case_03/brass_plaque.png',
     });
     final evidence = {for (final e in MockEpisodeRepository.bundled()) for (final x in e.allEvidence) x.id: x};
     expect(evidence.keys, containsAll(ArtAssets.evidencePictures.keys), reason: 'real evidence ids');

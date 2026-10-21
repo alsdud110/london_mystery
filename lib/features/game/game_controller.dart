@@ -291,6 +291,14 @@ class GameController extends Notifier<GameProgress> {
     _update(state.copyWith(revealed: {...state.revealed, missionId: at}));
   }
 
+  /// How mission [missionId]'s puzzle is left on its page ([state]: the
+  /// puzzle's own string), saved as it changes (see
+  /// [GameProgress.puzzleStates]).
+  void recordPuzzleState(String missionId, String state) {
+    if (this.state.puzzleStateOf(missionId) == state) return;
+    _update(this.state.copyWith(puzzleStates: {...this.state.puzzleStates, missionId: state}));
+  }
+
   /// Checks [answer], records the attempt, and on success completes the
   /// mission (unlocking the next one) and awards badges. The solve, its
   /// coins and the season record are saved together.

@@ -39,10 +39,12 @@ const measured = <ParisLandmark, Offset>{
 const caseMap = <String, ParisLandmark>{
   's2_ep01': ParisLandmark.gareDuNord,
   's2_ep02': ParisLandmark.montmartre,
-  's2_ep03': ParisLandmark.seineQuays,
-  's2_ep04': ParisLandmark.louvre,
+  // Case 03 climbs the Eiffel Tower; its plaque points Case 04 to the
+  // Seine; Case 06 is at the Louvre (2026-10-21).
+  's2_ep03': ParisLandmark.eiffelTower,
+  's2_ep04': ParisLandmark.seineQuays,
   's2_ep05': ParisLandmark.notreDame,
-  's2_ep06': ParisLandmark.eiffelTower,
+  's2_ep06': ParisLandmark.louvre,
   's2_ep07': ParisLandmark.palaisGarnier,
   's2_ep08': ParisLandmark.montmartre,
   's2_ep09': ParisLandmark.luxembourgGardens,
@@ -262,10 +264,30 @@ void main() {
     });
   });
 
-  group('Season 2 stays coming soon', () {
-    test('its map and Case 01 open no season: not released yet', () async {
+  group('Season 2 and its release', () {
+    test('as shipped, released: with Season 1 finished its map opens', () async {
       SharedPreferences.setMockInitialValues({});
       final c = ProviderContainer(overrides: await testOverridesFor(await SharedPreferences.getInstance()));
+      addTearDown(c.dispose);
+      c.read(gameControllerProvider.notifier).createDetective('Kim', DetectiveAvatar.boy);
+      c.read(progressRepositoryProvider).saveSeason(season1Finished);
+      c.invalidate(seasonProvider);
+      final paris = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
+      expect(paris.released, isTrue);
+      expect(paris.status, SeasonStatus.open);
+      expect(paris.canEnter, isTrue);
+      expect(c.read(gameControllerProvider.notifier).openSeason(SeasonIds.paris), isTrue);
+      expect(c.read(selectedSeasonIdProvider), SeasonIds.paris);
+      expect(c.read(playableSeasonCountProvider), 2);
+    });
+
+    test('not yet released, its map and Case 01 open no season', () async {
+      SharedPreferences.setMockInitialValues({});
+      final c = ProviderContainer(overrides: [
+        ...await testOverridesFor(await SharedPreferences.getInstance()),
+        // Paris as it was before its release (2026-10-21).
+        seasonReleasedProvider.overrideWithValue((id) => id != SeasonIds.paris),
+      ]);
       addTearDown(c.dispose);
       c.read(gameControllerProvider.notifier).createDetective('Kim', DetectiveAvatar.boy);
       c.read(progressRepositoryProvider).saveSeason(season1Finished);

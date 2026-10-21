@@ -155,7 +155,7 @@ void main() {
     await wait(t, const Duration(seconds: 3));
   });
 
-  testWidgets('9. Case 12: INVESTIGATION BOARD → the completed season, unchanged', (t) async {
+  testWidgets('9. Case 12: INVESTIGATION BOARD → the completed season, GO TO PARIS on it', (t) async {
     await pumpApp(t, const Size(390, 844), closed(12));
     expect(find.text('OPEN CASE 13'), findsNothing);
     await fromReport(t, 'INVESTIGATION BOARD');
@@ -163,8 +163,12 @@ void main() {
     expect(find.text('12 / 12'), findsOneWidget);
     expect(find.text('COMPLETED'), findsOneWidget);
     expect(find.text('View Case Files'), findsOneWidget);
-    expect(find.textContaining('PARIS'), findsNothing, reason: 'PARIS is the post-case scene\'s');
+    // The hook (PARIS.) is the post-case scene's, never told again here;
+    // Paris is out, so the board offers the way there.
+    expect(find.text('PARIS.'), findsNothing, reason: 'PARIS is the post-case scene\'s');
     expect(byNumber(12).finalMission.transition.last, 'PARIS.');
+    expect(find.byKey(const ValueKey('begin-next-season')), findsOneWidget);
+    expect(find.text('GO TO PARIS'), findsOneWidget);
     await wait(t, const Duration(seconds: 3));
   });
 

@@ -193,7 +193,7 @@ void main() {
 
   group('the case', () {
     test('Case 02 is in the game, after Case 01, with its four puzzles and evidence', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03']);
       expect(season2AwaitingArtJson, isEmpty);
       expect(SeasonCatalog.isAwaitingArt('s2_ep02'), isFalse);
       expect(const MockEpisodeRepository().fetchEpisode('s2_ep02'), completion(isA<Episode>()));
@@ -470,7 +470,11 @@ void main() {
     });
 
     test('unreleased, nobody but the preview plays it', () async {
-      final c = ProviderContainer(overrides: await testOverridesFor(prefs));
+      // Paris as it was before its release (2026-10-21).
+      final c = ProviderContainer(overrides: [
+        ...await testOverridesFor(prefs),
+        seasonReleasedProvider.overrideWithValue((id) => id != SeasonIds.paris),
+      ]);
       addTearDown(c.dispose);
       final game = c.read(gameControllerProvider.notifier);
       expect(game.openSeason(SeasonIds.paris), isFalse, reason: 'the release lock first');
@@ -481,10 +485,10 @@ void main() {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       expect(game.openSeason(SeasonIds.paris), isTrue);
-      expect(c.read(episodeCatalogProvider).map((e) => e.id), ['s2_ep01', 's2_ep02']);
+      expect(c.read(episodeCatalogProvider).map((e) => e.id), ['s2_ep01', 's2_ep02', 's2_ep03']);
       expect(c.read(seasonProvider.notifier).isUnlocked('s2_ep02'), isFalse);
       expect(game.openEpisode('s2_ep02'), isFalse, reason: 'no way round Case 01');
-      expect(c.read(seasonOverviewProvider).marks, [CaseMark.current, CaseMark.sealed]);
+      expect(c.read(seasonOverviewProvider).marks, [CaseMark.current, CaseMark.sealed, CaseMark.sealed]);
       solve(c, case01);
       expect(c.read(seasonProvider.notifier).isUnlocked('s2_ep02'), isTrue);
       final board = c.read(seasonOverviewProvider);
@@ -496,7 +500,10 @@ void main() {
     });
 
     test('unreleased, the preview plays it in order; full access opens it at once', () async {
-      final c = ProviderContainer(overrides: await testOverridesFor(prefs));
+      final c = ProviderContainer(overrides: [
+        ...await testOverridesFor(prefs),
+        seasonReleasedProvider.overrideWithValue((id) => id != SeasonIds.paris),
+      ]);
       addTearDown(c.dispose);
       final game = c.read(gameControllerProvider.notifier);
       c.read(seasonPreviewSwitchProvider.notifier).set(true);
@@ -551,7 +558,7 @@ void main() {
       expect(c.read(progressRepositoryProvider).load('s2_ep01').isCaseSolved, isTrue);
     });
 
-    test('solved: Paris is 2 of 12, Case 03 is coming, nothing opens it', () async {
+    test('solved: Paris is 2 of 12, and Case 03 (in the game since its pictures came in) opens', () async {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -568,12 +575,12 @@ void main() {
       expect(board.solvedCount, 2);
       expect(board.info.plannedCases, 12);
       expect(board.complete, isFalse);
-      expect(board.comingSoonCase, 3);
-      expect(board.current, isNull);
+      expect(board.comingSoonCase, isNull, reason: 'Case 03 is in the game');
+      expect(board.current, 2, reason: 'Case 03 is the case to work on now');
       final paris = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect((paris.solvedCount, paris.plannedCount), (2, 12));
       expect(paris.isCompleted, isFalse);
-      expect(game.openEpisode('s2_ep03'), isFalse, reason: 'no Case 03 to open');
+      expect(game.openEpisode('s2_ep03'), isTrue, reason: 'Case 02 solved opens Case 03');
       // Season 1 is as it was.
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12));
     });
@@ -862,11 +869,11 @@ void main() {
         expect(find.byKey(const ValueKey('scene-backdrop')), findsOneWidget, reason: 'the back of the canvas');
         await shot('final_scene');
 
-        // Paris: 2 of 12, Case 03 still to come.
+        // Paris: 2 of 12, Case 03 opens next.
         final board = ref.read(seasonOverviewProvider);
         expect(board.solvedCount, 2);
-        expect(board.comingSoonCase, 3);
-        expect(game.openEpisode('s2_ep03'), isFalse);
+        expect(board.comingSoonCase, isNull);
+        expect(board.current, 2);
         await wait(t, const Duration(seconds: 3));
       });
     }

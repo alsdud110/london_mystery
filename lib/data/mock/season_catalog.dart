@@ -14,6 +14,7 @@ import '../models/scene_inspect.dart';
 import '../models/season.dart';
 import '../models/station_clocks.dart';
 import '../models/story_picture.dart';
+import '../models/tower_puzzles.dart';
 import 'season1/episode01_mock.dart';
 import 'season1/season1_clocks.dart';
 import 'season1/season1_decodes.dart';
@@ -25,6 +26,7 @@ import 'season1/season1_inspections.dart';
 import 'season1/season1_investigations.dart';
 import 'season1/season1_learning.dart';
 import 'season1/season1_mock.dart';
+import 'season2/season2_case03_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -54,6 +56,10 @@ class SeasonContent {
     this.studios = const {},
     this.layers = const {},
     this.canvases = const {},
+    this.records = const {},
+    this.lifts = const {},
+    this.dialLocks = const {},
+    this.evidenceBoards = const {},
     this.exhibits = const {},
     this.lockBoxes = const {},
     this.evidenceLinks = const {},
@@ -102,6 +108,14 @@ class SeasonContent {
   final Map<String, StudioScene> studios;
   final Map<String, LayerScene> layers;
   final Map<String, CanvasScene> canvases;
+
+  /// Missions played on Case 03's pictures (Season 2): two records compared
+  /// line by line, a lift log read against its route plate, a padlock's
+  /// three dials, and the final's evidence linked to its questions.
+  final Map<String, RecordsScene> records;
+  final Map<String, LiftScene> lifts;
+  final Map<String, DialLockScene> dialLocks;
+  final Map<String, EvidenceBoardScene> evidenceBoards;
 
   /// Things handed over with a mission's document, to look at closer.
   final Map<String, Exhibit> exhibits;
@@ -161,10 +175,14 @@ final season2Content = SeasonContent(
   studios: season2Studios,
   layers: season2Layers,
   canvases: season2Canvases,
+  records: season2Records,
+  lifts: season2Lifts,
+  dialLocks: season2DialLocks,
+  evidenceBoards: season2EvidenceBoards,
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
-  evidenceLinks: season2EvidenceLinks,
-  storyScenes: {...season2StoryScenes, ...season2Case02StoryScenes},
+  evidenceLinks: {...season2EvidenceLinks, ...season2Case03EvidenceLinks},
+  storyScenes: {...season2StoryScenes, ...season2Case02StoryScenes, ...season2Case03StoryScenes},
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
 );
@@ -258,6 +276,14 @@ abstract final class SeasonCatalog {
 
   static CanvasScene? canvasChoice(Mission m) =>
       ofMission(m.id)?.canvases[m.id];
+
+  static RecordsScene? records(Mission m) => ofMission(m.id)?.records[m.id];
+
+  static LiftScene? lift(Mission m) => ofMission(m.id)?.lifts[m.id];
+
+  static DialLockScene? dialLock(Mission m) => ofMission(m.id)?.dialLocks[m.id];
+
+  static EvidenceBoardScene? evidenceBoard(Mission m) => ofMission(m.id)?.evidenceBoards[m.id];
 
   static Exhibit? exhibit(Mission m) => ofMission(m.id)?.exhibits[m.id];
 

@@ -256,10 +256,18 @@ abstract final class ArtAssets {
     Artwork.montmartrePainting: '$_paris01/montmartre_painting.png',
     Artwork.montmartreStreet: '$_paris02/montmartre_street_real.png',
     Artwork.paintersStudio: '$_paris02/painters_studio.png',
+    Artwork.paintersMessage: '$_paris02/canvas_back.png',
+    Artwork.eiffelTower: '$_paris03/eiffel_tower_exterior.png',
+    Artwork.towerEntrance: '$_paris03/tower_notice_board.png',
+    Artwork.towerLift: '$_paris03/tower_lift.png',
+    Artwork.serviceDoor: '$_paris03/service_door.png',
+    Artwork.serviceRoom: '$_paris03/service_room.png',
+    Artwork.timeMachine: '$_paris03/time_recording_machine.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
   static const _paris02 = 'assets/seasons/season_02_paris/cases/case_02';
+  static const _paris03 = 'assets/seasons/season_02_paris/cases/case_03';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -328,6 +336,14 @@ abstract final class ArtAssets {
     Artwork.montmartreStreet: 1536 / 1024,
     // The studio: a portrait picture.
     Artwork.paintersStudio: 1024 / 1536,
+    Artwork.paintersMessage: 1536 / 1024,
+    // Case 03: the tower at dusk is a portrait picture; the rest are wide.
+    Artwork.eiffelTower: 1024 / 1536,
+    Artwork.towerEntrance: 1536 / 1024,
+    Artwork.towerLift: 1536 / 1024,
+    Artwork.serviceDoor: 1536 / 1024,
+    Artwork.serviceRoom: 1536 / 1024,
+    Artwork.timeMachine: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).
@@ -433,6 +449,10 @@ abstract final class ArtAssets {
     's2_ep01_e4': '$_paris01/montmartre_painting.png',
     // Paris Case 02: the painting of the street, its clock above the door.
     's2_ep02_e1': '$_paris02/montmartre_street_painted.png',
+    // Paris Case 03: the hidden room, and the plaque from the machine
+    // (its message is in its words: the picture is the blank brass).
+    's2_ep03_e3': '$_paris03/service_room.png',
+    's2_ep03_e4': '$_paris03/brass_plaque.png',
   };
 
   /// Evidence pictures too wide for the round frame's close look: shown
@@ -441,6 +461,8 @@ abstract final class ArtAssets {
     's2_ep01_e2': 1774 / 887,
     's2_ep01_e4': 1774 / 887,
     's2_ep02_e1': 1536 / 1024,
+    's2_ep03_e3': 1536 / 1024,
+    's2_ep03_e4': 1536 / 1024,
   };
 
   /// What a case's Case Closed file shows under its title in place of the

@@ -148,7 +148,19 @@ enum Artwork {
   // Case 02's places, waiting for their pictures (the case is not in the
   // game until they are): a street in Montmartre, and the painter's studio.
   montmartreStreet,
-  paintersStudio;
+  paintersStudio,
+  // The back of Case 02's last canvas (its tower sketch beside ALWAYS
+  // HIGHER): where Case 03's story begins.
+  paintersMessage,
+  // Case 03's places at the Eiffel Tower: the tower at dusk, its entrance
+  // and notice board, the lift, the iron door at the Service Level, the
+  // hidden machine room, and the time-recording machine in it.
+  eiffelTower,
+  towerEntrance,
+  towerLift,
+  serviceDoor,
+  serviceRoom,
+  timeMachine;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

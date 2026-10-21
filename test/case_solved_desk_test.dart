@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
+import 'package:london_mystery/data/models/season.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/season_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
@@ -37,7 +38,9 @@ void main() {
   });
 
   for (final size in const [Size(360, 640), Size(390, 844)]) {
-    for (final (id, next) in const [('ep01', 'OPEN CASE 02'), ('ep05', 'OPEN CASE 06'), ('ep12', 'INVESTIGATION BOARD')]) {
+    // Case 12 closes the season: Paris is out (released), so GO TO PARIS
+    // leads its report.
+    for (final (id, next) in const [('ep01', 'OPEN CASE 02'), ('ep05', 'OPEN CASE 06'), ('ep12', 'GO TO PARIS')]) {
       final tag = '${id}_${size.width.toInt()}x${size.height.toInt()}';
       testWidgets('case closed $tag: on the desk, $next as the glass button, and on to it', (t) async {
         t.view.physicalSize = size * 3;
@@ -81,15 +84,18 @@ void main() {
         // The hook is told by the post-case scene before the report, not here.
         if (e.hook != null) expect(find.text(e.hook!), findsNothing, reason: 'no hook on the report');
         if (id == 'ep12') {
-          // The season's finale: on to Paris, still coming soon in a release
-          // build — the ticket says so, and the board leads.
+          // The season's finale, as shipped (Paris released): on to Paris,
+          // the one strong action; the board after it, quieter; the case
+          // file, its badges and report as before.
           expect(find.text('But the watch says PARIS.'), findsOneWidget);
           expect(find.text('London needs you again.'), findsNothing);
           expect(find.byKey(const ValueKey('finale-ticket')), findsOneWidget);
-          expect(find.text('COMING SOON'), findsOneWidget, reason: 'stamped on the ticket');
-          expect(find.byKey(const ValueKey('go-to-next-season')), findsNothing, reason: 'nothing to press for Paris yet');
+          expect(find.text('COMING SOON'), findsNothing, reason: 'the journey can be made');
+          expect(find.byKey(const ValueKey('go-to-next-season')), findsOneWidget);
+          final board = t.widget<GameButton>(find.ancestor(of: find.text('INVESTIGATION BOARD'), matching: find.byType(GameButton)));
+          expect(board.style, GameButtonStyle.outline, reason: 'the board, quieter');
           expect(find.text('View my detective report'), findsOneWidget, reason: 'the grown-ups\' report, quieter');
-          expect(find.byType(GameButton), findsOneWidget, reason: 'one boxed button: the board');
+          expect(find.byType(GameButton), findsNWidgets(2), reason: 'two boxes: Paris, then the board');
         } else {
           expect(find.text('VIEW MY DETECTIVE REPORT'), findsOneWidget, reason: 'the grown-ups\' report, as before');
           expect(find.textContaining('PARIS'), findsNothing);
@@ -100,7 +106,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 1500));
         final path = router.routerDelegate.currentConfiguration.uri.toString();
         if (id == 'ep12') {
-          expect(path, Routes.season, reason: 'to the completed season board');
+          expect(path, Routes.seasonOf(SeasonIds.paris), reason: "to Paris's cover");
         } else {
           expect(path, Routes.season, reason: 'to the investigation board, the next case current on it');
         }

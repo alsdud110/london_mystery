@@ -23,6 +23,7 @@ import '../../data/models/painter_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
 import '../../data/models/station_clocks.dart';
 import '../../data/models/story_picture.dart';
+import '../../data/models/tower_puzzles.dart';
 import '../../data/models/dialogue.dart';
 import '../../data/models/investigation.dart';
 import '../../data/mock/season1/season1_sounds.dart';
@@ -46,9 +47,11 @@ import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/clock_question.dart';
+import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
 import 'widgets/exhibit.dart';
 import 'widgets/investigation_search.dart';
+import 'widgets/lift_route.dart';
 import 'widgets/lens_inspect.dart';
 import 'widgets/scene_deduction.dart';
 import 'widgets/scene_decode.dart';
@@ -60,6 +63,7 @@ import 'widgets/reveal_layer.dart';
 import 'widgets/spot_differences.dart';
 import 'widgets/studio_match.dart';
 import 'widgets/tip_shop.dart';
+import 'widgets/tower_records.dart';
 import '../../data/models/detective_name.dart';
 
 /// The three steps of a mission. Each screen offers one main action.
@@ -126,6 +130,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// [GameProgress.examined]), what is open or joined on the page.
   final PicturePuzzleProgress _picture = PicturePuzzleProgress();
 
+  /// A mission played on Case 03's papers and lift (Paris): the record
+  /// shown, the lines and the stop picked (kept while the page is open;
+  /// what was read is saved: [GameProgress.examined]).
+  final TowerPuzzleProgress _tower = TowerPuzzleProgress();
+
   @override
   void initState() {
     super.initState();
@@ -171,6 +180,8 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
       ref
           .read(gameControllerProvider.notifier)
           .markMissionStarted(widget.missionId);
+      // A padlock's note, read on the letter step, stays read.
+      if (SeasonCatalog.dialLock(_mission) != null) _recordFound(_mission, noteId);
     }
     setState(() => _stage = stage);
   }
@@ -203,6 +214,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // The studio: back first closes the painting, the notes or the matching
     // page over it.
     final inStudio = _stage == MissionStage.puzzle && SeasonCatalog.studio(_mission) != null;
+    // Case 03's records and lift are read on the puzzle page itself: no
+    // letter step (back is the place).
+    final onPapers =
+        _stage == MissionStage.puzzle && (SeasonCatalog.records(_mission) != null || SeasonCatalog.lift(_mission) != null);
     if (inStudio && _picture.open != null) {
       setState(() => _picture.open = null);
       return;
@@ -242,6 +257,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               !inspecting &&
               !comparing &&
               !inStudio &&
+              !onPapers &&
               !reading &&
               !examining
           ? MissionStage.letter
@@ -361,6 +377,70 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         onReread: () => _rereadLetter(m),
         hintsShown: progress.hintsFor(m.id),
         onHint: () => _showHint(m),
+      );
+
+  /// The things of a mission's scene looked at so far (saved), by id.
+  Set<String> _looked(Mission m, Iterable<String> ids, GameProgress progress) => {
+        for (final id in ids)
+          if (progress.hasExamined(GameProgress.examinedKey(m.id, id))) id,
+      };
+
+  /// Two records compared line by line (the lines picked answer the
+  /// mission's puzzle).
+  Widget _recordsStage(Mission m, RecordsScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: TowerRecords(
+          scene: scene,
+          mission: m,
+          progress: _tower,
+          read: _looked(m, [for (final d in scene.docs) d.id], progress),
+          onRead: (id) => _recordFound(m, id),
+          onChanged: () => setState(() {}),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The lift's route plate and log read (the stop chosen answers the
+  /// mission's puzzle).
+  Widget _liftStage(Mission m, LiftScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: LiftRoute(
+          scene: scene,
+          mission: m,
+          progress: _tower,
+          read: _looked(m, const [LiftScene.plateId, LiftScene.logId], progress),
+          onRead: (id) => _recordFound(m, id),
+          onChanged: () => setState(() {}),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// A padlock's dials set (the symbols set answer the mission's puzzle);
+  /// where they are left is saved.
+  Widget _dialStage(Mission m, DialLockScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: DialLock(
+          scene: scene,
+          mission: m,
+          dials: DialState.decode(progress.puzzleStateOf(m.id), scene),
+          onSet: (dials) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, DialState.encode(dials)),
+          onSubmit: (a) => _submit(m, a),
+        ),
       );
 
   /// The thing handed over with the letter, looked at closer (kept as seen).
@@ -578,6 +658,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final studio = SeasonCatalog.studio(m);
     final layer = SeasonCatalog.layer(m);
     final exhibit = SeasonCatalog.exhibit(m);
+    final records = SeasonCatalog.records(m);
+    final lift = SeasonCatalog.lift(m);
+    final dialLock = SeasonCatalog.dialLock(m);
 
     final Widget body = solved
         ? _SolvedStage(key: const ValueKey('solved'), mission: m)
@@ -607,6 +690,8 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                   talk != null ||
                           hall != null ||
                           studio != null ||
+                          records != null ||
+                          lift != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -655,6 +740,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when compare != null => _compareStage(m, compare, progress.hintsFor(m.id)),
             MissionStage.puzzle when studio != null => _studioStage(m, studio, progress.hintsFor(m.id)),
             MissionStage.puzzle when layer != null => _layerStage(m, layer, progress),
+            MissionStage.puzzle when records != null => _recordsStage(m, records, progress),
+            MissionStage.puzzle when lift != null => _liftStage(m, lift, progress),
+            MissionStage.puzzle when dialLock != null => _dialStage(m, dialLock, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,

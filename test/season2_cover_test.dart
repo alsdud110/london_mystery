@@ -91,8 +91,8 @@ void main() {
     });
 
     for (final size in const [Size(360, 640), Size(390, 844), Size(430, 932)]) {
-      testWidgets('${size.width.toInt()}: unsealed, coming soon: the Paris cover on its file, still shut', (t) async {
-        await pumpApp(t, size: size, solved: 12);
+      testWidgets('${size.width.toInt()}: unsealed, not yet released: the Paris cover on its file, still shut', (t) async {
+        await pumpApp(t, size: size, solved: 12, extra: [parisNotYetReleased]);
         appRef.read(routerProvider).go(Routes.seasons);
         await wait(t, const Duration(milliseconds: 1400));
         await reveal(t, parisFile());

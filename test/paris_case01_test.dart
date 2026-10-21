@@ -67,7 +67,7 @@ void main() {
 
   group('the case', () {
     test('Case 01 of Paris: its id, season, place and four puzzles', () {
-      expect([for (final e in all.where((e) => e.seasonId == SeasonIds.paris)) e.id], ['s2_ep01', 's2_ep02']);
+      expect([for (final e in all.where((e) => e.seasonId == SeasonIds.paris)) e.id], ['s2_ep01', 's2_ep02', 's2_ep03']);
       expect(paris.number, 1);
       expect(paris.title, 'The Ticking Watch');
       expect(paris.introScene, Artwork.gareDuNord);
@@ -184,7 +184,7 @@ void main() {
       // Case 01's own (Case 02's are checked in paris_case02_test.dart).
       expect(season2Learning.keys.where((id) => id.startsWith('s2_ep01_')).toSet(), {for (final m in paris.allMissions) m.id});
       expect(season2LanguageTopics.keys.first, 's2_ep01');
-      expect(season2LanguageTopics.keys.toSet(), {'s2_ep01', 's2_ep02'});
+      expect(season2LanguageTopics.keys.toSet(), {'s2_ep01', 's2_ep02', 's2_ep03'});
       for (final m in paris.allMissions) {
         final l = SeasonCatalog.learning(m)!;
         expect(l.isHonest, isTrue, reason: m.id);
@@ -395,10 +395,13 @@ void main() {
   });
 
   group('the release lock', () {
+    /// Paris as it was before its release (2026-10-21): the lock is tested
+    /// on it. The game ships it released.
+    final notYetReleased = seasonReleasedProvider.overrideWithValue((id) => id != SeasonIds.paris);
     late ProviderContainer c;
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
-      c = ProviderContainer(overrides: await testOverridesFor(await SharedPreferences.getInstance()));
+      c = ProviderContainer(overrides: [...await testOverridesFor(await SharedPreferences.getInstance()), notYetReleased]);
       c.read(gameControllerProvider.notifier).createDetective('Kim', DetectiveAvatar.boy);
       c.read(progressRepositoryProvider).saveSeason(SeasonProgress(activeEpisodeId: 'ep12', solvedEpisodeIds: [for (final e in s1) e.id]));
       c.invalidate(seasonProvider);
@@ -407,7 +410,32 @@ void main() {
 
     SeasonAvailability parisNow() => c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
 
-    test('for players, Paris is coming soon even with Season 1 finished', () {
+    test('as shipped, Paris is released: Season 1 finished opens it for players, no preview needed', () async {
+      final shipped = ProviderContainer(overrides: await testOverridesFor(await SharedPreferences.getInstance()));
+      addTearDown(shipped.dispose);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.released, isTrue);
+      expect(shipped.read(seasonPreviewProvider), isFalse);
+      final paris = shipped.read(seasonAvailabilityProvider(SeasonIds.paris))!;
+      expect(paris.released, isTrue);
+      expect(paris.status, SeasonStatus.open);
+      expect(shipped.read(gameControllerProvider.notifier).openSeason(SeasonIds.paris), isTrue);
+      expect(shipped.read(currentEpisodeProvider).id, 's2_ep01');
+      expect(shipped.read(gameControllerProvider.notifier).openEpisode('s2_ep02'), isFalse, reason: 'still case by case');
+    });
+
+    test('as shipped, Paris stays locked until Season 1 is finished', () async {
+      SharedPreferences.setMockInitialValues({});
+      final fresh = ProviderContainer(overrides: await testOverridesFor(await SharedPreferences.getInstance()));
+      addTearDown(fresh.dispose);
+      fresh.read(gameControllerProvider.notifier).createDetective('Lee', DetectiveAvatar.girl);
+      final paris = fresh.read(seasonAvailabilityProvider(SeasonIds.paris))!;
+      expect(paris.released, isTrue);
+      expect(paris.isUnlocked, isFalse);
+      expect(fresh.read(gameControllerProvider.notifier).openSeason(SeasonIds.paris), isFalse);
+    });
+
+    // The lock itself, on a Paris not yet out (as before its release).
+    test('for players, an unreleased Paris is coming soon even with Season 1 finished', () {
       expect(parisNow().status, SeasonStatus.comingSoon);
       expect(c.read(gameControllerProvider.notifier).openSeason(SeasonIds.paris), isFalse);
       expect(c.read(gameControllerProvider.notifier).openEpisode('s2_ep01'), isFalse);
@@ -417,6 +445,7 @@ void main() {
     test('a release build has no season preview to switch on', () async {
       final release = ProviderContainer(overrides: [
         ...await testOverridesFor(await SharedPreferences.getInstance()),
+        notYetReleased,
         operatorToolsAvailableProvider.overrideWithValue(false),
       ]);
       addTearDown(release.dispose);
@@ -431,7 +460,7 @@ void main() {
       expect(c.read(gameControllerProvider.notifier).openSeason(SeasonIds.paris), isTrue);
       expect(c.read(currentEpisodeProvider).id, 's2_ep01');
       // A restart forgets the preview: Season 1 again, its saves as they were.
-      final again = ProviderContainer(overrides: await testOverridesFor(await SharedPreferences.getInstance()));
+      final again = ProviderContainer(overrides: [...await testOverridesFor(await SharedPreferences.getInstance()), notYetReleased]);
       addTearDown(again.dispose);
       expect(again.read(seasonPreviewProvider), isFalse);
       expect(again.read(selectedSeasonIdProvider), SeasonIds.london);

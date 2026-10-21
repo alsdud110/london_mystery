@@ -23,6 +23,7 @@ class GameProgress {
     this.behavior = BehaviorLog.empty,
     this.examined = const [],
     this.revealed = const {},
+    this.puzzleStates = const {},
     this.startedAt,
     this.completedAt,
     this.playMillis,
@@ -95,6 +96,15 @@ class GameProgress {
 
   /// How far mission [missionId]'s top layer is slid away (0 when never).
   double revealedOf(String missionId) => revealed[missionId] ?? 0;
+
+  /// How a puzzle was left on its page, by mission id, so it is as it was
+  /// after a restart (Paris Case 03: the padlock's dials, the evidence
+  /// linked on the final's board). The puzzle reads its own string; an
+  /// unknown one starts the puzzle afresh. Never XP.
+  final Map<String, String> puzzleStates;
+
+  /// How mission [missionId]'s puzzle was left, or null when never touched.
+  String? puzzleStateOf(String missionId) => puzzleStates[missionId];
 
   final DateTime? startedAt;
   final DateTime? completedAt;
@@ -178,6 +188,7 @@ class GameProgress {
     BehaviorLog? behavior,
     List<String>? examined,
     Map<String, double>? revealed,
+    Map<String, String>? puzzleStates,
     DateTime? startedAt,
     DateTime? completedAt,
     int? playMillis,
@@ -199,6 +210,7 @@ class GameProgress {
       behavior: behavior ?? this.behavior,
       examined: examined ?? this.examined,
       revealed: revealed ?? this.revealed,
+      puzzleStates: puzzleStates ?? this.puzzleStates,
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
       playMillis: playMillis ?? this.playMillis,
@@ -269,6 +281,12 @@ class GameProgress {
                   e.key.toString(): (e.value as num).toDouble().clamp(0.0, 1.0),
             }
           : const {},
+      puzzleStates: json['puzzleStates'] is Map
+          ? {
+              for (final e in (json['puzzleStates'] as Map).entries)
+                if (e.value is String) e.key.toString(): e.value as String,
+            }
+          : const {},
       startedAt: startedAt,
       completedAt: completedAt,
       playMillis: playMillis,
@@ -293,6 +311,7 @@ class GameProgress {
         if (behavior != null) 'behavior': behavior!.toJson(),
         if (examined.isNotEmpty) 'examined': examined,
         if (revealed.isNotEmpty) 'revealed': revealed,
+        if (puzzleStates.isNotEmpty) 'puzzleStates': puzzleStates,
         'startedAt': startedAt?.toIso8601String(),
         'completedAt': completedAt?.toIso8601String(),
         if (playMillis != null) 'playMillis': playMillis,

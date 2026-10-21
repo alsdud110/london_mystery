@@ -1,5 +1,6 @@
 import 'episode01_mock.dart';
 import 'episode02_mock.dart';
+import 'episode03_mock.dart';
 
 /// Season 2 as a whole: who the season is. Its cases, casebook lines and
 /// board figures come with its content; until then the season has no cases,
@@ -23,11 +24,12 @@ const Map<String, dynamic> season2InfoJson = {
 const Map<String, Map<String, dynamic>> season2Json = {
   's2_ep01': season2Episode01Json,
   's2_ep02': season2Episode02Json,
+  's2_ep03': season2Episode03Json,
 };
 
 /// Season 2's cases written but waiting for their pictures, in case order:
 /// never in the game (no case file, board, map or save shows them) until
-/// their pictures are, then moved into [season2Json]. None now: Case 02's
+/// their pictures are, then moved into [season2Json]. None now: Case 03's
 /// pictures are in (2026-10-21).
 const Map<String, Map<String, dynamic>> season2AwaitingArtJson = {};
 

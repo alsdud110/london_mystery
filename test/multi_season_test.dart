@@ -54,6 +54,7 @@ final withParis = MockEpisodeRepository.bundled();
 /// these tests check the rules a released season follows.
 final asReleased = seasonReleasedProvider.overrideWithValue((_) => true);
 
+
 /// The game's maps, Paris's included (a season is entered only with its map).
 const withParisMap = SeasonMap.bySeason;
 
@@ -88,9 +89,10 @@ void main() {
   /// [episodes] (a stand-in Paris case), Paris is played as released and has
   /// its map unless [maps] says otherwise. Without, the game as it ships:
   /// Paris not released.
-  Future<ProviderContainer> open({List<Episode>? episodes, Map<String, SeasonMap>? maps}) async => ProviderContainer(
+  Future<ProviderContainer> open({List<Episode>? episodes, Map<String, SeasonMap>? maps, bool parisUnreleased = false}) async => ProviderContainer(
     overrides: [
       ...await testOverridesFor(prefs),
+      if (parisUnreleased) parisNotYetReleased,
       if (episodes != null) ...[allEpisodesProvider.overrideWithValue(episodes), asReleased],
       if (maps != null || episodes != null) seasonMapsProvider.overrideWithValue(maps ?? withParisMap),
     ],
@@ -117,7 +119,7 @@ void main() {
   tearDown(() => container.dispose());
 
   group('season ids and content', () {
-    test('Season 1 keeps its cases, ids and content; Season 2 has its Cases 01 and 02, not released', () {
+    test('Season 1 keeps its cases, ids and content; Season 2 has its Cases 01 to 03, released', () {
       final seasons = container.read(seasonsProvider);
       expect([for (final s in seasons) s.id], [SeasonIds.london, SeasonIds.paris]);
       expect(seasons.first.title, 'Shadows over London');
@@ -131,8 +133,9 @@ void main() {
       expect(container.read(seasonInfoProvider).id, SeasonIds.london);
       expect([for (final e in container.read(episodeCatalogProvider)) e.id], season1Ids);
       expect(container.read(episodeCatalogProvider).every((e) => e.seasonId == SeasonIds.london), isTrue);
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02']);
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.released, isFalse);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03']);
+      // Paris is out for players (2026-10-21): it opens by the season rule.
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.released, isTrue);
       expect(SeasonCatalog.byId(SeasonIds.london)!.released, isTrue);
     });
 
@@ -147,8 +150,8 @@ void main() {
     });
 
     test('every season orders its own cases from 01, season by season', () {
-      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(3), ...MockEpisodeRepository.bundled()]);
-      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02', 's2_ep03']);
+      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(4), ...MockEpisodeRepository.bundled()]);
+      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02', 's2_ep03', 's2_ep04']);
     });
 
     test('mission ids are never shared between seasons, so no reward is paid twice', () {
@@ -266,7 +269,7 @@ void main() {
       expect(current().id, 's2_ep01', reason: 'Season 2 starts at its own Case 01');
       expect(state().completedMissionIds, isEmpty);
       expect(state().detectiveName, 'Kim', reason: 'the detective is the same');
-      expect([for (final e in container.read(episodeCatalogProvider)) e.id], ['s2_ep01', 's2_ep02']);
+      expect([for (final e in container.read(episodeCatalogProvider)) e.id], ['s2_ep01', 's2_ep02', 's2_ep03']);
       expect(ctrl().openEpisode('s2_ep02'), isFalse, reason: 'Case 02 of Paris waits for its Case 01');
       expect(ctrl().openEpisode('ep05'), isFalse, reason: 'a case of another season never opens here');
 
@@ -412,7 +415,7 @@ void main() {
       ctrl().createDetective('Kim', DetectiveAvatar.boy);
       saveSeason1(season1Finished);
       container.dispose();
-      container = await open(); // the game as it ships: Paris's Case 01 and map, not released
+      container = await open(parisUnreleased: true); // Paris's cases and map in, not released yet
       expect(paris().hasCases, isTrue);
       expect(paris().hasMap, isTrue);
       expect(paris().released, isFalse);

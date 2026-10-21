@@ -140,8 +140,8 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('Season 1 solved: SOLVED, REVIEW THE FILE; Season 2 named and coming soon', (t) async {
-      await pumpApp(t, seasonSaves(12));
+    testWidgets('Season 1 solved, Paris not yet released: SOLVED, REVIEW THE FILE; Season 2 named and coming soon', (t) async {
+      await pumpApp(t, seasonSaves(12), extra: [parisNotYetReleased]);
       await openArchive(t);
       expect(find.text('12 / 12'), findsOneWidget);
       expect(find.text('SOLVED'), findsOneWidget);
@@ -186,8 +186,8 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('coming soon: still being prepared, Season 1 stays the one played', (t) async {
-      await pumpApp(t, seasonSaves(12));
+    testWidgets('coming soon (Paris not yet released): still being prepared, Season 1 stays the one played', (t) async {
+      await pumpApp(t, seasonSaves(12), extra: [parisNotYetReleased]);
       // Read before the snapshot: the first read of the wallet makes it (a
       // save from before coins), which is not the archives' doing.
       final coins = appRef.read(walletProvider).balance;
@@ -276,8 +276,8 @@ void main() {
 
   group('the ways in', () {
     for (final size in const [Size(360, 640), Size(390, 844)]) {
-      testWidgets('${size.width.toInt()}x${size.height.toInt()}: the completed board, Season 2 not out: coming soon, nothing to begin', (t) async {
-        await pumpApp(t, seasonSaves(12), size: size);
+      testWidgets('${size.width.toInt()}x${size.height.toInt()}: the completed board, Season 2 not yet released: coming soon, nothing to begin', (t) async {
+        await pumpApp(t, seasonSaves(12), size: size, extra: [parisNotYetReleased]);
         appRef.read(routerProvider).go(Routes.season);
         await wait(t, const Duration(milliseconds: 2400));
         expect(find.text('SEASON TWO · COMING SOON'), findsOneWidget);

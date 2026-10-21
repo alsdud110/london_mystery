@@ -136,6 +136,7 @@ flutter:
     # brass box shut and open, and the Montmartre painting.
     - assets/seasons/season_02_paris/cases/case_01/
     - assets/seasons/season_02_paris/cases/case_02/
+    - assets/seasons/season_02_paris/cases/case_03/
     # The title screen (the detective's office).
     - assets/shared/title/
     # Season hero pictures (the opening of Season 1).

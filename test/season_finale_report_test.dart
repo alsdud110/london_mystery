@@ -74,8 +74,8 @@ void main() {
   for (final size in const [Size(360, 640), Size(390, 844)]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}';
 
-    testWidgets('$tag release build, Paris not out: the ticket says COMING SOON, the board leads', (t) async {
-      await pumpApp(t, size: size);
+    testWidgets('$tag release build, Paris not yet released: the ticket says COMING SOON, the board leads', (t) async {
+      await pumpApp(t, size: size, extra: [parisNotYetReleased]);
       await openReport(t);
       expect(t.takeException(), isNull);
       expect(find.text('CASE CLOSED'), findsOneWidget, reason: 'the case file, as before');
@@ -134,6 +134,53 @@ void main() {
       await wait(t, const Duration(milliseconds: 1400));
       expect(path(), Routes.parisPrologue);
       expect(find.text('THE LAST CLUE'), findsOneWidget);
+      await wait(t, const Duration(seconds: 3));
+    });
+  }
+
+  for (final size in const [Size(360, 640), Size(390, 844), Size(430, 932)]) {
+    final tag = '${size.width.toInt()}x${size.height.toInt()}';
+    testWidgets('$tag as shipped (Paris released, a release build): report → GO TO PARIS → cover → opening → Case 01', (t) async {
+      await pumpApp(t, size: size, extra: [operatorToolsAvailableProvider.overrideWithValue(false)]);
+      expect(appRef.read(seasonPreviewProvider), isFalse, reason: 'no preview: the release itself');
+      final prefs = appRef.read(sharedPreferencesProvider);
+      final season1 = prefs.getString(savedKey(prefs, AppConstants.seasonStorageKey));
+      await openReport(t);
+      expect(t.takeException(), isNull);
+      // The completion report as before: the case file, stamped, its
+      // badge and XP.
+      expect(find.text('CASE CLOSED'), findsOneWidget);
+      expect(find.text('London is safe.'), findsOneWidget);
+      expect(find.text('But the watch says PARIS.'), findsOneWidget);
+      expect(find.text('COMING SOON'), findsNothing);
+      final go = find.byKey(const ValueKey('go-to-next-season'));
+      await reveal(t, go);
+      expect(find.text('GO TO PARIS'), findsOneWidget);
+      expect(t.widget<GameButton>(go).style, GameButtonStyle.glass, reason: 'the one strong action');
+      expect(buttonOf(t, find.text('INVESTIGATION BOARD')).style, GameButtonStyle.outline);
+      expect(find.text('View my detective report'), findsOneWidget);
+
+      await t.tap(go);
+      await wait(t, const Duration(milliseconds: 1600));
+      expect(appRef.read(selectedSeasonIdProvider), SeasonIds.paris);
+      expect(path(), Routes.seasonOf(SeasonIds.paris), reason: "Paris's cover");
+      expect(prefs.getString(savedKey(prefs, AppConstants.seasonStorageKey)), season1, reason: 'Season 1 kept');
+      await wait(t, const Duration(milliseconds: 1400)); // the cover comes in
+      expect(t.takeException(), isNull);
+      final begin = find.text('BEGIN SEASON TWO').evaluate().isNotEmpty ? 'BEGIN SEASON TWO' : 'BEGIN INVESTIGATION';
+      await tapText(t, begin, after: const Duration(milliseconds: 1400));
+      expect(path(), Routes.parisPrologue, reason: "Paris's opening");
+      expect(find.text('THE LAST CLUE'), findsOneWidget);
+      await t.tap(find.text('SKIP ›'));
+      await wait(t, const Duration(milliseconds: 1600));
+      await t.tap(find.text('ACCEPT THE CASE'));
+      await wait(t, const Duration(milliseconds: 2000));
+      expect(find.text('ASSIGNED'), findsOneWidget, reason: 'Case 01 can be played');
+      expect(find.text('COMING SOON'), findsNothing);
+      await tapText(t, 'START CASE 01', after: const Duration(milliseconds: 1600));
+      expect(path(), Routes.caseFile('s2_ep01'));
+      expect(appRef.read(currentEpisodeProvider).id, 's2_ep01');
+      expect(t.takeException(), isNull);
       await wait(t, const Duration(seconds: 3));
     });
   }

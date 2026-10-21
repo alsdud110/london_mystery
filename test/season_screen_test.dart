@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
@@ -205,14 +206,20 @@ void main() {
   late WidgetRef appRef;
   String path() => appRef.read(routerProvider).routerDelegate.currentConfiguration.uri.toString();
 
-  Future<void> pumpApp(WidgetTester t, Map<String, Object> prefs, {Size size = const Size(360, 640), double textScale = 1}) async {
+  Future<void> pumpApp(
+    WidgetTester t,
+    Map<String, Object> prefs, {
+    Size size = const Size(360, 640),
+    double textScale = 1,
+    List<Override> extra = const [],
+  }) async {
     t.view.physicalSize = size * 3;
     t.view.devicePixelRatio = 3;
     t.platformDispatcher.textScaleFactorTestValue = textScale;
     addTearDown(t.view.reset);
     addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
     await t.pumpWidget(ProviderScope(
-      overrides: await testOverrides(prefs: prefs),
+      overrides: [...await testOverrides(prefs: prefs), ...extra],
       child: RepaintBoundary(
         key: const ValueKey('shot'),
         child: Consumer(builder: (context, ref, _) {
@@ -500,8 +507,8 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('season complete at $tag: 12 / 12, COMPLETED, the closed board', (t) async {
-      await pumpApp(t, seasonSaves(12), size: size);
+    testWidgets('season complete at $tag, Paris not yet released: 12 / 12, COMPLETED, the closed board', (t) async {
+      await pumpApp(t, seasonSaves(12), size: size, extra: [parisNotYetReleased]);
       await openSeason(t, size: size);
       expect(t.takeException(), isNull);
       expect(find.text('12 / 12'), findsOneWidget);

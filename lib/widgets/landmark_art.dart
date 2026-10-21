@@ -316,7 +316,14 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.oldClockFace ||
           Artwork.montmartrePainting ||
           Artwork.montmartreStreet ||
-          Artwork.paintersStudio:
+          Artwork.paintersStudio ||
+          Artwork.paintersMessage ||
+          Artwork.eiffelTower ||
+          Artwork.towerEntrance ||
+          Artwork.towerLift ||
+          Artwork.serviceDoor ||
+          Artwork.serviceRoom ||
+          Artwork.timeMachine:
         break;
     }
     canvas.restore();

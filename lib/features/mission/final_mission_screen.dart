@@ -16,6 +16,7 @@ import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/painter_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
+import '../../data/models/tower_puzzles.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/coin_balance.dart';
 import '../../widgets/evidence_card.dart';
@@ -35,6 +36,7 @@ import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/canvas_choice.dart';
+import 'widgets/evidence_board.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
 import 'widgets/lock_box.dart';
 import 'widgets/question_widgets.dart';
@@ -73,6 +75,66 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
 
   /// Canvases to look at and turn round (Paris Case 02), or null.
   CanvasScene? get _canvases => SeasonCatalog.canvasChoice(_mission);
+
+  /// Evidence linked to questions, the time-recording machine on the stage
+  /// (Paris Case 03), or null.
+  EvidenceBoardScene? get _board => SeasonCatalog.evidenceBoard(_mission);
+
+  /// The board as it is (saved as it changes: `GameProgress.puzzleStates`),
+  /// and the question being linked (kept while the page is open).
+  Map<String, Set<String>> _links = {};
+  String? _conclusion;
+  String? _question;
+
+  /// Where the plaque in the machine counts as read.
+  String get _plaqueKey => GameProgress.examinedKey(_mission.id, EvidenceBoardScene.plaqueId);
+
+  void _saveBoard() => ref
+      .read(gameControllerProvider.notifier)
+      .recordPuzzleState(_mission.id, BoardState.encode(_links, _conclusion, _board!));
+
+  void _pickQuestion(String id) => setState(() => _question = _question == id ? null : id);
+
+  void _link(String evidence) {
+    final q = _question;
+    if (q == null) return;
+    setState(() {
+      final set = {...?_links[q]};
+      set.contains(evidence) ? set.remove(evidence) : set.add(evidence);
+      _links = {..._links, q: set};
+    });
+    _saveBoard();
+  }
+
+  void _conclude(String id) {
+    setState(() => _conclusion = id);
+    _saveBoard();
+  }
+
+  Future<void> _solveBoard() async {
+    if (_checking) return;
+    setState(() => _checking = true);
+    try {
+      await _submit(_board!.answerOf(_links, _conclusion));
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
+  Future<void> _readPlaque() async {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
+    ref.read(gameControllerProvider.notifier).recordExamined(_plaqueKey);
+    await showBrassPlaque(context, scene: _board!, evidence: _mission.evidence);
+    if (mounted) setState(() {});
+  }
+
+  /// The case's evidence on the board, by its board id.
+  Map<String, Evidence> _boardEvidence(EvidenceBoardScene board) {
+    final all = {for (final e in ref.read(currentEpisodeProvider).allEvidence) e.id: e};
+    return {
+      for (final e in board.evidence) e.id: ?all[e.evidenceId],
+    };
+  }
 
   /// The canvas looked at, and the canvases looked at (saved, so they stay
   /// looked at after a restart).
@@ -121,6 +183,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final length = _mission.codeLength ?? _mission.answer.length;
     _digits = List.filled(length, 0);
     final progress = ref.read(gameControllerProvider);
+    if (_board case final board?) {
+      final (links, conclusion) = BoardState.decode(progress.puzzleStateOf(_mission.id), board);
+      _links = links;
+      _conclusion = conclusion;
+    }
     final canvases = _canvases;
     if (canvases != null) {
       for (final c in canvases.canvases) {
@@ -159,9 +226,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     // moment the code is right (never a blank frame as the lid swings).
     final box = _box;
     final canvases = _canvases;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null)) return;
+    final board = _board;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null)) return;
     _precached = true;
-    final files = canvases != null
+    final files = board != null
+        ? [board.shut, board.open, board.plaque]
+        : canvases != null
         ? [for (final c in canvases.canvases) c.file, canvases.back]
         : box == null
         ? [ArtAssets.royalBox.closed, ArtAssets.royalBox.open]
@@ -441,6 +511,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final solved = progress.isCaseSolved;
     final box = _box;
     final canvases = _canvases;
+    final board = _board;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -501,6 +572,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : board != null
+                            ? (stage.maxWidth / board.pixels.aspect)
+                                .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : canvases != null
                             ? (stage.maxWidth / canvases.pixels.aspect)
                                 .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
@@ -508,7 +582,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: canvases != null
+                          child: board != null
+                              // The machine: its hatch opens with the solve.
+                              ? MachineStage(key: const ValueKey('machine-stage'), scene: board, open: _open)
+                              : canvases != null
                               ? CanvasStage(
                                   key: const ValueKey('canvas-stage'),
                                   scene: canvases,
@@ -667,6 +744,36 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           onTurn: _turnCanvas,
         ),
       ),
+    ] else if (_board case final board?) ...[
+      // The questions, the evidence and the conclusion, on one sheet.
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: PaperSheet(
+          key: const ValueKey('evidence-board'),
+          padding: const EdgeInsets.all(AppSpace.lg),
+          child: EvidenceBoard(
+            scene: board,
+            mission: m,
+            evidence: _boardEvidence(board),
+            links: _links,
+            conclusion: _conclusion,
+            question: _question,
+            checking: _checking,
+            onQuestion: _pickQuestion,
+            onLink: _link,
+            onConclusion: _conclude,
+            onSubmit: _solveBoard,
+          ),
+        ),
+      ),
+      Center(
+        child: InkTextButton(
+          label: 'Reread the time cards',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
+        ),
+      ),
     ] else if (_box != null && m.type == MissionType.letterLock)
       // The box's lock: what is set in it shows on the box above.
       ShakeOnChange(
@@ -748,7 +855,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         ],
         // A box with something in it: looked at first (its back holds the
         // case's last words), then the story goes on.
-        if (_canvases != null && !ref.watch(gameControllerProvider).hasExamined(_backKey))
+        if (_board != null && !ref.watch(gameControllerProvider).hasExamined(_plaqueKey))
+          GameButton(
+            key: const ValueKey('final-read-plaque'),
+            label: 'LOOK INSIDE',
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _readPlaque,
+          )
+        else if (_canvases != null && !ref.watch(gameControllerProvider).hasExamined(_backKey))
           GameButton(
             key: const ValueKey('final-read-back'),
             label: 'READ THE BACK',
