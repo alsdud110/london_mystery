@@ -18,6 +18,7 @@ import '../../data/models/painter_puzzles.dart';
 import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
 import '../../data/models/tower_puzzles.dart';
+import '../../data/models/workshop_puzzles.dart';
 import '../../widgets/clue_card.dart';
 import '../../widgets/coin_balance.dart';
 import '../../widgets/evidence_card.dart';
@@ -40,6 +41,7 @@ import 'widgets/canvas_choice.dart';
 import 'widgets/evidence_board.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
 import 'widgets/lock_box.dart';
+import 'widgets/post_trail.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/street_book.dart';
 import 'widgets/tip_shop.dart';
@@ -98,6 +100,49 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   Map<String, Set<String>> _crossed = {};
   String? _address;
   Set<String> _picked = {};
+
+  /// The post's slips under the workshop door (Paris Case 05), or null.
+  PostTrailScene? get _trail => SeasonCatalog.postTrail(_mission);
+
+  /// The slips set on the trail (saved as they change:
+  /// `GameProgress.puzzleStates`), and the slip picked (kept while the page
+  /// is open).
+  Map<String, String> _placed = {};
+  String? _slipPicked;
+
+  void _pickSlip(String id) {
+    ref.read(gameControllerProvider.notifier).recordExamined(GameProgress.examinedKey(_mission.id, PostTrailScene.slipsId));
+    setState(() => _slipPicked = _slipPicked == id ? null : id);
+  }
+
+  /// A slot tapped: the slip picked is set there (off any other slot); with
+  /// none picked, the slip there is taken off.
+  void _setSlot(String slot) {
+    final trail = _trail!;
+    final id = _slipPicked;
+    setState(() {
+      final placed = {..._placed};
+      if (id == null) {
+        placed.remove(slot);
+      } else {
+        placed.removeWhere((_, v) => v == id);
+        placed[slot] = id;
+        _slipPicked = null;
+      }
+      _placed = placed;
+    });
+    ref.read(gameControllerProvider.notifier).recordPuzzleState(_mission.id, TrailState.encode(_placed, trail));
+  }
+
+  Future<void> _followLetter() async {
+    if (_checking) return;
+    setState(() => _checking = true);
+    try {
+      await _submit(_trail!.answerOf(_placed));
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
 
   /// Where the gate's scrap counts as taken and read.
   String get _gateKey => GameProgress.examinedKey(_mission.id, StreetBookScene.gateId);
@@ -272,6 +317,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     if (_book case final book?) {
       _crossed = CrossOutState.decode(progress.puzzleStateOf(_mission.id), book);
     }
+    if (_trail case final trail?) {
+      _placed = TrailState.decode(progress.puzzleStateOf(_mission.id), trail);
+    }
     final canvases = _canvases;
     if (canvases != null) {
       for (final c in canvases.canvases) {
@@ -312,9 +360,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final canvases = _canvases;
     final board = _board;
     final book = _book;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null)) return;
+    final trail = _trail;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null)) return;
     _precached = true;
-    final files = book != null
+    final files = trail != null
+        ? [trail.stage, trail.slip, trail.receipt.file]
+        : book != null
         ? [book.hut, book.book, book.gate, book.label.file, book.label.back]
         : board != null
         ? [board.shut, board.open, board.plaque]
@@ -600,6 +651,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final canvases = _canvases;
     final board = _board;
     final book = _book;
+    final trail = _trail;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -660,6 +712,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : trail != null
+                            ? (stage.maxWidth / (trail.stageView.width * trail.stagePixels.aspect / trail.stageView.height))
+                                .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : book != null
                             ? (stage.maxWidth / book.hutPixels.aspect)
                                 .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
@@ -673,7 +728,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: book != null
+                          child: trail != null
+                              // The workshop door; the slip that says where
+                              // the letter stopped, with the solve.
+                              ? TrailStage(key: const ValueKey('trail-stage'), scene: trail, open: _open)
+                              : book != null
                               // The keeper's hut; the gate with the solve.
                               ? GateStage(key: const ValueKey('gate-stage'), scene: book, open: _open)
                               : board != null
@@ -893,6 +952,33 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       Center(
         child: InkTextButton(
           label: 'Reread Letter',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
+        ),
+      ),
+    ] else if (_trail case final trail?) ...[
+      // The receipt, the slips, and the trail they are set on.
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: PaperSheet(
+          key: const ValueKey('post-trail-sheet'),
+          padding: const EdgeInsets.all(AppSpace.md),
+          child: PostTrailPuzzle(
+            scene: trail,
+            mission: m,
+            placed: _placed,
+            picked: _slipPicked,
+            checking: _checking,
+            onPick: _pickSlip,
+            onSlot: _setSlot,
+            onSubmit: _followLetter,
+          ),
+        ),
+      ),
+      Center(
+        child: InkTextButton(
+          label: 'Reread the receipt',
           glyph: InkGlyph.letter,
           color: AppColors.goldLight,
           onPressed: _rereadLetter,

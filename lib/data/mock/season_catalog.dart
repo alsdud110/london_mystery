@@ -16,6 +16,7 @@ import '../models/season.dart';
 import '../models/station_clocks.dart';
 import '../models/story_picture.dart';
 import '../models/tower_puzzles.dart';
+import '../models/workshop_puzzles.dart';
 import 'season1/episode01_mock.dart';
 import 'season1/season1_clocks.dart';
 import 'season1/season1_decodes.dart';
@@ -29,6 +30,7 @@ import 'season1/season1_learning.dart';
 import 'season1/season1_mock.dart';
 import 'season2/season2_case03_scenes.dart';
 import 'season2/season2_case04_scenes.dart';
+import 'season2/season2_case05_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -66,6 +68,10 @@ class SeasonContent {
     this.keeperHuts = const {},
     this.quayBoxes = const {},
     this.streetBooks = const {},
+    this.markCompares = const {},
+    this.clockWalls = const {},
+    this.blotters = const {},
+    this.postTrails = const {},
     this.introPlaques = const {},
     this.evidenceArt = const {},
     this.exhibits = const {},
@@ -132,6 +138,14 @@ class SeasonContent {
   final Map<String, KeeperHutScene> keeperHuts;
   final Map<String, BoxesScene> quayBoxes;
   final Map<String, StreetBookScene> streetBooks;
+
+  /// Missions played on Case 05's pictures (Season 2): the workbench's
+  /// stamps under the tracing sheet, the wall of clocks watched for a
+  /// minute, the blotter read in a hand mirror, and the final's post slips.
+  final Map<String, MarkCompareScene> markCompares;
+  final Map<String, ClockWallScene> clockWalls;
+  final Map<String, BlotterScene> blotters;
+  final Map<String, PostTrailScene> postTrails;
 
   /// By case id: a picture shown under the case's opening lines.
   final Map<String, IntroPlaque> introPlaques;
@@ -205,16 +219,26 @@ final season2Content = SeasonContent(
   keeperHuts: season2KeeperHuts,
   quayBoxes: season2QuayBoxes,
   streetBooks: season2StreetBooks,
+  markCompares: season2MarkCompares,
+  clockWalls: season2ClockWalls,
+  blotters: season2Blotters,
+  postTrails: season2PostTrails,
   introPlaques: season2IntroPlaques,
-  evidenceArt: season2Case04EvidenceArt,
+  evidenceArt: {...season2Case04EvidenceArt, ...season2Case05EvidenceArt},
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
-  evidenceLinks: {...season2EvidenceLinks, ...season2Case03EvidenceLinks, ...season2Case04EvidenceLinks},
+  evidenceLinks: {
+    ...season2EvidenceLinks,
+    ...season2Case03EvidenceLinks,
+    ...season2Case04EvidenceLinks,
+    ...season2Case05EvidenceLinks,
+  },
   storyScenes: {
     ...season2StoryScenes,
     ...season2Case02StoryScenes,
     ...season2Case03StoryScenes,
     ...season2Case04StoryScenes,
+    ...season2Case05StoryScenes,
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
@@ -325,6 +349,14 @@ abstract final class SeasonCatalog {
   static BoxesScene? quayBoxes(Mission m) => ofMission(m.id)?.quayBoxes[m.id];
 
   static StreetBookScene? streetBook(Mission m) => ofMission(m.id)?.streetBooks[m.id];
+
+  static MarkCompareScene? markCompare(Mission m) => ofMission(m.id)?.markCompares[m.id];
+
+  static ClockWallScene? clockWall(Mission m) => ofMission(m.id)?.clockWalls[m.id];
+
+  static BlotterScene? blotter(Mission m) => ofMission(m.id)?.blotters[m.id];
+
+  static PostTrailScene? postTrail(Mission m) => ofMission(m.id)?.postTrails[m.id];
 
   /// The picture under case [episodeId]'s opening lines, if any.
   static IntroPlaque? introPlaque(String episodeId) => ofEpisode(episodeId)?.introPlaques[episodeId];

@@ -585,6 +585,23 @@ sealed class RiverEvidenceArt {
   double get aspect;
 }
 
+/// Evidence of a later case drawn by that case's own view (Case 05's
+/// workshop papers and pictures).
+abstract interface class DrawnEvidence {
+  /// Width / height of what is shown.
+  double get aspect;
+}
+
+/// Evidence drawn by its own case's view ([drawn]).
+final class DrawnEvidenceArt extends RiverEvidenceArt {
+  const DrawnEvidenceArt(this.drawn);
+
+  final DrawnEvidence drawn;
+
+  @override
+  double get aspect => drawn.aspect;
+}
+
 /// A mark of the quay wall up close, its word carved on it.
 final class MarkEvidenceArt extends RiverEvidenceArt {
   const MarkEvidenceArt(this.scene, this.mark);

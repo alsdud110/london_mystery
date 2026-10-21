@@ -36,8 +36,10 @@ class StoryPictureView extends StatelessWidget {
             // Its part covers the box, centred on it, kept inside the picture.
             final crop = Rect.fromLTRB(p.crop.left * w, p.crop.top * h, p.crop.right * w, p.crop.bottom * h);
             final k = math.max(size.width / crop.width, size.height / crop.height);
-            final left = (size.width / 2 - crop.center.dx * k).clamp(size.width - w * k, 0.0);
-            final top = (size.height / 2 - crop.center.dy * k).clamp(size.height - h * k, 0.0);
+            // (The picture is never smaller than the box; a rounding error
+            // must not put the lower limit above 0.)
+            final left = (size.width / 2 - crop.center.dx * k).clamp(math.min(size.width - w * k, 0.0), 0.0).toDouble();
+            final top = (size.height / 2 - crop.center.dy * k).clamp(math.min(size.height - h * k, 0.0), 0.0).toDouble();
             at = Rect.fromLTWH(left, top, w * k, h * k);
           }
           final dpr = MediaQuery.devicePixelRatioOf(context);

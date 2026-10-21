@@ -15,6 +15,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Following written clues: towards, moved, collected, and ruling out',
     titleKo: '글로 된 단서 따라가기: towards, moved, collected와 근거로 지우기',
   ),
+  's2_ep05': CaseLanguageTopic(
+    title: 'Two clues at once: the wrong way, added, and collected, sorted, held',
+    titleKo: '두 조건 함께 읽기: the wrong way, added와 우편 기록 collected, sorted, held',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -165,5 +169,42 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '주소록 항목의 이름, 번지 범위(Houses 1 to 5), 문 위치(the steps on Quay 1)를 읽고 증거와 비교해 틀린 주소 셋을 지운 뒤 남은 주소를 찾는다.',
     expressions: ['Cross out every address that cannot be right.', 'Use your evidence to show why.'],
+  ),
+  // ── Case 05 — The Silent Workshop ──────────────────────────────────────
+  // The note says what a copy is; the stamps are compared by their lines
+  // under the sheet: a matching job more than an English one.
+  's2_ep05_m1': LearningObjective(
+    dependency: LanguageDependency.helpful,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '쪽지 "A copy is never the same."를 읽고, 투명 대조지를 겹쳐 바늘 끝 모양·짧은 바늘 위치·바늘 개수가 다른 사본 셋을 가려 진짜 서명(D)을 찾는다.',
+    expressions: ['My mark is on everything I make.', 'A copy is never the same.'],
+  ),
+  // The card's two sentences are the two checks: one small wheel added (the
+  // back), and the hands turn the wrong way (the times before and after).
+  's2_ep05_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '수리 카드의 "I added one small wheel."과 "Now its hands turn the wrong way."를 두 조건으로 읽고, 1분 뒤 시각과 시계 뒷면을 비교해 둘 다 맞는 Clock III를 찾는다.',
+    expressions: ['I added one small wheel.', 'Now its hands turn the wrong way.'],
+  ),
+  // The brown note names the place only as "the clock that turns back":
+  // read, then joined with Clock III from M2.
+  's2_ep05_m3': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '거울로 읽은 세 쪽지 중 진짜 서명이 있는 쪽지의 "I hid it in the clock that turns back."을 이해하고, M2에서 찾은 거꾸로 도는 시계(Clock III)와 연결한다.',
+    expressions: ["Trust only the maker's own mark.", 'Where did the maker put the letter?'],
+  ),
+  // The slips are read for their letter number, date and record words, then
+  // put in time order.
+  's2_ep05_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '영수증의 LETTER No. 4417과 날짜를 우편 전표와 비교해 다른 편지의 전표를 빼고, COLLECTED, SORTED, HELD 기록을 시간순으로 배열해 편지가 멈춘 곳을 찾는다.',
+    expressions: ['Find its slips.', 'Put them in order.'],
   ),
 };

@@ -269,12 +269,17 @@ abstract final class ArtAssets {
     Artwork.keeperHutInside: '$_paris04/keeper_hut_interior.png',
     Artwork.quayBoxes: '$_paris04/quay_boxes.png',
     Artwork.passageGate: '$_paris04/passage_gate.png',
+    Artwork.workshopInterior: '$_paris05/workshop_interior.png',
+    Artwork.workbenchMarks: '$_paris05/workbench_marks.png',
+    Artwork.wallOfClocks: '$_paris05/wall_of_clocks.png',
+    Artwork.writingDesk: '$_paris05/writing_desk_blotter.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
   static const _paris02 = 'assets/seasons/season_02_paris/cases/case_02';
   static const _paris03 = 'assets/seasons/season_02_paris/cases/case_03';
   static const _paris04 = 'assets/seasons/season_02_paris/cases/case_04';
+  static const _paris05 = 'assets/seasons/season_02_paris/cases/case_05';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -358,6 +363,11 @@ abstract final class ArtAssets {
     Artwork.keeperHutInside: 1536 / 1024,
     Artwork.quayBoxes: 1536 / 1024,
     Artwork.passageGate: 1024 / 1536,
+    // Case 05: all wide; the desk a little less tall than the rest.
+    Artwork.workshopInterior: 1536 / 1024,
+    Artwork.workbenchMarks: 1536 / 1024,
+    Artwork.wallOfClocks: 1536 / 1024,
+    Artwork.writingDesk: 1264 / 848,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).

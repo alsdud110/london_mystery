@@ -8,6 +8,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../data/models/river_puzzles.dart';
 import '../../../data/models/scene_explore.dart' show ScenePixels;
 import 'tower_documents.dart';
+import 'workshop_papers.dart' show DrawnEvidenceView;
 
 /// Case 04's stones and papers drawn with their words: the back of the
 /// brass plaque, a carved mark up close, a page of the keeper's ledger, the
@@ -1007,6 +1008,7 @@ class RiverEvidenceArtView extends StatelessWidget {
     child: switch (art) {
       MarkEvidenceArt(:final scene, :final mark) => RiverMarkView(scene: scene, mark: scene.mark(mark)),
       LedgerEvidenceArt(:final scene, :final page) => LedgerPageView(scene: scene, page: page),
+      DrawnEvidenceArt(:final drawn) => DrawnEvidenceView(drawn: drawn),
       final LabelEvidenceArt a => () {
         final cut = LabelCut(a.label);
         final size = Size(a.label.pixels.width, a.label.pixels.height);

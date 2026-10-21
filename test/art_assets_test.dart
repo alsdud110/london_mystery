@@ -122,6 +122,12 @@ void main() {
       Artwork.keeperHutInside: 'assets/seasons/season_02_paris/cases/case_04/keeper_hut_interior.png',
       Artwork.quayBoxes: 'assets/seasons/season_02_paris/cases/case_04/quay_boxes.png',
       Artwork.passageGate: 'assets/seasons/season_02_paris/cases/case_04/passage_gate.png',
+      // Case 05's places in No. 7's workshop: the room, the workbench, the
+      // wall of clocks and the writing desk.
+      Artwork.workshopInterior: 'assets/seasons/season_02_paris/cases/case_05/workshop_interior.png',
+      Artwork.workbenchMarks: 'assets/seasons/season_02_paris/cases/case_05/workbench_marks.png',
+      Artwork.wallOfClocks: 'assets/seasons/season_02_paris/cases/case_05/wall_of_clocks.png',
+      Artwork.writingDesk: 'assets/seasons/season_02_paris/cases/case_05/writing_desk_blotter.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -153,9 +159,9 @@ void main() {
   testWidgets('every scene picture is in the app bundle', (t) async {
     // Season 1's 31, and Season 2's Gare du Nord, old clock face, the
     // Montmartre painting (Case 02's first scene), Case 02's street and studio,
-    // Case 03's seven (the canvas back and six places at the tower), and
-    // Case 04's six places on the Seine.
-    expect(ArtAssets.scenes, hasLength(49));
+    // Case 03's seven (the canvas back and six places at the tower),
+    // Case 04's six places on the Seine, and Case 05's four in the workshop.
+    expect(ArtAssets.scenes, hasLength(53));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,

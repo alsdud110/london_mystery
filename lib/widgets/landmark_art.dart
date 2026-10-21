@@ -329,7 +329,11 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.keeperHut ||
           Artwork.keeperHutInside ||
           Artwork.quayBoxes ||
-          Artwork.passageGate:
+          Artwork.passageGate ||
+          Artwork.workshopInterior ||
+          Artwork.workbenchMarks ||
+          Artwork.wallOfClocks ||
+          Artwork.writingDesk:
         break;
     }
     canvas.restore();
