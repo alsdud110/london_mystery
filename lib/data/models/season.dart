@@ -108,6 +108,7 @@ class Season {
     required this.figures,
     this.city = 'London',
     this.plannedCases,
+    this.upcomingTitles = const {},
   });
 
   /// [SeasonIds]: which season this is.
@@ -120,6 +121,11 @@ class Season {
   /// or null: as many as are in the game. A season is complete only once
   /// all of them are solved.
   final int? plannedCases;
+
+  /// The titles of cases not in the game yet, by case number, told where
+  /// the season says what comes next ("CASE 05 · THE SILENT WORKSHOP"):
+  /// a title only, never a case to open.
+  final Map<int, String> upcomingTitles;
 
   final int number;
 
@@ -164,10 +170,17 @@ class Season {
     final figures = json['figures'];
     final city = json['city'];
     final planned = json['cases'];
+    final upcoming = json['upcoming'];
     return Season(
       // Season 1's content names no city: it is London.
       city: city is String && city.isNotEmpty ? city : 'London',
       plannedCases: planned is int && planned > 0 ? planned : null,
+      upcomingTitles: upcoming is Map
+          ? {
+              for (final e in upcoming.entries)
+                if (int.tryParse('${e.key}') case final n? when e.value is String) n: e.value as String,
+            }
+          : const {},
       // Season 1's content has no id: it is the default.
       id: id is String && id.isNotEmpty ? id : SeasonIds.london,
       number: number is int ? number : 1,

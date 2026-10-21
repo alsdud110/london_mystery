@@ -15,6 +15,7 @@ import '../../data/mock/season_catalog.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/painter_puzzles.dart';
+import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
 import '../../data/models/tower_puzzles.dart';
 import '../../widgets/clue_card.dart';
@@ -40,6 +41,7 @@ import 'widgets/evidence_board.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
 import 'widgets/lock_box.dart';
 import 'widgets/question_widgets.dart';
+import 'widgets/street_book.dart';
 import 'widgets/tip_shop.dart';
 import '../../data/models/detective_name.dart';
 
@@ -85,6 +87,85 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   Map<String, Set<String>> _links = {};
   String? _conclusion;
   String? _question;
+
+  /// The street book, the keeper's hut and the gate on the stage (Paris
+  /// Case 04), or null.
+  StreetBookScene? get _book => SeasonCatalog.streetBook(_mission);
+
+  /// The addresses crossed out, with their evidence (saved as they change:
+  /// `GameProgress.puzzleStates`); the address picked and the evidence
+  /// chosen for it (kept while the page is open).
+  Map<String, Set<String>> _crossed = {};
+  String? _address;
+  Set<String> _picked = {};
+
+  /// Where the gate's scrap counts as taken and read.
+  String get _gateKey => GameProgress.examinedKey(_mission.id, StreetBookScene.gateId);
+
+  void _pickAddress(String id) => setState(() {
+        _address = _address == id ? null : id;
+        _picked = {};
+      });
+
+  void _pickEvidence(String id) => setState(() {
+        final set = {..._picked};
+        set.contains(id) ? set.remove(id) : set.add(id);
+        if (set.length <= _book!.maxEvidence) _picked = set;
+      });
+
+  /// An address crossed out with the evidence chosen: struck through when
+  /// the evidence rules it out; otherwise checked (a wrong answer, said why).
+  Future<void> _crossOut() async {
+    final book = _book!;
+    final address = _address;
+    if (address == null || _picked.isEmpty || _checking) return;
+    final part = book.partOf(address, _picked);
+    if (Mission.sequenceIds(_mission.answer).contains(part)) {
+      ref.read(audioServiceProvider).play(GameSound.paperPlace);
+      setState(() {
+        _crossed = {..._crossed, address: {..._picked}};
+        _address = null;
+        _picked = {};
+      });
+      ref.read(gameControllerProvider.notifier).recordPuzzleState(_mission.id, CrossOutState.encode(_crossed, book));
+      return;
+    }
+    setState(() => _checking = true);
+    try {
+      await _submit(part);
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
+  Future<void> _submitAddress() async {
+    if (_checking) return;
+    setState(() => _checking = true);
+    try {
+      await _submit(_book!.answerOf(_crossed));
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
+  Future<void> _openGate() async {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
+    await showGateReveal(
+      context,
+      scene: _book!,
+      evidence: _mission.evidence,
+      onRead: () => ref.read(gameControllerProvider.notifier).recordExamined(_gateKey),
+    );
+    if (mounted) setState(() {});
+  }
+
+  /// The street book's evidence, by its id in the answer.
+  Map<String, Evidence> _bookEvidence(StreetBookScene book) {
+    final all = {for (final e in ref.read(currentEpisodeProvider).allEvidence) e.id: e};
+    return {
+      for (final e in book.evidence) e.id: ?all[e.evidenceId],
+    };
+  }
 
   /// Where the plaque in the machine counts as read.
   String get _plaqueKey => GameProgress.examinedKey(_mission.id, EvidenceBoardScene.plaqueId);
@@ -188,6 +269,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       _links = links;
       _conclusion = conclusion;
     }
+    if (_book case final book?) {
+      _crossed = CrossOutState.decode(progress.puzzleStateOf(_mission.id), book);
+    }
     final canvases = _canvases;
     if (canvases != null) {
       for (final c in canvases.canvases) {
@@ -227,9 +311,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final box = _box;
     final canvases = _canvases;
     final board = _board;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null)) return;
+    final book = _book;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null)) return;
     _precached = true;
-    final files = board != null
+    final files = book != null
+        ? [book.hut, book.book, book.gate, book.label.file, book.label.back]
+        : board != null
         ? [board.shut, board.open, board.plaque]
         : canvases != null
         ? [for (final c in canvases.canvases) c.file, canvases.back]
@@ -512,6 +599,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final box = _box;
     final canvases = _canvases;
     final board = _board;
+    final book = _book;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -572,6 +660,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : book != null
+                            ? (stage.maxWidth / book.hutPixels.aspect)
+                                .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : board != null
                             ? (stage.maxWidth / board.pixels.aspect)
                                 .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
@@ -582,7 +673,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: board != null
+                          child: book != null
+                              // The keeper's hut; the gate with the solve.
+                              ? GateStage(key: const ValueKey('gate-stage'), scene: book, open: _open)
+                              : board != null
                               // The machine: its hatch opens with the solve.
                               ? MachineStage(key: const ValueKey('machine-stage'), scene: board, open: _open)
                               : canvases != null
@@ -774,6 +868,36 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           onPressed: _rereadLetter,
         ),
       ),
+    ] else if (_book case final book?) ...[
+      // The street book, the address picked, the evidence for it.
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: PaperSheet(
+          key: const ValueKey('street-book-sheet'),
+          padding: const EdgeInsets.all(AppSpace.md),
+          child: StreetBookPuzzle(
+            scene: book,
+            mission: m,
+            evidence: _bookEvidence(book),
+            crossed: _crossed,
+            selected: _address,
+            picked: _picked,
+            checking: _checking,
+            onSelect: _pickAddress,
+            onPick: _pickEvidence,
+            onCross: _crossOut,
+            onSubmit: _submitAddress,
+          ),
+        ),
+      ),
+      Center(
+        child: InkTextButton(
+          label: 'Reread Letter',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
+        ),
+      ),
     ] else if (_box != null && m.type == MissionType.letterLock)
       // The box's lock: what is set in it shows on the box above.
       ShakeOnChange(
@@ -855,7 +979,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         ],
         // A box with something in it: looked at first (its back holds the
         // case's last words), then the story goes on.
-        if (_board != null && !ref.watch(gameControllerProvider).hasExamined(_plaqueKey))
+        if (_book != null && !ref.watch(gameControllerProvider).hasExamined(_gateKey))
+          GameButton(
+            key: const ValueKey('final-open-gate'),
+            label: 'LOOK AT THE GATE',
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _openGate,
+          )
+        else if (_board != null && !ref.watch(gameControllerProvider).hasExamined(_plaqueKey))
           GameButton(
             key: const ValueKey('final-read-plaque'),
             label: 'LOOK INSIDE',

@@ -323,7 +323,13 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.towerLift ||
           Artwork.serviceDoor ||
           Artwork.serviceRoom ||
-          Artwork.timeMachine:
+          Artwork.timeMachine ||
+          Artwork.seineQuays ||
+          Artwork.quayWall ||
+          Artwork.keeperHut ||
+          Artwork.keeperHutInside ||
+          Artwork.quayBoxes ||
+          Artwork.passageGate:
         break;
     }
     canvas.restore();

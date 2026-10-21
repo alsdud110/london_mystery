@@ -207,12 +207,29 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                             ),
                             if (comingNext != null) ...[
                               const SizedBox(height: AppSpace.sm),
-                              Text(
-                                'CASE ${comingNext.toString().padLeft(2, '0')} · COMING SOON',
-                                key: const ValueKey('next-case-coming-soon'),
-                                style: AppText.eyebrow(color: AppColors.goldLight),
-                                textAlign: TextAlign.center,
-                              ),
+                              // Its title when the season tells it (a title
+                              // only: the case is not in the game yet).
+                              if (season.upcomingTitles[comingNext] case final title?) ...[
+                                Text(
+                                  'CASE ${comingNext.toString().padLeft(2, '0')} · ${title.toUpperCase()}',
+                                  key: const ValueKey('next-case-title'),
+                                  style: AppText.mark(color: AppColors.goldLight, size: 17),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: AppSpace.xs),
+                                Text(
+                                  'COMING SOON',
+                                  key: const ValueKey('next-case-coming-soon'),
+                                  style: AppText.eyebrow(color: AppColors.goldLight),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ] else
+                                Text(
+                                  'CASE ${comingNext.toString().padLeft(2, '0')} · COMING SOON',
+                                  key: const ValueKey('next-case-coming-soon'),
+                                  style: AppText.eyebrow(color: AppColors.goldLight),
+                                  textAlign: TextAlign.center,
+                                ),
                             ],
                             const SizedBox(height: 16),
                             // The child's next step is the primary action: on to the

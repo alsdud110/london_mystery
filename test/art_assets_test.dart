@@ -114,6 +114,14 @@ void main() {
       Artwork.serviceDoor: 'assets/seasons/season_02_paris/cases/case_03/service_door.png',
       Artwork.serviceRoom: 'assets/seasons/season_02_paris/cases/case_03/service_room.png',
       Artwork.timeMachine: 'assets/seasons/season_02_paris/cases/case_03/time_recording_machine.png',
+      // Case 04's places on the Seine: the quays at dusk, the quay wall, the
+      // keeper's hut outside and in, the green boxes and the passage's gate.
+      Artwork.seineQuays: 'assets/seasons/season_02_paris/cases/case_04/seine_quays_dusk.png',
+      Artwork.quayWall: 'assets/seasons/season_02_paris/cases/case_04/quay_wall_marks.png',
+      Artwork.keeperHut: 'assets/seasons/season_02_paris/cases/case_04/keeper_hut.png',
+      Artwork.keeperHutInside: 'assets/seasons/season_02_paris/cases/case_04/keeper_hut_interior.png',
+      Artwork.quayBoxes: 'assets/seasons/season_02_paris/cases/case_04/quay_boxes.png',
+      Artwork.passageGate: 'assets/seasons/season_02_paris/cases/case_04/passage_gate.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -145,8 +153,9 @@ void main() {
   testWidgets('every scene picture is in the app bundle', (t) async {
     // Season 1's 31, and Season 2's Gare du Nord, old clock face, the
     // Montmartre painting (Case 02's first scene), Case 02's street and studio,
-    // and Case 03's seven (the canvas back and six places at the tower).
-    expect(ArtAssets.scenes, hasLength(43));
+    // Case 03's seven (the canvas back and six places at the tower), and
+    // Case 04's six places on the Seine.
+    expect(ArtAssets.scenes, hasLength(49));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,
@@ -341,6 +350,12 @@ void main() {
       // their pictures are blank paper.
       's2_ep03_e3': 'assets/seasons/season_02_paris/cases/case_03/service_room.png',
       's2_ep03_e4': 'assets/seasons/season_02_paris/cases/case_03/brass_plaque.png',
+      // Paris Case 04: blank stone, ledger and label, drawn with their words
+      // wherever they are shown (`season2Case04EvidenceArt`).
+      's2_ep04_e1': 'assets/seasons/season_02_paris/cases/case_04/river_mark_d.png',
+      's2_ep04_e2': 'assets/seasons/season_02_paris/cases/case_04/keeper_ledger.png',
+      's2_ep04_e3': 'assets/seasons/season_02_paris/cases/case_04/delivery_label_blank.png',
+      's2_ep04_e4': 'assets/seasons/season_02_paris/cases/case_04/delivery_label_blank.png',
     });
     final evidence = {for (final e in MockEpisodeRepository.bundled()) for (final x in e.allEvidence) x.id: x};
     expect(evidence.keys, containsAll(ArtAssets.evidencePictures.keys), reason: 'real evidence ids');

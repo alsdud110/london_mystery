@@ -9,6 +9,7 @@ import '../data/models/mission.dart';
 import '../features/game/game_controller.dart';
 import '../features/game/game_providers.dart';
 import '../features/mission/widgets/dialogue_investigation.dart';
+import '../features/mission/widgets/river_papers.dart' show RiverEvidenceArtView;
 import 'art_assets.dart';
 import 'game_button.dart';
 import 'glossary_text.dart';
@@ -303,6 +304,8 @@ class _EvidenceArt extends StatelessWidget {
     final s = GameSymbol.of(evidence.icon);
     final mark = s.mark(size: size * 0.55);
     final picture = ArtAssets.evidencePictures[evidence.id];
+    // Drawn with its words (its picture is blank): the middle of it.
+    final drawn = SeasonCatalog.evidenceArt(evidence.id);
     return Container(
       width: size,
       height: size,
@@ -314,7 +317,16 @@ class _EvidenceArt extends StatelessWidget {
       ),
       // The object is drawn in the middle of its square parchment, so the
       // round frame shows all of it (only plain parchment is left out).
-      child: picture == null
+      child: drawn != null
+          ? ClipOval(
+              child: SizedBox.expand(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(width: 300 * drawn.aspect.clamp(0.5, 3.0), height: 300, child: RiverEvidenceArtView(art: drawn)),
+                ),
+              ),
+            )
+          : picture == null
           ? mark
           : ClipOval(
               child: Transform.scale(
@@ -348,6 +360,14 @@ class _EvidencePrint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mark = GameSymbol.of(evidence.icon).mark(size: 80);
+    // Drawn with its words (its picture is blank).
+    if (SeasonCatalog.evidenceArt(evidence.id) case final drawn?) {
+      return ConstrainedBox(
+        key: ValueKey('evidence-print-${evidence.id}'),
+        constraints: const BoxConstraints(maxHeight: 360),
+        child: AspectRatio(aspectRatio: drawn.aspect, child: RiverEvidenceArtView(art: drawn)),
+      );
+    }
     return AspectRatio(
       aspectRatio: ArtAssets.evidencePrints[evidence.id]!,
       child: Image.asset(

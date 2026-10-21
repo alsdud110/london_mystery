@@ -211,7 +211,7 @@ void main() {
 
   group('the case', () {
     test('Case 03 is in the game, after Case 02, at the Eiffel Tower, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys.take(3), ['s2_ep01', 's2_ep02', 's2_ep03']);
       expect(case03.number, 3);
       expect(case03.title, "The Tower's Secret");
       expect(case03.place, 'EIFFEL TOWER · PARIS');
@@ -535,7 +535,7 @@ void main() {
       expect(set.resetCase().puzzleStates, isEmpty, reason: 'play again starts the puzzles afresh');
     });
 
-    test('solved: Paris is 3 of 12, Case 04 is coming soon, nothing opens it', () async {
+    test('solved: Paris is 3 of 12, and Case 04 opens next', () async {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -546,11 +546,11 @@ void main() {
       final board = c.read(seasonOverviewProvider);
       expect(board.solvedCount, 3);
       expect(board.info.plannedCases, 12);
-      expect(board.comingSoonCase, 4);
-      expect(board.current, isNull);
+      expect(board.comingSoonCase, isNull, reason: 'Case 04 is in the game (2026-10-21)');
+      expect(board.current, 3, reason: 'Case 04 is the case to work on now');
       final paris = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect((paris.solvedCount, paris.plannedCount), (3, 12));
-      expect(game.openEpisode('s2_ep04'), isFalse, reason: 'no Case 04 to open');
+      expect(game.openEpisode('s2_ep04'), isTrue, reason: 'Case 04 follows');
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12));
     });
   });
@@ -812,16 +812,14 @@ void main() {
         expect(find.byKey(const ValueKey('scene-backdrop')), findsOneWidget, reason: 'the open machine');
         await shot('final_scene');
         await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 4000));
-        await reveal(t, find.byKey(const ValueKey('next-case-coming-soon')));
-        expect(find.byKey(const ValueKey('next-case-coming-soon')), findsOneWidget);
-        expect(find.text('CASE 04 · COMING SOON'), findsOneWidget);
+        expect(find.byKey(const ValueKey('next-case-coming-soon')), findsNothing, reason: 'Case 04 is in the game');
         await shot('case_closed');
 
-        // Paris: 3 of 12, Case 04 still to come.
+        // Paris: 3 of 12, Case 04 next.
         final board = ref.read(seasonOverviewProvider);
         expect(board.solvedCount, 3);
-        expect(board.comingSoonCase, 4);
-        expect(game.openEpisode('s2_ep04'), isFalse);
+        expect(board.comingSoonCase, isNull);
+        expect(game.openEpisode('s2_ep04'), isTrue);
         await wait(t, const Duration(seconds: 3));
       });
     }

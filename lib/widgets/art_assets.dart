@@ -263,11 +263,18 @@ abstract final class ArtAssets {
     Artwork.serviceDoor: '$_paris03/service_door.png',
     Artwork.serviceRoom: '$_paris03/service_room.png',
     Artwork.timeMachine: '$_paris03/time_recording_machine.png',
+    Artwork.seineQuays: '$_paris04/seine_quays_dusk.png',
+    Artwork.quayWall: '$_paris04/quay_wall_marks.png',
+    Artwork.keeperHut: '$_paris04/keeper_hut.png',
+    Artwork.keeperHutInside: '$_paris04/keeper_hut_interior.png',
+    Artwork.quayBoxes: '$_paris04/quay_boxes.png',
+    Artwork.passageGate: '$_paris04/passage_gate.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
   static const _paris02 = 'assets/seasons/season_02_paris/cases/case_02';
   static const _paris03 = 'assets/seasons/season_02_paris/cases/case_03';
+  static const _paris04 = 'assets/seasons/season_02_paris/cases/case_04';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -344,6 +351,13 @@ abstract final class ArtAssets {
     Artwork.serviceDoor: 1536 / 1024,
     Artwork.serviceRoom: 1536 / 1024,
     Artwork.timeMachine: 1536 / 1024,
+    // Case 04: the gate is a portrait picture; the rest are wide.
+    Artwork.seineQuays: 1536 / 1024,
+    Artwork.quayWall: 1536 / 1024,
+    Artwork.keeperHut: 1536 / 1024,
+    Artwork.keeperHutInside: 1536 / 1024,
+    Artwork.quayBoxes: 1536 / 1024,
+    Artwork.passageGate: 1024 / 1536,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).
@@ -453,6 +467,13 @@ abstract final class ArtAssets {
     // (its message is in its words: the picture is the blank brass).
     's2_ep03_e3': '$_paris03/service_room.png',
     's2_ep03_e4': '$_paris03/brass_plaque.png',
+    // Paris Case 04: its stone, ledger and label are blank pictures, drawn
+    // with their words where they are shown (`season2Case04EvidenceArt`);
+    // these are what stands under them.
+    's2_ep04_e1': '$_paris04/river_mark_d.png',
+    's2_ep04_e2': '$_paris04/keeper_ledger.png',
+    's2_ep04_e3': '$_paris04/delivery_label_blank.png',
+    's2_ep04_e4': '$_paris04/delivery_label_blank.png',
   };
 
   /// Evidence pictures too wide for the round frame's close look: shown
@@ -463,6 +484,12 @@ abstract final class ArtAssets {
     's2_ep02_e1': 1536 / 1024,
     's2_ep03_e3': 1536 / 1024,
     's2_ep03_e4': 1536 / 1024,
+    // Case 04: the mark up close, the ledger's page, the label whole, and
+    // the label's lower part with its last piece.
+    's2_ep04_e1': 1.0,
+    's2_ep04_e2': 620 / 755,
+    's2_ep04_e3': 1377 / 1142,
+    's2_ep04_e4': 1377 / 514,
   };
 
   /// What a case's Case Closed file shows under its title in place of the

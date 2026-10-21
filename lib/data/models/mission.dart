@@ -160,7 +160,16 @@ enum Artwork {
   towerLift,
   serviceDoor,
   serviceRoom,
-  timeMachine;
+  timeMachine,
+  // Case 04's places on the Seine: the quays at dusk, the quay wall and its
+  // marks, the river keeper's hut (outside and in), the green boxes on the
+  // river wall, and the gate of the watchmakers' passage.
+  seineQuays,
+  quayWall,
+  keeperHut,
+  keeperHutInside,
+  quayBoxes,
+  passageGate;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

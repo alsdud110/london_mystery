@@ -20,6 +20,7 @@ import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/painter_puzzles.dart';
+import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
 import '../../data/models/station_clocks.dart';
 import '../../data/models/story_picture.dart';
@@ -51,6 +52,8 @@ import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
 import 'widgets/exhibit.dart';
 import 'widgets/investigation_search.dart';
+import 'widgets/keeper_ledger.dart';
+import 'widgets/label_assembly.dart';
 import 'widgets/lift_route.dart';
 import 'widgets/lens_inspect.dart';
 import 'widgets/scene_deduction.dart';
@@ -60,6 +63,7 @@ import 'widgets/station_clocks.dart';
 import 'widgets/story_picture_view.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/reveal_layer.dart';
+import 'widgets/river_marks.dart';
 import 'widgets/spot_differences.dart';
 import 'widgets/studio_match.dart';
 import 'widgets/tip_shop.dart';
@@ -134,6 +138,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// shown, the lines and the stop picked (kept while the page is open;
   /// what was read is saved: [GameProgress.examined]).
   final TowerPuzzleProgress _tower = TowerPuzzleProgress();
+
+  /// Case 04's box answer just found in the ledger (Paris): its reward,
+  /// held for the Discovery Moment until the ledger's second page is read.
+  /// Null after a restart: the moment then says the reward was paid.
+  SubmitOutcome? _ledgerSolve;
 
   @override
   void initState() {
@@ -217,7 +226,22 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // Case 03's records and lift are read on the puzzle page itself: no
     // letter step (back is the place).
     final onPapers =
-        _stage == MissionStage.puzzle && (SeasonCatalog.records(_mission) != null || SeasonCatalog.lift(_mission) != null);
+        _stage == MissionStage.puzzle &&
+        (SeasonCatalog.records(_mission) != null ||
+            SeasonCatalog.lift(_mission) != null ||
+            SeasonCatalog.riverMarks(_mission) != null ||
+            SeasonCatalog.keeperHut(_mission) != null ||
+            SeasonCatalog.quayBoxes(_mission) != null);
+    // Case 04's hut: back walks out of it one place at a time (the ledger,
+    // the inside, the outside).
+    final hut = SeasonCatalog.keeperHut(_mission);
+    if (_stage == MissionStage.puzzle && hut != null) {
+      final (at, box) = HutState.decode(ref.read(gameControllerProvider).puzzleStateOf(_mission.id), hut);
+      if (at != HutStep.outside) {
+        _saveHut(_mission, HutStep.values[at.index - 1], box);
+        return;
+      }
+    }
     if (inStudio && _picture.open != null) {
       setState(() => _picture.open = null);
       return;
@@ -443,6 +467,104 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         ),
       );
 
+  /// The quay wall's marks looked at, the plaque read again (the mark
+  /// chosen answers the mission's puzzle).
+  Widget _marksStage(Mission m, RiverMarksScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: RiverMarks(
+          scene: scene,
+          mission: m,
+          read: _looked(m, [...scene.marks.map((x) => x.id), RiverMarksScene.backId], progress),
+          onRead: (id) => _recordFound(m, id),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  void _saveHut(Mission m, HutStep at, String? box) =>
+      ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, HutState.encode(at, box));
+
+  /// The keeper's hut walked into, its ledger read (the box circled answers
+  /// the mission's puzzle); where the detective is and the box are saved.
+  Widget _hutStage(Mission m, KeeperHutScene scene, GameProgress progress) {
+    final (at, box) = HutState.decode(progress.puzzleStateOf(m.id), scene);
+    return _PuzzleStage(
+      key: const ValueKey('puzzle'),
+      mission: m,
+      hintsShown: progress.hintsFor(m.id),
+      wrongPulse: _wrongPulse,
+      onHint: () => _showHint(m),
+      onReread: () => _rereadLetter(m),
+      child: KeeperHut(
+        scene: scene,
+        mission: m,
+        at: at,
+        circled: box,
+        onAt: (to) {
+          if (to == HutStep.ledger) _recordFound(m, KeeperHutScene.ledgerId);
+          _saveHut(m, to, box);
+        },
+        onCircle: (b) => _saveHut(m, at, b),
+        onSubmit: (a) => _submit(m, a),
+      ),
+    );
+  }
+
+  /// The box is right: the ledger's second page, turned and read before the
+  /// story goes on.
+  Widget _ledgerAfterStage(Mission m, KeeperHutScene scene) => CenteredScroll(
+        key: const ValueKey('ledger-after'),
+        padding: _stagePadding,
+        children: [
+          Text('MISSION ${m.numberLabel} · THE LEDGER', textAlign: TextAlign.center, style: AppText.eyebrow()),
+          const SizedBox(height: AppSpace.lg),
+          LedgerSecondPage(scene: scene, answer: m.answer, onContinue: () => _afterLedger(m)),
+        ],
+      );
+
+  Future<void> _afterLedger(Mission m) async {
+    final audio = ref.read(audioServiceProvider);
+    ref.read(gameControllerProvider.notifier).recordExamined(GameProgress.examinedKey(m.id, KeeperHutScene.page2Id));
+    final solve = _ledgerSolve;
+    _ledgerSolve = null;
+    await showDiscoveryMoment(
+      context,
+      mission: m,
+      discovery: SeasonCatalog.discovery(m),
+      xp: XpBreakdown.of(m, ref.read(gameControllerProvider)),
+      coins: solve?.coins ?? 0,
+      firstSolve: solve?.firstSolve ?? false,
+      newBadges: solve?.newBadges ?? const [],
+      onEvidenceLaid: () => audio.play(GameSound.paperPlace),
+      showDetective: true,
+    );
+    if (mounted) context.go(Routes.story(m.id));
+  }
+
+  /// The green boxes tried, the label put back together (the frame answers
+  /// the mission's puzzle); the boxes tried and the frame are saved.
+  Widget _boxesStage(Mission m, BoxesScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: LabelAssembly(
+          scene: scene,
+          mission: m,
+          tried: _looked(m, [for (final b in scene.boxes) BoxesScene.boxKey(b.id)], progress),
+          onTry: (id) => _recordFound(m, BoxesScene.boxKey(id)),
+          placed: LabelState.decode(progress.puzzleStateOf(m.id), scene),
+          onPlaced: (placed) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, LabelState.encode(placed, scene)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
   /// The thing handed over with the letter, looked at closer (kept as seen).
   void _lookAtExhibit(Mission m, Exhibit exhibit) {
     ref.read(audioServiceProvider).play(GameSound.paperRustle);
@@ -594,6 +716,12 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         // A real lock on the scene opens (a heavy one, a padlock); anything
         // else is a discovery.
         audio.play(solveSoundOf(m));
+        // The keeper's ledger: its second page is read first (the moment
+        // comes after it).
+        if (SeasonCatalog.keeperHut(m) != null) {
+          setState(() => _ledgerSolve = outcome);
+          return;
+        }
         final progress = ref.read(gameControllerProvider);
         await showDiscoveryMoment(
           context,
@@ -661,9 +789,15 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final records = SeasonCatalog.records(m);
     final lift = SeasonCatalog.lift(m);
     final dialLock = SeasonCatalog.dialLock(m);
+    final marks = SeasonCatalog.riverMarks(m);
+    final hut = SeasonCatalog.keeperHut(m);
+    final boxes = SeasonCatalog.quayBoxes(m);
 
     final Widget body = solved
-        ? _SolvedStage(key: const ValueKey('solved'), mission: m)
+        // The ledger's second page, until it is read.
+        ? hut != null && !progress.hasExamined(GameProgress.examinedKey(m.id, KeeperHutScene.page2Id))
+            ? _ledgerAfterStage(m, hut)
+            : _SolvedStage(key: const ValueKey('solved'), mission: m)
         : switch (_stage) {
             MissionStage.story =>
               // A talk starts at once: who is here is told in the talk itself.
@@ -692,6 +826,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           studio != null ||
                           records != null ||
                           lift != null ||
+                          marks != null ||
+                          hut != null ||
+                          boxes != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -743,6 +880,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when records != null => _recordsStage(m, records, progress),
             MissionStage.puzzle when lift != null => _liftStage(m, lift, progress),
             MissionStage.puzzle when dialLock != null => _dialStage(m, dialLock, progress),
+            MissionStage.puzzle when marks != null => _marksStage(m, marks, progress),
+            MissionStage.puzzle when hut != null => _hutStage(m, hut, progress),
+            MissionStage.puzzle when boxes != null => _boxesStage(m, boxes, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,

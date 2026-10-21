@@ -11,6 +11,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Reading records: times, routes and first, next, finally',
     titleKo: '기록 읽기: 시각, 노선, 순서어 first, next, finally',
   ),
+  's2_ep04': CaseLanguageTopic(
+    title: 'Following written clues: towards, moved, collected, and ruling out',
+    titleKo: '글로 된 단서 따라가기: towards, moved, collected와 근거로 지우기',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -124,5 +128,42 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '세 질문(무엇이 잘못됐나, 승강기는 어디로 갔나, 누가 들어갔다는 근거는)을 읽고 증거를 연결한 뒤, 증거로 증명할 수 있는 결론만 고른다.',
     expressions: ['What was wrong with the inspection records?', 'What can we conclude?'],
+  ),
+  // ── Case 04 — The River's Secret ───────────────────────────────────────
+  // The plaque's three lines are the three checks: each wrong mark breaks
+  // one of them, so only reading all three finds the mark.
+  's2_ep04_m1': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '황동판 뒷면의 세 문장을 조건으로 읽고(물결 세 개, 강 쪽을 가리키는 화살표, 물을 지켜보는 사람) 네 표식과 비교해 RIVER KEEPER 표식 D를 찾는다.',
+    expressions: ['Three waves mark the place.', 'Follow the arrow towards the river.', 'Find the one who watches the water.'],
+  ),
+  // The ledger's words decide: from the Eiffel Tower, on Quay 3, and then
+  // moved to another box.
+  's2_ep04_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '장부에서 에펠탑에서 온 짐 가운데 QUAY 3에 있는 것을 찾고, "Box 17 moved to Box 23"의 moved를 이해해 짐이 지금 있는 상자(Box 23)를 고른다.',
+    expressions: ['Something came from the Eiffel Tower.', 'Where is the crate now?'],
+  ),
+  // A label is read from the top: FROM, CONTENTS, TO; the scrap that says
+  // something else is left out.
+  's2_ep04_m3': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '배송표의 FROM, CONTENTS, TO 순서를 이해해 찢어진 조각을 위에서 아래로 맞추고, 내용이 다른 종이 조각(TO: BOOKSTALL 12)을 구별한다.',
+    expressions: ['Put the torn label back together.', 'Read where it was sent.'],
+  ),
+  // Each address is ruled out by what an English line says (PASSAGE, the
+  // house numbers, the steps on Quay 3).
+  's2_ep04_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '주소록 항목의 이름, 번지 범위(Houses 1 to 5), 문 위치(the steps on Quay 1)를 읽고 증거와 비교해 틀린 주소 셋을 지운 뒤 남은 주소를 찾는다.',
+    expressions: ['Cross out every address that cannot be right.', 'Use your evidence to show why.'],
   ),
 };

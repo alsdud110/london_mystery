@@ -10,7 +10,9 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/mock/season_catalog.dart';
 import '../../data/models/episode.dart';
+import '../mission/widgets/river_papers.dart' show PlaqueBackView;
 import '../../widgets/game_button.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/paper_background.dart';
@@ -109,6 +111,9 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
   @override
   Widget build(BuildContext context) {
     final lines = _lines;
+    // A thing the opening turns to (Case 04: the plaque's back), under its
+    // line.
+    final plaque = SeasonCatalog.introPlaque(ref.read(currentEpisodeProvider).id);
     return Scaffold(
       backgroundColor: AppColors.nightBottom,
       // The narration over the place the case opens on, in the dark.
@@ -146,7 +151,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                 controller: _scroll,
                                 child: Column(
                                   children: [
-                                    for (var i = 0; i <= _line && i < lines.length; i++)
+                                    for (var i = 0; i <= _line && i < lines.length; i++) ...[
                                       Padding(
                                         padding: const EdgeInsets.only(bottom: 22),
                                         child: AnimatedOpacity(
@@ -176,6 +181,35 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                           ),
                                         ),
                                       ),
+                                      if (plaque != null && i == plaque.afterLine)
+                                        Padding(
+                                          key: const ValueKey('intro-plaque'),
+                                          padding: const EdgeInsets.only(bottom: 22),
+                                          child: TweenAnimationBuilder<double>(
+                                            tween: Tween(begin: 0, end: 1),
+                                            duration: MediaQuery.disableAnimationsOf(context) ? Duration.zero : const Duration(milliseconds: 600),
+                                            builder: (context, t, child) => Opacity(opacity: t, child: child),
+                                            child: ConstrainedBox(
+                                              constraints: const BoxConstraints(maxWidth: 380),
+                                              child: Column(
+                                                children: [
+                                                  PlaqueBackView(plaque: plaque.plaque),
+                                                  const SizedBox(height: 12),
+                                                  // What the brass says, large (the scratches are small).
+                                                  ExcludeSemantics(
+                                                    child: Text(
+                                                      plaque.plaque.lines.join('\n'),
+                                                      key: const ValueKey('intro-plaque-words'),
+                                                      textAlign: TextAlign.center,
+                                                      style: AppText.style(AppText.italic, size: 19, color: AppColors.goldLight, fontStyle: FontStyle.italic, height: 1.4),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ],
                                 ),
                               ),
