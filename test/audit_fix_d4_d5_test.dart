@@ -204,7 +204,9 @@ void main() {
         'ep09': 3984906767,
         'ep10': 1240895729,
         'ep11': 2763911661,
-        'ep12': 3222189086,
+        // Time code fix (2026-10-21): 12-M2 reads as HH:MM ('codeFormat': 'time').
+        // Case 12 M3 (2026-10-21): UNDER ___ ___, one blank per word of BIG BEN.
+        'ep12': 547534199,
       });
     });
   });

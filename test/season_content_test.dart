@@ -131,9 +131,15 @@ void main() {
     test('word prompts show one blank per letter of the answer', () {
       for (final e in later) {
         for (final m in e.allMissions.where((m) => m.prompt != null)) {
-          final blanks = RegExp('_+').allMatches(m.prompt!).toList();
-          expect(blanks, hasLength(1), reason: '${m.id}: one blank run (it is replaced by the typed word)');
-          expect(blanks.single.group(0)!.length, AnswerChecker.normalize(m.answer).length, reason: m.id);
+          // One blank per word, side by side ("UNDER ___ ___"): one group.
+          final blanks = RegExp(r'_+(?: +_+)*').allMatches(m.prompt!).toList();
+          expect(blanks, hasLength(1), reason: '${m.id}: one blank group (it is replaced by the typed word)');
+          final runs = [for (final r in RegExp('_+').allMatches(m.prompt!)) r.group(0)!.length];
+          expect(runs.fold(0, (a, b) => a + b), AnswerChecker.normalize(m.answer).length, reason: m.id);
+          if (runs.length > 1) {
+            expect(runs, [for (final w in m.answer.trim().split(RegExp(r'\s+'))) AnswerChecker.normalize(w).length],
+                reason: '${m.id}: one blank per word of the answer');
+          }
         }
       }
     });

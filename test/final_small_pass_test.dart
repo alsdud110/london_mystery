@@ -453,5 +453,7 @@ const _otherCases = <String, int>{
   // Phase 4 (approved 2026-10-12): 11-M3 tip 1 (never sleeps), 12-M2 board + after, 12-F whose.
   // Audit fix N1 (2026-10-12): 11-M2 tip 1 reads from the last letter, M.
   'ep11': 4002299555,
-  'ep12': 1830498596,
+  // Time code fix (2026-10-21): 12-M2 reads as HH:MM ('codeFormat': 'time').
+  // Case 12 M3 (2026-10-21): UNDER ___ ___, one blank per word of BIG BEN.
+  'ep12': 3715848451,
 };

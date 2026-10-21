@@ -347,11 +347,13 @@ class _WordInputQuestionState extends State<WordInputQuestion> {
               fit: BoxFit.scaleDown,
               child: Text(
                 // Empty: the prompt's own blanks, one per letter (a case may
-                // say "four letters"). Typing: the child's word in their place.
+                // say "four letters"; a two-word answer, one blank per word:
+                // "UNDER ___ ___"). Typing: the child's words in their place,
+                // once for all the blanks.
                 _controller.text.trim().isEmpty
                     ? prompt
                     : prompt.replaceAll(
-                        RegExp(r'_+'),
+                        RegExp(r'_+(?: +_+)*'),
                         _controller.text.trim().toUpperCase(),
                       ),
                 style: AppText.title(size: 26).copyWith(letterSpacing: 2),

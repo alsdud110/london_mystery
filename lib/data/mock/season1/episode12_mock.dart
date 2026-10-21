@@ -177,7 +177,8 @@ const Map<String, dynamic> episode12Json = {
           "The Clockmaker's door is under me.",
       'type': 'wordInput',
       'question': "Where is the Clockmaker's door?",
-      'prompt': 'UNDER ______',
+      // Two words, two blanks: BIG BEN (3 + 3).
+      'prompt': 'UNDER ___ ___',
       'answer': 'BIG BEN',
       'acceptedAnswers': ['BIGBEN', 'THE CLOCK TOWER', 'CLOCK TOWER', 'ELIZABETH TOWER'],
       'hints': [
