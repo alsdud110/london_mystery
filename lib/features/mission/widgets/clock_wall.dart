@@ -8,9 +8,10 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/mission.dart';
 import '../../../data/models/workshop_puzzles.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
-import 'mark_compare.dart' show WorkshopChoice, WorkshopNote;
+import 'mark_compare.dart' show WorkshopChoice, WorkshopChoices, WorkshopNote;
 import 'river_papers.dart' show PictureCanvas, carved;
 import 'workshop_papers.dart';
 
@@ -179,16 +180,19 @@ class _ClockWallState extends State<ClockWall> with SingleTickerProviderStateMix
         const SizedBox(height: AppSpace.sm),
         Text(_scene.backTask, textAlign: TextAlign.center, style: AppText.aside()),
         const SizedBox(height: AppSpace.md),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: AppSpace.sm,
-          crossAxisSpacing: AppSpace.sm,
-          childAspectRatio: 3.0,
+        // A clock is chosen only once the minute has been watched (saved:
+        // [watched]), never before.
+        WorkshopChoices(
+          open: watched,
+          lockedLine: 'Watch the clocks first.',
           children: [
             for (final o in widget.mission.options)
-              WorkshopChoice(key: ValueKey('clock-${o.id}'), label: o.label, selected: _choice == o.id, onTap: () => setState(() => _choice = o.id)),
+              WorkshopChoice(
+                key: ValueKey('clock-${o.id}'),
+                label: o.label,
+                selected: _choice == o.id,
+                onTap: watched ? () => setState(() => _choice = o.id) : null,
+              ),
           ],
         ),
         const SizedBox(height: AppSpace.md),
@@ -197,7 +201,7 @@ class _ClockWallState extends State<ClockWall> with SingleTickerProviderStateMix
           label: _scene.chooseLabel,
           glyph: InkGlyph.check,
           tap: TapRole.primary,
-          onPressed: _choice != null && !_checking && !_watching ? _check : null,
+          onPressed: watched && _choice != null && !_checking ? _check : null,
         ),
       ],
     );
@@ -348,7 +352,13 @@ Future<void> showClockBack(BuildContext context, {required ClockWallScene scene,
                       ),
                       const SizedBox(height: AppSpace.md),
                       ExcludeSemantics(
-                        child: Text(clock.backNote, key: const ValueKey('clock-back-note'), textAlign: TextAlign.center, style: AppText.title(size: 21, color: AppColors.goldLight)),
+                        child: GlossaryText(
+                          clock.backNote,
+                          key: const ValueKey('clock-back-note'),
+                          textAlign: TextAlign.center,
+                          linkColor: AppColors.goldLight,
+                          style: AppText.title(size: 21, color: AppColors.goldLight),
+                        ),
                       ),
                       const SizedBox(height: AppSpace.lg),
                       Builder(

@@ -29,9 +29,26 @@ class GlossaryText extends ConsumerStatefulWidget {
     this.linkColor = AppColors.royalBlue,
     this.interactive = true,
     this.wordSemantics = true,
-  });
+  }) : spans = null;
+
+  /// Text made of [spans]: each plain [TextSpan] (a text, no children) gets
+  /// its harder words dotted, in its own style; any other span (a box
+  /// number to circle, a picture) is kept as it is, with its own taps.
+  const GlossaryText.spans(
+    List<InlineSpan> this.spans, {
+    super.key,
+    required this.style,
+    this.textAlign = TextAlign.start,
+    this.episode,
+    this.linkColor = AppColors.royalBlue,
+    this.interactive = true,
+    this.wordSemantics = true,
+  }) : text = '';
 
   final String text;
+
+  /// See [GlossaryText.spans].
+  final List<InlineSpan>? spans;
   final TextStyle style;
   final TextAlign textAlign;
 
@@ -82,6 +99,18 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
     final Episode episode = widget.episode ?? ref.watch(currentEpisodeProvider);
     final name = ref.watch(gameControllerProvider.select((s) => s.detectiveName));
     final spans = <InlineSpan>[];
+    if (widget.spans case final parts?) {
+      for (final part in parts) {
+        if (part is TextSpan && part.children == null && part.recognizer == null && part.text != null) {
+          final words = <InlineSpan>[];
+          _addWords(part.text!, episode, words);
+          spans.add(TextSpan(style: part.style, children: words));
+        } else {
+          spans.add(part);
+        }
+      }
+      return Text.rich(TextSpan(children: spans), style: widget.style, textAlign: widget.textAlign);
+    }
     for (final (text, isName) in _pieces(widget.text, name)) {
       if (isName) {
         spans.add(TextSpan(text: text));

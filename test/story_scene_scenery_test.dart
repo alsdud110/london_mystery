@@ -103,6 +103,9 @@ void main() {
           expect(t.getRect(full), Offset.zero & size, reason: 'the place fills the screen');
         }
         expect(find.text(next.location), findsOneWidget, reason: 'the unlocked card');
+        // Season 1 greets the detective under MISSION COMPLETE, as always.
+        expect(find.byKey(const ValueKey('scene-greeting')), findsOneWidget);
+        expect(find.text('Great work, Detective MINYOUNG.'), findsOneWidget);
         final cta = t.getRect(find.text('TO THE MAP'));
         expect(cta.bottom, lessThan(size.height), reason: 'TO THE MAP on screen');
         await capture(t, 'story_scene_$tag');

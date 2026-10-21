@@ -6,6 +6,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/mission.dart';
 import '../../../data/models/tower_puzzles.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import 'tower_documents.dart';
@@ -283,7 +284,7 @@ class RecordPaper extends StatelessWidget {
               children: [
                 FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(doc.title, style: paperInk(size: unit * 0.95, weight: FontWeight.w800).copyWith(letterSpacing: 1.5)),
+                  child: GlossaryText(doc.title, style: paperInk(size: unit * 0.95, weight: FontWeight.w800).copyWith(letterSpacing: 1.5)),
                 ),
                 for (final line in doc.lines)
                   _RecordLineRow(
@@ -296,7 +297,7 @@ class RecordPaper extends StatelessWidget {
                 if (doc.note case final note?)
                   FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: Text(note, style: paperInk(size: unit * 0.62, weight: FontWeight.w500, color: AppColors.inkBrown).copyWith(fontStyle: FontStyle.italic)),
+                    child: GlossaryText(note, style: paperInk(size: unit * 0.62, weight: FontWeight.w500, color: AppColors.inkBrown).copyWith(fontStyle: FontStyle.italic)),
                   ),
               ],
             ),
@@ -328,13 +329,15 @@ class _RecordLineRow extends StatelessWidget {
       child: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.centerLeft,
-        child: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(text: '${line.label}   ', style: paperInk(size: unit * 0.62, weight: FontWeight.w500, color: AppColors.muted)),
-              TextSpan(text: line.value, style: paperInk(size: unit * 0.82)),
-            ],
-          ),
+        // A line to pick is one target: its words are dotted only where
+        // the line is read, not picked.
+        child: GlossaryText.spans(
+          [
+            TextSpan(text: '${line.label}   ', style: paperInk(size: unit * 0.62, weight: FontWeight.w500, color: AppColors.muted)),
+            TextSpan(text: line.value, style: paperInk(size: unit * 0.82)),
+          ],
+          style: paperInk(size: unit * 0.82),
+          interactive: onTap == null,
         ),
       ),
     );

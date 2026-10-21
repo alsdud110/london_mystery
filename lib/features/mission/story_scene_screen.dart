@@ -50,9 +50,14 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
   bool _done = false;
   Timer? _pause;
 
-  /// The post-case story is longer than a small phone: it keeps the newest
-  /// line in view.
+  /// The story can be longer than a small phone (the post-case story, or a
+  /// mission's lines once the next place's card is laid under them): it
+  /// keeps the newest line in view.
   final _scroll = ScrollController();
+
+  /// The lines are taller than the room left for them: the earlier ones
+  /// scroll up under a faded top edge.
+  bool _overflow = false;
 
   @override
   void dispose() {
@@ -157,11 +162,15 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                           const SizedBox(height: AppSpace.sm),
                           const OrnamentRule(color: AppColors.goldLight),
                           const SizedBox(height: AppSpace.sm),
-                          Text(
-                            'Great work, ${DetectiveName.title(name)}.',
-                            textAlign: TextAlign.center,
-                            style: AppText.bodyText(size: 16, color: AppColors.paperLight.withValues(alpha: 0.72)),
-                          ),
+                          // The greeting, where the season has it (not Paris:
+                          // its Discovery Moment has just cheered the solve).
+                          if (SeasonCatalog.storyGreeting(m))
+                            Text(
+                              'Great work, ${DetectiveName.title(name)}.',
+                              key: const ValueKey('scene-greeting'),
+                              textAlign: TextAlign.center,
+                              style: AppText.bodyText(size: 16, color: AppColors.paperLight.withValues(alpha: 0.72)),
+                            ),
                           // The longer story scrolls: a breath between the greeting and its faded edge.
                           if (afterCase) const SizedBox(height: AppSpace.md),
                           Expanded(
@@ -169,12 +178,18 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                               child: NotificationListener<ScrollMetricsNotification>(
                                 // A new line (or the evidence handed over) made the
                                 // story taller: keep the newest in view.
-                                onNotification: (_) {
-                                  if (afterCase || handed != null) _followNewestLine();
+                                onNotification: (n) {
+                                  final overflow = n.metrics.maxScrollExtent > 0;
+                                  if (overflow != _overflow) setState(() => _overflow = overflow);
+                                  _followNewestLine();
                                   return false;
                                 },
                                 child: _StoryEdges(
                                   fade: afterCase,
+                                  // A mission's lines pushed up by the card
+                                  // below: only the top edge fades, the
+                                  // newest line stays clear at the bottom.
+                                  fadeTop: !afterCase && _overflow,
                                   child: SingleChildScrollView(
                                     controller: _scroll,
                                     // Room to scroll the first and last lines clear of the faded edges.
@@ -217,6 +232,8 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                 ? Column(
                                     key: const ValueKey('done'),
                                     children: [
+                                      // A breath between the last line and the card.
+                                      const SizedBox(height: AppSpace.sm),
                                       // After the case: its last evidence, held up once more.
                                       if (afterCase && m.evidence != null)
                                         _EvidenceCard(evidence: m.evidence!, location: m.location)
@@ -377,14 +394,30 @@ class _EvidenceCard extends StatelessWidget {
 /// The longer post-case story scrolls: its lines fade out at the top and
 /// bottom edges instead of being cut off under the greeting.
 class _StoryEdges extends StatelessWidget {
-  const _StoryEdges({required this.fade, required this.child});
+  const _StoryEdges({required this.fade, required this.child, this.fadeTop = false});
 
   final bool fade;
+
+  /// Only the top edge fades (the lines above the newest one).
+  final bool fadeTop;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    if (!fade) return child;
+    if (!fade) {
+      // Always the same mask (only its colours change), so the scroll view
+      // under it is never rebuilt: no jump when the lines start to overflow.
+      return ShaderMask(
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (rect) => LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [fadeTop ? Colors.transparent : Colors.white, Colors.white],
+          stops: const [0, 0.12],
+        ).createShader(rect),
+        child: child,
+      );
+    }
     return ShaderMask(
       blendMode: BlendMode.dstIn,
       shaderCallback: (rect) => const LinearGradient(

@@ -7,6 +7,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/mission.dart';
 import '../../../data/models/workshop_puzzles.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import 'mark_compare.dart' show WorkshopChoice;
@@ -301,7 +302,7 @@ class _NoteRead extends StatelessWidget {
                 children: [
                   Text(note.name, style: AppText.mark(color: ink, size: 13)),
                   const SizedBox(height: 2),
-                  Text(note.lines.join(' '), style: handwriting(18, color: ink)),
+                  GlossaryText(note.lines.join(' '), style: handwriting(18, color: ink), wordSemantics: false),
                 ],
               ),
             ),

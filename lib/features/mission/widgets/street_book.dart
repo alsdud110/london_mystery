@@ -8,6 +8,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/mission.dart';
 import '../../../data/models/river_puzzles.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/evidence_card.dart' show EvidenceLinkRow, showEvidenceZoom;
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
@@ -204,7 +205,9 @@ class _AddressPanel extends StatelessWidget {
         children: [
           Text(entry.name, key: const ValueKey('book-panel-name'), style: AppText.title(size: 21, color: AppColors.navyDeep)),
           const SizedBox(height: AppSpace.xs),
-          for (final line in entry.lines) Text(line, style: AppText.bodyText(size: 17)),
+          // The address read large: its harder words can be looked up here
+          // (on the page, a tap picks the address).
+          for (final line in entry.lines) GlossaryText(line, style: AppText.bodyText(size: 17)),
           const SizedBox(height: AppSpace.md),
           Text(scene.evidenceTask, style: AppText.eyebrow()),
           const SizedBox(height: AppSpace.sm),

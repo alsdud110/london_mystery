@@ -161,7 +161,7 @@ class _KeeperHutState extends State<KeeperHut> {
         const SizedBox(height: AppSpace.md),
         DecoratedBox(
           decoration: BoxDecoration(boxShadow: AppShadow.paperLift, borderRadius: BorderRadius.circular(AppRadius.paper)),
-          child: LedgerPageView(key: const ValueKey('ledger-page-0'), scene: _scene, page: 0, circled: circled, onBox: widget.onCircle),
+          child: LedgerPageView(key: const ValueKey('ledger-page-0'), scene: _scene, page: 0, circled: circled, onBox: widget.onCircle, words: true),
         ),
         const SizedBox(height: AppSpace.sm),
         Wrap(
@@ -176,7 +176,7 @@ class _KeeperHutState extends State<KeeperHut> {
                 context,
                 title: _scene.pages.first.title,
                 aspect: LedgerEvidenceArt(_scene, 0).aspect,
-                child: LedgerPageView(scene: _scene, page: 0, circled: circled),
+                child: LedgerPageView(scene: _scene, page: 0, circled: circled, words: true),
               ),
             ),
             InkTextButton(
@@ -314,8 +314,8 @@ class _LedgerSecondPageState extends State<LedgerSecondPage> {
             key: ValueKey(_turned ? 'ledger-page-1' : 'ledger-page-0-solved'),
             decoration: BoxDecoration(boxShadow: AppShadow.paperLift, borderRadius: BorderRadius.circular(AppRadius.paper)),
             child: _turned
-                ? LedgerPageView(scene: s, page: 1, found: _found ? s.findBox : null, onBox: _found ? null : _tap)
-                : LedgerPageView(scene: s, page: 0, circled: widget.answer),
+                ? LedgerPageView(scene: s, page: 1, found: _found ? s.findBox : null, onBox: _found ? null : _tap, words: true)
+                : LedgerPageView(scene: s, page: 0, circled: widget.answer, words: true),
           ),
         ),
         if (_missed) ...[

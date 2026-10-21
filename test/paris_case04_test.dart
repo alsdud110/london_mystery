@@ -413,7 +413,13 @@ void main() {
     });
 
     test('every word in its glossary is in its text', () {
-      final text = everything(case04.allMissions, e: case04).toLowerCase();
+      // Its text: the missions' words, and the papers read in its puzzles
+      // (the ledger's lines, the street book's), whose words are dotted too.
+      final text = [
+        everything(case04.allMissions, e: case04),
+        for (final p in hut.pages) for (final e in p.entries) e.words,
+        for (final e in book.entries) ...e.lines,
+      ].join('\n').toLowerCase();
       for (final w in case04.glossary.keys) {
         expect(text, contains(w), reason: w);
       }
@@ -705,7 +711,7 @@ void main() {
         await tapKey('mark-close-done');
         await tapKey('marks-plaque', after: const Duration(milliseconds: 600));
         expect(find.byKey(const ValueKey('plaque-back')), findsOneWidget, reason: 'it opens on the back');
-        expect(t.widget<Text>(find.byKey(const ValueKey('plaque-side-words'))).style!.fontSize, greaterThanOrEqualTo(20));
+        expect(t.widget<Text>(find.descendant(of: find.byKey(const ValueKey('plaque-side-words')), matching: find.byType(Text))).style!.fontSize, greaterThanOrEqualTo(20));
         await shot('m1_plaque_back');
         await tapKey('plaque-turn', after: const Duration(milliseconds: 500));
         expect(find.byKey(const ValueKey('plaque-front')), findsOneWidget);

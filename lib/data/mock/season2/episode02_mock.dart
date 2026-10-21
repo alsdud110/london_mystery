@@ -311,7 +311,9 @@ const Map<String, dynamic> season2Episode02Json = {
       'id': 's2_ep02_e4',
       'name': "The Painter's Message",
       'icon': 'letter',
-      'description': 'Written on the back of his canvas.',
+      // His note with it, kept in the notebook: what he saw is a lead for
+      // later cases, never who it was.
+      'description': 'Written on the back of his canvas. His note with it says: "I saw who took the hour."',
       'inscription': 'A city can lose an hour. But who can steal it?',
     },
     'successMessage': 'You found the right canvas!',
@@ -326,6 +328,8 @@ const Map<String, dynamic> season2Episode02Json = {
       '"I saw who took the hour. So I hid my sketch, left my notes for you, and went away to keep the secret safe. — P."',
       'Nobody took the painter.',
       'He hid his own sketch. He left his notes for you.',
+      // How his painting came into the brass box is asked, never told.
+      'Did he leave his painting in the brass box for you, too?',
       'He left on his own.',
       'But someone is still stealing the hours of Paris.',
     ],

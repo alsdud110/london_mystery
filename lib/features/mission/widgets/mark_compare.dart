@@ -8,6 +8,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/mission.dart';
 import '../../../data/models/workshop_puzzles.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import 'workshop_papers.dart';
@@ -107,20 +108,18 @@ class _MarkCompareState extends State<MarkCompare> {
           ),
         ),
         const SizedBox(height: AppSpace.md),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: AppSpace.sm,
-          crossAxisSpacing: AppSpace.sm,
-          childAspectRatio: 3.0,
+        // A thing is chosen only once the sheet has been laid on every
+        // stamp: the choice is a comparison, never a guess.
+        WorkshopChoices(
+          open: all,
+          lockedLine: 'Lay the sheet on every stamp first (${widget.compared.length} of ${_scene.seals.length}).',
           children: [
             for (final o in widget.mission.options)
               WorkshopChoice(
                 key: ValueKey('bench-${o.id}'),
                 label: o.label,
                 selected: _choice == o.id,
-                onTap: () => setState(() => _choice = o.id),
+                onTap: all ? () => setState(() => _choice = o.id) : null,
               ),
           ],
         ),
@@ -130,7 +129,7 @@ class _MarkCompareState extends State<MarkCompare> {
           label: _scene.chooseLabel,
           glyph: InkGlyph.check,
           tap: TapRole.primary,
-          onPressed: _choice != null && !_checking ? _check : null,
+          onPressed: all && _choice != null && !_checking ? _check : null,
         ),
       ],
     );
@@ -226,9 +225,43 @@ class WorkshopNote extends StatelessWidget {
       children: [
         Text(intro, textAlign: TextAlign.center, style: AppText.caption()),
         const SizedBox(height: 2),
-        Text(text, textAlign: TextAlign.center, style: AppText.letter(size: 18)),
+        GlossaryText(text, textAlign: TextAlign.center, style: AppText.letter(size: 18)),
       ],
     ),
+  );
+}
+
+/// Case 05's choices, two by two: dimmed, with [lockedLine] under them,
+/// until what they are chosen from has been looked at ([open]).
+class WorkshopChoices extends StatelessWidget {
+  const WorkshopChoices({super.key, required this.open, required this.lockedLine, required this.children});
+
+  final bool open;
+  final String lockedLine;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      AnimatedOpacity(
+        duration: const Duration(milliseconds: 250),
+        opacity: open ? 1 : 0.45,
+        child: GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: AppSpace.sm,
+          crossAxisSpacing: AppSpace.sm,
+          childAspectRatio: 3.0,
+          children: children,
+        ),
+      ),
+      if (!open) ...[
+        const SizedBox(height: AppSpace.sm),
+        Text(lockedLine, key: const ValueKey('choices-locked'), textAlign: TextAlign.center, style: AppText.aside(size: 15)),
+      ],
+    ],
   );
 }
 

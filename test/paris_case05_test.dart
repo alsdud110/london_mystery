@@ -282,7 +282,7 @@ void main() {
     test('Final: only letter 4417\'s three slips, in time order, make the trail; it stops at the Louvre post room', () {
       final ours = [for (final s in trail.slips) if (s.letter == '4417' && s.date == '16 MAY') s];
       int minutes(String t) {
-        final [h, m] = t.replaceAll(' PM', '').split(':').map(int.parse).toList();
+        final [h, m] = t.replaceAll(RegExp(r' [AP]M$'), '').split(':').map(int.parse).toList();
         return (t.endsWith('PM') && h != 12 ? h + 12 : h) * 60 + m;
       }
 
@@ -337,7 +337,13 @@ void main() {
     });
 
     test('every word in its glossary is in its text', () {
-      final text = everything(case05.allMissions, e: case05).toLowerCase();
+      // Its text: the missions' words, and the papers read in its puzzles
+      // (the clocks' backs, the blotted notes, the slips), dotted too.
+      final text = [
+        everything(case05.allMissions, e: case05),
+        for (final c in wall.clocks) c.backNote,
+        for (final n in blotter.notes) ...n.lines,
+      ].join('\n').toLowerCase();
       for (final w in case05.glossary.keys) {
         expect(text, contains(w), reason: w);
       }
@@ -603,6 +609,10 @@ void main() {
         expect(find.byKey(const ValueKey('maker-note')), findsOneWidget);
         nothingOfTheLetter('M1');
         await shot('m1_bench');
+        // Nothing is chosen before the sheet is laid on every stamp.
+        expect(find.byKey(const ValueKey('choices-locked')), findsOneWidget);
+        await tapKey('bench-d');
+        expect(t.widget<GameButton>(find.byKey(const ValueKey('bench-check'))).onPressed, isNull, reason: 'not compared yet');
         await tapKey('seal-spot-b', after: const Duration(milliseconds: 600));
         expect(find.byKey(const ValueKey('seal-close-b')), findsOneWidget);
         await shot('m1_stamp_b');
@@ -627,6 +637,7 @@ void main() {
           await tapKey('seal-close-done');
         }
         expect(examined(), containsAll(['s2_ep05_m1:sheet-a', 's2_ep05_m1:sheet-c', 's2_ep05_m1:sheet-d']));
+        expect(find.byKey(const ValueKey('choices-locked')), findsNothing, reason: 'all four compared');
         await tapKey('bench-c');
         await tapKey('bench-check');
         await wrongThenTryAgain('Count the hands', 'm1');
@@ -641,6 +652,10 @@ void main() {
         expect(find.byKey(const ValueKey('repair-card-note')), findsOneWidget);
         expect(find.byKey(const ValueKey('clocks-later')), findsNothing);
         expect(t.widget<GameButton>(find.byKey(const ValueKey('clocks-check'))).onPressed, isNull, reason: 'a clock chosen first');
+        // Nothing is chosen before the minute is watched.
+        expect(find.byKey(const ValueKey('choices-locked')), findsOneWidget);
+        await tapKey('clock-iii');
+        expect(t.widget<GameButton>(find.byKey(const ValueKey('clocks-check'))).onPressed, isNull, reason: 'not watched yet');
         await shot('m2_wall');
         await tapKey('clocks-watch', after: const Duration(milliseconds: 1500));
         expect(find.byKey(const ValueKey('clocks-watching')), findsOneWidget, reason: 'the minute plays');
@@ -648,6 +663,7 @@ void main() {
         await wait(t, const Duration(seconds: 5));
         expect(find.text('ONE MINUTE LATER…'), findsOneWidget);
         expect(examined(), contains('s2_ep05_m2:watched'));
+        expect(find.byKey(const ValueKey('choices-locked')), findsNothing, reason: 'watched');
         for (final c in wall.clocks) {
           expect(find.byKey(ValueKey('clock-time-${c.id}')), findsOneWidget);
         }
@@ -655,10 +671,10 @@ void main() {
         await shot('m2_later');
         await tapKey('clock-spot-ii', after: const Duration(milliseconds: 600));
         expect(find.byKey(const ValueKey('clock-back-ii')), findsOneWidget);
-        expect(find.text('A big new spring.'), findsOneWidget);
+        expect(findReadable('A big, shiny spring.'), findsOneWidget);
         await tapKey('clock-back-done');
         await tapKey('clock-spot-iii', after: const Duration(milliseconds: 600));
-        expect(find.text('One small brass wheel, added.'), findsOneWidget);
+        expect(findReadable('A small brass wheel at the side of the gears.'), findsOneWidget);
         await shot('m2_back_iii');
         await tapKey('clock-back-done');
         expect(examined(), containsAll(['s2_ep05_m2:back-ii', 's2_ep05_m2:back-iii']));

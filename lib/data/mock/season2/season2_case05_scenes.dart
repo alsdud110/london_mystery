@@ -158,8 +158,8 @@ final Map<String, ClockWallScene> season2ClockWalls = {
         shows: 3 * 60 + 10,
         change: 1,
         back: '$_case05/clock_back_normal.png',
-        backLabel: 'The back of Clock I: brass gears and two weights, nothing added',
-        backNote: 'Good gears. Nothing added.',
+        backLabel: 'The back of Clock I: brass gears and two weights',
+        backNote: 'Brass gears and two weights.',
       ),
       WallClock(
         id: 'ii',
@@ -171,8 +171,8 @@ final Map<String, ClockWallScene> season2ClockWalls = {
         shows: 7 * 60 + 25,
         change: 5,
         back: '$_case05/clock_back_spring.png',
-        backLabel: 'The back of Clock II: a big new spring in the middle of the gears',
-        backNote: 'A big new spring.',
+        backLabel: 'The back of Clock II: a big, shiny spring in the middle of the gears',
+        backNote: 'A big, shiny spring.',
       ),
       WallClock(
         id: 'iii',
@@ -185,7 +185,7 @@ final Map<String, ClockWallScene> season2ClockWalls = {
         change: -1,
         back: '$_case05/clock_back_extra_wheel.png',
         backLabel: 'The back of Clock III: one small brass wheel at the side of the gears',
-        backNote: 'One small brass wheel, added.',
+        backNote: 'A small brass wheel at the side of the gears.',
       ),
       WallClock(
         id: 'iv',
@@ -298,9 +298,9 @@ final Map<String, PostTrailScene> season2PostTrails = {
     slips: const [
       PostSlip(id: 's3', letter: '4417', date: '16 MAY', time: '4:00 PM', record: 'HELD', where: 'LOUVRE POST ROOM'),
       PostSlip(id: 's5', letter: '4471', date: '16 MAY', time: null, record: 'COLLECTED', where: 'CORNER BOX'),
-      PostSlip(id: 's1', letter: '4417', date: '16 MAY', time: '9:00', record: 'COLLECTED', where: 'PASSAGE BOX'),
+      PostSlip(id: 's1', letter: '4417', date: '16 MAY', time: '9:00 AM', record: 'COLLECTED', where: 'PASSAGE BOX'),
       PostSlip(id: 's4', letter: '2903', date: '3 MAY', time: null, record: 'DELIVERED', where: 'RUE DU BAC'),
-      PostSlip(id: 's2', letter: '4417', date: '16 MAY', time: '11:00', record: 'SORTED', where: 'CENTRAL OFFICE'),
+      PostSlip(id: 's2', letter: '4417', date: '16 MAY', time: '11:00 AM', record: 'SORTED', where: 'CENTRAL OFFICE'),
     ],
     slots: const ['first', 'second', 'third'],
     slotLabels: const ['1st', '2nd', '3rd'],
@@ -310,7 +310,7 @@ final Map<String, PostTrailScene> season2PostTrails = {
     stageView: _workshop.rect(1000, 100, 1536, 820),
     stageLabel: 'The workshop door, a line of light under it',
     pickTask: 'Tap a slip, then tap its place on the trail.',
-    placeTask: 'Now tap 1st, 2nd or 3rd.',
+    placeTask: 'Now tap its place on the trail above: 1st, 2nd or 3rd.',
     submitLabel: 'FOLLOW THE LETTER',
   ),
 };

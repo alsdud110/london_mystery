@@ -141,7 +141,9 @@ const Map<String, dynamic> season2Episode04Json = {
       ],
       'letterIntro': 'Your notebook says:',
       'letter':
-          'Something came from the Eiffel Tower.\n'
+          // Case 03's end: the crate gone from the service room, its tag
+          // TO: THE RIVER.
+          'The crate from the tower went to the river.\n'
           'The River Mark says QUAY 3.\n\n'
           "Find the keeper's ledger.\n"
           'Where is the crate now?',
@@ -411,5 +413,10 @@ const Map<String, dynamic> season2Episode04Json = {
     'workshops': '작업장, 공방',
     'trust': '믿다',
     'evidence': '증거',
+    'bookseller': '책 파는 사람',
+    'chain': '쇠사슬',
+    'houses': '집들 (번지)',
+    'shops': '가게들',
+    'iron': '철로 된',
   },
 };

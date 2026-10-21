@@ -67,6 +67,10 @@ const Map<String, dynamic> season2Episode05Json = {
       'scene': 'workbenchMarks',
       'story': [
         'Inside No. 7, tools lie on a long workbench.',
+        // Case 04's Box 23: its crate came here (ledger: for No. 7; label:
+        // CLOCK PARTS, the watchmakers).
+        'Behind it stands an empty crate, with brown paper and string, just like in Box 23.',
+        'The clock parts from the tower came here.',
         'Four things on it are stamped with two clock hands.',
         'They look the same. Are they?',
       ],
@@ -208,10 +212,10 @@ const Map<String, dynamic> season2Episode05Json = {
       'letter':
           'Read the backwards notes in the mirror.\n'
           "Trust only the maker's own mark.\n"
-          'Then find where the letter is.',
+          'What does it say? Where should you look?',
       // The place the note with the maker's own mark names.
       'type': 'multipleChoice',
-      'question': 'Where did the maker put the letter?',
+      'question': "Which place does the maker's own note name?",
       'options': [
         {
           'id': 'corner',
@@ -256,7 +260,10 @@ const Map<String, dynamic> season2Episode05Json = {
         'Inside Clock III, there is no letter.',
         'Only a torn envelope corner and a small receipt.',
         '16 MAY — ONE LETTER COLLECTED FROM No. 7.',
-        'The letter has gone into the post.',
+        // What is known, then what is asked: the maker's own note says the
+        // letter was hidden here; who took it out, nothing tells.
+        "The maker's note said the letter was hidden here.",
+        'Now it is gone. Did someone take it out?',
         'Under the door, post slips have piled up.',
       ],
       'nextMissionId': 's2_ep05_final',
@@ -275,6 +282,9 @@ const Map<String, dynamic> season2Episode05Json = {
       'Under the door, post slips have piled up.',
       'The post leaves one each time a letter moves.',
       'Nobody was here to read them.',
+      // "Collected from No. 7" (the receipt) and "the passage box" (a
+      // slip) are one place.
+      'The post box of the passage stands right outside No. 7.',
     ],
     'letterIntro': 'The receipt from Clock III says:',
     'letter':
@@ -303,10 +313,10 @@ const Map<String, dynamic> season2Episode05Json = {
       'third:s5': 'Look at the letter number. Is it 4417?',
       'first:s2': 'Put the times in order: which came first?',
       'first:s3': 'Put the times in order: which came first?',
-      'second:s1': 'Put the times in order: 9:00, then 11:00, then 4:00 PM.',
-      'second:s3': 'Put the times in order: 9:00, then 11:00, then 4:00 PM.',
-      'third:s1': 'Put the times in order: 9:00, then 11:00, then 4:00 PM.',
-      'third:s2': 'Put the times in order: 9:00, then 11:00, then 4:00 PM.',
+      'second:s1': 'Read the time on each slip again. Which one came in the middle?',
+      'second:s3': 'Read the time on each slip again. Which one came in the middle?',
+      'third:s1': 'Read the time on each slip again. Which one came last?',
+      'third:s2': 'Read the time on each slip again. Which one came last?',
     },
     'hints': [
       'Look at the letter number on each slip. Is it the same as on the receipt?',
@@ -388,5 +398,15 @@ const Map<String, dynamic> season2Episode05Json = {
     'delivered': '배달됐다',
     'trail': '지나간 길, 흔적',
     'order': '순서',
+    'gears': '톱니바퀴들',
+    'spring': '태엽, 용수철',
+    'pendulum': '시계추',
+    'hook': '고리',
+    'broken': '부러진, 고장 난',
+    'turns': '돌아간다',
+    'central': '중앙의',
+    'office': '사무소',
+    'crate': '나무 상자',
+    'empty': '빈',
   },
 };

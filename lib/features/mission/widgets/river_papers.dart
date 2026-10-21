@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../data/models/river_puzzles.dart';
 import '../../../data/models/scene_explore.dart' show ScenePixels;
+import '../../../widgets/glossary_text.dart';
 import 'tower_documents.dart';
 import 'workshop_papers.dart' show DrawnEvidenceView;
 
@@ -133,13 +134,17 @@ class RiverMarkView extends StatelessWidget {
 /// numbers can be circled ([onBox]); [circled] is the one circled, [found]
 /// a line found on it (picked out in ink).
 class LedgerPageView extends StatelessWidget {
-  const LedgerPageView({super.key, required this.scene, required this.page, this.circled, this.found, this.onBox});
+  const LedgerPageView({super.key, required this.scene, required this.page, this.circled, this.found, this.onBox, this.words = false});
 
   final KeeperHutScene scene;
   final int page;
   final String? circled;
   final String? found;
   final ValueChanged<String>? onBox;
+
+  /// Its harder words can be tapped for their meaning (the page read in
+  /// the hut; not a small picture of it that opens as a whole).
+  final bool words;
 
   static const _ink = AppColors.ink;
 
@@ -181,7 +186,7 @@ class LedgerPageView extends StatelessWidget {
                         Container(height: 2, margin: const EdgeInsets.only(top: 6, bottom: 10), color: AppColors.navyDeep.withValues(alpha: 0.5)),
                         for (final (i, e) in p.entries.indexed)
                           Expanded(
-                            child: _LedgerLine(index: i, entry: e, style: text, hands: scene.hands, circled: circled, found: found != null && e.boxes.contains(found), onBox: onBox, page: page),
+                            child: _LedgerLine(index: i, entry: e, style: text, hands: scene.hands, circled: circled, found: found != null && e.boxes.contains(found), onBox: onBox, page: page, words: words),
                           ),
                       ],
                     ),
@@ -197,7 +202,9 @@ class LedgerPageView extends StatelessWidget {
 }
 
 class _LedgerLine extends StatelessWidget {
-  const _LedgerLine({required this.index, required this.entry, required this.style, required this.hands, required this.circled, required this.found, required this.onBox, required this.page});
+  const _LedgerLine({required this.index, required this.entry, required this.style, required this.hands, required this.circled, required this.found, required this.onBox, required this.page, required this.words});
+
+  final bool words;
 
   /// Its place on the page (a box can be on more than one line).
   final int index;
@@ -234,9 +241,10 @@ class _LedgerLine extends StatelessWidget {
                   width: 420,
                   child: ExcludeSemantics(
                     excluding: onBox == null,
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
+                    child: GlossaryText.spans(
+                      style: style,
+                      interactive: words,
+                      [
                           TextSpan(
                             text: '${e.date}  ',
                             style: style.copyWith(fontSize: style.fontSize! * 0.8, color: AppColors.inkBrown, fontWeight: FontWeight.w800),
@@ -256,8 +264,7 @@ class _LedgerLine extends StatelessWidget {
                               )
                             else
                               TextSpan(text: part.text, style: style),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
                 ),

@@ -31,7 +31,14 @@ class SeasonMap {
     this.missionLandmarks = const {},
     this.caseLandmarks = const {},
     this.groupHeights = const {},
+    this.namesClearOfCurrent = false,
   });
+
+  /// A landmark's name never lies under the current place's YOU'RE HERE
+  /// note, pin or name, nor under a solved place's mark: it is lettered
+  /// above its landmark instead, or left out while they would meet. Paris
+  /// only: London's names are as they always were.
+  final bool namesClearOfCurrent;
 
   /// The map artwork asset.
   final String artwork;
@@ -85,6 +92,7 @@ class SeasonMap {
     // pushed 0.17 down, off the hill. At 0.6 of the height its places stay
     // between the basilica's steps and the foot of the hill, still apart.
     groupHeights: {ParisLandmark.montmartre: 0.6},
+    namesClearOfCurrent: true,
   );
 
   /// Every season's map by season id. A season without one is not ready:

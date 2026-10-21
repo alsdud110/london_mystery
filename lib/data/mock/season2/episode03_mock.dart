@@ -242,13 +242,16 @@ const Map<String, dynamic> season2Episode03Json = {
         'icon': 'key',
         'description': 'Behind the locked iron door at the Service Level.',
         'inscription':
-            'A hidden machine room. Only the service staff can come in. At the back stands an old time-recording machine.',
+            'A hidden machine room. Only the service staff can come in. At the back stands an old time-recording machine. '
+            'On the floor, a square mark in the dust where a heavy crate stood.',
       },
       'successMessage': 'The lock is open!',
       'transition': [
         'Click. The padlock opens.',
         'Behind the iron door is a small hidden room.',
         'Wheels, cables and gears. And at the back, an old machine with a clock.',
+        // Where Case 04's crate comes from: it stood here, and is gone.
+        'On the floor, a square mark in the dust. A heavy crate stood here. Now it is gone.',
         'Two time cards are still inside it.',
       ],
       'nextMissionId': 's2_ep03_final',
@@ -270,8 +273,11 @@ const Map<String, dynamic> season2Episode03Json = {
     ],
     'letterIntro': 'The two time cards say:',
     'letter':
-        'OFFICIAL TIME — 4:00\n\n'
-        'RECORDED TIME — 3:00',
+        'OFFICIAL TIME — 4:00\n'
+        'RECORDED TIME — 3:00\n\n'
+        // The cards say what the two records at the entrance said (M1).
+        'One hour apart, like the visitor notice\n'
+        'and the maintenance log at the entrance.',
     // Each question's evidence (`question:e1+e2`, in the evidence's order),
     // then what can be concluded (`why:…`). The order the evidence was found
     // in answers nothing: question 3 needs two pieces.
@@ -333,6 +339,10 @@ const Map<String, dynamic> season2Episode03Json = {
       'Below them is a single word.',
       'SEINE.',
       'The river that runs through Paris.',
+      // The crate gone from the floor (M3) went the same way: Case 04
+      // follows it. Where on the river, the plaque's back says.
+      'Beside the square mark in the dust, you find a torn shipping tag.',
+      'FROM: SERVICE LEVEL. TO: THE RIVER.',
       'Who left this message?',
       'And why does it lead to the river?',
     ],
@@ -399,5 +409,13 @@ const Map<String, dynamic> season2Episode03Json = {
     'brass': '황동, 놋쇠',
     'waves': '물결들',
     'river': '강',
+    'square': '네모난',
+    'dust': '먼지',
+    'crate': '나무 상자',
+    'gone': '사라진, 없어진',
+    'torn': '찢어진',
+    'shipping': '배송',
+    'tag': '꼬리표',
+    'run': '운행, 운행하다',
   },
 };

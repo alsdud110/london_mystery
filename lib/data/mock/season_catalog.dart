@@ -28,6 +28,7 @@ import 'season1/season1_inspections.dart';
 import 'season1/season1_investigations.dart';
 import 'season1/season1_learning.dart';
 import 'season1/season1_mock.dart';
+import 'season2/season2_discoveries.dart';
 import 'season2/season2_case03_scenes.dart';
 import 'season2/season2_case04_scenes.dart';
 import 'season2/season2_case05_scenes.dart';
@@ -48,6 +49,7 @@ class SeasonContent {
     required this.episodes,
     this.awaitingArt = const {},
     this.released = true,
+    this.storyGreeting = true,
     this.investigations = const {},
     this.explores = const {},
     this.inspections = const {},
@@ -103,6 +105,12 @@ class SeasonContent {
   /// game; only an operator build's season preview plays it (see
   /// `SeasonAvailability`).
   final bool released;
+
+  /// The story after a solve greets the detective ("Great work, Detective
+  /// …") under MISSION / CASE COMPLETE. Season 2 leaves it out: its
+  /// Discovery Moment has just cheered the solve, and the story goes
+  /// straight on.
+  final bool storyGreeting;
 
   final Map<String, InvestigationScene> investigations;
   final Map<String, ExploreScene> explores;
@@ -204,7 +212,9 @@ final season2Content = SeasonContent(
   info: season2InfoJson,
   episodes: season2Json,
   awaitingArt: season2AwaitingArtJson,
+  discoveries: season2DiscoveriesOf(season2Json),
   released: true,
+  storyGreeting: false,
   clocks: season2Clocks,
   stationClocks: season2StationClocks,
   compares: season2Compares,
@@ -378,6 +388,10 @@ abstract final class SeasonCatalog {
 
   /// The evidence [evidenceId] matches, from its season's content (evidence
   /// ids are never shared between seasons), or null.
+  /// Whether the story after [m] greets the detective (a mission no
+  /// season has: as Season 1 does).
+  static bool storyGreeting(Mission m) => ofMission(m.id)?.storyGreeting ?? true;
+
   static EvidenceLink? evidenceLink(String evidenceId) {
     for (final s in all) {
       final link = s.evidenceLinks[evidenceId];

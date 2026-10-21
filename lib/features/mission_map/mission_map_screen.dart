@@ -670,6 +670,42 @@ class _MapNotReady extends StatelessWidget {
 /// The season's map world: the artwork, the route inked on it, the landmark
 /// names, and the pins of the places found so far — all at map positions,
 /// so they all move together with the camera.
+/// How wide a landmark's name may be lettered on the map.
+const landmarkNameWidth = 140.0;
+
+/// A landmark's name sits this far below its landmark point.
+const landmarkNameDrop = 18.0;
+
+/// Where landmark [l]'s name is lettered (its top left, world px): below
+/// its landmark, as always; on a map whose names keep clear of the places
+/// ([SeasonMap.namesClearOfCurrent]), above it when the name would meet the
+/// current pin's note, pin or name at [current] or a solved place's mark
+/// at one of [solved], and nowhere (null) when both would.
+Offset? landmarkNameAt(
+  MapLandmark l,
+  Size world,
+  Size name, {
+  Offset? current,
+  List<Offset> solved = const [],
+  bool clearOfCurrent = false,
+}) {
+  final x = l.at.dx * world.width;
+  final y = l.at.dy * world.height;
+  final below = Offset(x - landmarkNameWidth / 2, y + landmarkNameDrop);
+  if (!clearOfCurrent || (current == null && solved.isEmpty)) return below;
+  final keepOut = [
+    if (current != null)
+      for (final k in MapPin.currentMarks) k.shift(current).inflate(3),
+    for (final p in solved) Rect.fromCircle(center: p, radius: MapPin.markRadius + 2),
+  ];
+  // The lettering itself, centred in its box.
+  Rect drawn(Offset at) => Rect.fromLTWH(at.dx + (landmarkNameWidth - name.width) / 2, at.dy, name.width, name.height);
+  bool clear(Offset at) => keepOut.every((k) => !k.overlaps(drawn(at)));
+  if (clear(below)) return below;
+  final above = Offset(x - landmarkNameWidth / 2, y - landmarkNameDrop - name.height);
+  return clear(above) && above.dy >= 0 ? above : null;
+}
+
 class _MapWorldView extends StatelessWidget {
   const _MapWorldView({
     required this.map,
@@ -701,10 +737,28 @@ class _MapWorldView extends StatelessWidget {
   /// A landmark whose name is not lettered (the current pin names it).
   final MapLandmark? hideName;
 
-  static const _nameWidth = 140.0;
 
-  /// The landmark name sits this far below the landmark point.
-  static const _nameDrop = 18.0;
+  static final _nameStyle = AppText.style(
+    AppText.heading,
+    size: 12.5,
+    weight: FontWeight.w700,
+    color: AppColors.inkBrown,
+    letterSpacing: 0.3,
+  );
+
+  /// The size [name] is lettered at (one line, up to [landmarkNameWidth]).
+  static Size _nameSize(BuildContext context, String name) {
+    final painter = TextPainter(
+      text: TextSpan(text: name, style: _nameStyle),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout(maxWidth: landmarkNameWidth);
+    final size = painter.size;
+    painter.dispose();
+    return size;
+  }
+
 
   /// Where to draw a solved place's mark, at [at] (world px): there, or —
   /// if it would cover the current pin's note, pin or name around [current]
@@ -767,24 +821,24 @@ class _MapWorldView extends StatelessWidget {
         ),
         for (final l in map.landmarks)
           if (l != hideName)
-            Positioned(
-              left: l.at.dx * w - _nameWidth / 2,
-              top: l.at.dy * h + _nameDrop,
-              width: _nameWidth,
-              child: IgnorePointer(
-                child: MapLettering(
-                  l.name,
-                  maxLines: 1,
-                  style: AppText.style(
-                    AppText.heading,
-                    size: 12.5,
-                    weight: FontWeight.w700,
-                    color: AppColors.inkBrown,
-                    letterSpacing: 0.3,
-                  ),
+            if (landmarkNameAt(
+                  l,
+                  size,
+                  _nameSize(context, l.name),
+                  current: current,
+                  solved: [for (final p in pins) if (p.pin.state == PinState.completed) drawnAt[p.at]!],
+                  clearOfCurrent: map.namesClearOfCurrent,
+                )
+                case final at?)
+              Positioned(
+                key: ValueKey('landmark-name-${l.name}'),
+                left: at.dx,
+                top: at.dy,
+                width: landmarkNameWidth,
+                child: IgnorePointer(
+                  child: MapLettering(l.name, maxLines: 1, style: _nameStyle),
                 ),
               ),
-            ),
         Positioned.fill(
           // Its own layer: the red way is redrawn as it grows, not the map.
           child: IgnorePointer(

@@ -161,7 +161,7 @@ const Map<String, dynamic> season2Episode01Json = {
         'title': 'Letter I',
         'value': 'I',
         'symbol': 'ticket',
-        'note': 'The man with the pocket watch came first. Then the old clock went back one hour. On the ticket: I.',
+        'note': 'FIRST, the hall clock struck ten. NEXT, a man with a pocket watch came in. AFTER THAT, the old clock showed nine. On the ticket: I.',
       },
       'evidence': {
         'id': 's2_ep01_e2',
@@ -170,10 +170,14 @@ const Map<String, dynamic> season2Episode01Json = {
         'description': 'Dropped under the old clock this morning.',
         'inscription': 'MONTMARTRE · PARIS · No. 72831. On the back, a small letter: I.',
       },
-      'successMessage': 'The man changed the old clock!',
+      'successMessage': 'You put the events in order!',
       'transition': [
-        'The man came first. Then the old clock went back one hour.',
-        'He did it on purpose. He hid the hour.',
+        // The order as the clerk's notes give it, never more: whether the
+        // man changed the clock is a question, not a finding.
+        'FIRST, the hall clock struck ten.',
+        'NEXT, a man with a pocket watch came in.',
+        'AFTER THAT, the old clock showed nine.',
+        'Did the man change the old clock? Why would anyone hide an hour?',
         'The ticket in your hand has a letter on the back: I.',
       ],
       'nextMissionId': 's2_ep01_m3',
@@ -320,7 +324,6 @@ const Map<String, dynamic> season2Episode01Json = {
     'entered': '들어갔다',
     'waiting': '기다리는',
     'dropped': '떨어뜨렸다',
-    'purpose': '목적, 의도',
     'carved': '새겨진',
     'carving': '새긴 글씨',
     'frame': '틀, 테두리',

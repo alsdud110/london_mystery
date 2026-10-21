@@ -150,7 +150,7 @@ const Map<String, LearningObjective> season2Learning = {
     level: LearningLevel.application,
     skill: LanguageSkill.sentenceMeaning,
     objective: '장부에서 에펠탑에서 온 짐 가운데 QUAY 3에 있는 것을 찾고, "Box 17 moved to Box 23"의 moved를 이해해 짐이 지금 있는 상자(Box 23)를 고른다.',
-    expressions: ['Something came from the Eiffel Tower.', 'Where is the crate now?'],
+    expressions: ['The crate from the tower went to the river.', 'Where is the crate now?'],
   ),
   // A label is read from the top: FROM, CONTENTS, TO; the scrap that says
   // something else is left out.
@@ -196,7 +196,7 @@ const Map<String, LearningObjective> season2Learning = {
     level: LearningLevel.application,
     skill: LanguageSkill.sentenceMeaning,
     objective: '거울로 읽은 세 쪽지 중 진짜 서명이 있는 쪽지의 "I hid it in the clock that turns back."을 이해하고, M2에서 찾은 거꾸로 도는 시계(Clock III)와 연결한다.',
-    expressions: ["Trust only the maker's own mark.", 'Where did the maker put the letter?'],
+    expressions: ["Trust only the maker's own mark.", "Which place does the maker's own note name?"],
   ),
   // The slips are read for their letter number, date and record words, then
   // put in time order.

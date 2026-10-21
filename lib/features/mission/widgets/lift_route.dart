@@ -6,6 +6,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/mission.dart';
 import '../../../data/models/tower_puzzles.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import 'tower_documents.dart';
@@ -388,7 +389,7 @@ class _LegendRow extends StatelessWidget {
             ),
           ),
           SizedBox(width: unit * 0.4),
-          Text(text, style: paperInk(size: unit * 0.8, weight: FontWeight.w800, color: color)),
+          GlossaryText(text, style: paperInk(size: unit * 0.8, weight: FontWeight.w800, color: color)),
         ],
       ),
     );

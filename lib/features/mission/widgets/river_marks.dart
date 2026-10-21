@@ -6,6 +6,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/mission.dart';
 import '../../../data/models/river_puzzles.dart';
+import '../../../widgets/glossary_text.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import 'evidence_board.dart' show BrassPlaque;
@@ -295,9 +296,10 @@ Future<void> showMarkCloser(BuildContext context, {required RiverMarksScene scen
                       ),
                       const SizedBox(height: AppSpace.md),
                       ExcludeSemantics(
-                        child: Text(
+                        child: GlossaryText(
                           mark.word,
                           textAlign: TextAlign.center,
+                          linkColor: AppColors.goldLight,
                           style: AppText.title(size: 22, color: AppColors.goldLight).copyWith(letterSpacing: 2),
                         ),
                       ),
@@ -375,10 +377,11 @@ class _PlaqueSidesState extends State<_PlaqueSides> {
                   const SizedBox(height: AppSpace.lg),
                   // What the brass says, in words a child reads at once.
                   ExcludeSemantics(
-                    child: Text(
+                    child: GlossaryText(
                       _back ? s.plaqueBack.lines.join('\n') : '${s.plaqueFront.plaqueMessage}\nUnder the waves: ${s.plaqueFront.riverWord}',
                       key: const ValueKey('plaque-side-words'),
                       textAlign: TextAlign.center,
+                      linkColor: AppColors.goldLight,
                       style: AppText.title(size: 21, color: AppColors.goldLight).copyWith(height: 1.4),
                     ),
                   ),
