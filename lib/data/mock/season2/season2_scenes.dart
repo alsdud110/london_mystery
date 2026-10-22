@@ -254,13 +254,15 @@ final _hallWhole = StoryPicture(
   clocks: _hallClocks,
 );
 
-/// The Lost Property desk, the old clock above it.
+/// The Lost Property desk whole: its sign board, the lit shelves behind the
+/// glass, the counter down to the floor, a luggage trolley and the hall
+/// beside it (wider than tall: a print a phone shows large). Right of the
+/// platform clock's lamp, under the old clock's bracket.
 final _desk = StoryPicture(
   file: '$_case01/station_hall_clocks.png',
   pixels: _hall,
-  crop: _hall.rect(1060, 190, 1536, 900),
-  label: 'The Lost Property desk, under the old brass clock',
-  clocks: [_oldClock],
+  crop: _hall.rect(905, 445, 1536, 1020),
+  label: 'The Lost Property desk: its counter, the shelves behind it and a luggage trolley',
 );
 
 /// The old clock in its brass bracket, high over the hall.
@@ -272,14 +274,17 @@ final _oldClockHigh = StoryPicture(
   clocks: [_oldClock],
 );
 
-/// The old clock's face, close: its hands at nine.
-final _oldClockClose = StoryPicture(
+/// The old clock on its wall: the bracket it hangs from, the lamp above it,
+/// the stone wall and the glass roof round it. (The picture shows it from
+/// below, at a slant: seen with the wall round it, it hangs as a clock
+/// does; never closer than this, nor through a lens.) Its hands at nine.
+/// Right of the platform clock (whose painted dial has no hands).
+final _oldClockWall = StoryPicture(
   file: '$_case01/station_hall_clocks.png',
   pixels: _hall,
-  crop: _hall.rect(1196, 200, 1408, 412),
-  label: 'The old clock up close, its hands at nine',
+  crop: _hall.rect(1070, 20, 1536, 600),
+  label: 'The old brass clock on the wall, its hands at nine',
   clocks: [_oldClock],
-  frame: StoryFrame.lens,
 );
 
 const _boxShut = StoryPicture(
@@ -303,12 +308,12 @@ final Map<String, StoryScenes> season2StoryScenes = {
       label: 'The lost ticket',
       cutOut: true,
     ),
-    next: _oldClockClose,
+    next: _oldClockWall,
   ),
-  // The old clock close; after it, its face put right at ten, and the box
-  // that slid out from under it.
+  // The old clock on its wall; after it, its face put right at ten, and the
+  // box that slid out from under it.
   's2_ep01_m3': StoryScenes(
-    place: _oldClockClose,
+    place: _oldClockWall,
     after: const StoryPicture(
       file: '$_case01/old_clock_face.png',
       pixels: _face,
@@ -447,7 +452,10 @@ final Map<String, StudioScene> season2Studios = {
     matchTask: 'Match each note to its painting.',
     missLine: 'Nothing here. Look in the places where things are put away.',
     deskFirstLine: 'Three notes. Find the paintings first: where did he put them away?',
-    matchHow: 'Tap a note, then tap its painting. Or drag the note onto it.',
+    matchHow: 'Tap a note.',
+    matchPainting: 'Now tap the painting for note {note}.',
+    matchDone: 'Every note has a painting. Tap CHECK.',
+    matchDrag: 'Tap a note again to let it go. You can also drag a note onto a painting.',
     // The desk, the trunk, the crate and the window above them.
     opening: _studio.rect(0, 640, 1024, 1440),
   ),
@@ -492,7 +500,11 @@ final Map<String, LayerScene> season2Layers = {
 // and a black iron gate between pillars, a blue sky. D: stone steps, a lamp
 // and a blue gate, a blue sky. The back (its own picture: the stretcher,
 // ATELIER MONTMARTRE on a label, "Paris, toujours plus haut") has a bare
-// lower panel: the message is written there.
+// lower panel: the message is written there. Each canvas stands a little
+// askew on its easel, the studio behind it; its painting, measured on all
+// four inside their edges (the left edge, nearest, at 60–135; the top at
+// 20–65; the right at 1465–1480; the foot at 925–985), is (140, 70)–
+// (1440, 900): only that is shown.
 const _canvas = ScenePixels(1536, 1024);
 
 final Map<String, CanvasScene> season2Canvases = {
@@ -504,6 +516,7 @@ final Map<String, CanvasScene> season2Canvases = {
       ChoiceCanvas(id: 'd', file: '$_case02/canvas_d.png', name: 'CANVAS D'),
     ],
     pixels: _canvas,
+    paint: _canvas.rect(140, 70, 1440, 900),
     back: '$_case02/canvas_back.png',
     backPixels: _canvas,
     writeOn: _canvas.rect(300, 600, 1290, 870),

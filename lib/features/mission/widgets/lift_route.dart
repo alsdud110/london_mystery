@@ -472,8 +472,12 @@ class _RoutePainter extends CustomPainter {
   bool shouldRepaint(_RoutePainter old) => old.passenger != passenger || old.service != service || old.width != width;
 }
 
-/// The lift log's page: its trips written on the ledger's left page, the
-/// stop not written as ?, the service run marked S.
+/// The lift log's page: its trips written into the ruled table of the
+/// ledger's left page ([SheetWriting]: in the page's own perspective) — the
+/// title in the title box, the column headings on the first row, then one
+/// trip a row, each word inside its own cell: the trip's number, its time,
+/// where from and where to (the stop not written as ?), and S in the last
+/// column for the service run.
 class LiftLogPage extends StatelessWidget {
   const LiftLogPage({super.key, required this.scene});
 
@@ -481,6 +485,22 @@ class LiftLogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final table = scene.logTable;
+    // As tall as a row allows (its words have no tails below the line).
+    final size = table.rowHeight * 0.7;
+    final ink = paperInk(size: size).copyWith(height: 1);
+    final unknown = paperInk(size: size, color: AppColors.burgundy, weight: FontWeight.w800).copyWith(height: 1);
+    TextSpan place(String p) => TextSpan(text: p, style: p == '?' ? unknown : ink);
+    // A cell's words, inside its lines (shrunk, never cut, to fit).
+    Widget cell(int column, int row, Widget child, {Alignment align = Alignment.centerLeft}) {
+      final r = table.cell(column, row);
+      final pad = table.rowHeight * 0.18;
+      return Positioned.fromRect(
+        rect: Rect.fromLTRB(r.left + pad, r.top + 3, r.right - pad, r.bottom - 3),
+        child: Align(alignment: align, child: FittedBox(fit: BoxFit.scaleDown, alignment: align, child: child)),
+      );
+    }
+
     return Semantics(
       image: true,
       label: '${scene.logTitle}. ${[
@@ -491,76 +511,65 @@ class LiftLogPage extends StatelessWidget {
         file: scene.log,
         pixels: scene.logPixels,
         crop: scene.logCrop,
-        overlayAt: scene.logWriteInCrop,
-        overlay: LayoutBuilder(
-          builder: (context, box) {
-            final unit = box.maxWidth / 12;
-            final ink = paperInk(size: unit * 0.78);
-            final unknown = paperInk(size: unit * 0.78, color: AppColors.burgundy, weight: FontWeight.w800);
-            TextSpan place(String p) => TextSpan(text: p, style: p == '?' ? unknown : ink);
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: unit * 0.3),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    height: box.maxHeight * 0.1,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(scene.logTitle, style: paperInk(size: unit * 0.8, weight: FontWeight.w800)),
-                    ),
+        overlay: SheetWriting(
+          corners: scene.logSheetInCrop,
+          flat: scene.logSheet.flat,
+          child: Stack(
+            children: [
+              Positioned.fromRect(
+                rect: table.titleBox,
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(scene.logTitle, style: paperInk(size: table.titleBox.height * 0.5, weight: FontWeight.w800).copyWith(height: 1)),
                   ),
-                  SizedBox(height: box.maxHeight * 0.05),
-                  for (final t in scene.trips)
-                    SizedBox(
-                      height: box.maxHeight * 0.12,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: unit * 2.4,
-                            child: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: Text(t.time, style: ink)),
-                          ),
-                          Expanded(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text.rich(TextSpan(children: [
-                                place(t.from),
-                                // The ink arrow (the type has no arrow glyph).
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: unit * 0.35),
-                                    child: InkIcon(InkGlyph.arrow, size: unit * 0.75, color: AppColors.ink),
-                                  ),
-                                ),
-                                place(t.to),
-                              ])),
-                            ),
-                          ),
-                          SizedBox(
-                            width: unit * 1.2,
-                            child: t.service
-                                ? Center(
-                                    child: Container(
-                                      key: const ValueKey('log-service-mark'),
-                                      padding: EdgeInsets.all(unit * 0.08),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: AppColors.burgundy, width: AppLine.rule),
-                                      ),
-                                      child: Text('S', style: paperInk(size: unit * 0.7, weight: FontWeight.w800, color: AppColors.burgundy)),
-                                    ),
-                                  )
-                                : null,
-                          ),
-                        ],
+                ),
+              ),
+              for (final (c, heading) in scene.logHeadings.indexed)
+                if (heading.isNotEmpty)
+                  cell(
+                    c,
+                    0,
+                    Text(heading, style: paperInk(size: size * 0.8, weight: FontWeight.w700, color: AppColors.muted).copyWith(height: 1)),
+                    align: c == 2 ? Alignment.centerLeft : Alignment.center,
+                  ),
+              for (final (i, t) in scene.trips.indexed) ...[
+                cell(0, i + 1, Text('${i + 1}', style: ink), align: Alignment.center),
+                cell(1, i + 1, Text(t.time, style: ink), align: Alignment.center),
+                cell(
+                  2,
+                  i + 1,
+                  Text.rich(TextSpan(children: [
+                    place(t.from),
+                    // The ink arrow (the type has no arrow glyph).
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: size * 0.4),
+                        child: InkIcon(InkGlyph.arrow, size: size * 0.9, color: AppColors.ink),
                       ),
                     ),
-                ],
-              ),
-            );
-          },
+                    place(t.to),
+                  ])),
+                ),
+                if (t.service)
+                  cell(
+                    3,
+                    i + 1,
+                    Container(
+                      key: const ValueKey('log-service-mark'),
+                      padding: EdgeInsets.all(size * 0.12),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.burgundy, width: size * 0.1),
+                      ),
+                      child: Text('S', style: paperInk(size: size * 0.85, weight: FontWeight.w800, color: AppColors.burgundy).copyWith(height: 1)),
+                    ),
+                    align: Alignment.center,
+                  ),
+              ],
+            ],
+          ),
         ),
       ),
     );

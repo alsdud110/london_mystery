@@ -747,7 +747,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? (stage.maxWidth / board.pixels.aspect)
                                 .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : canvases != null
-                            ? (stage.maxWidth / canvases.pixels.aspect)
+                            ? (stage.maxWidth / canvases.paintAspect)
                                 .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : box != null
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
@@ -908,7 +908,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       // The canvas looked at, whole (a tap looks closer), over the four.
       LayoutBuilder(
         builder: (context, box) => SizedBox(
-          height: (box.maxWidth / canvases.pixels.aspect).clamp(150.0, 340.0),
+          height: (box.maxWidth / canvases.paintAspect).clamp(150.0, 340.0),
           child: CanvasStage(
             key: const ValueKey('canvas-stage'),
             scene: canvases,

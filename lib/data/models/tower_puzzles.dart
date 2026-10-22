@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'dart:ui' show Offset, Rect;
+import 'dart:ui' show Offset, Rect, Size;
 
 import 'package:flutter/foundation.dart';
 
@@ -25,9 +25,82 @@ class RecordLine {
   final String value;
 }
 
+/// A sheet of paper as a picture shows it: its four corners (pixels of the
+/// picture, clockwise from the top left: a sheet seen at a slant is no
+/// rectangle), and its own size seen face on ([flat], in units of its own).
+/// What is written on it is laid out face on in [flat]'s units, then put on
+/// the sheet in the picture's perspective.
+@immutable
+class PaperQuad {
+  const PaperQuad({
+    required this.topLeft,
+    required this.topRight,
+    required this.bottomRight,
+    required this.bottomLeft,
+    required this.flat,
+  });
+
+  final Offset topLeft;
+  final Offset topRight;
+  final Offset bottomRight;
+  final Offset bottomLeft;
+  final Size flat;
+
+  List<Offset> get corners => [topLeft, topRight, bottomRight, bottomLeft];
+
+  /// The corners in fractions of [crop] (itself fractions of a picture
+  /// [pixels] large).
+  List<Offset> inCrop(Rect crop, ScenePixels pixels) => [
+        for (final c in corners)
+          Offset(
+            (c.dx / pixels.width - crop.left) / crop.width,
+            (c.dy / pixels.height - crop.top) / crop.height,
+          ),
+      ];
+}
+
+/// Where a record's words go on its sheet, face on (units of the sheet's
+/// [PaperQuad.flat]): the [title] in its box; each line on its own row
+/// ([rows]: each row's top, [rowHeight] tall), its label between
+/// [labelLeft] and [labelRight], its value between [valueLeft] and
+/// [valueRight]; the [note] on a row of its own ([noteRow], from [noteLeft]
+/// — the values' column by default — to [valueRight]). A line is picked
+/// anywhere within [reach] above or below its row (the rows between the
+/// lines are left empty for it).
+@immutable
+class RecordLayout {
+  const RecordLayout({
+    required this.title,
+    required this.rows,
+    required this.rowHeight,
+    required this.labelLeft,
+    required this.labelRight,
+    required this.valueLeft,
+    required this.valueRight,
+    this.noteRow,
+    this.noteLeft,
+    this.reach = 0,
+    this.ink = 0.9,
+  });
+
+  final Rect title;
+  final List<double> rows;
+  final double rowHeight;
+  final double labelLeft;
+  final double labelRight;
+  final double valueLeft;
+  final double valueRight;
+  final double? noteRow;
+  final double? noteLeft;
+  final double reach;
+
+  /// The words' size, in rows (capitals only: no tails below the line).
+  final double ink;
+}
+
 /// A record found at the place: its picture ([file], shown as [crop]), and
-/// what is written on its blank paper ([writeOn], fractions of the whole
-/// picture): a [title], the [lines] to compare and a last, unpicked [note].
+/// what is written on its blank paper ([sheet], laid out by [layout]): a
+/// [title], the [lines] to compare and a last, unpicked [note].
 @immutable
 class RecordDoc {
   const RecordDoc({
@@ -36,7 +109,8 @@ class RecordDoc {
     required this.file,
     required this.pixels,
     required this.crop,
-    required this.writeOn,
+    required this.sheet,
+    required this.layout,
     required this.title,
     required this.lines,
     required this.label,
@@ -54,8 +128,9 @@ class RecordDoc {
   /// The part of the picture shown (fractions).
   final Rect crop;
 
-  /// Where the writing goes (fractions of the whole picture).
-  final Rect writeOn;
+  /// The blank paper the words are written on, and where they go on it.
+  final PaperQuad sheet;
+  final RecordLayout layout;
   final String title;
   final List<RecordLine> lines;
   final String? note;
@@ -66,13 +141,33 @@ class RecordDoc {
   /// Width / height of the part shown.
   double get aspect => crop.width * pixels.width / (crop.height * pixels.height);
 
-  /// [writeOn] in fractions of the part shown.
-  Rect get writeInCrop => Rect.fromLTRB(
-        (writeOn.left - crop.left) / crop.width,
-        (writeOn.top - crop.top) / crop.height,
-        (writeOn.right - crop.left) / crop.width,
-        (writeOn.bottom - crop.top) / crop.height,
-      );
+  /// The sheet's corners in fractions of the part shown.
+  List<Offset> get sheetInCrop => sheet.inCrop(crop, pixels);
+}
+
+/// A ruled table on a sheet, face on (units of the sheet's
+/// [PaperQuad.flat]): its title box ([titleBox]), the left edges of its
+/// columns ([columns], the last one's right edge last), and the top of its
+/// first row ([top]), [rows] rows of [rowHeight] each.
+@immutable
+class LedgerTable {
+  const LedgerTable({
+    required this.titleBox,
+    required this.columns,
+    required this.top,
+    required this.rows,
+    required this.rowHeight,
+  });
+
+  final Rect titleBox;
+  final List<double> columns;
+  final double top;
+  final int rows;
+  final double rowHeight;
+
+  /// The cell of column [column], row [row] (from 0).
+  Rect cell(int column, int row) =>
+      Rect.fromLTRB(columns[column], top + row * rowHeight, columns[column + 1], top + (row + 1) * rowHeight);
 }
 
 /// Two records of the same job, compared ([MissionType.matchPairs] with
@@ -147,7 +242,9 @@ class LiftScene {
     required this.log,
     required this.logPixels,
     required this.logCrop,
-    required this.logWriteOn,
+    required this.logSheet,
+    required this.logTable,
+    required this.logHeadings,
     required this.logTitle,
     required this.trips,
     required this.readTask,
@@ -184,19 +281,19 @@ class LiftScene {
   /// The page shown (fractions of the log's picture): the written one.
   final Rect logCrop;
 
-  /// Where the trips are written (fractions of the log's picture).
-  final Rect logWriteOn;
+  /// The page's ruled table as the picture shows it ([logSheet]), and its
+  /// title box, columns and rows face on ([logTable]): the title in its box,
+  /// the column headings ([logHeadings]) on the first row, each trip on a
+  /// row of its own after them.
+  final PaperQuad logSheet;
+  final LedgerTable logTable;
+  final List<String> logHeadings;
 
   /// Width / height of the page shown.
   double get logAspect => logCrop.width * logPixels.width / (logCrop.height * logPixels.height);
 
-  /// [logWriteOn] in fractions of the page shown.
-  Rect get logWriteInCrop => Rect.fromLTRB(
-        (logWriteOn.left - logCrop.left) / logCrop.width,
-        (logWriteOn.top - logCrop.top) / logCrop.height,
-        (logWriteOn.right - logCrop.left) / logCrop.width,
-        (logWriteOn.bottom - logCrop.top) / logCrop.height,
-      );
+  /// The table's corners in fractions of the page shown.
+  List<Offset> get logSheetInCrop => logSheet.inCrop(logCrop, logPixels);
   final String logTitle;
   final List<LiftTrip> trips;
 
@@ -215,15 +312,30 @@ class LiftScene {
 /// the dial's picture).
 @immutable
 class DialSymbol {
-  const DialSymbol({required this.id, required this.name, required this.angle, required this.closeUp});
+  const DialSymbol({required this.id, required this.name, required this.angle, required this.closeUp, required this.outline});
 
   final String id;
   final String name;
   final double angle;
 
-  /// The symbol alone on the dial's picture (pixels of the dial), shown
-  /// upright and large under its dial once it is set.
+  /// The symbol alone on the dial's picture (pixels of the dial): the box
+  /// round its [outline], shown upright and large under its dial once it
+  /// is set.
   final Rect closeUp;
+
+  /// The symbol's own shape on the dial (pixels of the dial): what of
+  /// [closeUp] is shown, cut out along it (the dial round it, its hub, rim
+  /// and spokes, never shown).
+  final SymbolOutline outline;
+}
+
+/// A symbol's shape: [ovals] and a [polygon] together (pixels of the dial).
+@immutable
+class SymbolOutline {
+  const SymbolOutline({this.ovals = const [], this.polygon = const []});
+
+  final List<Rect> ovals;
+  final List<Offset> polygon;
 }
 
 /// A padlock with three dials ([MissionType.sequence]): the lock's picture

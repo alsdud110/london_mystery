@@ -11,6 +11,7 @@ import '../../../core/utils/audio_service.dart' show TapRole;
 import '../../../data/models/investigation.dart' show InvestigationSpot;
 import '../../../data/models/mission.dart';
 import '../../../data/models/painter_puzzles.dart';
+import '../../../data/models/scene_explore.dart' show ScenePixels;
 import '../../../widgets/detective_tips.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
@@ -24,6 +25,7 @@ import 'scene_explore.dart' show LookMark, OverPicture;
 import 'search_stage.dart';
 import 'spot_differences.dart' show PicturePuzzleActions;
 import 'station_clocks.dart' show GuidePulse;
+import 'tower_documents.dart' show CroppedPicture;
 import 'zoom_picture.dart';
 
 /// A studio looked round, then its notes joined to its paintings
@@ -516,6 +518,14 @@ class _MatchPageState extends State<_MatchPage> {
     final scene = widget.scene;
     final notes = _notes;
     final allPaired = notes.every((n) => _p.pairs.containsKey(n.$1));
+    final picked = _p.pickedNote;
+    // The one thing to do now: pick a note, then its painting; CHECK once
+    // every note has one.
+    final (step, stepLine) = picked != null
+        ? ('2', scene.matchPainting.replaceAll('{note}', picked.toUpperCase()))
+        : allPaired
+        ? ('✓', scene.matchDone)
+        : ('1', scene.matchHow);
     return ColoredBox(
       color: AppColors.paperLight,
       child: InkSurface(
@@ -534,8 +544,57 @@ class _MatchPageState extends State<_MatchPage> {
                       onPressed: widget.onClose,
                       icon: const InkIcon(InkGlyph.back, color: AppColors.navy),
                     ),
-                    Expanded(child: Text('THE NOTES AND THE PAINTINGS', textAlign: TextAlign.center, style: AppText.eyebrow())),
+                    // The question, in the bar: the room below is the
+                    // paintings' and the notes'.
+                    Expanded(child: GlossaryText(m.question, textAlign: TextAlign.center, style: AppText.subtitle(color: AppColors.navy))),
                     const SizedBox(width: 48),
+                  ],
+                ),
+              ),
+              // The step and the paintings stay in view; the notes scroll
+              // under them, so a note picked and its painting are on the
+              // screen together.
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.xs, AppSpace.screen, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Semantics(
+                      liveRegion: true,
+                      child: _MatchStep(key: const ValueKey('match-step'), step: step, line: stepLine),
+                    ),
+                    const SizedBox(height: AppSpace.sm),
+                    ShakeOnChange(
+                      trigger: widget.wrongPulse,
+                      child: LayoutBuilder(
+                        builder: (context, box) {
+                          const gap = AppSpace.sm;
+                          final n = scene.order.length;
+                          final tile = (box.maxWidth - gap * (n - 1)) / n;
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (final (i, id) in scene.order.indexed) ...[
+                                if (i > 0) const SizedBox(width: gap),
+                                SizedBox(
+                                  width: tile,
+                                  child: _PaintingSlot(
+                                    key: ValueKey('slot-$id'),
+                                    painting: scene.painting(id),
+                                    number: i + 1,
+                                    note: _p.pairs.entries.where((e) => e.value == id).map((e) => e.key).firstOrNull,
+                                    picked: picked,
+                                    onTap: () => _tapPainting(id),
+                                    onDrop: (note) => _join(note, id),
+                                    onCloser: () => _lookCloser(scene.painting(id)),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -543,43 +602,10 @@ class _MatchPageState extends State<_MatchPage> {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.lg),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      GlossaryText(m.question, textAlign: TextAlign.center, style: AppText.task()),
+                      Text('THE NOTES', textAlign: TextAlign.center, style: AppText.eyebrow()),
                       const SizedBox(height: AppSpace.xs),
-                      Text(scene.matchHow, textAlign: TextAlign.center, style: AppText.caption(color: AppColors.inkBrown)),
-                      const SizedBox(height: AppSpace.md),
-                      ShakeOnChange(
-                        trigger: widget.wrongPulse,
-                        child: LayoutBuilder(
-                          builder: (context, box) {
-                            const gap = AppSpace.sm;
-                            final n = scene.order.length;
-                            final tile = (box.maxWidth - gap * (n - 1)) / n;
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (final (i, id) in scene.order.indexed) ...[
-                                  if (i > 0) const SizedBox(width: gap),
-                                  SizedBox(
-                                    width: tile,
-                                    child: _PaintingSlot(
-                                      key: ValueKey('slot-$id'),
-                                      painting: scene.painting(id),
-                                      number: i + 1,
-                                      note: _p.pairs.entries.where((e) => e.value == id).map((e) => e.key).firstOrNull,
-                                      waiting: _p.pickedNote != null,
-                                      onTap: () => _tapPainting(id),
-                                      onDrop: (note) => _join(note, id),
-                                      onCloser: () => _lookCloser(scene.painting(id)),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: AppSpace.lg),
                       for (final (id, text) in notes)
                         Padding(
                           padding: const EdgeInsets.only(bottom: AppSpace.sm),
@@ -587,12 +613,13 @@ class _MatchPageState extends State<_MatchPage> {
                             key: ValueKey('note-$id'),
                             id: id,
                             text: text,
-                            picked: _p.pickedNote == id,
+                            picked: picked == id,
                             joinedTo: _p.pairs[id] == null ? null : scene.order.indexOf(_p.pairs[id]!) + 1,
                             onTap: () => _pickNote(id),
                           ),
                         ),
-                      const SizedBox(height: AppSpace.sm),
+                      Text(scene.matchDrag, textAlign: TextAlign.center, style: AppText.caption(color: AppColors.inkBrown)),
+                      const SizedBox(height: AppSpace.md),
                       DetectiveTipNotes(hints: m.hints, revealed: widget.hintsShown, compact: true),
                     ],
                   ),
@@ -627,15 +654,80 @@ class _MatchPageState extends State<_MatchPage> {
   }
 }
 
-/// One painting on the matching page: its picture (a tap with a note picked
-/// joins them; the glass looks closer), its number, and the note it holds.
+/// What to do now on the matching page: the step's number (1: a note, 2:
+/// its painting; ✓: every note has one) and its words.
+class _MatchStep extends StatelessWidget {
+  const _MatchStep({super.key, required this.step, required this.line});
+
+  final String step;
+  final String line;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = step == '2';
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
+      decoration: BoxDecoration(
+        color: now ? AppColors.goldLight.withValues(alpha: 0.4) : AppColors.parchment.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(AppRadius.paper),
+        border: Border.all(color: now ? AppColors.gold : AppLine.faint(0.3), width: now ? AppLine.rule : AppLine.hairline),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.navy),
+            // (The type has no tick: the ink one.)
+            child: step == '✓'
+                ? const InkIcon(InkGlyph.check, size: AppIconSize.tiny, color: AppColors.goldLight)
+                : Text(step, style: AppText.button(size: 14, color: AppColors.goldLight)),
+          ),
+          const SizedBox(width: AppSpace.sm),
+          Expanded(child: Text(line, key: const ValueKey('match-step-line'), style: AppText.subtitle(color: AppColors.navy))),
+        ],
+      ),
+    );
+  }
+}
+
+/// A note's letter in a small round badge: the same on the note and on the
+/// painting it is put on.
+class _NoteBadge extends StatelessWidget {
+  const _NoteBadge({required this.id, this.light = false, this.size = 26});
+
+  final String id;
+  final bool light;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: light ? AppColors.goldLight : AppColors.navy,
+      ),
+      child: Text(id.toUpperCase(), style: AppText.button(size: size * 0.55, color: light ? AppColors.navyDeep : AppColors.goldLight)),
+    );
+  }
+}
+
+/// One painting on the matching page: its picture and number (a tap with a
+/// note picked puts the note on it; the glass looks closer), and the note
+/// it holds (a tap with none picked takes it off). While a note is picked,
+/// every painting calls for it: PUT A HERE.
 class _PaintingSlot extends StatelessWidget {
   const _PaintingSlot({
     super.key,
     required this.painting,
     required this.number,
     required this.note,
-    required this.waiting,
+    required this.picked,
     required this.onTap,
     required this.onDrop,
     required this.onCloser,
@@ -644,7 +736,9 @@ class _PaintingSlot extends StatelessWidget {
   final StudioPainting painting;
   final int number;
   final String? note;
-  final bool waiting;
+
+  /// The note picked to be put on a painting, if any.
+  final String? picked;
   final VoidCallback onTap;
   final ValueChanged<String> onDrop;
   final VoidCallback onCloser;
@@ -656,9 +750,13 @@ class _PaintingSlot extends StatelessWidget {
       builder: (context, candidates, _) {
         final hovering = candidates.isNotEmpty;
         final held = note;
+        final waiting = picked != null;
+        final call = hovering || waiting;
         return Semantics(
           button: true,
-          label: 'Painting $number: ${painting.label}.${held == null ? '' : ' Note ${held.toUpperCase()} is on it.'}',
+          label: 'Painting $number: ${painting.label}.'
+              '${held == null ? '' : ' Note ${held.toUpperCase()} is on it.'}'
+              '${waiting ? ' Tap to put note ${picked!.toUpperCase()} here.' : held == null ? '' : ' Tap to take it off.'}',
           excludeSemantics: true,
           onTap: onTap,
           child: GestureDetector(
@@ -668,11 +766,11 @@ class _PaintingSlot extends StatelessWidget {
               duration: const Duration(milliseconds: 160),
               padding: const EdgeInsets.all(AppSpace.xs),
               decoration: BoxDecoration(
-                color: hovering ? AppColors.goldLight.withValues(alpha: 0.35) : AppColors.parchment.withValues(alpha: 0.5),
+                color: call ? AppColors.goldLight.withValues(alpha: 0.35) : AppColors.parchment.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(AppRadius.paper),
                 border: Border.all(
-                  color: hovering || waiting ? AppColors.gold : AppLine.faint(0.25),
-                  width: hovering || waiting ? AppLine.ink : AppLine.hairline,
+                  color: call ? AppColors.gold : AppLine.faint(0.25),
+                  width: call ? AppLine.ink : AppLine.hairline,
                 ),
               ),
               child: Column(
@@ -683,6 +781,19 @@ class _PaintingSlot extends StatelessWidget {
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: Image.asset(painting.file, fit: BoxFit.cover, excludeFromSemantics: true),
+                        ),
+                      ),
+                      // Its number, on the picture's corner.
+                      Positioned(
+                        left: AppSpace.xs,
+                        top: AppSpace.xs,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColors.paperLight.withValues(alpha: 0.92),
+                            borderRadius: BorderRadius.circular(AppRadius.paper),
+                          ),
+                          child: Text('$number', style: AppText.button(size: 14, color: AppColors.navy)),
                         ),
                       ),
                       // A 32 px brass lens on the frame's top corner (a
@@ -721,25 +832,40 @@ class _PaintingSlot extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: AppSpace.xs),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text('PAINTING $number', maxLines: 1, style: AppText.eyebrow(color: AppColors.inkBrown)),
-                  ),
-                  const SizedBox(height: AppSpace.xs),
-                  // The note it holds, or room for one.
+                  // The note it holds (✕: a tap takes it off), where the
+                  // picked note would go, or room for one.
                   Container(
                     key: ValueKey('slot-note-${painting.id}'),
-                    height: 34,
+                    height: 36,
                     width: double.infinity,
                     alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                     decoration: BoxDecoration(
-                      color: held == null ? Colors.transparent : AppColors.navy,
+                      color: held != null && !waiting
+                          ? AppColors.navy
+                          : waiting
+                          ? AppColors.paperLight
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(AppRadius.paper),
-                      border: Border.all(color: held == null ? AppColors.inkBrown.withValues(alpha: 0.35) : AppColors.navyDeep, width: AppLine.hairline),
+                      border: Border.all(
+                        color: waiting ? AppColors.gold : held == null ? AppColors.inkBrown.withValues(alpha: 0.35) : AppColors.navyDeep,
+                        width: waiting ? AppLine.rule : AppLine.hairline,
+                      ),
                     ),
-                    child: Text(
-                      held == null ? 'note?' : 'NOTE ${held.toUpperCase()}',
-                      style: held == null ? AppText.caption() : AppText.button(size: 14, color: AppColors.goldLight),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: waiting
+                          ? Text('PUT ${picked!.toUpperCase()} HERE', maxLines: 1, style: AppText.button(size: 14, color: AppColors.burgundy))
+                          : held == null
+                          ? Text('NOTE ?', maxLines: 1, style: AppText.button(size: 14, color: AppColors.muted))
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _NoteBadge(id: held, light: true, size: 22),
+                                const SizedBox(width: AppSpace.xs),
+                                const InkIcon(InkGlyph.close, size: AppIconSize.tiny, color: AppColors.goldLight),
+                              ],
+                            ),
                     ),
                   ),
                 ],
@@ -752,7 +878,8 @@ class _PaintingSlot extends StatelessWidget {
   }
 }
 
-/// One note, to pick (navy once picked) or drag onto its painting; the
+/// One note, to pick (navy and gold-edged once picked; a tap again lets it
+/// go) or drag onto its painting: its letter in a badge, its words, and the
 /// painting it is on, once joined.
 class _NoteChip extends StatelessWidget {
   const _NoteChip({super.key, required this.id, required this.text, required this.picked, required this.joinedTo, required this.onTap});
@@ -765,6 +892,8 @@ class _NoteChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The letter is in the badge: the words without their "A — ".
+    final words = text.replaceFirst(RegExp(r'^[A-Za-z]\s*—\s*'), '');
     final card = AnimatedContainer(
       duration: const Duration(milliseconds: 160),
       width: double.infinity,
@@ -773,23 +902,30 @@ class _NoteChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: picked ? AppColors.navy : AppColors.paperLight,
         borderRadius: BorderRadius.circular(AppRadius.paper),
-        border: Border.all(color: picked ? AppColors.navyDeep : AppColors.parchmentDark, width: picked ? AppLine.ink : AppLine.hairline),
+        border: Border.all(color: picked ? AppColors.gold : AppColors.parchmentDark, width: picked ? AppLine.ink : AppLine.hairline),
         boxShadow: AppShadow.paperLift,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _NoteBadge(id: id, light: picked),
+          const SizedBox(width: AppSpace.sm),
           Expanded(
             // Plain words: the whole card picks the note (its words are
             // looked up on the notes' card, from the studio).
             child: Text(
-              text,
+              words,
               style: AppText.letter(size: 15, color: picked ? AppColors.paperLight : AppColors.inkBrown),
             ),
           ),
           if (joinedTo != null) ...[
             const SizedBox(width: AppSpace.sm),
-            Text('→ $joinedTo', style: AppText.subtitle(color: picked ? AppColors.goldLight : AppColors.burgundy)),
+            Column(
+              children: [
+                InkIcon(InkGlyph.frame, size: AppIconSize.tiny, color: picked ? AppColors.goldLight : AppColors.burgundy),
+                Text('$joinedTo', style: AppText.subtitle(color: picked ? AppColors.goldLight : AppColors.burgundy)),
+              ],
+            ),
           ],
         ],
       ),
@@ -813,14 +949,17 @@ class _NoteChip extends StatelessWidget {
   }
 }
 
-/// A picture over the page, whole, to pinch closer; a tap outside or CLOSE
-/// goes back.
+/// A picture over the page, whole (or only its part [crop], fractions of a
+/// picture [pixels] large), to pinch closer; a tap outside or CLOSE goes
+/// back.
 class PictureCloser extends StatelessWidget {
-  const PictureCloser({super.key, required this.file, required this.aspect, required this.label});
+  const PictureCloser({super.key, required this.file, required this.aspect, required this.label, this.pixels, this.crop});
 
   final String file;
   final double aspect;
   final String label;
+  final ScenePixels? pixels;
+  final Rect? crop;
 
   @override
   Widget build(BuildContext context) {
@@ -841,7 +980,10 @@ class PictureCloser extends StatelessWidget {
                         child: Semantics(
                           image: true,
                           label: label,
-                          child: Image.asset(file, key: const ValueKey('closer-picture'), fit: BoxFit.contain, excludeFromSemantics: true),
+                          child: switch ((pixels, crop)) {
+                            (final p?, final c?) => CroppedPicture(key: const ValueKey('closer-picture'), file: file, pixels: p, crop: c),
+                            _ => Image.asset(file, key: const ValueKey('closer-picture'), fit: BoxFit.contain, excludeFromSemantics: true),
+                          },
                         ),
                       ),
                     ),

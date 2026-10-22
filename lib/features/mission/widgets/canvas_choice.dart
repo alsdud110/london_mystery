@@ -14,6 +14,7 @@ import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
 import '../../../widgets/ink_icon.dart';
 import 'studio_match.dart' show PictureCloser;
+import 'tower_documents.dart' show CroppedPicture;
 
 /// The final's stage over a [CanvasScene]: the canvas being looked at, whole
 /// (a tap looks closer). Once the right one is chosen, [turn] (0..1) turns
@@ -50,12 +51,13 @@ class CanvasStage extends StatelessWidget {
                 onTap: onCloser,
                 child: GestureDetector(
                   onTap: onCloser,
-                  child: Image.asset(c.file, key: ValueKey('canvas-front-${c.id}'), fit: BoxFit.contain, excludeFromSemantics: true),
+                  // The painting itself (not its easel nor the studio).
+                  child: CroppedPicture(key: ValueKey('canvas-front-${c.id}'), file: c.file, pixels: scene.pixels, crop: scene.paint),
                 ),
               );
         return Center(
           child: AspectRatio(
-            aspectRatio: scene.pixels.aspect,
+            aspectRatio: scene.paintAspect,
             child: Transform(
               alignment: Alignment.center,
               transform: Matrix4.identity()
@@ -174,7 +176,7 @@ class CanvasPicker extends StatelessWidget {
                       label: mission.options.firstWhere((o) => o.id == c.id).label,
                       on: c.id == looking,
                       looked: looked.contains(c.id),
-                      aspect: scene.pixels.aspect,
+                      scene: scene,
                       onTap: () => onLook(c.id),
                     ),
                   ),
@@ -211,7 +213,7 @@ class _CanvasTile extends StatelessWidget {
     required this.label,
     required this.on,
     required this.looked,
-    required this.aspect,
+    required this.scene,
     required this.onTap,
   });
 
@@ -219,7 +221,7 @@ class _CanvasTile extends StatelessWidget {
   final String label;
   final bool on;
   final bool looked;
-  final double aspect;
+  final CanvasScene scene;
   final VoidCallback onTap;
 
   @override
@@ -252,7 +254,7 @@ class _CanvasTile extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(2),
-                      child: AspectRatio(aspectRatio: aspect, child: Image.asset(canvas.file, fit: BoxFit.cover, excludeFromSemantics: true)),
+                      child: CroppedPicture(file: canvas.file, pixels: scene.pixels, crop: scene.paint),
                     ),
                     if (looked)
                       const Positioned(
@@ -291,8 +293,10 @@ Future<void> showCanvasCloser(BuildContext context, CanvasScene scene, String id
       opaque: false,
       barrierDismissible: true,
       barrierColor: AppColors.navyDeep.withValues(alpha: 0.92),
-      pageBuilder: (context, anim, _) =>
-          FadeTransition(opacity: anim, child: PictureCloser(file: c.file, aspect: scene.pixels.aspect, label: '${c.name}: $label')),
+      pageBuilder: (context, anim, _) => FadeTransition(
+        opacity: anim,
+        child: PictureCloser(file: c.file, aspect: scene.paintAspect, label: '${c.name}: $label', pixels: scene.pixels, crop: scene.paint),
+      ),
     ),
   );
 }

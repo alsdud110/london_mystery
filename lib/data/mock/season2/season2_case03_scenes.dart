@@ -1,4 +1,4 @@
-import 'dart:ui' show Offset, Rect;
+import 'dart:ui' show Offset, Rect, Size;
 
 import '../../models/scene_exhibit.dart' show EvidenceLink;
 import '../../models/scene_explore.dart' show ScenePixels;
@@ -15,11 +15,22 @@ const _case03 = 'assets/seasons/season_02_paris/cases/case_03';
 
 // ── M1 — the two records ────────────────────────────────────────────────
 // The notice board at the tower's entrance (1536 × 1024): its blank cream
-// notice, pinned at its four corners, from (295, 348) to (660, 665). The
-// maintenance log (1254 × 1254, cut out): a clipboard, its ruled sheet's
-// header box (322, 318)–(948, 402) and ruled lines down to 1060.
+// notice, pinned at its four corners, a little askew (its top edge runs
+// down to the right). The words go inside the faint border printed round
+// it: (316, 360), (650, 378), (648, 652), (304, 648); 340 × 282 face on.
+// The maintenance log (1254 × 1254, cut out): a clipboard, its ruled sheet
+// seen a little from below (wider at the foot). Its form, from the header
+// box's top to the last ruled line: (315, 315), (952, 310), (977, 1064),
+// (299, 1069); face on 640 wide, the header 98 tall, then 18 rows of 35.6
+// (measured on the ruled lines: 35 apart at the top, 38 at the foot, as
+// the slant has them). Its columns: 0–68, 68–558 and 558–640; the header's
+// middle box 80–542. Each line is written in the wide column on a row of
+// its own, two empty rows between (a fingertip's room to pick it), never
+// across a ruled line.
 const _entrance = ScenePixels(1536, 1024);
 const _clipboard = ScenePixels(1254, 1254);
+const _logRow = 35.6;
+const _logTop = 98.0;
 
 final Map<String, RecordsScene> season2Records = {
   's2_ep03_m1': RecordsScene(
@@ -28,8 +39,29 @@ final Map<String, RecordsScene> season2Records = {
       name: 'THE VISITOR NOTICE',
       file: '$_case03/tower_notice_board.png',
       pixels: _entrance,
-      crop: _entrance.rect(236, 286, 720, 716),
-      writeOn: _entrance.rect(322, 376, 634, 640),
+      // The notice in its wooden frame, close enough to read.
+      crop: _entrance.rect(258, 316, 698, 702),
+      sheet: const PaperQuad(
+        topLeft: Offset(316, 360),
+        topRight: Offset(650, 378),
+        bottomRight: Offset(648, 652),
+        bottomLeft: Offset(304, 648),
+        flat: Size(340, 282),
+      ),
+      // Clear of the four brass pins in its corners.
+      layout: const RecordLayout(
+        title: Rect.fromLTRB(24, 14, 316, 56),
+        rows: [70, 122, 174],
+        rowHeight: 46,
+        reach: 3,
+        labelLeft: 26,
+        labelRight: 100,
+        valueLeft: 108,
+        valueRight: 318,
+        noteRow: 226,
+        noteLeft: 26,
+        ink: 0.62,
+      ),
       title: 'VISITOR NOTICE',
       lines: const [
         RecordLine(id: 'date', label: 'DATE', value: '12 MAY'),
@@ -44,8 +76,28 @@ final Map<String, RecordsScene> season2Records = {
       name: 'THE MAINTENANCE LOG',
       file: '$_case03/inspection_log.png',
       pixels: _clipboard,
-      crop: _clipboard.rect(176, 8, 1132, 1232),
-      writeOn: _clipboard.rect(334, 326, 944, 1040),
+      // The sheet whole, the clip's foot above it.
+      crop: _clipboard.rect(226, 236, 1046, 1146),
+      sheet: const PaperQuad(
+        topLeft: Offset(315, 315),
+        topRight: Offset(952, 310),
+        bottomRight: Offset(977, 1064),
+        bottomLeft: Offset(299, 1069),
+        flat: Size(640, _logTop + 18 * _logRow),
+      ),
+      layout: const RecordLayout(
+        title: Rect.fromLTRB(80, 10, 542, 88),
+        rows: [_logTop + 1 * _logRow, _logTop + 4 * _logRow, _logTop + 7 * _logRow],
+        rowHeight: _logRow,
+        reach: _logRow,
+        // Label and value both in the wide column (the first is too narrow
+        // to read a word in).
+        labelLeft: 80,
+        labelRight: 166,
+        valueLeft: 176,
+        valueRight: 548,
+        noteRow: _logTop + 10 * _logRow,
+      ),
       title: 'MAINTENANCE LOG',
       lines: const [
         RecordLine(id: 'date', label: 'DATE', value: '12 MAY'),
@@ -67,7 +119,11 @@ final Map<String, RecordsScene> season2Records = {
 // with four studs down its middle (the top, the second floor, the first,
 // the ground) and one set apart at its right, joined by an engraved line
 // to the second floor's: the Service Level. The log (1254 × 1254, cut
-// out): an open ledger; the trips are written on its left page.
+// out): an open ledger; the trips are written on its left page. Its ruled
+// table, from the title box's top to the last line: (144, 264), (595,
+// 262), (591, 944), (129.5, 946) (its left edge leans a little); face on
+// 454 × 682: the title box 6–66, four columns at 0, 61, 142, 379 and 454,
+// then 18 rows of 33.6 from 77, each word inside its own cell.
 const _lift = ScenePixels(1536, 1024);
 const _plate = ScenePixels(1024, 1536);
 const _ledger = ScenePixels(1254, 1254);
@@ -94,9 +150,23 @@ final Map<String, LiftScene> season2Lifts = {
     legendAt: _plate.rect(170, 1340, 854, 1440),
     log: '$_case03/lift_log.png',
     logPixels: _ledger,
-    // The left page, its leather edge and ribbon in view.
-    logCrop: _ledger.rect(70, 190, 676, 1030),
-    logWriteOn: _ledger.rect(152, 272, 590, 940),
+    // The left page, the ribbon at its side.
+    logCrop: _ledger.rect(92, 205, 640, 1012),
+    logSheet: const PaperQuad(
+      topLeft: Offset(144, 264),
+      topRight: Offset(595, 262),
+      bottomRight: Offset(591, 944),
+      bottomLeft: Offset(129.5, 946),
+      flat: Size(454, 682),
+    ),
+    logTable: const LedgerTable(
+      titleBox: Rect.fromLTRB(10, 6, 444, 66),
+      columns: [0, 61, 142, 379, 454],
+      top: 77,
+      rows: 18,
+      rowHeight: 33.6,
+    ),
+    logHeadings: const ['No.', 'TIME', 'TRIP', ''],
     logTitle: 'LIFT LOG — 12 MAY',
     trips: const [
       LiftTrip(time: '3:05', from: 'Ground', to: 'First'),
@@ -132,10 +202,41 @@ const Map<String, DialLockScene> season2DialLocks = {
     pivot: Offset(624.2, 624.8),
     showRadius: 405,
     symbols: [
-      // Each symbol alone on the dial (upright there), for its close-up.
-      DialSymbol(id: 'clock', name: 'CLOCK', angle: 0, closeUp: Rect.fromLTRB(490, 200, 760, 470)),
-      DialSymbol(id: 'key', name: 'KEY', angle: 113, closeUp: Rect.fromLTRB(785, 545, 1015, 940)),
-      DialSymbol(id: 'lift', name: 'LIFT', angle: 252, closeUp: Rect.fromLTRB(245, 580, 435, 855)),
+      // Each symbol alone on the dial (upright there), for its close-up,
+      // cut out along its own outline, traced on the dial: the clock's
+      // round rim, the lift's door frame, the key's trefoil bow, collar,
+      // shaft and bit. Nothing of the hub, the rim, the spokes or the
+      // pointer beside them is in a close-up.
+      DialSymbol(
+        id: 'clock',
+        name: 'CLOCK',
+        angle: 0,
+        closeUp: Rect.fromLTRB(502, 214, 752, 452),
+        outline: SymbolOutline(ovals: [Rect.fromLTRB(502, 214, 752, 452)]),
+      ),
+      DialSymbol(
+        id: 'key',
+        name: 'KEY',
+        angle: 113,
+        closeUp: Rect.fromLTRB(798, 550, 1030, 936),
+        outline: SymbolOutline(polygon: [
+          Offset(900, 577), Offset(910, 557), Offset(940, 550), Offset(970, 556), Offset(982, 577), // the bow's top lobe
+          Offset(980, 602), Offset(1002, 602), Offset(1022, 614), Offset(1030, 640), Offset(1022, 670), // its right lobe
+          Offset(1002, 686), Offset(975, 689), Offset(952, 688), Offset(954, 702), Offset(948, 718), // the collar
+          Offset(930, 733), Offset(886, 930), Offset(880, 936), Offset(856, 936), Offset(850, 926), // the shaft's end
+          Offset(856, 900), Offset(800, 900), Offset(798, 864), Offset(810, 860), Offset(810, 822), // the bit
+          Offset(858, 820), Offset(860, 806), Offset(883, 804), Offset(898, 734), Offset(893, 722), // up the shaft
+          Offset(890, 704), Offset(896, 690), Offset(872, 688), Offset(852, 672), Offset(846, 642), // its left lobe
+          Offset(854, 614), Offset(876, 600), Offset(900, 600),
+        ]),
+      ),
+      DialSymbol(
+        id: 'lift',
+        name: 'LIFT',
+        angle: 252,
+        closeUp: Rect.fromLTRB(254, 586, 430, 847),
+        outline: SymbolOutline(polygon: [Offset(254, 586), Offset(430, 586), Offset(430, 847), Offset(254, 847)]),
+      ),
     ],
     // Key, clock, lift: no dial starts on its answer.
     start: [1, 0, 2],

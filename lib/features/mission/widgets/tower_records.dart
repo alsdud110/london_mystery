@@ -254,9 +254,10 @@ class _DocTab extends StatelessWidget {
   }
 }
 
-/// A record: its picture, and its words written on its blank paper — the
-/// title, the lines (each picked by a tap when [onPick] is given; the one
-/// picked circled in ink), and its note.
+/// A record: its picture, and its words written on its blank paper as if
+/// printed there ([SheetWriting]: in the sheet's own perspective) — the
+/// title in its box, each line on its own row (picked by a tap when
+/// [onPick] is given; the one picked circled in ink), and its note.
 class RecordPaper extends StatelessWidget {
   const RecordPaper({super.key, required this.doc, this.picked, this.onPick});
 
@@ -266,101 +267,133 @@ class RecordPaper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = doc.layout;
+    final ink = l.rowHeight * l.ink;
     return CroppedPicture(
       file: doc.file,
       pixels: doc.pixels,
       crop: doc.crop,
       label: doc.label,
-      overlayAt: doc.writeInCrop,
-      overlay: LayoutBuilder(
-        builder: (context, box) {
-          // Sized to the paper: the words grow and shrink with it.
-          final unit = box.maxWidth / 12;
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: unit * 0.3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FittedBox(
+      overlay: SheetWriting(
+        corners: doc.sheetInCrop,
+        flat: doc.sheet.flat,
+        child: Stack(
+          children: [
+            Positioned.fromRect(
+              rect: l.title,
+              child: Center(
+                child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: GlossaryText(doc.title, style: paperInk(size: unit * 0.95, weight: FontWeight.w800).copyWith(letterSpacing: 1.5)),
+                  child: GlossaryText(
+                    doc.title,
+                    style: paperInk(size: l.title.height * 0.62, weight: FontWeight.w800).copyWith(letterSpacing: 1.5, height: 1),
+                  ),
                 ),
-                for (final line in doc.lines)
-                  _RecordLineRow(
+              ),
+            ),
+            for (final (i, line) in doc.lines.indexed)
+              if (i < l.rows.length)
+                Positioned(
+                  left: l.labelLeft,
+                  top: l.rows[i] - l.reach,
+                  width: l.valueRight - l.labelLeft,
+                  height: l.rowHeight + 2 * l.reach,
+                  child: _RecordLineRow(
                     key: ValueKey('line-${doc.id}-${line.id}'),
                     line: line,
-                    unit: unit,
+                    layout: l,
+                    ink: ink,
                     picked: picked == line.id,
                     onTap: onPick == null ? null : () => onPick!(line.id),
                   ),
-                if (doc.note case final note?)
-                  FittedBox(
+                ),
+            if ((doc.note, l.noteRow) case (final note?, final row?))
+              Positioned(
+                left: l.noteLeft ?? l.valueLeft,
+                top: row,
+                width: l.valueRight - (l.noteLeft ?? l.valueLeft),
+                height: l.rowHeight,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: GlossaryText(note, style: AppText.style(AppText.italic, size: unit * 0.62, color: AppColors.inkBrown, fontStyle: FontStyle.italic)),
+                    alignment: Alignment.centerLeft,
+                    child: GlossaryText(
+                      note,
+                      style: AppText.style(AppText.italic, size: ink * 0.9, color: AppColors.inkBrown, fontStyle: FontStyle.italic, height: 1),
+                    ),
                   ),
-              ],
-            ),
-          );
-        },
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
 
+/// One line on a record's row: its label in the labels' column, its value
+/// in the values' (each within its own column, never across a ruled line),
+/// the whole row and [RecordLayout.reach] round it one target to pick.
 class _RecordLineRow extends StatelessWidget {
-  const _RecordLineRow({super.key, required this.line, required this.unit, required this.picked, this.onTap});
+  const _RecordLineRow({super.key, required this.line, required this.layout, required this.ink, required this.picked, this.onTap});
 
   final RecordLine line;
-  final double unit;
+  final RecordLayout layout;
+  final double ink;
   final bool picked;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final row = Container(
-      padding: EdgeInsets.symmetric(horizontal: unit * 0.25, vertical: unit * 0.12),
-      decoration: picked
-          ? BoxDecoration(
-              border: Border.all(color: AppColors.navy, width: AppLine.ink),
-              borderRadius: BorderRadius.circular(unit),
-            )
-          : null,
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.centerLeft,
-        // A line to pick is one target: its words are dotted only where
-        // the line is read, not picked.
-        child: GlossaryText.spans(
-          [
-            TextSpan(text: '${line.label}   ', style: paperInk(size: unit * 0.62, weight: FontWeight.w500, color: AppColors.muted)),
-            TextSpan(text: line.value, style: paperInk(size: unit * 0.82)),
-          ],
-          style: paperInk(size: unit * 0.82),
-          interactive: onTap == null,
+    final l = layout;
+    final h = l.rowHeight;
+    Widget cell(double left, double right, Widget text) => Positioned(
+          left: left - l.labelLeft,
+          top: l.reach,
+          width: right - left,
+          height: h,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: text),
+          ),
+        );
+    final row = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        // The one picked: circled in ink round its row.
+        if (picked)
+          Positioned(
+            left: -h * 0.15,
+            top: l.reach - h * 0.12,
+            right: -h * 0.15,
+            height: h * 1.24,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.navy, width: h * 0.08),
+                borderRadius: BorderRadius.circular(h),
+              ),
+            ),
+          ),
+        cell(l.labelLeft, l.labelRight, Text(line.label, style: paperInk(size: ink * 0.78, weight: FontWeight.w500, color: AppColors.muted).copyWith(height: 1))),
+        // A line to pick is one target: its words are dotted only where the
+        // line is read, not picked.
+        cell(
+          l.valueLeft,
+          l.valueRight,
+          GlossaryText(line.value, style: paperInk(size: ink).copyWith(height: 1), interactive: onTap == null),
         ),
-      ),
+      ],
     );
     if (onTap == null) {
-      return Semantics(
-        label: '${line.label}: ${line.value}',
-        child: ExcludeSemantics(child: Align(alignment: Alignment.centerLeft, child: row)),
-      );
+      return Semantics(label: '${line.label}: ${line.value}', child: ExcludeSemantics(child: row));
     }
     return Semantics(
       button: true,
       selected: picked,
       label: '${line.label}: ${line.value}',
       excludeSemantics: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        // At least a fingertip tall, whatever the paper's size.
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 44),
-          child: Align(alignment: Alignment.centerLeft, child: row),
-        ),
-      ),
+      child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: row),
     );
   }
 }

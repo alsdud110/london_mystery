@@ -784,7 +784,9 @@ void main() {
         await shot('m2_wrong');
         await tapText(t, 'TRY AGAIN', after: const Duration(milliseconds: 600));
         expect(find.byKey(const ValueKey('studio-match-page')), findsOneWidget, reason: 'still matching');
-        // Dragged onto its painting this time.
+        // Dragged onto its painting this time (the paintings stay in view
+        // over the notes: the note brought into view first).
+        await reveal(t, find.byKey(const ValueKey('note-a')));
         await reveal(t, find.byKey(const ValueKey('slot-p2')));
         await t.drag(find.byKey(const ValueKey('note-a')), t.getCenter(find.byKey(const ValueKey('slot-p2'))) - t.getCenter(find.byKey(const ValueKey('note-a'))));
         await t.pump(const Duration(milliseconds: 300));

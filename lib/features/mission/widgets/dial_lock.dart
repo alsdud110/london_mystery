@@ -272,7 +272,9 @@ class _DialLockState extends State<DialLock> {
   }
 }
 
-/// A dial's symbol alone, upright, in a small dark brass well.
+/// A dial's symbol alone, upright, in a small dark brass well: each cut out
+/// along its own outline (nothing of the dial round it), every one the
+/// same height in the same well.
 class _SymbolCloseUp extends StatelessWidget {
   const _SymbolCloseUp({super.key, required this.scene, required this.symbol});
 
@@ -286,21 +288,47 @@ class _SymbolCloseUp extends StatelessWidget {
     return Container(
       width: 60,
       height: 60,
-      padding: const EdgeInsets.all(AppSpace.xs),
+      padding: const EdgeInsets.all(AppSpace.sm),
       decoration: BoxDecoration(
         color: AppColors.walnutDeep,
         borderRadius: BorderRadius.circular(AppRadius.button),
         border: Border.all(color: AppColors.gold, width: AppLine.rule),
       ),
       child: Center(
-        child: CroppedPicture(
-          file: scene.dial,
-          pixels: p,
-          crop: Rect.fromLTRB(r.left / p.width, r.top / p.height, r.right / p.width, r.bottom / p.height),
+        child: ClipPath(
+          clipper: _OutlineClip(symbol),
+          child: CroppedPicture(
+            file: scene.dial,
+            pixels: p,
+            crop: Rect.fromLTRB(r.left / p.width, r.top / p.height, r.right / p.width, r.bottom / p.height),
+          ),
         ),
       ),
     );
   }
+}
+
+/// A symbol's outline ([DialSymbol.outline]), from the dial's pixels to the
+/// close-up's box ([DialSymbol.closeUp] filling it).
+class _OutlineClip extends CustomClipper<Path> {
+  const _OutlineClip(this.symbol);
+
+  final DialSymbol symbol;
+
+  @override
+  Path getClip(Size size) {
+    final box = symbol.closeUp;
+    Offset at(Offset p) => Offset((p.dx - box.left) / box.width * size.width, (p.dy - box.top) / box.height * size.height);
+    final path = Path();
+    for (final o in symbol.outline.ovals) {
+      path.addOval(Rect.fromPoints(at(o.topLeft), at(o.bottomRight)));
+    }
+    if (symbol.outline.polygon.isNotEmpty) path.addPolygon([for (final p in symbol.outline.polygon) at(p)], true);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(_OutlineClip old) => old.symbol != symbol;
 }
 
 /// One finger on a dial's window, from down to up: claimed at once (so the

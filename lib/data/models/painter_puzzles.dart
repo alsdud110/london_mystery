@@ -118,6 +118,9 @@ class StudioScene {
     required this.missLine,
     required this.deskFirstLine,
     required this.matchHow,
+    required this.matchPainting,
+    required this.matchDone,
+    required this.matchDrag,
     this.opening = const Rect.fromLTRB(0, 0, 1, 1),
   });
 
@@ -150,8 +153,14 @@ class StudioScene {
   /// The notes before the paintings are all found.
   final String deskFirstLine;
 
-  /// How to join on the matching page.
+  /// The matching page's step, as it goes: pick a note ([matchHow]), then
+  /// its painting ([matchPainting], `{note}`: the note picked), then CHECK
+  /// once every note has one ([matchDone]). Dragging is the other way
+  /// ([matchDrag]), never needed.
   final String matchHow;
+  final String matchPainting;
+  final String matchDone;
+  final String matchDrag;
 
   final Rect opening;
 
@@ -249,12 +258,14 @@ class ChoiceCanvas {
 
 /// Canvases looked at one by one and the right one turned round: its back
 /// ([back]) is a picture of its own, the message written on it by the app
-/// in [writeOn] (fractions of [back]).
+/// in [writeOn] (fractions of [back]). Each canvas's picture shows it on
+/// its easel in the studio; only its painting ([paint]) is shown.
 @immutable
 class CanvasScene {
   const CanvasScene({
     required this.canvases,
     required this.pixels,
+    required this.paint,
     required this.back,
     required this.backPixels,
     required this.writeOn,
@@ -265,6 +276,14 @@ class CanvasScene {
 
   final List<ChoiceCanvas> canvases;
   final ScenePixels pixels;
+
+  /// The painted part of every canvas's picture (fractions): inside the
+  /// canvas's edges, none of the easel, the stretcher's side or the studio
+  /// round it.
+  final Rect paint;
+
+  /// Width / height of [paint].
+  double get paintAspect => paint.width * pixels.width / (paint.height * pixels.height);
 
   final String back;
   final ScenePixels backPixels;

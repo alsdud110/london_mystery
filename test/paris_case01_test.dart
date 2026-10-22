@@ -816,10 +816,12 @@ void main() {
         await finish(m2.transition.first, 'm2');
 
         // ── M3: the old clock's hands, dragged forward one hour ────────
-        // The old clock, up close through a lens, before its carving.
+        // The old clock on its wall (a print, the wall and bracket round it:
+        // never magnified through a lens), before its carving.
         await t.tap(find.bySemanticsLabel('GO TO THE OLD CLOCK'));
         await wait(t, const Duration(milliseconds: 2800));
-        expect(find.byKey(const ValueKey('story-lens')), findsOneWidget);
+        expect(find.byKey(const ValueKey('story-picture')), findsOneWidget);
+        expect(find.byKey(const ValueKey('story-lens')), findsNothing);
         await shot('m3_place');
         await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
         await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
