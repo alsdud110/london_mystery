@@ -152,7 +152,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 520),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(28, 20, 28, 20),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.screen, vertical: AppSpace.lg),
                       child: Column(
                         children: [
                           Text(
@@ -198,7 +198,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                       children: [
                                         for (var i = 0; i <= _line && i < lines.length; i++)
                                           Padding(
-                                            padding: const EdgeInsets.only(bottom: 20),
+                                            padding: const EdgeInsets.only(bottom: AppSpace.lg),
                                             child: i < _line || _done
                                                 ? GlossaryText(
                                                     lines[i],
@@ -244,7 +244,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                           art: PlaceArt.placeOf(next),
                                           picture: story?.next,
                                         ),
-                                      const SizedBox(height: 18),
+                                      const SizedBox(height: AppSpace.lg),
                                       if (afterCase)
                                         GameButton(
                                           label: 'SEE MY CASE REPORT',
@@ -264,7 +264,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                   )
                                 : Padding(
                                     key: const ValueKey('tap'),
-                                    padding: const EdgeInsets.only(bottom: 20),
+                                    padding: const EdgeInsets.only(bottom: AppSpace.lg),
                                     child: Text(
                                       'Tap to skip',
                                       style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.75)),
@@ -321,7 +321,7 @@ class _UnlockedCard extends StatelessWidget {
                 height: 72,
                 child: p.frame == StoryFrame.lens
                     ? ClipOval(child: StoryPictureView(p))
-                    : ClipRRect(borderRadius: BorderRadius.circular(2), child: StoryPictureView(p)),
+                    : ClipRRect(borderRadius: BorderRadius.circular(AppRadius.paper), child: StoryPictureView(p)),
               )
             else
               SizedBox(
@@ -329,7 +329,7 @@ class _UnlockedCard extends StatelessWidget {
                 height: 72,
                 child: LandmarkArt(art, borderRadius: LandmarkArt.hasPicture(art) ? 2 : 6),
               ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

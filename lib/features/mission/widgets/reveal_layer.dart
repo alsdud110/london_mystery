@@ -183,7 +183,7 @@ class _RevealLayerState extends State<RevealLayer> {
                   _readable ? scene.findTask : scene.slideTask,
                   key: const ValueKey('layer-task'),
                   textAlign: TextAlign.center,
-                  style: AppText.title(size: 19),
+                  style: AppText.task(),
                 ),
               ),
             ),
@@ -193,7 +193,7 @@ class _RevealLayerState extends State<RevealLayer> {
               _readable ? 'Found: $found of ${scene.marks.length}' : 'Drag the brass handle to the right.',
               key: const ValueKey('layer-count'),
               textAlign: TextAlign.center,
-              style: _readable ? AppText.mark(color: AppColors.burgundy, size: 14) : AppText.caption(),
+              style: _readable ? AppText.tally() : AppText.caption(),
             ),
           ],
         ),
@@ -268,10 +268,7 @@ class _LayerPicture extends StatelessWidget {
                 width: 3,
                 child: IgnorePointer(
                   child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: AppColors.goldLight,
-                      boxShadow: [BoxShadow(color: AppColors.navyDeep.withValues(alpha: 0.5), blurRadius: 4)],
-                    ),
+                    decoration: const BoxDecoration(color: AppColors.goldLight),
                   ),
                 ),
               ),

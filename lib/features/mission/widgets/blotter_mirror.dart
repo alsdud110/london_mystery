@@ -291,7 +291,7 @@ class _NoteRead extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpace.md),
         decoration: BoxDecoration(
           color: AppColors.paperLight,
-          border: Border(left: BorderSide(color: ink, width: 4)),
+          border: Border.all(color: AppLine.faint(0.25), width: AppLine.hairline),
           borderRadius: BorderRadius.circular(AppRadius.paper),
         ),
         child: Row(
@@ -300,8 +300,8 @@ class _NoteRead extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(note.name, style: AppText.mark(color: ink, size: 13)),
-                  const SizedBox(height: 2),
+                  Text(note.name, style: AppText.mark(color: ink)),
+                  const SizedBox(height: AppSpace.xs),
                   GlossaryText(note.lines.join(' '), style: handwriting(18, color: ink), wordSemantics: false),
                 ],
               ),

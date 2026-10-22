@@ -178,30 +178,47 @@ class _SealSpot extends StatelessWidget {
           border: Border.all(color: AppColors.goldLight.withValues(alpha: compared ? 0.45 : 0.9), width: AppLine.rule),
           borderRadius: BorderRadius.circular(AppRadius.paper),
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              left: 2,
-              top: 2,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                decoration: BoxDecoration(color: AppColors.navyDeep.withValues(alpha: 0.85), borderRadius: BorderRadius.circular(3)),
-                child: Text(seal.id.toUpperCase(), style: AppText.style(AppText.body, size: 12, weight: FontWeight.w800, color: AppColors.goldLight)),
-              ),
-            ),
-            Positioned(
-              right: 2,
-              top: 2,
-              child: CircleAvatar(
-                radius: 10,
-                backgroundColor: AppColors.navyDeep.withValues(alpha: 0.8),
-                child: InkIcon(compared ? InkGlyph.check : InkGlyph.search, size: 12, color: AppColors.goldLight),
-              ),
-            ),
-          ],
-        ),
+        child: SpotMarks(letter: seal.id.toUpperCase(), done: compared),
       ),
     ),
+  );
+}
+
+/// The two small marks on a spot of a picture that can be looked at: its
+/// letter in the top-left corner, and a lens (a tick once looked at) in the
+/// top-right.
+class SpotMarks extends StatelessWidget {
+  const SpotMarks({super.key, required this.letter, required this.done});
+
+  final String letter;
+  final bool done;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    clipBehavior: Clip.none,
+    children: [
+      Positioned(
+        left: AppSpace.xs / 2,
+        top: AppSpace.xs / 2,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
+          decoration: BoxDecoration(
+            color: AppColors.navyDeep.withValues(alpha: 0.85),
+            borderRadius: BorderRadius.circular(AppRadius.paper),
+          ),
+          child: Text(letter, style: AppText.style(AppText.body, size: 13, weight: FontWeight.w700, color: AppColors.goldLight)),
+        ),
+      ),
+      Positioned(
+        right: AppSpace.xs / 2,
+        top: AppSpace.xs / 2,
+        child: CircleAvatar(
+          radius: 10,
+          backgroundColor: AppColors.navyDeep.withValues(alpha: 0.8),
+          child: InkIcon(done ? InkGlyph.check : InkGlyph.search, size: AppIconSize.tiny, color: AppColors.goldLight),
+        ),
+      ),
+    ],
   );
 }
 
@@ -224,7 +241,7 @@ class WorkshopNote extends StatelessWidget {
     child: Column(
       children: [
         Text(intro, textAlign: TextAlign.center, style: AppText.caption()),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpace.xs),
         GlossaryText(text, textAlign: TextAlign.center, style: AppText.letter(size: 18)),
       ],
     ),
@@ -244,17 +261,28 @@ class WorkshopChoices extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
+      // Rows of two, each as tall as its tallest label (never under a
+      // fingertip's 48 px, whatever the phone's width or text size).
       AnimatedOpacity(
         duration: const Duration(milliseconds: 250),
         opacity: open ? 1 : 0.45,
-        child: GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: AppSpace.sm,
-          crossAxisSpacing: AppSpace.sm,
-          childAspectRatio: 3.0,
-          children: children,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < children.length; i += 2) ...[
+              if (i > 0) const SizedBox(height: AppSpace.sm),
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: children[i]),
+                    const SizedBox(width: AppSpace.sm),
+                    Expanded(child: i + 1 < children.length ? children[i + 1] : const SizedBox.shrink()),
+                  ],
+                ),
+              ),
+            ],
+          ],
         ),
       ),
       if (!open) ...[
@@ -486,7 +514,8 @@ class _SealCloserState extends State<_SealCloser> {
                         GameButton(
                           key: const ValueKey('seal-close-lay'),
                           label: _laid ? 'LIFT THE SHEET' : s.sheetLabel,
-                          style: GameButtonStyle.glass,
+                          style: _laid ? GameButtonStyle.glass : GameButtonStyle.gold,
+                          tap: _laid ? TapRole.secondary : TapRole.primary,
                           onPressed: _laid ? _lift : _lay,
                         ),
                         Builder(

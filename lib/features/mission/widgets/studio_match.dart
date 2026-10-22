@@ -170,16 +170,16 @@ class _StudioMatchState extends State<StudioMatch> {
                   child: Semantics(
                     key: ValueKey(_task),
                     liveRegion: true,
-                    child: GlossaryText(_task, key: const ValueKey('studio-task'), textAlign: TextAlign.center, style: AppText.title(size: 19)),
+                    child: GlossaryText(_task, key: const ValueKey('studio-task'), textAlign: TextAlign.center, style: AppText.task()),
                   ),
                 ),
                 const SizedBox(height: AppSpace.xs),
                 Text(
                   'Paintings found: $found of ${scene.paintings.length}',
                   key: const ValueKey('studio-count'),
-                  style: AppText.mark(color: AppColors.burgundy, size: 14),
+                  style: AppText.tally(),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpace.xs),
                 Text('Tap a glass to look. Pinch to look closer.', textAlign: TextAlign.center, style: AppText.caption()),
               ],
             ),
@@ -408,7 +408,7 @@ class _Framed extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.paper),
-        border: Border.all(color: AppColors.goldDeep, width: AppLine.rule + 1),
+        border: Border.all(color: AppColors.goldDeep, width: AppLine.ink),
         boxShadow: AppShadow.paperLift,
       ),
       child: ClipRRect(borderRadius: BorderRadius.circular(AppRadius.paper), child: child),
@@ -544,7 +544,7 @@ class _MatchPageState extends State<_MatchPage> {
                   padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.lg),
                   child: Column(
                     children: [
-                      GlossaryText(m.question, textAlign: TextAlign.center, style: AppText.title(size: 21)),
+                      GlossaryText(m.question, textAlign: TextAlign.center, style: AppText.task()),
                       const SizedBox(height: AppSpace.xs),
                       Text(scene.matchHow, textAlign: TextAlign.center, style: AppText.caption(color: AppColors.inkBrown)),
                       const SizedBox(height: AppSpace.md),
@@ -600,7 +600,7 @@ class _MatchPageState extends State<_MatchPage> {
               ),
               DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.7), width: AppLine.rule)),
+                  border: Border(top: BorderSide(color: AppColors.gold.withValues(alpha: 0.6), width: AppLine.rule)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.md, AppSpace.screen, AppSpace.sm),
@@ -685,25 +685,35 @@ class _PaintingSlot extends StatelessWidget {
                           child: Image.asset(painting.file, fit: BoxFit.cover, excludeFromSemantics: true),
                         ),
                       ),
+                      // A 32 px brass lens on the frame's top corner (a
+                      // fingertip's 44 px to press it), clear of the middle
+                      // of the slot, where a note is laid.
                       Positioned(
-                        right: 2,
-                        bottom: 2,
+                        right: 0,
+                        top: 0,
                         child: Semantics(
                           button: true,
                           label: 'Look closer at painting $number',
                           child: GestureDetector(
                             key: ValueKey('closer-${painting.id}'),
+                            behavior: HitTestBehavior.opaque,
                             onTap: onCloser,
-                            child: Container(
-                              width: 32,
-                              height: 32,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.paperLight.withValues(alpha: 0.92),
-                                border: Border.all(color: AppColors.gold, width: AppLine.rule),
+                            child: SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: Center(
+                                child: Container(
+                                  width: 32,
+                                  height: 32,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.paperLight.withValues(alpha: 0.92),
+                                    border: Border.all(color: AppColors.gold, width: AppLine.rule),
+                                  ),
+                                  child: const InkIcon(InkGlyph.search, size: AppIconSize.tiny, color: AppColors.burgundy),
+                                ),
                               ),
-                              child: const InkIcon(InkGlyph.search, size: AppIconSize.tiny, color: AppColors.burgundy),
                             ),
                           ),
                         ),
@@ -729,7 +739,7 @@ class _PaintingSlot extends StatelessWidget {
                     ),
                     child: Text(
                       held == null ? 'note?' : 'NOTE ${held.toUpperCase()}',
-                      style: held == null ? AppText.caption() : AppText.mark(color: AppColors.goldLight, size: 14),
+                      style: held == null ? AppText.caption() : AppText.button(size: 14, color: AppColors.goldLight),
                     ),
                   ),
                 ],
@@ -779,7 +789,7 @@ class _NoteChip extends StatelessWidget {
           ),
           if (joinedTo != null) ...[
             const SizedBox(width: AppSpace.sm),
-            Text('→ $joinedTo', style: AppText.mark(color: picked ? AppColors.goldLight : AppColors.burgundy, size: 15)),
+            Text('→ $joinedTo', style: AppText.subtitle(color: picked ? AppColors.goldLight : AppColors.burgundy)),
           ],
         ],
       ),

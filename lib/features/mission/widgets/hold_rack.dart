@@ -132,7 +132,7 @@ class TrailClue extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(intro, style: AppText.caption()),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpace.xs),
               GlossaryText(text, style: AppText.bodyText(size: 16, weight: FontWeight.w700).copyWith(height: 1.3)),
             ],
           ),
@@ -216,8 +216,8 @@ class _TagCloserState extends State<_TagCloser> with SingleTickerProviderStateMi
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // The clue, kept in view while the tag is read.
-                  Text('YOUR CLUE', style: AppText.mark(color: AppColors.goldLight, size: 13)),
-                  const SizedBox(height: 2),
+                  Text('YOUR CLUE', style: AppText.eyebrow(color: AppColors.goldLight)),
+                  const SizedBox(height: AppSpace.xs),
                   Text(
                     widget.mission.letter.replaceAll('\n', '  ·  '),
                     key: const ValueKey('tag-clue'),
@@ -253,7 +253,7 @@ class _TagCloserState extends State<_TagCloser> with SingleTickerProviderStateMi
                     ),
                   ),
                   const SizedBox(height: AppSpace.sm),
-                  Text(_back ? 'THE BACK' : 'THE FRONT', style: AppText.mark(color: AppColors.paperLight, size: 13)),
+                  Text(_back ? 'THE BACK' : 'THE FRONT', style: AppText.eyebrow(color: AppColors.goldLight)),
                   const SizedBox(height: AppSpace.md),
                   GameButton(
                     key: const ValueKey('tag-turn'),
@@ -272,10 +272,11 @@ class _TagCloserState extends State<_TagCloser> with SingleTickerProviderStateMi
                     onPressed: () => Navigator.of(context).pop(tag.id),
                   ),
                   const SizedBox(height: AppSpace.xs),
-                  TextButton(
+                  InkTextButton(
                     key: const ValueKey('tag-done'),
+                    label: 'BACK TO THE RACK',
+                    color: AppColors.goldLight,
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text('BACK TO THE RACK', style: AppText.button(size: 15, color: AppColors.goldLight)),
                   ),
                 ],
               ),

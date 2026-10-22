@@ -843,7 +843,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               child: Text(
                 count,
                 key: key,
-                style: AppText.mark(color: AppColors.paperLight, size: 12.5),
+                style: AppText.tally(color: AppColors.paperLight),
               ),
             ),
           ],

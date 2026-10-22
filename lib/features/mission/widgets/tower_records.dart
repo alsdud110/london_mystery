@@ -105,7 +105,7 @@ class _TowerRecordsState extends State<TowerRecords> {
           _bothRead ? _scene.compareTask : _scene.readTask,
           key: const ValueKey('records-task'),
           textAlign: TextAlign.center,
-          style: AppText.subtitle(),
+          style: AppText.task(),
         ),
         const SizedBox(height: AppSpace.md),
         // The two records, one tab each; a tick once read.
@@ -177,7 +177,7 @@ class _TowerRecordsState extends State<TowerRecords> {
                             alignment: Alignment.centerLeft,
                             child: Text(d.title, maxLines: 1, style: AppText.eyebrow()),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpace.xs),
                           Text(_pickedValue(d), key: ValueKey('picked-${d.id}'), style: AppText.bodyText(size: 16, weight: FontWeight.w600)),
                         ],
                       ),
@@ -241,7 +241,7 @@ class _DocTab extends StatelessWidget {
                   Flexible(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text(name, maxLines: 1, style: AppText.button(size: 13, color: ink).copyWith(letterSpacing: 1)),
+                      child: Text(name, maxLines: 1, style: AppText.button(size: 15, color: ink)),
                     ),
                   ),
                 ],
@@ -297,7 +297,7 @@ class RecordPaper extends StatelessWidget {
                 if (doc.note case final note?)
                   FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: GlossaryText(note, style: paperInk(size: unit * 0.62, weight: FontWeight.w500, color: AppColors.inkBrown).copyWith(fontStyle: FontStyle.italic)),
+                    child: GlossaryText(note, style: AppText.style(AppText.italic, size: unit * 0.62, color: AppColors.inkBrown, fontStyle: FontStyle.italic)),
                   ),
               ],
             ),
@@ -357,7 +357,7 @@ class _RecordLineRow extends StatelessWidget {
         onTap: onTap,
         // At least a fingertip tall, whatever the paper's size.
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 36),
+          constraints: const BoxConstraints(minHeight: 44),
           child: Align(alignment: Alignment.centerLeft, child: row),
         ),
       ),

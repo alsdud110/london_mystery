@@ -10,6 +10,7 @@ import '../../../widgets/glossary_text.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import 'evidence_board.dart' show BrassPlaque;
+import 'mark_compare.dart' show SpotMarks, WorkshopChoice, WorkshopChoices;
 import 'river_papers.dart';
 
 /// The quay wall ([RiverMarksScene]): four carved marks, each looked at
@@ -140,22 +141,18 @@ class _RiverMarksState extends State<RiverMarks> {
         Center(
           child: InkTextButton(
             key: const ValueKey('marks-plaque'),
-            label: widget.read.contains(RiverMarksScene.backId) ? 'The brass plaque ✓' : 'The brass plaque',
-            glyph: InkGlyph.search,
+            label: 'The brass plaque',
+            glyph: widget.read.contains(RiverMarksScene.backId) ? InkGlyph.check : InkGlyph.search,
             onPressed: _plaque,
           ),
         ),
         const SizedBox(height: AppSpace.sm),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: AppSpace.sm,
-          crossAxisSpacing: AppSpace.sm,
-          childAspectRatio: 3.2,
+        WorkshopChoices(
+          open: true,
+          lockedLine: '',
           children: [
             for (final o in widget.mission.options)
-              _MarkChoice(
+              WorkshopChoice(
                 key: ValueKey('mark-${o.id}'),
                 label: o.label,
                 selected: _choice == o.id,
@@ -200,67 +197,7 @@ class _MarkSpot extends StatelessWidget {
             border: Border.all(color: AppColors.goldLight.withValues(alpha: looked ? 0.45 : 0.9), width: AppLine.rule),
             borderRadius: BorderRadius.circular(AppRadius.paper),
           ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                left: 2,
-                top: 2,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                  decoration: BoxDecoration(color: AppColors.navyDeep.withValues(alpha: 0.85), borderRadius: BorderRadius.circular(3)),
-                  child: Text(letter, style: AppText.style(AppText.body, size: 12, weight: FontWeight.w800, color: AppColors.goldLight)),
-                ),
-              ),
-              Positioned(
-                right: 2,
-                top: 2,
-                child: CircleAvatar(
-                  radius: 10,
-                  backgroundColor: AppColors.navyDeep.withValues(alpha: 0.8),
-                  child: InkIcon(looked ? InkGlyph.check : InkGlyph.search, size: 12, color: AppColors.goldLight),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MarkChoice extends StatelessWidget {
-  const _MarkChoice({super.key, required this.label, required this.selected, required this.onTap});
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: label,
-      excludeSemantics: true,
-      child: Material(
-        color: selected ? AppColors.navy : AppColors.paperLight,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          side: BorderSide(color: selected ? AppColors.navy : AppLine.faint(0.35), width: AppLine.hairline),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          onTap: onTap,
-          child: Center(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
-                child: Text(label.toUpperCase(), style: AppText.button(size: 15, color: selected ? AppColors.paperLight : AppColors.navy)),
-              ),
-            ),
-          ),
+          child: SpotMarks(letter: letter, done: looked),
         ),
       ),
     );

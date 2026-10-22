@@ -41,8 +41,13 @@ abstract final class AppText {
     double? letterSpacing,
     FontStyle? fontStyle,
   }) {
-    // IM Fell has one weight: drawn as it is, never emboldened.
-    final w = family == display ? FontWeight.w400 : weight;
+    // IM Fell has one weight: drawn as it is, never emboldened. Sentient's
+    // axis ends at 700: heavier asks are drawn at its heaviest, not faked.
+    final w = family == display
+        ? FontWeight.w400
+        : weight.value > FontWeight.w700.value
+        ? FontWeight.w700
+        : weight;
     return TextStyle(
       fontFamily: family,
       // The bundled faces are Latin only. Korean (a detective's name, the
@@ -88,6 +93,16 @@ abstract final class AppText {
   /// figure on the case file).
   static TextStyle title({double size = 26, Color color = AppColors.navy}) =>
       style(body, size: size, weight: FontWeight.w600, color: color, height: 1.2);
+
+  /// Quiet storybook line under a title (italic serif).
+  /// What a puzzle asks the player to do now ("Find the tag of Letter
+  /// 4417."): the one instruction over a scene, the same size in every
+  /// puzzle.
+  static TextStyle task({Color color = AppColors.navy}) => title(size: 20, color: color);
+
+  /// How far a search has got ("Found 2 of 5"): a count, in the body face —
+  /// numbers are never set in the display face.
+  static TextStyle tally({Color color = AppColors.burgundy}) => eyebrow(color: color);
 
   /// Quiet storybook line under a title (italic serif).
   static TextStyle aside({double size = 16, Color color = AppColors.muted}) =>

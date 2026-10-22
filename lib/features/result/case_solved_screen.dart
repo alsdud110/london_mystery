@@ -164,7 +164,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
               child: AnimatedBuilder(
                 animation: _c,
                 builder: (context, _) => ListView(
-                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 32),
+                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.xxl),
                   children: [
                     Opacity(
                       opacity: paper.value.clamp(0, 1),
@@ -180,7 +180,7 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                         ),
                       ),
                     ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: AppSpace.xl),
                     Opacity(
                       opacity: footer.value,
                       child: Column(
@@ -473,12 +473,12 @@ class _CaseFile extends StatelessWidget {
           ),
         Container(
           margin: EdgeInsets.only(top: behind),
-          padding: const EdgeInsets.fromLTRB(22, 22, 22, 26),
+          padding: const EdgeInsets.all(AppSpace.xl),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFFFFFAEC), AppColors.parchment, Color(0xFFEAD8AE)],
+              colors: [AppColors.paperLight, AppColors.parchment, AppColors.paperShade],
             ),
             borderRadius: BorderRadius.circular(AppRadius.paper),
             border: Border.all(color: AppColors.parchmentDark, width: AppLine.hairline),
@@ -493,7 +493,7 @@ class _CaseFile extends StatelessWidget {
                 '${city.toUpperCase()} MYSTERY · FILE ${report.episode.numberLabel}',
                 style: AppText.eyebrow(color: AppColors.inkBrown),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpace.sm),
               Text(
                 'CASE CLOSED',
                 style: AppText.logo(size: 36, color: AppColors.navy),
@@ -542,7 +542,7 @@ class _CaseFile extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: emblem == null ? 10 : 2),
+              SizedBox(height: emblem == null ? AppSpace.sm : AppSpace.xs),
               _Field(label: 'Case', value: report.episode.title.toUpperCase(), name: true),
               // What the case was about, alone on the paper, under its title:
               // no frame, no tilt, no shadow.
@@ -628,10 +628,10 @@ class _CaseFile extends StatelessWidget {
                         children: [
                           Text('BADGE', style: AppText.eyebrow(color: AppColors.inkBrown)),
                           Text(top.title.toUpperCase(), style: AppText.title(size: 22)),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: AppSpace.sm),
                           Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
+                            spacing: AppSpace.sm,
+                            runSpacing: AppSpace.sm,
                             children: [
                               for (final b in report.badges)
                                 if (b != top)
@@ -674,16 +674,21 @@ class _Stamp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.waxRed.withValues(alpha: 0.85), width: 3.5),
-        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.waxRed.withValues(alpha: 0.85), width: AppLine.ink * 1.5),
+        borderRadius: BorderRadius.circular(AppRadius.button),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('SOLVED', style: AppText.logo(size: 22, color: AppColors.waxRed.withValues(alpha: 0.9))),
-          Text('★ ★ ★', style: AppText.button(size: 13, color: AppColors.waxRed.withValues(alpha: 0.9))),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < 3; i++) InkStar(color: AppColors.waxRed.withValues(alpha: 0.9), size: AppIconSize.tiny),
+            ],
+          ),
         ],
       ),
     );
@@ -706,10 +711,10 @@ class _Photo extends StatelessWidget {
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: AppColors.paperLight,
-          boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(1, 3))],
-          borderRadius: BorderRadius.circular(2),
+          boxShadow: AppShadow.paperLift,
+          borderRadius: BorderRadius.circular(AppRadius.paper),
         ),
-        child: LandmarkArt(scene, borderRadius: 2, solved: 1),
+        child: LandmarkArt(scene, borderRadius: AppRadius.paper, solved: 1),
       ),
     );
   }
@@ -721,7 +726,7 @@ class _Rule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
       child: LayoutBuilder(
         builder: (context, box) {
           final count = (box.maxWidth / 10).floor();
@@ -779,7 +784,7 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
       child: Row(
         children: [
           Expanded(

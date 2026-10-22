@@ -28,6 +28,9 @@ abstract final class AppShadow {
     BoxShadow(color: Color(0x1A2A2622), blurRadius: 10, offset: Offset(0, 4)),
   ];
   static const onNight = [BoxShadow(color: Color(0x73000000), blurRadius: 28, offset: Offset(0, 14))];
+
+  /// A card pinned to the investigation board, under the desk lamp.
+  static const pinned = [BoxShadow(color: Color(0x66000000), blurRadius: 8, offset: Offset(2, 4))];
 }
 
 /// Icon sizes for [InkIcon] (logical px). Picture-sized art such as the

@@ -181,7 +181,7 @@ class _SpotDifferencesState extends State<SpotDifferences> {
               onRight: () => _show(true),
             ),
             const SizedBox(height: AppSpace.sm),
-            GlossaryText(scene.task, key: const ValueKey('compare-task'), textAlign: TextAlign.center, style: AppText.title(size: 18)),
+            GlossaryText(scene.task, key: const ValueKey('compare-task'), textAlign: TextAlign.center, style: AppText.task()),
             const SizedBox(height: AppSpace.xs),
             // The note's lines, ticked as their changes are found; on a short
             // phone, one line (the note is a tap away), the picture larger.
@@ -308,7 +308,7 @@ class _Switch extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs),
                 decoration: BoxDecoration(
                   color: on ? AppColors.navy : AppColors.parchment.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(AppRadius.paper),
+                  borderRadius: BorderRadius.circular(AppRadius.button),
                   border: Border.all(color: on ? AppColors.navyDeep : AppLine.faint(0.3), width: AppLine.hairline),
                 ),
                 child: MediaQuery.withClampedTextScaling(
@@ -316,7 +316,7 @@ class _Switch extends StatelessWidget {
                   child: Text(
                     label,
                     textAlign: TextAlign.center,
-                    style: AppText.mark(color: on ? AppColors.goldLight : AppColors.inkBrown, size: 14),
+                    style: AppText.button(size: 15, color: on ? AppColors.goldLight : AppColors.navy),
                   ),
                 ),
               ),
@@ -349,11 +349,11 @@ class _FoundDots extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Found $n of ${done.length}', style: AppText.mark(color: AppColors.burgundy, size: 14)),
+          Text('Found $n of ${done.length}', style: AppText.tally()),
           const SizedBox(width: AppSpace.sm),
           for (final d in done)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs / 2),
               child: _Tick(done: d),
             ),
         ],

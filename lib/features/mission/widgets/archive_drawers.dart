@@ -81,15 +81,15 @@ class _ArchivePuzzleState extends State<ArchivePuzzle> {
         ),
         const SizedBox(height: AppSpace.md),
         if (!open)
-          SizedBox(
-            height: 52,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 52),
             child: _refused == null
                 ? const SizedBox.shrink()
                 : GlossaryText(
                     _scene.refusalOf(_refused!),
                     key: const ValueKey('drawer-refused'),
                     textAlign: TextAlign.center,
-                    style: AppText.bodyText(size: 17, color: AppColors.tryAgain, weight: FontWeight.w700),
+                    style: AppText.bodyText(size: 17, color: AppColors.inkBrown, weight: FontWeight.w600),
                   ),
           ),
       ],
@@ -353,8 +353,8 @@ class _EnvelopeCloserState extends State<_EnvelopeCloser> with SingleTickerProvi
                     },
                   ),
                   const SizedBox(height: AppSpace.sm),
-                  SizedBox(
-                    height: 28,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 28),
                     child: Text(
                       _settled ? 'It fits!' : (_line ?? ''),
                       key: const ValueKey('envelope-line'),
@@ -367,15 +367,16 @@ class _EnvelopeCloserState extends State<_EnvelopeCloser> with SingleTickerProvi
                     key: const ValueKey('corner-lay'),
                     label: _scene.layLabel,
                     glyph: InkGlyph.puzzle,
-                    style: GameButtonStyle.glass,
+                    style: GameButtonStyle.gold,
                     tap: TapRole.primary,
                     onPressed: _busy ? null : _lay,
                   ),
                   const SizedBox(height: AppSpace.xs),
-                  TextButton(
+                  InkTextButton(
                     key: const ValueKey('envelope-done'),
+                    label: 'BACK TO THE DRAWER',
+                    color: AppColors.goldLight,
                     onPressed: _busy ? null : () => Navigator.of(context).pop(),
-                    child: Text('BACK TO THE DRAWER', style: AppText.button(size: 15, color: AppColors.goldLight)),
                   ),
                 ],
               ),
@@ -461,7 +462,7 @@ class EnvelopeFound extends StatelessWidget {
                             key: const ValueKey('seal-close-done'),
                             label: 'CONTINUE',
                             arrow: true,
-                            style: GameButtonStyle.glass,
+                            style: GameButtonStyle.gold,
                             tap: TapRole.primary,
                             onPressed: () => Navigator.of(context).pop(),
                           ),

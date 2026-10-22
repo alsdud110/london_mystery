@@ -406,7 +406,7 @@ class _CoverTitle extends StatelessWidget {
         children: [
           Text(
             'LONDON MYSTERY',
-            style: AppText.eyebrow(color: AppColors.goldLight.withValues(alpha: 0.75)).copyWith(fontSize: 11.5, letterSpacing: 4, shadows: lift),
+            style: AppText.eyebrow(color: AppColors.goldLight).copyWith(letterSpacing: 4, shadows: lift),
           ),
           const SizedBox(height: AppSpace.md),
           Text(season.label, style: AppText.eyebrow(color: AppColors.goldLight).copyWith(shadows: lift)),
@@ -460,8 +460,8 @@ class _Heading extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(overview.info.label, style: AppText.eyebrow(color: AppColors.goldLight).copyWith(fontSize: 12)),
-        const SizedBox(height: 2),
+        Text(overview.info.label, style: AppText.eyebrow(color: AppColors.goldLight)),
+        const SizedBox(height: AppSpace.xs),
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(

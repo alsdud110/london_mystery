@@ -401,7 +401,7 @@ class _CaseNote extends StatelessWidget {
                 bottom: AppSpace.xs,
                 child: Text(
                   episode.numberLabel,
-                  style: AppText.eyebrow(color: AppColors.inkBrown.withValues(alpha: 0.75)).copyWith(fontSize: tagSize),
+                  style: AppText.eyebrow(color: AppColors.muted).copyWith(fontSize: tagSize),
                 ),
               ),
             ],
@@ -423,7 +423,7 @@ class _CaseNote extends StatelessWidget {
               color: current ? AppColors.burgundy.withValues(alpha: 0.75) : AppLine.faint(0.3),
               width: current ? AppLine.rule : AppLine.hairline,
             ),
-            boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 5, offset: Offset(1.5, 3))],
+            boxShadow: AppShadow.pinned,
           ),
           alignment: Alignment.center,
           child: Text('?', style: AppText.title(size: size.height * 0.5, color: current ? AppColors.burgundy : AppColors.inkBrown)),
@@ -608,7 +608,7 @@ class _FigureNote extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.paperLight,
             border: Border.all(color: AppLine.faint(0.3), width: AppLine.hairline),
-            boxShadow: const [BoxShadow(color: Color(0x66000000), blurRadius: 8, offset: Offset(2, 4))],
+            boxShadow: AppShadow.pinned,
           ),
           foregroundDecoration: RuledFrame(color: closed ? AppColors.goldDeep : AppColors.inkBrown, inset: 3),
           child: Column(

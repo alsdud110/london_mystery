@@ -86,7 +86,7 @@ class _LiftRouteState extends State<LiftRoute> {
           _bothRead ? _scene.chooseTask : _scene.readTask,
           key: const ValueKey('lift-task'),
           textAlign: TextAlign.center,
-          style: AppText.subtitle(),
+          style: AppText.task(),
         ),
         const SizedBox(height: AppSpace.md),
         // The lift, its plate and its log marked where they hang.
@@ -130,8 +130,8 @@ class _LiftRouteState extends State<LiftRoute> {
           alignment: WrapAlignment.center,
           spacing: AppSpace.sm,
           children: [
-            InkTextButton(label: readPlate ? 'Route plate ✓' : 'Route plate', glyph: InkGlyph.map, onPressed: () => _open(LiftScene.plateId)),
-            InkTextButton(label: readLog ? 'Lift log ✓' : 'Lift log', glyph: InkGlyph.notebook, onPressed: () => _open(LiftScene.logId)),
+            InkTextButton(label: 'Route plate', glyph: readPlate ? InkGlyph.check : InkGlyph.map, onPressed: () => _open(LiftScene.plateId)),
+            InkTextButton(label: 'Lift log', glyph: readLog ? InkGlyph.check : InkGlyph.notebook, onPressed: () => _open(LiftScene.logId)),
           ],
         ),
         if (_bothRead) ...[
@@ -145,12 +145,16 @@ class _LiftRouteState extends State<LiftRoute> {
                 key: const ValueKey('lift-question-trip'),
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('${t.time}   ${t.from.toUpperCase()}', style: paperInk(size: 20, weight: FontWeight.w700)),
+                  Text(t.time, style: paperInk(size: 20, weight: FontWeight.w700)),
+                  const SizedBox(width: AppSpace.md),
+                  Text(t.from.toUpperCase(), style: paperInk(size: 20, weight: FontWeight.w700)),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpace.sm),
                     child: InkIcon(InkGlyph.arrow, size: AppIconSize.small, color: AppColors.ink),
                   ),
-                  Text('${t.to.toUpperCase()}   (S)', style: paperInk(size: 20, weight: FontWeight.w700)),
+                  Text(t.to.toUpperCase(), style: paperInk(size: 20, weight: FontWeight.w700)),
+                  const SizedBox(width: AppSpace.md),
+                  Text('(S)', style: paperInk(size: 20, weight: FontWeight.w700, color: AppColors.burgundy)),
                 ],
               ),
             ),

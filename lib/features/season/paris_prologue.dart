@@ -272,7 +272,7 @@ class _ParisPrologueScreenState extends ConsumerState<ParisPrologueScreen> with 
                               const SizedBox(height: AppSpace.sm),
                               const OrnamentRule(color: AppColors.goldLight, width: 150),
                               const SizedBox(height: AppSpace.sm),
-                              Text(season.tagline, style: AppText.logo(size: 32, color: AppColors.paperLight)),
+                              Text(season.tagline, textAlign: TextAlign.center, style: AppText.cinematicPrompt(size: 22, color: AppColors.paperLight)),
                             ],
                           ),
                         ),

@@ -431,7 +431,7 @@ class _TrayPiece extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.walnutDeep.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppRadius.button),
-        border: Border.all(color: holding ? AppColors.gold : AppLine.faint(0.25), width: holding ? 3 : AppLine.hairline),
+        border: Border.all(color: holding ? AppColors.gold : AppLine.faint(0.25), width: holding ? AppLine.ink : AppLine.hairline),
       ),
       alignment: Alignment.center,
       child: child,
@@ -490,9 +490,9 @@ class _NumberPlate extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: AppColors.paperLight,
-          borderRadius: BorderRadius.circular(3),
-          border: Border.all(color: AppColors.goldDeep, width: 1.5),
-          boxShadow: const [BoxShadow(color: Color(0x66000000), blurRadius: 3, offset: Offset(0, 1))],
+          borderRadius: BorderRadius.circular(AppRadius.paper),
+          border: Border.all(color: AppColors.goldDeep, width: AppLine.rule),
+          boxShadow: AppShadow.paperLift,
         ),
         child: Center(
           child: MediaQuery.withNoTextScaling(

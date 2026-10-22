@@ -189,8 +189,7 @@ class _SlotLetter extends StatelessWidget {
     return ExcludeSemantics(
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border: glowing ? Border.all(color: AppColors.goldLight, width: AppLine.rule) : null,
-          boxShadow: glowing ? [BoxShadow(color: AppColors.goldLight.withValues(alpha: 0.55), blurRadius: 10)] : null,
+          border: glowing ? Border.all(color: AppColors.goldLight, width: AppLine.ink) : null,
         ),
         child: Padding(
           padding: const EdgeInsets.all(3),
@@ -199,10 +198,7 @@ class _SlotLetter extends StatelessWidget {
             child: Text(
               letter,
               textScaler: TextScaler.noScaling,
-              style: AppText.logo(size: 40, color: AppColors.ink).copyWith(
-                height: 1,
-                shadows: const [Shadow(color: AppColors.goldLight, blurRadius: 1.5)],
-              ),
+              style: AppText.style(AppText.body, size: 40, weight: FontWeight.w700, color: AppColors.ink, height: 1),
             ),
           ),
         ),
@@ -238,7 +234,6 @@ class _InsideRingState extends State<_InsideRing> with SingleTickerProviderState
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppRadius.paper),
           border: Border.all(color: AppColors.goldLight.withValues(alpha: 0.5 + 0.4 * _c.value), width: AppLine.ink),
-          boxShadow: [BoxShadow(color: AppColors.goldLight.withValues(alpha: 0.25 * _c.value), blurRadius: 14)],
         ),
       ),
     );
@@ -364,7 +359,7 @@ class _FoundInspectState extends State<_FoundInspect> with SingleTickerProviderS
                       GameButton(
                         key: const ValueKey('found-turn'),
                         label: back ? 'TURN IT BACK' : 'TURN IT OVER',
-                        style: back ? GameButtonStyle.glass : GameButtonStyle.navy,
+                        style: back ? GameButtonStyle.glass : GameButtonStyle.gold,
                         tap: back ? TapRole.secondary : TapRole.primary,
                         onPressed: _flip,
                       ),

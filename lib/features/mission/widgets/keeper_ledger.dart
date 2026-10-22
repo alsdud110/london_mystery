@@ -297,7 +297,7 @@ class _LedgerSecondPageState extends State<LedgerSecondPage> {
                 task,
                 key: const ValueKey('ledger-turn-task'),
                 textAlign: TextAlign.center,
-                style: AppText.subtitle(color: !_turned || _found ? AppColors.success : AppColors.ink),
+                style: AppText.subtitle(),
               ),
             ),
           ],

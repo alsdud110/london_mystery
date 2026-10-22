@@ -183,13 +183,13 @@ class _PlanRoutePuzzleState extends State<PlanRoutePuzzle> {
         const SizedBox(height: AppSpace.md),
         // What comes first, when the letter cannot go there yet; the same
         // room kept, so nothing jumps.
-        SizedBox(
-          height: 26,
+        ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 26),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             child: _line == null
                 ? const SizedBox.shrink()
-                : Text(_line!, key: const ValueKey('plan-line'), textAlign: TextAlign.center, style: AppText.bodyText(size: 17, color: AppColors.tryAgain, weight: FontWeight.w700)),
+                : Text(_line!, key: const ValueKey('plan-line'), textAlign: TextAlign.center, style: AppText.bodyText(size: 17, color: AppColors.inkBrown, weight: FontWeight.w600)),
           ),
         ),
         const SizedBox(height: AppSpace.sm),
