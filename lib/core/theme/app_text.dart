@@ -122,4 +122,28 @@ abstract final class AppText {
 
   static TextStyle caption({Color color = AppColors.muted}) =>
       style(body, size: 14, weight: FontWeight.w500, color: color, height: 1.4);
+
+  static final _digits = RegExp(r'[0-9]+(?:[:.][0-9]+)*');
+
+  /// [text] in [style], its numbers in the reading face. The display face
+  /// draws old-style figures ("4:oo", "ı", "₃"): a time or a number in a
+  /// title is read as letters. Text in any other face is left as it is.
+  static TextSpan liningDigits(String text, TextStyle style) {
+    if (style.fontFamily != display || !_digits.hasMatch(text)) return TextSpan(text: text, style: style);
+    final figures = style.copyWith(
+      fontFamily: body,
+      fontWeight: FontWeight.w600,
+      fontVariations: const [FontVariation('wght', 600)],
+      fontSize: (style.fontSize ?? 16) * 0.92,
+    );
+    final spans = <TextSpan>[];
+    var at = 0;
+    for (final m in _digits.allMatches(text)) {
+      if (m.start > at) spans.add(TextSpan(text: text.substring(at, m.start)));
+      spans.add(TextSpan(text: m.group(0), style: figures));
+      at = m.end;
+    }
+    if (at < text.length) spans.add(TextSpan(text: text.substring(at)));
+    return TextSpan(style: style, children: spans);
+  }
 }

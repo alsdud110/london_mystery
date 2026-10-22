@@ -20,6 +20,7 @@ import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/letter_puzzles.dart';
+import '../../data/models/opera_puzzles.dart';
 import '../../data/models/painter_puzzles.dart';
 import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
@@ -56,17 +57,20 @@ import 'widgets/clock_question.dart';
 import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
 import 'widgets/exhibit.dart';
+import 'widgets/fly_rail.dart';
 import 'widgets/hold_rack.dart';
 import 'widgets/investigation_search.dart';
 import 'widgets/keeper_ledger.dart';
 import 'widgets/label_assembly.dart';
 import 'widgets/lift_route.dart';
+import 'widgets/light_board.dart';
 import 'widgets/lens_inspect.dart';
 import 'widgets/mark_compare.dart';
 import 'widgets/plan_route.dart';
 import 'widgets/scene_deduction.dart';
 import 'widgets/scene_decode.dart';
 import 'widgets/scene_explore.dart';
+import 'widgets/show_strip.dart';
 import 'widgets/station_clocks.dart';
 import 'widgets/story_picture_view.dart';
 import 'widgets/question_widgets.dart';
@@ -161,6 +165,18 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// restart.
   SubmitOutcome? _envelopeSolve;
 
+  /// Case 07's stage lit like the photo (Paris): its reward, held for the
+  /// Discovery Moment until the cue card is read and the scrap found (the
+  /// scrap seen is kept while the page is open). Null after a restart.
+  SubmitOutcome? _cueSolve;
+  bool _scrapSeen = false;
+
+  /// Case 07's backdrop found (Paris): its reward, held for the Discovery
+  /// Moment until the slip is taken from its pocket (the pocket opened is
+  /// kept while the page is open). Null after a restart.
+  SubmitOutcome? _pocketSolve;
+  bool _pocketOpen = false;
+
   @override
   void initState() {
     super.initState();
@@ -254,7 +270,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             SeasonCatalog.blotter(_mission) != null ||
             SeasonCatalog.holdRack(_mission) != null ||
             SeasonCatalog.planRoute(_mission) != null ||
-            SeasonCatalog.archive(_mission) != null);
+            SeasonCatalog.archive(_mission) != null ||
+            SeasonCatalog.showStrip(_mission) != null ||
+            SeasonCatalog.lightBoard(_mission) != null ||
+            SeasonCatalog.flyRail(_mission) != null);
     // Case 04's hut: back walks out of it one place at a time (the ledger,
     // the inside, the outside).
     final hut = SeasonCatalog.keeperHut(_mission);
@@ -779,6 +798,120 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     if (mounted) context.go(Routes.story(m.id));
   }
 
+  /// The show's strip slid along the clock (what its start says answers
+  /// the mission's puzzle).
+  Widget _stripStage(Mission m, ShowStripScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: ShowStripPuzzle(scene: scene, mission: m, onSubmit: (a) => _submit(m, a)),
+      );
+
+  /// The stage lit from the lighting desk (what it says against the old
+  /// photo answers the mission's puzzle); the photo looked at is saved.
+  Widget _lightsStage(Mission m, LightBoardScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: LightBoardPuzzle(
+          scene: scene,
+          mission: m,
+          onPhoto: () => _recordFound(m, LightBoard.photoId),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The stage matches: the cue card read and the scrap found before the
+  /// story goes on (the cue card read is saved).
+  Widget _cueStage(Mission m, LightBoardScene scene, GameProgress progress) => CenteredScroll(
+        key: const ValueKey('cue-stage'),
+        padding: _stagePadding,
+        children: [
+          Text('MISSION ${m.numberLabel} · THE LIGHTING BOOK', textAlign: TextAlign.center, style: AppText.eyebrow()),
+          const SizedBox(height: AppSpace.lg),
+          CueFound(
+            scene: scene,
+            mission: m,
+            cueRead: progress.hasExamined(GameProgress.examinedKey(m.id, LightBoard.cueId)),
+            scrapFound: _scrapSeen,
+            onCue: () => _recordFound(m, LightBoard.cueId),
+            onScrap: () => setState(() => _scrapSeen = true),
+            onContinue: () => _afterHeld(m, LightBoard.scrapId, () {
+              final solve = _cueSolve;
+              _cueSolve = null;
+              return solve;
+            }),
+          ),
+        ],
+      );
+
+  /// The backdrops lowered from the rope rail (the one chosen answers the
+  /// mission's puzzle); the backdrops lowered are saved.
+  Widget _railStage(Mission m, FlyRailScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: FlyRailPuzzle(
+          scene: scene,
+          mission: m,
+          lowered: _looked(m, [for (final b in scene.rail.ropes) FlyRail.loweredKey(b.id)], progress).map((k) => k.replaceFirst('backdrop-', '')).toSet(),
+          onLowered: (id) => _recordFound(m, FlyRail.loweredKey(id)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The backdrop is the right one: its pocket opened before the story goes
+  /// on.
+  Widget _pocketStage(Mission m, FlyRailScene scene) => CenteredScroll(
+        key: const ValueKey('pocket-stage'),
+        padding: _stagePadding,
+        children: [
+          Text('MISSION ${m.numberLabel} · THE BACKDROP', textAlign: TextAlign.center, style: AppText.eyebrow()),
+          const SizedBox(height: AppSpace.lg),
+          PocketFound(
+            scene: scene,
+            mission: m,
+            open: _pocketOpen,
+            onOpen: () => setState(() => _pocketOpen = true),
+            onContinue: () => _afterHeld(m, FlyRail.pocketId, () {
+              final solve = _pocketSolve;
+              _pocketSolve = null;
+              return solve;
+            }),
+          ),
+        ],
+      );
+
+  /// What was found after a solve is seen ([key] saved): the Discovery
+  /// Moment with the solve's reward ([take]: null after a restart, the
+  /// reward paid then), then the story.
+  Future<void> _afterHeld(Mission m, String key, SubmitOutcome? Function() take) async {
+    final audio = ref.read(audioServiceProvider);
+    _recordFound(m, key);
+    final solve = take();
+    await showDiscoveryMoment(
+      context,
+      mission: m,
+      discovery: SeasonCatalog.discovery(m),
+      xp: XpBreakdown.of(m, ref.read(gameControllerProvider)),
+      coins: solve?.coins ?? 0,
+      firstSolve: solve?.firstSolve ?? false,
+      newBadges: solve?.newBadges ?? const [],
+      onEvidenceLaid: () => audio.play(GameSound.paperPlace),
+      showDetective: true,
+    );
+    if (mounted) context.go(Routes.story(m.id));
+  }
+
   /// The thing handed over with the letter, looked at closer (kept as seen).
   void _lookAtExhibit(Mission m, Exhibit exhibit) {
     ref.read(audioServiceProvider).play(GameSound.paperRustle);
@@ -946,6 +1079,16 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           setState(() => _envelopeSolve = outcome);
           return;
         }
+        // The stage lit like the photo: the cue card and the scrap first.
+        if (SeasonCatalog.lightBoard(m) != null) {
+          setState(() => _cueSolve = outcome);
+          return;
+        }
+        // The backdrop: the pocket behind it first.
+        if (SeasonCatalog.flyRail(m) != null) {
+          setState(() => _pocketSolve = outcome);
+          return;
+        }
         final progress = ref.read(gameControllerProvider);
         await showDiscoveryMoment(
           context,
@@ -1022,6 +1165,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final rack = SeasonCatalog.holdRack(m);
     final plan = SeasonCatalog.planRoute(m);
     final archive = SeasonCatalog.archive(m);
+    final strip = SeasonCatalog.showStrip(m);
+    final lights = SeasonCatalog.lightBoard(m);
+    final ropes = SeasonCatalog.flyRail(m);
 
     final Widget body = solved
         // The ledger's second page, until it is read.
@@ -1033,6 +1179,12 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             // The envelope found, until its seal is looked at.
             : archive != null && !progress.hasExamined(GameProgress.examinedKey(m.id, ArchiveDrawers.sealId))
             ? _envelopeFoundStage(m, archive)
+            // The cue card and the scrap, until the scrap is found.
+            : lights != null && !progress.hasExamined(GameProgress.examinedKey(m.id, LightBoard.scrapId))
+            ? _cueStage(m, lights, progress)
+            // The backdrop's pocket, until the slip is taken from it.
+            : ropes != null && !progress.hasExamined(GameProgress.examinedKey(m.id, FlyRail.pocketId))
+            ? _pocketStage(m, ropes)
             : _SolvedStage(key: const ValueKey('solved'), mission: m)
         : switch (_stage) {
             MissionStage.story =>
@@ -1071,6 +1223,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           rack != null ||
                           plan != null ||
                           archive != null ||
+                          strip != null ||
+                          lights != null ||
+                          ropes != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -1131,6 +1286,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when rack != null => _rackStage(m, rack, progress),
             MissionStage.puzzle when plan != null => _planStage(m, plan, progress),
             MissionStage.puzzle when archive != null => _archiveStage(m, archive, progress),
+            MissionStage.puzzle when strip != null => _stripStage(m, strip, progress),
+            MissionStage.puzzle when lights != null => _lightsStage(m, lights, progress),
+            MissionStage.puzzle when ropes != null => _railStage(m, ropes, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,

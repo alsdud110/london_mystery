@@ -37,6 +37,10 @@ const Map<String, DiscoveryType> season2DiscoveryTypes = {
   's2_ep06_m1': DiscoveryType.evidenceFound, // Tag D: kept safe, not stolen
   's2_ep06_m2': DiscoveryType.newLead, // the archive behind Door E
   's2_ep06_m3': DiscoveryType.evidenceFound, // the torn envelope, No. 4417
+  // ── Case 07 — The Phantom Performance ───────────────────────────────
+  's2_ep07_m1': DiscoveryType.deduction, // the show fits only from 4:00
+  's2_ep07_m2': DiscoveryType.evidenceFound, // the stage cue card: 4:00
+  's2_ep07_m3': DiscoveryType.evidenceFound, // the Amendment Slip
 };
 
 /// The Discovery Moments of Season 2's regular missions in [cases] (case id

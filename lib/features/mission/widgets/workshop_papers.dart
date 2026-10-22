@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../data/models/letter_puzzles.dart' show FittedEnvelope, LetterPaper;
+import '../../../data/models/opera_puzzles.dart' show AmendmentSlip, CueCard, OfficeRecord, PhotoPrint, ProgrammePage;
 import '../../../data/models/river_puzzles.dart' show DrawnEvidence;
 import '../../../data/models/scene_explore.dart' show ScenePixels;
 import '../../../data/models/workshop_puzzles.dart';
 import 'letter_papers.dart' show FittedEnvelopeView, LetterPaperView;
+import 'opera_papers.dart';
 import 'river_papers.dart' show PictureCanvas;
 
 /// Case 05's papers and marks drawn with their words: the maker's mark and
@@ -198,7 +200,7 @@ class CroppedPicture extends StatelessWidget {
   );
 }
 
-/// Case 05's and Case 06's evidence drawn (see `DrawnEvidenceArt`).
+/// Case 05's, Case 06's and Case 07's evidence drawn (see `DrawnEvidenceArt`).
 class DrawnEvidenceView extends StatelessWidget {
   const DrawnEvidenceView({super.key, required this.drawn});
 
@@ -213,6 +215,11 @@ class DrawnEvidenceView extends StatelessWidget {
     ),
     final FittedEnvelope e => FittedEnvelopeView(fitted: e),
     final LetterPaper l => LetterPaperView(paper: l),
+    final OfficeRecord r => OfficeRecordView(record: r),
+    final ProgrammePage p => ProgrammeView(page: p),
+    final CueCard c => CueCardView(card: c),
+    final AmendmentSlip s => AmendmentSlipView(slip: s),
+    final PhotoPrint p => PhotoPrintView(photo: p),
     _ => const SizedBox.shrink(),
   };
 }

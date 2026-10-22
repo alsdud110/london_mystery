@@ -1,8 +1,8 @@
 # WORLD MYSTERY — SEASON 2 STORY BIBLE
 ## PARIS STANDS STILL — ONE STOLEN HOUR
 
-**Version:** 1.4 · 2026-10-22  
-**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을 반영했다.  
+**Version:** 1.5 · 2026-10-23  
+**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을, v1.5에서 **Case 07 확정 퍼즐·수정 슬립·Case 08 연결**을 반영했다.  
 **Audience:** ages 8–12 · English-language detective adventure · realistic mystery (no actual time travel).  
 **Scope:** 12 cases, three acts, full solution, chronology, characters, clue ledger, case-by-case missions and endings, implementation guardrails.
 
@@ -146,7 +146,7 @@ Season 1 구현 데이터에서 확인된 사실만 정사로 인정한다. 새�
 | 인물 | 겉으로 알려진 역할 | 실제 역할·동기 | 공개 타이밍 |
 |---|---|---|---|
 | **Émile Moreau** | 이름 없는 Clockmaker (Season 1 런던 사건의 범인) / No. 7 제작자 후보 | 과거 시험 사업의 기술 담당자. 삭제된 기록을 드러내려는 목적으로 **Season 1 런던 사건을 계획·실행**했고, 저지된 뒤 파리에서 현재 단서망을 만든 인물. 목적이 행동을 정당화하지 않는다. **No. 7 제작자와 동일 인물이라는 것은 Case 12에서 도구 흔적·기록으로 확인**. | Clockmaker 별명은 Season 1부터 공개. 시험 사업 연관은 Case 09~11 암시, 실명·동기는 Case 12 확인 |
-| **Victor Delacroix** | 옛 시계 시험 사업 책임자 | 실패와 자신의 삭제 지시를 감춘 인물. 물리적 시간 도둑이 아님. | Case 07 문서에 이름 일부, Case 11 명시, Case 12 입증 |
+| **Victor Delacroix** | 옛 시계 시험 사업 책임자 | 실패와 자신의 삭제 지시를 감춘 인물. 물리적 시간 도둑이 아님. | Case 07에는 이름·이니셜 없음(수정 슬립에 바늘 없는 시계 + 월계관 도장만, v1.5), Case 11 명시, Case 12 입증 |
 | **P. (Painter)** | Montmartre에서 스스로 사라진 화가 | 과거 자료를 옮기는 사람을 목격했다. 얼굴을 보지 못했으므로 성급한 지목 금지. | Case 02 진술, Case 08 목격 의미 해명 |
 | **River Keeper** | 장부에 등장하는 운송 기록자 | Box 23 운송 경로를 기록한 사람. 공범이라는 근거 없음. | Case 04 기록, 후반부 필요 시 기록만 재인용 |
 | **Louvre 보관 담당자** | 편지 4417의 행방을 아는 사람 | 편지를 고의 은폐한 악역이 아님. 16 MAY 4:00 PM **Preservation Order(보존 지시)**에 따라 편지를 보류한 행정 조치. 지시를 내린 사람·구체적 이유, 보류 처리 담당자, 이동 날짜·담당자, 현재 보관 위치는 **미확정**. | Case 06 |
@@ -224,6 +224,22 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 **Dates:** Case 06은 Case 05(16 MAY) 이후 시점이다. 보류는 16 MAY 4:00 PM, 사유는 Preservation Order로 확정. 지시자·구체적 이유, 보류 처리 담당자, `TRANSFERRED` 날짜·담당자, 현재 보관 위치는 Case 06 세부 명세에서 확정하며, M2 진술과 Final의 편지 발견 장소는 그 결정 이후에 작성한다.
 
 ## CASE 07 — THE PHANTOM PERFORMANCE
+
+### v1.5 확정 명세 (2026-10-23, 사용자 승인 — 아래 v1.0 기획안보다 우선)
+**Location:** Palais Garnier, 지붕 아래 가상 기록 보관실(archive) → 객석 뒤 조명 데스크 → 무대 옆 로프 레일 → 다시 archive의 라이트 테이블. Map pin: Palais Garnier.  
+**Records:** 공연 *The Golden Nightingale*, **PERFORMANCE No. 34**. **FILE 3** = 사무실 공식 기록(`DOORS OPEN · 3:30 PM`, `CURTAIN UP · 3:00 PM`, `CURTAIN DOWN · 6:10 PM`). **FILE 4** = 공연 프로그램(OVERTURE 10 · ACT ONE 60 · INTERVAL 20 · ACT TWO 40, `THE WHOLE SHOW: 2 HOURS 10 MINUTES`) — **시작 시각은 적혀 있지 않다.** 실제 공연: 4:00 시작, 6:10 종료.  
+**Core deduction:** 같은 공연의 시작 시각이 둘. 바뀌지 않은 독립 기록(프로그램 길이, 무대 큐카드)과 바뀐 기록(FILE 3)을 구별한다. 시간이 실제로 사라진 것이 아니라 **기록이 사후에 바뀌었다.**
+
+- **M1 · The Show Strip (공연 띠 맞추기):** 2시간 10분 길이의 공연 띠(길이 고정)를 2:30–6:30 시간줄 위에서 10분 단위로 드래그·◀▶ 이동(시작 2:30–4:20). 관객 입장(3:30) **이후** 시작하고 `CURTAIN DOWN` 6:10에 끝나는 시작은 **4:00 하나**. 오답 분류: office(3:00) / early(≤3:30) / end(종료가 6:10 아님). **증거:** `The Office Record`. M1에서는 기록 수정 여부를 확정하지 않는다.
+- **M2 · The Ghost Light (조명 맞추기):** 객석 뒤 조명 데스크의 레버 4개(GHOST LIGHT · HOUSE LIGHTS · FOOTLIGHTS · BIG SPOT, 16개 조합)로 `3:00 PM · CURTAIN UP!`이라 적힌 옛 사진과 같은 조명을 만든다. 정답은 **GHOST LIGHT만**: 빈 무대(공연 아님). 사진은 촬영 시각을 증명하지 않는다. Lighting Book의 No. 34 페이지 **Stage Cue Card**: `SHOW No. 34 · CUE 1 · CURTAIN UP · 4:00`(사무실이 아닌 조명 데스크 보관). 책에 끼워진 **익명의 작은 그림 쪽지**(빨간 문 위의 작은 시계) — 작성자는 밝히지도 추측하지도 않는다. **증거:** `The Stage Cue Card`.
+- **M3 · The Painted Sky (배경막 내리기):** Case 02 증거 `The Painted Street`의 `Above the red door: a small clock.`로 로프 4개의 배경막(빨간 문 + 램프 / 빨간 문 + 먼 시계탑 / **빨간 문 + 바로 위 작은 시계(로프 3)** / 파란 문 + 작은 시계) 중 하나를 고른다. 오답은 각각 한 가지만 어긋난다. 배경막 뒤 천 주머니에서 **Amendment Slip**: `FILE 3 · PERFORMANCE No. 34 · CURTAIN UP: 4:00 → 3:00`, 보라색 잉크 **바늘 없는 시계 + 월계관 도장**, 이름·이니셜 없음. 슬립이 배경막 뒤에 있던 이유, P.가 배경막을 그렸는지는 확정하지 않는다(`Did P. paint this? We can't be sure.`). **증거:** `The Amendment Slip`.
+- **Final · The Changed Record (라이트 테이블 + 핀 연결):** (1) 바뀐 기록 고르기: FILE 3(3:00) vs FILE 4 + 큐카드(4:00) → FILE 3. (2) FILE 3을 라이트 테이블에 올리고 황동 스위치를 켠다: CURTAIN UP 위에 덧붙인 종이의 테두리와 그 아래 원래 `4:00 PM`이 비친다(DOORS OPEN·CURTAIN DOWN은 그대로). (3) 슬립의 `4:00` 핀 → 덧붙인 종이 아래 원래 시각, `3:00` 핀 → 덧붙인 종이 위 바뀐 시각. 정답 상태 `old:under,new:patch`. **증거:** `The Changed Record`.
+
+**Reveal (Case Solved):** 공연은 4:00에 시작했다. FILE 3도 처음엔 4:00이었고 나중에 누군가 3:00으로 덮었다 — 3:00 공연은 종이 위에만 있었다(*phantom performance*). Case 03 에펠탑 안내문의 3:00/4:00을 **유사 패턴**으로만 회상(`Is it the same hand? We don't know yet.`).  
+**End hook:** 슬립 뒷면의 작은 연필 스케치(계단, 가로등, metro 표지판 `ABBESSES`)와 `P. KNEW THE BAG.` → Case 08 *The Painter's Last Sketch* (Montmartre / Abbesses). Case 08 질문: `What did P. see — and what was in the bag?`  
+**Keep hidden (v1.5):** 기록을 바꾼 사람·지시자·이유, 그림 쪽지 작성자, 슬립이 배경막 뒤에 있던 이유, P.와 배경막의 관계, Victor·Émile·Clockmaker의 연관, 모든 실명·이니셜. 도장 문양(바늘 없는 시계 + 월계관)은 Case 08 이후 재사용을 위해 유지한다.
+
+### v1.0 기획안 (참고용, v1.5 확정 명세로 대체됨)
 **Location:** Palais Garnier, fictional archival wing.  
 **Opening question:** `Why does the same performance have two start times?`
 
@@ -336,6 +352,8 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | Backward Clock III | Case 05 | Case 09, 12 | 개별 개조 시계와 제작자의 기술 |
 | Letter No. 4417 | Case 05 | Case 06–07 | 보류된 편지의 이동 경로 및 삭제 기록 색인 |
 | Modified opera record | Case 07 | Case 08, 11 | 기록 수정 패턴과 사업 부서 연결 |
+| Stage Cue Card (CURTAIN UP · 4:00) | Case 07 | Case 11 | 사무실 기록과 독립된 무대 기록; 수정되지 않은 원래 시작 시각 |
+| Amendment Slip stamp (바늘 없는 시계 + 월계관, 이름 없음) | Case 07 | Case 08, 11 | 수정 승인 문양; 부서 표식과의 대응은 Case 08, 개인 신원 단정 금지 |
 | P.'s bag and badge sketch | Case 08 | Case 11–12 | 문서 이동과 소속 단서; 인물 단정 금지 |
 | Trial map and gear diagram | Case 09 | Case 10, 12 | 제한된 시험망의 작동 방식 |
 | Independent time log | Case 10 | Case 12 | 실제 시간 소멸 부정 |
@@ -356,7 +374,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | 04 | 시계 부품이 No. 7로 운송됨 | 부품의 최종 용도 |
 | 05 | 4417 편지가 16 MAY 4:00 PM Louvre에서 보류됨 | 편지 내용·보류자·보류 이유 |
 | 06 | 편지는 도난이 아니라 Preservation Order로 보류됐고(16 MAY 4:00 PM), 다음 날 아침 archive로 옮겨졌다. 편지 `The clocks may lie. / But the show remembers.`와 오페라 극장 그림, 뒷면 `OPERA ARCHIVE · FILE 3–4` | 작성자·삭제 지시자, 보존 지시자, `THE RECORD WAS REMOVED` (v1.4: 시즌 후반 반전으로 보류) |
-| 07 | 오페라 기록이 사후 수정됨 | Victor의 최종 책임 |
+| 07 | 오페라 기록(FILE 3)의 CURTAIN UP이 4:00에서 3:00으로 사후 수정됨(덧붙인 종이 아래 원래 4:00), 수정 슬립과 바늘 없는 시계 + 월계관 도장, 슬립 뒷면 `ABBESSES` 스케치와 `P. KNEW THE BAG.` | 수정자·지시자·이유, 그림 쪽지 작성자, 슬립이 배경막 뒤에 있던 이유, P.와 배경막의 관계, Victor의 최종 책임과 모든 이름·이니셜 |
 | 08 | 화가가 본 것은 기록 가방을 옮기는 행위 | 얼굴·개인 신원 |
 | 09 | 일부 시험 시계가 하나의 기준값에 연결될 수 있음, Clockmaker의 톱니 표식이 시험 장치 설계 문양과 같음 | Clockmaker 실명·동기, 삭제 책임 |
 | 10 | 시간이 실제로 사라진 것은 아님 | 삭제 승인자 |
@@ -373,7 +391,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 4→5 **Box 23의 주소와 두 바늘 표식**이 No. 7을 가리킨다.  
 5→6 **Letter 4417의 HELD · LOUVRE POST ROOM**이 Louvre를 가리킨다.  
 6→7 **편지의 오페라 극장 그림과 뒷면 `OPERA ARCHIVE · FILE 3–4`**가 Palais Garnier를 가리킨다.  
-7→8 **수정 지시서의 P. 스케치**가 Abbesses를 가리킨다.  
+7→8 **수정 슬립 뒷면의 P. 스케치(`ABBESSES`)와 `P. KNEW THE BAG.`**가 Abbesses를 가리킨다.  
 8→9 **화가의 정원 모형 스케치**가 Luxembourg Gardens를 가리킨다.  
 9→10 **시험망 기록 코드와 Arc de Triomphe의 표식**이 다음 자료를 가리킨다.  
 10→11 **누락 페이지 보존 목록**이 Saint-Sulpice 인근 기록실을 가리킨다.  
@@ -416,4 +434,5 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 - **v1.1 (2026-10-21):** 사용자 승인에 따라 Season 1 Clockmaker = Émile 통합(런던 사건의 범인, 동기는 정당화 아님). Season 1 확인 행동 범위(§2.5), 톱니 표식 기원(시험 장치 설계 문양 → 에밀의 상징), Case 01 표현 유지 원칙, 날짜 연속성(13–16 MAY, 보류 지속·이동 날짜 미확정), Victor 입증의 독립 증거 원칙, Case 12 결말·최종 보드 문구 갱신.
 - **v1.2 (2026-10-21):** 편지 4417 보류 시점 확정(16 MAY 4:00 PM, Louvre 우편실; 보류자·이유·이동 날짜는 미확정). §2.6 신설: Big Ben 비밀 문 보관함에 파리 시험 설계도 일부·기록 색인이 있었고 에밀은 확보에 실패했다는 Season 2 후반부 배경(보관 경위·인지 경로 등은 미확정). Case 06 M2를 보류 시점 vs 이동 시점 구분 원칙으로 재정의. §3·§7·§8·§10 반영.
 - **v1.3 (2026-10-21):** §2.6을 Big Ben 이중 잠금 구조로 확정(1차 비밀 문 → 에밀의 작업실, 2차 작업실 내 별도 보관함 → Big Ben 시계 장치 특정 위치 정지로 해제; 에밀 해제 실패, 탐정 미발견, Case 12 공개). Season 1 Case 02(8:17 정지)·Case 12(진짜 톱니, 자정 타종)와의 인과 검증 추가. 편지 4417 보류 사유를 Preservation Order로 확정(지시자·구체적 이유·이동 날짜·담당자·현재 위치는 미확정). Case 06에 도난 vs 보류 vs 이동 구분 추리 원칙 추가. §2.5·§3·§7·§8·§10 반영.
+- **v1.5 (2026-10-23):** 사용자 승인에 따라 Case 07 확정 명세 추가: M1 공연 띠 맞추기(4:00 시작), M2 조명 데스크 고스트 라이트 + Stage Cue Card(4:00) + 익명 그림 쪽지, M3 Case 02 `The Painted Street`로 배경막 고르기 + Amendment Slip(`4:00 → 3:00`, 바늘 없는 시계 + 월계관 도장, 이름 없음), Final 라이트 테이블에서 덧붙인 종이 아래 4:00 확인 + 핀 연결. 슬립 뒷면 `ABBESSES` 스케치와 `P. KNEW THE BAG.`로 Case 08 연결. §3 Victor 공개 타이밍(Case 07 이름 일부 → 이름·이니셜 없음)과 §6 Case 07·§7·§8 07행·§9 7→8 갱신. Case 08–12 기획, Season 1과 Case 01–06 설정은 변경 없음.
 - **v1.4 (2026-10-22):** 사용자 승인에 따라 Case 06 확정 명세 추가: M1 꼬리표 뒤집기, M2 평면도 길찾기(Door E), M3 서랍 + Case 05 찢긴 봉투 모서리 맞추기(Envelope 2), Final 편지 그림 ↔ 지도 대조(Palais Garnier). 편지 문구 `The clocks may lie. / But the show remembers.`, 뒷면 `OPERA ARCHIVE · FILE 3–4`로 Case 07 연결. 이동 `17 MAY · MORNING · MOVED`(archive) 확정. `THE RECORD WAS REMOVED`는 Case 06 비공개(시즌 후반 반전). §1 날짜 메모·§5 표 유지, §8 06행·§9 6→7 갱신. Season 1과 Case 01–05 설정은 변경 없음.

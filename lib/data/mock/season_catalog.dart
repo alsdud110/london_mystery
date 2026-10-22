@@ -6,6 +6,7 @@ import '../models/investigation.dart';
 import '../models/learning.dart';
 import '../models/letter_puzzles.dart';
 import '../models/mission.dart';
+import '../models/opera_puzzles.dart';
 import '../models/painter_puzzles.dart';
 import '../models/river_puzzles.dart';
 import '../models/scene_decode.dart';
@@ -34,6 +35,7 @@ import 'season2/season2_case03_scenes.dart';
 import 'season2/season2_case04_scenes.dart';
 import 'season2/season2_case05_scenes.dart';
 import 'season2/season2_case06_scenes.dart';
+import 'season2/season2_case07_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -80,6 +82,10 @@ class SeasonContent {
     this.planRoutes = const {},
     this.archives = const {},
     this.letterMaps = const {},
+    this.showStrips = const {},
+    this.lightBoards = const {},
+    this.flyRails = const {},
+    this.lightTables = const {},
     this.introPlaques = const {},
     this.evidenceArt = const {},
     this.exhibits = const {},
@@ -170,6 +176,15 @@ class SeasonContent {
   final Map<String, ArchiveScene> archives;
   final Map<String, LetterMapScene> letterMaps;
 
+  /// Missions played on Case 07's pictures (Season 2): the show's strip slid
+  /// along the clock, the stage lit like the old photo from the lighting
+  /// desk, the backdrops lowered from the rope rail, and the final's light
+  /// table and the Amendment Slip pinned to FILE 3.
+  final Map<String, ShowStripScene> showStrips;
+  final Map<String, LightBoardScene> lightBoards;
+  final Map<String, FlyRailScene> flyRails;
+  final Map<String, LightTableScene> lightTables;
+
   /// By case id: a picture shown under the case's opening lines.
   final Map<String, IntroPlaque> introPlaques;
 
@@ -252,8 +267,12 @@ final season2Content = SeasonContent(
   planRoutes: season2PlanScenes,
   archives: season2ArchiveScenes,
   letterMaps: season2LetterMapScenes,
+  showStrips: season2ShowStripScenes,
+  lightBoards: season2LightBoardScenes,
+  flyRails: season2FlyRailScenes,
+  lightTables: season2LightTableScenes,
   introPlaques: season2IntroPlaques,
-  evidenceArt: {...season2Case04EvidenceArt, ...season2Case05EvidenceArt, ...season2Case06EvidenceArt},
+  evidenceArt: {...season2Case04EvidenceArt, ...season2Case05EvidenceArt, ...season2Case06EvidenceArt, ...season2Case07EvidenceArt},
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
   evidenceLinks: {
@@ -262,6 +281,7 @@ final season2Content = SeasonContent(
     ...season2Case04EvidenceLinks,
     ...season2Case05EvidenceLinks,
     ...season2Case06EvidenceLinks,
+    ...season2Case07EvidenceLinks,
   },
   storyScenes: {
     ...season2StoryScenes,
@@ -270,6 +290,7 @@ final season2Content = SeasonContent(
     ...season2Case04StoryScenes,
     ...season2Case05StoryScenes,
     ...season2Case06StoryScenes,
+    ...season2Case07StoryScenes,
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
@@ -396,6 +417,14 @@ abstract final class SeasonCatalog {
   static ArchiveScene? archive(Mission m) => ofMission(m.id)?.archives[m.id];
 
   static LetterMapScene? letterMap(Mission m) => ofMission(m.id)?.letterMaps[m.id];
+
+  static ShowStripScene? showStrip(Mission m) => ofMission(m.id)?.showStrips[m.id];
+
+  static LightBoardScene? lightBoard(Mission m) => ofMission(m.id)?.lightBoards[m.id];
+
+  static FlyRailScene? flyRail(Mission m) => ofMission(m.id)?.flyRails[m.id];
+
+  static LightTableScene? lightTable(Mission m) => ofMission(m.id)?.lightTables[m.id];
 
   /// The picture under case [episodeId]'s opening lines, if any.
   static IntroPlaque? introPlaque(String episodeId) => ofEpisode(episodeId)?.introPlaques[episodeId];

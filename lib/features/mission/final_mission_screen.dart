@@ -15,6 +15,7 @@ import '../../data/mock/season_catalog.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/letter_puzzles.dart';
 import '../../data/models/mission.dart';
+import '../../data/models/opera_puzzles.dart';
 import '../../data/models/painter_puzzles.dart';
 import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
@@ -42,6 +43,7 @@ import 'widgets/canvas_choice.dart';
 import 'widgets/evidence_board.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
 import 'widgets/letter_map.dart';
+import 'widgets/light_table.dart';
 import 'widgets/lock_box.dart';
 import 'widgets/post_trail.dart';
 import 'widgets/question_widgets.dart';
@@ -108,6 +110,54 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
 
   /// The letter and the map of Paris (Paris Case 06), or null.
   LetterMapScene? get _letterMap => SeasonCatalog.letterMap(_mission);
+
+  /// The archive's light table and the Amendment Slip (Paris Case 07), or
+  /// null.
+  LightTableScene? get _lightTable => SeasonCatalog.lightTable(_mission);
+
+  String _tableKey(String thing) => GameProgress.examinedKey(_mission.id, thing);
+
+  bool _tableDone(String thing) => ref.watch(gameControllerProvider).hasExamined(_tableKey(thing));
+
+  /// The final's story, opened again once it has been read (it folds away
+  /// while FILE 3 is worked on, so the table is in sight).
+  bool _storyOpen = false;
+
+  /// A step of the light table done: its next step brought into view.
+  void _nextTableStep(String thing) {
+    _recordTable(thing);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final locks = _locksKey.currentContext;
+      if (!mounted || locks == null || !locks.mounted) return;
+      Scrollable.ensureVisible(
+        locks,
+        alignment: 0.02,
+        duration: MediaQuery.disableAnimationsOf(context) ? Duration.zero : const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
+      );
+    });
+  }
+
+  void _recordTable(String thing) => ref.read(gameControllerProvider.notifier).recordExamined(_tableKey(thing));
+
+  /// A wrong record or pin, checked as part of the answer (said why); or
+  /// the pins right, the whole answer.
+  Future<void> _submitTable(String answer) async {
+    if (_checking) return;
+    setState(() => _checking = true);
+    try {
+      await _submit(answer);
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
+  Future<void> _turnSlip() async {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
+    _recordTable(ChangedRecord.slipBackId);
+    await showSlipBack(context, scene: _lightTable!);
+    if (mounted) setState(() {});
+  }
 
   void _lookAtBuilding(String id) =>
       ref.read(gameControllerProvider.notifier).recordExamined(GameProgress.examinedKey(_mission.id, LetterMap.lookedKey(id)));
@@ -380,9 +430,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final book = _book;
     final trail = _trail;
     final letters = _letterMap;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null)) return;
+    final table = _lightTable;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null && table == null)) return;
     _precached = true;
-    final files = letters != null
+    final files = table != null
+        ? [table.archive, table.table, table.tableOn, table.file3.file, table.file3.patch.file, table.slip.file, table.slip.stamp]
+        : letters != null
         ? [letters.letter.file, letters.letter.sketch, letters.mapFile]
         : trail != null
         ? [trail.stage, trail.slip, trail.receipt.file]
@@ -674,6 +727,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final book = _book;
     final trail = _trail;
     final letters = _letterMap;
+    final table = _lightTable;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -734,6 +788,13 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : table != null
+                            // Slim while FILE 3 is on the table below (the
+                            // table is there too); whole for the solve.
+                            ? (!solved && _tableDone(ChangedRecord.placedId))
+                                ? 96.0
+                                : (stage.maxWidth / table.tablePixels.aspect)
+                                    .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : letters != null
                             ? (stage.maxWidth / letters.letter.pixels.aspect)
                                 .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
@@ -753,7 +814,17 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: letters != null
+                          child: table != null
+                              // The archive table; FILE 3 on the lit light
+                              // table with the solve.
+                              ? RecordStage(
+                                  key: const ValueKey('record-stage'),
+                                  scene: table,
+                                  open: _open,
+                                  placed: progress.hasExamined(_tableKey(ChangedRecord.placedId)),
+                                  lit: progress.hasExamined(_tableKey(ChangedRecord.litId)),
+                                )
+                              : letters != null
                               // The letter; turned over with the solve.
                               ? LetterStage(
                                   key: const ValueKey('letter-stage'),
@@ -841,7 +912,22 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     );
   }
 
-  Widget _intro(Mission m) => Column(
+  Widget _sheetOrTable({required bool placed, required Widget child}) => placed
+      ? KeyedSubtree(key: const ValueKey('light-table-sheet'), child: child)
+      : PaperSheet(key: const ValueKey('light-table-sheet'), padding: const EdgeInsets.all(AppSpace.sm), child: child);
+
+  Widget _intro(Mission m) => _lightTable != null && _tableDone(ChangedRecord.chosenId) && !_storyOpen
+      // The story read: folded to one line, opened again with a tap.
+      ? Center(
+          child: InkTextButton(
+            key: const ValueKey('story-fold'),
+            label: 'Read the story again',
+            glyph: InkGlyph.letter,
+            color: AppColors.goldLight,
+            onPressed: () => setState(() => _storyOpen = true),
+          ),
+        )
+      : Column(
     children: [
       for (final line in m.story)
         Padding(
@@ -852,8 +938,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
             style: AppText.subtitle(color: AppColors.paperLight),
           ),
         ),
-      // The letter itself is on the stage (Paris Case 06): not again.
-      if (_letterMap == null) ...[
+      // The letter itself is on the stage (Paris Case 06), the slip in the
+      // puzzle (Paris Case 07): not again.
+      if (_letterMap == null && _lightTable == null) ...[
         const SizedBox(height: 12),
         LetterCard(text: m.letter, tilt: 0.01),
       ],
@@ -863,7 +950,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   List<Widget> _puzzle(Mission m, int hintsShown) => [
     GlossaryText(
       key: _locksKey,
-      m.question,
+      // The light table's final asks one step at a time.
+      _lightTable == null
+          ? m.question
+          : ChangedRecordPuzzle.headingOf(
+              _lightTable!,
+              m,
+              chosen: ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.chosenId)),
+              placed: ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.placedId)),
+              litSeen: ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.litId)),
+            ),
       textAlign: TextAlign.center,
       style: AppText.title(size: 24, color: AppColors.goldLight),
       linkColor: AppColors.paperLight,
@@ -988,6 +1084,48 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       Center(
         child: InkTextButton(
           label: 'Reread Letter',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
+        ),
+      ),
+    ] else if (_lightTable case final table?) ...[
+      // Which record was changed; FILE 3 on the light table; the slip's pins.
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        // On the table itself once FILE 3 is laid on it (no paper sheet
+        // round the table); the first two steps on a sheet.
+        child: _sheetOrTable(
+          placed: _tableDone(ChangedRecord.placedId),
+          child: ChangedRecordPuzzle(
+            scene: table,
+            mission: m,
+            chosen: ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.chosenId)),
+            placed: ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.placedId)),
+            litSeen: ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.litId)),
+            pinned: {
+              for (final pin in ChangedRecord.homes.keys)
+                if (ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.pinnedKey(pin)))) pin,
+            },
+            checking: _checking,
+            onChosen: () => _nextTableStep(ChangedRecord.chosenId),
+            onPlaced: () {
+              ref.read(audioServiceProvider).play(GameSound.paperPlace);
+              _nextTableStep(ChangedRecord.placedId);
+            },
+            onLit: () => _nextTableStep(ChangedRecord.litId),
+            onPinned: (pin) {
+              ref.read(audioServiceProvider).play(GameSound.paperPlace);
+              _recordTable(ChangedRecord.pinnedKey(pin));
+            },
+            onWrong: _submitTable,
+            onSolve: _submitTable,
+          ),
+        ),
+      ),
+      Center(
+        child: InkTextButton(
+          label: 'Reread the slip',
           glyph: InkGlyph.letter,
           color: AppColors.goldLight,
           onPressed: _rereadLetter,
@@ -1139,7 +1277,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         ],
         // A box with something in it: looked at first (its back holds the
         // case's last words), then the story goes on.
-        if (_book != null && !ref.watch(gameControllerProvider).hasExamined(_gateKey))
+        if (_lightTable != null && !ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.slipBackId)))
+          GameButton(
+            key: const ValueKey('final-turn-slip'),
+            label: 'TURN THE SLIP OVER',
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _turnSlip,
+          )
+        else if (_book != null && !ref.watch(gameControllerProvider).hasExamined(_gateKey))
           GameButton(
             key: const ValueKey('final-open-gate'),
             label: 'LOOK AT THE GATE',

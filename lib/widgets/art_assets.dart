@@ -277,6 +277,11 @@ abstract final class ArtAssets {
     Artwork.holdRack: '$_paris06/post_room_hold_rack.png',
     Artwork.archiveFloorPlan: '$_paris06/archive_floor_plan.png',
     Artwork.archiveRoom: '$_paris06/archive_room.png',
+    Artwork.palaisGarnierNight: '$_paris07/palais_garnier_night.png',
+    Artwork.operaArchive: '$_paris07/opera_archive_room.png',
+    Artwork.operaStage: '$_paris07/stage_base.png',
+    Artwork.flyRail: '$_paris07/fly_rail.png',
+    Artwork.lightTable: '$_paris07/light_table_off.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
@@ -285,6 +290,7 @@ abstract final class ArtAssets {
   static const _paris04 = 'assets/seasons/season_02_paris/cases/case_04';
   static const _paris05 = 'assets/seasons/season_02_paris/cases/case_05';
   static const _paris06 = 'assets/seasons/season_02_paris/cases/case_06';
+  static const _paris07 = 'assets/seasons/season_02_paris/cases/case_07';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -379,6 +385,12 @@ abstract final class ArtAssets {
     Artwork.holdRack: 1536 / 1024,
     Artwork.archiveFloorPlan: 1024 / 1536,
     Artwork.archiveRoom: 1536 / 1024,
+    // Case 07: all wide.
+    Artwork.palaisGarnierNight: 1536 / 1024,
+    Artwork.operaArchive: 1536 / 1024,
+    Artwork.operaStage: 1536 / 1024,
+    Artwork.flyRail: 1536 / 1024,
+    Artwork.lightTable: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).

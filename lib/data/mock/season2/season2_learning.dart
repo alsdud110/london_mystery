@@ -23,6 +23,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Following directions: past, second, left, and letter or parcel',
     titleKo: '길 안내 따라가기: past, second, left와 LETTER/PARCEL 구분',
   ),
+  's2_ep07': CaseLanguageTopic(
+    title: 'Reading a record: times, above and under, and what was changed',
+    titleKo: '기록 읽기: 시각, above와 under, 바뀐 것 찾기',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -245,5 +249,42 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '편지 그림의 둥근 지붕·지붕 위 조각상을 지도의 건물과 비교하고, "But the show remembers."의 show(공연)로 공연장인 Palais Garnier를 찾는다.',
     expressions: ['But the show remembers.'],
+  ),
+  // ── Case 07 — The Phantom Performance ──────────────────────────────────
+  // FILE 3's DOORS OPEN and CURTAIN DOWN and FILE 4's whole show are read
+  // together: only then does one start fit (the strip does the sums).
+  's2_ep07_m1': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: 'FILE 3의 DOORS OPEN · 3:30 PM, CURTAIN DOWN · 6:10 PM과 FILE 4의 "THE WHOLE SHOW: 2 HOURS 10 MINUTES"를 함께 읽고, 관객이 들어온 뒤 시작해 CURTAIN DOWN에 끝나는 시작 시각(4:00)을 찾는다.',
+    expressions: ['DOORS OPEN · 3:30 PM', 'THE WHOLE SHOW: 2 HOURS 10 MINUTES'],
+  ),
+  // The photo is matched by its lights; the book says what one lamp alone
+  // means: an empty stage.
+  's2_ep07_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: 'Lighting Book의 "GHOST LIGHT: one lamp on an empty stage."를 이해하고 사진과 같게 고스트 라이트만 켜서, 3:00이라고 적힌 사진이 공연이 아니라 빈 무대임을 안다.',
+    expressions: ['GHOST LIGHT: one lamp on an empty stage.', 'Light the stage like the old photo.'],
+  ),
+  // The clue's two words decide: the door's colour, and what is right
+  // above it (a small clock, not a lamp, not a tower far off).
+  's2_ep07_m3': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '"Above the red door: a small clock."의 red door와 above(바로 위)를 두 조건으로 읽고, 램프·먼 시계탑·파란 문 배경막과 구별해 맞는 배경막을 찾는다.',
+    expressions: ['Above the red door: a small clock.', 'look right above the door'],
+  ),
+  // The slip's change is read as old → new, and found on FILE 3: the new
+  // time on the patch, the old one under it.
+  's2_ep07_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '수정 슬립의 "CURTAIN UP: 4:00 to 3:00"을 원래 시각에서 바뀐 시각으로 이해하고, 라이트 테이블에서 덧붙인 종이 위의 3:00과 그 아래의 4:00에 핀을 연결해 FILE 3이 바뀌었음을 증명한다.',
+    expressions: ['CURTAIN UP: 4:00 to 3:00', 'Which record was changed?'],
   ),
 };

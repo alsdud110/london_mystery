@@ -210,10 +210,9 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                               // Its title when the season tells it (a title
                               // only: the case is not in the game yet).
                               if (season.upcomingTitles[comingNext] case final title?) ...[
-                                Text(
-                                  'CASE ${comingNext.toString().padLeft(2, '0')} · ${title.toUpperCase()}',
+                                Text.rich(
+                                  AppText.liningDigits('CASE ${comingNext.toString().padLeft(2, '0')} · ${title.toUpperCase()}', AppText.mark(color: AppColors.goldLight, size: 17)),
                                   key: const ValueKey('next-case-title'),
-                                  style: AppText.mark(color: AppColors.goldLight, size: 17),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: AppSpace.xs),

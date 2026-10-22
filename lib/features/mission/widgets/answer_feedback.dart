@@ -244,9 +244,9 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                           // 2. What was found or worked out.
                           _rise(
                             _title,
-                            Text(d.title,
-                                textAlign: TextAlign.center,
-                                style: AppText.placeTitle(size: 26, color: AppColors.paperLight).copyWith(height: 1.2)),
+                            // Its numbers in the reading face ("It fits at 4:00!").
+                            Text.rich(AppText.liningDigits(d.title, AppText.placeTitle(size: 26, color: AppColors.paperLight).copyWith(height: 1.2)),
+                                textAlign: TextAlign.center),
                           ),
                           // 3. The evidence itself, laid down at the scene.
                           if (evidence != null) ...[

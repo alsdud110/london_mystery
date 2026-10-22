@@ -9,6 +9,7 @@ import '../data/models/mission.dart';
 import '../features/game/game_controller.dart';
 import '../features/game/game_providers.dart';
 import '../features/mission/widgets/dialogue_investigation.dart';
+import '../data/models/river_puzzles.dart' show DrawnEvidenceArt;
 import '../features/mission/widgets/river_papers.dart' show RiverEvidenceArtView;
 import 'art_assets.dart';
 import 'game_button.dart';
@@ -306,6 +307,7 @@ class _EvidenceArt extends StatelessWidget {
     final picture = ArtAssets.evidencePictures[evidence.id];
     // Drawn with its words (its picture is blank): the middle of it.
     final drawn = SeasonCatalog.evidenceArt(evidence.id);
+    final paper = drawn is DrawnEvidenceArt && drawn.whole ? drawn : null;
     return Container(
       width: size,
       height: size,
@@ -317,7 +319,13 @@ class _EvidenceArt extends StatelessWidget {
       ),
       // The object is drawn in the middle of its square parchment, so the
       // round frame shows all of it (only plain parchment is left out).
-      child: drawn != null
+      child: paper != null
+          // A paper with words: all of it, small, inside the ring.
+          ? Padding(
+              padding: EdgeInsets.all(size * 0.1),
+              child: Center(child: AspectRatio(aspectRatio: paper.aspect, child: RiverEvidenceArtView(art: paper))),
+            )
+          : drawn != null
           ? ClipOval(
               child: SizedBox.expand(
                 child: FittedBox(

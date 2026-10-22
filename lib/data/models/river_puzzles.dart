@@ -599,9 +599,13 @@ abstract interface class DrawnEvidence {
 
 /// Evidence drawn by its own case's view ([drawn]).
 final class DrawnEvidenceArt extends RiverEvidenceArt {
-  const DrawnEvidenceArt(this.drawn);
+  const DrawnEvidenceArt(this.drawn, {this.whole = false});
 
   final DrawnEvidence drawn;
+
+  /// Shown whole in the evidence's round frame (a paper with words: cut to
+  /// the circle, its lines would be torn mid-word), not filling it.
+  final bool whole;
 
   @override
   double get aspect => drawn.aspect;

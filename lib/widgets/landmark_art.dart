@@ -337,7 +337,12 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.louvrePostRoom ||
           Artwork.holdRack ||
           Artwork.archiveFloorPlan ||
-          Artwork.archiveRoom:
+          Artwork.archiveRoom ||
+          Artwork.palaisGarnierNight ||
+          Artwork.operaArchive ||
+          Artwork.operaStage ||
+          Artwork.flyRail ||
+          Artwork.lightTable:
         break;
     }
     canvas.restore();

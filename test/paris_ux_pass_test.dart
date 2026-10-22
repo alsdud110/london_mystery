@@ -19,7 +19,7 @@ void main() {
 
   group('Discovery Moments', () {
     test('every Paris mission names its kind, in its own success line; no reward or evidence card changes', () {
-      expect(paris.map((e) => e.id), ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06']);
+      expect(paris.map((e) => e.id), ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07']);
       for (final e in paris) {
         for (final m in e.missions) {
           final d = SeasonCatalog.discovery(m);
@@ -33,7 +33,7 @@ void main() {
         // The final has its own solve, never a Discovery Moment.
         expect(season2DiscoveryTypes.containsKey(e.finalMission.id), isFalse);
       }
-      expect(season2DiscoveryTypes, hasLength(18));
+      expect(season2DiscoveryTypes, hasLength(21));
     });
 
     test('Season 1 keeps its own Discovery Moments', () {

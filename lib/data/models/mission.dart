@@ -181,7 +181,15 @@ enum Artwork {
   louvrePostRoom,
   holdRack,
   archiveFloorPlan,
-  archiveRoom;
+  archiveRoom,
+  // Case 07's places at the Palais Garnier: the opera house at night, its
+  // archive under the roof, the stage from the back of the hall, the rope
+  // rail backstage, and the archive's light table.
+  palaisGarnierNight,
+  operaArchive,
+  operaStage,
+  flyRail,
+  lightTable;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));
