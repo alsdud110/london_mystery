@@ -175,7 +175,13 @@ enum Artwork {
   workshopInterior,
   workbenchMarks,
   wallOfClocks,
-  writingDesk;
+  writingDesk,
+  // Case 06's places: the post room's door near the Louvre, its hold rack,
+  // the plan of the building, and the archive downstairs.
+  louvrePostRoom,
+  holdRack,
+  archiveFloorPlan,
+  archiveRoom;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

@@ -841,3 +841,11 @@ Report concisely:
 - Remaining risks or unverified areas
 
 Never claim that the full test suite passed unless it was actually executed.
+# 22. Season 2 Paris Story Bible
+
+Before developing any Season 2 (Paris) story, character, case, mission, evidence, or puzzle, read `docs/SEASON2_PARIS_STORY_BIBLE.md` first.
+
+- It is the reference for the season's full truth, characters, Case 06–12 plots, clue payoffs, and reveal timing.
+- Conflict priority: (1) facts already implemented in Case 01–05, (2) the user's latest explicitly approved decisions, (3) the bible's Case 06–12 plan, (4) temporary ideas.
+- If the bible and the code conflict, report the conflict; do not silently change either.
+- Do not change the season's overall truth, culprit, characters, time-manipulation rules, or ending without the user's approval.

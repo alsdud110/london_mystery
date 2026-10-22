@@ -227,7 +227,7 @@ void main() {
 
   group('the case', () {
     test('Case 04 is in the game, after Case 03, on the Seine, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06']);
       expect(case04.number, 4);
       expect(case04.title, "The River's Secret");
       expect(case04.place, 'SEINE QUAYS · PARIS');
@@ -241,7 +241,7 @@ void main() {
       expect(ParisLandmark.cases['s2_ep05'], ParisLandmark.notreDame, reason: 'Case 05 keeps its place');
       expect(SeasonMap.landmarkOf(m1.id), ParisLandmark.seineQuays);
       // Case 05 is in the game now (2026-10-21): no title waits for it.
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, isEmpty);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles[5], isNull);
       expect(inGame.firstWhere((e) => e.id == 's2_ep05').title, 'The Silent Workshop');
     });
 

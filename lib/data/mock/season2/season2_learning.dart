@@ -19,6 +19,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Two clues at once: the wrong way, added, and collected, sorted, held',
     titleKo: '두 조건 함께 읽기: the wrong way, added와 우편 기록 collected, sorted, held',
   ),
+  's2_ep06': CaseLanguageTopic(
+    title: 'Following directions: past, second, left, and letter or parcel',
+    titleKo: '길 안내 따라가기: past, second, left와 LETTER/PARCEL 구분',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -206,5 +210,40 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '영수증의 LETTER No. 4417과 날짜를 우편 전표와 비교해 다른 편지의 전표를 빼고, COLLECTED, SORTED, HELD 기록을 시간순으로 배열해 편지가 멈춘 곳을 찾는다.',
     expressions: ['Find its slips.', 'Put them in order.'],
+  ),
+  // ── Case 06 — The Letter That Never Arrived ────────────────────────────
+  // The tags are read against the Letter's Trail: LETTER or PARCEL, the
+  // number's digits, then (where ink hides one) the day and time on the back.
+  's2_ep06_m1': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '노트의 LETTER No. 4417 · 16 MAY · 4:00 PM과 꼬리표 앞뒤를 비교해, PARCEL과 LETTER를 구분하고 잉크로 가려진 번호는 뒷면의 날짜·시각으로 가려 Tag D를 찾는다.',
+    expressions: ['LETTER No. 4417', 'Which tag is for Letter 4417?'],
+  ),
+  // Only the note's words lead to the door: past, second, on the left.
+  's2_ep06_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '쪽지의 "Walk past the statue."와 "Take the second door on the left."를 따라 평면도에서 편지를 한 걸음씩 옮기고, 조각상을 지난 뒤 왼쪽 두 번째 문(E)을 찾는다.',
+    expressions: ['Walk past the statue.', 'Take the second door on the left.'],
+  ),
+  // The drawer is found by its numbers; the envelope by the torn edge.
+  's2_ep06_m3': LearningObjective(
+    dependency: LanguageDependency.helpful,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '서랍 라벨의 LETTERS와 번호 범위로 4417이 든 서랍을 열고, Case 05에서 찾은 찢긴 모서리를 대어 찢긴 가장자리가 맞는 봉투를 찾는다.',
+    expressions: ['Find the envelope it was torn from.'],
+  ),
+  // The drawing alone can find it (statues on the roof); "the show" helps
+  // decide between the buildings with a dome.
+  's2_ep06_final': LearningObjective(
+    dependency: LanguageDependency.helpful,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '편지 그림의 둥근 지붕·지붕 위 조각상을 지도의 건물과 비교하고, "But the show remembers."의 show(공연)로 공연장인 Palais Garnier를 찾는다.',
+    expressions: ['But the show remembers.'],
   ),
 };

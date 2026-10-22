@@ -273,6 +273,10 @@ abstract final class ArtAssets {
     Artwork.workbenchMarks: '$_paris05/workbench_marks.png',
     Artwork.wallOfClocks: '$_paris05/wall_of_clocks.png',
     Artwork.writingDesk: '$_paris05/writing_desk_blotter.png',
+    Artwork.louvrePostRoom: '$_paris06/louvre_post_room_exterior.png',
+    Artwork.holdRack: '$_paris06/post_room_hold_rack.png',
+    Artwork.archiveFloorPlan: '$_paris06/archive_floor_plan.png',
+    Artwork.archiveRoom: '$_paris06/archive_room.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
@@ -280,6 +284,7 @@ abstract final class ArtAssets {
   static const _paris03 = 'assets/seasons/season_02_paris/cases/case_03';
   static const _paris04 = 'assets/seasons/season_02_paris/cases/case_04';
   static const _paris05 = 'assets/seasons/season_02_paris/cases/case_05';
+  static const _paris06 = 'assets/seasons/season_02_paris/cases/case_06';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -368,6 +373,12 @@ abstract final class ArtAssets {
     Artwork.workbenchMarks: 1536 / 1024,
     Artwork.wallOfClocks: 1536 / 1024,
     Artwork.writingDesk: 1264 / 848,
+    // Case 06: the plan of the building is a portrait picture; the rest
+    // are wide.
+    Artwork.louvrePostRoom: 1536 / 1024,
+    Artwork.holdRack: 1536 / 1024,
+    Artwork.archiveFloorPlan: 1024 / 1536,
+    Artwork.archiveRoom: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).

@@ -4,6 +4,7 @@ import '../models/discovery.dart';
 import '../models/episode.dart';
 import '../models/investigation.dart';
 import '../models/learning.dart';
+import '../models/letter_puzzles.dart';
 import '../models/mission.dart';
 import '../models/painter_puzzles.dart';
 import '../models/river_puzzles.dart';
@@ -32,6 +33,7 @@ import 'season2/season2_discoveries.dart';
 import 'season2/season2_case03_scenes.dart';
 import 'season2/season2_case04_scenes.dart';
 import 'season2/season2_case05_scenes.dart';
+import 'season2/season2_case06_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -74,6 +76,10 @@ class SeasonContent {
     this.clockWalls = const {},
     this.blotters = const {},
     this.postTrails = const {},
+    this.holdRacks = const {},
+    this.planRoutes = const {},
+    this.archives = const {},
+    this.letterMaps = const {},
     this.introPlaques = const {},
     this.evidenceArt = const {},
     this.exhibits = const {},
@@ -155,6 +161,15 @@ class SeasonContent {
   final Map<String, BlotterScene> blotters;
   final Map<String, PostTrailScene> postTrails;
 
+  /// Missions played on Case 06's pictures (Season 2): the hold rack's tags
+  /// turned over, the letter moved along the plan of the building, the
+  /// archive's drawers and the torn corner fitted to its envelope, and the
+  /// final's letter matched to the map of Paris.
+  final Map<String, HoldRackScene> holdRacks;
+  final Map<String, PlanScene> planRoutes;
+  final Map<String, ArchiveScene> archives;
+  final Map<String, LetterMapScene> letterMaps;
+
   /// By case id: a picture shown under the case's opening lines.
   final Map<String, IntroPlaque> introPlaques;
 
@@ -233,8 +248,12 @@ final season2Content = SeasonContent(
   clockWalls: season2ClockWalls,
   blotters: season2Blotters,
   postTrails: season2PostTrails,
+  holdRacks: season2HoldRackScenes,
+  planRoutes: season2PlanScenes,
+  archives: season2ArchiveScenes,
+  letterMaps: season2LetterMapScenes,
   introPlaques: season2IntroPlaques,
-  evidenceArt: {...season2Case04EvidenceArt, ...season2Case05EvidenceArt},
+  evidenceArt: {...season2Case04EvidenceArt, ...season2Case05EvidenceArt, ...season2Case06EvidenceArt},
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
   evidenceLinks: {
@@ -242,6 +261,7 @@ final season2Content = SeasonContent(
     ...season2Case03EvidenceLinks,
     ...season2Case04EvidenceLinks,
     ...season2Case05EvidenceLinks,
+    ...season2Case06EvidenceLinks,
   },
   storyScenes: {
     ...season2StoryScenes,
@@ -249,6 +269,7 @@ final season2Content = SeasonContent(
     ...season2Case03StoryScenes,
     ...season2Case04StoryScenes,
     ...season2Case05StoryScenes,
+    ...season2Case06StoryScenes,
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
@@ -367,6 +388,14 @@ abstract final class SeasonCatalog {
   static BlotterScene? blotter(Mission m) => ofMission(m.id)?.blotters[m.id];
 
   static PostTrailScene? postTrail(Mission m) => ofMission(m.id)?.postTrails[m.id];
+
+  static HoldRackScene? holdRack(Mission m) => ofMission(m.id)?.holdRacks[m.id];
+
+  static PlanScene? planRoute(Mission m) => ofMission(m.id)?.planRoutes[m.id];
+
+  static ArchiveScene? archive(Mission m) => ofMission(m.id)?.archives[m.id];
+
+  static LetterMapScene? letterMap(Mission m) => ofMission(m.id)?.letterMaps[m.id];
 
   /// The picture under case [episodeId]'s opening lines, if any.
   static IntroPlaque? introPlaque(String episodeId) => ofEpisode(episodeId)?.introPlaques[episodeId];

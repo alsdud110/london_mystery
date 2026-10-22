@@ -13,6 +13,7 @@ import '../../core/utils/audio_service.dart';
 import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/game_progress.dart';
+import '../../data/models/letter_puzzles.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/painter_puzzles.dart';
 import '../../data/models/river_puzzles.dart';
@@ -40,6 +41,7 @@ import 'widgets/answer_feedback.dart';
 import 'widgets/canvas_choice.dart';
 import 'widgets/evidence_board.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
+import 'widgets/letter_map.dart';
 import 'widgets/lock_box.dart';
 import 'widgets/post_trail.dart';
 import 'widgets/question_widgets.dart';
@@ -103,6 +105,22 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
 
   /// The post's slips under the workshop door (Paris Case 05), or null.
   PostTrailScene? get _trail => SeasonCatalog.postTrail(_mission);
+
+  /// The letter and the map of Paris (Paris Case 06), or null.
+  LetterMapScene? get _letterMap => SeasonCatalog.letterMap(_mission);
+
+  void _lookAtBuilding(String id) =>
+      ref.read(gameControllerProvider.notifier).recordExamined(GameProgress.examinedKey(_mission.id, LetterMap.lookedKey(id)));
+
+  Future<void> _chooseBuilding(String id) async {
+    if (_checking) return;
+    setState(() => _checking = true);
+    try {
+      await _submit(id);
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
 
   /// The slips set on the trail (saved as they change:
   /// `GameProgress.puzzleStates`), and the slip picked (kept while the page
@@ -361,9 +379,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final board = _board;
     final book = _book;
     final trail = _trail;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null)) return;
+    final letters = _letterMap;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null)) return;
     _precached = true;
-    final files = trail != null
+    final files = letters != null
+        ? [letters.letter.file, letters.letter.sketch, letters.mapFile]
+        : trail != null
         ? [trail.stage, trail.slip, trail.receipt.file]
         : book != null
         ? [book.hut, book.book, book.gate, book.label.file, book.label.back]
@@ -652,6 +673,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final board = _board;
     final book = _book;
     final trail = _trail;
+    final letters = _letterMap;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -712,6 +734,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : letters != null
+                            ? (stage.maxWidth / letters.letter.pixels.aspect)
+                                .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : trail != null
                             ? (stage.maxWidth / (trail.stageView.width * trail.stagePixels.aspect / trail.stageView.height))
                                 .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
@@ -728,7 +753,15 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: trail != null
+                          child: letters != null
+                              // The letter; turned over with the solve.
+                              ? LetterStage(
+                                  key: const ValueKey('letter-stage'),
+                                  scene: letters,
+                                  open: _open,
+                                  onDrawing: solved ? null : () => showLetterDrawing(context, letters),
+                                )
+                              : trail != null
                               // The workshop door; the slip that says where
                               // the letter stopped, with the solve.
                               ? TrailStage(key: const ValueKey('trail-stage'), scene: trail, open: _open)
@@ -819,8 +852,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
             style: AppText.subtitle(color: AppColors.paperLight),
           ),
         ),
-      const SizedBox(height: 12),
-      LetterCard(text: m.letter, tilt: 0.01),
+      // The letter itself is on the stage (Paris Case 06): not again.
+      if (_letterMap == null) ...[
+        const SizedBox(height: 12),
+        LetterCard(text: m.letter, tilt: 0.01),
+      ],
     ],
   );
 
@@ -956,6 +992,44 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           color: AppColors.goldLight,
           onPressed: _rereadLetter,
         ),
+      ),
+    ] else if (_letterMap case final letters?) ...[
+      // The map of Paris, its buildings to look at beside the drawing.
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: PaperSheet(
+          key: const ValueKey('letter-map-sheet'),
+          padding: const EdgeInsets.all(AppSpace.md),
+          child: LetterMapPuzzle(
+            scene: letters,
+            mission: m,
+            looked: {
+              for (final s in letters.spots)
+                if (ref.watch(gameControllerProvider).hasExamined(GameProgress.examinedKey(m.id, LetterMap.lookedKey(s.id)))) s.id,
+            },
+            onLooked: _lookAtBuilding,
+            onSubmit: _chooseBuilding,
+          ),
+        ),
+      ),
+      Wrap(
+        alignment: WrapAlignment.center,
+        spacing: AppSpace.sm,
+        children: [
+          InkTextButton(
+            key: const ValueKey('look-at-drawing'),
+            label: 'Look at the drawing',
+            glyph: InkGlyph.search,
+            color: AppColors.goldLight,
+            onPressed: () => showLetterDrawing(context, letters),
+          ),
+          InkTextButton(
+            label: 'Reread Letter',
+            glyph: InkGlyph.letter,
+            color: AppColors.goldLight,
+            onPressed: _rereadLetter,
+          ),
+        ],
       ),
     ] else if (_trail case final trail?) ...[
       // The receipt, the slips, and the trail they are set on.

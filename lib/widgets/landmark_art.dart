@@ -333,7 +333,11 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.workshopInterior ||
           Artwork.workbenchMarks ||
           Artwork.wallOfClocks ||
-          Artwork.writingDesk:
+          Artwork.writingDesk ||
+          Artwork.louvrePostRoom ||
+          Artwork.holdRack ||
+          Artwork.archiveFloorPlan ||
+          Artwork.archiveRoom:
         break;
     }
     canvas.restore();

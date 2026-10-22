@@ -33,6 +33,10 @@ const Map<String, DiscoveryType> season2DiscoveryTypes = {
   's2_ep05_m1': DiscoveryType.evidenceFound, // the maker's own mark; the card
   's2_ep05_m2': DiscoveryType.deduction, // the clock that turns back
   's2_ep05_m3': DiscoveryType.clueFound, // where the letter was
+  // ── Case 06 — The Letter That Never Arrived ─────────────────────────
+  's2_ep06_m1': DiscoveryType.evidenceFound, // Tag D: kept safe, not stolen
+  's2_ep06_m2': DiscoveryType.newLead, // the archive behind Door E
+  's2_ep06_m3': DiscoveryType.evidenceFound, // the torn envelope, No. 4417
 };
 
 /// The Discovery Moments of Season 2's regular missions in [cases] (case id

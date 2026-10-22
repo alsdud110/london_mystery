@@ -19,6 +19,7 @@ import '../../data/models/scene_explore.dart';
 import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
 import '../../data/models/game_progress.dart';
+import '../../data/models/letter_puzzles.dart';
 import '../../data/models/painter_puzzles.dart';
 import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
@@ -48,18 +49,21 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
+import 'widgets/archive_drawers.dart';
 import 'widgets/blotter_mirror.dart';
 import 'widgets/clock_wall.dart';
 import 'widgets/clock_question.dart';
 import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
 import 'widgets/exhibit.dart';
+import 'widgets/hold_rack.dart';
 import 'widgets/investigation_search.dart';
 import 'widgets/keeper_ledger.dart';
 import 'widgets/label_assembly.dart';
 import 'widgets/lift_route.dart';
 import 'widgets/lens_inspect.dart';
 import 'widgets/mark_compare.dart';
+import 'widgets/plan_route.dart';
 import 'widgets/scene_deduction.dart';
 import 'widgets/scene_decode.dart';
 import 'widgets/scene_explore.dart';
@@ -152,6 +156,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// the Discovery Moment until Clock III is opened. Null after a restart.
   SubmitOutcome? _hideawaySolve;
 
+  /// Case 06's envelope just found in the archive (Paris): its reward, held
+  /// for the Discovery Moment until its seal is looked at. Null after a
+  /// restart.
+  SubmitOutcome? _envelopeSolve;
+
   @override
   void initState() {
     super.initState();
@@ -242,7 +251,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             SeasonCatalog.quayBoxes(_mission) != null ||
             SeasonCatalog.markCompare(_mission) != null ||
             SeasonCatalog.clockWall(_mission) != null ||
-            SeasonCatalog.blotter(_mission) != null);
+            SeasonCatalog.blotter(_mission) != null ||
+            SeasonCatalog.holdRack(_mission) != null ||
+            SeasonCatalog.planRoute(_mission) != null ||
+            SeasonCatalog.archive(_mission) != null);
     // Case 04's hut: back walks out of it one place at a time (the ledger,
     // the inside, the outside).
     final hut = SeasonCatalog.keeperHut(_mission);
@@ -673,6 +685,100 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     if (mounted) context.go(Routes.story(m.id));
   }
 
+  /// The hold rack's tags looked at and turned over (the tag chosen answers
+  /// the mission's puzzle); the tags turned are saved.
+  Widget _rackStage(Mission m, HoldRackScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: HoldRackPuzzle(
+          scene: scene,
+          mission: m,
+          turned: {
+            for (final t in scene.tags)
+              if (progress.hasExamined(GameProgress.examinedKey(m.id, HoldRack.turnedKey(t.id)))) t.id,
+          },
+          onTurned: (id) => _recordFound(m, HoldRack.turnedKey(id)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The letter moved along the plan of the building (the door it goes
+  /// through answers the mission's puzzle); the places it reached are saved.
+  Widget _planStage(Mission m, PlanScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: PlanRoutePuzzle(
+          scene: scene,
+          mission: m,
+          reached: {
+            for (final step in PlanStep.values)
+              if (progress.hasExamined(GameProgress.examinedKey(m.id, PlanRoute.reachedKey(step)))) step,
+          },
+          onReached: (step) => _recordFound(m, PlanRoute.reachedKey(step)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The archive's drawers opened, the torn corner laid on an envelope (the
+  /// envelope it is laid on answers the mission's puzzle); the drawers
+  /// opened are saved.
+  Widget _archiveStage(Mission m, ArchiveScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: ArchivePuzzle(
+          scene: scene,
+          mission: m,
+          opened: {
+            for (final d in scene.drawers.drawers)
+              if (progress.hasExamined(GameProgress.examinedKey(m.id, ArchiveDrawers.openedKey(d.id)))) d.id,
+          },
+          onOpened: (id) => _recordFound(m, ArchiveDrawers.openedKey(id)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The envelope is found: its seal looked at before the story goes on.
+  Widget _envelopeFoundStage(Mission m, ArchiveScene scene) => CenteredScroll(
+        key: const ValueKey('envelope-found-stage'),
+        padding: _stagePadding,
+        children: [
+          Text('MISSION ${m.numberLabel} · LETTER 4417', textAlign: TextAlign.center, style: AppText.eyebrow()),
+          const SizedBox(height: AppSpace.lg),
+          EnvelopeFound(scene: scene, onContinue: () => _afterSeal(m)),
+        ],
+      );
+
+  Future<void> _afterSeal(Mission m) async {
+    final audio = ref.read(audioServiceProvider);
+    _recordFound(m, ArchiveDrawers.sealId);
+    final solve = _envelopeSolve;
+    _envelopeSolve = null;
+    await showDiscoveryMoment(
+      context,
+      mission: m,
+      discovery: SeasonCatalog.discovery(m),
+      xp: XpBreakdown.of(m, ref.read(gameControllerProvider)),
+      coins: solve?.coins ?? 0,
+      firstSolve: solve?.firstSolve ?? false,
+      newBadges: solve?.newBadges ?? const [],
+      onEvidenceLaid: () => audio.play(GameSound.paperPlace),
+      showDetective: true,
+    );
+    if (mounted) context.go(Routes.story(m.id));
+  }
+
   /// The thing handed over with the letter, looked at closer (kept as seen).
   void _lookAtExhibit(Mission m, Exhibit exhibit) {
     ref.read(audioServiceProvider).play(GameSound.paperRustle);
@@ -835,6 +941,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           setState(() => _hideawaySolve = outcome);
           return;
         }
+        // The archive's envelope: its seal is looked at first.
+        if (SeasonCatalog.archive(m) != null) {
+          setState(() => _envelopeSolve = outcome);
+          return;
+        }
         final progress = ref.read(gameControllerProvider);
         await showDiscoveryMoment(
           context,
@@ -908,6 +1019,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final bench = SeasonCatalog.markCompare(m);
     final wall = SeasonCatalog.clockWall(m);
     final blotter = SeasonCatalog.blotter(m);
+    final rack = SeasonCatalog.holdRack(m);
+    final plan = SeasonCatalog.planRoute(m);
+    final archive = SeasonCatalog.archive(m);
 
     final Widget body = solved
         // The ledger's second page, until it is read.
@@ -916,6 +1030,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             // Clock III opened, until what is in it is read.
             : blotter != null && !progress.hasExamined(GameProgress.examinedKey(m.id, BlotterScene.openedId))
             ? _hideawayStage(m, blotter)
+            // The envelope found, until its seal is looked at.
+            : archive != null && !progress.hasExamined(GameProgress.examinedKey(m.id, ArchiveDrawers.sealId))
+            ? _envelopeFoundStage(m, archive)
             : _SolvedStage(key: const ValueKey('solved'), mission: m)
         : switch (_stage) {
             MissionStage.story =>
@@ -951,6 +1068,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           bench != null ||
                           wall != null ||
                           blotter != null ||
+                          rack != null ||
+                          plan != null ||
+                          archive != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -1008,6 +1128,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when bench != null => _benchStage(m, bench, progress),
             MissionStage.puzzle when wall != null => _clocksStage(m, wall, progress),
             MissionStage.puzzle when blotter != null => _blotterStage(m, blotter, progress),
+            MissionStage.puzzle when rack != null => _rackStage(m, rack, progress),
+            MissionStage.puzzle when plan != null => _planStage(m, plan, progress),
+            MissionStage.puzzle when archive != null => _archiveStage(m, archive, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,

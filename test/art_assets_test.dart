@@ -128,6 +128,10 @@ void main() {
       Artwork.workbenchMarks: 'assets/seasons/season_02_paris/cases/case_05/workbench_marks.png',
       Artwork.wallOfClocks: 'assets/seasons/season_02_paris/cases/case_05/wall_of_clocks.png',
       Artwork.writingDesk: 'assets/seasons/season_02_paris/cases/case_05/writing_desk_blotter.png',
+      Artwork.louvrePostRoom: 'assets/seasons/season_02_paris/cases/case_06/louvre_post_room_exterior.png',
+      Artwork.holdRack: 'assets/seasons/season_02_paris/cases/case_06/post_room_hold_rack.png',
+      Artwork.archiveFloorPlan: 'assets/seasons/season_02_paris/cases/case_06/archive_floor_plan.png',
+      Artwork.archiveRoom: 'assets/seasons/season_02_paris/cases/case_06/archive_room.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -161,7 +165,7 @@ void main() {
     // Montmartre painting (Case 02's first scene), Case 02's street and studio,
     // Case 03's seven (the canvas back and six places at the tower),
     // Case 04's six places on the Seine, and Case 05's four in the workshop.
-    expect(ArtAssets.scenes, hasLength(53));
+    expect(ArtAssets.scenes, hasLength(57));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,

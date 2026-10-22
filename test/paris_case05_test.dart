@@ -37,7 +37,7 @@ import 'helpers.dart';
 
 /// Season 2, Case 05 — The Silent Workshop: its fourteen pictures (as
 /// delivered, measured), its story and puzzles as the papers and clocks say
-/// them, its rules (unlock after Case 04, saves, Case 06 still to come), and
+/// them, its rules (unlock after Case 04, saves, Case 06 opening next), and
 /// a child playing it through on three phones. What the letter's receipt
 /// and slips say is never shown before its mission; who the maker is, who
 /// the letter was for and what it says are never told.
@@ -186,7 +186,7 @@ void main() {
 
   group('its story and puzzles', () {
     test('Case 05 is in the game, after Case 04, at Notre-Dame, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06']);
       expect(case05.number, 5);
       expect(case05.title, 'The Silent Workshop');
       expect(case05.place, 'PASSAGE DES HORLOGERS · No. 7');
@@ -198,7 +198,7 @@ void main() {
       expect(ParisLandmark.cases['s2_ep05'], ParisLandmark.notreDame);
       expect(ParisLandmark.notreDame.at, const Offset(0.732, 0.566));
       expect(SeasonMap.landmarkOf(m1.id), ParisLandmark.notreDame);
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, isEmpty, reason: "Case 06's title is not settled");
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, {7: 'The Phantom Performance'}, reason: 'Case 06 is in the game; Case 07 is told next');
     });
 
     test('the opening picks up the label\'s last words, in the second person; Case 04 is as it was', () {
@@ -457,7 +457,7 @@ void main() {
       expect(c.read(progressRepositoryProvider).load('s2_ep04').isCaseSolved, isTrue, reason: "Case 04's save is its own");
     });
 
-    test('solved: Paris is 5 of 12, Case 06 is coming soon, nothing opens it; London is as it was', () async {
+    test('solved: Paris is 5 of 12, Case 06 opens next; London is as it was', () async {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -466,10 +466,10 @@ void main() {
       }
       final board = c.read(seasonOverviewProvider);
       expect(board.solvedCount, 5);
-      expect(board.comingSoonCase, 6);
+      expect(board.comingSoonCase, isNot(6), reason: 'Case 06 is in the game (2026-10-22)');
       final paris = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect((paris.solvedCount, paris.plannedCount), (5, 12));
-      expect(game.openEpisode('s2_ep06'), isFalse, reason: 'no Case 06 to open');
+      expect(game.openEpisode('s2_ep06'), isTrue, reason: 'Case 06 opens after Case 05');
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12));
     });
   });
@@ -777,15 +777,14 @@ void main() {
         expect(find.byKey(const ValueKey('scene-backdrop')), findsOneWidget, reason: 'the workshop');
         await shot('final_scene');
         await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 4000));
-        await reveal(t, find.byKey(const ValueKey('next-case-coming-soon')));
-        expect(find.text('CASE 06 · COMING SOON'), findsOneWidget);
-        expect(find.text('INVESTIGATION BOARD'), findsOneWidget, reason: 'no case to open');
+        // Case 06 is in the game (2026-10-22): its case opens from here.
+        await reveal(t, find.text('OPEN CASE 06'));
+        expect(find.text('OPEN CASE 06'), findsOneWidget);
         await shot('case_closed');
 
         final board = ref.read(seasonOverviewProvider);
         expect(board.solvedCount, 5);
-        expect(board.comingSoonCase, 6);
-        expect(game.openEpisode('s2_ep06'), isFalse);
+        expect(game.openEpisode('s2_ep06'), isTrue);
         await wait(t, const Duration(seconds: 3));
       });
     }
