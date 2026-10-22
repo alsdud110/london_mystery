@@ -97,13 +97,15 @@ void main() {
     const folder = 'assets/seasons/season_02_paris/cases/case_05';
     // Size, and whether it has an alpha channel (as delivered). Clock I's
     // back is larger than the other three and has none: the same picture.
+    // Clock IV's back has none either since its watermark was taken off
+    // (b64ed09): the backs are shown whole, opaque.
     const pictures = {
       'workshop_interior.png': (1536, 1024, false),
       'wall_of_clocks.png': (1536, 1024, false),
       'clock_back_normal.png': (1254, 1254, false),
       'clock_back_spring.png': (1024, 1024, true),
       'clock_back_extra_wheel.png': (1024, 1024, true),
-      'clock_back_broken.png': (1024, 1024, true),
+      'clock_back_broken.png': (1024, 1024, false),
       'workbench_marks.png': (1536, 1024, false),
       'maker_mark_a.png': (1254, 1254, true),
       'writing_desk_blotter.png': (1264, 848, true),
