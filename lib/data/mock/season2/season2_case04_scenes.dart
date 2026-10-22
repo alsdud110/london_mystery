@@ -104,9 +104,15 @@ final Map<String, RiverMarksScene> season2RiverMarks = {
     sign: 'QUAY 3',
     plaqueFront: season2EvidenceBoards['s2_ep03_final']!,
     plaqueBack: plaqueBack,
-    readTask: 'Tap each mark to look closer. Read the back of the plaque too.',
-    chooseTask: 'Which mark follows all three lines? Choose it.',
+    readTask: 'Check each mark with the three lines.',
+    chooseTask: 'Which mark follows all three lines? Tap it.',
     chooseLabel: 'THIS IS THE MARK',
+    // Said only once Mark D is chosen and checked right: line by line.
+    rightLines: const [
+      'Three waves.',
+      'Its arrow points down, towards the river.',
+      'RIVER KEEPER: he watches the water.',
+    ],
   ),
 };
 

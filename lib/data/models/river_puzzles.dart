@@ -95,6 +95,7 @@ class RiverMarksScene {
     required this.readTask,
     required this.chooseTask,
     required this.chooseLabel,
+    required this.rightLines,
   });
 
   final String wall;
@@ -102,6 +103,10 @@ class RiverMarksScene {
   final String place;
   final List<RiverMark> marks;
   final ScenePixels closePixels;
+
+  /// Once the right mark is chosen (and only then): how it follows each of
+  /// the plaque's lines, one for each, in their order.
+  final List<String> rightLines;
 
   /// The small enamel sign on the wall, and what it says (QUAY 3).
   final Rect signAt;

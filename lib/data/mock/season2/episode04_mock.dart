@@ -82,17 +82,19 @@ const Map<String, dynamic> season2Episode04Json = {
         {
           'id': 'a',
           'label': 'Mark A',
-          'feedback': 'Mark A has three waves and the right words. But where does its arrow point? Is the river up there?',
+          // Each wrong mark breaks one line: the feedback names that line
+          // (as numbered on the puzzle page), never the right mark.
+          'feedback': 'Look at line 2 again: the arrow. Where does the arrow on Mark A point? Is the river up there?',
         },
         {
           'id': 'b',
           'label': 'Mark B',
-          'feedback': 'Mark B has three waves, and its arrow points down to the river. But read its word. Do booksellers watch the water?',
+          'feedback': 'Look at line 3 again: the word. Mark B has three waves and points down to the river. But read its word. Do booksellers watch the water?',
         },
         {
           'id': 'c',
           'label': 'Mark C',
-          'feedback': 'Mark C points down to the river and names the River Keeper. Count its waves again.',
+          'feedback': 'Look at line 1 again: the waves. Count the waves on Mark C. How many does the plaque say?',
         },
         {'id': 'd', 'label': 'Mark D'},
       ],

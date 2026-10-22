@@ -30,6 +30,7 @@ import 'package:london_mystery/features/mission_map/map_world.dart';
 import 'package:london_mystery/features/season/season_overview.dart';
 import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/game_button.dart';
+import 'package:london_mystery/widgets/ink_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -718,12 +719,56 @@ void main() {
         expect(find.byKey(const ValueKey('plaque-river')), findsOneWidget);
         await tapKey('plaque-sides-done');
         expect(examined(), containsAll(['s2_ep04_m1:a', 's2_ep04_m1:back']));
+        // The plaque's three lines on the page itself, whole, numbered.
+        for (var i = 1; i <= 3; i++) {
+          expect(find.byKey(ValueKey('marks-line-$i')), findsOneWidget);
+        }
+        for (final line in marks.plaqueBack.lines) {
+          expect(findReadableContaining(line), findsWidgets, reason: line);
+        }
+        // Each mark large on its card (wider than a third of the screen),
+        // its close-up a glass away; none chosen, no tick on the wall.
+        for (final m in marks.marks) {
+          expect(t.getSize(find.byKey(ValueKey('mark-${m.id}'))).width, greaterThan(size.width / 3), reason: m.id);
+          expect(find.text('${m.name} · CHOSEN'), findsNothing);
+        }
+        expect(find.descendant(of: find.byKey(const ValueKey('mark-spot-a')), matching: find.byWidgetPredicate((w) => w is InkIcon && w.glyph == InkGlyph.check)), findsNothing,
+            reason: 'looked at, but never ticked like an answer');
+        await shot('m1_compare');
+        await tapKey('mark-closer-c', after: const Duration(milliseconds: 600));
+        expect(find.byKey(const ValueKey('mark-close-c')), findsOneWidget);
+        await shot('m1_mark_c');
+        await tapKey('mark-close-done');
+        // One chosen at a time: B, then D in its place.
         await tapKey('mark-b');
+        expect(find.text('MARK B · CHOSEN'), findsOneWidget);
         await tapKey('marks-check');
-        await wrongThenTryAgain('Do booksellers watch the water?', 'm1');
+        // The line it breaks, by its number; never the right mark.
+        await wrongThenTryAgain('Look at line 3 again', 'm1');
+        expect(findReadableContaining('Do booksellers watch the water?'), findsNothing, reason: 'closed');
+        await tapKey('mark-c');
+        await tapKey('marks-check');
+        await wrongThenTryAgain('Look at line 1 again', 'm1c');
         await tapKey('mark-d');
+        expect(find.text('MARK D · CHOSEN'), findsOneWidget);
+        expect(find.text('MARK C · CHOSEN'), findsNothing, reason: 'only one chosen');
         await shot('m1_chosen');
-        await tapKey('marks-check');
+        // Out and back in before checking: what was looked at is kept.
+        router.go(Routes.map);
+        await wait(t, const Duration(milliseconds: 1400));
+        await visit(m1.id);
+        if (find.text('INVESTIGATE').evaluate().isNotEmpty) await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 900));
+        expect(examined(), containsAll(['s2_ep04_m1:a', 's2_ep04_m1:b', 's2_ep04_m1:c', 's2_ep04_m1:d', 's2_ep04_m1:back']));
+        await tapKey('mark-d');
+        await tapKey('marks-check', after: const Duration(milliseconds: 600));
+        // Right: why, line by line, before the case goes on.
+        expect(find.byKey(const ValueKey('marks-why')), findsOneWidget);
+        for (final (i, line) in marks.rightLines.indexed) {
+          expect(find.descendant(of: find.byKey(ValueKey('marks-why-${i + 1}')), matching: find.text(line)), findsOneWidget);
+        }
+        expect(ref.read(gameControllerProvider).isCompleted(m1.id), isFalse, reason: 'checked once the why is read');
+        await shot('m1_why');
+        await tapKey('marks-why-continue');
         await finish(m1.transition.first, 'm1');
         expect(ref.read(gameControllerProvider).isCompleted(m1.id), isTrue);
 

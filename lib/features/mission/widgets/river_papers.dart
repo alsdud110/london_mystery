@@ -95,10 +95,14 @@ class PlaqueBackView extends StatelessWidget {
 
 /// A mark up close: its stone, and its word carved in its panel.
 class RiverMarkView extends StatelessWidget {
-  const RiverMarkView({super.key, required this.scene, required this.mark});
+  const RiverMarkView({super.key, required this.scene, required this.mark, this.wordKey = true});
 
   final RiverMarksScene scene;
   final RiverMark mark;
+
+  /// Its word keyed (`mark-word-…`): false where the same mark is shown
+  /// twice at once (the comparing cards under its close-up).
+  final bool wordKey;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +121,7 @@ class RiverMarkView extends StatelessWidget {
               child: Center(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(mark.word, key: ValueKey('mark-word-${mark.id}'), style: carved(104)),
+                  child: Text(mark.word, key: wordKey ? ValueKey('mark-word-${mark.id}') : null, style: carved(104)),
                 ),
               ),
             ),
