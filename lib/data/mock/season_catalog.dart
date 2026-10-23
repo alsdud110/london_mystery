@@ -272,7 +272,7 @@ final season2Content = SeasonContent(
   flyRails: season2FlyRailScenes,
   lightTables: season2LightTableScenes,
   introPlaques: season2IntroPlaques,
-  evidenceArt: {...season2Case04EvidenceArt, ...season2Case05EvidenceArt, ...season2Case06EvidenceArt, ...season2Case07EvidenceArt},
+  evidenceArt: {...season2Case02EvidenceArt, ...season2Case04EvidenceArt, ...season2Case05EvidenceArt, ...season2Case06EvidenceArt, ...season2Case07EvidenceArt},
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
   evidenceLinks: {

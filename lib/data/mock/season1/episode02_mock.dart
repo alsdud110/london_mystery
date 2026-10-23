@@ -104,7 +104,7 @@ const Map<String, dynamic> episode02Json = {
           'I took one small brass gear.\n\n'
           'I did not take it far.\n'
           'It is not under the biggest bell.\n'
-          'It is under the smallest bell.\n\n'
+          'It is under the bell that is the opposite of the biggest.\n\n'
           '— R.',
       'type': 'multipleChoice',
       'question': 'Where is the missing gear?',
@@ -224,8 +224,8 @@ const Map<String, dynamic> episode02Json = {
     'letter':
         'Clever detective!\n\n'
         'Set the hands to the time the thief will take the picture.\n'
-        'When Big Ben rings at that time, the museum guards will hear it\n'
-        'and they will be ready.\n\n'
+        'Then I will ring the great bell.\n'
+        'The museum guards will hear it and be ready.\n\n'
         'Your notebook knows when the clock stopped,\n'
         "and the Time Card has the thief's plan.",
     'type': 'finalCode',
@@ -301,6 +301,7 @@ const Map<String, dynamic> episode02Json = {
     'feather': '깃털',
     'stairs': '계단',
     'opposites': '반대말들',
+    'opposite': '반대(의 것)',
     'moment': '순간',
   },
 };

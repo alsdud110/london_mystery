@@ -146,11 +146,13 @@ const Map<String, dynamic> episode07Json = {
         'A river piece, a park piece and a station piece.',
       ],
       'letterIntro': 'The instructions on the back say:',
+      // Two lines, read together, leave one order (2026-10-23, approved):
+      // the pieces that do not touch are the top and the bottom, and the
+      // river is not the top.
       'letter':
-          'The station piece goes at the top.\n'
-          'The river piece goes at the bottom.\n'
-          'The park piece goes above the river\n'
-          'and below the station.',
+          'Put me together, from the top to the bottom.\n'
+          'The river piece is not at the top.\n'
+          'The station piece and the river piece do not touch.',
       'type': 'sequence',
       'question': 'Put the pieces in order, from the top to the bottom.',
       'options': [
@@ -160,13 +162,18 @@ const Map<String, dynamic> episode07Json = {
       ],
       'codeLength': 3,
       'answer': 'station,park,river',
+      // Every wrong order says which line it breaks.
       'feedback': {
-        'river,park,station': 'That is upside down. Which piece goes at the TOP?',
+        'river,park,station': 'Can the river piece be at the top?',
+        'river,station,park': 'The river piece is at the top again. Is it allowed there?',
+        'station,river,park': 'Here the station piece and the river piece touch. Do they?',
+        'park,station,river': 'The station piece sits right on the river piece. Can they touch?',
+        'park,river,station': 'The river piece sits right on the station piece. Can they touch?',
       },
-      'orderFeedback': 'Read the first two lines again: one piece goes at the top, one at the bottom.',
+      'orderFeedback': 'Read both lines again: the river piece is not at the top, and the station and river pieces do not touch.',
       'hints': [
-        'The first line tells you the top. The second line tells you the bottom.',
-        '"Above" means higher. "Below" means lower.',
+        'Start with the two pieces that do not touch. Where can they go?',
+        'Pieces that do not touch are at the top and the bottom. Which one is NOT at the top?',
       ],
       'clue': {
         'id': 'ep07_c3',
@@ -180,13 +187,15 @@ const Map<String, dynamic> episode07Json = {
         'name': 'Joined Map',
         'icon': 'map',
         'description': 'Three pieces, one picture.',
-        'inscription': 'An arrow goes north, to the old gate of the park.',
+        // Its direction only (2026-10-23, approved; it named the old gate):
+        // the final puts it together with Grey's way.
+        'inscription': 'An arrow points north, to the top of the park.',
       },
       'successMessage': 'The pieces fit!',
       'transition': [
-        // The arrow's spot is the final's answer: the Discovery Moment tells
-        // its direction only (north, the top of the park) and the scene
-        // follows it; only the Joined Map in the notebook names the spot.
+        // The arrow's spot is the final's answer: nothing names it; the
+        // Discovery Moment, the scene and the Joined Map give its direction
+        // only (north, the top of the park).
         'You hurry north along the park paths, the joined map in your hand.',
         '"The last piece waits where my arrow points."',
         'But a man in a dark coat is walking there fast!',
@@ -216,7 +225,8 @@ const Map<String, dynamic> episode07Json = {
         'Then follow your joined map!',
     // Grey gives the way (left after the bridge: the left bench or the old
     // gate); the Joined Map (Mission 03) gives the end (its arrow: north, the
-    // old gate). Only both together pick one map.
+    // top of the park, where the old gate is drawn above the left bench).
+    // Only both together pick one map.
     'type': 'imageChoice',
     'question': 'Which map shows where to stop?',
     'options': [
@@ -228,7 +238,7 @@ const Map<String, dynamic> episode07Json = {
     'answer': 'b',
     'hints': [
       'Use both clues: Inspector Grey’s directions and the arrow on your joined map.',
-      'Open your notebook and look closer at the joined map. Where does its arrow point?',
+      "Grey's way leaves two places. Which one is at the top of the park, where the arrow points?",
     ],
     'evidence': {
       'id': 'ep07_e4',
@@ -273,6 +283,8 @@ const Map<String, dynamic> episode07Json = {
     'piece': '조각',
     'top': '맨 위',
     'bottom': '맨 아래',
+    'touch': '닿다, 맞닿다',
+    'together': '함께, 하나로',
     'above': '~위에',
     'below': '~아래에',
     'garden': '정원',

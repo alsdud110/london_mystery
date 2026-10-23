@@ -220,7 +220,8 @@ void main() {
     await tapText(t, 'THE SECRET LETTER', after: const Duration(milliseconds: 600));
     await reveal(t, find.text('Word Card'));
     await tapText(t, 'Word Card', after: const Duration(milliseconds: 800));
-    expect(findReadable('RED · FOUR · CLOCK · PLATFORM'), findsWidgets, reason: 'evidence zoom');
+    // The card's words (2026-10-23, approved: SMALL, not FOUR).
+    expect(findReadable('RED · SMALL · CLOCK · PLATFORM'), findsWidgets, reason: 'evidence zoom');
     await tapText(t, 'CLOSE', after: const Duration(milliseconds: 600));
     await reveal(t, find.text('"Platform 4"'));
     expect(find.text('"Platform 4"'), findsOneWidget, reason: 'the clue Case 12 needs');

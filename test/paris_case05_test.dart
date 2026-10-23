@@ -131,7 +131,7 @@ void main() {
     int alphaAt(ByteData d, int w, int x, int y) => d.getUint8((y * w + x) * 4 + 3);
 
     test('all fourteen are in, listed in pubspec, at their sizes', () {
-      expect(File('pubspec.yaml').readAsStringSync(), contains('    - $folder/\n'));
+      expect(pubspecAssets(), contains('$folder/'), reason: 'its folder, exactly, in flutter: assets:');
       expect(Directory(folder).listSync().whereType<File>().where((f) => f.path.endsWith('.png')).length, 14);
       for (final MapEntry(key: name, value: (w, h, alpha)) in pictures.entries) {
         final file = File('$folder/$name');
@@ -305,7 +305,14 @@ void main() {
       }
       expect(AnswerChecker.feedbackFor(fin, 'first:s1,second:s5,third:s3'), contains('4417'));
       expect(AnswerChecker.feedbackFor(fin, 'first:s4,second:s2,third:s3'), contains('3 May'));
-      expect(fin.evidence!.inscription, 'Letter No. 4417: collected, sorted, then HELD at the Louvre post room. Never delivered.');
+      expect(
+        fin.evidence!.inscription,
+        'Letter No. 4417, 16 May: collected at 9:00 AM, sorted at 11:00 AM, then HELD at the Louvre post room at 4:00 PM. Never delivered.',
+      );
+      // Its times are the slips' own (Case 06 M1 needs the last).
+      for (final s in ours) {
+        expect(fin.evidence!.inscription, contains(s.time!), reason: s.id);
+      }
       // Saved and read back; unknown slots, slips and doubles are left out.
       final placed = {'first': 's1', 'third': 's5'};
       expect(TrailState.decode(TrailState.encode(placed, trail), trail), placed);

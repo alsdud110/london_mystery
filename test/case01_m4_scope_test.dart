@@ -74,7 +74,10 @@ void main() {
     // Was 376694330 before M5 was redesigned as the crown card examined on
     // the device, no QR code (2026-10-19, requested; see case01_decode_test).
     // Was 1565212565 before its hidden message was shortened (same day,
-    // requested).
-    expect(fnv(withoutNames(jsonEncode({...json, 'glossary': glossary}))), 2004498282);
+    // requested). Was 2004498282 before the final's box was found behind
+    // the secret door Mission 05 opens (2026-10-23, approved). Was
+    // 3339709869 before the golden key's tag named the next stop, the bell,
+    // and M2's scene after it read the bell as Big Ben (same day, approved).
+    expect(fnv(withoutNames(jsonEncode({...json, 'glossary': glossary}))), 3330943963);
   });
 }

@@ -62,7 +62,8 @@ void main() {
   });
 
   group('other number codes: their wheels as before, no colon', () {
-    for (final (id, length) in const [('ep08_m3', 3), ('ep09_m3', 2), ('ep06_m3', 1)]) {
+    // 06-M3 is a choice now (2026-10-23): no wheels.
+    for (final (id, length) in const [('ep08_m3', 3), ('ep09_m3', 2)]) {
       testWidgets(id, (t) async {
         final m = mission(id);
         expect(m.type, MissionType.numberCode);

@@ -176,25 +176,29 @@ const Map<String, dynamic> episode06Json = {
           'TUESDAY, MIDNIGHT\n'
           'A short woman. A dark coat.\n'
           'A red hat. A big bag.',
-      'type': 'numberCode',
-      'question':
-          'Compare the five details: height, person, coat, hat, and bag. '
-          'How many are different?',
-      'codeLength': 1,
-      'answer': '4',
-      // Each slip names where to look again, never the count: 3 misses the
-      // man / woman line under tall / short, 5 counts the coat, 6 counts
-      // past the five details.
-      'feedback': {
-        '3': 'One difference is missing. Did you check both height (tall or short) and person (man or woman)?',
-        '5': 'Look at the coat on Monday and on Tuesday. Is it really different?',
-        '6': 'There are only five details. Count each one once: height, person, coat, hat, bag.',
-      },
+      // The guard's two nights, held against the market's Witness Notes
+      // (Mission 01: dark coat, grey hat, small bag): only Monday matches.
+      // The dark coat is on both nights, so it tells nobody apart
+      // (2026-10-23, approved; was a count of the differences, 4).
+      'type': 'multipleChoice',
+      'question': 'The market witnesses saw one of these two people. Which one?',
+      'options': [
+        {'id': 'a', 'label': 'Monday: a tall man, a grey hat, a small bag'},
+        {
+          'id': 'b',
+          'label': 'Tuesday: a short woman, a red hat, a big bag',
+          'feedback': 'Check your witness notes. What colour was the hat? How big was the bag?',
+        },
+        {
+          'id': 'c',
+          'label': 'Both of them: they both wore a dark coat',
+          'feedback': 'Both wore dark coats, so the coat cannot tell them apart. Look at the hat and the bag.',
+        },
+      ],
+      'answer': 'a',
       'hints': [
-        'Compare the details one by one. '
-            'Is each one the same or different?',
-        'Make two groups: SAME and DIFFERENT. Read Monday and Tuesday line by line, '
-            'and check the coats too. Count only the DIFFERENT details.',
+        'Open your notebook: the Witness Notes from the market. Which night matches them?',
+        'Only one detail is the same on both nights. Use the details that are different.',
       ],
       'clue': {
         'id': 'ep06_c3',
@@ -212,7 +216,7 @@ const Map<String, dynamic> episode06Json = {
         'description': 'Dropped by the woman in the red hat. A black raven is stamped on the back.',
         'inscription': 'ROW R · SEAT 17',
       },
-      'successMessage': 'Four details differ. The coats match, but the people do not!',
+      'successMessage': 'Monday matches the market. Tuesday was someone else!',
       'transition': [
         // Where the ticket comes from: the guard hands it over.
         'The guard gives you a theatre ticket. "The woman in the red hat dropped it."',
@@ -339,6 +343,9 @@ const Map<String, dynamic> episode06Json = {
     'matches': '~와 맞다, 일치하다',
     // The five details 06-M3 asks to compare, and the ticket's raven mark.
     'details': '세부 사항, 특징',
+    // 06-M3's two nights held against the market's notes (2026-10-23).
+    'detail': '세부 사항, 특징',
+    'apart': '따로 (tell apart: 구별하다)',
     'height': '키',
     'person': '사람 (남자인지 여자인지)',
     'raven': '까마귀',

@@ -211,9 +211,10 @@ const Map<String, dynamic> season2Episode03Json = {
       'letterIntro': 'The sign says SERVICE ACCESS ONLY. Beside the door, a note is pinned:',
       'letter':
           'INSPECTION STEPS\n\n'
+          // Not in order: the order words set the dials.
+          'Finally, turn the key.\n'
           'First, check the clock.\n'
-          'Next, stop the lift.\n'
-          'Finally, turn the key.',
+          'Next, stop the lift.',
       // The symbols set on the three dials, left to right.
       'type': 'sequence',
       'question': 'Set the three dials. Then open the lock.',

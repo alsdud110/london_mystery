@@ -174,7 +174,7 @@ void main() {
       expect(joined.name, 'Joined Map');
       expect(
         joined.inscription,
-        'An arrow goes north, to the old gate of the park.',
+        'An arrow points north, to the top of the park.',
       );
       expect(m3.answer, 'station,park,river');
     });
@@ -196,9 +196,12 @@ void main() {
       );
     });
 
-    test('nothing before the final names the spot, except the joined map', () {
-      final text = before(e, fin.id, except: {joined.inscription!});
+    // 2026-10-23 (approved): not even the joined map names it any more; it
+    // gives the direction, the final puts it with Grey's way.
+    test('nothing before the final names the spot, not even the joined map', () {
+      final text = before(e, fin.id);
       expect(text.toLowerCase(), isNot(contains('old gate')));
+      expect(joined.inscription!.toLowerCase(), isNot(contains('gate')));
     });
 
     test("Grey gives the way, not the end: his note alone leaves two maps", () {
@@ -211,7 +214,9 @@ void main() {
       for (final h in fin.hints) {
         expect(h.toLowerCase(), isNot(contains('gate')), reason: h);
       }
-      expect(fin.hints.last, contains('joined map'));
+      // Tip 1 names the joined map; tip 2 (2026-10-23) its arrow.
+      expect(fin.hints.first, contains('joined map'));
+      expect(fin.hints.last, contains('where the arrow points'));
     });
 
     test('Case 05 → 07 → 08 stay', () {
@@ -529,7 +534,7 @@ void main() {
           await lookCloser(
             t,
             'Joined Map',
-            'An arrow goes north, to the old gate of the park.',
+            'An arrow points north, to the top of the park.',
             'ep07_final_map_$tag',
           );
           await wait(t, const Duration(seconds: 2));

@@ -357,6 +357,38 @@ class _EvidenceArt extends StatelessWidget {
   }
 }
 
+/// The evidence's picture as large as [maxHeight] allows, to look at beside
+/// a puzzle (the recall card): its drawing or wide print whole, else its
+/// round frame (its picture or ink symbol), as the close look shows it.
+class EvidencePicture extends StatelessWidget {
+  const EvidencePicture({super.key, required this.evidence, this.maxHeight = 220});
+
+  final Evidence evidence;
+  final double maxHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    final wide = SeasonCatalog.evidenceArt(evidence.id) != null || ArtAssets.evidencePrints[evidence.id] != null;
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: wide ? _EvidencePrint(evidence: evidence) : _EvidenceArt(evidence: evidence, size: maxHeight.clamp(56.0, 150.0)),
+      ),
+    );
+  }
+}
+
+/// The evidence's small round picture (a notebook tile's), for a row.
+class EvidenceThumb extends StatelessWidget {
+  const EvidenceThumb({super.key, required this.evidence, this.size = 48});
+
+  final Evidence evidence;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => _EvidenceArt(evidence: evidence, size: size);
+}
+
 /// A wide evidence picture ([ArtAssets.evidencePrints]) shown whole, as wide
 /// as the card: the ticket's print, the painting in its frame. Its symbol if
 /// the picture fails.

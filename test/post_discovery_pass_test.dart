@@ -38,9 +38,12 @@ void main() {
       expect([d.title, d.detail, ?d.note].join(' ').toLowerCase(), isNot(contains('gate')));
     });
 
-    test('3. the Joined Map itself still names the spot (the notebook keeps it)', () {
+    // 2026-10-23 (approved): the Joined Map gives the arrow's direction
+    // only; the final puts it together with Grey's way.
+    test('3. the Joined Map gives the direction, never the spot (the notebook keeps it)', () {
       expect(m07.evidence!.name, 'Joined Map');
-      expect(m07.evidence!.inscription, 'An arrow goes north, to the old gate of the park.');
+      expect(m07.evidence!.inscription, 'An arrow points north, to the top of the park.');
+      expect(m07.evidence!.inscription!.toLowerCase(), isNot(contains('gate')));
     });
 
     test('5. its scene goes on from the discovery, and never names the spot', () {
@@ -167,7 +170,8 @@ void main() {
             scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.physics is! NeverScrollableScrollPhysics).last);
         await t.tap(tile);
         await wait(t, const Duration(milliseconds: 700));
-        expect(find.text('An arrow goes north, to the old gate of the park.'), findsOneWidget);
+        // Read as shown: "top" is a dotted word now, so the line is rich text.
+        expect(findReadable('An arrow points north, to the top of the park.'), findsOneWidget);
         await tapText(t, 'CLOSE', after: const Duration(milliseconds: 600));
         await t.binding.handlePopRoute(); // the notebook sheet
         await wait(t, const Duration(milliseconds: 700));

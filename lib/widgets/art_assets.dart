@@ -515,6 +515,8 @@ abstract final class ArtAssets {
     's2_ep01_e2': 1774 / 887,
     's2_ep01_e4': 1774 / 887,
     's2_ep02_e1': 1536 / 1024,
+    // The Hidden Sketch on its easel (drawn: `season2Case02EvidenceArt`).
+    's2_ep02_e3': 640 / 690,
     's2_ep03_e3': 1536 / 1024,
     's2_ep03_e4': 1536 / 1024,
     // Case 04: the mark up close, the ledger's page, the label whole, and

@@ -209,6 +209,7 @@ class DrawnEvidenceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => switch (drawn) {
     final WrittenPaper p => WrittenPaperView(paper: p),
+    PictureEvidence(:final file, :final pixels, crop: final crop?) => CroppedPicture(file: file, pixels: pixels, crop: crop),
     final PictureEvidence p => PictureCanvas(
       pixels: p.pixels,
       child: Image.asset(p.file, fit: BoxFit.fill, excludeFromSemantics: true),

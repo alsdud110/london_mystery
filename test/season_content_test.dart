@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/utils/answer_checker.dart';
+import 'package:london_mystery/data/mock/season_catalog.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/mission.dart';
 import 'helpers.dart';
@@ -164,11 +165,28 @@ void main() {
       expect(MissionType.values.map((t) => t.name), isNot(contains('qrScan')));
     });
 
+    // A puzzle's kind as the child plays it: a mission played in its own
+    // scene (a talk, a search, a lens, traces, a code, a clock) is that
+    // scene, whatever its data type; any other is its type (2026-10-23,
+    // approved: Case 06 M1 is a talk with the witnesses, not a choice).
+    String kindOf(Mission m) => switch (m) {
+          _ when SeasonCatalog.dialogue(m) != null => 'talk',
+          _ when SeasonCatalog.investigation(m) != null => 'search',
+          _ when SeasonCatalog.explore(m) != null => 'explore',
+          _ when SeasonCatalog.inspection(m) != null => 'lens',
+          _ when SeasonCatalog.deduction(m) != null => 'traces',
+          _ when SeasonCatalog.decode(m) != null => 'decode',
+          _ when SeasonCatalog.clock(m) != null => 'clock',
+          _ => m.type.name,
+        };
+
     test('a case mixes puzzle types instead of repeating one', () {
       for (final e in later) {
-        final types = e.allMissions.map((m) => m.type).toSet();
-        expect(types.length, greaterThanOrEqualTo(3), reason: e.id);
+        final kinds = e.allMissions.map(kindOf).toSet();
+        expect(kinds.length, greaterThanOrEqualTo(3), reason: '${e.id}: $kinds');
       }
+      // Case 06: the talk, the card's word, then two choices.
+      expect(season.firstWhere((e) => e.id == 'ep06').allMissions.map(kindOf).toSet(), {'talk', 'wordInput', 'multipleChoice'});
     });
   });
 }

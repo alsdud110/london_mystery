@@ -119,7 +119,9 @@ final Map<String, InspectScene> season1Inspections = {
           _room4.rect(994, 666, 1300, 758),
           _room4.rect(862, 758, 1300, 900),
         ],
-        line: 'Something glints in the shadow. A small golden key! ROOM 4 is cut into it.',
+        // Its tag says where the thief goes next: the bell after the case
+        // (2026-10-23, approved).
+        line: "Something glints in the shadow. A small golden key! ROOM 4 is cut into it. A tag on the key says: 'My next stop is where London's biggest bell rings.'",
         requires: 'slab',
         lockedLine: 'A plinth with a rail around it. What stands on it?',
       ),

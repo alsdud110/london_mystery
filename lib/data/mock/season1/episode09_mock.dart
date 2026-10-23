@@ -185,7 +185,7 @@ const Map<String, dynamic> episode09Json = {
       'successMessage': "Twelve o'clock!",
       'transition': [
         "At twelve o'clock, three people were in the courtyard:",
-        'Anna, Ben the gardener and Carl the guard.',
+        'Anna, Ben the gardener and Carl, the guard who lent her his key.',
         'Each of them had one thing with them.',
       ],
       'nextMissionId': 'ep09_final',

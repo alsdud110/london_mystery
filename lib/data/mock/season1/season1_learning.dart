@@ -90,7 +90,7 @@ const Map<String, LearningObjective> season1Learning = {
     level: LearningLevel.comprehension,
     skill: LanguageSkill.grammarInContext,
     objective: '부정문(not)과 긍정문을 구분해 톱니바퀴가 있는 곳을 찾는다.',
-    expressions: ['It is not under the biggest bell', 'It is under the smallest bell'],
+    expressions: ['It is not under the biggest bell', 'the opposite of the biggest'],
   ),
   'ep02_m3': LearningObjective(
     dependency: LanguageDependency.essential,
@@ -155,7 +155,7 @@ const Map<String, LearningObjective> season1Learning = {
     dependency: LanguageDependency.essential,
     level: LearningLevel.comprehension,
     skill: LanguageSkill.sentenceMeaning,
-    objective: '보기는 승강장 번호뿐이다. 짐꾼의 네 문장을 끝까지 읽고 RED·FOUR·CLOCK을 모두 맞는 곳을 찾는다("a red door, but no clock"은 시계가 아니다).',
+    objective: '보기는 승강장 번호뿐이다. 짐꾼의 네 문장을 끝까지 읽고 RED·SMALL·CLOCK을 모두 맞는 곳을 찾는다("a red door, but no clock"은 시계가 아니다).',
     expressions: ['Platform 4 has a small red clock', 'Platform 7 has a red door, but no clock'],
   ),
   'ep04_m3': LearningObjective(
@@ -223,10 +223,11 @@ const Map<String, LearningObjective> season1Learning = {
   ),
   'ep06_m3': LearningObjective(
     dependency: LanguageDependency.essential,
-    level: LearningLevel.comprehension,
+    level: LearningLevel.recall,
     skill: LanguageSkill.vocabulary,
-    objective: '두 날의 인물 묘사(tall/short, man/woman …)를 비교해 다른 점을 센다.',
-    expressions: ['A tall man', 'A short woman', 'How many are different?'],
+    objective: '두 날의 인물 묘사를 시장 증언(회색 모자, 작은 가방)과 맞춰 증인이 본 사람을 고른다. 둘 다 입은 dark coat로는 구별할 수 없다.',
+    expressions: ['A tall man', 'A short woman', 'He carried a small bag'],
+    recallFrom: 'ep06_m1',
   ),
   'ep06_final': LearningObjective(
     dependency: LanguageDependency.helpful,
@@ -256,12 +257,10 @@ const Map<String, LearningObjective> season1Learning = {
     dependency: LanguageDependency.essential,
     level: LearningLevel.application,
     skill: LanguageSkill.grammarInContext,
-    objective: 'top / bottom / above / below를 이해하고 지도 조각을 실제로 배열한다.',
+    objective: '"not at the top"과 "do not touch" 두 조건을 함께 써서 지도 조각을 위에서 아래로 배열한다.',
     expressions: [
-      'The station piece goes at the top',
-      'The river piece goes at the bottom',
-      'above the river',
-      'below the station',
+      'The river piece is not at the top',
+      'The station piece and the river piece do not touch',
     ],
   ),
   'ep07_final': LearningObjective(
@@ -269,7 +268,7 @@ const Map<String, LearningObjective> season1Learning = {
     level: LearningLevel.recall,
     skill: LanguageSkill.sentenceMeaning,
     objective: '새 길 안내와 앞에서 맞춘 지도의 화살표 글귀를 함께 읽어 멈출 곳을 정한다.',
-    expressions: ['Cross the bridge and turn left', 'An arrow goes north'],
+    expressions: ['Cross the bridge and turn left', 'An arrow points north'],
     recallFrom: 'ep07_m3',
   ),
 
@@ -379,7 +378,7 @@ const Map<String, LearningObjective> season1Learning = {
     dependency: LanguageDependency.low,
     level: LearningLevel.exposure,
     objective: '거꾸로 쓴 글자를 바로 읽는 철자 해독. 영어 의미 이해와는 거의 관계가 없다.',
-    expressions: ['Read me from right to left'],
+    expressions: ['Start with the last letter'],
   ),
   'ep11_m3': LearningObjective(
     dependency: LanguageDependency.essential,

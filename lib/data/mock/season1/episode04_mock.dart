@@ -1,7 +1,7 @@
 /// Case 04 — The Secret Letter (King's Cross). Theme: reading letters.
 ///
 /// Every step is a letter or a card that must be read to find the next
-/// place: the station guide ("never sleep"), the four-word card (RED · FOUR ·
+/// place: the station guide ("never sleep"), the four-word card (RED · SMALL ·
 /// CLOCK · PLATFORM) and the postmark. Final case: the last letter describes
 /// the sender's name without saying it; the wax seal in the notebook shows it.
 const Map<String, dynamic> episode04Json = {
@@ -92,7 +92,7 @@ const Map<String, dynamic> episode04Json = {
       'location': 'THE PLATFORMS',
       'scene': 'kingsCross',
       'story': [
-        'The card says: RED · FOUR · CLOCK · PLATFORM.',
+        'The card says: RED · SMALL · CLOCK · PLATFORM.',
         'You look at the clocks above the platforms.',
       ],
       'letterIntro': 'A porter tells you about the clocks.',
@@ -101,7 +101,7 @@ const Map<String, dynamic> episode04Json = {
           'Platform 4 has a small red clock.\n'
           'Platform 7 has a red door, but no clock.\n'
           'Platform 9 has a green clock.\n\n'
-          'Your card says: RED · FOUR · CLOCK · PLATFORM.',
+          'Your card says: RED · SMALL · CLOCK · PLATFORM.',
       'type': 'multipleChoice',
       'question': 'Where is the next clue?',
       'options': [
@@ -113,7 +113,7 @@ const Map<String, dynamic> episode04Json = {
       'answer': 'b',
       'hints': [
         'Your card has four words. Check each platform against all four.',
-        'Match the colour, object and platform number together. A red door is not the same as a red clock.',
+        'Match the colour, the size and the object together. A red door is not the same as a red clock.',
       ],
       'clue': {
         'id': 'ep04_c2',
@@ -127,7 +127,7 @@ const Map<String, dynamic> episode04Json = {
         'name': 'Word Card',
         'icon': 'ticket',
         'description': 'Four words, one place.',
-        'inscription': 'RED · FOUR · CLOCK · PLATFORM',
+        'inscription': 'RED · SMALL · CLOCK · PLATFORM',
       },
       'successMessage': 'Under the red clock on Platform 4!',
       'transition': [

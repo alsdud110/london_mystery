@@ -157,7 +157,11 @@ void main() {
     final m2 = m('ep11_m2');
     final written = m2.letter.split('\n').first;
     expect(written, 'THGINDIM');
-    expect(m2.letter, contains('Read me from right to left.'));
+    // How to read it is not on the mask (2026-10-23, approved): the child
+    // finds it out; tip 1 walks it.
+    expect(m2.letter, 'THGINDIM');
+    expect(m2.letter.toLowerCase(), isNot(contains('right to left')));
+    expect(m2.hints.first, startsWith('Start with the last letter'));
     final reversed = written.split('').reversed.join();
     expect(reversed, m2.answer);
     // "Start with the last letter, M. Then go left: I, D, N..." — the letters

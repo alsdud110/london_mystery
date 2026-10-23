@@ -30,7 +30,7 @@ void main() {
 
   test('the answers of Case 06-08 are unchanged', () {
     expect({for (final x in missions.values) x.id: x.answer}, {
-      'ep06_m1': 'b', 'ep06_m2': 'GREY', 'ep06_m3': '4', 'ep06_final': 'c',
+      'ep06_m1': 'b', 'ep06_m2': 'GREY', 'ep06_m3': 'a', 'ep06_final': 'c', // 06-M3: which night (2026-10-23, was the count 4)
       'ep07_m1': 'c', 'ep07_m2': 'c', 'ep07_m3': 'station,park,river', 'ep07_final': 'b',
       'ep08_m1': 'b', 'ep08_m2': 'ROBIN', 'ep08_m3': '429', 'ep08_final': 'c',
     });
@@ -131,10 +131,13 @@ void main() {
 
   test('the slips of Case 06-08', () {
     expect(AnswerChecker.feedbackFor(m('ep06_m1'), 'd'), contains('worn'));
-    expect(AnswerChecker.feedbackFor(m('ep06_m3'), '5'), contains('coat'));
+    expect(AnswerChecker.feedbackFor(m('ep06_m3'), 'c'), contains('coat')); // both nights' dark coat (2026-10-23)
     expect(AnswerChecker.feedbackFor(m('ep07_m2'), 'b'), contains("'behind'"));
-    expect(AnswerChecker.feedbackFor(m('ep07_m3'), 'river,park,station'), contains('upside down'));
-    expect(AnswerChecker.feedbackFor(m('ep07_m3'), 'park,station,river'), m('ep07_m3').orderFeedback);
+    // Case 07 M3's two lines (2026-10-23, approved): each wrong order names
+    // the line it breaks — the river at the top, or the station and the
+    // river touching.
+    expect(AnswerChecker.feedbackFor(m('ep07_m3'), 'river,park,station'), contains('river piece be at the top'));
+    expect(AnswerChecker.feedbackFor(m('ep07_m3'), 'park,station,river'), contains('touch'));
     expect(AnswerChecker.feedbackFor(m('ep08_m2'), 'lily'), contains('her dad'));
     expect(AnswerChecker.feedbackFor(m('ep08_m3'), '9:30'), contains('whole train time'));
     expect(AnswerChecker.feedbackFor(m('ep08_m3'), '942'), m('ep08_m3').orderFeedback);
@@ -163,8 +166,8 @@ void main() {
     c.useHint(m('ep06_m2'));
     c.submitAnswer(m('ep06_m2'), 'red');
     c.submitAnswer(m('ep06_m2'), 'grey');
-    c.submitAnswer(m('ep06_m3'), '5');
-    c.submitAnswer(m('ep06_m3'), '4');
+    c.submitAnswer(m('ep06_m3'), 'c');
+    c.submitAnswer(m('ep06_m3'), 'a');
     c.submitAnswer(m('ep06_final'), 'a');
     c.submitAnswer(m('ep06_final'), 'c');
     final p = container.read(gameControllerProvider);

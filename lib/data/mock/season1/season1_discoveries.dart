@@ -134,7 +134,7 @@ const Map<String, Discovery> season1Discoveries = {
     type: DiscoveryType.clueFound,
     timing: DiscoveryTiming.fromPuzzle,
     title: 'PLATFORM 4',
-    detail: 'Red, four, clock, platform: the small red clock on Platform 4.',
+    detail: 'Red, small, clock, platform: the small red clock on Platform 4.',
   ),
   'ep04_m3': Discovery(
     type: DiscoveryType.newLead,
@@ -185,7 +185,7 @@ const Map<String, Discovery> season1Discoveries = {
     type: DiscoveryType.storyDiscovery,
     timing: DiscoveryTiming.fromPuzzle,
     title: 'TWO DARK COATS',
-    detail: 'Four things are different: Monday and Tuesday were two different people.',
+    detail: 'Monday was the man from the market. Tuesday was someone else.',
   ),
 
   // ── Case 07 — The Lost Map ──────────────────────────────────────────
@@ -208,7 +208,7 @@ const Map<String, Discovery> season1Discoveries = {
     timing: DiscoveryTiming.fromPuzzle,
     title: 'THE JOINED MAP',
     detail: 'The three pieces fit. An arrow points north, to the top of the park.',
-    // No card: what is written on it names the spot the final asks for.
+    // No card: the direction is told here, the map waits in the notebook.
     // The direction is told here; the map itself waits in the notebook.
   ),
 

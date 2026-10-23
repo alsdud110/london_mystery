@@ -130,7 +130,7 @@ void main() {
     }
 
     test('all eighteen are in, listed in pubspec, at their sizes, cut out where they are papers or parts', () {
-      expect(File('pubspec.yaml').readAsStringSync(), contains('    - $folder/\n'));
+      expect(pubspecAssets(), contains('$folder/'), reason: 'its folder, exactly, in flutter: assets:');
       expect(Directory(folder).listSync().whereType<File>().where((f) => f.path.endsWith('.png')).length, 18);
       for (final MapEntry(key: name, value: (w, h, cutOut)) in pictures.entries) {
         final file = File('$folder/$name');

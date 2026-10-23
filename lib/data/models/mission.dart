@@ -306,6 +306,54 @@ class Evidence {
   };
 }
 
+/// Evidence from an earlier case that a mission is played with: the
+/// detective may bring it from the notebook to look at beside the puzzle
+/// (`EvidenceRecallDock`). Only a help: the puzzle never waits for it, and
+/// nothing is paid or lost for a wrong pick.
+@immutable
+class EvidenceRecall {
+  const EvidenceRecall({required this.evidenceId, this.title, this.prompt, this.feedback = const {}, this.miss});
+
+  /// The evidence to bring (an evidence id of the same season).
+  final String evidenceId;
+
+  /// The card's line before it is found ("Find an old clue") and under it
+  /// ("Look in your Notebook."); the app's own words when not given.
+  final String? title;
+  final String? prompt;
+
+  /// One short line for other evidence picked instead, by evidence id.
+  final Map<String, String> feedback;
+
+  /// For any other evidence picked (the app's own words when not given).
+  final String? miss;
+
+  static const defaultTitle = 'Find an old clue';
+  static const defaultPrompt = 'Look in your Notebook.';
+  static const defaultMiss = 'Look again. Does it match?';
+
+  /// The line for [evidenceId] picked instead of the one asked for.
+  String missFor(String evidenceId) => feedback[evidenceId] ?? miss ?? defaultMiss;
+
+  factory EvidenceRecall.fromJson(Map<String, dynamic> json) => EvidenceRecall(
+    evidenceId: json['evidence'] as String,
+    title: json['title'] as String?,
+    prompt: json['prompt'] as String?,
+    feedback: {
+      for (final e in (json['feedback'] as Map? ?? const {}).entries) e.key.toString(): e.value.toString(),
+    },
+    miss: json['miss'] as String?,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'evidence': evidenceId,
+    if (title != null) 'title': title,
+    if (prompt != null) 'prompt': prompt,
+    if (feedback.isNotEmpty) 'feedback': feedback,
+    if (miss != null) 'miss': miss,
+  };
+}
+
 @immutable
 class Mission {
   const Mission({
@@ -339,6 +387,7 @@ class Mission {
     this.feedback = const {},
     this.orderFeedback,
     this.hideOptionNames = false,
+    this.recall,
   });
 
   final String id;
@@ -400,6 +449,10 @@ class Mission {
   /// Picture choices: hide the landmark names under the pictures, so the
   /// description has to be read (park maps never show names).
   final bool hideOptionNames;
+
+  /// Evidence of an earlier case to bring from the notebook, or null (most
+  /// missions: nothing is shown).
+  final EvidenceRecall? recall;
 
   /// The episode's final case. Set by `Episode` for its `finalMission`, so a
   /// final case can use any puzzle type (Episode 01 uses the picture locks).
@@ -467,6 +520,7 @@ class Mission {
     },
     orderFeedback: json['orderFeedback'] as String?,
     hideOptionNames: json['hideOptionNames'] == true,
+    recall: json['recall'] == null ? null : EvidenceRecall.fromJson(json['recall'] as Map<String, dynamic>),
   );
 
   Map<String, dynamic> toJson() => {
@@ -499,5 +553,6 @@ class Mission {
     if (feedback.isNotEmpty) 'feedback': feedback,
     if (orderFeedback != null) 'orderFeedback': orderFeedback,
     if (hideOptionNames) 'hideOptionNames': true,
+    if (recall != null) 'recall': recall!.toJson(),
   };
 }

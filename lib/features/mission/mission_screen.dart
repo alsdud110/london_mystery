@@ -56,6 +56,7 @@ import 'widgets/clock_wall.dart';
 import 'widgets/clock_question.dart';
 import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
+import 'widgets/evidence_recall.dart';
 import 'widgets/exhibit.dart';
 import 'widgets/fly_rail.dart';
 import 'widgets/hold_rack.dart';
@@ -1345,6 +1346,26 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
           FadeTransition(opacity: anim, child: child),
       child: body,
     );
+    // Evidence of an earlier case to bring from the notebook: its card on
+    // the page's foot, from the open letter until the mission is solved
+    // (it keeps the system bar clear itself).
+    final recall = m.recall;
+    final recalling =
+        recall != null &&
+        !solved &&
+        (_stage == MissionStage.puzzle ||
+            (_stage == MissionStage.letter && _letterOpened));
+    // The page keeps one shape for the whole mission (the card only comes
+    // and goes under it), so the puzzle's own state is never rebuilt when
+    // the card appears or the mission is solved.
+    Widget withRecall(Widget page) => recall == null
+        ? page
+        : Column(
+            children: [
+              Expanded(child: page),
+              if (recalling) EvidenceRecallDock(mission: m, recall: recall),
+            ],
+          );
     return BackTo(
       onBack: _back,
       child: Scaffold(
@@ -1399,19 +1420,24 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             // The panel under the search keeps clear of the system bar itself.
             ? InkSurface(
                 night: true,
-                child: SafeArea(
-                  top: false,
-                  bottom: !searching && !talking,
-                  child: content,
+                child: withRecall(
+                  SafeArea(
+                    top: false,
+                    bottom: !searching && !talking && !recalling,
+                    child: content,
+                  ),
                 ),
               )
             : PaperBackground(
-                child: SafeArea(
-                  top: false,
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 560),
-                      child: content,
+                child: withRecall(
+                  SafeArea(
+                    top: false,
+                    bottom: !recalling,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 560),
+                        child: content,
+                      ),
                     ),
                   ),
                 ),

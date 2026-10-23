@@ -130,7 +130,8 @@ void main() {
       expect(e.hook, 'Inside the hat, a card: "The jewel was never the prize. Watch the ravens."');
       expect(byId('ep10').intro.first, 'Tower of London, 7:00 AM...');
       expect(m3.answer, '12');
-      expect(m3.transition.join(' '), contains('Carl the guard'));
+      // Carl is the guard, and the one whose key Anna used (2026-10-23).
+      expect(m3.transition.join(' '), contains('Carl, the guard who lent her his key'));
     });
   });
 

@@ -327,7 +327,9 @@ const Map<String, dynamic> season2Episode05Json = {
       'name': "The Letter's Trail",
       'icon': 'map',
       'description': 'Three post slips from under the workshop door.',
-      'inscription': 'Letter No. 4417: collected, sorted, then HELD at the Louvre post room. Never delivered.',
+      // The times its slips give (Case 06 tells its tags apart by the last).
+      'inscription':
+          'Letter No. 4417, 16 May: collected at 9:00 AM, sorted at 11:00 AM, then HELD at the Louvre post room at 4:00 PM. Never delivered.',
     },
     'successMessage': 'You followed the letter!',
     // After the case is closed: the post-case scene, then the case report.

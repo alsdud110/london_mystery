@@ -1,3 +1,6 @@
+import 'dart:convert' show LineSplitter;
+import 'dart:io' show File, FileSystemEntity, FileSystemEntityType;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/widgets/game_button.dart';
@@ -56,6 +59,55 @@ String savedKey(SharedPreferences prefs, String legacyKey) =>
 /// The detective's saved JSON under [legacyKey], or null.
 String? savedString(SharedPreferences prefs, String legacyKey) =>
     prefs.getString(savedKey(prefs, legacyKey));
+
+/// The entries of the `flutter:` → `assets:` list of a pubspec's [text],
+/// each as written (`assets/…/case_02/`), read by its structure: only that
+/// list, its comments and blank lines left out, whatever the line endings
+/// (LF, or CRLF as a Windows checkout has them). A folder is listed only
+/// when this has it exactly.
+List<String> pubspecAssetsOf(String text) {
+  int indent(String line) => line.length - line.trimLeft().length;
+  final out = <String>[];
+  int? flutterAt, assetsAt;
+  for (final raw in const LineSplitter().convert(text)) {
+    final line = raw.trimRight();
+    final body = line.trimLeft();
+    if (body.isEmpty || body.startsWith('#')) continue;
+    final at = indent(line);
+    if (flutterAt == null) {
+      if (at == 0 && body == 'flutter:') flutterAt = 0;
+      continue;
+    }
+    if (at <= flutterAt) break; // the next top-level key: the section is over
+    if (assetsAt == null) {
+      if (body == 'assets:') assetsAt = at;
+      continue;
+    }
+    if (at <= assetsAt && !body.startsWith('- ')) break; // the next key of `flutter:`
+    if (!body.startsWith('- ')) continue;
+    var entry = body.substring(2).trim();
+    final comment = entry.indexOf(' #');
+    if (comment >= 0) entry = entry.substring(0, comment).trim();
+    if (entry.length >= 2 && (entry[0] == '"' || entry[0] == "'") && entry[entry.length - 1] == entry[0]) {
+      entry = entry.substring(1, entry.length - 1);
+    }
+    out.add(entry);
+  }
+  return out;
+}
+
+/// The app's own `flutter: assets:` entries (see [pubspecAssetsOf]).
+List<String> pubspecAssets() => pubspecAssetsOf(File('pubspec.yaml').readAsStringSync());
+
+/// The entries of [assets] that name nothing on disk (a folder entry ends
+/// in `/` and must be a folder; any other, a file).
+List<String> missingAssets(Iterable<String> assets) => [
+  for (final a in assets)
+    if (a.endsWith('/')
+        ? FileSystemEntity.typeSync(a.substring(0, a.length - 1)) != FileSystemEntityType.directory
+        : FileSystemEntity.typeSync(a) != FileSystemEntityType.file)
+      a,
+];
 
 /// Text as a reader sees it, in a plain or a rich [Text]. Notebook and
 /// evidence English is rich text (harder words open their meaning), and

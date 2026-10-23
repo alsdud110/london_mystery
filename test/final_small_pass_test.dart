@@ -433,27 +433,53 @@ const _otherCases = <String, int>{
   // final (7924) unchanged. Value before it: ep01 3068875867. Then its
   // letter shortened to "Four pictures. Four locks. / Remember the order."
   // (no name; requested): value before it 2180131402.
-  'ep01': 3696114919,
+  // Story links (2026-10-23, approved): the final's box is behind the secret
+  // door of M5. Value before it: ep01 3696114919. Then (same day, approved)
+  // the golden key's tag names the next stop, the bell: value before it
+  // 2832071042.
+  'ep01': 2842519320,
   // TYPE B Phase 2 (approved 2026-10-12): Case 02, 03, 04.
-  'ep02': 3508708899,
+  // Story links (2026-10-23, approved): in 02-F, Mrs Bell rings the great
+  // bell once the hands are set. Value before it: ep02 3508708899.
+  // Puzzle wording (2026-10-23, approved): 02-M2's note says "the opposite
+  // of the biggest", not the answer; "opposite" in its glossary. Value
+  // before it: ep02 1562541321.
+  'ep02': 1569936382,
   // Wave 1 (2026-10-14): 03-M1 tip 2 (the search of Gallery 8); Wave 1.1:
   // its report's first line (three things in the gallery, not on the floor);
   // Wave 1.2: a no-break space in its title ('GALLERY 8').
   'ep03': 2213693696,
   // Audit fix D3 (2026-10-12): the postmark keeps only its picture.
-  'ep04': 1263118138,
+  // Puzzle wording (2026-10-23, approved): 04-M2's card says RED · SMALL ·
+  // CLOCK · PLATFORM, not FOUR; tip 2 matches it (was 1263118138).
+  'ep04': 3723578742,
   // Audit fix D2 (2026-10-12): 05-M3 shows the warning on the wall.
   'ep05': 1062733482,
   // Post-discovery small pass: one transition line each (07 M3, 10 M2).
   // TYPE B Phase 3A (approved 2026-10-12): Case 07 feedback lines (06, 08: guarded above).
   // Audit follow-up (2026-10-12): Case 07 glossary 'right' also means 맞는.
-  'ep07': 1138937255,
-  'ep09': 660966236,
+  // Puzzle wording (2026-10-23, approved): 07-M3's two lines (not at the top;
+  // do not touch), its tips, every wrong order's line, and touch / together
+  // in its glossary (was 1138937255). Then (same day, approved) the joined
+  // map gives the arrow's direction only, and the final's tip 2 puts it with
+  // Grey's way (was 3660302554).
+  'ep07': 2754950822,
+  // Mission links (2026-10-23, approved): 09-M3's scene names Carl as the
+  // guard who lent Anna his key (was 660966236).
+  'ep09': 1140744217,
   'ep10': 1827099610,
   // Phase 4 (approved 2026-10-12): 11-M3 tip 1 (never sleeps), 12-M2 board + after, 12-F whose.
   // Audit fix N1 (2026-10-12): 11-M2 tip 1 reads from the last letter, M.
-  'ep11': 4002299555,
+  // Cross-case tip paths (2026-10-23, approved): 11-F tip 1 leads to Case
+  // 01 in the Case Archive (no answer; was 4002299555).
+  // Puzzle wording (2026-10-23, approved): 11-M2's mask no longer says how
+  // to read it; tip 1 does (was 3504206302).
+  'ep11': 102824680,
   // Time code fix (2026-10-21): 12-M2 reads as HH:MM ('codeFormat': 'time').
   // Case 12 M3 (2026-10-21): UNDER ___ ___, one blank per word of BIG BEN.
-  'ep12': 3715848451,
+  // Evidence recall (2026-10-23, requested): 12-F tip 1 says where the
+  // ravens were counted (no number; was 3715848451).
+  // Mission links (2026-10-23, approved): 12-M3's story counts the seven
+  // ravens its saved clue gives (was 3097016166).
+  'ep12': 1822783536,
 };

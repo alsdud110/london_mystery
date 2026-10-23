@@ -248,6 +248,11 @@ void main() {
         expect(card('plinth'), findsOneWidget);
         expect(find.text(spot('plinth').title), findsOneWidget);
         expect(find.byWidgetPredicate((w) => w is InkIcon && w.glyph == InkGlyph.key), findsOneWidget);
+        // ROOM 4 (the final lock's number) and the tag naming the next stop,
+        // read where the key is found (2026-10-23, approved).
+        expect(find.text(spot('plinth').line), findsOneWidget);
+        expect(spot('plinth').line, allOf(contains('ROOM 4'), contains("My next stop is where London's biggest bell rings.")));
+        expect(t.takeException(), isNull, reason: '$tag: the key card fits');
         neverTheWord(t, 'the key');
         await capture(t, 'case01_inspect_key_$tag');
         await tapText(t, 'Tap to keep looking', after: const Duration(milliseconds: 400));

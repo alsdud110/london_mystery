@@ -166,7 +166,7 @@ const Map<String, dynamic> episode12Json = {
       'location': 'THE TOWER OF LONDON',
       'scene': 'raven',
       'story': [
-        'All the ravens of the Tower are awake. Poppy flies to you.',
+        'All seven ravens of the Tower are awake. Poppy flies to you.',
         'She drops her very last paper: a riddle.',
       ],
       'letterIntro': 'The Ravenmaster reads it with you:',
@@ -235,7 +235,10 @@ const Map<String, dynamic> episode12Json = {
     // goes where, in a different order from tonight's (8, 4, 7).
     'answer': '487',
     'hints': [
-      'Each lock asks for a different number. Find the three sources in your notebook and match them to the locks.',
+      // The ravens were counted at the Tower: tonight's clue, and the Tower
+      // case before it (no number told).
+      'Each lock asks for a different number. Find the three sources in your notebook and match them to the locks. '
+          'For the ravens: your clue from the Tower tonight, or the Tower case in your Case Archive.',
       "'The platform whose clock is small and red' means the platform that has the small red clock.",
     ],
     'orderFeedback': 'You put the numbers in the order you found them tonight. Read the door: which lock comes first?',

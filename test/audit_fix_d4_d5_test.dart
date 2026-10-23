@@ -48,12 +48,13 @@ void main() {
       ('ep08', 'You cannot prove it, Detective {detectiveName}!"', 'prove'),
       ('ep08', 'Which evidence shows that she was in Gallery 8?', 'evidence'),
       ('ep08', 'Think back to an earlier case.', 'earlier'),
-      // 06-M3's question names the five details (2026-10-15 wording); its
-      // ticket's raven mark (2026-10-16); 09-F's umbrella line.
-      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'Compare'),
-      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'details'),
-      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'height,'),
-      ('ep06', 'Compare the five details: height, person, coat, hat, and bag. How many are different?', 'person,'),
+      // 06-M3 asks which night the market witnesses saw (2026-10-23; it
+      // counted the five details before); its ticket's raven mark
+      // (2026-10-16); 09-F's umbrella line.
+      ('ep06', 'The market witnesses saw one of these two people. Which one?', 'witnesses'),
+      ('ep06', 'Both wore dark coats, so the coat cannot tell them apart. Look at the hat and the bag.', 'apart.'),
+      ('ep06', 'Only one detail is the same on both nights. Use the details that are different.', 'detail'),
+      ('ep06', 'Only one detail is the same on both nights. Use the details that are different.', 'details'),
       ('ep06', 'On the back, a black raven is stamped: the mark of the Raven Society.', 'stamped'),
       ('ep06', 'On the back, a black raven is stamped: the mark of the Raven Society.', 'mark'),
       ('ep09', "Anna borrowed the key, but the note says WHOSE key you used. Was it Anna's own key?", 'borrowed'),
@@ -189,24 +190,54 @@ void main() {
         // QR code (2026-10-19, requested; was 592271942): see
         // case01_decode_test. Then its hidden message shortened (2026-10-19,
         // requested; was 1576316267).
-        'ep01': 972650650,
-        'ep02': 1023821448,
+        // Story links (2026-10-23, approved): the final's box is behind the
+        // secret door of M5 (was 972650650). Then (same day, approved) the
+        // golden key's tag names the next stop, the bell (was 759690419).
+        'ep01': 681127705,
+        // Story links (2026-10-23, approved): in 02-F, Mrs Bell rings the
+        // great bell once the hands are set (was 1023821448).
+        // Puzzle wording (2026-10-23, approved): 02-M2's note says "the
+        // opposite of the biggest", not the answer (was 4137245326).
+        'ep02': 3936198735,
         // Wave 1 (2026-10-14): 03-M1 is searched; its tip 2 reads the place
         // words. Wave 1.1: the report says 'I noticed three things in the
         // gallery' (not all on the floor). Wave 1.2: 'GALLERY 8' in its title
         // never breaks (a no-break space). See test/case03_investigation_test.dart.
         'ep03': 494843145,
-        'ep04': 3227171614,
+        // Puzzle wording (2026-10-23, approved): 04-M2's card says RED ·
+        // SMALL · CLOCK · PLATFORM, not FOUR; tip 2 matches it (was
+        // 3227171614).
+        'ep04': 4165157138,
         'ep05': 3809709994,
-        'ep06': 878804669,
-        'ep07': 923859634,
-        'ep08': 932948487,
-        'ep09': 3984906767,
+        // Mission links (2026-10-23, approved): 06-M3 asks which night the
+        // market witnesses saw (Monday), not how many details differ (was
+        // 878804669).
+        'ep06': 1208524818,
+        // Puzzle wording (2026-10-23, approved): 07-M3's two lines (not at
+        // the top; do not touch), its tips and every wrong order's line
+        // (was 923859634). Then (same day, approved) the joined map gives
+        // the arrow's direction only; 07-F tip 2 puts it with Grey's way
+        // (was 246931138).
+        'ep07': 779074998,
+        // Cross-case tip paths (2026-10-23, approved): 08-F tip 1 leads to
+        // Case 03 in the Case Archive (no answer; was 932948487).
+        'ep08': 1854545292,
+        // Mission links (2026-10-23, approved): 09-M3's scene names Carl as
+        // the guard who lent Anna his key (was 3984906767).
+        'ep09': 1856530826,
         'ep10': 1240895729,
-        'ep11': 2763911661,
+        // Cross-case tip paths (2026-10-23, approved): 11-F tip 1 leads to
+        // Case 01 in the Case Archive (no answer; was 2763911661).
+        // Puzzle wording (2026-10-23, approved): 11-M2's mask no longer says
+        // how to read it; tip 1 does (was 1220913972).
+        'ep11': 2940818726,
         // Time code fix (2026-10-21): 12-M2 reads as HH:MM ('codeFormat': 'time').
         // Case 12 M3 (2026-10-21): UNDER ___ ___, one blank per word of BIG BEN.
-        'ep12': 547534199,
+        // Evidence recall (2026-10-23, requested): 12-F tip 1 says where the
+        // ravens were counted (no number; was 547534199).
+        // Mission links (2026-10-23, approved): 12-M3's story counts the
+        // seven ravens its saved clue gives (was 437255976).
+        'ep12': 3678739778,
       });
     });
   });

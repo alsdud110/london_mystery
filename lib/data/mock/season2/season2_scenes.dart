@@ -5,10 +5,12 @@ import '../../models/investigation.dart' show InvestigationSpot;
 import '../../models/mission.dart';
 import '../../models/painter_puzzles.dart';
 import '../../models/picture_spot.dart';
+import '../../models/river_puzzles.dart' show DrawnEvidenceArt, RiverEvidenceArt;
 import '../../models/scene_exhibit.dart';
 import '../../models/scene_explore.dart' show ScenePixels;
 import '../../models/station_clocks.dart';
 import '../../models/story_picture.dart';
+import '../../models/workshop_puzzles.dart' show PictureEvidence;
 
 /// Season 2's missions played in their scenes (presentation only: the case
 /// data is left as it is). Each table is keyed by mission id, as Season 1's
@@ -491,6 +493,15 @@ final Map<String, LayerScene> season2Layers = {
       'steps': 'Stone steps, going up.',
       'gate': 'An iron gate between two stone pillars. The gate is black.',
     },
+  ),
+};
+
+/// Case 02's evidence shown by its picture: the Hidden Sketch as the easel
+/// showed it once the paint was slid away (the puzzle's own view), so the
+/// notebook keeps the very drawing the detective uncovered.
+final Map<String, RiverEvidenceArt> season2Case02EvidenceArt = {
+  's2_ep02_e3': DrawnEvidenceArt(
+    PictureEvidence(file: season2Layers['s2_ep02_m3']!.sketch, pixels: _easel, crop: season2Layers['s2_ep02_m3']!.view),
   ),
 };
 

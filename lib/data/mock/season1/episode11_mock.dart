@@ -90,8 +90,8 @@ const Map<String, dynamic> episode11Json = {
       ],
       'letterIntro': 'Inside the mask:',
       'letter':
-          'THGINDIM\n\n'
-          'Read me from right to left.',
+          // How to read it is the puzzle (tip 1 tells it).
+          'THGINDIM',
       'type': 'wordInput',
       'question': 'What is the word inside the mask?',
       'prompt': '________',
@@ -212,7 +212,7 @@ const Map<String, dynamic> episode11Json = {
     ],
     'answer': 'd',
     'hints': [
-      '"The very start" means your first case. What did you find in a suitcase there?',
+      "'The very start' means your first case. Open your Case Archive, then Case 01. What did you find in a suitcase there?",
       'Open Case 01 in your Case Archive. Look closer at the letter from the suitcase. Who signed it?',
     ],
     'evidence': {

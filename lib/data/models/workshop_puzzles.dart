@@ -435,14 +435,20 @@ abstract final class TrailState {
   }
 }
 
-/// Case 05's evidence drawn: a written paper, or a picture alone.
+/// Case 05's evidence drawn: a written paper, or a picture alone — the
+/// whole of it, or the part of it ([crop], fractions) the detective found it
+/// in (Case 02's sketch, as the easel showed it).
 @immutable
 class PictureEvidence implements DrawnEvidence {
-  const PictureEvidence({required this.file, required this.pixels});
+  const PictureEvidence({required this.file, required this.pixels, this.crop});
 
   final String file;
   final ScenePixels pixels;
+  final Rect? crop;
 
   @override
-  double get aspect => pixels.aspect;
+  double get aspect => switch (crop) {
+    final c? => c.width * pixels.width / (c.height * pixels.height),
+    null => pixels.aspect,
+  };
 }

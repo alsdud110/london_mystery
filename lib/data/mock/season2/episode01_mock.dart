@@ -133,9 +133,11 @@ const Map<String, dynamic> season2Episode01Json = {
       // (`season2Exhibits`): nothing here says what is printed on it.
       'letter':
           "CLERK'S NOTES\n\n"
+          // Written as she remembered it, not in order: the order words put
+          // them in order.
+          'AFTER THAT, the old clock showed nine.\n'
           'FIRST, the hall clock struck ten.\n'
-          'NEXT, a man with a pocket watch entered the waiting room.\n'
-          'AFTER THAT, the old clock showed nine.\n\n'
+          'NEXT, a man with a pocket watch entered the waiting room.\n\n'
           '— Lost Property, Gare du Nord',
       // The cards are shuffled; FIRST, NEXT and AFTER THAT put them in order.
       'type': 'sequence',

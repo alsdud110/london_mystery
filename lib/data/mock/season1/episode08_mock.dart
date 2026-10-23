@@ -233,7 +233,7 @@ const Map<String, dynamic> episode08Json = {
     ],
     'answer': 'c',
     'hints': [
-      'Think back to an earlier case. The thief left small things in Gallery 8. Which one could have come from Mrs Robin?',
+      'Think back to an earlier case. Gallery 8 was in Case 03. Open your notebook, then the Case Archive, then Case 03: what was left in Gallery 8?',
       'Open your notebook, then the Case Archive, then Case 03. Look closer at each thing: where was it found? Then think about what Mrs Robin is wearing.',
     ],
     'evidence': {
