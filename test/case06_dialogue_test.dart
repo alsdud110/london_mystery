@@ -222,7 +222,7 @@ void main() {
   final anotherPair = find.byKey(const ValueKey('choose-another-pair'));
   final mark = find.byKey(const ValueKey('talk-mark'));
   final next = find.byKey(const ValueKey('talk-next'));
-  Finder dotted() => find.bySemanticsLabel(RegExp('tap for meaning'));
+  Finder dotted() => find.bySemanticsLabel(RegExp('hold for meaning'));
   Finder marked(String words) => find.descendant(of: mark, matching: find.text(words), matchRoot: true);
   Finder line(String words) => find.descendant(of: next, matching: find.text(words), matchRoot: true);
   Finder verdict(String words) => find.descendant(of: feedback, matching: find.text(words));

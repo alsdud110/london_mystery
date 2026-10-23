@@ -235,7 +235,7 @@ void main() {
     await shot('mission_envelope');
     await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
     await shot('mission_letter');
-    await t.tapOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
+    await t.holdOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
     await wait(t, const Duration(milliseconds: 600));
     await shot('word_card');
     await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));

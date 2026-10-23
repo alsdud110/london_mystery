@@ -398,7 +398,7 @@ const Map<String, dynamic> episode01Json = {
     'mapX': 0.84,
     'mapY': 0.45,
   },
-  // Only these words get a dotted underline; tapping one shows its meaning.
+  // Only these words can be looked up; pressing and holding one shows its meaning.
   'glossary': {
     'mysterious': '수상한, 이상한',
     'suitcase': '여행 가방',

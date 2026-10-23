@@ -270,7 +270,7 @@ void main() {
           expect(_chosen(t, label), isTrue);
 
           // On the chosen card, the same word shows its meaning, and nothing else.
-          await t.tapOnText(find.textRange.ofSubstring('smallest'));
+          await t.holdOnText(find.textRange.ofSubstring('smallest'));
           await wait(t, const Duration(milliseconds: 600));
           expect(
             find.text('= ${byId('ep02').meaningOf('smallest')}'),
@@ -315,7 +315,7 @@ void main() {
         expect(findReadable(line), findsOneWidget);
         // "You have the right number of left and right turns…" — the first
         // "right" (맞는), the sense the line is about.
-        await t.tapOnText(find.textRange.ofSubstring('right').first);
+        await t.holdOnText(find.textRange.ofSubstring('right').first);
         await wait(t, const Duration(milliseconds: 600));
         expect(find.text('= ${byId('ep05').meaningOf('right')}'), findsOneWidget);
         await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
@@ -332,7 +332,7 @@ void main() {
           );
           await takeTipFromSheet(t);
           await reveal(t, findReadable(tip));
-          await t.tapOnText(find.textRange.ofSubstring('opposite'));
+          await t.holdOnText(find.textRange.ofSubstring('opposite'));
           await wait(t, const Duration(milliseconds: 600));
           expect(
             find.text('= ${byId('ep05').meaningOf('opposite')}'),
@@ -355,7 +355,7 @@ void main() {
           await _openFinal(t, size, season, 'ep08');
           final q = byId('ep08').finalMission.question;
           await reveal(t, findReadable(q));
-          await t.tapOnText(find.textRange.ofSubstring('evidence'));
+          await t.holdOnText(find.textRange.ofSubstring('evidence'));
           await wait(t, const Duration(milliseconds: 600));
           expect(find.text('= 증거'), findsOneWidget);
           await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
@@ -365,7 +365,7 @@ void main() {
       );
     }
 
-    testWidgets('text 1.3×: a chosen card with its dotted words still fits', (
+    testWidgets('text 1.3×: a chosen card with its words to look up still fits', (
       t,
     ) async {
       final play = MissionPlay();
@@ -407,7 +407,7 @@ void main() {
       },
     );
 
-    testWidgets('the story text keeps its dotted words (unchanged)', (t) async {
+    testWidgets('the story text keeps its words to look up (unchanged)', (t) async {
       // Case 01's first letter, read again where it was found (the suitcase).
       final play = MissionPlay();
       await play.openPuzzle(t, const Size(390, 844), 'm01');
@@ -417,7 +417,7 @@ void main() {
         'Letter',
         after: const Duration(milliseconds: 600),
       );
-      await t.tapOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
+      await t.holdOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('= 박물관'), findsOneWidget);
     });

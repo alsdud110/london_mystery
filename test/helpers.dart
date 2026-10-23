@@ -1,6 +1,7 @@
 import 'dart:convert' show LineSplitter;
 import 'dart:io' show File, FileSystemEntity, FileSystemEntityType;
 
+import 'package:flutter/gestures.dart' show HitTestResult;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:london_mystery/widgets/game_button.dart';
@@ -16,6 +17,34 @@ import 'package:london_mystery/features/game/game_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final episode01 = Episode.fromJson(episode01Json);
+
+/// Looking up a word as a player does: press and hold it.
+extension HoldOnText on WidgetTester {
+  /// Presses and holds the single text range [range] (as
+  /// [WidgetTester.tapOnText] taps it), long enough to be a long press: on
+  /// a point of it whose hit lands on its text (a line's box can be taller
+  /// than its letters).
+  Future<void> holdOnText(FinderBase<TextRangeContext> range) {
+    final found = range.evaluate().toList();
+    if (found.length != 1) throw FlutterError('$range: needs a single text range, found ${found.length}');
+    final r = found.single;
+    final boxes = r.renderObject.getBoxesForSelection(
+      TextSelection(baseOffset: r.textRange.start, extentOffset: r.textRange.end),
+    );
+    for (final box in boxes) {
+      final rect = box.toRect();
+      for (final fy in const [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8]) {
+        for (final fx in const [0.5, 0.35, 0.65]) {
+          final at = r.renderObject.localToGlobal(Offset(rect.left + rect.width * fx, rect.top + rect.height * fy));
+          final hit = HitTestResult();
+          binding.hitTestInView(hit, at, r.view.view.viewId);
+          if (hit.path.isNotEmpty && hit.path.first.target is InlineSpan) return longPressAt(at);
+        }
+      }
+    }
+    throw FlutterError('$range: no point of it can be pressed');
+  }
+}
 
 /// Paris as it was before its release (2026-10-21): the screens and rules
 /// of a season not yet out for players are tested on it. The game itself

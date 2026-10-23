@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +49,7 @@ void main() {
     'Read the Letter',
     'Talk to People',
     'Solve the Mystery',
-    'Discover New Words',
+    "A Word You Don't Know?",
     'Hints When You Need Them',
     'Your Detective Notebook',
     'Your First Case Awaits!',
@@ -252,11 +253,11 @@ void main() {
     expect(find.text('Well done!'), findsOneWidget);
     await next(t);
 
-    // 9. A dotted word: its word card.
-    await t.tapOnText(find.textRange.ofSubstring('chimney'));
+    // 9. A word held: its word card (practice: not recorded, see 12).
+    await t.holdOnText(find.textRange.ofSubstring('mysterious'));
     await wait(t, const Duration(milliseconds: 600));
     expect(find.text('WORD CARD'), findsOneWidget);
-    expect(find.text('= 굴뚝'), findsOneWidget);
+    expect(find.text('= 수상한, 이상한'), findsOneWidget);
     await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
     await next(t);
 
@@ -509,9 +510,9 @@ void main() {
       await t.pump();
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 400));
       expect(find.text('Well done!'), findsOneWidget);
-      // A dotted word.
+      // A word, held.
       await swipe(t, left: true);
-      await t.tapOnText(find.textRange.ofSubstring('chimney'));
+      await t.holdOnText(find.textRange.ofSubstring('mysterious'));
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('WORD CARD'), findsOneWidget);
       await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
@@ -540,6 +541,142 @@ void main() {
       expect(find.text(titles[0]), findsNothing, reason: 'the page before already gone');
       expect(t.getRect(find.text(titles[1])).center.dx, closeTo(195, 1), reason: 'square on the screen');
       await wait(t, const Duration(seconds: 3));
+    });
+  });
+
+  // The word page: a hand shows how to press and hold a word, and the
+  // player can do it there, on the game's own word card.
+  group('the word page', () {
+    Future<void> openWords(WidgetTester t, Size size) async {
+      await pump(t, size: size);
+      await register(t);
+      for (var i = 0; i < 4; i++) {
+        await next(t);
+      }
+      expect(find.text(titles[4]), findsOneWidget);
+    }
+
+    final word = find.textRange.ofSubstring('mysterious');
+    final hand = find.image(const AssetImage(ArtAssets.onboardingHand));
+
+    Rect wordRect(WidgetTester t) {
+      final r = word.evaluate().single;
+      final box = r.renderObject
+          .getBoxesForSelection(TextSelection(baseOffset: r.textRange.start, extentOffset: r.textRange.end))
+          .first
+          .toRect();
+      return box.shift(r.renderObject.localToGlobal(Offset.zero));
+    }
+
+    TextSpan wordSpan(WidgetTester t) {
+      late TextSpan found;
+      final text = t.widget<RichText>(find.byWidgetPredicate((w) => w is RichText && w.text.toPlainText(includeSemanticsLabels: false) == 'A mysterious letter arrived.'));
+      text.text.visitChildren((s) {
+        if (s is TextSpan && s.text == 'mysterious') found = s;
+        return true;
+      });
+      return found;
+    }
+
+    bool lit(WidgetTester t) => wordSpan(t).style?.backgroundColor != null;
+
+    /// The hand's fingertip, on screen.
+    Offset tip(WidgetTester t) {
+      final r = t.getRect(hand);
+      return Offset(r.left + ArtAssets.onboardingHandTip.dx * r.width, r.top + ArtAssets.onboardingHandTip.dy * r.height);
+    }
+
+    for (final size in const [Size(360, 640), Size(390, 844)]) {
+      final tag = '${size.width.toInt()}x${size.height.toInt()}';
+
+      testWidgets('$tag: the words read plain; the hand comes, holds the word (lit), goes back, again', (t) async {
+        await openWords(t, size);
+        expect(find.text("A Word You Don't Know?"), findsOneWidget);
+        expect(find.text('Press and hold a word to discover its meaning.'), findsOneWidget);
+        expect(find.text('PRESS & HOLD'), findsOneWidget);
+        expect(wordSpan(t).style?.decoration, isNull, reason: 'no dotted underline');
+        expect(hand, findsOneWidget);
+        final w = wordRect(t);
+        // One showing and a little more, every 50ms.
+        final tips = <Offset>[];
+        var litSeen = false, pressedWhenLit = true;
+        for (var i = 0; i < 70; i++) {
+          await t.pump(const Duration(milliseconds: 50));
+          final p = tip(t);
+          tips.add(p);
+          if (i == 4) await capture(t, 'how_to_play_words_rest_$tag');
+          if (lit(t)) {
+            if (!litSeen) await capture(t, 'how_to_play_words_press_$tag');
+            litSeen = true;
+            pressedWhenLit &= (p.dx - w.center.dx).abs() < 2 && (p.dy - w.bottom).abs() < 4;
+          }
+        }
+        expect(litSeen, isTrue, reason: 'the word lights while held');
+        expect(pressedWhenLit, isTrue, reason: 'lit only with the fingertip on the word');
+        for (final p in tips) {
+          expect(p.dy, greaterThanOrEqualTo(w.bottom - 1), reason: 'the hand stays under the word, never over it');
+        }
+        final moved = tips.map((p) => (p - tips.first).distance).reduce(math.max);
+        expect(moved, greaterThan(20), reason: 'it moves between rest and the word');
+        expect(t.takeException(), isNull);
+        await capture(t, 'how_to_play_words_guide_$tag');
+        await wait(t, const Duration(seconds: 1));
+      });
+
+      testWidgets('$tag: a tap opens nothing and ends the showing; a hold opens the word card, lit until closed', (t) async {
+        await openWords(t, size);
+        await t.tapOnText(word);
+        await wait(t, const Duration(milliseconds: 600));
+        expect(find.text('WORD CARD'), findsNothing, reason: 'a tap is not a look-up');
+        expect(hand, findsNothing, reason: 'the player\'s own touch ends the showing');
+        expect(find.text(titles[4]), findsOneWidget);
+
+        await t.holdOnText(word);
+        await wait(t, const Duration(milliseconds: 600));
+        expect(find.text('WORD CARD'), findsOneWidget);
+        expect(find.text('= 수상한, 이상한'), findsOneWidget);
+        expect(lit(t), isTrue, reason: 'the word held, lit');
+        await capture(t, 'how_to_play_words_card_$tag');
+        await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 600));
+        expect(find.text('WORD CARD'), findsNothing);
+        expect(lit(t), isFalse, reason: 'as it was');
+        expect(find.text(titles[4]), findsOneWidget, reason: 'back on the page');
+        expect(find.text('mysterious = 수상한, 이상한'), findsOneWidget, reason: 'its note pinned to the page');
+        expect(hand, findsNothing);
+        expect(app(t).read(gameControllerProvider).lookedUpWords, isEmpty, reason: 'practice');
+        // NEXT goes on as ever.
+        await next(t);
+        expect(find.text(titles[5]), findsOneWidget);
+        await wait(t, const Duration(seconds: 1));
+      });
+    }
+
+    testWidgets('NEXT without trying: on to the next page', (t) async {
+      await openWords(t, const Size(390, 844));
+      await next(t);
+      expect(find.text(titles[5]), findsOneWidget);
+      await wait(t, const Duration(seconds: 1));
+    });
+
+    testWidgets('reduced motion: the hand rests by the word, still; the word unlit', (t) async {
+      t.platformDispatcher.accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(t.platformDispatcher.clearAccessibilityFeaturesTestValue);
+      await openWords(t, const Size(360, 640));
+      await t.pump();
+      final first = t.getRect(hand);
+      final w = wordRect(t);
+      expect((tip(t).dx - w.center.dx).abs(), lessThan(2));
+      expect(tip(t).dy, greaterThanOrEqualTo(w.bottom - 1));
+      for (var i = 0; i < 20; i++) {
+        await t.pump(const Duration(milliseconds: 100));
+        expect(t.getRect(hand), first, reason: 'no motion');
+        expect(lit(t), isFalse);
+      }
+      await t.holdOnText(word);
+      await t.pump();
+      await t.pump();
+      expect(find.text('WORD CARD'), findsOneWidget, reason: 'still works by hand');
+      await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 600));
     });
   });
 
@@ -575,6 +712,7 @@ void main() {
       for (final a in [...DetectiveAvatar.values, null]) ...[ArtAssets.onboardingWelcome(a), ArtAssets.onboardingReady(a)],
       ArtAssets.onboardingWitness,
       ArtAssets.onboardingCat,
+      ArtAssets.onboardingHand,
     ];
     for (final f in own) {
       expect(f, startsWith('assets/shared/onboarding/'));

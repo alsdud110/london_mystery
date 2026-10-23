@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme/app_colors.dart';
@@ -12,13 +13,16 @@ import '../features/game/game_providers.dart';
 import 'game_button.dart';
 import 'paper.dart';
 
-/// English text where harder words (from the episode glossary) get a dotted
-/// underline. Tapping one shows its meaning — the translation is never shown
-/// up front, so children still read the English first.
+/// English text where harder words (from the episode glossary) can be looked
+/// up: they read like every other word (nothing marks them), and pressing
+/// and holding one lights that word alone and opens its word card; closing
+/// the card puts the word back as it was. A tap is never a look-up, so it
+/// stays the screen's own (the next line, choosing a card). The translation
+/// is never shown up front, so children still read the English first.
 ///
 /// A line that speaks to the player ([DetectiveName.placeholder], e.g.
 /// "Dear Detective {detectiveName},") is written with the detective's name
-/// as saved now; the name is plain text, never a dotted word.
+/// as saved now; the name is plain text, never a word to look up.
 class GlossaryText extends ConsumerStatefulWidget {
   const GlossaryText(
     this.text, {
@@ -26,13 +30,16 @@ class GlossaryText extends ConsumerStatefulWidget {
     required this.style,
     this.textAlign = TextAlign.start,
     this.episode,
-    this.linkColor = AppColors.royalBlue,
+    this.linkColor = AppColors.gold,
     this.interactive = true,
     this.wordSemantics = true,
+    this.practice,
+    this.shownWord,
+    this.onHold,
   }) : spans = null;
 
   /// Text made of [spans]: each plain [TextSpan] (a text, no children) gets
-  /// its harder words dotted, in its own style; any other span (a box
+  /// its harder words to look up, in its own style; any other span (a box
   /// number to circle, a picture) is kept as it is, with its own taps.
   const GlossaryText.spans(
     List<InlineSpan> this.spans, {
@@ -40,9 +47,12 @@ class GlossaryText extends ConsumerStatefulWidget {
     required this.style,
     this.textAlign = TextAlign.start,
     this.episode,
-    this.linkColor = AppColors.royalBlue,
+    this.linkColor = AppColors.gold,
     this.interactive = true,
     this.wordSemantics = true,
+    this.practice,
+    this.shownWord,
+    this.onHold,
   }) : text = '';
 
   final String text;
@@ -52,13 +62,24 @@ class GlossaryText extends ConsumerStatefulWidget {
   final TextStyle style;
   final TextAlign textAlign;
 
-  /// The dotted underline's ink: royal blue on paper; a light ink on a dark
-  /// surface (a chosen answer card, the final case's desk).
+  /// The ink of a held word's wash: antique gold on paper; a light ink on a
+  /// dark surface (a chosen answer card, the final case's desk).
   final Color linkColor;
 
-  /// False: plain text, no dotted words (e.g. an answer card not yet chosen,
-  /// where a tap must always choose the card).
+  /// False: plain text, no words to look up (e.g. an answer card not yet
+  /// chosen, where a touch must always choose the card).
   final bool interactive;
+
+  /// Practice words in place of the case's glossary (How to Play): held the
+  /// same way, on the same word card, but never recorded for the report.
+  final Map<String, String>? practice;
+
+  /// A word lit as if held, with no finger on it (How to Play showing how).
+  final String? shownWord;
+
+  /// A word was held, just before its card opens (How to Play stops
+  /// showing how).
+  final VoidCallback? onHold;
 
   /// False inside a control that speaks for itself (an answer card gives its
   /// words to screen readers as actions, see [glossaryWordsOf]).
@@ -76,26 +97,54 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
   // A word keeps its inner apostrophe (King's, o'clock); quotes around it
   // ('Smells of …') are not part of it.
   static final _tokens = RegExp(r"[A-Za-z]+(?:'[A-Za-z]+)*|[^A-Za-z]+");
-  final List<TapGestureRecognizer> _recognizers = [];
+
+  /// One per word to look up, in reading order. Kept from build to build, so
+  /// a rebuild while a finger is down (a line typing on, a fade) does not
+  /// drop the hold.
+  final List<LongPressGestureRecognizer> _holds = [];
+
+  /// Words to look up laid out so far in this build.
+  int _count = 0;
+
+  /// The word held now (its place in [_holds]): lit until its card closes.
+  int? _held;
 
   @override
   void dispose() {
-    _disposeRecognizers();
+    for (final r in _holds) {
+      r.dispose();
+    }
     super.dispose();
   }
 
-  void _disposeRecognizers() {
-    for (final r in _recognizers) {
-      r.dispose();
+  Future<void> _hold(int index, String word, String meaning) async {
+    if (_held != null || wordCardOpen) return;
+    HapticFeedback.selectionClick();
+    widget.onHold?.call();
+    setState(() => _held = index);
+    try {
+      if (widget.practice != null) {
+        await showWordMeaning(context, word, meaning);
+      } else {
+        await lookUpAndShowWord(context, ref, word, meaning);
+      }
+    } finally {
+      if (mounted) setState(() => _held = null);
     }
-    _recognizers.clear();
   }
-
-  void _show(String word, String meaning) => lookUpAndShowWord(context, ref, word, meaning);
 
   @override
   Widget build(BuildContext context) {
-    _disposeRecognizers();
+    _count = 0;
+    final text = _build(context);
+    // Words gone from the text since the last build.
+    while (_holds.length > _count) {
+      _holds.removeLast().dispose();
+    }
+    return text;
+  }
+
+  Widget _build(BuildContext context) {
     final Episode episode = widget.episode ?? ref.watch(currentEpisodeProvider);
     final name = ref.watch(gameControllerProvider.select((s) => s.detectiveName));
     final spans = <InlineSpan>[];
@@ -147,23 +196,25 @@ class _GlossaryTextState extends ConsumerState<GlossaryText> {
   void _addWords(String text, Episode episode, List<InlineSpan> spans) {
     for (final match in _tokens.allMatches(text)) {
       final token = match.group(0)!;
-      final meaning = widget.interactive ? episode.meaningOf(token) : null;
+      final meaning = !widget.interactive
+          ? null
+          : widget.practice != null
+          ? widget.practice![token.toLowerCase()]
+          : episode.meaningOf(token);
       if (meaning == null) {
         spans.add(TextSpan(text: token));
         continue;
       }
-      final recognizer = TapGestureRecognizer()..onTap = () => _show(token, meaning);
-      _recognizers.add(recognizer);
+      final index = _count++;
+      if (index == _holds.length) _holds.add(LongPressGestureRecognizer());
+      final hold = _holds[index]..onLongPress = () => _hold(index, token, meaning);
+      final lit = index == _held || token.toLowerCase() == widget.shownWord?.toLowerCase();
       spans.add(TextSpan(
         text: token,
-        recognizer: recognizer,
-        semanticsLabel: widget.wordSemantics ? '$token (tap for meaning)' : null,
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-          decorationStyle: TextDecorationStyle.dotted,
-          decorationColor: widget.linkColor,
-          decorationThickness: 2.2,
-        ),
+        recognizer: hold,
+        semanticsLabel: widget.wordSemantics ? '$token (hold for meaning)' : null,
+        // Read like any other word; held, a soft wash of ink behind it.
+        style: lit ? TextStyle(backgroundColor: widget.linkColor.withValues(alpha: 0.28)) : null,
       ));
     }
   }
@@ -182,14 +233,35 @@ List<({String word, String meaning})> glossaryWordsOf(Episode episode, String te
   ];
 }
 
-/// Records [word] for the parent report and shows its word card.
-Future<void> lookUpAndShowWord(BuildContext context, WidgetRef ref, String word, String meaning) {
+/// Records [word] for the parent report and shows its word card (neither,
+/// while a word card is already open).
+Future<void> lookUpAndShowWord(BuildContext context, WidgetRef ref, String word, String meaning) async {
+  if (wordCardOpen) return;
   ref.read(gameControllerProvider.notifier).lookUpWord(word.replaceAll(RegExp(r"'s$"), ''));
   return showWordMeaning(context, word, meaning);
 }
 
-/// A small, friendly word card: "Queen = 여왕".
-Future<void> showWordMeaning(BuildContext context, String word, String meaning) {
+/// A word card is open (or opening): a second one waits for it to close.
+/// (A card whose screen has gone, closed or not, no longer counts.)
+bool get wordCardOpen => _cardOver?.mounted ?? false;
+
+/// The navigator the open word card is shown on.
+NavigatorState? _cardOver;
+
+/// A small, friendly word card: "Queen = 여왕". One at a time: asked again
+/// while one is open, it does nothing.
+Future<void> showWordMeaning(BuildContext context, String word, String meaning) async {
+  if (wordCardOpen) return;
+  final over = Navigator.of(context);
+  _cardOver = over;
+  try {
+    await _showWordCard(context, word, meaning);
+  } finally {
+    if (identical(_cardOver, over)) _cardOver = null;
+  }
+}
+
+Future<void> _showWordCard(BuildContext context, String word, String meaning) {
   return showModalBottomSheet<void>(
     context: context,
     // A small reference card from the casebook (this sheet only; the others

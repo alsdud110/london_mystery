@@ -99,7 +99,7 @@ void main() {
       expectPaperShell(t);
       await capture(t, 'letter_sheet_$tag');
       // A word in the letter still opens its card, over the letter.
-      await t.tapOnText(find.textRange.ofSubstring('castle', descendentOf: find.byType(LetterCard)).first);
+      await t.holdOnText(find.textRange.ofSubstring('castle', descendentOf: find.byType(LetterCard)).first);
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('WORD CARD'), findsOneWidget);
       await t.tap(find.text('GOT IT!'));
@@ -140,7 +140,7 @@ void main() {
       await capture(t, 'final_letter_$tag');
       // A word in the letter still opens its card, over the letter.
       final sheetLetter = find.descendant(of: find.byType(BottomSheet), matching: find.byType(LetterCard));
-      await t.tapOnText(find.textRange.ofSubstring('locks').last);
+      await t.holdOnText(find.textRange.ofSubstring('locks').last);
       await wait(t, const Duration(milliseconds: 600));
       expect(find.text('WORD CARD'), findsOneWidget);
       await t.tap(find.text('GOT IT!'));

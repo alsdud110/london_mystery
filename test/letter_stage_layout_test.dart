@@ -131,7 +131,7 @@ void main() {
     of: find.text('SOLVE THE PUZZLE'),
     matching: find.byType(GameButton),
   );
-  Finder note() => find.text('Tap a dotted word to see what it means.');
+  Finder note() => find.text('Press and hold a word to see what it means.');
 
   /// The group's gaps: intro → letter, letter → note, note → button.
   List<double> gaps(WidgetTester t) => [
@@ -206,7 +206,7 @@ void main() {
                 .first;
             await t.ensureVisible(find.byType(LetterCard));
             await t.pumpAndSettle();
-            await t.tapOnText(word);
+            await t.holdOnText(word);
             await wait(t, const Duration(milliseconds: 600));
             expect(find.text('WORD CARD'), findsOneWidget);
             await t.tap(find.text('GOT IT!'));

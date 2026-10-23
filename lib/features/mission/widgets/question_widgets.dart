@@ -238,8 +238,8 @@ class _ChoiceTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Choosing always comes first: a card's words are dotted (tap: meaning,
-    // the card stays chosen) only once it is chosen, so a tap on a card not
+    // Choosing always comes first: a card's words can be looked up (held:
+    // meaning, the card stays chosen) only once it is chosen, so a touch on a card not
     // yet chosen always chooses it. Screen readers hear the card as one
     // answer, so its words come as actions instead.
     final words = glossaryWordsOf(ref.watch(currentEpisodeProvider), label);

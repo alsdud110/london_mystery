@@ -52,7 +52,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 1200));
 
       Future<void> tapWord(String word) async {
-        await t.tapOnText(find.textRange.ofSubstring(word).first);
+        await t.holdOnText(find.textRange.ofSubstring(word).first);
         await wait(t, const Duration(milliseconds: 600));
         expect(find.text('WORD CARD'), findsOneWidget, reason: word);
       }

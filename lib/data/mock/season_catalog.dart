@@ -272,7 +272,13 @@ final season2Content = SeasonContent(
   flyRails: season2FlyRailScenes,
   lightTables: season2LightTableScenes,
   introPlaques: season2IntroPlaques,
-  evidenceArt: {...season2Case02EvidenceArt, ...season2Case04EvidenceArt, ...season2Case05EvidenceArt, ...season2Case06EvidenceArt, ...season2Case07EvidenceArt},
+  evidenceArt: {
+    ...season2Case02EvidenceArt,
+    ...season2Case04EvidenceArt,
+    ...season2Case05EvidenceArt,
+    ...season2Case06EvidenceArt,
+    ...season2Case07EvidenceArt,
+  },
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
   evidenceLinks: {
@@ -323,8 +329,9 @@ abstract final class SeasonCatalog {
   static SeasonContent? ofEpisode(String episodeId) {
     for (final s in all) {
       if (s.episodes.containsKey(episodeId) ||
-          s.awaitingArt.containsKey(episodeId))
+          s.awaitingArt.containsKey(episodeId)) {
         return s;
+      }
     }
     return null;
   }
@@ -392,23 +399,30 @@ abstract final class SeasonCatalog {
 
   static DialLockScene? dialLock(Mission m) => ofMission(m.id)?.dialLocks[m.id];
 
-  static EvidenceBoardScene? evidenceBoard(Mission m) => ofMission(m.id)?.evidenceBoards[m.id];
+  static EvidenceBoardScene? evidenceBoard(Mission m) =>
+      ofMission(m.id)?.evidenceBoards[m.id];
 
-  static RiverMarksScene? riverMarks(Mission m) => ofMission(m.id)?.riverMarks[m.id];
+  static RiverMarksScene? riverMarks(Mission m) =>
+      ofMission(m.id)?.riverMarks[m.id];
 
-  static KeeperHutScene? keeperHut(Mission m) => ofMission(m.id)?.keeperHuts[m.id];
+  static KeeperHutScene? keeperHut(Mission m) =>
+      ofMission(m.id)?.keeperHuts[m.id];
 
   static BoxesScene? quayBoxes(Mission m) => ofMission(m.id)?.quayBoxes[m.id];
 
-  static StreetBookScene? streetBook(Mission m) => ofMission(m.id)?.streetBooks[m.id];
+  static StreetBookScene? streetBook(Mission m) =>
+      ofMission(m.id)?.streetBooks[m.id];
 
-  static MarkCompareScene? markCompare(Mission m) => ofMission(m.id)?.markCompares[m.id];
+  static MarkCompareScene? markCompare(Mission m) =>
+      ofMission(m.id)?.markCompares[m.id];
 
-  static ClockWallScene? clockWall(Mission m) => ofMission(m.id)?.clockWalls[m.id];
+  static ClockWallScene? clockWall(Mission m) =>
+      ofMission(m.id)?.clockWalls[m.id];
 
   static BlotterScene? blotter(Mission m) => ofMission(m.id)?.blotters[m.id];
 
-  static PostTrailScene? postTrail(Mission m) => ofMission(m.id)?.postTrails[m.id];
+  static PostTrailScene? postTrail(Mission m) =>
+      ofMission(m.id)?.postTrails[m.id];
 
   static HoldRackScene? holdRack(Mission m) => ofMission(m.id)?.holdRacks[m.id];
 
@@ -416,18 +430,23 @@ abstract final class SeasonCatalog {
 
   static ArchiveScene? archive(Mission m) => ofMission(m.id)?.archives[m.id];
 
-  static LetterMapScene? letterMap(Mission m) => ofMission(m.id)?.letterMaps[m.id];
+  static LetterMapScene? letterMap(Mission m) =>
+      ofMission(m.id)?.letterMaps[m.id];
 
-  static ShowStripScene? showStrip(Mission m) => ofMission(m.id)?.showStrips[m.id];
+  static ShowStripScene? showStrip(Mission m) =>
+      ofMission(m.id)?.showStrips[m.id];
 
-  static LightBoardScene? lightBoard(Mission m) => ofMission(m.id)?.lightBoards[m.id];
+  static LightBoardScene? lightBoard(Mission m) =>
+      ofMission(m.id)?.lightBoards[m.id];
 
   static FlyRailScene? flyRail(Mission m) => ofMission(m.id)?.flyRails[m.id];
 
-  static LightTableScene? lightTable(Mission m) => ofMission(m.id)?.lightTables[m.id];
+  static LightTableScene? lightTable(Mission m) =>
+      ofMission(m.id)?.lightTables[m.id];
 
   /// The picture under case [episodeId]'s opening lines, if any.
-  static IntroPlaque? introPlaque(String episodeId) => ofEpisode(episodeId)?.introPlaques[episodeId];
+  static IntroPlaque? introPlaque(String episodeId) =>
+      ofEpisode(episodeId)?.introPlaques[episodeId];
 
   /// Evidence [evidenceId] drawn with its words, if it is drawn so.
   static RiverEvidenceArt? evidenceArt(String evidenceId) {
@@ -448,7 +467,8 @@ abstract final class SeasonCatalog {
   /// ids are never shared between seasons), or null.
   /// Whether the story after [m] greets the detective (a mission no
   /// season has: as Season 1 does).
-  static bool storyGreeting(Mission m) => ofMission(m.id)?.storyGreeting ?? true;
+  static bool storyGreeting(Mission m) =>
+      ofMission(m.id)?.storyGreeting ?? true;
 
   static EvidenceLink? evidenceLink(String evidenceId) {
     for (final s in all) {

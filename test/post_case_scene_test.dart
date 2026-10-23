@@ -325,7 +325,7 @@ void main() {
   });
 }
 
-/// A story line as read on screen: a glossary word's "(tap for meaning)"
+/// A story line as read on screen: a glossary word's "(hold for meaning)"
 /// label is for screen readers, not part of the line.
 /// Only the story itself (the evidence card may say the same words).
 Finder storyLine(String line) => find.descendant(

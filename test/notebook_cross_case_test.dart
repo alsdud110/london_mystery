@@ -67,7 +67,7 @@ void main() {
         await wait(t, const Duration(milliseconds: 800));
         expect(findReadable('A raven is pressed into the wax.'), findsOneWidget, reason: 'the close-up, as before');
         await capture(t, 'phase4_seal_words_$tag');
-        await t.tapOnText(find.textRange.ofSubstring('wax').first);
+        await t.holdOnText(find.textRange.ofSubstring('wax').first);
         await wait(t, const Duration(milliseconds: 600));
         expect(find.text('WORD CARD'), findsOneWidget);
         expect(find.text('= 밀랍'), findsOneWidget, reason: "Case 04's glossary");
@@ -85,7 +85,7 @@ void main() {
         // THIS CASE → CLUES: "The platforms never sleep. They are open day and night."
         final note = find.textRange.ofSubstring('never');
         expect(note, findsWidgets);
-        await t.tapOnText(note.first);
+        await t.holdOnText(note.first);
         await wait(t, const Duration(milliseconds: 600));
         expect(find.text('WORD CARD'), findsOneWidget);
         expect(t.takeException(), isNull);

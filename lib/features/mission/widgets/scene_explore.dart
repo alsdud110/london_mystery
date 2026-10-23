@@ -718,7 +718,7 @@ class _DocumentCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpace.md),
               if (opened) ...[
-                Text('Tap a dotted word to see what it means.', textAlign: TextAlign.center, style: AppText.caption()),
+                Text('Press and hold a word to see what it means.', textAlign: TextAlign.center, style: AppText.caption()),
                 const SizedBox(height: AppSpace.md),
               ],
               GameButton(

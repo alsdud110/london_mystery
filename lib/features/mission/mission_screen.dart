@@ -1664,7 +1664,7 @@ class _LetterStage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The intro, the letter, the dotted-word note and the button are one
+    // The intro, the letter, the word note and the button are one
     // group: centred under the bar when the letter is short, read from the
     // top and scrolled when it is long.
     return CenteredScroll(
@@ -1707,7 +1707,7 @@ class _LetterStage extends StatelessWidget {
                     children: [
                       const SizedBox(height: AppSpace.lg),
                       Text(
-                        'Tap a dotted word to see what it means.',
+                        'Press and hold a word to see what it means.',
                         style: AppText.caption(),
                         textAlign: TextAlign.center,
                       ),

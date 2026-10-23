@@ -234,6 +234,12 @@ abstract final class ArtAssets {
   /// transparency.
   static const onboardingCat = 'assets/shared/onboarding/lost_cat.png';
 
+  /// A pointing hand with a gold touch ring (the guide's word page shows
+  /// how to press and hold a word): square, on transparency. Its fingertip
+  /// is at [onboardingHandTip], as fractions of the picture.
+  static const onboardingHand = 'assets/shared/onboarding/long_press_hand.png';
+  static const onboardingHandTip = Offset(0.42, 0.15);
+
   /// Scene pictures (mission, final, image choices, the arrival at a place,
   /// Case Solved photo), full colour: the nine London landmarks in
   /// `locations/landmarks/`, and the places inside a landmark in a folder named

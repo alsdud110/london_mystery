@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,7 +11,7 @@ import 'package:london_mystery/features/mission/widgets/river_papers.dart';
 import 'helpers.dart';
 
 /// Paris Cases 03–05: the papers read inside the puzzles (the ledger, the
-/// slips) have their harder words dotted, and a tap on a word opens its
+/// slips) have their harder words to look up, and holding a word opens its
 /// word card without doing the puzzle's own tap (circling a box, picking a
 /// slip).
 void main() {
@@ -42,7 +43,7 @@ void main() {
     await t.pumpAndSettle();
     expect(circled, ['box17'], reason: 'the box number keeps its own tap');
 
-    expect(tapOnWord(t, crate, 'crate'), isTrue);
+    expect(holdOnWord(t, crate, 'crate'), isTrue);
     await t.pumpAndSettle();
     expect(find.text('WORD CARD'), findsOneWidget);
     expect(find.text('= ${case04.meaningOf('crate')}'), findsOneWidget);
@@ -54,7 +55,7 @@ void main() {
     await pump(t, LedgerPageView(scene: hut, page: 0), caseId: case04.id);
     final rich = findReadableContaining('A heavy crate');
     expect(rich, findsOneWidget);
-    expect(tapOnWord(t, rich, 'crate'), isFalse);
+    expect(holdOnWord(t, rich, 'crate'), isFalse);
   });
 
   testWidgets('the slips: the slip picked is read with its words; on the trail, its letter number', (t) async {
@@ -80,21 +81,21 @@ void main() {
     final words = find.byKey(const ValueKey('slip-detail-words'));
     expect(words, findsOneWidget);
     final detail = find.descendant(of: words, matching: find.byType(Text));
-    expect(tapOnWord(t, detail, 'HELD'), isTrue);
+    expect(holdOnWord(t, detail, 'HELD'), isTrue);
     await t.pumpAndSettle();
     expect(find.text('WORD CARD'), findsOneWidget);
     expect(picks, isEmpty, reason: 'a word is not a slip');
   });
 }
 
-/// Taps [word] inside the rich text [finder] if it is a dotted word (has a
-/// tap of its own); false when it is plain.
-bool tapOnWord(WidgetTester t, Finder finder, String word) {
+/// Holds [word] inside the rich text [finder] if it is a word to look up (has a
+/// press and hold of its own); false when it is plain.
+bool holdOnWord(WidgetTester t, Finder finder, String word) {
   final text = t.widget<Text>(finder);
   var found = false;
   text.textSpan!.visitChildren((span) {
     if (span is TextSpan && span.text == word && span.recognizer != null) {
-      (span.recognizer! as dynamic).onTap!();
+      (span.recognizer! as LongPressGestureRecognizer).onLongPress!();
       found = true;
       return false;
     }

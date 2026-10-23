@@ -317,7 +317,7 @@ void main() {
       expect(find.text('TAP TO OPEN'), findsNothing, reason: 'no letter step: the letter is in the station');
       await tapStationSpot(t, 'suitcase');
       await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
-      await t.tapOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
+      await t.holdOnText(find.textRange.ofSubstring('museum', descendentOf: find.byType(LetterCard)).first);
       await wait(t, const Duration(milliseconds: 600));
       expect(
         find.text('= 박물관'),
