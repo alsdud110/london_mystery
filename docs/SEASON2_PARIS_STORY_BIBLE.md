@@ -1,8 +1,8 @@
 # WORLD MYSTERY — SEASON 2 STORY BIBLE
 ## PARIS STANDS STILL — ONE STOLEN HOUR
 
-**Version:** 1.5 · 2026-10-23  
-**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을, v1.5에서 **Case 07 확정 퍼즐·수정 슬립·Case 08 연결**을 반영했다.  
+**Version:** 1.6 · 2026-10-23  
+**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을, v1.5에서 **Case 07 확정 퍼즐·수정 슬립·Case 08 연결**을, v1.6에서 **Case 08 확정 퍼즐·가방 그림·방패 배지·찢긴 시간 변경 종이·Case 09 연결**을 반영했다. Case 08 화면·대사 상세는 `docs/SEASON2_CASE08_SPEC.md`, 이미지 명세는 `docs/SEASON2_CASE08_ASSET_SPEC.md`.  
 **Audience:** ages 8–12 · English-language detective adventure · realistic mystery (no actual time travel).  
 **Scope:** 12 cases, three acts, full solution, chronology, characters, clue ledger, case-by-case missions and endings, implementation guardrails.
 
@@ -147,7 +147,7 @@ Season 1 구현 데이터에서 확인된 사실만 정사로 인정한다. 새�
 |---|---|---|---|
 | **Émile Moreau** | 이름 없는 Clockmaker (Season 1 런던 사건의 범인) / No. 7 제작자 후보 | 과거 시험 사업의 기술 담당자. 삭제된 기록을 드러내려는 목적으로 **Season 1 런던 사건을 계획·실행**했고, 저지된 뒤 파리에서 현재 단서망을 만든 인물. 목적이 행동을 정당화하지 않는다. **No. 7 제작자와 동일 인물이라는 것은 Case 12에서 도구 흔적·기록으로 확인**. | Clockmaker 별명은 Season 1부터 공개. 시험 사업 연관은 Case 09~11 암시, 실명·동기는 Case 12 확인 |
 | **Victor Delacroix** | 옛 시계 시험 사업 책임자 | 실패와 자신의 삭제 지시를 감춘 인물. 물리적 시간 도둑이 아님. | Case 07에는 이름·이니셜 없음(수정 슬립에 바늘 없는 시계 + 월계관 도장만, v1.5), Case 11 명시, Case 12 입증 |
-| **P. (Painter)** | Montmartre에서 스스로 사라진 화가 | 과거 자료를 옮기는 사람을 목격했다. 얼굴을 보지 못했으므로 성급한 지목 금지. | Case 02 진술, Case 08 목격 의미 해명 |
+| **P. (Painter)** | Montmartre에서 스스로 사라진 화가 | 과거 자료를 옮기는 사람을 목격했다. 얼굴을 보지 못했으므로 성급한 지목 금지. *(v1.6)* Abbesses의 한 모퉁이에서 어느 아침을 연필로 그렸고(가방 운반자의 뒷모습, 방패 배지), 계단에 떨어진 종이를 주워 그림 묶음에 보관했으며, 같은 가방을 정원의 작은 모형 시계 옆에서 다시 그렸다. 현재 행방은 미공개. | Case 02 진술, Case 08 목격 의미 해명 |
 | **River Keeper** | 장부에 등장하는 운송 기록자 | Box 23 운송 경로를 기록한 사람. 공범이라는 근거 없음. | Case 04 기록, 후반부 필요 시 기록만 재인용 |
 | **Louvre 보관 담당자** | 편지 4417의 행방을 아는 사람 | 편지를 고의 은폐한 악역이 아님. 16 MAY 4:00 PM **Preservation Order(보존 지시)**에 따라 편지를 보류한 행정 조치. 지시를 내린 사람·구체적 이유, 보류 처리 담당자, 이동 날짜·담당자, 현재 보관 위치는 **미확정**. | Case 06 |
 | **플레이어 탐정** | 증거를 모으는 어린이 | 누구의 말도 맹신하지 않고 기록·물건·진술을 비교해 진실을 입증 | 전 Case |
@@ -180,7 +180,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | 05 | The Silent Workshop | Passage des Horlogers No. 7 | Clock III / letter 4417 | Louvre 보류 우편 |
 | 06 | **The Letter That Never Arrived** | Louvre area | 편지의 보류 사유·색인 확보 | Palais Garnier 기록 번호 |
 | 07 | **The Phantom Performance** | Palais Garnier | 공연 기록 수정 흔적·사업 표식 | 화가의 Abbesses 작업실 |
-| 08 | **The Painter's Last Sketch** | Montmartre / Abbesses | 화가의 진술 의미 회수 | 정원 모형의 설계 단서 |
+| 08 | **The Painter's Last Sketch** | Montmartre / Abbesses | 화가의 진술 의미 회수: 가방에서 시간 변경 종이가 떨어짐 | P.의 마지막 그림: 같은 가방 + 정원의 작은 모형 시계 |
 | 09 | **The Clockwork Garden** | Luxembourg Gardens | 한정된 시험망 작동 원리 | Arc de Triomphe 기록 표식 |
 | 10 | **The Hour of Shadows** | Arc de Triomphe | 한 시간 차이의 인위성 증명 | 원본 기록 보관 장소 |
 | 11 | **The Unwritten Hour** | Saint-Sulpice area (map pin: Luxembourg Gardens) | 원본·수정본·삭제 승인 | Arts et Métiers 원본 장치 |
@@ -252,6 +252,25 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 **Keep hidden:** 지시서의 최종 서명자, P.가 본 얼굴.
 
 ## CASE 08 — THE PAINTER'S LAST SKETCH
+
+### v1.6 확정 명세 (2026-10-23, 사용자 승인 — 아래 v1.0 기획안보다 우선)
+**상세:** `docs/SEASON2_CASE08_SPEC.md`(대사·피드백·힌트·Glossary), `docs/SEASON2_CASE08_ASSET_SPEC.md`(이미지).  
+**Location:** Abbesses 광장 → P.의 모퉁이(계단·가로등·두 기둥 사이 black gate·위쪽 흰 교회). Map pin: Montmartre/Abbesses.  
+**Intro:** Case 07 Amendment Slip 뒷면(`abbesses_sketch.png` 재사용, `ABBESSES`, `P. KNEW THE BAG.`)을 다시 보여 준다. Case 07 데이터는 변경하지 않는다.  
+**Core deduction:** 그림의 시간 순서와 위치로 **종이가 가방에서 떨어졌음**을 추론하고, 그 종이가 Case 07 슬립과 같은 **시간 변경 양식**임을 확인한다. 결론은 떨어진 종이 한 장으로 한정한다.
+
+- **M1 · The Hidden Sketch (지점 고르기):** 광장의 세 모퉁이를 Case 02 `The Hidden Sketch`(그림 + inscription `The gate is black.`, Recall Card)와 비교한다. Corner 1 = 배치 같음 + **dark green gate**, **Corner 2 = 배치 같음 + black gate (정답)**, Corner 3 = 좌우 반대 배치 + black gate. 배치(그림)와 색(inscription)이 각각 꼭 필요하다. 왼쪽 기둥의 헐거운 돌 뒤에서 그림 묶음 발견. **증거:** `The Painter's Spot`.
+- **M2 · The Morning Drawing (순서 + 겹쳐 보기 + 출처 추론):** 같은 구도의 연필화 3장. P.의 꼬리표 `I drew this corner one morning. First, the sky was dark. Then it grew light. When the sun came up, the lamps went out.` 순서 근거는 **하늘의 밝기**(별이 있는 어둠 → 희미 → 밝음)와 **가로등**(켜짐·켜짐·꺼짐)이며, 순서는 1→2→3 하나로 정해진다. **그림자는 순서 근거로 쓰지 않는다.** 그림 2: 모자 쓴 뒷모습의 인물이 꽉 차서 덮개 아래로 종이가 삐져나온 **납작한 서류 가방**(버클 2개, 덮개에 **방패 배지, 테두리에 잎**)을 들고 열린 대문에서 나와 왼쪽 계단을 오르고 있고, 여백에 배지 확대 그림이 있다. 그림 3: 인물 없음, 가로등 꺼짐, **계단 맨 아랫단에 종이**(인물이 지나간 자리), 여백에 종이 확대 그림(위쪽 V자 찢김). 질문 `Where did the paper on the steps come from?` → `It fell from the bag.` **증거:** `The Bag Sketch` (얼굴·이름 없음).
+- **M3 · The Purple Seal (펼치기 + 같은 점·없는 점):** 그림 뒤의 접힌 종이와 P.의 쪽지 `I found this paper on the steps. I kept it with my drawings.`(가방 언급 없음). 펼친 뒤 Case 07 `The Amendment Slip`(Recall)과 비교한다. SAME = 이중 테두리, FILE 머리글 띠, `→` 변경 줄, 보라색 도장(바늘 없는 시계 + 월계관, 바늘 수·잎 확인). MISSING = FILE 번호, 시 숫자. 보이는 글자는 `FILE`, `:00 →`뿐이다. Case 05 식의 "도장 여러 개 중 고르기"는 쓰지 않는다. **증거:** `The Matching Seal`.
+- **Final · The Torn Hour (겹치기 + 증거 보드):** (1) 실물 종이를 돌려 그림 3 여백의 확대 그림에 겹친다. V자 찢김, 오른쪽 거친 가장자리, 접힌 자국, 도장 자리가 한 방향에서만 맞는다 → 같은 종이. (2) 보드(증거 직접 제공: Bag Sketch, Matching Seal, **Case 07 Amendment Slip**, 미끼 Painter's Spot): Q1 `Where did the paper come from?` → Bag Sketch, Q2 `What kind of paper is it?` → Matching Seal + Amendment Slip. 결론 **`A paper for changing a time fell from the bag.`** (오답: clock parts / the painter carried it / we know who changed the record). Final 전용 Recall 확장은 쓰지 않는다. **증거:** `The Torn Hour`.
+- **Case Closed · Next Lead (점수 없음):** 묶음 맨 아래 **P.의 마지막 그림**. (a) Bag Sketch와 같은 가방인지 확인: 납작한 모양, 버클 2개, 방패 배지(미끼: 둥근 바구니). (b) 그림의 긴 궁전(가운데가 높음), 분수가 있는 둥근 연못, 꽃밭을 기존 Paris 지도와 대조(Case 06 `LetterMap` 방식) → **Luxembourg Gardens**. 잔디 위의 **작은 모형 시계, 둘레에 작은 지붕들**.
+
+**Case 09 질문:** `Why did the bag go to the little clock in the garden?`  
+**새로 확정한 사실 (v1.6):** P.가 Abbesses 모퉁이에서 어느 아침을 그림 3장으로 그렸다. 운반자는 대문에서 나와 계단을 올라갔고 가방에서 시간 변경 양식의 종이가 떨어졌다. P.가 그 종이를 주워 보관했다. 종이는 Case 07 슬립과 같은 양식(이중 테두리, FILE 띠, `→`)과 같은 보라색 도장을 가졌다. 가방에는 **방패 모양, 테두리에 잎이 있는 배지**가 있다. P.는 같은 가방을 정원 모형 시계 옆에서 다시 그렸다.  
+**미확정 (Case 08에서 쓰지 않음):** 운반자의 얼굴·이름·소속, **배지의 의미와 가운데 문양**(P.의 그림에서는 너무 작아 보이지 않음 — Case 11–12에서 회수), 도장과 배지의 관계, 종이의 FILE 번호·원래 시각·바뀐 시각·대상 기록, 가방 속 다른 내용물, 그림의 날짜(과거 시험 사고 날짜 미지정 원칙과 맞춤), 가방이 정원에 간 이유, P.가 가방을 따라갔는지, `P. KNEW THE BAG.` 작성자, P.의 현재 행방.  
+**Keep hidden (v1.6):** 위 미확정 항목 전부, Chronos 시험·시험망·모형 시계의 기능, Victor·Émile·Clockmaker와의 연관, 모든 실명·이니셜. `THE RECORD WAS REMOVED`는 계속 비공개.
+
+### v1.0 기획안 (참고용, v1.6 확정 명세로 대체됨)
 **Location:** Montmartre / Abbesses.  
 **Opening question:** `What did P. really see?`
 
@@ -353,8 +372,10 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | Letter No. 4417 | Case 05 | Case 06–07 | 보류된 편지의 이동 경로 및 삭제 기록 색인 |
 | Modified opera record | Case 07 | Case 08, 11 | 기록 수정 패턴과 사업 부서 연결 |
 | Stage Cue Card (CURTAIN UP · 4:00) | Case 07 | Case 11 | 사무실 기록과 독립된 무대 기록; 수정되지 않은 원래 시작 시각 |
-| Amendment Slip stamp (바늘 없는 시계 + 월계관, 이름 없음) | Case 07 | Case 08, 11 | 수정 승인 문양; 부서 표식과의 대응은 Case 08, 개인 신원 단정 금지 |
-| P.'s bag and badge sketch | Case 08 | Case 11–12 | 문서 이동과 소속 단서; 인물 단정 금지 |
+| Amendment Slip stamp (바늘 없는 시계 + 월계관, 이름 없음) | Case 07 | Case 08, 11 | 수정 승인 문양; Case 08에서 찢긴 종이의 도장과 같음을 확인(같은 양식의 시간 변경 문서), 부서 표식과의 대응은 Case 11, 개인 신원 단정 금지 |
+| P.'s bag and badge sketch (`The Bag Sketch`: 납작한 서류 가방, 버클 2개, 방패 배지 + 테두리 잎) | Case 08 | Case 11–12 | 문서 이동과 소속 단서; 배지 의미는 Case 08에서 해석하지 않음, 인물 단정 금지 |
+| Torn time-change paper (`The Matching Seal` / `The Torn Hour`: FILE 번호·시 숫자 찢김, `:00 →`) | Case 08 | Case 11–12 (미확정) | 가방이 시간 변경 양식의 종이를 운반했다는 물증; 대상 기록은 미확정 |
+| P.'s last sketch (같은 가방 + 정원의 작은 모형 시계) | Case 08 | Case 09 | 다음 조사 장소(Luxembourg Gardens)의 물증; 모형의 기능은 Case 09에서 |
 | Trial map and gear diagram | Case 09 | Case 10, 12 | 제한된 시험망의 작동 방식 |
 | Independent time log | Case 10 | Case 12 | 실제 시간 소멸 부정 |
 | Original test log / removal order | Case 11 | Case 12 | Victor의 삭제 지시와 Émile의 경고 |
@@ -375,7 +396,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | 05 | 4417 편지가 16 MAY 4:00 PM Louvre에서 보류됨 | 편지 내용·보류자·보류 이유 |
 | 06 | 편지는 도난이 아니라 Preservation Order로 보류됐고(16 MAY 4:00 PM), 다음 날 아침 archive로 옮겨졌다. 편지 `The clocks may lie. / But the show remembers.`와 오페라 극장 그림, 뒷면 `OPERA ARCHIVE · FILE 3–4` | 작성자·삭제 지시자, 보존 지시자, `THE RECORD WAS REMOVED` (v1.4: 시즌 후반 반전으로 보류) |
 | 07 | 오페라 기록(FILE 3)의 CURTAIN UP이 4:00에서 3:00으로 사후 수정됨(덧붙인 종이 아래 원래 4:00), 수정 슬립과 바늘 없는 시계 + 월계관 도장, 슬립 뒷면 `ABBESSES` 스케치와 `P. KNEW THE BAG.` | 수정자·지시자·이유, 그림 쪽지 작성자, 슬립이 배경막 뒤에 있던 이유, P.와 배경막의 관계, Victor의 최종 책임과 모든 이름·이니셜 |
-| 08 | 화가가 본 것은 기록 가방을 옮기는 행위 | 얼굴·개인 신원 |
+| 08 | 화가가 본 것은 기록 가방을 옮기는 행위. 그 가방에서 Case 07 슬립과 같은 양식·도장의 **시간 변경 종이**가 떨어졌다(`A paper for changing a time fell from the bag.`). 가방에는 방패 배지가 있다. 같은 가방이 정원의 작은 모형 시계 옆에 있었다 → Luxembourg Gardens | 얼굴·개인 신원·소속, 배지 의미, 종이의 대상 기록과 시각, 기록 변경자·지시자, 모형 시계의 기능(Chronos 시험), 그림 날짜 |
 | 09 | 일부 시험 시계가 하나의 기준값에 연결될 수 있음, Clockmaker의 톱니 표식이 시험 장치 설계 문양과 같음 | Clockmaker 실명·동기, 삭제 책임 |
 | 10 | 시간이 실제로 사라진 것은 아님 | 삭제 승인자 |
 | 11 | Victor가 과거 삭제를 승인함 | Émile의 현재 행동 동기 전체 |
@@ -392,7 +413,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 5→6 **Letter 4417의 HELD · LOUVRE POST ROOM**이 Louvre를 가리킨다.  
 6→7 **편지의 오페라 극장 그림과 뒷면 `OPERA ARCHIVE · FILE 3–4`**가 Palais Garnier를 가리킨다.  
 7→8 **수정 슬립 뒷면의 P. 스케치(`ABBESSES`)와 `P. KNEW THE BAG.`**가 Abbesses를 가리킨다.  
-8→9 **화가의 정원 모형 스케치**가 Luxembourg Gardens를 가리킨다.  
+8→9 **화가의 정원 모형 스케치**가 Luxembourg Gardens를 가리킨다. *(v1.6)* 마지막 그림 속 가방이 Bag Sketch와 같은 가방(납작함, 버클 2개, 방패 배지)이고, 그림의 궁전·분수가 있는 둥근 연못·꽃밭이 지도의 Luxembourg Gardens와 일치한다.  
 9→10 **시험망 기록 코드와 Arc de Triomphe의 표식**이 다음 자료를 가리킨다.  
 10→11 **누락 페이지 보존 목록**이 Saint-Sulpice 인근 기록실을 가리킨다.  
 11→12 **원본 장치 보존 목록**이 Arts et Métiers를 가리킨다.
@@ -436,3 +457,4 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 - **v1.3 (2026-10-21):** §2.6을 Big Ben 이중 잠금 구조로 확정(1차 비밀 문 → 에밀의 작업실, 2차 작업실 내 별도 보관함 → Big Ben 시계 장치 특정 위치 정지로 해제; 에밀 해제 실패, 탐정 미발견, Case 12 공개). Season 1 Case 02(8:17 정지)·Case 12(진짜 톱니, 자정 타종)와의 인과 검증 추가. 편지 4417 보류 사유를 Preservation Order로 확정(지시자·구체적 이유·이동 날짜·담당자·현재 위치는 미확정). Case 06에 도난 vs 보류 vs 이동 구분 추리 원칙 추가. §2.5·§3·§7·§8·§10 반영.
 - **v1.5 (2026-10-23):** 사용자 승인에 따라 Case 07 확정 명세 추가: M1 공연 띠 맞추기(4:00 시작), M2 조명 데스크 고스트 라이트 + Stage Cue Card(4:00) + 익명 그림 쪽지, M3 Case 02 `The Painted Street`로 배경막 고르기 + Amendment Slip(`4:00 → 3:00`, 바늘 없는 시계 + 월계관 도장, 이름 없음), Final 라이트 테이블에서 덧붙인 종이 아래 4:00 확인 + 핀 연결. 슬립 뒷면 `ABBESSES` 스케치와 `P. KNEW THE BAG.`로 Case 08 연결. §3 Victor 공개 타이밍(Case 07 이름 일부 → 이름·이니셜 없음)과 §6 Case 07·§7·§8 07행·§9 7→8 갱신. Case 08–12 기획, Season 1과 Case 01–06 설정은 변경 없음.
 - **v1.4 (2026-10-22):** 사용자 승인에 따라 Case 06 확정 명세 추가: M1 꼬리표 뒤집기, M2 평면도 길찾기(Door E), M3 서랍 + Case 05 찢긴 봉투 모서리 맞추기(Envelope 2), Final 편지 그림 ↔ 지도 대조(Palais Garnier). 편지 문구 `The clocks may lie. / But the show remembers.`, 뒷면 `OPERA ARCHIVE · FILE 3–4`로 Case 07 연결. 이동 `17 MAY · MORNING · MOVED`(archive) 확정. `THE RECORD WAS REMOVED`는 Case 06 비공개(시즌 후반 반전). §1 날짜 메모·§5 표 유지, §8 06행·§9 6→7 갱신. Season 1과 Case 01–05 설정은 변경 없음.
+- **v1.6 (2026-10-23):** 사용자 승인에 따라 Case 08 확정 명세 추가. 제목 `The Painter's Last Sketch` 유지(가제 `The Hidden Bag` 폐기). Intro는 Case 07 슬립 뒷면 재표시(Case 07 데이터 변경 없음). M1 Case 02 Hidden Sketch 그림(배치) + inscription(black gate)으로 세 모퉁이 중 Corner 2 선택, M2 연필화 3장을 하늘 밝기·가로등으로 순서 배열(그림자는 근거로 쓰지 않음) + 겹쳐 보기 + "종이는 가방에서 떨어졌다" 추론, 방패 배지 유지, M3 P.의 쪽지(주웠다는 사실만) + 펼치기 + Case 07 슬립과 같은 점·없는 점(FILE 번호·시 숫자 찢김, `:00 →`), Final 종이를 그림 여백 확대 그림에 겹치기 + 증거 보드(Case 07 슬립 직접 제공) → `A paper for changing a time fell from the bag.`, Case Closed Next Lead(같은 가방 확인 → 지도로 Luxembourg Gardens). §3 P. 행, §5 08행, §6 Case 08(v1.0 기획안은 참고용으로 보존), §7 슬립 도장·가방 그림 행 갱신과 찢긴 종이·마지막 그림 행 추가, §8 08행, §9 8→9 갱신. Case 01–07, Case 09–12 기획, Season 1 설정은 변경 없음.
