@@ -14,8 +14,8 @@ import '../../../widgets/paper.dart' show OrnamentRule;
 import '../../../widgets/symbol_icon.dart';
 import 'tower_documents.dart';
 
-/// The final's board ([EvidenceBoardScene]): its questions, the case's
-/// evidence, and what can be concluded. A question is tapped, then the
+/// The final's board ([EvidenceBoardSpec]: Case 03's, Case 08's): its
+/// questions, the case's evidence, and what can be concluded. A question is tapped, then the
 /// evidence that answers it (tapped again: taken off); a piece can answer
 /// more than one question, and a question can need more than one piece.
 /// Once every question has evidence, a conclusion is chosen; SOLVE THE
@@ -37,7 +37,7 @@ class EvidenceBoard extends StatelessWidget {
     required this.onSubmit,
   });
 
-  final EvidenceBoardScene scene;
+  final EvidenceBoardSpec scene;
   final Mission mission;
 
   /// The case's evidence, by board id (`e1`).

@@ -154,7 +154,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (path.startsWith('/story/')) {
         // Story scenes play only after their mission is solved.
         final id = state.pathParameters['id'] ?? path.substring('/story/'.length);
-        return episode.missionById(id) != null && progress.isCompleted(id) ? null : Routes.map;
+        final mission = episode.missionById(id);
+        // The story after the case: only once the case is closed (a final
+        // answered whose last step waits goes back to that step).
+        if (mission != null && mission.isFinal && progress.isCompleted(id) && !progress.isCaseSolved) return Routes.finalMission;
+        return mission != null && progress.isCompleted(id) ? null : Routes.map;
       }
       if (path == Routes.finalMission) {
         return progress.allMissionsDone(episode) ? null : Routes.map;

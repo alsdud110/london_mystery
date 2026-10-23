@@ -62,9 +62,17 @@ void main() {
 
   group('the data', () {
     test('a mission without a recall reads as before; one with it keeps every field', () {
+      // Case 08's M1 (the Hidden Sketch) and M3 (the Amendment Slip) are the
+      // game's only missions played with a recall (2026-10-23).
+      const recalling = {'s2_ep08_m1': 's2_ep02_e3', 's2_ep08_m3': 's2_ep07_e3'};
       for (final e in inGame) {
         for (final m in e.allMissions) {
-          expect(m.recall, isNull, reason: '${m.id}: no mission of the game recalls yet');
+          if (recalling[m.id] case final evidence?) {
+            expect(m.recall?.evidenceId, evidence, reason: m.id);
+            expect(m.toJson()['recall'], m.recall!.toJson(), reason: m.id);
+            continue;
+          }
+          expect(m.recall, isNull, reason: '${m.id}: no other mission of the game recalls');
           expect(m.toJson().containsKey('recall'), isFalse);
         }
       }

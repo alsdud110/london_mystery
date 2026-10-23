@@ -27,6 +27,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Reading a record: times, above and under, and what was changed',
     titleKo: '기록 읽기: 시각, above와 under, 바뀐 것 찾기',
   ),
+  's2_ep08': CaseLanguageTopic(
+    title: 'Where things stand and what changed: between, above, first, then, same and missing',
+    titleKo: '위치와 변화 읽기: between, above, first/then, same/missing',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -286,5 +290,42 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '수정 슬립의 "CURTAIN UP: 4:00 to 3:00"을 원래 시각에서 바뀐 시각으로 이해하고, 라이트 테이블에서 덧붙인 종이 위의 3:00과 그 아래의 4:00에 핀을 연결해 FILE 3이 바뀌었음을 증명한다.',
     expressions: ['CURTAIN UP: 4:00 to 3:00', 'Which record was changed?'],
+  ),
+  // ── Case 08 — The Painter's Last Sketch ────────────────────────────────
+  // The Hidden Sketch decides two ways: its picture (where the lamp
+  // stands) and its words (the gate is black). The note names the things.
+  's2_ep08_m1': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '메모의 "A gate between two pillars.", "The white church above."로 무엇을 찾을지 알고, Notebook의 Hidden Sketch 그림(가로등이 대문 왼쪽)과 문구 "The gate is black."로 세 모퉁이 중 하나를 고른다.',
+    expressions: ['A gate between two pillars.', 'The white church above.'],
+  ),
+  // P.'s tag gives the rule; the drawings are put in order by it, then the
+  // paper's coming is read against the bag's going.
+  's2_ep08_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: 'P.의 꼬리표 "First, the sky was dark.", "When the sun came up, the lamps went out."을 규칙으로 그림 3장을 시간순으로 놓고, 겹쳐 비교해 종이가 가방이 지나간 뒤 나타났음을 추론한다.',
+    expressions: ['First, the sky was dark.', 'When the sun came up, the lamps went out.'],
+  ),
+  // The two papers are read side by side: what is the same, what is
+  // missing (FILE's number, the hour).
+  's2_ep08_m3': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.vocabulary,
+    objective: '"What is the same as the opera slip? What is missing?"의 same과 missing을 구별해, 찢긴 종이에서 수정 슬립과 같은 양식·도장과 찢겨 없어진 FILE 번호·시각을 표시한다.',
+    expressions: ['What is the same as the opera slip? What is missing?', 'I found this paper on the steps.'],
+  ),
+  // Two questions answered with evidence, then what can be said: no more
+  // than the evidence shows.
+  's2_ep08_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '"Where did the paper come from?", "What kind of paper is it?"에 맞는 증거를 고르고, 증거가 말하는 만큼만 결론(종이 한 장이 가방에서 떨어졌다)을 고른다.',
+    expressions: ['Where did the paper come from?', 'What kind of paper is it?'],
   ),
 };

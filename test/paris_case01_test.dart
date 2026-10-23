@@ -67,7 +67,7 @@ void main() {
 
   group('the case', () {
     test('Case 01 of Paris: its id, season, place and four puzzles', () {
-      expect([for (final e in all.where((e) => e.seasonId == SeasonIds.paris)) e.id], ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07']);
+      expect([for (final e in all.where((e) => e.seasonId == SeasonIds.paris)) e.id], ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08']);
       expect(paris.number, 1);
       expect(paris.title, 'The Ticking Watch');
       expect(paris.introScene, Artwork.gareDuNord);
@@ -185,7 +185,7 @@ void main() {
       expect(season2Learning.keys.where((id) => id.startsWith('s2_ep01_')).toSet(), {for (final m in paris.allMissions) m.id});
       expect(season2LanguageTopics.keys.first, 's2_ep01');
       // Case 06's is written with it, waiting for its pictures.
-      expect(season2LanguageTopics.keys.toSet(), {'s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07'});
+      expect(season2LanguageTopics.keys.toSet(), {'s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08'});
       for (final m in paris.allMissions) {
         final l = SeasonCatalog.learning(m)!;
         expect(l.isHonest, isTrue, reason: m.id);

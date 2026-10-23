@@ -12,6 +12,7 @@ import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/mock/season_catalog.dart';
+import '../../data/models/abbesses_puzzles.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/letter_puzzles.dart';
 import '../../data/models/mission.dart';
@@ -49,6 +50,7 @@ import 'widgets/post_trail.dart';
 import 'widgets/question_widgets.dart';
 import 'widgets/street_book.dart';
 import 'widgets/tip_shop.dart';
+import 'widgets/torn_hour.dart';
 import '../../data/models/detective_name.dart';
 
 /// The final case: four picture locks. The player must combine what they
@@ -114,6 +116,14 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   /// The archive's light table and the Amendment Slip (Paris Case 07), or
   /// null.
   LightTableScene? get _lightTable => SeasonCatalog.lightTable(_mission);
+
+  /// The torn paper laid on P.'s drawing, then the board, then P.'s last
+  /// drawing (Paris Case 08), or null.
+  TornHourScene? get _tornHour => SeasonCatalog.tornHour(_mission);
+
+  /// The board of this final (Case 03's, or Case 08's after its paper is
+  /// laid on the drawing), or null.
+  EvidenceBoardSpec? get _boardSpec => _board ?? _tornHour?.board;
 
   String _tableKey(String thing) => GameProgress.examinedKey(_mission.id, thing);
 
@@ -285,7 +295,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
 
   void _saveBoard() => ref
       .read(gameControllerProvider.notifier)
-      .recordPuzzleState(_mission.id, BoardState.encode(_links, _conclusion, _board!));
+      .recordPuzzleState(_mission.id, BoardState.encode(_links, _conclusion, _boardSpec!));
 
   void _pickQuestion(String id) => setState(() => _question = _question == id ? null : id);
 
@@ -309,7 +319,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     if (_checking) return;
     setState(() => _checking = true);
     try {
-      await _submit(_board!.answerOf(_links, _conclusion));
+      await _submit(boardAnswerOf(_boardSpec!, _links, _conclusion));
     } finally {
       if (mounted) setState(() => _checking = false);
     }
@@ -322,12 +332,38 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     if (mounted) setState(() {});
   }
 
-  /// The case's evidence on the board, by its board id.
-  Map<String, Evidence> _boardEvidence(EvidenceBoardScene board) {
-    final all = {for (final e in ref.read(currentEpisodeProvider).allEvidence) e.id: e};
+  /// The evidence on the board, by its board id: the case's own, and an
+  /// earlier case's given on it (Case 08: Case 07's Amendment Slip).
+  Map<String, Evidence> _boardEvidence(EvidenceBoardSpec board) {
+    final all = {
+      for (final episode in ref.read(allEpisodesProvider))
+        for (final e in episode.allEvidence) e.id: e,
+      for (final e in ref.read(currentEpisodeProvider).allEvidence) e.id: e,
+    };
     return {
       for (final e in board.evidence) e.id: ?all[e.evidenceId],
     };
+  }
+
+  /// Where the torn paper laid on the drawing, and P.'s last drawing looked
+  /// at, are kept (Case 08).
+  String get _placedKey => GameProgress.examinedKey(_mission.id, TornHourScene.placedId);
+  String get _leadKey => GameProgress.examinedKey(_mission.id, TornHourScene.leadId);
+
+  void _placePaper() {
+    ref.read(audioServiceProvider).play(GameSound.paperPlace);
+    _nextTableStep(TornHourScene.placedId);
+  }
+
+  Future<void> _lookAtLastDrawing() async {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
+    final done = await showNextLead(context, _tornHour!.lead);
+    if (done == true && mounted) {
+      // The last step done: now the case is closed (solved, the next case
+      // file open), never with the answer alone.
+      ref.read(gameControllerProvider.notifier).closeCase(_leadKey);
+      setState(() {});
+    }
   }
 
   /// The canvas looked at, and the canvases looked at (saved, so they stay
@@ -377,7 +413,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final length = _mission.codeLength ?? _mission.answer.length;
     _digits = List.filled(length, 0);
     final progress = ref.read(gameControllerProvider);
-    if (_board case final board?) {
+    if (_boardSpec case final board?) {
       final (links, conclusion) = BoardState.decode(progress.puzzleStateOf(_mission.id), board);
       _links = links;
       _conclusion = conclusion;
@@ -402,7 +438,8 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         });
       }
     }
-    if (progress.isCaseSolved) {
+    // Answered: open on the solve (the case closed, or its last step to do).
+    if (progress.isCaseSolved || progress.finalAwaitsLastStep(ref.read(currentEpisodeProvider))) {
       _open.value = 1;
     } else {
       // Back again (the story and the letter were read before): open on the locks.
@@ -431,9 +468,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final trail = _trail;
     final letters = _letterMap;
     final table = _lightTable;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null && table == null)) return;
+    final hour = _tornHour;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null && table == null && hour == null)) return;
     _precached = true;
-    final files = table != null
+    final files = hour != null
+        ? [hour.sketch.file, hour.study.file, hour.form.file, hour.form.stamp, hour.lead.file, hour.lead.mapFile]
+        : table != null
         ? [table.archive, table.table, table.tableOn, table.file3.file, table.file3.patch.file, table.slip.file, table.slip.stamp]
         : letters != null
         ? [letters.letter.file, letters.letter.sketch, letters.mapFile]
@@ -720,7 +760,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   Widget build(BuildContext context) {
     final m = ref.watch(currentEpisodeProvider).finalMission;
     final progress = ref.watch(gameControllerProvider);
-    final solved = progress.isCaseSolved;
+    // Answered: the case closed, or its last step after the answer to do
+    // (Paris Case 08's last drawing; the case closes with it).
+    final solved = progress.isCaseSolved || progress.finalAwaitsLastStep(ref.watch(currentEpisodeProvider));
     final box = _box;
     final canvases = _canvases;
     final board = _board;
@@ -728,6 +770,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final trail = _trail;
     final letters = _letterMap;
     final table = _lightTable;
+    final hour = _tornHour;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -788,6 +831,13 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : hour != null
+                            // Slim while the paper is laid on the drawing
+                            // below (the drawing is there too); whole after.
+                            ? (!solved && !progress.hasExamined(_placedKey))
+                                ? 96.0
+                                : (stage.maxWidth / hour.sketch.pixels.aspect)
+                                    .clamp(150.0, math.min(320.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.36)))
                             : table != null
                             // Slim while FILE 3 is on the table below (the
                             // table is there too); whole for the solve.
@@ -814,7 +864,14 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: table != null
+                          child: hour != null
+                              // P.'s drawing; the torn paper on it once laid.
+                              ? TornHourStage(
+                                  key: const ValueKey('torn-hour-stage'),
+                                  scene: hour,
+                                  placed: progress.hasExamined(_placedKey),
+                                )
+                              : table != null
                               // The archive table; FILE 3 on the lit light
                               // table with the solve.
                               ? RecordStage(
@@ -893,6 +950,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                                 progress: _open.value,
                                 message: m.successMessage,
                                 detectiveName: progress.detectiveName ?? '',
+                                closed: progress.isCaseSolved,
                               )
                             : _intro(m),
                       ),
@@ -950,8 +1008,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   List<Widget> _puzzle(Mission m, int hintsShown) => [
     GlossaryText(
       key: _locksKey,
-      // The light table's final asks one step at a time.
-      _lightTable == null
+      // The light table's final asks one step at a time; so does the torn
+      // paper's (is it the same paper, then the board).
+      _tornHour != null && !ref.watch(gameControllerProvider).hasExamined(_placedKey)
+          ? _tornHour!.placeHeading
+          : _lightTable == null
           ? m.question
           : ChangedRecordPuzzle.headingOf(
               _lightTable!,
@@ -1027,6 +1088,50 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           checking: _checking,
           onLook: _lookAt,
           onTurn: _turnCanvas,
+        ),
+      ),
+    ] else if (_tornHour case final hour?) ...[
+      // The paper laid on P.'s drawing first; then the board.
+      if (!ref.watch(gameControllerProvider).hasExamined(_placedKey))
+        PaperSheet(
+          key: const ValueKey('torn-hour-place'),
+          padding: const EdgeInsets.all(AppSpace.md),
+          child: PaperOnDrawing(scene: hour, onPlaced: _placePaper),
+        )
+      else ...[
+        for (final line in hour.placedLines)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpace.xs),
+            child: Text(line, textAlign: TextAlign.center, style: AppText.aside(size: 17, color: AppColors.goldLight)),
+          ),
+        const SizedBox(height: AppSpace.sm),
+        ShakeOnChange(
+          trigger: _wrongPulse,
+          child: PaperSheet(
+            key: const ValueKey('evidence-board'),
+            padding: const EdgeInsets.all(AppSpace.lg),
+            child: EvidenceBoard(
+              scene: hour.board,
+              mission: m,
+              evidence: _boardEvidence(hour.board),
+              links: _links,
+              conclusion: _conclusion,
+              question: _question,
+              checking: _checking,
+              onQuestion: _pickQuestion,
+              onLink: _link,
+              onConclusion: _conclude,
+              onSubmit: _solveBoard,
+            ),
+          ),
+        ),
+      ],
+      Center(
+        child: InkTextButton(
+          label: 'Reread your evidence',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
         ),
       ),
     ] else if (_board case final board?) ...[
@@ -1277,7 +1382,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         ],
         // A box with something in it: looked at first (its back holds the
         // case's last words), then the story goes on.
-        if (_lightTable != null && !ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.slipBackId)))
+        if (_tornHour != null && !ref.watch(gameControllerProvider).hasExamined(_leadKey))
+          GameButton(
+            key: const ValueKey('final-last-drawing'),
+            label: _tornHour!.leadLabel,
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _lookAtLastDrawing,
+          )
+        else if (_lightTable != null && !ref.watch(gameControllerProvider).hasExamined(_tableKey(ChangedRecord.slipBackId)))
           GameButton(
             key: const ValueKey('final-turn-slip'),
             label: 'TURN THE SLIP OVER',
@@ -1496,11 +1610,16 @@ class _CaseSolvedBanner extends StatelessWidget {
     required this.progress,
     required this.message,
     required this.detectiveName,
+    this.closed = true,
   });
 
   final double progress;
   final String message;
   final String detectiveName;
+
+  /// The case is closed: its CASE SOLVED stamp. Not yet while a last step
+  /// after the answer waits (Paris Case 08's last drawing).
+  final bool closed;
 
   @override
   Widget build(BuildContext context) {
@@ -1511,8 +1630,10 @@ class _CaseSolvedBanner extends StatelessWidget {
         scale: 0.92 + 0.08 * Curves.easeOutCubic.transform(t),
         child: Column(
           children: [
-            const InkStamp('CASE SOLVED', color: AppColors.gold, size: 26),
-            const SizedBox(height: 14),
+            if (closed) ...[
+              const InkStamp('CASE SOLVED', color: AppColors.gold, size: 26),
+              const SizedBox(height: 14),
+            ],
             Text(
               message,
               style: AppText.title(size: 24, color: AppColors.paperLight),

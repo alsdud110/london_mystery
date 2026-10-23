@@ -135,12 +135,18 @@ class GameProgress {
   bool allMissionsDone(Episode episode) => episode.missions.every((m) => isCompleted(m.id));
 
   /// The mission the player should play next (null once the case is solved).
+  /// A final answered whose case is not closed yet (a step after its answer
+  /// still to do: Paris Case 08's last drawing) is still the one to play.
   Mission? currentMission(Episode episode) {
     for (final m in episode.missions) {
       if (!isCompleted(m.id)) return m;
     }
-    return isCompleted(episode.finalMission.id) ? null : episode.finalMission;
+    return isCompleted(episode.finalMission.id) && isCaseSolved ? null : episode.finalMission;
   }
+
+  /// The final is answered but the case is not closed: its last step (after
+  /// the answer) is still to do.
+  bool finalAwaitsLastStep(Episode episode) => isCompleted(episode.finalMission.id) && !isCaseSolved;
 
   /// A mission is playable once every mission before it is solved.
   bool isUnlocked(Episode episode, String missionId) {

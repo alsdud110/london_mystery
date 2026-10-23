@@ -13,6 +13,7 @@ import '../../core/utils/audio_service.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/episode.dart';
 import '../mission/widgets/river_papers.dart' show PlaqueBackView;
+import '../mission/widgets/workshop_papers.dart' show DrawnEvidenceView;
 import '../../widgets/game_button.dart';
 import '../../widgets/landmark_art.dart';
 import '../../widgets/paper_background.dart';
@@ -114,6 +115,8 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
     // A thing the opening turns to (Case 04: the plaque's back), under its
     // line.
     final plaque = SeasonCatalog.introPlaque(ref.read(currentEpisodeProvider).id);
+    // A paper the opening turns to (Case 08: the back of Case 07's slip).
+    final paper = SeasonCatalog.introPaper(ref.read(currentEpisodeProvider).id);
     return Scaffold(
       backgroundColor: AppColors.nightBottom,
       // The narration over the place the case opens on, in the dark.
@@ -206,6 +209,20 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                                   ),
                                                 ],
                                               ),
+                                            ),
+                                          ),
+                                        ),
+                                      if (paper != null && i == paper.afterLine)
+                                        Padding(
+                                          key: const ValueKey('intro-paper'),
+                                          padding: const EdgeInsets.only(bottom: 22),
+                                          child: TweenAnimationBuilder<double>(
+                                            tween: Tween(begin: 0, end: 1),
+                                            duration: MediaQuery.disableAnimationsOf(context) ? Duration.zero : const Duration(milliseconds: 600),
+                                            builder: (context, t, child) => Opacity(opacity: t, child: child),
+                                            child: ConstrainedBox(
+                                              constraints: const BoxConstraints(maxWidth: 380),
+                                              child: DrawnEvidenceView(drawn: paper.paper),
                                             ),
                                           ),
                                         ),

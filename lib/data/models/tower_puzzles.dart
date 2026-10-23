@@ -449,13 +449,36 @@ class BoardConclusion {
   final String text;
 }
 
+/// A final's board of questions answered with evidence, then a conclusion
+/// (Case 03's, with its machine; Case 08's). Its answer: each question's
+/// evidence (`question:e1+e2`, the ids in [evidence]'s order), then the
+/// conclusion chosen (`why:id`).
+abstract interface class EvidenceBoardSpec {
+  List<BoardQuestion> get questions;
+  List<BoardEvidence> get evidence;
+  String get conclusionId;
+  String get conclusionQuestion;
+  List<BoardConclusion> get conclusions;
+  String get linkTask;
+  String get concludeTask;
+  String get solveLabel;
+}
+
+/// The answer of a board: each question's evidence (in its evidence's
+/// order), then the conclusion.
+String boardAnswerOf(EvidenceBoardSpec board, Map<String, Set<String>> links, String? conclusion) => [
+      for (final q in board.questions)
+        '${q.id}:${[for (final e in board.evidence) if (links[q.id]?.contains(e.id) ?? false) e.id].join('+')}',
+      '${board.conclusionId}:${conclusion ?? ''}',
+    ].join(',');
+
 /// The final ([MissionType.matchPairs]): the evidence linked to each
 /// question (`question:e1+e2`, the ids in [evidence]'s order), and the
 /// conclusion chosen (`why:id`). Its stage: the time-recording machine,
 /// shut and then open (two pictures in register), and the brass plaque
 /// found inside, its message written by the app.
 @immutable
-class EvidenceBoardScene {
+class EvidenceBoardScene implements EvidenceBoardSpec {
   const EvidenceBoardScene({
     required this.shut,
     required this.open,
@@ -483,16 +506,24 @@ class EvidenceBoardScene {
   final ScenePixels pixels;
   final String machineLabel;
 
+  @override
   final List<BoardQuestion> questions;
+  @override
   final List<BoardEvidence> evidence;
 
   /// The conclusion's part in the answer (`why`), its question and choices.
+  @override
   final String conclusionId;
+  @override
   final String conclusionQuestion;
+  @override
   final List<BoardConclusion> conclusions;
 
+  @override
   final String linkTask;
+  @override
   final String concludeTask;
+  @override
   final String solveLabel;
 
   final String plaque;
@@ -511,11 +542,7 @@ class EvidenceBoardScene {
 
   /// The answer of a board: each question's evidence (in [evidence]'s
   /// order), then the conclusion.
-  String answerOf(Map<String, Set<String>> links, String? conclusion) => [
-        for (final q in questions)
-          '${q.id}:${[for (final e in evidence) if (links[q.id]?.contains(e.id) ?? false) e.id].join('+')}',
-        '$conclusionId:${conclusion ?? ''}',
-      ].join(',');
+  String answerOf(Map<String, Set<String>> links, String? conclusion) => boardAnswerOf(this, links, conclusion);
 }
 
 /// How far the detective has got on a Case 03 puzzle page: what is open
@@ -540,13 +567,13 @@ const noteId = 'note';
 /// A board's links and conclusion as saved (`q1=e1;q2=e2;q3=e2+e3;why=c`),
 /// and back. Unknown parts are dropped.
 abstract final class BoardState {
-  static String encode(Map<String, Set<String>> links, String? conclusion, EvidenceBoardScene scene) => [
+  static String encode(Map<String, Set<String>> links, String? conclusion, EvidenceBoardSpec scene) => [
         for (final q in scene.questions)
           '${q.id}=${[for (final e in scene.evidence) if (links[q.id]?.contains(e.id) ?? false) e.id].join('+')}',
         if (conclusion != null) '${scene.conclusionId}=$conclusion',
       ].join(';');
 
-  static (Map<String, Set<String>>, String?) decode(String? saved, EvidenceBoardScene scene) {
+  static (Map<String, Set<String>>, String?) decode(String? saved, EvidenceBoardSpec scene) {
     final links = <String, Set<String>>{};
     String? conclusion;
     final questions = {for (final q in scene.questions) q.id};

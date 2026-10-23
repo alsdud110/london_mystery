@@ -189,7 +189,12 @@ enum Artwork {
   operaArchive,
   operaStage,
   flyRail,
-  lightTable;
+  lightTable,
+  // Case 08's places in Abbesses: the square, the painter's corner, and the
+  // bundle of drawings behind the loose stone.
+  abbessesSquare,
+  paintersCorner,
+  drawingBundle;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

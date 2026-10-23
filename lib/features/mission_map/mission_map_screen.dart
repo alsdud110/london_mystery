@@ -91,6 +91,9 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
   }
 
   PinState _stateOf(GameProgress p, Episode e, Mission m) {
+    // A final answered whose last step waits (Paris Case 08's last drawing)
+    // is still the place to go: it opens on that step.
+    if (m.isFinal && p.finalAwaitsLastStep(e)) return PinState.current;
     if (p.isCompleted(m.id)) return PinState.completed;
     if (p.isUnlocked(e, m.id)) return PinState.current;
     return PinState.locked;

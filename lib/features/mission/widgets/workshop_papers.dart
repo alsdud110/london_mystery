@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
+import '../../../data/models/abbesses_puzzles.dart' show MorningSketch, TornForm;
 import '../../../data/models/letter_puzzles.dart' show FittedEnvelope, LetterPaper;
 import '../../../data/models/opera_puzzles.dart' show AmendmentSlip, CueCard, OfficeRecord, PhotoPrint, ProgrammePage;
 import '../../../data/models/river_puzzles.dart' show DrawnEvidence;
 import '../../../data/models/scene_explore.dart' show ScenePixels;
 import '../../../data/models/workshop_puzzles.dart';
+import 'abbesses_papers.dart' show MorningSketchView, TornFormView;
 import 'letter_papers.dart' show FittedEnvelopeView, LetterPaperView;
 import 'opera_papers.dart';
 import 'river_papers.dart' show PictureCanvas;
@@ -200,7 +202,7 @@ class CroppedPicture extends StatelessWidget {
   );
 }
 
-/// Case 05's, Case 06's and Case 07's evidence drawn (see `DrawnEvidenceArt`).
+/// Case 05's to Case 08's evidence drawn (see `DrawnEvidenceArt`).
 class DrawnEvidenceView extends StatelessWidget {
   const DrawnEvidenceView({super.key, required this.drawn});
 
@@ -221,6 +223,8 @@ class DrawnEvidenceView extends StatelessWidget {
     final CueCard c => CueCardView(card: c),
     final AmendmentSlip s => AmendmentSlipView(slip: s),
     final PhotoPrint p => PhotoPrintView(photo: p),
+    final MorningSketch s => MorningSketchView(sketch: s),
+    final TornForm f => TornFormView(form: f),
     _ => const SizedBox.shrink(),
   };
 }

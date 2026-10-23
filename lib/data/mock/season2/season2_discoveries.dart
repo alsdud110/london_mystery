@@ -41,6 +41,10 @@ const Map<String, DiscoveryType> season2DiscoveryTypes = {
   's2_ep07_m1': DiscoveryType.deduction, // the show fits only from 4:00
   's2_ep07_m2': DiscoveryType.evidenceFound, // the stage cue card: 4:00
   's2_ep07_m3': DiscoveryType.evidenceFound, // the Amendment Slip
+  // ── Case 08 — The Painter's Last Sketch ─────────────────────────────
+  's2_ep08_m1': DiscoveryType.newLead, // the painter's corner; the bundle
+  's2_ep08_m2': DiscoveryType.deduction, // the paper fell from the bag
+  's2_ep08_m3': DiscoveryType.evidenceFound, // the same seal as the slip
 };
 
 /// The Discovery Moments of Season 2's regular missions in [cases] (case id

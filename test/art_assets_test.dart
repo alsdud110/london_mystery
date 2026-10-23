@@ -137,6 +137,11 @@ void main() {
       Artwork.operaStage: 'assets/seasons/season_02_paris/cases/case_07/stage_base.png',
       Artwork.flyRail: 'assets/seasons/season_02_paris/cases/case_07/fly_rail.png',
       Artwork.lightTable: 'assets/seasons/season_02_paris/cases/case_07/light_table_off.png',
+      // Case 08's places in Abbesses: the square, the painter's corner and
+      // the bundle behind the loose stone.
+      Artwork.abbessesSquare: 'assets/seasons/season_02_paris/cases/case_08/abbesses_square.png',
+      Artwork.paintersCorner: 'assets/seasons/season_02_paris/cases/case_08/corner_2.png',
+      Artwork.drawingBundle: 'assets/seasons/season_02_paris/cases/case_08/drawing_bundle.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -169,8 +174,9 @@ void main() {
     // Season 1's 31, and Season 2's Gare du Nord, old clock face, the
     // Montmartre painting (Case 02's first scene), Case 02's street and studio,
     // Case 03's seven (the canvas back and six places at the tower),
-    // Case 04's six places on the Seine, and Case 05's four in the workshop.
-    expect(ArtAssets.scenes, hasLength(62));
+    // Case 04's six places on the Seine, and Case 05's four in the workshop;
+    // Case 06's four, Case 07's five, and Case 08's three in Abbesses.
+    expect(ArtAssets.scenes, hasLength(65));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,

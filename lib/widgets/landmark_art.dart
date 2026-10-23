@@ -342,7 +342,10 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.operaArchive ||
           Artwork.operaStage ||
           Artwork.flyRail ||
-          Artwork.lightTable:
+          Artwork.lightTable ||
+          Artwork.abbessesSquare ||
+          Artwork.paintersCorner ||
+          Artwork.drawingBundle:
         break;
     }
     canvas.restore();

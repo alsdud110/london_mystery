@@ -190,6 +190,9 @@ const _amendment = AmendmentSlip(
   ),
 );
 
+/// The Amendment Slip as Case 07 drew it (Case 08 opens on its back).
+const season2Case07Slip = _amendment;
+
 // ── M1 — the archive table ──────────────────────────────────────────────
 // The strip (2172 × 724, cut out): its paper (37, 275)–(2137, 448), an
 // ornamental line along its top and bottom and a flourish at each end; the

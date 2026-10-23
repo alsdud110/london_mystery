@@ -188,7 +188,7 @@ void main() {
 
   group('its story and puzzles', () {
     test('Case 05 is in the game, after Case 04, at Notre-Dame, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08']);
       expect(case05.number, 5);
       expect(case05.title, 'The Silent Workshop');
       expect(case05.place, 'PASSAGE DES HORLOGERS · No. 7');
@@ -200,7 +200,7 @@ void main() {
       expect(ParisLandmark.cases['s2_ep05'], ParisLandmark.notreDame);
       expect(ParisLandmark.notreDame.at, const Offset(0.732, 0.566));
       expect(SeasonMap.landmarkOf(m1.id), ParisLandmark.notreDame);
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, {8: "The Painter's Last Sketch"}, reason: 'Cases 06 and 07 are in the game; Case 08 is told next');
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, {9: 'The Clockwork Garden'}, reason: 'Cases 06 to 08 are in the game; Case 09 is told next');
     });
 
     test('the opening picks up the label\'s last words, in the second person; Case 04 is as it was', () {

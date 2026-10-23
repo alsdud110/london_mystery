@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/answer_checker.dart';
+import '../../data/mock/season_catalog.dart';
 import '../../data/models/detective_name.dart';
+import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/profile.dart';
@@ -328,34 +330,65 @@ class GameController extends Notifier<GameProgress> {
     final coins = ref.read(walletProvider.notifier).rewardMission(mission);
     final solvedAt = now();
     final seconds = _solveSeconds(mission.id, solvedAt);
+    // A final closes its case with its answer, unless a last step comes
+    // after it (Paris Case 08's last drawing): then [closeCase] does.
+    final closes = mission.isFinal && !SeasonCatalog.closesAfterLastStep(mission);
     var next = state.copyWith(
       attempts: attempts,
       completedMissionIds: [...state.completedMissionIds, mission.id],
       solveSeconds: seconds == null ? null : {...state.solveSeconds, mission.id: seconds},
       // The XP rule this answer is scored under, kept with it for good.
       xpRules: {...state.xpRules, mission.id: XpBreakdown.currentRule},
-      completedAt: mission.isFinal ? solvedAt : null,
+      completedAt: closes ? solvedAt : null,
     );
 
-    final newBadges = [
-      for (final b in GameBadge.forEpisode(episode))
-        if (!next.badgeIds.contains(b.name) && b.isEarned(episode, next)) b,
-    ];
+    final newBadges = _earnedBadges(episode, next);
     if (newBadges.isNotEmpty) {
       next = next.copyWith(badgeIds: [...next.badgeIds, for (final b in newBadges) b.name]);
     }
     _update(next);
-    // The next case file opens (and stays open, even if this case is replayed).
-    if (mission.isFinal) {
-      // A first solve is news for the season board; a replay is not.
-      if (!ref.read(seasonProvider).isSolved(episode.id)) ref.read(recentSolveProvider.notifier).add(episode.id);
-      ref.read(seasonProvider.notifier).markSolved(episode.id);
-    }
+    if (closes) _markCaseSolved(episode.id);
 
     if (mission.nextMissionId != null) {
       ref.read(recentUnlockProvider.notifier).set(mission.nextMissionId);
     }
     return SubmitOutcome(SubmitResult.correct, newBadges: newBadges, coins: coins, firstSolve: firstSolve);
+  }
+
+  /// Closes the case whose final was answered but waited for its last step
+  /// ([GameProgress.finalAwaitsLastStep]; Paris Case 08's last drawing), once
+  /// that step is done ([stepKey] kept with it): the case is solved, its
+  /// badges are earned and the next case file opens, together. Nothing for
+  /// a case not waiting (its final not answered, or already closed). True
+  /// when it was closed now.
+  bool closeCase(String stepKey) => ref.read(progressRepositoryProvider).transaction(() {
+        final episode = ref.read(currentEpisodeProvider);
+        // The step is done only after the final's answer (a case closed by
+        // an earlier build keeps it too, and stays as it was).
+        if (!state.isCompleted(episode.finalMission.id)) return false;
+        if (!state.hasExamined(stepKey)) _update(state.copyWith(examined: [...state.examined, stepKey]));
+        if (!state.finalAwaitsLastStep(episode)) return false;
+        var next = state.copyWith(completedAt: now());
+        final newBadges = _earnedBadges(episode, next);
+        if (newBadges.isNotEmpty) {
+          next = next.copyWith(badgeIds: [...next.badgeIds, for (final b in newBadges) b.name]);
+        }
+        _update(next);
+        _markCaseSolved(episode.id);
+        return true;
+      });
+
+  List<GameBadge> _earnedBadges(Episode episode, GameProgress next) => [
+        for (final b in GameBadge.forEpisode(episode))
+          if (!next.badgeIds.contains(b.name) && b.isEarned(episode, next)) b,
+      ];
+
+  /// The case is solved: the next case file opens (and stays open, even if
+  /// this case is replayed).
+  void _markCaseSolved(String episodeId) {
+    // A first solve is news for the season board; a replay is not.
+    if (!ref.read(seasonProvider).isSolved(episodeId)) ref.read(recentSolveProvider.notifier).add(episodeId);
+    ref.read(seasonProvider.notifier).markSolved(episodeId);
   }
 
   /// Clears the case but keeps the detective name.

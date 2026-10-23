@@ -1,3 +1,4 @@
+import '../models/abbesses_puzzles.dart';
 import '../models/clock_puzzle.dart';
 import '../models/dialogue.dart';
 import '../models/discovery.dart';
@@ -36,6 +37,7 @@ import 'season2/season2_case04_scenes.dart';
 import 'season2/season2_case05_scenes.dart';
 import 'season2/season2_case06_scenes.dart';
 import 'season2/season2_case07_scenes.dart';
+import 'season2/season2_case08_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -86,7 +88,12 @@ class SeasonContent {
     this.lightBoards = const {},
     this.flyRails = const {},
     this.lightTables = const {},
+    this.cornerChoices = const {},
+    this.morningSketches = const {},
+    this.tornSlips = const {},
+    this.tornHours = const {},
     this.introPlaques = const {},
+    this.introPapers = const {},
     this.evidenceArt = const {},
     this.exhibits = const {},
     this.lockBoxes = const {},
@@ -185,8 +192,20 @@ class SeasonContent {
   final Map<String, FlyRailScene> flyRails;
   final Map<String, LightTableScene> lightTables;
 
+  /// Missions played on Case 08's pictures (Season 2): the square's corners
+  /// beside the Hidden Sketch, P.'s three drawings put in order and laid
+  /// over each other, the torn paper unfolded beside the Amendment Slip,
+  /// and the final's paper laid on P.'s drawing and its board.
+  final Map<String, CornerChoiceScene> cornerChoices;
+  final Map<String, MorningSketchesScene> morningSketches;
+  final Map<String, TornSlipScene> tornSlips;
+  final Map<String, TornHourScene> tornHours;
+
   /// By case id: a picture shown under the case's opening lines.
   final Map<String, IntroPlaque> introPlaques;
+
+  /// By case id: a paper shown under one of the case's opening lines.
+  final Map<String, IntroPaper> introPapers;
 
   /// By evidence id: evidence drawn with its words (its picture is blank).
   final Map<String, RiverEvidenceArt> evidenceArt;
@@ -271,13 +290,19 @@ final season2Content = SeasonContent(
   lightBoards: season2LightBoardScenes,
   flyRails: season2FlyRailScenes,
   lightTables: season2LightTableScenes,
+  cornerChoices: season2CornerChoices,
+  morningSketches: season2MorningSketches,
+  tornSlips: season2TornSlips,
+  tornHours: season2TornHours,
   introPlaques: season2IntroPlaques,
+  introPapers: season2IntroPapers,
   evidenceArt: {
     ...season2Case02EvidenceArt,
     ...season2Case04EvidenceArt,
     ...season2Case05EvidenceArt,
     ...season2Case06EvidenceArt,
     ...season2Case07EvidenceArt,
+    ...season2Case08EvidenceArt,
   },
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
@@ -288,6 +313,7 @@ final season2Content = SeasonContent(
     ...season2Case05EvidenceLinks,
     ...season2Case06EvidenceLinks,
     ...season2Case07EvidenceLinks,
+    ...season2Case08EvidenceLinks,
   },
   storyScenes: {
     ...season2StoryScenes,
@@ -297,6 +323,7 @@ final season2Content = SeasonContent(
     ...season2Case05StoryScenes,
     ...season2Case06StoryScenes,
     ...season2Case07StoryScenes,
+    ...season2Case08StoryScenes,
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
@@ -443,6 +470,22 @@ abstract final class SeasonCatalog {
 
   static LightTableScene? lightTable(Mission m) =>
       ofMission(m.id)?.lightTables[m.id];
+
+  static CornerChoiceScene? cornerChoice(Mission m) => ofMission(m.id)?.cornerChoices[m.id];
+
+  static MorningSketchesScene? morningSketches(Mission m) => ofMission(m.id)?.morningSketches[m.id];
+
+  static TornSlipScene? tornSlip(Mission m) => ofMission(m.id)?.tornSlips[m.id];
+
+  static TornHourScene? tornHour(Mission m) => ofMission(m.id)?.tornHours[m.id];
+
+  /// Whether final [m]'s case closes only after a step after its answer
+  /// (Paris Case 08: P.'s last drawing, matched to the map), not with the
+  /// answer itself.
+  static bool closesAfterLastStep(Mission m) => m.isFinal && tornHour(m) != null;
+
+  /// The paper under one of case [episodeId]'s opening lines, if any.
+  static IntroPaper? introPaper(String episodeId) => ofEpisode(episodeId)?.introPapers[episodeId];
 
   /// The picture under case [episodeId]'s opening lines, if any.
   static IntroPlaque? introPlaque(String episodeId) =>

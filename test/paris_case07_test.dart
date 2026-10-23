@@ -43,7 +43,7 @@ import 'helpers.dart';
 /// Season 2, Case 07 — The Phantom Performance: its twenty-nine pictures
 /// (as delivered, measured), its story and puzzles as the strip, the
 /// lights, the backdrops and the light table say them, its rules (unlock
-/// after Case 06, saves, Case 08 still to come), and a child playing it
+/// after Case 06, saves, Case 08 next), and a child playing it
 /// through on three phones. Nothing is told before its time; who changed
 /// the record and why, and any name behind it, never.
 ///
@@ -326,7 +326,7 @@ void main() {
 
   group('in the game', () {
     test('Case 07 is in the game, after Case 06, at the Palais Garnier, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08']);
       expect(season2AwaitingArtJson, isEmpty);
       expect(SeasonCatalog.isAwaitingArt('s2_ep07'), isFalse);
       expect(const MockEpisodeRepository().fetchEpisode('s2_ep07'), completes);
@@ -360,9 +360,10 @@ void main() {
       }
     });
 
-    test("Case 07's Case Closed tells Case 08's title, and nothing else of it", () {
+    test("Case 08, the bible's, is in the game after it (2026-10-23)", () {
       final season = SeasonCatalog.byId(SeasonIds.paris)!.season;
-      expect(season.upcomingTitles, {8: "The Painter's Last Sketch"});
+      expect(season.upcomingTitles[8], isNull, reason: 'Case 08 is in the game: no title waits for it');
+      expect(inGame.firstWhere((e) => e.id == 's2_ep08').title, "The Painter's Last Sketch");
       expect(File('docs/SEASON2_PARIS_STORY_BIBLE.md').readAsStringSync(), contains("| 08 | **The Painter's Last Sketch** | Montmartre / Abbesses |"));
       expect(case07.hook, 'What did P. see — and what was in the bag?');
       expect(case06.hook, 'What is in File 3–4 of the opera archive?', reason: 'Case 06 is as it was');
@@ -694,7 +695,7 @@ void main() {
       expect(c.read(progressRepositoryProvider).load('s2_ep06').examined.any((k) => k.startsWith('s2_ep07')), isFalse);
     });
 
-    test('solved: Paris is 7 of 12, Case 08 is coming soon, nothing opens it; London is as it was', () async {
+    test('solved: Paris is 7 of 12, Case 08 opens; London is as it was', () async {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -703,10 +704,10 @@ void main() {
       }
       final board = c.read(seasonOverviewProvider);
       expect(board.solvedCount, 7);
-      expect(board.comingSoonCase, 8);
+      expect(board.comingSoonCase, isNot(8), reason: 'Case 08 is in the game (2026-10-23)');
       final available = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect((available.solvedCount, available.plannedCount), (7, 12));
-      expect(game.openEpisode('s2_ep08'), isFalse, reason: 'no Case 08 to open');
+      expect(game.openEpisode('s2_ep08'), isTrue, reason: 'Case 08 opens after Case 07');
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12));
     });
   });
@@ -1079,15 +1080,14 @@ void main() {
         expect(findReadable('The mystery continues in Montmartre!'), findsOneWidget);
         await shot('final_scene');
         await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 4000));
-        await reveal(t, find.byKey(const ValueKey('next-case-coming-soon')));
-        expect(find.text("CASE 08 · THE PAINTER'S LAST SKETCH"), findsOneWidget);
-        expect(find.text('COMING SOON'), findsOneWidget);
+        // Case 08 is in the game (2026-10-23): its case opens from here.
+        await reveal(t, find.text('OPEN CASE 08'));
+        expect(find.text('OPEN CASE 08'), findsOneWidget);
         await shot('case_closed');
 
         final board = ref.read(seasonOverviewProvider);
         expect(board.solvedCount, 7);
-        expect(board.comingSoonCase, 8);
-        expect(game.openEpisode('s2_ep08'), isFalse);
+        expect(game.openEpisode('s2_ep08'), isTrue);
         await wait(t, const Duration(seconds: 3));
       });
     }

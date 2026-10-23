@@ -13,6 +13,8 @@ import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/data/mock/season2/season2_mock.dart';
 import 'package:london_mystery/data/mock/season2/season2_scenes.dart';
 import 'package:london_mystery/data/models/episode.dart';
+import 'package:london_mystery/data/mock/season_catalog.dart';
+import 'package:london_mystery/data/models/abbesses_puzzles.dart' show TornHourScene;
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/mission.dart' show EvidenceRecall;
 import 'package:london_mystery/data/models/season.dart';
@@ -30,10 +32,12 @@ import 'package:london_mystery/widgets/game_button.dart';
 import 'full_playthrough_test.dart' show tapText, wait;
 import 'helpers.dart';
 
-/// Season 2 Case 08 is still being planned. These tests play two missions
-/// shaped like its M1 and M3 (a stand-in case of this file only, after Case
-/// 07; the game's own cases unchanged) in the real app — its mission page,
-/// router, saves and notebook — with the Evidence Recall card:
+/// Written while Season 2 Case 08 was being planned (it is in the game now,
+/// played on its own pictures: `paris_case08_test.dart`). These tests play
+/// two missions shaped like its M1 and M3 as plain choices (a stand-in case
+/// of this file only, after the real Case 08; the game's own cases
+/// unchanged) in the real app — its mission page, router, saves and
+/// notebook — with the Evidence Recall card:
 ///
 /// - M1: the Hidden Sketch of Case 02 brought, to compare with the places
 ///   where the painter may have sat (four choices);
@@ -46,10 +50,11 @@ void main() {
   final inGame = MockEpisodeRepository.bundled();
   final s1 = season1Cases();
 
-  /// A stand-in Case 08: Case 07's missions under Case 08's ids (so none of
-  /// Case 07's scenes: plain choices), M1 and M3 played with a recall.
+  /// A stand-in case after the real Case 08: Case 07's missions under ids of
+  /// their own (so none of Case 07's scenes: plain choices), M1 and M3
+  /// played with a recall.
   Episode case08() {
-    final text = jsonEncode(season2Json['s2_ep07']).replaceAll('"s2_ep07', '"s2_ep08');
+    final text = jsonEncode(season2Json['s2_ep07']).replaceAll('"s2_ep07', '"s2_ep09');
     final json = jsonDecode(text) as Map<String, dynamic>;
     final missions = json['missions'] as List;
     missions[0] = {
@@ -93,7 +98,7 @@ void main() {
         },
       },
     };
-    return Episode.fromJson({...json, 'number': 8, 'seasonId': SeasonIds.paris});
+    return Episode.fromJson({...json, 'number': 9, 'seasonId': SeasonIds.paris});
   }
 
   final fixture = case08();
@@ -115,9 +120,9 @@ void main() {
     }
   });
 
-  /// The app with Season 1 and Paris Cases 01–07 solved, the stand-in Case
-  /// 08 open, its missions before [missionId] solved; [missionId] opened
-  /// at its place.
+  /// The app with Season 1 and Paris Cases 01–08 solved, the stand-in case
+  /// open, its missions before [missionId] solved; [missionId] opened at
+  /// its place.
   Future<WidgetRef> open(WidgetTester t, Size size, String missionId) async {
     t.view.physicalSize = size * 3;
     t.view.devicePixelRatio = 3;
@@ -152,14 +157,18 @@ void main() {
     await wait(t, const Duration(milliseconds: 300));
     final g = ref.read(gameControllerProvider.notifier);
     expect(g.openSeason(SeasonIds.paris), isTrue);
-    for (final e in game.where((e) => e.seasonId == SeasonIds.paris && e.number <= 7)) {
+    for (final e in game.where((e) => e.seasonId == SeasonIds.paris && e.number <= 8)) {
       expect(g.openEpisode(e.id), isTrue, reason: e.id);
       g.startInvestigation();
       for (final m in e.allMissions) {
         g.submitAnswer(m, m.answer);
       }
+      // Case 08 closes with its last drawing, after its final's answer.
+      if (SeasonCatalog.closesAfterLastStep(e.finalMission)) {
+        expect(g.closeCase(GameProgress.examinedKey(e.finalMission.id, TornHourScene.leadId)), isTrue, reason: e.id);
+      }
     }
-    expect(g.openEpisode('s2_ep08'), isTrue, reason: 'the stand-in Case 08 opens after Case 07');
+    expect(g.openEpisode('s2_ep09'), isTrue, reason: 'the stand-in case opens after the real Case 08');
     g.startInvestigation();
     for (final m in fixture.missions.takeWhile((m) => m.id != missionId)) {
       expect(g.submitAnswer(m, m.answer).result, SubmitResult.correct);

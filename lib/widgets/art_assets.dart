@@ -288,6 +288,9 @@ abstract final class ArtAssets {
     Artwork.operaStage: '$_paris07/stage_base.png',
     Artwork.flyRail: '$_paris07/fly_rail.png',
     Artwork.lightTable: '$_paris07/light_table_off.png',
+    Artwork.abbessesSquare: '$_paris08/abbesses_square.png',
+    Artwork.paintersCorner: '$_paris08/corner_2.png',
+    Artwork.drawingBundle: '$_paris08/drawing_bundle.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
@@ -297,6 +300,7 @@ abstract final class ArtAssets {
   static const _paris05 = 'assets/seasons/season_02_paris/cases/case_05';
   static const _paris06 = 'assets/seasons/season_02_paris/cases/case_06';
   static const _paris07 = 'assets/seasons/season_02_paris/cases/case_07';
+  static const _paris08 = 'assets/seasons/season_02_paris/cases/case_08';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -397,6 +401,10 @@ abstract final class ArtAssets {
     Artwork.operaStage: 1536 / 1024,
     Artwork.flyRail: 1536 / 1024,
     Artwork.lightTable: 1536 / 1024,
+    // Case 08: all wide.
+    Artwork.abbessesSquare: 1536 / 1024,
+    Artwork.paintersCorner: 1536 / 1024,
+    Artwork.drawingBundle: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).

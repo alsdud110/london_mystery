@@ -11,6 +11,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/models/abbesses_puzzles.dart';
 import '../../data/models/mission.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/scene_deduction.dart';
@@ -67,6 +68,8 @@ import 'widgets/lift_route.dart';
 import 'widgets/light_board.dart';
 import 'widgets/lens_inspect.dart';
 import 'widgets/mark_compare.dart';
+import 'widgets/morning_sketches.dart';
+import 'widgets/painter_corner.dart';
 import 'widgets/plan_route.dart';
 import 'widgets/scene_deduction.dart';
 import 'widgets/scene_decode.dart';
@@ -80,6 +83,7 @@ import 'widgets/river_marks.dart';
 import 'widgets/spot_differences.dart';
 import 'widgets/studio_match.dart';
 import 'widgets/tip_shop.dart';
+import 'widgets/torn_slip.dart';
 import 'widgets/tower_records.dart';
 import '../../data/models/detective_name.dart';
 
@@ -274,7 +278,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             SeasonCatalog.archive(_mission) != null ||
             SeasonCatalog.showStrip(_mission) != null ||
             SeasonCatalog.lightBoard(_mission) != null ||
-            SeasonCatalog.flyRail(_mission) != null);
+            SeasonCatalog.flyRail(_mission) != null ||
+            SeasonCatalog.cornerChoice(_mission) != null ||
+            SeasonCatalog.morningSketches(_mission) != null ||
+            SeasonCatalog.tornSlip(_mission) != null);
     // Case 04's hut: back walks out of it one place at a time (the ledger,
     // the inside, the outside).
     final hut = SeasonCatalog.keeperHut(_mission);
@@ -870,6 +877,67 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         ),
       );
 
+  /// The square's corners looked at beside the Hidden Sketch (the corner
+  /// chosen answers the mission's puzzle); the corners looked at are saved.
+  Widget _cornerStage(Mission m, CornerChoiceScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: PainterCornerPuzzle(
+          scene: scene,
+          mission: m,
+          looked: {
+            for (final c in scene.corners)
+              if (progress.hasExamined(GameProgress.examinedKey(m.id, CornerChoiceScene.lookedKey(c.id)))) c.id,
+          },
+          onLooked: (id) => _recordFound(m, CornerChoiceScene.lookedKey(id)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// P.'s drawings put in order, laid over each other, then the question
+  /// (its choice answers the mission's puzzle); how far they are is saved.
+  Widget _sketchesStage(Mission m, MorningSketchesScene scene, GameProgress progress) {
+    final state = SketchState.decode(progress.puzzleStateOf(m.id), scene);
+    return _PuzzleStage(
+      key: const ValueKey('puzzle'),
+      mission: m,
+      question: MorningSketchesPuzzle.headingOf(scene, m, state),
+      hintsShown: progress.hintsFor(m.id),
+      wrongPulse: _wrongPulse,
+      onHint: () => _showHint(m),
+      onReread: () => _rereadLetter(m),
+      child: MorningSketchesPuzzle(
+        scene: scene,
+        mission: m,
+        state: state,
+        onState: (s) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, s.encode()),
+        onSubmit: (a) => _submit(m, a),
+      ),
+    );
+  }
+
+  /// The torn paper unfolded and marked beside the Amendment Slip (what is
+  /// marked answers the mission's puzzle); the folds and marks are saved.
+  Widget _slipStage(Mission m, TornSlipScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: TornSlipPuzzle(
+          scene: scene,
+          mission: m,
+          state: SlipState.decode(progress.puzzleStateOf(m.id), scene),
+          onState: (s) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, s.encode()),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
   /// The backdrop is the right one: its pocket opened before the story goes
   /// on.
   Widget _pocketStage(Mission m, FlyRailScene scene) => CenteredScroll(
@@ -1169,6 +1237,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final strip = SeasonCatalog.showStrip(m);
     final lights = SeasonCatalog.lightBoard(m);
     final ropes = SeasonCatalog.flyRail(m);
+    final corners = SeasonCatalog.cornerChoice(m);
+    final sketches = SeasonCatalog.morningSketches(m);
+    final slip = SeasonCatalog.tornSlip(m);
 
     final Widget body = solved
         // The ledger's second page, until it is read.
@@ -1227,6 +1298,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           strip != null ||
                           lights != null ||
                           ropes != null ||
+                          corners != null ||
+                          sketches != null ||
+                          slip != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -1290,6 +1364,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when strip != null => _stripStage(m, strip, progress),
             MissionStage.puzzle when lights != null => _lightsStage(m, lights, progress),
             MissionStage.puzzle when ropes != null => _railStage(m, ropes, progress),
+            MissionStage.puzzle when corners != null => _cornerStage(m, corners, progress),
+            MissionStage.puzzle when sketches != null => _sketchesStage(m, sketches, progress),
+            MissionStage.puzzle when slip != null => _slipStage(m, slip, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,
