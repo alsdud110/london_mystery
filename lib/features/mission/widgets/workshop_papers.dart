@@ -11,6 +11,8 @@ import '../../../data/models/scene_explore.dart' show ScenePixels;
 import '../../../data/models/workshop_puzzles.dart';
 import 'abbesses_papers.dart' show MorningSketchView, TornFormView;
 import 'clockwork_garden.dart' show GearDiagramView, MarksPaperView, TestCardView, TrialMapPaperView;
+import '../../../data/models/star_puzzles.dart' show PhotoLog, ShadowCard, TapeCard;
+import 'star_records.dart' show PhotoLogView, ShadowCardView, TapeCardView;
 import 'letter_papers.dart' show FittedEnvelopeView, LetterPaperView;
 import 'opera_papers.dart';
 import 'river_papers.dart' show PictureCanvas;
@@ -231,6 +233,9 @@ class DrawnEvidenceView extends StatelessWidget {
     final GearDiagram d => GearDiagramView(diagram: d),
     final MarksPaper p => MarksPaperView(paper: p),
     final TestCard c => TestCardView(card: c),
+    final TapeCard c => TapeCardView(card: c),
+    final PhotoLog l => PhotoLogView(log: l),
+    final ShadowCard c => ShadowCardView(card: c),
     _ => const SizedBox.shrink(),
   };
 }

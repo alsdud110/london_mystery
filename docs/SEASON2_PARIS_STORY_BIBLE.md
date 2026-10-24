@@ -1,8 +1,8 @@
 # WORLD MYSTERY — SEASON 2 STORY BIBLE
 ## PARIS STANDS STILL — ONE STOLEN HOUR
 
-**Version:** 1.8 · 2026-10-23  
-**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을, v1.5에서 **Case 07 확정 퍼즐·수정 슬립·Case 08 연결**을, v1.6에서 **Case 08 확정 퍼즐·가방 그림·방패 배지·찢긴 시간 변경 종이·Case 09 연결**을, v1.7에서 **Case 09 확정 퍼즐(간소화)·시험 시계 세 곳·두 표식의 출처·별 표식 → Arc de Triomphe 연결**을, v1.8에서 **Case 08 → 09 → 10 연결 대사 원칙**을 반영했다. Case 08 화면·대사 상세는 `docs/SEASON2_CASE08_SPEC.md`, 이미지 명세는 `docs/SEASON2_CASE08_ASSET_SPEC.md`. Case 09는 `docs/SEASON2_CASE09_SPEC.md`, `docs/SEASON2_CASE09_ASSET_SPEC.md`.  
+**Version:** 1.9 · 2026-10-24  
+**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을, v1.5에서 **Case 07 확정 퍼즐·수정 슬립·Case 08 연결**을, v1.6에서 **Case 08 확정 퍼즐·가방 그림·방패 배지·찢긴 시간 변경 종이·Case 09 연결**을, v1.7에서 **Case 09 확정 퍼즐(간소화)·시험 시계 세 곳·두 표식의 출처·별 표식 → Arc de Triomphe 연결**을, v1.8에서 **Case 08 → 09 → 10 연결 대사 원칙**을, v1.9에서 **Case 10 확정 퍼즐·실제 시간/T1 표시 타임라인·Trial Log 3쪽 누락·Saint-Sulpice 연결**을 반영했다. Case 08 화면·대사 상세는 `docs/SEASON2_CASE08_SPEC.md`, 이미지 명세는 `docs/SEASON2_CASE08_ASSET_SPEC.md`. Case 09는 `docs/SEASON2_CASE09_SPEC.md`, `docs/SEASON2_CASE09_ASSET_SPEC.md`. Case 10은 `docs/SEASON2_CASE10_SPEC.md`, `docs/SEASON2_CASE10_ASSET_SPEC.md`.  
 **Audience:** ages 8–12 · English-language detective adventure · realistic mystery (no actual time travel).  
 **Scope:** 12 cases, three acts, full solution, chronology, characters, clue ledger, case-by-case missions and endings, implementation guardrails.
 
@@ -182,7 +182,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | 07 | **The Phantom Performance** | Palais Garnier | 공연 기록 수정 흔적·사업 표식 | 화가의 Abbesses 작업실 |
 | 08 | **The Painter's Last Sketch** | Montmartre / Abbesses | 화가의 진술 의미 회수: 가방에서 시간 변경 종이가 떨어짐 | P.의 마지막 그림: 같은 가방 + 정원의 작은 모형 시계 |
 | 09 | **The Clockwork Garden** | Luxembourg Gardens | 한정된 시험망 작동 원리 | Arc de Triomphe 기록 표식 |
-| 10 | **The Hour of Shadows** | Arc de Triomphe | 한 시간 차이의 인위성 증명 | 원본 기록 보관 장소 |
+| 10 | **The Hour of Shadows** | Arc de Triomphe | 한 시간 차이의 인위성 증명: 시간은 흘렀고 T1이 한 시간 늦게 표시, 그 시간의 기록부 3쪽 누락 (v1.9) | 기록 목록상 3쪽의 목적지 (Saint-Sulpice) |
 | 11 | **The Unwritten Hour** | Saint-Sulpice area (map pin: Luxembourg Gardens) | 원본·수정본·삭제 승인 | Arts et Métiers 원본 장치 |
 | 12 | **The Clockmaker's Truth** | Arts et Métiers | 인물 책임 분리, 장치 정상화, 최종 추리 | 시즌 완결 |
 
@@ -318,6 +318,36 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 **Keep hidden:** Émile의 실명, Clockmaker의 동기, Victor의 삭제 승인. (Clockmaker가 시험 사업과 연관 있다는 암시는 공개해도 된다.)
 
 ## CASE 10 — THE HOUR OF SHADOWS
+
+### v1.9 확정 명세 (2026-10-24, 사용자 승인 — 아래 v1.0 기획안보다 우선)
+**상세:** `docs/SEASON2_CASE10_SPEC.md` v1.1(대사·피드백·힌트·Glossary·해시계 시각 데이터), `docs/SEASON2_CASE10_ASSET_SPEC.md` v1.1(이미지 6장, 납품·검수 승인).  
+**성격:** Case 09처럼 8–12세가 5–7분에 끝내는 사건. 오답은 진행을 초기화하지 않는다.  
+**Location:** 개선문 지붕 아래의 가상 **Star Room**(문짝에 T1 받침과 같은 별, 벽의 황동 명판 `TRIAL RECORDS · KEPT AT THE STAR`) → 지붕(가상의 T1 기둥과 오래된 해시계). Map pin: Arc de Triomphe. 실제 개선문에 그런 방이 있다고 단정하지 않는다.  
+**Intro:** Case 09의 별(T1 받침)과 꼬리표를 회수한다. `In the garden, we tested a model. These records are from the real trial.`로 **모형과 실제 기록을 구분**한다.  
+**Core deduction:** 시험 시계 T1의 기록에는 3시가 없지만, 시험 시계가 아닌 시계들과 해는 그 한 시간이 흘렀음을 보여 준다. **한 시간은 사라지지 않았다. T1이 한 시간 늦게 표시했고, 그 시간의 기록부 쪽이 없다.**
+
+**실제 시간 / T1 표시 (확정):** 드럼은 T1의 분침이 :00·:15·:30·:45에 닿을 때마다 T1의 시각을 찍는다(테이프는 일정 속도, 눈금 간격 = 실제 15분).
+
+| 실제 | 2:00 | 2:15 | 2:30 | 2:45 | **3:00** | 3:15 | 3:30 | 3:45 | **4:00** | 4:15 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| T1 = 테이프 | 2:00 | 2:15 | 2:30 | 2:45 | **2:00** | 2:15 | 2:30 | 2:45 | **4:00** | 4:15 |
+| 기록 | Photo 1 (해 2:00) | | | | 변화 ①: 실제 3:00, 시침 한 시간 뒤로 | | Photo 2 (해·독립 시계 3:30) | | 변화 ②: 실제 4:00, 정상 복귀 | |
+
+변화 ①·②의 원인·주체, 정각에 일어난 이유는 공개하지 않는다.
+
+- **M1 · The Drum Tape (테이프 펼치기 + 점프 탭):** T1이 15분마다 찍은 테이프 `2:00 · 2:15 · 2:30 · 2:45 · 2:00 · 2:15 · 2:30 · 2:45 · 4:00 · 4:15`에서 시간이 건너뛰는 두 곳(두 번째 2:00, 4:00)을 찾는다. 테이프에는 3시가 없다. Case 01 `The Clockmaker steals an hour.`는 **질문으로만** 회상한다. **증거:** `T1 Drum Tape`.
+- **M2 · A City of Clocks (돋보기 + 출처 분류):** Roof Photo 2(한 순간)의 시계 4개를 `TRIAL CLOCK`(T1, 기둥에 별) / `NOT A TRIAL CLOCK`(카페·성당·우체국)으로 나눈다. 분류 근거는 Case 09 `Trial Map`(장소·표식)뿐이고, Case 09 모형의 연동 동작은 쓰지 않는다. 분류 후 공개되는 시각: T1 2:30, 나머지 셋 3:30. **확정 범위: T1은 독립 시계보다 한 시간 늦었고, 독립 시계들은 서로 같은 시각이었다.** T2·T3의 상태는 확정하지 않는다. **증거:** `Independent Time Log`.
+- **M3 · The Hour of Shadows (해 끌기 → 그림자 재현):** 지붕 해시계 위의 해 토큰(코드 아이콘 `InkGlyph.sun`, 이미지 없음)을 궤도를 따라 끌어, 그림자의 **방향과 길이**를 Photo 1·2 속 그림자와 같게 만든다. Photo 1: T1 2:00 = 해 2:00(해시계 신뢰 기준), Photo 2: T1 2:30, 해 3:30. `No one can set the sun.` Case 06 편지 `The clocks may lie.`는 인용만 한다. **증거:** `The Shadow Check`.
+- **Final · The Hour Was Recorded (시간축 정렬 + 빠진 쪽 + 결론):** (1) Photo 1 핀(첫 2:00)을 기준으로 Photo 2의 순간을 테이프에서 탭한다 → **두 번째 2:30**(6눈금 = 1시간 30분). 해 시각 줄이 깔리며 t5–t8 아래에 3:00–3:45가 드러나고 변화 ①(3:00)·②(4:00)가 표시된다. (2) Trial Log 목차 p.1–4(p.3 = 3:00–4:00)와 실제 쪽 p.1·p.2·p.4를 비교해 p.3을 탭한다(쪽 본문은 읽히지 않음, **찢김·제본 흔적 없음**). (3) 3지선다 정답 `The hour was there. T1 was one hour behind, and the page about it is missing.`(오답: 시간이 사라졌다 / 파리의 모든 시계가 늦었다). 직후 `In the garden, a model showed what could happen. This tape shows what happened to T1.` **증거:** `The Hour Was Recorded`.
+- **Case Closed · Next Lead (점수 없음):** Case 03 회상 **한 번**(`At the Eiffel Tower, an old time-recording machine hid a plaque: ONE HOUR IS MISSING. THE CLOCK IS STILL RUNNING. Was it about this hour? We don't know yet.`). Trial Log 뒤표지 안쪽 RECORD LIST의 `p.3 · SENT TO: SAINT-SULPICE · ARCHIVE ANNEX` 줄을 탭 → 지도의 Luxembourg Gardens 북쪽 끝 `Saint-Sulpice`. `SENT TO`는 **목록에 적힌 목적지일 뿐**이며 실제 도착 여부는 확정하지 않는다(`Is page 3 really there? Who sent it, and why? The list doesn't say.`).
+
+**결론:** `The hour was there. T1 was one hour behind, and the page about it is missing.`  
+**End hook:** `Who sent page 3 away — and why?` → Case 11.  
+**새로 확정한 사실 (v1.9):** Star Room·지붕 위 T1 기둥·지붕 해시계(모두 가상), 기록 4종(T1 드럼 테이프, 같은 자리에서 찍은 지붕 사진 2장, Trial Log p.1·p.2·p.4, RECORD LIST), 위 실제 시간/T1 표시 표, Trial Log 3쪽(3:00–4:00)이 책에 없음, RECORD LIST상 3쪽의 목적지 `SAINT-SULPICE · ARCHIVE ANNEX`. 기록 드럼은 Case 03 시간 기록 장치와 다른 장치다(연결 암시 금지).  
+**Keep hidden (v1.9):** 3쪽의 실제 내용, 3쪽을 보낸 사람·이유, 기록이 사라진 정확한 경위, 3쪽의 실제 도착 여부, 제본 흔적, T1이 틀린 원인과 책임자, 4:00에 고친 주체, **T2·T3의 실제 시험 결과**, Émile·Victor 관련 반전, Clockmaker의 정체, Case 03 명판을 남긴 사람, 과거 시험 사고 날짜, 가방·방패 배지·보라색 도장. `removed` / `THE RECORD WAS REMOVED`는 쓰지 않는다.  
+**Boundary:** Case 09 모형에서 T1–T3이 함께 움직인 것을 과거 사건의 증거로 쓰지 않는다. 결론은 T1에 한정한다. Case 01 역 시계(현재 한 시간 늦음)와 과거 T1을 같은 원인으로 말하지 않는다(§2.4).
+
+### v1.0 기획안 (참고용, v1.9 확정 명세로 대체됨)
 **Location:** Arc de Triomphe area; fictional trial marker and exhibit.  
 **Opening question:** `Was the hour lost — or was the clock wrong?`
 
@@ -401,7 +431,8 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | P.'s last sketch (같은 가방 + 정원의 작은 모형 시계) | Case 08 | Case 09 | 다음 조사 장소(Luxembourg Gardens)의 물증; 모형의 기능은 Case 09에서 |
 | Trial map and gear diagram | Case 09 | Case 10, 12 | 제한된 시험망의 작동 방식. *(v1.7)* 시험 시계 T1 Arc · T2 Seine Quays · T3 Arts et Métiers, 기록 꼬리표 `KEPT AT THE STAR` → T1 |
 | Why the bag was beside the little clock (P.'s last sketch) | Case 08–09 | Case 11 (예정) | *(v1.7)* 미해결 단서로 관리. Case 09에서 공개하지 않음. 구체적 이유는 미창작 |
-| Independent time log | Case 10 | Case 12 | 실제 시간 소멸 부정 |
+| Independent time log | Case 10 | Case 12 | 실제 시간 소멸 부정. *(v1.9)* `T1 Drum Tape`(3시 없음, 2시대 두 번) + `Independent Time Log`(Photo 2: T1 2:30, 시험 시계가 아닌 시계 셋 3:30) + `The Shadow Check`(해 2:00 / 3:30) → `The Hour Was Recorded`. T1에 한정, T2·T3 미확정 |
+| Trial Log p.3 missing / RECORD LIST `SENT TO` | Case 10 | Case 11 | *(v1.9)* 3:00–4:00 쪽이 Star Room의 책에 없음. 목록상 목적지 `SAINT-SULPICE · ARCHIVE ANNEX`(도착 여부·보낸 사람·이유·내용 미확정) |
 | Original test log / removal order | Case 11 | Case 12 | Victor의 삭제 지시와 Émile의 경고 |
 
 **Notebook design principle:** 매 Case 최소 1회 이미 얻은 단서를 실제 풀이에 활용한다. 플레이어가 증거를 기억 못 해도 Notebook에서 다시 확인 가능해야 한다. 앞선 Case를 재플레이해야만 풀 수 있는 구조는 금지.
@@ -422,7 +453,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | 07 | 오페라 기록(FILE 3)의 CURTAIN UP이 4:00에서 3:00으로 사후 수정됨(덧붙인 종이 아래 원래 4:00), 수정 슬립과 바늘 없는 시계 + 월계관 도장, 슬립 뒷면 `ABBESSES` 스케치와 `P. KNEW THE BAG.` | 수정자·지시자·이유, 그림 쪽지 작성자, 슬립이 배경막 뒤에 있던 이유, P.와 배경막의 관계, Victor의 최종 책임과 모든 이름·이니셜 |
 | 08 | 화가가 본 것은 기록 가방을 옮기는 행위. 그 가방에서 Case 07 슬립과 같은 양식·도장의 **시간 변경 종이**가 떨어졌다(`A paper for changing a time fell from the bag.`). 가방에는 방패 배지가 있다. 같은 가방이 정원의 작은 모형 시계 옆에 있었다 → Luxembourg Gardens | 얼굴·개인 신원·소속, 배지 의미, 종이의 대상 기록과 시각, 기록 변경자·지시자, 모형 시계의 기능(Chronos 시험), 그림 날짜 |
 | 09 | 일부 시험 시계가 하나의 기준값에 연결될 수 있음(시험 시계는 세 곳, 잘못된 설정 하나가 이어진 시계만 함께 바꿈), Clockmaker의 톱니 표식이 시험 장치 설계 문양과 같음, 두 바늘은 No. 7 수리 메모에 있음(서로 다른 종이), 별 표식 → Arc de Triomphe | Clockmaker 실명·동기, 두 표식의 동일인 여부, 삭제 책임, 실제 시간 소멸 여부, 가방이 정원에 온 이유 |
-| 10 | 시간이 실제로 사라진 것은 아님 | 삭제 승인자 |
+| 10 | 시간이 실제로 사라진 것은 아님. *(v1.9)* 과거 시험 날 실제 3:00–4:00 동안 T1은 한 시간 늦게 표시했고 4:00에 정상으로 돌아왔다. 시험 시계가 아닌 시계들과 해가 그 시각을 증명한다. Trial Log 3쪽(3:00–4:00)이 없고, 목록상 목적지는 Saint-Sulpice Archive Annex | 삭제 승인자, 3쪽 내용·보낸 사람·이유·도착 여부, T1이 틀린 원인·책임자, T2·T3 결과, 제본 흔적, Émile·Victor·Clockmaker 관련 |
 | 11 | Victor가 과거 삭제를 승인함 | Émile의 현재 행동 동기 전체 |
 | 12 | Clockmaker = Émile, 런던 계획의 목적(작업실 안 보관함의 파리 시험 자료와 Big Ben 정지 잠금 원리), 런던·파리 행동의 동기와 책임, Victor의 별개 책임, 전체 진상 | 모두 공개 (§2.6 미확정 항목은 확정 전 언급 금지) |
 
@@ -439,7 +470,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 7→8 **수정 슬립 뒷면의 P. 스케치(`ABBESSES`)와 `P. KNEW THE BAG.`**가 Abbesses를 가리킨다.  
 8→9 **화가의 정원 모형 스케치**가 Luxembourg Gardens를 가리킨다. *(v1.6)* 마지막 그림 속 가방이 Bag Sketch와 같은 가방(납작함, 버클 2개, 방패 배지)이고, 그림의 궁전·분수가 있는 둥근 연못·꽃밭이 지도의 Luxembourg Gardens와 일치한다.  
 9→10 **시험망 기록 코드와 Arc de Triomphe의 표식**이 다음 자료를 가리킨다. *(v1.7)* M2 기록 꼬리표 `TRIAL RECORDS · KEPT AT THE STAR`의 별이 M1 시계 모형 T1의 받침 별과 같고, T1은 지도의 Arc de Triomphe에 놓여 있다.  
-10→11 **누락 페이지 보존 목록**이 Saint-Sulpice 인근 기록실을 가리킨다.  
+10→11 **누락 페이지 보존 목록**이 Saint-Sulpice 인근 기록실을 가리킨다. *(v1.9)* Trial Log 뒤표지 안쪽 RECORD LIST의 `p.3 · SENT TO: SAINT-SULPICE · ARCHIVE ANNEX`. 목록에 적힌 목적지일 뿐이므로, 3쪽이 실제로 거기 있는지는 Case 11에서 확인한다.  
 11→12 **원본 장치 보존 목록**이 Arts et Métiers를 가리킨다.
 
 **원칙:** 다음 장소는 우연히 발견하지 않는다. 각 Case의 Final이 다음 장소로 갈 **검증 가능한 물증**을 남긴다.
@@ -484,3 +515,4 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 - **v1.6 (2026-10-23):** 사용자 승인에 따라 Case 08 확정 명세 추가. 제목 `The Painter's Last Sketch` 유지(가제 `The Hidden Bag` 폐기). Intro는 Case 07 슬립 뒷면 재표시(Case 07 데이터 변경 없음). M1 Case 02 Hidden Sketch 그림(배치) + inscription(black gate)으로 세 모퉁이 중 Corner 2 선택, M2 연필화 3장을 하늘 밝기·가로등으로 순서 배열(그림자는 근거로 쓰지 않음) + 겹쳐 보기 + "종이는 가방에서 떨어졌다" 추론, 방패 배지 유지, M3 P.의 쪽지(주웠다는 사실만) + 펼치기 + Case 07 슬립과 같은 점·없는 점(FILE 번호·시 숫자 찢김, `:00 →`), Final 종이를 그림 여백 확대 그림에 겹치기 + 증거 보드(Case 07 슬립 직접 제공) → `A paper for changing a time fell from the bag.`, Case Closed Next Lead(같은 가방 확인 → 지도로 Luxembourg Gardens). §3 P. 행, §5 08행, §6 Case 08(v1.0 기획안은 참고용으로 보존), §7 슬립 도장·가방 그림 행 갱신과 찢긴 종이·마지막 그림 행 추가, §8 08행, §9 8→9 갱신. Case 01–07, Case 09–12 기획, Season 1 설정은 변경 없음.
 - **v1.7 (2026-10-23):** 사용자 승인에 따라 Case 09 확정 명세 추가(간소화, 5–7분). M1 시계 모형 3개를 지도에 놓기(T1 Arc · T2 Seine Quays · T3 Arts et Métiers, 받침 표식 별·아치 세 개·종), M2 톱니 2개 끼우기 + `The gears move the model. The real trial used wires.` + 기록 꼬리표 `KEPT AT THE STAR`, M3 Notebook 표식 두 개를 설계도 EMBLEM(Case 01 clue 톱니 8개 아이콘 기준)과 수리 메모 두 바늘에 잇기(동일인 결론 금지, Recall 시스템 변경 없음), Final 바늘 다시 끼우기 연출(Case 07·08 도장과 연결 안 함) + 4:00 → 3:00 TEST + 3지선다, Case Closed 별 → T1 → Arc de Triomphe. 가방이 정원에 온 이유는 Case 11 회수 예정 미해결 단서로 등록(이유 미창작). §6 Case 09(v1.0 기획안은 참고용으로 보존), §7 표식·시험 지도 행 갱신과 가방 미해결 행 추가, §8 09행, §9 9→10 갱신. Case 01–08, Case 10–12 기획, Season 1 설정은 변경 없음.
 - **v1.8 (2026-10-23):** Case 08 → 09 → 10 연결 대사 원칙 추가(§6 Case 09 `연결 원칙`, Final 직후 문장 교체). 퍼즐·에셋·증거·시험 시계 위치·4:00 → 3:00·미해결 단서(가방 방문 목적, Case 11)는 변경 없음. Case 01–08, Case 10–12, Season 1 설정 변경 없음.
+- **v1.9 (2026-10-24):** 사용자 승인에 따라 Case 10 확정 명세 추가. Star Room(가상)에서 M1 T1 드럼 테이프 점프 찾기(3시 없음), M2 지붕 사진 시계 4개를 시험 시계 / 아닌 시계로 분류(T1 2:30 vs 독립 시계 3:30, T2·T3 미확정, Case 09 모형 연동을 증거로 쓰지 않음), M3 해 토큰(`InkGlyph.sun`, 이미지 없음)으로 해시계 그림자 방향·길이 재현(해 2:00 / 3:30), Final 테이프 위 시간축 정렬(두 번째 2:30) + Trial Log 3쪽 누락 + 3지선다, Case Closed Case 03 회상 한 줄 + RECORD LIST `SENT TO`(목적지만, 도착 미확정) → Saint-Sulpice. 실제 시간/T1 표시 타임라인 확정(실제 3:00 한 시간 뒤로, 실제 4:00 정상 복귀, 원인·주체 비공개). Bible v1.0 Case 10 M2 `The Signal Table`(Case 09 Final과 중복)과 증거 `Signal Test Result`, `Missing Page Reference`는 폐기(`The Shadow Check`, `The Hour Was Recorded`로 대체). §5 10행, §6 Case 10(v1.0 기획안은 참고용으로 보존), §7 독립 시간 기록 행 갱신과 3쪽 누락 행 추가, §8 10행, §9 10→11 갱신. Case 01–09, Case 11–12 기획, Season 1 설정은 변경 없음. *(같은 날 보정: 에셋 검수 승인에 따라 Case 10 상세 문서 참조를 v1.1로, Star Room 묘사를 "문짝의 별·벽의 황동 명판"으로 맞춤. 스토리·퍼즐 변경 없음.)*

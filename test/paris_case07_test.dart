@@ -326,7 +326,7 @@ void main() {
 
   group('in the game', () {
     test('Case 07 is in the game, after Case 06, at the Palais Garnier, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
       expect(season2AwaitingArtJson, isEmpty);
       expect(SeasonCatalog.isAwaitingArt('s2_ep07'), isFalse);
       expect(const MockEpisodeRepository().fetchEpisode('s2_ep07'), completes);

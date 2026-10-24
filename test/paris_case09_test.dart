@@ -220,7 +220,7 @@ void main() {
 
   group('in the game', () {
     test('Case 09 is in the game, after Case 08, in the Luxembourg Gardens, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
       expect(season2AwaitingArtJson, isEmpty);
       expect(const MockEpisodeRepository().fetchEpisode('s2_ep09'), completes);
       expect(case09.number, 9);
@@ -254,9 +254,10 @@ void main() {
       }
     });
 
-    test("Case 09's Case Closed tells Case 10's title (the bible's), and its question; Case 08 is as it was", () {
+    test("Case 09 leads on to Case 10 (the bible's title), now in the game, and its question; Case 08 is as it was", () {
       final season = SeasonCatalog.byId(SeasonIds.paris)!.season;
-      expect(season.upcomingTitles, {10: 'The Hour of Shadows'});
+      expect(season.upcomingTitles.containsKey(10), isFalse, reason: 'Case 10 is no longer to come: it is in the game');
+      expect(inGame.firstWhere((e) => e.id == 's2_ep10').title, 'The Hour of Shadows');
       final bible = File('docs/SEASON2_PARIS_STORY_BIBLE.md').readAsStringSync();
       expect(bible, contains('| 10 | **The Hour of Shadows** | Arc de Triomphe |'));
       expect(case09.hook, 'Was the hour lost — or was the clock wrong?');
@@ -509,7 +510,7 @@ void main() {
       expect(c.read(progressRepositoryProvider).load('s2_ep08').examined.any((k) => k.startsWith('s2_ep09')), isFalse);
     });
 
-    test('solved: Paris is 9 of 12, Case 10 is coming soon, nothing opens it; London is as it was', () async {
+    test('solved: Paris is 9 of 12, Case 10 opens next; London is as it was', () async {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -518,10 +519,10 @@ void main() {
       }
       final board = c.read(seasonOverviewProvider);
       expect(board.solvedCount, 9);
-      expect(board.comingSoonCase, 10);
+      expect(board.comingSoonCase, isNull, reason: 'Case 10 is in the game: nothing is only coming');
       final available = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect((available.solvedCount, available.plannedCount), (9, 12));
-      expect(game.openEpisode('s2_ep10'), isFalse, reason: 'no Case 10 to open');
+      expect(game.openEpisode('s2_ep10'), isTrue, reason: 'Case 10 opens after Case 09');
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12));
     });
   });
@@ -850,15 +851,16 @@ void main() {
         expect(findReadable('The mystery continues at the Arc de Triomphe!'), findsOneWidget);
         await shot('final_scene');
         await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 4000));
-        await reveal(t, find.byKey(const ValueKey('next-case-coming-soon')));
-        expect(find.text('CASE 10 · THE HOUR OF SHADOWS'), findsOneWidget);
-        expect(find.text('COMING SOON'), findsOneWidget);
+        // Case 10 is in the game: its case file opens next.
+        await reveal(t, find.text('OPEN CASE 10'));
+        expect(find.text('OPEN CASE 10'), findsOneWidget);
+        expect(find.text('COMING SOON'), findsNothing);
         await shot('case_closed');
 
         final board = ref.read(seasonOverviewProvider);
         expect(board.solvedCount, 9);
-        expect(board.comingSoonCase, 10);
-        expect(game.openEpisode('s2_ep10'), isFalse);
+        expect(board.comingSoonCase, isNull);
+        expect(game.openEpisode('s2_ep10'), isTrue);
         expect(ref.read(walletProvider).balance, greaterThan(coinsAtStart), reason: 'the case paid its coins');
         await wait(t, const Duration(seconds: 3));
       });
@@ -884,9 +886,9 @@ void main() {
       await wait(t, const Duration(seconds: 14));
       expect(t.getRect(picture), first);
       expect(find.byKey(const ValueKey('intro-picture-garden')), findsOneWidget);
-      // No other case's opening has such a picture: their openings are as
-      // they were.
-      for (final e in inGame.where((e) => e.id != 's2_ep09')) {
+      // No case before it has such a picture: their openings are as they
+      // were (Case 10's, after it, has its own).
+      for (final e in inGame.where((e) => e.id != 's2_ep09' && e.id != 's2_ep10')) {
         expect(SeasonCatalog.introPicture(e.id), isNull, reason: e.id);
       }
       expect(t.takeException(), isNull);

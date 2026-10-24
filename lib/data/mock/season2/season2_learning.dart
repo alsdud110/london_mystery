@@ -35,6 +35,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Joined or not: same, big and small, one hour back',
     titleKo: '이어졌나 아닌가: same, big/small, one hour back',
   ),
+  's2_ep10': CaseLanguageTopic(
+    title: 'Time words: after, behind, missing',
+    titleKo: '시간 표현: after, behind, missing',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -364,5 +368,37 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '"Set the tower one hour back."에 따라 탑을 4시에서 3시로 옮겨 시험하고, 결과가 보여 주는 만큼만 결론("Only the joined clocks went wrong.")을 고른다.',
     expressions: ['Set the tower one hour back.', 'Only the joined clocks went wrong.'],
+  ),
+  // The tape's rule read, then the two marks that break it.
+  's2_ep10_m1': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '"Each one should be fifteen minutes after the last."를 읽고 테이프의 시각을 하나씩 따라가, 시간이 건너뛰는 두 곳(2:45 → 2:00, 2:45 → 4:00)을 찾는다.',
+    expressions: ['Each one should be fifteen minutes after the last.', 'Where does the time jump?'],
+  ),
+  // Sorted by where each clock comes from, not by the time it shows.
+  's2_ep10_m2': LearningObjective(
+    dependency: LanguageDependency.exposure,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.vocabulary,
+    objective: '"Is it a trial clock?"에 답하며 사진 속 시계를 Trial Map의 표식으로 나누고, 시험 시계가 아닌 시계들이 서로 같은 시각임을 확인한다.',
+    expressions: ['Is it a trial clock?', 'The other clocks are not trial clocks.'],
+  ),
+  // The shadow made the same as the photo's: the sun's time read.
+  's2_ep10_m3': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '"Make the same shadow as in the photo."를 읽고 해를 움직여 그림자의 방향과 길이를 사진과 맞추고, 해의 시각을 읽는다.',
+    expressions: ['Make the same shadow as in the photo.'],
+  ),
+  // The two records laid together; then no more than they show.
+  's2_ep10_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '두 사진의 시각으로 테이프에서 Photo 2의 순간을 찾고 빠진 쪽을 확인한 뒤, 기록이 보여 주는 만큼만 결론("T1 was one hour behind, and the page about it is missing.")을 고른다.',
+    expressions: ['Was the hour lost — or was the clock wrong?', 'T1 was one hour behind, and the page about it is missing.'],
   ),
 };

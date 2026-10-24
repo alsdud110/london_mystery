@@ -53,7 +53,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
     final picture = SeasonCatalog.introPicture(ref.read(currentEpisodeProvider).id);
     if (picture == null) return;
     _picturesReady = false;
-    final files = [picture.from, picture.to, ?picture.clock?.dial];
+    final files = [picture.from, picture.to, ?picture.clock?.dial, ?picture.inset?.file];
     // A picture that cannot be read never holds the story up: no longer
     // than a moment, whatever happens.
     Future.wait([for (final f in files) precacheImage(AssetImage(f), context, onError: (_, _) {})])
@@ -193,7 +193,7 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                                   constraints: BoxConstraints(
                                     maxWidth: math.min(380, MediaQuery.sizeOf(context).height * 0.27 * picture.pixels.aspect),
                                   ),
-                                  child: IntroPictureView(picture: picture, turned: _line >= picture.turnAtLine),
+                                  child: IntroPictureView(picture: picture, turned: _line >= picture.turnAtLine, line: _ready ? -1 : _line),
                                 ),
                               ),
                             ),

@@ -4,6 +4,7 @@ import '../models/dialogue.dart';
 import '../models/discovery.dart';
 import '../models/episode.dart';
 import '../models/garden_puzzles.dart';
+import '../models/star_puzzles.dart';
 import '../models/investigation.dart';
 import '../models/learning.dart';
 import '../models/letter_puzzles.dart';
@@ -40,6 +41,7 @@ import 'season2/season2_case06_scenes.dart';
 import 'season2/season2_case07_scenes.dart';
 import 'season2/season2_case08_scenes.dart';
 import 'season2/season2_case09_scenes.dart';
+import 'season2/season2_case10_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -98,6 +100,10 @@ class SeasonContent {
     this.gearBoards = const {},
     this.makerMarks = const {},
     this.towerTests = const {},
+    this.drumTapes = const {},
+    this.cityClocks = const {},
+    this.shadowChecks = const {},
+    this.hourRecords = const {},
     this.introPictures = const {},
     this.introPlaques = const {},
     this.introPapers = const {},
@@ -216,6 +222,14 @@ class SeasonContent {
   final Map<String, MakerMarksScene> makerMarks;
   final Map<String, TowerTestScene> towerTests;
 
+  /// Missions played on Case 10's pictures (Season 2): T1's tape and its
+  /// jumps, the roof photo's clocks sorted, the sundial's shadow made, and
+  /// the final's tape laid beside the sun's time.
+  final Map<String, DrumTapeScene> drumTapes;
+  final Map<String, CityClocksScene> cityClocks;
+  final Map<String, ShadowCheckScene> shadowChecks;
+  final Map<String, HourRecordScene> hourRecords;
+
   /// By case id: a picture under the case's opening lines that turns into
   /// another (Case 09: P.'s drawing into the garden).
   final Map<String, IntroPicture> introPictures;
@@ -317,7 +331,11 @@ final season2Content = SeasonContent(
   gearBoards: season2GearBoards,
   makerMarks: season2MakerMarksScenes,
   towerTests: season2TowerTests,
-  introPictures: season2IntroPictures,
+  drumTapes: season2DrumTapes,
+  cityClocks: season2CityClocksScenes,
+  shadowChecks: season2ShadowChecks,
+  hourRecords: season2HourRecords,
+  introPictures: {...season2IntroPictures, ...season2Case10IntroPictures},
   introPlaques: season2IntroPlaques,
   introPapers: season2IntroPapers,
   evidenceArt: {
@@ -328,6 +346,7 @@ final season2Content = SeasonContent(
     ...season2Case07EvidenceArt,
     ...season2Case08EvidenceArt,
     ...season2Case09EvidenceArt,
+    ...season2Case10EvidenceArt,
   },
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
@@ -340,6 +359,7 @@ final season2Content = SeasonContent(
     ...season2Case07EvidenceLinks,
     ...season2Case08EvidenceLinks,
     ...season2Case09EvidenceLinks,
+    ...season2Case10EvidenceLinks,
   },
   storyScenes: {
     ...season2StoryScenes,
@@ -351,6 +371,7 @@ final season2Content = SeasonContent(
     ...season2Case07StoryScenes,
     ...season2Case08StoryScenes,
     ...season2Case09StoryScenes,
+    ...season2Case10StoryScenes,
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
@@ -514,10 +535,19 @@ abstract final class SeasonCatalog {
 
   static TowerTestScene? towerTest(Mission m) => ofMission(m.id)?.towerTests[m.id];
 
+  static DrumTapeScene? drumTape(Mission m) => ofMission(m.id)?.drumTapes[m.id];
+
+  static CityClocksScene? cityClocks(Mission m) => ofMission(m.id)?.cityClocks[m.id];
+
+  static ShadowCheckScene? shadowCheck(Mission m) => ofMission(m.id)?.shadowChecks[m.id];
+
+  static HourRecordScene? hourRecord(Mission m) => ofMission(m.id)?.hourRecords[m.id];
+
   /// Whether final [m]'s case closes only after a step after its answer
   /// (Paris Case 08: P.'s last drawing, matched to the map; Case 09: the
-  /// star followed to the map), not with the answer itself.
-  static bool closesAfterLastStep(Mission m) => m.isFinal && (tornHour(m) != null || towerTest(m) != null);
+  /// star followed to the map; Case 10: the record list read), not with
+  /// the answer itself.
+  static bool closesAfterLastStep(Mission m) => m.isFinal && (tornHour(m) != null || towerTest(m) != null || hourRecord(m) != null);
 
   /// The picture under case [episodeId]'s opening lines that turns into
   /// another, if any.

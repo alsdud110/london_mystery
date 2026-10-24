@@ -49,6 +49,10 @@ const Map<String, DiscoveryType> season2DiscoveryTypes = {
   's2_ep09_m1': DiscoveryType.deduction, // only three places have trial clocks
   's2_ep09_m2': DiscoveryType.deduction, // the tower turns only the joined clocks
   's2_ep09_m3': DiscoveryType.evidenceFound, // the two marks, on two papers
+  // ── Case 10 — The Hour of Shadows ───────────────────────────────────
+  's2_ep10_m1': DiscoveryType.evidenceFound, // T1's tape: no three o'clock
+  's2_ep10_m2': DiscoveryType.deduction, // T1 one hour behind the other clocks
+  's2_ep10_m3': DiscoveryType.deduction, // the sun says 3:30 too
 };
 
 /// The Discovery Moments of Season 2's regular missions in [cases] (case id

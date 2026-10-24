@@ -13,6 +13,7 @@ import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/landmark_art.dart' show ClockHandsPainter;
 import 'river_papers.dart' show PictureCanvas;
+import 'star_records.dart' show PlateCloser, StarRoomPicture;
 
 /// Season 2, Case 09 — The Clockwork Garden, played on its pictures
 /// (`docs/SEASON2_CASE09_SPEC.md`): the little clocks put back on the map,
@@ -185,27 +186,84 @@ class GardenPicture extends StatelessWidget {
 // ── The opening ─────────────────────────────────────────────────────────
 
 /// P.'s last drawing under the opening's lines, turning into the garden
-/// once the detective walks in ([turned]).
+/// once the detective walks in ([turned]). Case 10: the arch, T1's star laid
+/// over it for its lines ([IntroPicture.inset]), turning into the room
+/// under the roof, its things ringed line by line ([line]) and its plate
+/// shown up close on the plate's line.
 class IntroPictureView extends StatelessWidget {
-  const IntroPictureView({super.key, required this.picture, required this.turned});
+  const IntroPictureView({super.key, required this.picture, required this.turned, this.line = -1});
 
   final IntroPicture picture;
   final bool turned;
 
+  /// The opening's line being told (-1: none in particular).
+  final int line;
+
   @override
   Widget build(BuildContext context) {
+    final inset = picture.inset;
+    final insetShown = inset != null && line >= inset.fromLine && line < inset.toLine;
     final drawing = Semantics(
       image: true,
-      label: picture.fromLabel,
+      label: insetShown ? '${picture.fromLabel}. ${inset.label}' : picture.fromLabel,
       excludeSemantics: true,
       child: PictureCanvas(
         key: const ValueKey('intro-picture-drawing'),
         pixels: picture.pixels,
-        child: Image.asset(picture.from, fit: BoxFit.fill, excludeFromSemantics: true),
+        child: Stack(
+          children: [
+            Positioned.fill(child: Image.asset(picture.from, fit: BoxFit.fill, excludeFromSemantics: true)),
+            if (inset != null)
+              // T1 and its star, in the corner while the lines tell of it.
+              Positioned(
+                right: picture.pixels.width * 0.03,
+                bottom: picture.pixels.height * 0.03,
+                width: picture.pixels.width * 0.32,
+                height: picture.pixels.width * 0.32,
+                child: AnimatedOpacity(
+                  key: const ValueKey('intro-picture-inset'),
+                  opacity: insetShown ? 1 : 0,
+                  duration: _still(context) ? Duration.zero : const Duration(milliseconds: 500),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.navyDeep.withValues(alpha: 0.72),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.goldLight, width: 8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(36),
+                      child: Image.asset(inset.file, fit: BoxFit.contain, excludeFromSemantics: true),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
     final clock = picture.clock;
-    final garden = clock == null
+    final room = picture.room;
+    final ring = [for (final m in picture.marks) if (m.line == line) m.area].firstOrNull;
+    final plateUp = room != null && ring != null && ring.contains(room.plateCentre);
+    final garden = room != null
+        ? LayoutBuilder(
+            builder: (context, box) => Stack(
+              children: [
+                StarRoomPicture(room: room, ring: ring),
+                // The plate's words are small in the room: up close, here.
+                Positioned(
+                  right: 6,
+                  bottom: 6,
+                  child: AnimatedOpacity(
+                    opacity: plateUp ? 1 : 0,
+                    duration: _still(context) ? Duration.zero : const Duration(milliseconds: 450),
+                    child: PlateCloser(room: room, size: math.min(box.maxWidth * 0.5, 170)),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : clock == null
         ? PictureCanvas(pixels: picture.pixels, child: Image.asset(picture.to, fit: BoxFit.fill, excludeFromSemantics: true))
         : GardenPicture(file: picture.to, pixels: picture.pixels, clock: clock, label: picture.toLabel);
     return ClipRRect(

@@ -18,6 +18,7 @@ import '../../data/models/garden_puzzles.dart';
 import '../../data/models/letter_puzzles.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/opera_puzzles.dart';
+import '../../data/models/star_puzzles.dart';
 import '../../data/models/painter_puzzles.dart';
 import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
@@ -43,6 +44,7 @@ import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/canvas_choice.dart';
 import 'widgets/clockwork_garden.dart';
+import 'widgets/star_records.dart';
 import 'widgets/evidence_board.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
 import 'widgets/letter_map.dart';
@@ -146,6 +148,28 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       // The last step done: now the case is closed (solved, the next case
       // file open), never with the answer alone.
       ref.read(gameControllerProvider.notifier).closeCase(_starKey);
+      setState(() {});
+    }
+  }
+
+  /// Photo 2 found on T1's tape, page 3 found missing, then the question,
+  /// then the record list read (Paris Case 10), or null.
+  HourRecordScene? get _record => SeasonCatalog.hourRecord(_mission);
+
+  String get _photoKey => GameProgress.examinedKey(_mission.id, HourRecordScene.photoId);
+  String get _pageKey => GameProgress.examinedKey(_mission.id, HourRecordScene.pageId);
+  String get _listKey => GameProgress.examinedKey(_mission.id, HourRecordScene.leadId);
+
+  /// Both of the record's steps done: the question is asked.
+  bool get _recordAsked => ref.watch(gameControllerProvider).hasExamined(_photoKey) && ref.watch(gameControllerProvider).hasExamined(_pageKey);
+
+  Future<void> _readRecordList() async {
+    ref.read(audioServiceProvider).play(GameSound.paperRustle);
+    final done = await showRecordListLead(context, _record!.lead);
+    if (done == true && mounted) {
+      // The last step done: now the case is closed (solved, the next case
+      // file open), never with the answer alone.
+      ref.read(gameControllerProvider.notifier).closeCase(_listKey);
       setState(() {});
     }
   }
@@ -503,9 +527,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final table = _lightTable;
     final hour = _tornHour;
     final tower = _tower;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null && table == null && hour == null && tower == null)) return;
+    final record = _record;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null && table == null && hour == null && tower == null && record == null)) return;
     _precached = true;
-    final files = tower != null
+    final files = record != null
+        ? [record.room.file, record.logFile, record.lead.mapFile]
+        : tower != null
         ? [tower.garden, tower.dialFile, tower.lead.mapFile, for (final m in tower.lead.models) m.file]
         : hour != null
         ? [hour.sketch.file, hour.study.file, hour.form.file, hour.form.stamp, hour.lead.file, hour.lead.mapFile]
@@ -808,6 +835,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final table = _lightTable;
     final hour = _tornHour;
     final tower = _tower;
+    final record = _record;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -868,6 +896,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : record != null
+                            ? (stage.maxWidth / record.room.pixels.aspect)
+                                .clamp(150.0, math.min(280.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.3)))
                             : tower != null
                             ? (stage.maxWidth / tower.gardenPixels.aspect)
                                 .clamp(150.0, math.min(280.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.3)))
@@ -904,7 +935,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: tower != null
+                          child: record != null
+                              // The room under the roof, its plate engraved.
+                              ? StarRoomStage(key: const ValueKey('record-stage'), room: record.room)
+                              : tower != null
                               // The garden, its clock at four.
                               ? TowerStage(key: const ValueKey('tower-stage'), scene: tower)
                               : hour != null
@@ -1051,7 +1085,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   List<Widget> _puzzle(Mission m, int hintsShown) => [
     // The tower untested (Case 09): the case's card above says what to do,
     // once; no heading repeats it. Then the question heads the page.
-    if (_tower != null && !ref.watch(gameControllerProvider).hasExamined(_testedKey))
+    if ((_tower != null && !ref.watch(gameControllerProvider).hasExamined(_testedKey)) || (_record != null && !_recordAsked))
       SizedBox(key: _locksKey)
     else
     GlossaryText(
@@ -1136,6 +1170,42 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           checking: _checking,
           onLook: _lookAt,
           onTurn: _turnCanvas,
+        ),
+      ),
+    ] else if (_record case final record?) ...[
+      // Photo 2 on the tape and the missing page first; then the question.
+      PaperSheet(
+        key: const ValueKey('record-sheet'),
+        padding: const EdgeInsets.all(AppSpace.md),
+        child: HourRecordPuzzle(
+          scene: record,
+          found: ref.watch(gameControllerProvider).hasExamined(_photoKey),
+          pageFound: ref.watch(gameControllerProvider).hasExamined(_pageKey),
+          onFound: () {
+            ref.read(audioServiceProvider).play(GameSound.paperPlace);
+            _recordTable(HourRecordScene.photoId);
+          },
+          onPage: () => _nextTableStep(HourRecordScene.pageId),
+        ),
+      ),
+      if (_recordAsked) ...[
+        const SizedBox(height: AppSpace.md),
+        // The page's heading asks it now (no second title).
+        ShakeOnChange(
+          trigger: _wrongPulse,
+          child: PaperSheet(
+            key: const ValueKey('record-question-sheet'),
+            padding: const EdgeInsets.all(AppSpace.lg),
+            child: questionFor(m, _submit),
+          ),
+        ),
+      ],
+      Center(
+        child: InkTextButton(
+          label: 'Reread your photos',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
         ),
       ),
     ] else if (_tower case final tower?) ...[
@@ -1469,7 +1539,23 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         ],
         // A box with something in it: looked at first (its back holds the
         // case's last words), then the story goes on.
-        if (_tower case final tower? when !ref.watch(gameControllerProvider).hasExamined(_starKey)) ...[
+        if (_record case final record? when !ref.watch(gameControllerProvider).hasExamined(_listKey)) ...[
+          // What the records show, and what is still not in the book.
+          for (final line in record.afterLines)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpace.xs),
+              child: Text(line, textAlign: TextAlign.center, style: AppText.aside(size: 17, color: AppColors.paperLight)),
+            ),
+          const SizedBox(height: AppSpace.md),
+          GameButton(
+            key: const ValueKey('final-read-list'),
+            label: record.leadLabel,
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _readRecordList,
+          ),
+        ] else if (_tower case final tower? when !ref.watch(gameControllerProvider).hasExamined(_starKey)) ...[
           // A model shows what could happen, never what did: the records.
           for (final line in tower.afterLines)
             Padding(

@@ -70,6 +70,10 @@ enum InkGlyph {
   park,
   crown,
 
+  /// The sun: a round middle and twelve short rounded rays (never pointed,
+  /// so it is never taken for a star).
+  sun,
+
   // Badges
   eye,
   stopwatch,
@@ -535,6 +539,12 @@ class _InkGlyphPainter extends CustomPainter {
           close: true,
         );
         line(4, 20.5, 20, 20.5);
+      case InkGlyph.sun:
+        canvas.drawCircle(const Offset(12, 12), 4.6, p);
+        for (var i = 0; i < 12; i++) {
+          final a = i * math.pi / 6;
+          line(12 + 7 * math.sin(a), 12 - 7 * math.cos(a), 12 + 9.4 * math.sin(a), 12 - 9.4 * math.cos(a));
+        }
       case InkGlyph.eye:
         canvas.drawPath(
           Path()

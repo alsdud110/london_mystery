@@ -26,6 +26,7 @@ import '../../data/models/opera_puzzles.dart';
 import '../../data/models/painter_puzzles.dart';
 import '../../data/models/river_puzzles.dart';
 import '../../data/models/scene_exhibit.dart';
+import '../../data/models/star_puzzles.dart';
 import '../../data/models/station_clocks.dart';
 import '../../data/models/story_picture.dart';
 import '../../data/models/tower_puzzles.dart';
@@ -83,6 +84,8 @@ import 'widgets/question_widgets.dart';
 import 'widgets/reveal_layer.dart';
 import 'widgets/river_marks.dart';
 import 'widgets/spot_differences.dart';
+import 'widgets/star_records.dart';
+import 'widgets/workshop_papers.dart' show DrawnEvidenceView;
 import 'widgets/studio_match.dart';
 import 'widgets/tip_shop.dart';
 import 'widgets/torn_slip.dart';
@@ -286,7 +289,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             SeasonCatalog.tornSlip(_mission) != null ||
             SeasonCatalog.trialMap(_mission) != null ||
             SeasonCatalog.gearBoard(_mission) != null ||
-            SeasonCatalog.makerMarks(_mission) != null);
+            SeasonCatalog.makerMarks(_mission) != null ||
+            SeasonCatalog.drumTape(_mission) != null ||
+            SeasonCatalog.cityClocks(_mission) != null ||
+            SeasonCatalog.shadowCheck(_mission) != null);
     // Case 04's hut: back walks out of it one place at a time (the ledger,
     // the inside, the outside).
     final hut = SeasonCatalog.keeperHut(_mission);
@@ -994,6 +1000,65 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         ),
       );
 
+  /// T1's tape pulled and its jumps found (both answer the mission's
+  /// puzzle); the tape pulled and the jumps found are saved.
+  Widget _tapeStage(Mission m, DrumTapeScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: DrumTapePuzzle(
+          scene: scene,
+          pulled: progress.hasExamined(GameProgress.examinedKey(m.id, DrumTapeScene.pulledId)),
+          found: DrumTapeState.decode(progress.puzzleStateOf(m.id), scene),
+          onPulled: () => _recordFound(m, DrumTapeScene.pulledId),
+          onFound: (found) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, DrumTapeState.encode(found)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The roof photo's clocks found and sorted (all sorted answer the
+  /// mission's puzzle); what is found and sorted is saved.
+  Widget _cityStage(Mission m, CityClocksScene scene, GameProgress progress) {
+    final (found, sorted) = CityClocksState.decode(progress.puzzleStateOf(m.id), scene);
+    final map = SeasonCatalog.evidenceArt(scene.trialMapId);
+    return _PuzzleStage(
+      key: const ValueKey('puzzle'),
+      mission: m,
+      hintsShown: progress.hintsFor(m.id),
+      wrongPulse: _wrongPulse,
+      onHint: () => _showHint(m),
+      onReread: () => _rereadLetter(m),
+      child: CityClocksPuzzle(
+        scene: scene,
+        found: found,
+        sorted: sorted,
+        trialMap: map is DrawnEvidenceArt ? DrawnEvidenceView(drawn: map.drawn) : null,
+        onChanged: (found, sorted) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, CityClocksState.encode(found, sorted)),
+        onSubmit: (a) => _submit(m, a),
+      ),
+    );
+  }
+
+  /// The sundial's shadow made like each photo's (both answer the
+  /// mission's puzzle); the photos matched are saved.
+  Widget _shadowStage(Mission m, ShadowCheckScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: ShadowCheckPuzzle(
+          scene: scene,
+          matched: ShadowCheckState.decode(progress.puzzleStateOf(m.id), scene),
+          onMatched: (matched) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, ShadowCheckState.encode(matched)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
   /// The backdrop is the right one: its pocket opened before the story goes
   /// on.
   Widget _pocketStage(Mission m, FlyRailScene scene) => CenteredScroll(
@@ -1299,6 +1364,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final trial = SeasonCatalog.trialMap(m);
     final gears = SeasonCatalog.gearBoard(m);
     final makers = SeasonCatalog.makerMarks(m);
+    final tape = SeasonCatalog.drumTape(m);
+    final city = SeasonCatalog.cityClocks(m);
+    final shadow = SeasonCatalog.shadowCheck(m);
 
     final Widget body = solved
         // The ledger's second page, until it is read.
@@ -1363,6 +1431,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           trial != null ||
                           gears != null ||
                           makers != null ||
+                          tape != null ||
+                          city != null ||
+                          shadow != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -1432,6 +1503,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when trial != null => _trialStage(m, trial, progress),
             MissionStage.puzzle when gears != null => _gearStage(m, gears, progress),
             MissionStage.puzzle when makers != null => _makersStage(m, makers, progress),
+            MissionStage.puzzle when tape != null => _tapeStage(m, tape, progress),
+            MissionStage.puzzle when city != null => _cityStage(m, city, progress),
+            MissionStage.puzzle when shadow != null => _shadowStage(m, shadow, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,

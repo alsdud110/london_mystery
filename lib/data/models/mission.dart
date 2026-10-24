@@ -198,7 +198,11 @@ enum Artwork {
   // Case 09's places in the Luxembourg Gardens: the garden with its little
   // clock tower, and the gear board under the model.
   luxembourgGarden,
-  gearBoard;
+  gearBoard,
+  // Case 10's places at the Arc de Triomphe: the arch, and the little room
+  // under its roof.
+  arcStarView,
+  starRoom;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart' show Offset, Rect;
 import 'letter_puzzles.dart' show MapSpot;
 import 'river_puzzles.dart' show DrawnEvidence;
 import 'scene_explore.dart' show ScenePixels;
+import 'star_puzzles.dart' show StarRoom;
 
 /// Season 2, Case 09 — The Clockwork Garden: its puzzles as they are played
 /// on the case's pictures (`docs/SEASON2_CASE09_SPEC.md`). Every place is
@@ -25,6 +26,9 @@ class IntroPicture {
     required this.fromLabel,
     required this.toLabel,
     this.clock,
+    this.room,
+    this.inset,
+    this.marks = const [],
   });
 
   final int afterLine;
@@ -37,6 +41,43 @@ class IntroPicture {
 
   /// A clock in [to] shown at four, as the story has it ([GardenClock]).
   final GardenClock? clock;
+
+  /// [to] is this room, its plate's words engraved by the app (Case 10's
+  /// Star Room).
+  final StarRoom? room;
+
+  /// A small cut-out laid over [from] for some lines (Case 10: T1's star).
+  final IntroInset? inset;
+
+  /// Rings round things in [to], each at its own line (Case 10: the door's
+  /// star, the plate).
+  final List<IntroMark> marks;
+}
+
+/// A cut-out ([file]) shown in a corner of an opening's first picture from
+/// line [fromLine] up to (not with) line [toLine].
+@immutable
+class IntroInset {
+  const IntroInset({required this.file, required this.pixels, required this.label, required this.fromLine, required this.toLine, this.view = const Rect.fromLTRB(0, 0, 1, 1)});
+
+  final String file;
+  final ScenePixels pixels;
+  final String label;
+  final int fromLine;
+  final int toLine;
+
+  /// The part of it shown (fractions).
+  final Rect view;
+}
+
+/// A soft gold ring round [area] (pixels of the turned-to picture) while
+/// the opening is on line [line].
+@immutable
+class IntroMark {
+  const IntroMark({required this.line, required this.area});
+
+  final int line;
+  final Rect area;
 }
 
 /// A clock painted in a picture whose hands the story does not want: its

@@ -144,6 +144,10 @@ void main() {
       Artwork.drawingBundle: 'assets/seasons/season_02_paris/cases/case_08/drawing_bundle.png',
       Artwork.luxembourgGarden: 'assets/seasons/season_02_paris/cases/case_09/garden_model_view.png',
       Artwork.gearBoard: 'assets/seasons/season_02_paris/cases/case_09/gear_board.png',
+      // Case 10's places at the Arc de Triomphe: the arch, and the room
+      // under its roof.
+      Artwork.arcStarView: 'assets/seasons/season_02_paris/cases/case_10/arc_star_view.png',
+      Artwork.starRoom: 'assets/seasons/season_02_paris/cases/case_10/star_room.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -177,9 +181,10 @@ void main() {
     // Montmartre painting (Case 02's first scene), Case 02's street and studio,
     // Case 03's seven (the canvas back and six places at the tower),
     // Case 04's six places on the Seine, and Case 05's four in the workshop;
-    // Case 06's four, Case 07's five, Case 08's three in Abbesses, and
-    // Case 09's two in the Luxembourg Gardens.
-    expect(ArtAssets.scenes, hasLength(67));
+    // Case 06's four, Case 07's five, Case 08's three in Abbesses,
+    // Case 09's two in the Luxembourg Gardens, and Case 10's two at the
+    // Arc de Triomphe.
+    expect(ArtAssets.scenes, hasLength(69));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,
