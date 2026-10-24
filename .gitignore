@@ -75,3 +75,6 @@ skills-lock.json
 /android/key.properties
 *service-account*.json
 *-firebase-adminsdk-*.json
+
+# Local QA screenshots and capture tools (large, not tracked)
+/qa/
