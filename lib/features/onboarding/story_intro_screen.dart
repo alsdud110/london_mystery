@@ -12,6 +12,7 @@ import '../../core/theme/app_text.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/episode.dart';
+import '../mission/widgets/clockwork_garden.dart' show IntroPictureView;
 import '../mission/widgets/river_papers.dart' show PlaqueBackView;
 import '../mission/widgets/workshop_papers.dart' show DrawnEvidenceView;
 import '../../widgets/game_button.dart';
@@ -36,6 +37,31 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
   bool _lineDone = false;
   bool _ready = false;
   Timer? _pause;
+
+  /// A case whose opening shows a picture from its first line (Case 09):
+  /// its pictures decoded before the first line is typed, so the picture
+  /// is whole when the words come (never a second late, pushing them).
+  /// Other cases start at once.
+  bool _picturesReady = true;
+  bool _precacheStarted = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_precacheStarted) return;
+    _precacheStarted = true;
+    final picture = SeasonCatalog.introPicture(ref.read(currentEpisodeProvider).id);
+    if (picture == null) return;
+    _picturesReady = false;
+    final files = [picture.from, picture.to, ?picture.clock?.dial];
+    // A picture that cannot be read never holds the story up: no longer
+    // than a moment, whatever happens.
+    Future.wait([for (final f in files) precacheImage(AssetImage(f), context, onError: (_, _) {})])
+        .timeout(const Duration(milliseconds: 1500), onTimeout: () => const [])
+        .whenComplete(() {
+          if (mounted) setState(() => _picturesReady = true);
+        });
+  }
 
   /// Keeps the newest line in view: on a small phone (or with large text)
   /// the story grows past the screen and the line being typed would be
@@ -117,6 +143,9 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
     final plaque = SeasonCatalog.introPlaque(ref.read(currentEpisodeProvider).id);
     // A paper the opening turns to (Case 08: the back of Case 07's slip).
     final paper = SeasonCatalog.introPaper(ref.read(currentEpisodeProvider).id);
+    // A picture the opening turns into another (Case 09: P.'s drawing into
+    // the garden it shows).
+    final picture = SeasonCatalog.introPicture(ref.read(currentEpisodeProvider).id);
     return Scaffold(
       backgroundColor: AppColors.nightBottom,
       // The narration over the place the case opens on, in the dark.
@@ -148,13 +177,34 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                               ),
                             ),
                           ),
+                          // A picture the lines keep talking about (Case 09's garden):
+                          // held above them from the first line, never scrolled
+                          // away with old lines. Its place is kept from the start
+                          // (its size never changes), so the words never move when
+                          // it shows; it fades in once its pictures are decoded.
+                          if (picture != null)
+                            Padding(
+                              key: const ValueKey('intro-picture'),
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: AnimatedOpacity(
+                                opacity: _picturesReady ? 1 : 0,
+                                duration: MediaQuery.disableAnimationsOf(context) ? Duration.zero : const Duration(milliseconds: 500),
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: math.min(380, MediaQuery.sizeOf(context).height * 0.27 * picture.pixels.aspect),
+                                  ),
+                                  child: IntroPictureView(picture: picture, turned: _line >= picture.turnAtLine),
+                                ),
+                              ),
+                            ),
                           Expanded(
                             child: Center(
                               child: SingleChildScrollView(
                                 controller: _scroll,
                                 child: Column(
                                   children: [
-                                    for (var i = 0; i <= _line && i < lines.length; i++) ...[
+                                    // (The first line waits for the opening's picture.)
+                                    for (var i = 0; _picturesReady && i <= _line && i < lines.length; i++) ...[
                                       Padding(
                                         padding: const EdgeInsets.only(bottom: 22),
                                         child: AnimatedOpacity(

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../data/models/abbesses_puzzles.dart' show MorningSketch, TornForm;
+import '../../../data/models/garden_puzzles.dart' show GearDiagram, MarksPaper, TestCard, TrialMapPaper;
 import '../../../data/models/letter_puzzles.dart' show FittedEnvelope, LetterPaper;
 import '../../../data/models/opera_puzzles.dart' show AmendmentSlip, CueCard, OfficeRecord, PhotoPrint, ProgrammePage;
 import '../../../data/models/river_puzzles.dart' show DrawnEvidence;
 import '../../../data/models/scene_explore.dart' show ScenePixels;
 import '../../../data/models/workshop_puzzles.dart';
 import 'abbesses_papers.dart' show MorningSketchView, TornFormView;
+import 'clockwork_garden.dart' show GearDiagramView, MarksPaperView, TestCardView, TrialMapPaperView;
 import 'letter_papers.dart' show FittedEnvelopeView, LetterPaperView;
 import 'opera_papers.dart';
 import 'river_papers.dart' show PictureCanvas;
@@ -225,6 +227,10 @@ class DrawnEvidenceView extends StatelessWidget {
     final PhotoPrint p => PhotoPrintView(photo: p),
     final MorningSketch s => MorningSketchView(sketch: s),
     final TornForm f => TornFormView(form: f),
+    final TrialMapPaper p => TrialMapPaperView(paper: p),
+    final GearDiagram d => GearDiagramView(diagram: d),
+    final MarksPaper p => MarksPaperView(paper: p),
+    final TestCard c => TestCardView(card: c),
     _ => const SizedBox.shrink(),
   };
 }

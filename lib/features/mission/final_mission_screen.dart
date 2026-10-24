@@ -14,6 +14,7 @@ import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/abbesses_puzzles.dart';
 import '../../data/models/game_progress.dart';
+import '../../data/models/garden_puzzles.dart';
 import '../../data/models/letter_puzzles.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/opera_puzzles.dart';
@@ -41,6 +42,7 @@ import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/canvas_choice.dart';
+import 'widgets/clockwork_garden.dart';
 import 'widgets/evidence_board.dart';
 import 'widgets/letter_lock.dart' show LetterLockQuestion, LetterLockReveal;
 import 'widgets/letter_map.dart';
@@ -120,6 +122,33 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   /// The torn paper laid on P.'s drawing, then the board, then P.'s last
   /// drawing (Paris Case 08), or null.
   TornHourScene? get _tornHour => SeasonCatalog.tornHour(_mission);
+
+  /// The tower set one hour back and tested, then the question, then the
+  /// star followed (Paris Case 09), or null.
+  TowerTestScene? get _tower => SeasonCatalog.towerTest(_mission);
+
+  /// The hour the tower is set to (saved as it changes: `hour=3`).
+  int _hour = 4;
+
+  String get _testedKey => GameProgress.examinedKey(_mission.id, TowerTestScene.testedId);
+  String get _starKey => GameProgress.examinedKey(_mission.id, TowerTestScene.leadId);
+
+  void _setHour(int hour) {
+    setState(() => _hour = hour);
+    ref.read(gameControllerProvider.notifier).recordPuzzleState(_mission.id, 'hour=$hour');
+  }
+
+  void _testTower() => _nextTableStep(TowerTestScene.testedId);
+
+  Future<void> _followStar() async {
+    final done = await showStarLead(context, _tower!.lead);
+    if (done == true && mounted) {
+      // The last step done: now the case is closed (solved, the next case
+      // file open), never with the answer alone.
+      ref.read(gameControllerProvider.notifier).closeCase(_starKey);
+      setState(() {});
+    }
+  }
 
   /// The board of this final (Case 03's, or Case 08's after its paper is
   /// laid on the drawing), or null.
@@ -424,6 +453,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     if (_trail case final trail?) {
       _placed = TrailState.decode(progress.puzzleStateOf(_mission.id), trail);
     }
+    if (_tower case final tower?) {
+      final saved = int.tryParse((progress.puzzleStateOf(_mission.id) ?? '').replaceFirst('hour=', ''));
+      _hour = progress.hasExamined(_testedKey) ? tower.targetHour : (saved != null && saved >= 1 && saved <= 12 ? saved : tower.startHour);
+    }
     final canvases = _canvases;
     if (canvases != null) {
       for (final c in canvases.canvases) {
@@ -469,9 +502,12 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final letters = _letterMap;
     final table = _lightTable;
     final hour = _tornHour;
-    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null && table == null && hour == null)) return;
+    final tower = _tower;
+    if (_precached || (_mission.scene != Artwork.royalBox && box == null && canvases == null && board == null && book == null && trail == null && letters == null && table == null && hour == null && tower == null)) return;
     _precached = true;
-    final files = hour != null
+    final files = tower != null
+        ? [tower.garden, tower.dialFile, tower.lead.mapFile, for (final m in tower.lead.models) m.file]
+        : hour != null
         ? [hour.sketch.file, hour.study.file, hour.form.file, hour.form.stamp, hour.lead.file, hour.lead.mapFile]
         : table != null
         ? [table.archive, table.table, table.tableOn, table.file3.file, table.file3.patch.file, table.slip.file, table.slip.stamp]
@@ -771,6 +807,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     final letters = _letterMap;
     final table = _lightTable;
     final hour = _tornHour;
+    final tower = _tower;
 
     return Scaffold(
       // The night page runs up under the app bar (no paper band on top).
@@ -831,6 +868,9 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
+                            : tower != null
+                            ? (stage.maxWidth / tower.gardenPixels.aspect)
+                                .clamp(150.0, math.min(280.0, math.max(150.0, MediaQuery.sizeOf(context).height * 0.3)))
                             : hour != null
                             // Slim while the paper is laid on the drawing
                             // below (the drawing is there too); whole after.
@@ -864,7 +904,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                             ? _boxStage(box, stage.maxWidth, MediaQuery.sizeOf(context).height)
                             : (MediaQuery.sizeOf(context).height * 0.3).clamp(160.0, 250.0),
                         child: ClipRect(
-                          child: hour != null
+                          child: tower != null
+                              // The garden, its clock at four.
+                              ? TowerStage(key: const ValueKey('tower-stage'), scene: tower)
+                              : hour != null
                               // P.'s drawing; the torn paper on it once laid.
                               ? TornHourStage(
                                   key: const ValueKey('torn-hour-stage'),
@@ -1006,6 +1049,11 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   );
 
   List<Widget> _puzzle(Mission m, int hintsShown) => [
+    // The tower untested (Case 09): the case's card above says what to do,
+    // once; no heading repeats it. Then the question heads the page.
+    if (_tower != null && !ref.watch(gameControllerProvider).hasExamined(_testedKey))
+      SizedBox(key: _locksKey)
+    else
     GlossaryText(
       key: _locksKey,
       // The light table's final asks one step at a time; so does the torn
@@ -1088,6 +1136,45 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           checking: _checking,
           onLook: _lookAt,
           onTurn: _turnCanvas,
+        ),
+      ),
+    ] else if (_tower case final tower?) ...[
+      // The tower set and tested first; then the question.
+      PaperSheet(
+        key: const ValueKey('tower-test-sheet'),
+        padding: const EdgeInsets.all(AppSpace.md),
+        child: TowerTestPuzzle(
+          scene: tower,
+          hour: _hour,
+          tested: ref.watch(gameControllerProvider).hasExamined(_testedKey),
+          onHour: _setHour,
+          onTested: _testTower,
+        ),
+      ),
+      if (ref.watch(gameControllerProvider).hasExamined(_testedKey)) ...[
+        const SizedBox(height: AppSpace.md),
+        for (final line in tower.testedLines)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpace.xs),
+            child: Text(line, textAlign: TextAlign.center, style: AppText.aside(size: 17, color: AppColors.goldLight)),
+          ),
+        const SizedBox(height: AppSpace.sm),
+        // The page's heading asks it now (no second title).
+        ShakeOnChange(
+          trigger: _wrongPulse,
+          child: PaperSheet(
+            key: const ValueKey('tower-question-sheet'),
+            padding: const EdgeInsets.all(AppSpace.lg),
+            child: questionFor(m, _submit),
+          ),
+        ),
+      ],
+      Center(
+        child: InkTextButton(
+          label: 'Reread the card',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
         ),
       ),
     ] else if (_tornHour case final hour?) ...[
@@ -1382,7 +1469,23 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
         ],
         // A box with something in it: looked at first (its back holds the
         // case's last words), then the story goes on.
-        if (_tornHour != null && !ref.watch(gameControllerProvider).hasExamined(_leadKey))
+        if (_tower case final tower? when !ref.watch(gameControllerProvider).hasExamined(_starKey)) ...[
+          // A model shows what could happen, never what did: the records.
+          for (final line in tower.afterLines)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpace.xs),
+              child: Text(line, textAlign: TextAlign.center, style: AppText.aside(size: 17, color: AppColors.paperLight)),
+            ),
+          const SizedBox(height: AppSpace.md),
+          GameButton(
+            key: const ValueKey('final-follow-star'),
+            label: tower.leadLabel,
+            glyph: InkGlyph.search,
+            style: GameButtonStyle.glass,
+            tap: TapRole.primary,
+            onPressed: _followStar,
+          ),
+        ] else if (_tornHour != null && !ref.watch(gameControllerProvider).hasExamined(_leadKey))
           GameButton(
             key: const ValueKey('final-last-drawing'),
             label: _tornHour!.leadLabel,

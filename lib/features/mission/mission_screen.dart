@@ -20,6 +20,7 @@ import '../../data/models/scene_explore.dart';
 import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
 import '../../data/models/game_progress.dart';
+import '../../data/models/garden_puzzles.dart';
 import '../../data/models/letter_puzzles.dart';
 import '../../data/models/opera_puzzles.dart';
 import '../../data/models/painter_puzzles.dart';
@@ -54,6 +55,7 @@ import 'widgets/answer_feedback.dart';
 import 'widgets/archive_drawers.dart';
 import 'widgets/blotter_mirror.dart';
 import 'widgets/clock_wall.dart';
+import 'widgets/clockwork_garden.dart';
 import 'widgets/clock_question.dart';
 import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
@@ -281,7 +283,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             SeasonCatalog.flyRail(_mission) != null ||
             SeasonCatalog.cornerChoice(_mission) != null ||
             SeasonCatalog.morningSketches(_mission) != null ||
-            SeasonCatalog.tornSlip(_mission) != null);
+            SeasonCatalog.tornSlip(_mission) != null ||
+            SeasonCatalog.trialMap(_mission) != null ||
+            SeasonCatalog.gearBoard(_mission) != null ||
+            SeasonCatalog.makerMarks(_mission) != null);
     // Case 04's hut: back walks out of it one place at a time (the ledger,
     // the inside, the outside).
     final hut = SeasonCatalog.keeperHut(_mission);
@@ -938,6 +943,57 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         ),
       );
 
+  /// The little clocks put back on the map (all three in their places
+  /// answer the mission's puzzle); the clocks in place are saved.
+  Widget _trialStage(Mission m, TrialMapScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: TrialMapPuzzle(
+          scene: scene,
+          placed: TrialMapState.decode(progress.puzzleStateOf(m.id), scene),
+          onPlaced: (placed) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, TrialMapState.encode(placed)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The gears fitted on the board (both in their places answer the
+  /// mission's puzzle); the gears in place are saved.
+  Widget _gearStage(Mission m, GearBoardScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: GearBoardPuzzle(
+          scene: scene,
+          placed: GearBoardState.decode(progress.puzzleStateOf(m.id), scene),
+          onPlaced: (placed) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, GearBoardState.encode(placed)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
+  /// The notebook's marks joined on the old plan (both joined answer the
+  /// mission's puzzle); the marks joined are saved.
+  Widget _makersStage(Mission m, MakerMarksScene scene, GameProgress progress) => _PuzzleStage(
+        key: const ValueKey('puzzle'),
+        mission: m,
+        hintsShown: progress.hintsFor(m.id),
+        wrongPulse: _wrongPulse,
+        onHint: () => _showHint(m),
+        onReread: () => _rereadLetter(m),
+        child: MakerMarksPuzzle(
+          scene: scene,
+          joined: MakerMarksState.decode(progress.puzzleStateOf(m.id), scene),
+          onJoined: (joined) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, MakerMarksState.encode(joined)),
+          onSubmit: (a) => _submit(m, a),
+        ),
+      );
+
   /// The backdrop is the right one: its pocket opened before the story goes
   /// on.
   Widget _pocketStage(Mission m, FlyRailScene scene) => CenteredScroll(
@@ -1240,6 +1296,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final corners = SeasonCatalog.cornerChoice(m);
     final sketches = SeasonCatalog.morningSketches(m);
     final slip = SeasonCatalog.tornSlip(m);
+    final trial = SeasonCatalog.trialMap(m);
+    final gears = SeasonCatalog.gearBoard(m);
+    final makers = SeasonCatalog.makerMarks(m);
 
     final Widget body = solved
         // The ledger's second page, until it is read.
@@ -1301,6 +1360,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           corners != null ||
                           sketches != null ||
                           slip != null ||
+                          trial != null ||
+                          gears != null ||
+                          makers != null ||
                           explore != null ||
                           inspect != null ||
                           deduction != null ||
@@ -1367,6 +1429,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             MissionStage.puzzle when corners != null => _cornerStage(m, corners, progress),
             MissionStage.puzzle when sketches != null => _sketchesStage(m, sketches, progress),
             MissionStage.puzzle when slip != null => _slipStage(m, slip, progress),
+            MissionStage.puzzle when trial != null => _trialStage(m, trial, progress),
+            MissionStage.puzzle when gears != null => _gearStage(m, gears, progress),
+            MissionStage.puzzle when makers != null => _makersStage(m, makers, progress),
             MissionStage.puzzle when explore != null => _exploreStage(
               m,
               explore,

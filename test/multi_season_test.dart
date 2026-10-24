@@ -133,7 +133,7 @@ void main() {
       expect(container.read(seasonInfoProvider).id, SeasonIds.london);
       expect([for (final e in container.read(episodeCatalogProvider)) e.id], season1Ids);
       expect(container.read(episodeCatalogProvider).every((e) => e.seasonId == SeasonIds.london), isTrue);
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09']);
       // Paris is out for players (2026-10-21): it opens by the season rule.
       expect(SeasonCatalog.byId(SeasonIds.paris)!.released, isTrue);
       expect(SeasonCatalog.byId(SeasonIds.london)!.released, isTrue);
@@ -150,8 +150,8 @@ void main() {
     });
 
     test('every season orders its own cases from 01, season by season', () {
-      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(9), ...MockEpisodeRepository.bundled()]);
-      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09']);
+      final ordered = MockEpisodeRepository.inPlayOrder([parisCase(10), ...MockEpisodeRepository.bundled()]);
+      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
     });
 
     test('mission ids are never shared between seasons, so no reward is paid twice', () {
@@ -269,7 +269,7 @@ void main() {
       expect(current().id, 's2_ep01', reason: 'Season 2 starts at its own Case 01');
       expect(state().completedMissionIds, isEmpty);
       expect(state().detectiveName, 'Kim', reason: 'the detective is the same');
-      expect([for (final e in container.read(episodeCatalogProvider)) e.id], ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08']);
+      expect([for (final e in container.read(episodeCatalogProvider)) e.id], ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09']);
       expect(ctrl().openEpisode('s2_ep02'), isFalse, reason: 'Case 02 of Paris waits for its Case 01');
       expect(ctrl().openEpisode('ep05'), isFalse, reason: 'a case of another season never opens here');
 

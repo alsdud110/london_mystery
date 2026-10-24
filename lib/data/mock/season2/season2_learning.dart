@@ -31,6 +31,10 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Where things stand and what changed: between, above, first, then, same and missing',
     titleKo: '위치와 변화 읽기: between, above, first/then, same/missing',
   ),
+  's2_ep09': CaseLanguageTopic(
+    title: 'Joined or not: same, big and small, one hour back',
+    titleKo: '이어졌나 아닌가: same, big/small, one hour back',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -327,5 +331,38 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '"Where did the paper come from?", "What kind of paper is it?"에 맞는 증거를 고르고, 증거가 말하는 만큼만 결론(종이 한 장이 가방에서 떨어졌다)을 고른다.',
     expressions: ['Where did the paper come from?', 'What kind of paper is it?'],
+  ),
+  // The little clocks put back by their shapes: the note says where each
+  // belongs, the hint how to find it.
+  's2_ep09_m1': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '"Put each clock back where it belongs."를 읽고 시계 모형 3개를 모양으로 지도의 제자리에 놓아, 시험 시계가 파리의 세 곳에만 있음을 알아낸다.',
+    expressions: ['Put each clock back where it belongs.', 'Find the same shape on the map.'],
+  ),
+  // The board's words say what to do: join the tower to its clocks.
+  's2_ep09_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '판의 글귀 "Join the tower to the trial clocks."를 읽고 크기가 맞는 톱니를 끼워, 탑이 이어진 시계만 움직이는 것을 관찰한다.',
+    expressions: ['Join the tower to the trial clocks.'],
+  ),
+  // Two notebook marks found again on the old paper, each by its shape.
+  's2_ep09_m3': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.vocabulary,
+    objective: 'Notebook의 "A tiny carved gear.", "Signed with two clock hands."를 읽고 설계도와 수리 메모에서 같은 표식을 찾아 잇는다.',
+    expressions: ['Find the same marks on the old paper.', 'Signed with two clock hands.'],
+  ),
+  // One hour back, tested; then no more than the test shows.
+  's2_ep09_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '"Set the tower one hour back."에 따라 탑을 4시에서 3시로 옮겨 시험하고, 결과가 보여 주는 만큼만 결론("Only the joined clocks went wrong.")을 고른다.',
+    expressions: ['Set the tower one hour back.', 'Only the joined clocks went wrong.'],
   ),
 };

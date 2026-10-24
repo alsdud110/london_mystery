@@ -220,7 +220,7 @@ void main() {
 
   group('in the game', () {
     test('Case 08 is in the game, after Case 07, in Abbesses, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09']);
       expect(season2AwaitingArtJson, isEmpty);
       expect(const MockEpisodeRepository().fetchEpisode('s2_ep08'), completes);
       expect(case08.number, 8);
@@ -251,9 +251,10 @@ void main() {
       }
     });
 
-    test("Case 08's Case Closed tells Case 09's title (the bible's), and nothing else of it", () {
+    test("Case 08 leads on to Case 09 (the bible's title), now in the game", () {
       final season = SeasonCatalog.byId(SeasonIds.paris)!.season;
-      expect(season.upcomingTitles, {9: 'The Clockwork Garden'});
+      expect(season.upcomingTitles.containsKey(9), isFalse, reason: 'Case 09 is no longer to come: it is in the game');
+      expect(inGame.firstWhere((e) => e.id == 's2_ep09').title, 'The Clockwork Garden');
       expect(File('docs/SEASON2_PARIS_STORY_BIBLE.md').readAsStringSync(), contains('| 09 | **The Clockwork Garden** | Luxembourg Gardens |'));
       expect(case08.hook, 'Why did the bag go to the little clock in the garden?');
       expect(case07.hook, 'What did P. see — and what was in the bag?', reason: 'Case 07 is as it was');
@@ -501,7 +502,7 @@ void main() {
       expect(c.read(progressRepositoryProvider).load('s2_ep07').examined.any((k) => k.startsWith('s2_ep08')), isFalse);
     });
 
-    test('solved: Paris is 8 of 12, Case 09 is coming soon, nothing opens it; London is as it was', () async {
+    test('solved: Paris is 8 of 12, Case 09 opens next; London is as it was', () async {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -510,10 +511,10 @@ void main() {
       }
       final board = c.read(seasonOverviewProvider);
       expect(board.solvedCount, 8);
-      expect(board.comingSoonCase, 9);
+      expect(board.comingSoonCase, isNull, reason: 'Case 09 is in the game: nothing is only coming');
       final available = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect((available.solvedCount, available.plannedCount), (8, 12));
-      expect(game.openEpisode('s2_ep09'), isFalse, reason: 'no Case 09 to open');
+      expect(game.openEpisode('s2_ep09'), isTrue, reason: 'Case 09 opens after Case 08');
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12));
     });
   });
@@ -936,15 +937,16 @@ void main() {
         expect(findReadable('The mystery continues in the Luxembourg Gardens!'), findsOneWidget);
         await shot('final_scene');
         await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 4000));
-        await reveal(t, find.byKey(const ValueKey('next-case-coming-soon')));
-        expect(find.text('CASE 09 · THE CLOCKWORK GARDEN'), findsOneWidget);
-        expect(find.text('COMING SOON'), findsOneWidget);
+        // Case 09 is in the game: its case file opens next.
+        await reveal(t, find.text('OPEN CASE 09'));
+        expect(find.text('OPEN CASE 09'), findsOneWidget);
+        expect(find.text('COMING SOON'), findsNothing);
         await shot('case_closed');
 
         final board = ref.read(seasonOverviewProvider);
         expect(board.solvedCount, 8);
-        expect(board.comingSoonCase, 9);
-        expect(game.openEpisode('s2_ep09'), isFalse);
+        expect(board.comingSoonCase, isNull);
+        expect(game.openEpisode('s2_ep09'), isTrue);
         expect(ref.read(walletProvider).balance, greaterThan(coinsAtStart), reason: 'the case paid its coins');
         await wait(t, const Duration(seconds: 3));
       });
@@ -1132,8 +1134,8 @@ void main() {
       expect(p.currentMission(case08), isNull);
       expect(c.read(seasonProvider).isSolved('s2_ep08'), isTrue);
       expect(c.read(seasonOverviewProvider).solvedCount, 8);
-      expect(c.read(seasonOverviewProvider).comingSoonCase, 9, reason: 'Case 09 is still to come');
-      expect(c.read(gameControllerProvider.notifier).openEpisode('s2_ep09'), isFalse);
+      expect(c.read(seasonOverviewProvider).comingSoonCase, isNull, reason: 'Case 09 is in the game');
+      expect(c.read(gameControllerProvider.notifier).openEpisode('s2_ep09'), isTrue, reason: 'closed: Case 09 opens now');
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12), reason: 'London is as it was');
     });
 

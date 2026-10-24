@@ -6,6 +6,7 @@ import 'episode05_mock.dart';
 import 'episode06_mock.dart';
 import 'episode07_mock.dart';
 import 'episode08_mock.dart';
+import 'episode09_mock.dart';
 
 /// Season 2 as a whole: who the season is. Its cases, casebook lines and
 /// board figures come with its content; until then the season has no cases,
@@ -23,9 +24,9 @@ const Map<String, dynamic> season2InfoJson = {
   'cases': 12,
   // The next cases' titles, told on the Case Closed file before they are
   // in the game ("CASE 05 · THE SILENT WORKSHOP"); never their content.
-  // Case 08 is in the game (its pictures are in, 2026-10-23); Case 09's
-  // title is the story bible's (v1.6, §5).
-  'upcoming': <String, String>{'9': 'The Clockwork Garden'},
+  // Case 09 is in the game (its pictures are in, 2026-10-24); Case 10's
+  // title is the story bible's (v1.8, §5).
+  'upcoming': <String, String>{'10': 'The Hour of Shadows'},
 };
 
 /// Season 2's cases in case order, by id. The season is not released yet
@@ -40,12 +41,13 @@ const Map<String, Map<String, dynamic>> season2Json = {
   's2_ep06': season2Episode06Json,
   's2_ep07': season2Episode07Json,
   's2_ep08': season2Episode08Json,
+  's2_ep09': season2Episode09Json,
 };
 
 /// Season 2's cases written but waiting for their pictures, in case order:
 /// never in the game (no case file, board, map or save shows them) until
-/// their pictures are, then moved into [season2Json]. None now: Case 08's
-/// pictures are in (2026-10-23).
+/// their pictures are, then moved into [season2Json]. None now: Case 09's
+/// pictures are in (2026-10-24).
 const Map<String, Map<String, dynamic>> season2AwaitingArtJson = {};
 
 /// Season 2's opening sequence, played once before its Case 01: five short

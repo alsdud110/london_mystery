@@ -45,6 +45,10 @@ const Map<String, DiscoveryType> season2DiscoveryTypes = {
   's2_ep08_m1': DiscoveryType.newLead, // the painter's corner; the bundle
   's2_ep08_m2': DiscoveryType.deduction, // the paper fell from the bag
   's2_ep08_m3': DiscoveryType.evidenceFound, // the same seal as the slip
+  // ── Case 09 — The Clockwork Garden ──────────────────────────────────
+  's2_ep09_m1': DiscoveryType.deduction, // only three places have trial clocks
+  's2_ep09_m2': DiscoveryType.deduction, // the tower turns only the joined clocks
+  's2_ep09_m3': DiscoveryType.evidenceFound, // the two marks, on two papers
 };
 
 /// The Discovery Moments of Season 2's regular missions in [cases] (case id

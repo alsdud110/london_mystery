@@ -291,6 +291,10 @@ abstract final class ArtAssets {
     Artwork.abbessesSquare: '$_paris08/abbesses_square.png',
     Artwork.paintersCorner: '$_paris08/corner_2.png',
     Artwork.drawingBundle: '$_paris08/drawing_bundle.png',
+    // Case 09: the garden (its own clock covered where its hands would
+    // tell the wrong time: `season2_case09_scenes.dart`), and the board.
+    Artwork.luxembourgGarden: '$_paris09/garden_model_view.png',
+    Artwork.gearBoard: '$_paris09/gear_board.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
@@ -301,6 +305,7 @@ abstract final class ArtAssets {
   static const _paris06 = 'assets/seasons/season_02_paris/cases/case_06';
   static const _paris07 = 'assets/seasons/season_02_paris/cases/case_07';
   static const _paris08 = 'assets/seasons/season_02_paris/cases/case_08';
+  static const _paris09 = 'assets/seasons/season_02_paris/cases/case_09';
 
   /// Clock faces cut out on transparency (a frame of their own): shown
   /// without a paper card behind them.
@@ -405,6 +410,9 @@ abstract final class ArtAssets {
     Artwork.abbessesSquare: 1536 / 1024,
     Artwork.paintersCorner: 1536 / 1024,
     Artwork.drawingBundle: 1536 / 1024,
+    // Case 09: both wide.
+    Artwork.luxembourgGarden: 1536 / 1024,
+    Artwork.gearBoard: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).

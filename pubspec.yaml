@@ -142,6 +142,7 @@ flutter:
     - assets/seasons/season_02_paris/cases/case_06/
     - assets/seasons/season_02_paris/cases/case_07/
     - assets/seasons/season_02_paris/cases/case_08/
+    - assets/seasons/season_02_paris/cases/case_09/
     # The title screen (the detective's office).
     - assets/shared/title/
     # Season hero pictures (the opening of Season 1).

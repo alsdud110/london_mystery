@@ -142,6 +142,8 @@ void main() {
       Artwork.abbessesSquare: 'assets/seasons/season_02_paris/cases/case_08/abbesses_square.png',
       Artwork.paintersCorner: 'assets/seasons/season_02_paris/cases/case_08/corner_2.png',
       Artwork.drawingBundle: 'assets/seasons/season_02_paris/cases/case_08/drawing_bundle.png',
+      Artwork.luxembourgGarden: 'assets/seasons/season_02_paris/cases/case_09/garden_model_view.png',
+      Artwork.gearBoard: 'assets/seasons/season_02_paris/cases/case_09/gear_board.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -175,8 +177,9 @@ void main() {
     // Montmartre painting (Case 02's first scene), Case 02's street and studio,
     // Case 03's seven (the canvas back and six places at the tower),
     // Case 04's six places on the Seine, and Case 05's four in the workshop;
-    // Case 06's four, Case 07's five, and Case 08's three in Abbesses.
-    expect(ArtAssets.scenes, hasLength(65));
+    // Case 06's four, Case 07's five, Case 08's three in Abbesses, and
+    // Case 09's two in the Luxembourg Gardens.
+    expect(ArtAssets.scenes, hasLength(67));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,

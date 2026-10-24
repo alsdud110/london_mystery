@@ -194,7 +194,11 @@ enum Artwork {
   // bundle of drawings behind the loose stone.
   abbessesSquare,
   paintersCorner,
-  drawingBundle;
+  drawingBundle,
+  // Case 09's places in the Luxembourg Gardens: the garden with its little
+  // clock tower, and the gear board under the model.
+  luxembourgGarden,
+  gearBoard;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

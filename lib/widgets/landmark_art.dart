@@ -345,7 +345,9 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.lightTable ||
           Artwork.abbessesSquare ||
           Artwork.paintersCorner ||
-          Artwork.drawingBundle:
+          Artwork.drawingBundle ||
+          Artwork.luxembourgGarden ||
+          Artwork.gearBoard:
         break;
     }
     canvas.restore();

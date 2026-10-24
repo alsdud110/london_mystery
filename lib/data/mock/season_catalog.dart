@@ -3,6 +3,7 @@ import '../models/clock_puzzle.dart';
 import '../models/dialogue.dart';
 import '../models/discovery.dart';
 import '../models/episode.dart';
+import '../models/garden_puzzles.dart';
 import '../models/investigation.dart';
 import '../models/learning.dart';
 import '../models/letter_puzzles.dart';
@@ -38,6 +39,7 @@ import 'season2/season2_case05_scenes.dart';
 import 'season2/season2_case06_scenes.dart';
 import 'season2/season2_case07_scenes.dart';
 import 'season2/season2_case08_scenes.dart';
+import 'season2/season2_case09_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -92,6 +94,11 @@ class SeasonContent {
     this.morningSketches = const {},
     this.tornSlips = const {},
     this.tornHours = const {},
+    this.trialMaps = const {},
+    this.gearBoards = const {},
+    this.makerMarks = const {},
+    this.towerTests = const {},
+    this.introPictures = const {},
     this.introPlaques = const {},
     this.introPapers = const {},
     this.evidenceArt = const {},
@@ -201,6 +208,18 @@ class SeasonContent {
   final Map<String, TornSlipScene> tornSlips;
   final Map<String, TornHourScene> tornHours;
 
+  /// Missions played on Case 09's pictures (Season 2): the little clocks put
+  /// back on the map, the gears fitted on the board, the notebook's marks
+  /// joined on the old plan, and the final's tower set one hour back.
+  final Map<String, TrialMapScene> trialMaps;
+  final Map<String, GearBoardScene> gearBoards;
+  final Map<String, MakerMarksScene> makerMarks;
+  final Map<String, TowerTestScene> towerTests;
+
+  /// By case id: a picture under the case's opening lines that turns into
+  /// another (Case 09: P.'s drawing into the garden).
+  final Map<String, IntroPicture> introPictures;
+
   /// By case id: a picture shown under the case's opening lines.
   final Map<String, IntroPlaque> introPlaques;
 
@@ -294,6 +313,11 @@ final season2Content = SeasonContent(
   morningSketches: season2MorningSketches,
   tornSlips: season2TornSlips,
   tornHours: season2TornHours,
+  trialMaps: season2TrialMaps,
+  gearBoards: season2GearBoards,
+  makerMarks: season2MakerMarksScenes,
+  towerTests: season2TowerTests,
+  introPictures: season2IntroPictures,
   introPlaques: season2IntroPlaques,
   introPapers: season2IntroPapers,
   evidenceArt: {
@@ -303,6 +327,7 @@ final season2Content = SeasonContent(
     ...season2Case06EvidenceArt,
     ...season2Case07EvidenceArt,
     ...season2Case08EvidenceArt,
+    ...season2Case09EvidenceArt,
   },
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
@@ -314,6 +339,7 @@ final season2Content = SeasonContent(
     ...season2Case06EvidenceLinks,
     ...season2Case07EvidenceLinks,
     ...season2Case08EvidenceLinks,
+    ...season2Case09EvidenceLinks,
   },
   storyScenes: {
     ...season2StoryScenes,
@@ -324,6 +350,7 @@ final season2Content = SeasonContent(
     ...season2Case06StoryScenes,
     ...season2Case07StoryScenes,
     ...season2Case08StoryScenes,
+    ...season2Case09StoryScenes,
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
@@ -479,10 +506,22 @@ abstract final class SeasonCatalog {
 
   static TornHourScene? tornHour(Mission m) => ofMission(m.id)?.tornHours[m.id];
 
+  static TrialMapScene? trialMap(Mission m) => ofMission(m.id)?.trialMaps[m.id];
+
+  static GearBoardScene? gearBoard(Mission m) => ofMission(m.id)?.gearBoards[m.id];
+
+  static MakerMarksScene? makerMarks(Mission m) => ofMission(m.id)?.makerMarks[m.id];
+
+  static TowerTestScene? towerTest(Mission m) => ofMission(m.id)?.towerTests[m.id];
+
   /// Whether final [m]'s case closes only after a step after its answer
-  /// (Paris Case 08: P.'s last drawing, matched to the map), not with the
-  /// answer itself.
-  static bool closesAfterLastStep(Mission m) => m.isFinal && tornHour(m) != null;
+  /// (Paris Case 08: P.'s last drawing, matched to the map; Case 09: the
+  /// star followed to the map), not with the answer itself.
+  static bool closesAfterLastStep(Mission m) => m.isFinal && (tornHour(m) != null || towerTest(m) != null);
+
+  /// The picture under case [episodeId]'s opening lines that turns into
+  /// another, if any.
+  static IntroPicture? introPicture(String episodeId) => ofEpisode(episodeId)?.introPictures[episodeId];
 
   /// The paper under one of case [episodeId]'s opening lines, if any.
   static IntroPaper? introPaper(String episodeId) => ofEpisode(episodeId)?.introPapers[episodeId];
