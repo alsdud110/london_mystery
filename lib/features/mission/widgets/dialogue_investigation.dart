@@ -19,6 +19,7 @@ import '../../../widgets/ink_icon.dart';
 import '../../../widgets/paper.dart';
 import '../../../widgets/paper_background.dart';
 import '../../../widgets/place_scenery.dart';
+import '../../../widgets/typewriter_text.dart';
 import '../../game/game_providers.dart';
 
 /// A mission played by talking to the people at its place (see
@@ -788,7 +789,7 @@ class _Portrait extends StatelessWidget {
 
 /// What was asked (small, the detective's) and the answer (the person's,
 /// larger, in their paper card), with their name plate.
-class _Speech extends StatelessWidget {
+class _Speech extends StatefulWidget {
   const _Speech({
     required this.speaker,
     required this.question,
@@ -809,7 +810,29 @@ class _Speech extends StatelessWidget {
   final bool beside;
 
   @override
+  State<_Speech> createState() => _SpeechState();
+}
+
+class _SpeechState extends State<_Speech> {
+  bool _skipTyping = false;
+
+  @override
+  void didUpdateWidget(covariant _Speech oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.line != widget.line ||
+        oldWidget.question?.id != widget.question?.id ||
+        oldWidget.speaker.id != widget.speaker.id) {
+      _skipTyping = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final speaker = widget.speaker;
+    final question = widget.question;
+    final line = widget.line;
+    final note = widget.note;
+    final beside = widget.beside;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final isNew = note == _Note.recorded;
     final edge = isNew ? AppColors.gold : AppLine.faint();
@@ -881,11 +904,24 @@ class _Speech extends StatelessWidget {
                           ],
                           // Beside the person with larger text, a little smaller:
                           // a long answer still reads whole in a short space.
-                          Text(
-                            '"$line"',
-                            style: AppText.letter(
-                              size: beside && MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 16 : 18,
-                              color: AppColors.ink,
+                          // Reuse the case Story Sequence's typewriter reveal.
+                          // Tapping the spoken line reveals it immediately; witness
+                          // selection, questions and evidence comparison remain unchanged.
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              if (!_skipTyping) setState(() => _skipTyping = true);
+                            },
+                            child: TypewriterText(
+                              '"$line"',
+                              key: ValueKey('talk-typewriter-${speaker.id}-${question?.id ?? 'greeting'}'),
+                              style: AppText.letter(
+                                size: beside && MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 16 : 18,
+                                color: AppColors.ink,
+                              ),
+                              textAlign: TextAlign.start,
+                              skip: _skipTyping,
+                              sound: false,
                             ),
                           ),
                         ],
