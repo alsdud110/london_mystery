@@ -261,7 +261,9 @@ void main() {
     test("Case 11 is told next by its title only; the bible's Case 10 is the one played", () {
       expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, {11: 'The Unwritten Hour'});
       final bible = File('docs/SEASON2_PARIS_STORY_BIBLE.md').readAsStringSync();
-      expect(bible, contains('**Version:** 1.9'));
+      // v2.0 (2026-10-26) added Cases 11–12; Case 10's section is as v1.9 wrote it.
+      expect(bible, contains('**Version:** 2.0'));
+      expect(bible, contains('- **v1.9 (2026-10-24):**'));
       expect(bible, contains('| 11 | **The Unwritten Hour** |'));
       for (final m in case10.allMissions) {
         expect(bible, contains(m.evidence!.name), reason: m.evidence!.name);

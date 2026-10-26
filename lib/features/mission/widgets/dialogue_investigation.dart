@@ -681,20 +681,15 @@ class _Conversation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final answer = question == null ? null : speaker.answers[question!.id];
+    final line = answer?.line ?? speaker.greeting;
+    final note = !recorded ? null : (fresh != null && answer?.statementId == fresh ? _Note.recorded : _Note.kept);
     // Keep the existing witness selection, questioning and deduction panel.
     // Only the active conversation is presented as a cinematic scene.
     final words = _AfterLanding(
       flying: flying,
       id: speaker.id,
       delay: const Duration(milliseconds: 150),
-      child: _Speech(
-        speaker: speaker,
-        question: question,
-        line: answer?.line ?? speaker.greeting,
-        note: !recorded
-            ? null
-            : (fresh != null && answer?.statementId == fresh ? _Note.recorded : _Note.kept),
-      ),
+      child: _Speech(speaker: speaker, question: question, line: line, note: note),
     );
 
     return Column(
@@ -705,9 +700,19 @@ class _Conversation extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final compact = constraints.maxHeight < 310;
-              final speechHeight = compact
+              final usual = compact
                   ? (constraints.maxHeight * 0.48).clamp(108.0, 148.0)
                   : (constraints.maxHeight * 0.42).clamp(145.0, 205.0);
+              // A long answer, or large text: the card grows to hold the
+              // words whole (the portrait gives way above it), never past
+              // the space there is; beyond that, the card scrolls.
+              final speechHeight = math.max(
+                usual,
+                math.min(
+                  _Speech.heightFor(context, line: line, note: note != null, width: constraints.maxWidth - 2 * AppSpace.md),
+                  constraints.maxHeight - (compact ? 4 : AppSpace.sm) - AppSpace.sm,
+                ),
+              );
               return Stack(
                 fit: StackFit.expand,
                 children: [
@@ -801,7 +806,6 @@ class _Speech extends StatefulWidget {
     required this.question,
     required this.line,
     required this.note,
-    this.beside = false,
   });
 
   final DialogueSpeaker speaker;
@@ -811,9 +815,26 @@ class _Speech extends StatefulWidget {
   /// How the answer is in the notes (null: it is not a statement).
   final _Note? note;
 
-  /// Beside the portrait: the words sit level with the person, and their
-  /// card points to them.
-  final bool beside;
+  /// The words' style (the size they keep at any text scale: the card
+  /// grows, the words are never made smaller).
+  static TextStyle get _lineStyle => AppText.letter(size: 18, color: AppColors.ink);
+
+  /// The height [line] needs to be read whole, at the text size of
+  /// [context], in a card [width] wide: the name plate, the card's edge and
+  /// padding, the note's mark ([note]) and the words themselves.
+  static double heightFor(BuildContext context, {required String line, required bool note, required double width}) {
+    final scaler = MediaQuery.textScalerOf(context);
+    double measure(String text, TextStyle style, [double max = double.infinity]) =>
+        (TextPainter(text: TextSpan(text: text, style: style), textDirection: TextDirection.ltr, textScaler: scaler)
+              ..layout(maxWidth: max))
+            .height;
+    final inner = math.max(1.0, width - 2 * AppSpace.lg - 2 * AppLine.ink);
+    final name = measure('A', AppText.mark(color: AppColors.goldLight, size: 15));
+    final mark = note ? math.max(AppIconSize.tiny, measure('A', AppText.eyebrow(color: AppColors.burgundy))) + AppSpace.xs : 0.0;
+    final words = measure('"$line"', _lineStyle, inner);
+    // A little to spare for rounding (a line never cut by a hair).
+    return name + AppSpace.sm + 2 * AppLine.ink + 2 * AppSpace.md + mark + words + 4;
+  }
 
   @override
   State<_Speech> createState() => _SpeechState();
@@ -838,13 +859,11 @@ class _SpeechState extends State<_Speech> {
     final question = widget.question;
     final line = widget.line;
     final note = widget.note;
-    final beside = widget.beside;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final isNew = note == _Note.recorded;
     final edge = isNew ? AppColors.gold : AppLine.faint();
     final edgeWidth = isNew ? AppLine.ink : AppLine.hairline;
     return Column(
-      mainAxisAlignment: beside ? MainAxisAlignment.center : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // One line, never wrapped (a long name is set a little smaller).
@@ -908,11 +927,11 @@ class _SpeechState extends State<_Speech> {
                             ),
                             const SizedBox(height: AppSpace.xs),
                           ],
-                          // Beside the person with larger text, a little smaller:
-                          // a long answer still reads whole in a short space.
-                          // Reuse the case Story Sequence's typewriter reveal.
-                          // Tapping the spoken line reveals it immediately; witness
-                          // selection, questions and evidence comparison remain unchanged.
+                          // The case Story Sequence's typewriter reveal, at one
+                          // size (the card grows for a long answer: see
+                          // [_Speech.heightFor]). Tapping the spoken line reveals
+                          // it immediately; witness selection, questions and
+                          // evidence comparison remain unchanged.
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: () {
@@ -921,10 +940,7 @@ class _SpeechState extends State<_Speech> {
                             child: TypewriterText(
                               '"$line"',
                               key: ValueKey('talk-typewriter-${speaker.id}-${question?.id ?? 'greeting'}'),
-                              style: AppText.letter(
-                                size: beside && MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 16 : 18,
-                                color: AppColors.ink,
-                              ),
+                              style: _Speech._lineStyle,
                               textAlign: TextAlign.start,
                               skip: _skipTyping,
                               sound: false,
@@ -936,16 +952,6 @@ class _SpeechState extends State<_Speech> {
                   ),
                 ),
               ),
-              // The card's point, toward the person speaking.
-              if (beside)
-                Positioned(
-                  left: -11,
-                  top: 22,
-                  child: CustomPaint(
-                    size: const Size(12, 22),
-                    painter: _CardPoint(fill: AppColors.paperLight, edge: edge, width: edgeWidth),
-                  ),
-                ),
             ],
           ),
         ),
@@ -956,46 +962,6 @@ class _SpeechState extends State<_Speech> {
 
 /// How an answer is in the notes: written down just now, or already.
 enum _Note { recorded, kept }
-
-/// The small point on the left of a speech card, toward the speaker: paper
-/// filled, its two outer sides in the card's edge ink.
-class _CardPoint extends CustomPainter {
-  const _CardPoint({required this.fill, required this.edge, required this.width});
-
-  final Color fill;
-  final Color edge;
-  final double width;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Over the card's edge by a pixel, so the paper runs on without a seam.
-    final tip = Offset(0, size.height / 2);
-    final top = Offset(size.width + 1, 0);
-    final bottom = Offset(size.width + 1, size.height);
-    canvas.drawPath(
-      Path()
-        ..moveTo(top.dx, top.dy)
-        ..lineTo(tip.dx, tip.dy)
-        ..lineTo(bottom.dx, bottom.dy)
-        ..close(),
-      Paint()..color = fill,
-    );
-    canvas.drawPath(
-      Path()
-        ..moveTo(top.dx - 1, top.dy)
-        ..lineTo(tip.dx, tip.dy)
-        ..lineTo(bottom.dx - 1, bottom.dy),
-      Paint()
-        ..color = edge
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = width
-        ..strokeJoin = StrokeJoin.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_CardPoint old) => old.fill != fill || old.edge != edge || old.width != width;
-}
 
 /// The mission, one line over the talk: a magnifier and what to find out.
 class _MissionStrip extends StatelessWidget {

@@ -7,7 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/mock/season_catalog.dart';
+import '../../data/models/case_talk.dart';
 import '../../data/models/episode.dart';
+import '../../data/models/mission.dart';
 import '../../data/models/profile.dart';
 import '../../data/models/season.dart';
 import '../../data/models/season_progress.dart';
@@ -74,6 +76,12 @@ final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
 /// Every case of every season, season by season in case order (pre-loaded
 /// before the app starts; defaults to the bundled content).
 final allEpisodesProvider = Provider<List<Episode>>((ref) => MockEpisodeRepository.bundled());
+
+/// The talk a mission is played as ([SeasonCatalog.caseTalk]) and the talks
+/// around a mission's puzzle ([SeasonCatalog.talkMission]), as the mission
+/// page finds them: providers, so a test can give a mission a talk.
+final caseTalkOfProvider = Provider<TalkScene? Function(Mission m)>((ref) => SeasonCatalog.caseTalk);
+final talkMissionOfProvider = Provider<TalkMission? Function(Mission m)>((ref) => SeasonCatalog.talkMission);
 
 /// Every season of the game, in play order.
 final seasonsProvider = Provider<List<Season>>((ref) => [for (final s in SeasonCatalog.all) s.season]);
