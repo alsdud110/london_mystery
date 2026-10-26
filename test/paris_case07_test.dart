@@ -413,12 +413,12 @@ void main() {
       expect({for (final o in m1.options) o.id}, {for (final v in StripVerdict.values) v.name});
       expect(m1.answer, StripVerdict.fit.name);
       String feedback(StripVerdict v) => AnswerChecker.feedbackFor(m1, v.name)!;
-      expect(feedback(StripVerdict.office), "That's the office's 3:00. The doors open at 3:30. Nobody is in the seats yet!");
-      expect(feedback(StripVerdict.early), 'The doors are not open yet. Who is watching the show?');
+      expect(feedback(StripVerdict.office), "That's the office's 3:00. But the doors open at 3:30.");
+      expect(feedback(StripVerdict.early), 'The doors are not open yet. Nobody is in the seats.');
       expect(feedback(StripVerdict.end), 'The audience is in. Now look at the END flag. Is it at CURTAIN DOWN?');
       expect(AnswerChecker.isCorrect(m1, 'fit'), isTrue);
       expect(m1.hints, ["The show strip can't get shorter or longer.", 'Put the END flag on the CURTAIN DOWN pin.']);
-      expect(stripScene.task, 'Slide the show. The audience must be in first. The show must end at CURTAIN DOWN.');
+      expect(stripScene.task, 'Slide the show. Start after the doors open. End at CURTAIN DOWN.');
       // FILE 4 says no start time.
       expect([...stripScene.programme.title, stripScene.programme.whole].join(' '), isNot(matches(RegExp(r'\d:\d\d'))));
       expect(m1.successMessage, 'It fits at 4:00!');
@@ -473,9 +473,9 @@ void main() {
       expect(rail.backdrop('towerRed').above, AboveDoor.nothing);
       expect({for (final b in rail.ropes) b.id}, {for (final o in m3.options) o.id});
       expect({for (final b in railScene.backdrops) b.id}, {for (final b in rail.ropes) b.id});
-      expect(AnswerChecker.feedbackFor(m3, 'lampRed'), 'There is a red door. But what is above it? Look closer.');
+      expect(AnswerChecker.feedbackFor(m3, 'lampRed'), 'There is a red door. But what is above it?');
       expect(AnswerChecker.feedbackFor(m3, 'clockBlue'), 'There is a small clock. But what color is the door?');
-      expect(AnswerChecker.feedbackFor(m3, 'towerRed'), 'That clock is big, and far from the door. Look right above the door.');
+      expect(AnswerChecker.feedbackFor(m3, 'towerRed'), 'That clock is far from the door. Look right above the door.');
       // The option names never give the answer away: the ropes' numbers only.
       expect([for (final o in m3.options) o.label], ['Backdrop 1', 'Backdrop 2', 'Backdrop 3', 'Backdrop 4']);
       expect(railScene.slip.words, ['FILE 3', 'PERFORMANCE No. 34', 'CURTAIN UP: 4:00 to 3:00']);

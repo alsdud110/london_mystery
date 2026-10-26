@@ -37,7 +37,7 @@ const Map<String, dynamic> season2Episode02Json = {
   'synopsis': [
     'The painting from the brass box shows Montmartre.',
     'On its back: FIND THE PAINTER.',
-    'But the painter has vanished.',
+    'But the painter has vanished. Does he know who took the hour?',
   ],
   'objectives': [
     'Find the street in the painting.',
@@ -48,16 +48,14 @@ const Map<String, dynamic> season2Episode02Json = {
   // the case begins.
   'introScene': 'montmartrePainting',
   'intro': [
-    'Montmartre. A hill high above Paris.',
-    'The lost ticket said MONTMARTRE. The painting showed this hill.',
-    'On its back, three words: FIND THE PAINTER.',
-    'But who is the painter?',
-    'And why was his painting hidden under an old clock?',
+    'Montmartre, a hill high above Paris.',
+    'The lost ticket said MONTMARTRE. The painting shows this hill.',
+    'On its back: FIND THE PAINTER.',
+    'Who is he? And why was his painting under an old clock?',
   ],
-  'caseSummary':
-      "You compared the painted street, matched the painter's notes and uncovered his hidden sketch. Behind the right canvas, he left a message.",
+  'caseSummary': "Three of the painter's clues led you to his hidden message.",
   'keyWords': ['above', 'missing', 'beside', 'before', 'after', 'underneath'],
-  'hook': 'Nobody took the painter. He left to keep a secret. Who can steal an hour?',
+  'hook': 'Nobody took the painter. He left to keep a secret. But who took the hour?',
   'missions': [
     {
       'id': 's2_ep02_m1',
@@ -66,10 +64,8 @@ const Map<String, dynamic> season2Episode02Json = {
       'location': 'A STREET IN MONTMARTRE',
       'scene': 'montmartreStreet',
       'story': [
-        'Near the white church, you find a quiet street.',
-        'A red door. Stone steps. An old lamp.',
-        'On the corner stands an easel. Nobody is painting.',
-        'But a painting of this street is still on it.',
+        'Near the white church: a quiet street. A red door. Stone steps. An old lamp.',
+        'On the corner, an easel holds a painting of this street. Nobody is painting.',
       ],
       'letterIntro': 'A note is pinned to the painting:',
       'letter':
@@ -90,7 +86,7 @@ const Map<String, dynamic> season2Episode02Json = {
       ],
       'answer': 'clock,window,lamp',
       'hints': [
-        'Read the note one line at a time. Each line tells you where to look.',
+        'Each line of the note tells you where to look.',
         'ABOVE means higher than. MISSING means it is not there. BESIDE means next to.',
       ],
       'clue': {
@@ -98,7 +94,7 @@ const Map<String, dynamic> season2Episode02Json = {
         'title': 'Not This Street',
         'value': 'Not the red door',
         'symbol': 'frame',
-        'note': 'On the back of his note: "My secret is not on this street. Look far from the red door."',
+        'note': 'On the back: "My secret is not on this street. Look far from the red door."',
       },
       'evidence': {
         'id': 's2_ep02_e1',
@@ -106,13 +102,11 @@ const Map<String, dynamic> season2Episode02Json = {
         'icon': 'frame',
         'description': 'Left on the easel, on the corner of the street.',
         'inscription':
-            'Above the red door: a small clock. The real street has none. One window is missing. The lamp is bright. '
+            'Above the red door: a small clock. One window is missing. The lamp is bright. '
             'On the back of the note: My secret is not on this street.',
       },
       'successMessage': 'You found all three!',
       'transition': [
-        'The painter changed three things.',
-        'A clock above the red door. A missing window. A bright lamp.',
         'You turn his note over. One more line:',
         '"My secret is not on this street. Look far from the red door."',
         'Under the easel, you find a key. Its tag says: STUDIO, TOP FLOOR.',
@@ -130,8 +124,7 @@ const Map<String, dynamic> season2Episode02Json = {
       'scene': 'paintersStudio',
       'story': [
         'The key opens a door at the top of narrow stairs.',
-        'Sunlight. The smell of paint. The studio is quiet.',
-        'Nobody is here. But the painter left his things behind.',
+        'Sunlight. The smell of paint. Nobody is here.',
       ],
       'letterIntro': 'Three notes lie on his desk:',
       // Found on the desk in the studio. The three paintings show the same
@@ -140,12 +133,15 @@ const Map<String, dynamic> season2Episode02Json = {
           'A — I painted this BEFORE THE RAIN.\n'
           'Dark clouds were coming. The stones were still dry.\n\n'
           'B — I painted this AFTER THE RAIN STOPPED.\n'
-          'The stones were wet and shiny.\n\n'
+          'The stones were wet and shiny. Some dark clouds were still there.\n\n'
           'C — I painted this WHEN THE SKY TURNED GOLD.\n'
-          'The whole sky was gold. The stones were dry.',
+          'The whole sky was gold. No dark clouds. The stones were dry.',
       // Each note joined to its painting (`note:painting`, any order): p1 the
       // gold sky over dry stones, p2 dark clouds over dry stones, p3 wet and
-      // shiny stones. The notes' order is never the paintings'.
+      // shiny stones. The notes' order is never the paintings'. p3's sky is a
+      // gold sunset too, so the sky alone never tells C from B: each note
+      // names its clouds as well as its stones (the clouds show even on the
+      // small paintings of the matching page).
       'type': 'matchPairs',
       'question': 'Match each note to its painting.',
       'options': [
@@ -160,10 +156,10 @@ const Map<String, dynamic> season2Episode02Json = {
         'b:p1': 'Read note B again. AFTER THE RAIN, the stones are wet and shiny.',
         'b:p2': 'Read note B again. AFTER THE RAIN, the stones are wet and shiny.',
         'c:p2': 'Read note C again. Is the whole sky gold?',
-        'c:p3': 'Read note C again. Were the stones dry?',
+        'c:p3': 'Read note C again. No dark clouds, and dry stones.',
       },
       'hints': [
-        'Each note says WHEN it was painted. Look at the sky and the stones in each painting.',
+        'Each note says WHEN he painted it. Check the clouds and the stones.',
         'BEFORE THE RAIN, the stones are dry. AFTER THE RAIN, they are wet and shiny.',
       ],
       'clue': {
@@ -171,7 +167,7 @@ const Map<String, dynamic> season2Episode02Json = {
         'title': 'A Blue-Sky Day',
         'value': 'A blue sky',
         'symbol': 'letter',
-        'note': 'Under note C, one more line: "My secret is not in a gold sky. I hid it on a blue-sky day."',
+        'note': 'Under note C: "My secret is not in a gold sky. I hid it on a blue-sky day."',
       },
       'evidence': {
         'id': 's2_ep02_e2',
@@ -184,11 +180,9 @@ const Map<String, dynamic> season2Episode02Json = {
       },
       'successMessage': 'Every note has its painting!',
       'transition': [
-        'Every note matches its painting.',
         'Under note C, one more line in pencil:',
         '"My secret is not in a gold sky. I hid it on a blue-sky day."',
-        'By the window stands a big easel.',
-        'Its canvas is covered in thick paint. Is something underneath?',
+        'By the window, a big easel holds a canvas of thick paint.',
       ],
       'nextMissionId': 's2_ep02_m3',
       'skills': ['reading', 'problemSolving'],
@@ -202,8 +196,7 @@ const Map<String, dynamic> season2Episode02Json = {
       'location': "THE PAINTER'S EASEL",
       'scene': 'paintersStudio',
       'story': [
-        'The big easel stands by the window.',
-        'Its canvas is covered in thick paint. Blue, red, yellow. No picture at all.',
+        'The canvas is covered in thick paint. Blue, red, yellow. No picture at all.',
         'Why would a painter do that?',
       ],
       'letterIntro': 'A note is tucked into the frame:',
@@ -226,14 +219,14 @@ const Map<String, dynamic> season2Episode02Json = {
       'answer': 'lamp,steps,gate',
       'hints': [
         'Slide the paint away first. The sketch is underneath.',
-        'The lamp is tall and thin. The steps are at the bottom. The gate is between two stone pillars.',
+        'The lamp is tall. The steps are at the bottom. The gate is between two pillars.',
       ],
       'clue': {
         'id': 's2_ep02_c3',
         'title': 'The Hidden Sketch',
         'value': 'Steps, a lamp, a black gate',
         'symbol': 'seal',
-        'note': 'Under the paint: stone steps, an old lamp and an iron gate between two pillars. His note says: the gate is black.',
+        'note': 'Under the paint: stone steps, an old lamp and an iron gate. The gate is black.',
       },
       'evidence': {
         'id': 's2_ep02_e3',
@@ -241,13 +234,13 @@ const Map<String, dynamic> season2Episode02Json = {
         'icon': 'seal',
         'description': 'Found underneath the thick paint on his big easel.',
         'inscription':
-            'A pencil sketch: stone steps, an old lamp, an iron gate between two pillars, the white church above. The gate is black.',
+            'A pencil sketch: stone steps, an old lamp and an iron gate. The white church is above. The gate is black.',
       },
       'successMessage': 'The sketch is uncovered!',
       'transition': [
-        'What changed? The painter covered his own sketch with paint.',
-        'What was hidden? A place: stone steps, an old lamp and a black iron gate.',
-        'Why does it matter? Nobody else hid it. He did, on purpose.',
+        'What changed? The painter covered his own sketch.',
+        'What was hidden? A place: stone steps, an old lamp, a black gate.',
+        'Why does it matter? He hid it himself, on purpose.',
         'Against the wall, four canvases are waiting.',
       ],
       'nextMissionId': 's2_ep02_final',
@@ -263,8 +256,7 @@ const Map<String, dynamic> season2Episode02Json = {
     'location': "THE PAINTER'S STUDIO",
     'scene': 'paintersStudio',
     'story': [
-      'Four canvases lean against the wall.',
-      'Streets, steps and sky. They look alike.',
+      'Four canvases lean against the wall. They look alike.',
       'Only one has a message on its back.',
     ],
     'letterIntro': 'Your notebook says:',
@@ -288,7 +280,7 @@ const Map<String, dynamic> season2Episode02Json = {
       {
         'id': 'a',
         'label': 'A red door, a lamp and stone steps',
-        'feedback': 'Check the clue from the painted street. Is there a red door?',
+        'feedback': 'Check the painted street clue. Is there a red door?',
       },
       {
         'id': 'b',
@@ -304,7 +296,7 @@ const Map<String, dynamic> season2Episode02Json = {
     ],
     'answer': 'c',
     'hints': [
-      'Check every canvas against all three clues. Three clues, one canvas.',
+      'Check each canvas against all three clues.',
       'No red door. A blue sky. A black gate beside the steps.',
     ],
     'evidence': {
@@ -313,7 +305,7 @@ const Map<String, dynamic> season2Episode02Json = {
       'icon': 'letter',
       // His note with it, kept in the notebook: what he saw is a lead for
       // later cases, never who it was.
-      'description': 'Written on the back of his canvas. His note with it says: "I saw who took the hour."',
+      'description': 'On the back of his canvas. His note says: "I saw who took the hour."',
       'inscription': 'A city can lose an hour. But who can steal it?',
     },
     'successMessage': 'You found the right canvas!',
@@ -322,11 +314,10 @@ const Map<String, dynamic> season2Episode02Json = {
     // hid his own sketch (M3) and left his notes to be found (M1, M2).
     'transition': [
       'On the back: ATELIER MONTMARTRE, his studio.',
-      'And three words in French: TOUJOURS PLUS HAUT. Always higher.',
+      'And three French words: TOUJOURS PLUS HAUT. Always higher.',
       'Below, in the same hand as FIND THE PAINTER:',
       'A city can lose an hour.\nBut who can steal it?',
-      '"I saw who took the hour. So I hid my sketch, left my notes for you, and went away to keep the secret safe. — P."',
-      'Nobody took the painter.',
+      '"I saw who took the hour. I went away to keep the secret safe. — P."',
       'He hid his own sketch. He left his notes for you.',
       // How his painting came into the brass box is asked, never told.
       'Did he leave his painting in the brass box for you, too?',

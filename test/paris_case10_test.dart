@@ -277,7 +277,7 @@ void main() {
       expect(case10.intro, [
         'The Arc de Triomphe. Twelve roads meet around it, like a star.',
         "T1's little clock stood on top of an arch, with a star under it.",
-        'You climb the stairs, up and up, to the top.',
+        'You climb the stairs to the top.',
         'Under the roof, a small door has a star on it.',
         'Inside: a brass drum, a box of photos, and a thick book.',
         'A brass plate on the wall: TRIAL RECORDS · KEPT AT THE STAR.',
@@ -310,10 +310,9 @@ void main() {
       expect(tape.lineFor('t2'), "2:15 comes fifteen minutes after 2:00. That's fine.");
       expect(tape.lineFor('t1'), "That's where the tape starts.");
       expect(DrumTapeState.decode('t5;t3;x;t9', tape), {'t5', 't9'}, reason: 'only jumps are kept');
-      expect(m1.transition.take(3), [
-        'After 2:45, the tape goes back to 2:00. T1 went one hour back!',
-        'After the next 2:45, it jumps to 4:00. T1 went one hour forward.',
-        "There is no three o'clock on the tape at all.",
+      expect(m1.transition.take(2), [
+        'After 2:45, the tape goes back to 2:00. Then it jumps to 4:00.',
+        "There is no three o'clock on the tape.",
       ]);
     });
 

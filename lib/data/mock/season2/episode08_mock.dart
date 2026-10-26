@@ -32,9 +32,9 @@ const Map<String, dynamic> season2Episode08Json = {
   'title': "The Painter's Last Sketch",
   'place': 'ABBESSES · MONTMARTRE',
   'synopsis': [
-    'A slip from the opera says: P. KNEW THE BAG.',
+    'The opera slip says: P. KNEW THE BAG.',
     'P. is the painter who went away.',
-    'What did he see?',
+    'He said he saw who took the hour. What did he see?',
   ],
   // Never what fell from the bag: that is found in the drawings.
   'objectives': [
@@ -45,14 +45,14 @@ const Map<String, dynamic> season2Episode08Json = {
   'introScene': 'abbessesSquare',
   'intro': [
     'You turn the opera slip over again.',
-    'A tiny pencil sketch: steps, a lamp, a metro sign. ABBESSES.',
+    'A tiny sketch: steps, a lamp, a metro sign. ABBESSES.',
     'Under it: P. KNEW THE BAG.',
-    'P. is the painter from Montmartre. He said: I saw who took the hour.',
+    'P. is the painter. He said: I saw who took the hour.',
     'What bag? What did he see?',
-    "Abbesses is a metro stop on the hill of Montmartre. Let's go.",
+    "Abbesses is on the hill of Montmartre. Let's go.",
   ],
   'caseSummary':
-      "You found the painter's corner, put his morning drawings in order, matched a torn paper to the opera slip, and proved it fell from the bag. Then his last drawing showed the same bag in a garden.",
+      'P. saw the bag. A paper for changing a time fell from it. Then he drew the bag in a garden.',
   'keyWords': ['left', 'right', 'above', 'between', 'first', 'next', 'last', 'same', 'missing', 'torn'],
   'hook': 'Why did the bag go to the little clock in the garden?',
   'missions': [
@@ -63,49 +63,46 @@ const Map<String, dynamic> season2Episode08Json = {
       'location': 'ABBESSES · MONTMARTRE',
       'scene': 'abbessesSquare',
       'story': [
-        'Abbesses. A small square on the hill of Montmartre.',
-        'There is the metro sign from the slip.',
-        'But look around. Steps, lamps and gates are everywhere.',
+        'Abbesses. Steps, lamps and gates are everywhere.',
         'Where did the painter sit to draw?',
       ],
       'letterIntro': 'In your notebook, you wrote:',
       // The sketch's things only: where they stand is in its picture, the
       // gate's colour in its words.
       'letter':
-          'The painter hid a sketch in his studio.\n'
+          'The sketch he hid in his studio:\n'
           'Steps. An old lamp. A gate between two pillars.\n'
-          'The white church above.\n'
-          'Which corner did he draw?',
+          'The white church above.',
       // Three corners, the pictures only (see `season2CornerChoices`): the
       // first has a dark green gate, the third has its lamp and steps on
       // the right.
       'type': 'multipleChoice',
       'hideOptionNames': true,
-      'question': 'Where did the painter sit to draw his sketch?',
+      'question': 'Where did the painter sit to draw?',
       'options': [
         {
           'id': 'corner1',
           'label': 'Corner 1',
-          'feedback': 'The steps, the lamp and the church match. Now read the sketch in your notebook. What colour is the gate?',
+          'feedback': "The steps and the lamp match. Now read the sketch's words. What colour is the gate?",
         },
         {'id': 'corner2', 'label': 'Corner 2'},
         {
           'id': 'corner3',
           'label': 'Corner 3',
-          'feedback': 'Look at the sketch again. Is the lamp on the left of the gate, or on the right?',
+          'feedback': 'Look at the sketch. Is the lamp on the left of the gate, or on the right?',
         },
       ],
       'answer': 'corner2',
       'hints': [
-        "Bring the painter's hidden sketch from your notebook. Look at it beside each corner.",
-        'Check two things: where the lamp stands, and the colour of the gate. The sketch has no colours. Read its words.',
+        "Bring the painter's hidden sketch from your notebook. Compare it with each corner.",
+        'Check where the lamp stands. The sketch has no colours, so read its words.',
       ],
       'recall': {
         'evidence': 's2_ep02_e3',
         'title': 'These steps look familiar...',
         'prompt': 'Find the drawing the painter hid.',
         'feedback': {
-          's2_ep07_e3': 'That sketch brought you to Abbesses. Find the one he hid in his studio.',
+          's2_ep07_e3': 'That sketch brought you here. Find the one he hid in his studio.',
           's2_ep02_e1': 'That street has a red door. Look for steps and a gate.',
           's2_ep02_e4': 'That message was on the back of a canvas. Find the sketch under the paint.',
         },
@@ -121,15 +118,14 @@ const Map<String, dynamic> season2Episode08Json = {
         'id': 's2_ep08_e1',
         'name': "The Painter's Spot",
         'icon': 'frame',
-        'description': 'A corner in Abbesses, behind a loose stone.',
+        'description': 'The corner in Abbesses where the painter sat.',
         'inscription':
-            'Steps on the left, an old lamp left of the gate, a black iron gate between two pillars, the white church above. '
-            'The same place as his hidden sketch. A bundle of drawings was hidden in the left pillar.',
+            'Steps on the left. An old lamp left of the gate. A black gate between two pillars. The white church above. '
+            'His drawings were hidden in the left pillar.',
       },
       'successMessage': "You found the painter's corner!",
       'transition': [
-        'The lamp on the left. The church above. A black gate.',
-        "This is the corner in the painter's sketch.",
+        "The lamp on the left. A black gate. This is the painter's corner.",
         'One stone in the left pillar is loose.',
         'Behind it: a bundle of drawings, tied with string.',
       ],
@@ -145,10 +141,8 @@ const Map<String, dynamic> season2Episode08Json = {
       'location': "THE PAINTER'S CORNER",
       'scene': 'drawingBundle',
       'story': [
-        'You untie the string.',
-        'Three pencil drawings of this corner.',
-        'The same steps. The same lamp. The same gate.',
-        'But they are not the same.',
+        'You untie the string: three drawings of this corner.',
+        'The same steps, lamp and gate. But something changes.',
       ],
       'letterIntro': 'A tag on the string says:',
       // The rule only: which drawing is which is for the detective.
@@ -171,7 +165,7 @@ const Map<String, dynamic> season2Episode08Json = {
         {
           'id': 'painter',
           'label': 'The painter dropped it.',
-          'feedback': 'The painter was drawing from across the street. The paper is on the steps.',
+          'feedback': 'The painter sat across the street. The paper is on the steps.',
         },
         {
           'id': 'window',
@@ -183,14 +177,14 @@ const Map<String, dynamic> season2Episode08Json = {
       'answer': 'bag',
       'hints': [
         "Read P.'s tag. Dark sky first. When the sun comes up, the lamps go out.",
-        'When does the paper come? Who was on those steps just before? Look closely at the bag.',
+        'When does the paper come? Look at who was on the steps just before.',
       ],
       'clue': {
         'id': 's2_ep08_c2',
         'title': 'It Fell from the Bag',
         'value': 'Paper after the bag',
         'symbol': 'frame',
-        'note': 'No paper in drawings 1 and 2. The bag went up the steps. Then the paper was there.',
+        'note': 'The bag went up the steps. Then a paper was there.',
       },
       'evidence': {
         'id': 's2_ep08_e2',
@@ -198,19 +192,17 @@ const Map<String, dynamic> season2Episode08Json = {
         'icon': 'frame',
         'description': "Three drawings of one morning, from the painter's corner.",
         'inscription':
-            'Someone in a hat, back turned, comes out of the black gate with a flat bag and climbs the steps. '
-            'The bag is so full that papers stick out under its flap. Two buckles. '
-            'On the flap: a small shield badge with leaves around its edge. '
+            'Someone in a hat comes out of the gate and goes up the steps. Back turned. '
+            'A flat bag, full of papers. Two buckles. A shield badge with leaves around its edge. '
             'Then a paper lies on the bottom step. No face. No name.',
       },
       'successMessage': 'It fell from the bag!',
       'transition': [
-        'Drawing 1: nobody is here.',
-        'Drawing 2: someone comes through the gate with a flat bag. It is so full that papers stick out.',
+        'Drawing 2: someone with a flat bag, full of papers.',
         'Drawing 3: the person is gone. A paper lies on the steps.',
-        'The paper fell from the bag!',
-        "In the corner, P. drew the bag's badge: a small shield with leaves around its edge.",
-        'And the face? P. drew only a hat and a back.',
+        'The paper fell from the bag.',
+        "P. drew the bag's badge: a small shield with leaves around it.",
+        'But no face. Only a hat and a back.',
       ],
       'nextMissionId': 's2_ep08_m3',
       'skills': ['reading', 'problemSolving'],
@@ -224,9 +216,8 @@ const Map<String, dynamic> season2Episode08Json = {
       'location': "THE PAINTER'S CORNER",
       'scene': 'drawingBundle',
       'story': [
-        'Behind the three drawings is one more paper.',
-        'It is folded small. It is not a drawing.',
-        'A note is clipped to it.',
+        'Behind the drawings is one more paper, folded small.',
+        'It is not a drawing. A note is clipped to it.',
       ],
       'letterIntro': "P.'s note says:",
       // That he picked it up, never where it came from.
@@ -245,14 +236,14 @@ const Map<String, dynamic> season2Episode08Json = {
       ],
       'answer': 'same:border,same:band,same:arrow,same:seal,missing:number,missing:hour',
       'feedback': {
-        'need:same': 'Look again. Four things on this paper are just like the opera slip.',
+        'need:same': 'Four things on this paper are just like the opera slip.',
         'need:seal': 'Look closely at the seal. Count the hands.',
         'need:hour': 'Read the times on the opera slip. What is in front of :00?',
         'need:number': 'The opera slip says FILE 3. What does this paper say after FILE?',
       },
       'hints': [
         'Bring the opera slip from your notebook. Put it beside this paper.',
-        'Look closely at the seal: count the hands, and look around the clock. Then read FILE and the times on both papers.',
+        "Count the seal's hands. Then compare FILE and the times on both papers.",
       ],
       'recall': {
         'evidence': 's2_ep07_e3',
@@ -270,7 +261,7 @@ const Map<String, dynamic> season2Episode08Json = {
         'title': 'The Same Seal',
         'value': 'No hands · leaves',
         'symbol': 'seal',
-        'note': 'Same form and seal as the opera slip. The FILE number and the hour are torn away.',
+        'note': 'Same form and seal as the opera slip. FILE number and hour torn away.',
       },
       'evidence': {
         'id': 's2_ep08_e3',
@@ -278,18 +269,17 @@ const Map<String, dynamic> season2Episode08Json = {
         'icon': 'seal',
         'description': "A torn, folded paper, kept with P.'s drawings.",
         'inscription':
-            "P.'s note: I found this paper on the steps. "
-            'The same form as the opera slip: a double border, a FILE band, a time with an arrow, '
-            'and the same purple seal, a clock with no hands in a ring of leaves. '
+            'P. found it on the steps. '
+            'The same form as the opera slip: a double border, a FILE band, an arrow between two times. '
+            'The same purple seal: a clock with no hands, in a ring of leaves. '
             'The FILE number and the hour are torn away.',
       },
       'successMessage': 'The same seal!',
       'transition': [
-        'The same border. The same FILE band. An arrow between two times.',
-        'And the same purple seal: a clock with no hands, in a ring of leaves.',
-        'But the FILE number is torn away. So is the hour.',
-        'This paper is like the opera slip. It is a paper for changing a time.',
-        "P. found it on the steps. But is it the paper in his drawing?",
+        'The same form. The same purple seal.',
+        'But the FILE number and the hour are torn away.',
+        'Like the opera slip, it is a paper for changing a time.',
+        'P. found it on the steps. Is it the paper in his drawing?',
       ],
       'nextMissionId': 's2_ep08_final',
       'skills': ['reading', 'problemSolving'],
@@ -304,9 +294,8 @@ const Map<String, dynamic> season2Episode08Json = {
     'location': "THE PAINTER'S CORNER",
     'scene': 'paintersCorner',
     'story': [
-      'You sit where the painter sat.',
-      'Drawing 3 is on one side. The torn paper is on the other.',
-      'Is it the same paper? And what does it tell us?',
+      'You sit where the painter sat, with drawing 3 and the torn paper.',
+      'Is it the same paper? What does it tell us?',
     ],
     'letterIntro': 'Your evidence:',
     'letter':
@@ -359,22 +348,20 @@ const Map<String, dynamic> season2Episode08Json = {
       'icon': 'letter',
       'description': "The torn paper, laid on P.'s drawing of the steps.",
       'inscription':
-          'The same V-shaped tear as the paper in drawing 3. It lay on the steps just after the bag went by. '
-          'The same form and seal as the opera slip. A paper for changing a time fell from the bag. '
+          'The same V-shaped tear as the paper in drawing 3. '
+          'A paper for changing a time fell from the bag. '
           'Who carried it, and who changed what, is not known.',
     },
     'successMessage': 'It fell from the bag!',
     // After the case is closed (and P.'s last drawing is looked at, its
     // bag and its garden: `TornHourScene.lead`): the post-case scene, then
-    // the case report.
+    // the case report. The garden's little clock was told on the map
+    // (`NextLead.doneLines`), so it is not told again here.
     'transition': [
       'The paper fell from the bag.',
       'It is a paper for changing a time, like the opera slip.',
-      'So the bag carried a paper for changing a time.',
       'But who carried it? P. never drew a face.',
-      "P.'s last drawing showed the same bag in the Luxembourg Gardens.",
-      'On the grass in the drawing stands a little clock. Tiny roofs are all around it.',
-      'Why did the bag go to a little clock in a garden?',
+      'And why did the bag go to a little clock in a garden?',
       'The mystery continues in the Luxembourg Gardens!',
     ],
     'skills': ['problemSolving', 'reading'],
@@ -388,7 +375,6 @@ const Map<String, dynamic> season2Episode08Json = {
     'pillar': '기둥',
     'pillars': '기둥들',
     'gate': '대문',
-    'iron': '철로 된',
     'loose': '헐거운, 빠질 듯한',
     'bundle': '묶음, 꾸러미',
     'string': '끈',
@@ -410,8 +396,6 @@ const Map<String, dynamic> season2Episode08Json = {
     'darker': '더 어두운',
     'flat': '납작한',
     'bag': '가방',
-    'flap': '(가방의) 덮개',
-    'stick': '삐져나오다 (stick out)',
     'full': '꽉 찬',
     'buckles': '버클, 잠금쇠',
     'badge': '배지',

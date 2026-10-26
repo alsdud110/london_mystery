@@ -29,7 +29,7 @@ const Map<String, dynamic> season2Episode09Json = {
   'place': 'LUXEMBOURG GARDENS',
   'synopsis': [
     'A paper for changing a time fell from a bag.',
-    "P.'s last drawing showed the same bag in a garden, beside a little clock.",
+    'P. drew the same bag in a garden, beside a little clock.',
     'What is that little clock?',
   ],
   // Never "three" or "joined": that is found on the model.
@@ -44,15 +44,14 @@ const Map<String, dynamic> season2Episode09Json = {
   'intro': [
     "You look at P.'s last drawing again.",
     'A palace. A round pond. A little clock on a stone base.',
-    'And beside it, the same flat bag. The paper for changing a time fell from that bag.',
+    'And beside it, the same flat bag.',
     'You walk into the Luxembourg Gardens.',
     "The palace. The pond. It's the garden from the drawing!",
     "Look! That's the little clock from the drawing!",
     'The same bag was here. But why?',
-    "The bag is gone. The little clock is still here. Let's look closer.",
   ],
   'caseSummary':
-      'You put three little clocks back on the map, joined them to the tower with gears, matched two old marks, and set the tower one hour wrong. Only the joined clocks went wrong. A star under T1 pointed to the Arc de Triomphe.',
+      "One wrong setting changed only the joined clocks. T1's star pointed to the Arc de Triomphe.",
   'keyWords': ['joined', 'trial', 'gear', 'big', 'small', 'same', 'one hour back', 'changed', 'still'],
   'hook': 'Was the hour lost — or was the clock wrong?',
   'missions': [
@@ -64,14 +63,10 @@ const Map<String, dynamic> season2Episode09Json = {
       'scene': 'luxembourgGarden',
       'story': [
         'The stone base has a map of Paris on it.',
-        'Three little clocks lie in a box. Their places are empty.',
-        'Put them back!',
+        'Three little clocks lie in a box beside it.',
       ],
       'letterIntro': 'Beside the box:',
-      'letter':
-          'Three little clocks.\n'
-          'A map of Paris with empty places.\n'
-          'Put each clock back where it belongs.',
+      'letter': 'Put each clock back where it belongs.',
       // Each little clock laid on its place (see `season2TrialMaps`): a
       // wrong place sends it back to the box with its line, never counted.
       'type': 'matchPairs',
@@ -83,7 +78,7 @@ const Map<String, dynamic> season2Episode09Json = {
       ],
       'answer': 't1:arcDeTriomphe,t2:seineQuays,t3:artsEtMetiers',
       'hints': [
-        'Look at the shape of each little clock. Find the same shape on the map.',
+        "Look at each clock's shape. Find the same shape on the map.",
         'T1 is an arch. T2 is a bridge. T3 is a tall spire.',
       ],
       'clue': {
@@ -99,15 +94,14 @@ const Map<String, dynamic> season2Episode09Json = {
         'icon': 'map',
         'description': 'The little clocks, put back on the map of Paris.',
         'inscription':
-            'T1 at the Arc de Triomphe, with a star. T2 at the Seine bridge, with three arches. '
-            'T3 at Arts et Métiers, with a bell. Only three places have trial clocks.',
+            'T1: Arc de Triomphe, a star. T2: Seine bridge, three arches. '
+            'T3: Arts et Métiers, a bell.',
       },
       'successMessage': 'All three are back!',
       'transition': [
-        'Click! All three clocks are back.',
-        'Only three places in Paris have trial clocks. Not every clock in Paris.',
-        'Each little clock has a sign: a star, three arches, a bell.',
-        'Three clocks, far apart. How does one little tower reach them?',
+        'Only three places in Paris have trial clocks.',
+        'Each one has a sign: a star, three arches, a bell.',
+        'How does one little tower reach all three?',
       ],
       'nextMissionId': 's2_ep09_m2',
       'skills': ['reading', 'problemSolving'],
@@ -152,18 +146,16 @@ const Map<String, dynamic> season2Episode09Json = {
         'icon': 'gear',
         'description': 'The gear board under the Little Paris.',
         'inscription':
-            'The tower turns T1, T2 and T3 together. The garden clock is not joined, so it does not move. '
-            'The gears move the model. The real trial used wires. '
+            'The tower turns T1, T2 and T3. The garden clock is not joined. '
+            'The real trial used wires. '
             'Under T1, a drum. Its tag: TRIAL RECORDS · KEPT AT THE STAR.',
       },
       'successMessage': 'They turn together!',
       'transition': [
-        'The tower turns. T1, T2 and T3 turn with it!',
-        'The garden clock does not move. It is not joined.',
         'The gears move the model. The real trial used wires.',
         'Under T1, a little drum writes the time.',
         'Its tag says: TRIAL RECORDS · KEPT AT THE STAR.',
-        'A drawer opens under the board. Who planned this machine? Who fixed it?',
+        'A drawer opens. Who planned this machine? Who fixed it?',
       ],
       'nextMissionId': 's2_ep09_m3',
       'skills': ['reading', 'problemSolving'],
@@ -177,8 +169,7 @@ const Map<String, dynamic> season2Episode09Json = {
       'location': 'UNDER THE LITTLE PARIS',
       'scene': 'gearBoard',
       'story': [
-        'In the drawer: an old plan. CHRONOS TRIAL.',
-        'A repair note is pinned to it.',
+        'In the drawer: an old plan, CHRONOS TRIAL, with a repair note.',
         'You know these marks!',
       ],
       'letterIntro': 'Your notebook says:',
@@ -205,7 +196,7 @@ const Map<String, dynamic> season2Episode09Json = {
         'title': 'Two Marks',
         'value': 'Gear = trial · hands = No. 7',
         'symbol': 'seal',
-        'note': 'Two marks on two different papers. Who made them is not known.',
+        'note': 'Two marks on two papers. Who made them? The papers do not say.',
       },
       'evidence': {
         'id': 's2_ep09_e3',
@@ -213,17 +204,16 @@ const Map<String, dynamic> season2Episode09Json = {
         'icon': 'seal',
         'description': 'An old trial plan with a repair note.',
         'inscription':
-            "CHRONOS TRIAL. The plan's emblem is a gear, like the Clockmaker's mark. "
-            'The repair note is stamped with two clock hands, the No. 7 mark. '
+            "The plan's emblem is a gear, like the Clockmaker's mark. "
+            'The repair note has a stamp of two clock hands, the No. 7 mark. '
             'The papers do not say who made the marks.',
       },
       'successMessage': 'The same marks!',
       'transition': [
         "The Clockmaker's gear is the trial's emblem.",
-        'The two hands are on the repair note. The No. 7 workshop mended a trial wheel.',
+        'The two hands are on the repair note. No. 7 mended a trial wheel.',
         'Two marks on two different papers. Did one person make both? The papers do not say.',
-        "And the paper from the bag was for changing a time. Is it linked to this machine? We can't tell yet.",
-        'So what does one wrong time do to these clocks? Let\'s test it!',
+        "And the paper from the bag? Is it linked to this machine? We can't tell yet.",
       ],
       'nextMissionId': 's2_ep09_final',
       'skills': ['reading', 'problemSolving'],
@@ -238,8 +228,7 @@ const Map<String, dynamic> season2Episode09Json = {
     'location': 'THE TOWER CLOCK',
     'scene': 'luxembourgGarden',
     'story': [
-      "The tower's hands lie in a little box. You put them back on.",
-      'Every clock says four.',
+      "You put the tower's hands back on. Every clock says four.",
       'What if the tower is set wrong?',
     ],
     'letterIntro': 'The card says:',
@@ -271,9 +260,8 @@ const Map<String, dynamic> season2Episode09Json = {
       'icon': 'clock',
       'description': 'A test on the tower clock in the garden.',
       'inscription':
-          'The tower was set one hour back. T1, T2 and T3 went to 3:00 with it. The garden clock stayed at 4:00. '
-          'One wrong setting can change several connected clocks. '
-          'The test does not show who set a wrong hour long ago.',
+          'The tower was set one hour back. T1, T2 and T3 went to 3:00. The garden clock stayed at 4:00. '
+          'The test does not show who set a wrong hour.',
     },
     'successMessage': 'One wrong setting!',
     // After the case is closed (and the star followed: `TowerTestScene.lead`):
@@ -281,9 +269,7 @@ const Map<String, dynamic> season2Episode09Json = {
     'transition': [
       'One wrong setting can change several connected clocks.',
       "And the bag? Why it came here, we still don't know.",
-      'The star is under T1, at the Arc de Triomphe.',
-      'Twelve roads meet there, like a star.',
-      'The real records may be kept there. We must read them.',
+      'Was an hour really lost? The records at the star may tell.',
       'The mystery continues at the Arc de Triomphe!',
     ],
     'skills': ['problemSolving', 'reading'],

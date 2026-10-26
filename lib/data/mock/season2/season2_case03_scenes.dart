@@ -241,7 +241,7 @@ const Map<String, DialLockScene> season2DialLocks = {
     // Key, clock, lift: no dial starts on its answer.
     start: [1, 0, 2],
     label: 'A heavy brass padlock with three dials, each under a pointer',
-    task: 'Turn each dial. The picture under the pointer is the one set.',
+    task: 'Turn each dial. The picture under the pointer is the one you set.',
     openLabel: 'OPEN THE LOCK',
   ),
 };
@@ -264,7 +264,7 @@ final Map<String, EvidenceBoardScene> season2EvidenceBoards = {
     questions: const [
       BoardQuestion(id: 'q1', text: 'What was wrong with the inspection records?'),
       BoardQuestion(id: 'q2', text: 'Where did the lift go?'),
-      BoardQuestion(id: 'q3', text: 'What supports the conclusion that someone entered the service area?'),
+      BoardQuestion(id: 'q3', text: 'What shows that someone went into the service area?'),
     ],
     evidence: const [
       BoardEvidence(id: 'e1', evidenceId: 's2_ep03_e1'),
@@ -274,7 +274,7 @@ final Map<String, EvidenceBoardScene> season2EvidenceBoards = {
     conclusionId: 'why',
     conclusionQuestion: 'What can we conclude?',
     conclusions: const [
-      BoardConclusion(id: 'entered', text: 'Someone entered the service area during the unexplained time difference.'),
+      BoardConclusion(id: 'entered', text: 'Someone went into the service area in the hour the records do not agree on.'),
       BoardConclusion(id: 'vanished', text: 'An hour really vanished from Paris.'),
       BoardConclusion(id: 'still', text: 'The lift never moved.'),
     ],

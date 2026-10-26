@@ -38,7 +38,7 @@ const Map<String, dynamic> season2Episode05Json = {
   'synopsis': [
     'The torn label led you to No. 7, Passage des Horlogers.',
     'Inside, the clocks move, but nobody is there.',
-    'Someone worked here. Not long ago.',
+    'The clock parts from the tower came here. Why?',
   ],
   'objectives': [
     "Find the maker's own mark.",
@@ -47,15 +47,13 @@ const Map<String, dynamic> season2Episode05Json = {
   ],
   'introScene': 'passageGate',
   'intro': [
-    'The last piece of the label said two things.',
     'Do not trust the clocks. Follow the hands that made them.',
-    'The iron gate is not locked. Behind it, a door says No. 7.',
-    'Inside, dozens of clocks hang on the walls.',
-    'Their hands are moving, but the room is strangely silent.',
+    'The gate is not locked. Behind it, a door says No. 7.',
+    'Inside, clocks cover the walls.',
+    'Their hands move, but the room is silent.',
     'Someone worked here. Not long ago.',
   ],
-  'caseSummary':
-      "You found the maker's own mark, caught the clock that turns back, read the blotted notes in a mirror and followed a letter through the post. It never arrived.",
+  'caseSummary': 'A mark, a backward clock and a mirror led you to letter No. 4417. It never arrived.',
   'keyWords': ['copy', 'backwards', 'wrong way', 'collected', 'sorted', 'held'],
   'hook': 'Who held the letter at the Louvre post room?',
   'missions': [
@@ -66,12 +64,10 @@ const Map<String, dynamic> season2Episode05Json = {
       'location': 'THE WORKBENCH',
       'scene': 'workbenchMarks',
       'story': [
-        'Inside No. 7, tools lie on a long workbench.',
         // Case 04's Box 23: its crate came here (ledger: for No. 7; label:
         // CLOCK PARTS, the watchmakers).
-        'Behind it stands an empty crate, with brown paper and string, just like in Box 23.',
-        'The clock parts from the tower came here.',
-        'Four things on it are stamped with two clock hands.',
+        'An empty crate stands behind the workbench, just like in Box 23.',
+        'Four things on the bench are stamped with two clock hands.',
         'They look the same. Are they?',
       ],
       'letterIntro': 'A note on the workbench says:',
@@ -100,7 +96,7 @@ const Map<String, dynamic> season2Episode05Json = {
       'answer': 'd',
       'hints': [
         'Lay the tracing sheet over each stamp. Look at the lines, not the colour.',
-        'Check three things: how many hands, where the short hand sits, and the shape of each tip.',
+        'Count the hands. See where the short hand sits. Check each tip.',
       ],
       'clue': {
         'id': 's2_ep05_c1',
@@ -119,7 +115,6 @@ const Map<String, dynamic> season2Episode05Json = {
       },
       'successMessage': "You found the maker's own mark!",
       'transition': [
-        'The marks were not all the same.',
         "Only the small drawer has the maker's own mark.",
         'Inside it, a repair card says:',
         'I changed one clock. I added one small wheel.',
@@ -138,8 +133,7 @@ const Map<String, dynamic> season2Episode05Json = {
       'location': 'THE WALL OF CLOCKS',
       'scene': 'wallOfClocks',
       'story': [
-        'Four clocks hang in a row on the wall.',
-        'Their hands move, but they make no sound.',
+        'Four silent clocks hang in a row on the wall.',
         'Each one shows a different time.',
       ],
       'letterIntro': 'The repair card says:',
@@ -151,24 +145,24 @@ const Map<String, dynamic> season2Episode05Json = {
         {
           'id': 'i',
           'label': 'Clock I',
-          'feedback': 'Clock I went from 3:10 to 3:11. That is the right way. And nothing was added at its back.',
+          'feedback': 'Clock I went from 3:10 to 3:11. That is the right way.',
         },
         {
           'id': 'ii',
           'label': 'Clock II',
-          'feedback': 'Clock II runs fast, but its hands still turn the right way. Read the card again.',
+          'feedback': 'Clock II runs fast, but it still turns the right way.',
         },
         {'id': 'iii', 'label': 'Clock III'},
         {
           'id': 'iv',
           'label': 'Clock IV',
-          'feedback': 'Clock IV does not move at all. Its hands do not turn the wrong way.',
+          'feedback': 'Clock IV does not move at all. It does not turn the wrong way.',
         },
       ],
       'answer': 'iii',
       'hints': [
         'Watch the clocks for one minute. Read each time before and after.',
-        'The card says two things: one small wheel was added, and the hands turn the wrong way. Find the clock that does both.',
+        'Find the clock with both: a wheel added, and hands that turn the wrong way.',
       ],
       'clue': {
         'id': 's2_ep05_c2',
@@ -187,8 +181,7 @@ const Map<String, dynamic> season2Episode05Json = {
       },
       'successMessage': 'You found the clock that turns back!',
       'transition': [
-        'Clock III went from 10:40 to 10:39.',
-        'Its hands turn the wrong way.',
+        'Clock III went back, from 10:40 to 10:39.',
         'Behind it, one small brass wheel does not belong.',
         'By the window, a writing desk is covered in ink.',
       ],
@@ -204,15 +197,14 @@ const Map<String, dynamic> season2Episode05Json = {
       'location': 'THE WRITING DESK',
       'scene': 'writingDesk',
       'story': [
-        'On the desk lies a big sheet of blotting paper.',
-        'Ink has dried on it, but the words are backwards.',
+        'Ink has dried on the blotting paper. The words are backwards.',
         'A small hand mirror lies beside it.',
       ],
       'letterIntro': 'Your notebook says:',
       'letter':
           'Read the backwards notes in the mirror.\n'
           "Trust only the maker's own mark.\n"
-          'What does it say? Where should you look?',
+          'Where does it tell you to look?',
       // The place the note with the maker's own mark names.
       'type': 'multipleChoice',
       'question': "Which place does the maker's own note name?",
@@ -237,7 +229,7 @@ const Map<String, dynamic> season2Episode05Json = {
       'answer': 'clock3',
       'hints': [
         'Hold the mirror over each note. Then look at the mark under it.',
-        "The note with the maker's own mark says: the clock that turns back. Which clock was that?",
+        "The maker's own note says: the clock that turns back. Which clock is that?",
       ],
       'clue': {
         'id': 's2_ep05_c3',
@@ -279,9 +271,7 @@ const Map<String, dynamic> season2Episode05Json = {
     'location': 'THE WORKSHOP DOOR',
     'scene': 'workshopInterior',
     'story': [
-      'Under the door, post slips have piled up.',
-      'The post leaves one each time a letter moves.',
-      'Nobody was here to read them.',
+      'The post leaves a slip each time a letter moves.',
       // "Collected from No. 7" (the receipt) and "the passage box" (a
       // slip) are one place.
       'The post box of the passage stands right outside No. 7.',
@@ -311,12 +301,12 @@ const Map<String, dynamic> season2Episode05Json = {
       'first:s5': 'Look at the letter number. Is it 4417?',
       'second:s5': 'Look at the letter number. Is it 4417?',
       'third:s5': 'Look at the letter number. Is it 4417?',
-      'first:s2': 'Put the times in order: which came first?',
-      'first:s3': 'Put the times in order: which came first?',
-      'second:s1': 'Read the time on each slip again. Which one came in the middle?',
-      'second:s3': 'Read the time on each slip again. Which one came in the middle?',
-      'third:s1': 'Read the time on each slip again. Which one came last?',
-      'third:s2': 'Read the time on each slip again. Which one came last?',
+      'first:s2': 'Read the times. Which came first?',
+      'first:s3': 'Read the times. Which came first?',
+      'second:s1': 'Read the times. Which came in the middle?',
+      'second:s3': 'Read the times. Which came in the middle?',
+      'third:s1': 'Read the times. Which came last?',
+      'third:s2': 'Read the times. Which came last?',
     },
     'hints': [
       'Look at the letter number on each slip. Is it the same as on the receipt?',
@@ -335,7 +325,7 @@ const Map<String, dynamic> season2Episode05Json = {
     // After the case is closed: the post-case scene, then the case report.
     'transition': [
       'Letter No. 4417 left No. 7 on 16 May.',
-      'It was collected. It was sorted.',
+      'It was collected and sorted.',
       'Then it stopped: HELD at the Louvre post room.',
       'It was never delivered.',
       'Who stopped it? And why?',
@@ -351,7 +341,6 @@ const Map<String, dynamic> season2Episode05Json = {
     'gate': '대문, 철문',
     'silent': '조용한, 소리 없는',
     'workbench': '작업대',
-    'tools': '공구들',
     'stamped': '도장이 찍힌',
     'mark': '표식',
     'copy': '복사본, 따라 만든 것',
@@ -371,7 +360,6 @@ const Map<String, dynamic> season2Episode05Json = {
     'wrong': '틀린, 잘못된',
     'wall': '벽',
     'row': '줄, 열',
-    'sound': '소리',
     'fast': '빠르게',
     'back': '뒤로; 뒷면',
     'brass': '황동, 놋쇠',

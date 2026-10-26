@@ -324,8 +324,10 @@ void main() {
       };
       final notes = <String, bool Function(({bool darkClouds, bool wet, bool wholeSkyGold}))>{
         'a': (p) => p.darkClouds && !p.wet, // BEFORE THE RAIN: dark clouds, dry stones
-        'b': (p) => p.wet, // AFTER THE RAIN STOPPED: wet and shiny
-        'c': (p) => p.wholeSkyGold && !p.wet, // WHEN THE SKY TURNED GOLD: whole sky gold, dry
+        'b': (p) => p.wet && p.darkClouds, // AFTER THE RAIN STOPPED: wet and shiny, some dark clouds still there
+        // WHEN THE SKY TURNED GOLD: whole sky gold, no dark clouds, dry. The
+        // sky alone fits p3 too (a gold sunset): the clouds and stones decide.
+        'c': (p) => p.wholeSkyGold && !p.darkClouds && !p.wet,
       };
       for (final MapEntry(key: note, value: fits) in notes.entries) {
         final matching = [for (final MapEntry(key: id, value: s) in shows.entries) if (fits(s)) id];
@@ -333,8 +335,8 @@ void main() {
         expect(Mission.sequenceIds(m2.answer), contains('$note:${matching.single}'));
       }
       expect(m2.letter, contains('Dark clouds were coming. The stones were still dry.'));
-      expect(m2.letter, contains('The stones were wet and shiny.'));
-      expect(m2.letter, contains('The whole sky was gold. The stones were dry.'));
+      expect(m2.letter, contains('The stones were wet and shiny. Some dark clouds were still there.'));
+      expect(m2.letter, contains('The whole sky was gold. No dark clouds. The stones were dry.'));
     });
 
     test('the final needs the clues: no one finds the canvas alone, together only one', () {

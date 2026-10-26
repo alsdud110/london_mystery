@@ -36,7 +36,7 @@ const Map<String, dynamic> season2Episode07Json = {
   'synopsis': [
     'The letter said: the show remembers.',
     'In the opera archive, one show has two start times.',
-    'Which one is true?',
+    'They are one hour apart. Which one is true?',
   ],
   'objectives': [
     "Test the show's times.",
@@ -45,14 +45,12 @@ const Map<String, dynamic> season2Episode07Json = {
   ],
   'introScene': 'palaisGarnierNight',
   'intro': [
-    'The letter showed one building: the Palais Garnier.',
+    'The letter led you to the Palais Garnier.',
     'On its back: OPERA ARCHIVE · FILE 3–4.',
-    'Tonight the opera house is dark and quiet.',
-    'Under the roof is the archive. Old boxes. Old programmes.',
+    'Tonight the opera house is dark. The archive is under the roof.',
     'One box on the table says: FILE 3–4.',
   ],
-  'caseSummary':
-      'You fitted the show to the clock, lit the stage like the old photo, found a slip behind a painted backdrop, and saw 4:00 under the 3:00. The show began at 4:00. Someone changed the record later.',
+  'caseSummary': 'The show began at 4:00. Later, someone covered FILE 3 with 3:00.',
   'keyWords': ['programme', 'doors open', 'curtain up', 'ghost light', 'cue', 'above', 'patch', 'changed'],
   'hook': 'What did P. see — and what was in the bag?',
   'missions': [
@@ -63,7 +61,6 @@ const Map<String, dynamic> season2Episode07Json = {
       'location': 'THE ARCHIVE TABLE',
       'scene': 'operaArchive',
       'story': [
-        'You open FILE 3–4. Inside are two files.',
         'FILE 3 is the office record of one show.',
         "FILE 4 is the show's programme.",
       ],
@@ -88,12 +85,12 @@ const Map<String, dynamic> season2Episode07Json = {
         {
           'id': 'office',
           'label': 'Start at 3:00',
-          'feedback': "That's the office's 3:00. The doors open at 3:30. Nobody is in the seats yet!",
+          'feedback': "That's the office's 3:00. But the doors open at 3:30.",
         },
         {
           'id': 'early',
           'label': 'Start before the doors open',
-          'feedback': 'The doors are not open yet. Who is watching the show?',
+          'feedback': 'The doors are not open yet. Nobody is in the seats.',
         },
         {
           'id': 'end',
@@ -112,7 +109,7 @@ const Map<String, dynamic> season2Episode07Json = {
         'title': 'Two Start Times',
         'value': '3:00 OR 4:00?',
         'symbol': 'watch',
-        'note': 'FILE 3 says the show began at 3:00. But the show only fits from 4:00 to 6:10.',
+        'note': 'FILE 3 says 3:00. But the show only fits from 4:00 to 6:10.',
       },
       'evidence': {
         'id': 's2_ep07_e1',
@@ -125,10 +122,8 @@ const Map<String, dynamic> season2Episode07Json = {
       'successMessage': 'It fits at 4:00!',
       'transition': [
         'The show fits only from 4:00 to 6:10.',
-        'A 3:00 show would start before the doors open.',
-        'And it would end at 5:10, not 6:10.',
-        'FILE 3 says 3:00. The show says 4:00.',
-        'Clipped to FILE 3 is an old photo. Under it, someone wrote: 3:00 PM · CURTAIN UP!',
+        'A 3:00 show would start too early and end at 5:10.',
+        'An old photo is clipped to FILE 3. It says: 3:00 PM · CURTAIN UP!',
         "Is that true? Let's look at the stage.",
       ],
       'nextMissionId': 's2_ep07_m2',
@@ -144,7 +139,6 @@ const Map<String, dynamic> season2Episode07Json = {
       'scene': 'operaStage',
       'story': [
         'At the back of the hall is the old lighting desk.',
-        'In front of you, the stage is dark.',
         'Four levers. One old book: THE LIGHTING BOOK.',
       ],
       'letterIntro': 'The Lighting Book says:',
@@ -205,8 +199,7 @@ const Map<String, dynamic> season2Episode07Json = {
         'The photo shows an empty stage, not a performance.',
         'In the Lighting Book, a cue card for show No. 34:',
         'CUE 1 · CURTAIN UP · 4:00.',
-        'The stage cue says 4:00.',
-        'A small scrap of paper is tucked in the book.',
+        'A scrap of paper is tucked in the book.',
         'On it, a tiny drawing: a small clock above a red door.',
         'Where have you seen that before?',
       ],
@@ -223,8 +216,7 @@ const Map<String, dynamic> season2Episode07Json = {
       'scene': 'flyRail',
       'story': [
         'Beside the stage is the rope rail.',
-        'Each rope holds a painted backdrop high above.',
-        'Pull a rope, and its backdrop comes down.',
+        'Pull a rope, and its painted backdrop comes down.',
       ],
       'letterIntro': 'The Painted Street in your notebook says:',
       'letter': 'Above the red door: a small clock.',
@@ -236,12 +228,12 @@ const Map<String, dynamic> season2Episode07Json = {
         {
           'id': 'lampRed',
           'label': 'Backdrop 1',
-          'feedback': 'There is a red door. But what is above it? Look closer.',
+          'feedback': 'There is a red door. But what is above it?',
         },
         {
           'id': 'towerRed',
           'label': 'Backdrop 2',
-          'feedback': 'That clock is big, and far from the door. Look right above the door.',
+          'feedback': 'That clock is far from the door. Look right above the door.',
         },
         {'id': 'clockRed', 'label': 'Backdrop 3'},
         {
@@ -260,7 +252,7 @@ const Map<String, dynamic> season2Episode07Json = {
         'title': 'A Hidden Pocket',
         'value': '4:00 to 3:00',
         'symbol': 'frame',
-        'note': 'Behind the backdrop with a small clock above a red door: a slip to change FILE 3.',
+        'note': 'Behind the backdrop, in a pocket: a slip to change FILE 3.',
       },
       'evidence': {
         'id': 's2_ep07_e3',
@@ -271,9 +263,9 @@ const Map<String, dynamic> season2Episode07Json = {
       },
       'successMessage': 'A hidden pocket!',
       'transition': [
-        "A small clock above a red door… like the painter's street.",
+        "It looks like the painter's street.",
         "Did P. paint this? We can't be sure.",
-        'In the pocket is an old slip of paper.',
+        'In the pocket is an old slip:',
         'FILE 3 · PERFORMANCE No. 34 · CURTAIN UP: 4:00 to 3:00.',
         'It says to change the record. But was FILE 3 really changed?',
       ],
@@ -290,8 +282,7 @@ const Map<String, dynamic> season2Episode07Json = {
     'location': 'THE ARCHIVE LIGHT TABLE',
     'scene': 'lightTable',
     'story': [
-      'Back in the archive, you lay the papers side by side.',
-      'Two records. Two start times.',
+      'Back in the archive: two records, two start times.',
       'One of them was changed.',
     ],
     'letterIntro': 'The Amendment Slip says:',
@@ -326,21 +317,17 @@ const Map<String, dynamic> season2Episode07Json = {
       'icon': 'letter',
       'description': 'FILE 3, on the light table in the opera archive.',
       'inscription':
-          'On the light table, FILE 3 has a patch over CURTAIN UP. On it: 3:00 PM. Under it: 4:00 PM. The Amendment Slip names the same change. Who changed it, and why, is not known.',
+          'FILE 3 has a patch over CURTAIN UP. On it: 3:00 PM. Under it: 4:00 PM. Who changed it, and why, is not known.',
     },
     'successMessage': 'The record was changed!',
     // After the case is closed: the post-case scene, then the case report.
     'transition': [
-      'The show began at 4:00.',
-      'At first, FILE 3 said 4:00 too.',
-      'Later, someone covered it with 3:00.',
+      'At first, FILE 3 said 4:00. Later, someone covered it with 3:00.',
       'The 3:00 show was only on paper. A phantom performance!',
       '3:00 and 4:00 again, like the notices at the Eiffel Tower.',
       "Is it the same hand? We don't know yet.",
-      'You turn the slip over.',
-      'A tiny pencil sketch: steps, a lamp, a metro sign. ABBESSES.',
+      'On the back of the slip: a sketch of a metro sign. ABBESSES.',
       'Under it: P. KNEW THE BAG.',
-      'P.? The painter? What bag?',
       'The mystery continues in Montmartre!',
     ],
     'skills': ['problemSolving', 'reading'],
@@ -353,13 +340,10 @@ const Map<String, dynamic> season2Episode07Json = {
     'opera': '오페라',
     'archive': '기록 보관실',
     'roof': '지붕',
-    'boxes': '상자들',
     'programme': '공연 안내서, 프로그램',
-    'programmes': '공연 안내서들',
     'record': '기록',
     'office': '사무실',
     'file': '서류철',
-    'files': '서류철들',
     'doors': '문들 (DOORS OPEN: 입장 시작)',
     'curtain': '막, 커튼 (CURTAIN UP: 막이 오름 / CURTAIN DOWN: 막이 내림)',
     'overture': '서곡',
@@ -368,6 +352,7 @@ const Map<String, dynamic> season2Episode07Json = {
     'whole': '전체의',
     'start': '시작하다',
     'times': '시각들',
+    'apart': '떨어져 (one hour apart: 한 시간 차이)',
     'fits': '꼭 맞는다',
     'audience': '관객',
     'seats': '좌석들',

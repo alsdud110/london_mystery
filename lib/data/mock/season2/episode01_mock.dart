@@ -31,8 +31,8 @@ const Map<String, dynamic> season2Episode01Json = {
   'place': 'GARE DU NORD · PARIS',
   'synopsis': [
     'The clocks at Gare du Nord show different times.',
-    'Why is one clock an hour behind?',
-    'Find the clues and discover the truth.',
+    'One clock is an hour behind. Who changed it?',
+    'This is where the missing hour begins.',
   ],
   'objectives': [
     'Find the clock that is wrong.',
@@ -42,12 +42,11 @@ const Map<String, dynamic> season2Episode01Json = {
   'introScene': 'gareDuNord',
   'intro': [
     'Paris. Gare du Nord.',
-    'You step off the train from London.',
-    "In your pocket, the Clockmaker's watch is still ticking.",
-    'High above the platforms, three clocks are ticking too.',
+    "The Clockmaker's watch is still ticking in your pocket.",
+    'Above the platforms, three clocks are ticking too.',
     'But they do not show the same time.',
   ],
-  'caseSummary': 'You found the clock that was one hour behind, put the events in order and opened the Clockmaker\'s hidden box.',
+  'caseSummary': "You found the wrong clock, put the events in order and opened the Clockmaker's box.",
   'keyWords': ['behind', 'first', 'next', 'forward'],
   'hook': 'Inside the box is a painting of Montmartre. On the back: FIND THE PAINTER.',
   'missions': [
@@ -58,15 +57,15 @@ const Map<String, dynamic> season2Episode01Json = {
       'location': 'THE STATION HALL',
       'scene': 'gareDuNord',
       'story': [
-        'The station hall is busy. People hurry to their trains.',
+        'The station hall is busy.',
         'Under the glass roof, three clocks are ticking.',
       ],
       'letterIntro': 'A notice hangs beside the departure board.',
       'letter':
           'STATION NOTICE\n\n'
           'All our clocks show Paris time.\n'
-          'IF ONE CLOCK IS ONE HOUR BEHIND,\n'
-          'REPORT IT TO THE LOST PROPERTY DESK.\n\n'
+          'If one clock is ONE HOUR BEHIND,\n'
+          'report it to the LOST PROPERTY DESK.\n\n'
           'YOUR NOTES\n'
           'The hall clock shows 10:00.\n'
           'The platform clock shows 10:00.\n'
@@ -79,39 +78,39 @@ const Map<String, dynamic> season2Episode01Json = {
         {
           'id': 'a',
           'label': 'The hall clock',
-          'feedback': 'The hall clock shows 10:00, like the platform clock. Which clock shows a different hour?',
+          'feedback': 'The hall clock shows 10:00, like the platform clock. Which one is different?',
         },
         {
           'id': 'b',
           'label': 'The platform clock',
-          'feedback': 'The platform clock shows 10:00, like the hall clock. Which clock shows a different hour?',
+          'feedback': 'The platform clock shows 10:00, like the hall clock. Which one is different?',
         },
         {'id': 'c', 'label': 'The old clock'},
       ],
       'answer': 'c',
       'hints': [
         'Look at all three clocks. Two of them show the same time.',
-        'ONE HOUR BEHIND means one hour less. Which clock shows 9:00 when the others show 10:00?',
+        'Behind means one hour less. Which clock shows 9:00?',
       ],
       'clue': {
         'id': 's2_ep01_c1',
         'title': 'Letter T',
         'value': 'T',
         'symbol': 'watch',
-        'note': 'The old clock is one hour behind. A letter is scratched on its glass: T.',
+        'note': 'The old clock is one hour behind. On its glass: T.',
       },
       'evidence': {
         'id': 's2_ep01_e1',
         'name': 'Station Notice',
         'icon': 'letter',
         'description': 'It hangs beside the departure board.',
-        'inscription': 'IF ONE CLOCK IS ONE HOUR BEHIND, REPORT IT TO THE LOST PROPERTY DESK.',
+        'inscription': 'If one clock is ONE HOUR BEHIND, report it to the LOST PROPERTY DESK.',
       },
       'successMessage': 'The old clock is one hour behind!',
       'transition': [
         'The old clock shows nine. The others show ten.',
-        'Someone scratched a small letter on its glass: T.',
-        'The notice says where to go: the Lost Property desk.',
+        'A letter is scratched on its glass: T.',
+        'Now go to the Lost Property desk.',
       ],
       'nextMissionId': 's2_ep01_m2',
       'skills': ['reading', 'problemSolving'],
@@ -125,7 +124,7 @@ const Map<String, dynamic> season2Episode01Json = {
       'location': 'LOST PROPERTY DESK',
       'scene': 'gareDuNord',
       'story': [
-        'At the Lost Property desk, a clerk shows you a train ticket.',
+        'The clerk shows you a train ticket.',
         'Someone dropped it under the old clock this morning.',
       ],
       'letterIntro': 'The clerk gives you the ticket and her notes.',
@@ -137,25 +136,25 @@ const Map<String, dynamic> season2Episode01Json = {
           // them in order.
           'AFTER THAT, the old clock showed nine.\n'
           'FIRST, the hall clock struck ten.\n'
-          'NEXT, a man with a pocket watch entered the waiting room.\n\n'
+          'NEXT, a man with a pocket watch came in.\n\n'
           '— Lost Property, Gare du Nord',
       // The cards are shuffled; FIRST, NEXT and AFTER THAT put them in order.
       'type': 'sequence',
-      'question': 'Put what happened in the right order.',
+      'question': 'Put what happened in order.',
       'options': [
         {'id': 'a', 'label': 'The old clock showed nine.'},
         {'id': 'b', 'label': 'The hall clock struck ten.'},
-        {'id': 'c', 'label': 'A man with a pocket watch entered the waiting room.'},
+        {'id': 'c', 'label': 'A man with a pocket watch came in.'},
       ],
       'answer': 'b,c,a',
       'codeLength': 3,
-      'orderFeedback': 'Read the notes again. What happened FIRST? What came NEXT? What came AFTER THAT?',
+      'orderFeedback': 'Read the notes again. What happened FIRST? NEXT? AFTER THAT?',
       'feedback': {
-        'c,b,a': 'The man came NEXT, not first. What happened FIRST?',
+        'c,b,a': 'The man came NEXT. What happened FIRST?',
         'b,a,c': 'The old clock changed AFTER THAT, at the end. What came NEXT?',
       },
       'hints': [
-        'The notes use three order words: FIRST, NEXT and AFTER THAT.',
+        'Find the order words: FIRST, NEXT and AFTER THAT.',
         'FIRST is the hall clock. AFTER THAT is the old clock. What is in the middle?',
       ],
       'clue': {
@@ -163,7 +162,7 @@ const Map<String, dynamic> season2Episode01Json = {
         'title': 'Letter I',
         'value': 'I',
         'symbol': 'ticket',
-        'note': 'FIRST, the hall clock struck ten. NEXT, a man with a pocket watch came in. AFTER THAT, the old clock showed nine. On the ticket: I.',
+        'note': 'The man came in before the old clock went back. On the ticket: I.',
       },
       'evidence': {
         'id': 's2_ep01_e2',
@@ -179,8 +178,8 @@ const Map<String, dynamic> season2Episode01Json = {
         'FIRST, the hall clock struck ten.',
         'NEXT, a man with a pocket watch came in.',
         'AFTER THAT, the old clock showed nine.',
-        'Did the man change the old clock? Why would anyone hide an hour?',
-        'The ticket in your hand has a letter on the back: I.',
+        'Did the man change the old clock?',
+        'On the back of the ticket is a letter: I.',
       ],
       'nextMissionId': 's2_ep01_m3',
       'skills': ['reading', 'problemSolving'],
@@ -199,10 +198,10 @@ const Map<String, dynamic> season2Episode01Json = {
       ],
       'letterIntro': 'The carving says:',
       'letter':
-          'THE OLD CLOCK IS ONE HOUR BEHIND.\n'
-          'MOVE ITS HANDS FORWARD ONE HOUR\n'
-          'TO MATCH THE HALL CLOCK.\n\n'
-          'Under the words, a tiny gear is carved.',
+          'The old clock is one hour behind.\n'
+          'Move its hands FORWARD one hour\n'
+          'to match the hall clock.\n\n'
+          'Under the words: a tiny gear.',
       // The time set is the answer (hour then two-digit minutes): 9:00 moved
       // forward one hour.
       'type': 'numberCode',
@@ -210,20 +209,20 @@ const Map<String, dynamic> season2Episode01Json = {
       'codeLength': 4,
       'answer': '1000',
       'feedback': {
-        '900': 'That is the time it shows now. Move the hands FORWARD one hour.',
-        '800': 'That is one hour BACK. FORWARD means the hour goes up.',
-        '1100': 'That is two hours forward. The carving says ONE hour.',
+        '900': 'That is the time now. Move the hands FORWARD.',
+        '800': 'That is one hour BACK. FORWARD means later.',
+        '1100': 'That is two hours. The carving says ONE hour.',
       },
       'hints': [
-        'The old clock shows 9:00. FORWARD means later, not earlier.',
-        'FORWARD ONE HOUR: the short hand moves on to the next number. The long hand goes once around, back to 12.',
+        'The old clock shows 9:00. FORWARD means later.',
+        'The short hand moves to the next number. The long hand stays on 12.',
       ],
       'clue': {
         'id': 's2_ep01_c3',
         'title': 'Letter M',
         'value': 'M',
         'symbol': 'gear',
-        'note': 'The old clock shows ten again. A little door clicked open on a letter: M.',
+        'note': 'The old clock shows ten again. A little door opened: M.',
       },
       'evidence': {
         'id': 's2_ep01_e3',
@@ -235,8 +234,8 @@ const Map<String, dynamic> season2Episode01Json = {
       'successMessage': 'The old clock shows ten again!',
       'transition': [
         'The old clock chimes ten.',
-        'Under its face, a small brass box slides out.',
-        'It has a lock with four letter slots. One letter is carved on it: E.',
+        'A small brass box slides out.',
+        'Its lock has four letter slots. One letter is carved on it: E.',
       ],
       'nextMissionId': 's2_ep01_final',
       'skills': ['reading', 'problemSolving'],
@@ -261,7 +260,7 @@ const Map<String, dynamic> season2Episode01Json = {
         'I — on the lost ticket\n'
         "M — behind the Clockmaker's mark\n"
         'E — carved on the box\n\n'
-        'The Clockmaker loves one thing more than anything.\n'
+        'The Clockmaker loves one thing most.\n'
         'He steals it. He hides it.',
     'type': 'letterLock',
     'question': 'Make the word that opens the box.',
@@ -273,14 +272,14 @@ const Map<String, dynamic> season2Episode01Json = {
       {'id': 'i', 'label': 'I'},
     ],
     'answer': 'TIME',
-    'orderFeedback': 'You have the right letters. Try another order. What does a clock show?',
+    'orderFeedback': 'Right letters. Try another order. What does a clock show?',
     'feedback': {
-      'ITEM': 'ITEM is a real word, but not the one. What does the Clockmaker steal? What does a clock show?',
-      'EMIT': 'EMIT is a real word, but not the one. What does a clock show?',
-      'MITE': 'MITE is a real word, but not the one. What does a clock show?',
+      'ITEM': 'ITEM is a real word, but not this one. What does a clock show?',
+      'EMIT': 'EMIT is a real word, but not this one. What does a clock show?',
+      'MITE': 'MITE is a real word, but not this one. What does a clock show?',
     },
     'hints': [
-      'The Clockmaker steals an hour. An hour is a part of the day. What is the word for hours and minutes?',
+      'The Clockmaker steals an hour. What word means hours and minutes?',
       'Clocks show the T _ _ E.',
     ],
     'evidence': {
@@ -293,13 +292,10 @@ const Map<String, dynamic> season2Episode01Json = {
     'successMessage': 'The box clicks open!',
     // After the case is closed: the post-case scene, then the case report.
     'transition': [
-      'The lock clicks. The lid lifts.',
-      'Inside is a small painting.',
-      'A white church on a hill,\nabove the roofs of Paris.',
-      'Montmartre.',
+      'The lid lifts. Inside is a small painting.',
+      'Montmartre: a white church on a hill,\nabove the roofs of Paris.',
       'The same white church is on the lost ticket.',
-      'You turn it over.',
-      'Three words are written on the back.',
+      'On the back, three words:',
       'FIND THE PAINTER.',
     ],
     'skills': ['problemSolving', 'reading'],
@@ -323,8 +319,6 @@ const Map<String, dynamic> season2Episode01Json = {
     'first': '먼저, 첫째로',
     'next': '그다음에',
     'struck': '(시계가) 쳤다',
-    'entered': '들어갔다',
-    'waiting': '기다리는',
     'dropped': '떨어뜨렸다',
     'carved': '새겨진',
     'carving': '새긴 글씨',

@@ -251,8 +251,7 @@ void main() {
         'Three small waves. One word: SEINE.',
         'You hold the brass plaque up to a street lamp.',
         'On its back, someone has scratched three short lines.',
-        'The river is only a short walk away.',
-        'Old stone walls. Green bookstalls. Dark, quiet water.',
+        'Down by the river: old stone walls and dark, quiet water.',
         'Somewhere on these quays, a mark is waiting for you.',
       ]);
       final plaque = SeasonCatalog.introPlaque('s2_ep04')!;

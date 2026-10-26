@@ -76,14 +76,17 @@ const Map<String, dynamic> season2PrologueJson = {
     'title': 'GARE DU NORD',
     'lines': ['The train pulls into Paris.', 'Look up at the station clocks...'],
   },
+  // The case (an hour is missing), the mystery (who took it, and why) and
+  // the goal: the player's own words for it, as Case 02's painter says
+  // ("I saw who took the hour"). What the hour really is stays untold.
   'missingHour': {
     'title': 'THE MISSING HOUR',
     'clocks': ['10:00', '10:00', '9:00'],
-    'lines': ['The clocks do not agree.', 'One hour has gone missing.'],
+    'lines': ['One hour is missing in Paris.', 'Who took it? And why?'],
   },
   'promise': {
     'cases': 12,
-    'lines': ['Find the stolen hour.', 'Before Paris stands still.'],
+    'lines': ['Follow the clues. Find out who took the hour.', 'Bring it back before Paris stands still.'],
   },
   'firstCase': {
     'id': 's2_ep01',
@@ -91,6 +94,6 @@ const Map<String, dynamic> season2PrologueJson = {
     'title': 'The Ticking Watch',
     'place': 'GARE DU NORD',
     'picture': 'pocketWatch',
-    'line': 'Your first case in Paris\nbegins at the station.',
+    'line': 'Your first clue is waiting\nat the station.',
   },
 };

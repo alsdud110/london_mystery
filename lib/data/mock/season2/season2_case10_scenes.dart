@@ -258,10 +258,10 @@ const season2HourRecord = HourRecordScene(
     ShadowPhoto(id: 'photo2', number: 2, t1: 150, sun: 210),
   ],
   tapeTask: 'When was Photo 2 taken? Tap that 2:30 on the tape.',
-  firstTwoThirty: "This 2:30 is only half an hour after Photo 1. Photo 2's sun said 3:30, much later.",
+  firstTwoThirty: 'This 2:30 is only half an hour after Photo 1. Photo 2 was later.',
   notTwoThirty: 'T1 said 2:30 in Photo 2. Find a 2:30.',
   foundLines: [
-    'Six marks from Photo 1 to Photo 2: one and a half hours. Fifteen minutes for each mark.',
+    'Six marks of fifteen minutes: one and a half hours after Photo 1.',
     'There it is: the hour from three to four! It was on the tape all along.',
     'At three, T1 went one hour back. At four, it was right again.',
   ],
@@ -284,8 +284,7 @@ const season2HourRecord = HourRecordScene(
   pageFoundLine: 'Page 3 should tell about three to four. It is not in the book.',
   afterLines: [
     'In the garden, a model showed what could happen. This tape shows what happened to T1.',
-    'Time did not stop. T1 showed the wrong time, and a page went missing.',
-    'And page 3 is not in the book.',
+    'Time did not stop. T1 was wrong, and page 3 is missing.',
   ],
   lead: RecordListLead(
     title: 'THE BACK OF THE BOOK',
@@ -304,8 +303,7 @@ const season2HourRecord = HourRecordScene(
     // Just north of the Luxembourg Gardens' palace on the map.
     spot: MapSpot(id: 'saintSulpice', name: 'Saint-Sulpice', at: Offset(0.462, 0.684)),
     doneLines: [
-      'The list says page 3 was sent to an archive near Saint-Sulpice.',
-      "It's just north of the Luxembourg Gardens.",
+      'The list says page 3 was sent to Saint-Sulpice, north of the Luxembourg Gardens.',
       'Is page 3 really there? Who sent it, and why? The list doesn\'t say.',
     ],
   ),

@@ -353,7 +353,7 @@ void main() {
         }
       }
       expect([for (final c in scene.conclusions) c.text], [
-        'Someone entered the service area during the unexplained time difference.',
+        'Someone went into the service area in the hour the records do not agree on.',
         'An hour really vanished from Paris.',
         'The lift never moved.',
       ]);
