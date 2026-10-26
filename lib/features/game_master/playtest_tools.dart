@@ -60,6 +60,43 @@ Future<void> startPlaytestAt(WidgetRef ref, String episodeId) async {
   ref.invalidate(gameControllerProvider); // load the prepared save
 }
 
+/// Why [jumpToCase] did not open a case (null: it opened).
+enum CaseJumpRefusal {
+  /// Not a build with operator tools (a release build).
+  noOperatorTools,
+
+  /// The device has no detective yet: one is created first, as in play.
+  noDetective,
+
+  /// No such case in that season, or the season cannot be entered.
+  notOpen,
+}
+
+/// The Game Master's case shortcut: opens case [episodeId] of season
+/// [seasonId] at its case file, whatever is solved, without changing any
+/// save. It switches on the two session-only operator switches the tools
+/// already have — the season preview (an unreleased or still locked season
+/// opens, see [SeasonAvailability.of]) for a season after the first, and
+/// operator access (every case of the season opens, out of order, see
+/// [SeasonNotifier.isUnlocked]) — then opens the season and the case as
+/// the case files do. Nothing is wiped or marked solved: the only things
+/// saved are which season and which case file are open, as when a player
+/// opens them. Both switches end with the session, so a restart is back to
+/// the player's own unlocks. A mission solved meanwhile is saved as in play.
+CaseJumpRefusal? jumpToCase(WidgetRef ref, String seasonId, String episodeId) {
+  if (!ref.read(operatorToolsAvailableProvider)) return CaseJumpRefusal.noOperatorTools;
+  if (!ref.read(gameControllerProvider).hasDetective) return CaseJumpRefusal.noDetective;
+  final cases = SeasonAvailability.casesOf(seasonId, ref.read(allEpisodesProvider));
+  if (!cases.any((e) => e.id == episodeId)) return CaseJumpRefusal.notOpen;
+  if (seasonId != ref.read(seasonsProvider).first.id) ref.read(seasonPreviewSwitchProvider.notifier).set(true);
+  ref.read(operatorAccessSwitchProvider.notifier).set(true);
+  final game = ref.read(gameControllerProvider.notifier);
+  if (!game.openSeason(seasonId) || !ref.read(gameControllerProvider.notifier).openEpisode(episodeId)) {
+    return CaseJumpRefusal.notOpen;
+  }
+  return null;
+}
+
 /// Clears the open case only (clues, XP, badges, hints), keeping the name
 /// and every other case: the same as "Play again" on the Case Solved page.
 void restartCurrentCase(WidgetRef ref) => ref.read(gameControllerProvider.notifier).playAgain();

@@ -1,8 +1,8 @@
 # WORLD MYSTERY — SEASON 2 STORY BIBLE
 ## PARIS STANDS STILL — ONE STOLEN HOUR
 
-**Version:** 1.9 · 2026-10-24  
-**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을, v1.5에서 **Case 07 확정 퍼즐·수정 슬립·Case 08 연결**을, v1.6에서 **Case 08 확정 퍼즐·가방 그림·방패 배지·찢긴 시간 변경 종이·Case 09 연결**을, v1.7에서 **Case 09 확정 퍼즐(간소화)·시험 시계 세 곳·두 표식의 출처·별 표식 → Arc de Triomphe 연결**을, v1.8에서 **Case 08 → 09 → 10 연결 대사 원칙**을, v1.9에서 **Case 10 확정 퍼즐·실제 시간/T1 표시 타임라인·Trial Log 3쪽 누락·Saint-Sulpice 연결**을 반영했다. Case 08 화면·대사 상세는 `docs/SEASON2_CASE08_SPEC.md`, 이미지 명세는 `docs/SEASON2_CASE08_ASSET_SPEC.md`. Case 09는 `docs/SEASON2_CASE09_SPEC.md`, `docs/SEASON2_CASE09_ASSET_SPEC.md`. Case 10은 `docs/SEASON2_CASE10_SPEC.md`, `docs/SEASON2_CASE10_ASSET_SPEC.md`.  
+**Version:** 2.0 · 2026-10-26  
+**Status:** 사용자 선택 A안에 따른 **후반부 신규 스토리 설계 기준안**. Case 01–05는 실제 구현이 우선하는 불변 기준이며, Case 06–12 및 시즌 진상은 본 문서에서 새롭게 정한 기획이다. v1.1에서 **Season 1 Clockmaker = Émile Moreau** 통합 설정을, v1.2에서 **편지 4417 보류 시점**과 **Big Ben 비밀 문 보관함 ↔ Paris 연결**을, v1.3에서 **Big Ben 이중 잠금 구조**와 **편지 4417 보류 사유(Preservation Order)**를, v1.4에서 **Case 06 확정 퍼즐·편지 문구·Case 07 연결**을, v1.5에서 **Case 07 확정 퍼즐·수정 슬립·Case 08 연결**을, v1.6에서 **Case 08 확정 퍼즐·가방 그림·방패 배지·찢긴 시간 변경 종이·Case 09 연결**을, v1.7에서 **Case 09 확정 퍼즐(간소화)·시험 시계 세 곳·두 표식의 출처·별 표식 → Arc de Triomphe 연결**을, v1.8에서 **Case 08 → 09 → 10 연결 대사 원칙**을, v1.9에서 **Case 10 확정 퍼즐·실제 시간/T1 표시 타임라인·Trial Log 3쪽 누락·Saint-Sulpice 연결**을 반영했다. Case 08 화면·대사 상세는 `docs/SEASON2_CASE08_SPEC.md`, 이미지 명세는 `docs/SEASON2_CASE08_ASSET_SPEC.md`. Case 09는 `docs/SEASON2_CASE09_SPEC.md`, `docs/SEASON2_CASE09_ASSET_SPEC.md`. Case 10은 `docs/SEASON2_CASE10_SPEC.md`, `docs/SEASON2_CASE10_ASSET_SPEC.md`. v2.0에서 **Case 11·12 확정 명세(8–12세용 단순화)**를 반영했다: Case 11 `docs/SEASON2_CASE11_SPEC.md`, Case 12 `docs/SEASON2_CASE12_SPEC.md`, 이미지 `docs/SEASON2_CASE11_12_ASSET_SPEC.md`, 검토 `docs/SEASON2_FINAL_STORY_REVIEW.md`.  
 **Audience:** ages 8–12 · English-language detective adventure · realistic mystery (no actual time travel).  
 **Scope:** 12 cases, three acts, full solution, chronology, characters, clue ledger, case-by-case missions and endings, implementation guardrails.
 
@@ -131,7 +131,7 @@ Season 1 구현 데이터에서 확인된 사실만 정사로 인정한다. 새�
 - 파리 시험 자료가 런던 보관함에 보관된 경위, Big Ben 시계 장치와 보관함 잠금을 연결한 사람·시기.
 - 에밀이 보관함과 자료, 잠금 원리를 알게 된 방법.
 - 보관함이 작업실 안에서 어떻게 숨겨져 있었기에 탐정이 발견하지 못했는지.
-- 탐정이 Case 12에서 보관함의 존재를 **어떤 증거로** 알게 되는지 (에밀의 진술만으로 확정하지 않는다는 원칙과 함께 결정).
+- 탐정이 Case 12에서 보관함의 존재를 **어떤 증거로** 알게 되는지 (에밀의 진술만으로 확정하지 않는다는 원칙과 함께 결정). *(v2.0 처리: Case 12에서 보관함은 **Émile의 진술로만** 나오고 증거로 확인하지 않는다. 화면이 즉시 `You can't check his box from here. But the clues in Paris are real.`로 밝힌다. 보관함은 동기 설명일 뿐 어떤 결론의 근거도 아니다. 아이에게는 "특정 위치"를 `It opens only if Big Ben stops.` / `It needs one special moment.`로만 말한다.)*
 - Season 1 이후 보관함의 현재 상태와 행방, Case 12 이후 보관함을 여는지 여부.
 
 **사용 원칙:**
@@ -145,8 +145,8 @@ Season 1 구현 데이터에서 확인된 사실만 정사로 인정한다. 새�
 
 | 인물 | 겉으로 알려진 역할 | 실제 역할·동기 | 공개 타이밍 |
 |---|---|---|---|
-| **Émile Moreau** | 이름 없는 Clockmaker (Season 1 런던 사건의 범인) / No. 7 제작자 후보 | 과거 시험 사업의 기술 담당자. 삭제된 기록을 드러내려는 목적으로 **Season 1 런던 사건을 계획·실행**했고, 저지된 뒤 파리에서 현재 단서망을 만든 인물. 목적이 행동을 정당화하지 않는다. **No. 7 제작자와 동일 인물이라는 것은 Case 12에서 도구 흔적·기록으로 확인**. | Clockmaker 별명은 Season 1부터 공개. 시험 사업 연관은 Case 09~11 암시, 실명·동기는 Case 12 확인 |
-| **Victor Delacroix** | 옛 시계 시험 사업 책임자 | 실패와 자신의 삭제 지시를 감춘 인물. 물리적 시간 도둑이 아님. | Case 07에는 이름·이니셜 없음(수정 슬립에 바늘 없는 시계 + 월계관 도장만, v1.5), Case 11 명시, Case 12 입증 |
+| **Émile Moreau** | 이름 없는 Clockmaker (Season 1 런던 사건의 범인) / No. 7 제작자 후보 | 과거 시험 사업의 기술 담당자. 삭제된 기록을 드러내려는 목적으로 **Season 1 런던 사건을 계획·실행**했고, 저지된 뒤 파리에서 현재 단서망을 만든 인물. 목적이 행동을 정당화하지 않는다. **No. 7 제작자와 동일 인물이라는 것은 Case 12에서 도구 흔적·기록으로 확인**. *(v2.0)* 3쪽이 숨겨진 것은 알았지만 **어디 있는지는 몰랐다**(그래서 런던 보관함의 색인이 필요했다). 찾아내더라도 "꾸며 냈다"는 말을 들을 것이므로 탐정이 증거로 찾게 했다 | Clockmaker 별명은 Season 1부터 공개. *(v2.0)* Case 11 원본 3쪽에 이니셜 **E.M.**(시험을 멈추라고 한 사람). Case 12 Intro 얼굴, M1 이름(바퀴 이름표), M2 Clockmaker와 동일인(같은 바퀴 + 톱니 도장), 동기는 그 뒤 질문·답변 |
+| **Victor Delacroix** | 옛 시계 시험 사업 책임자 | 실패와 자신의 삭제 지시를 감춘 인물. 물리적 시간 도둑이 아님. | Case 07에는 이름·이니셜 없음(수정 슬립에 바늘 없는 시계 + 월계관 도장만, v1.5), Case 11 명시, Case 12 입증. *(v2.0)* Case 11 Intro에서 직접 등장, 원본 3쪽의 **V.D.**("Keep going"), M2 사무실 도장, M3 서명, Final 고백 `I was afraid.` Case 12에는 직접 등장하지 않고 Case 11 진술 카드로만 나온다 |
 | **P. (Painter)** | Montmartre에서 스스로 사라진 화가 | 과거 자료를 옮기는 사람을 목격했다. 얼굴을 보지 못했으므로 성급한 지목 금지. *(v1.6)* Abbesses의 한 모퉁이에서 어느 아침을 연필로 그렸고(가방 운반자의 뒷모습, 방패 배지), 계단에 떨어진 종이를 주워 그림 묶음에 보관했으며, 같은 가방을 정원의 작은 모형 시계 옆에서 다시 그렸다. 현재 행방은 미공개. | Case 02 진술, Case 08 목격 의미 해명 |
 | **River Keeper** | 장부에 등장하는 운송 기록자 | Box 23 운송 경로를 기록한 사람. 공범이라는 근거 없음. | Case 04 기록, 후반부 필요 시 기록만 재인용 |
 | **Louvre 보관 담당자** | 편지 4417의 행방을 아는 사람 | 편지를 고의 은폐한 악역이 아님. 16 MAY 4:00 PM **Preservation Order(보존 지시)**에 따라 편지를 보류한 행정 조치. 지시를 내린 사람·구체적 이유, 보류 처리 담당자, 이동 날짜·담당자, 현재 보관 위치는 **미확정**. | Case 06 |
@@ -183,8 +183,8 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | 08 | **The Painter's Last Sketch** | Montmartre / Abbesses | 화가의 진술 의미 회수: 가방에서 시간 변경 종이가 떨어짐 | P.의 마지막 그림: 같은 가방 + 정원의 작은 모형 시계 |
 | 09 | **The Clockwork Garden** | Luxembourg Gardens | 한정된 시험망 작동 원리 | Arc de Triomphe 기록 표식 |
 | 10 | **The Hour of Shadows** | Arc de Triomphe | 한 시간 차이의 인위성 증명: 시간은 흘렀고 T1이 한 시간 늦게 표시, 그 시간의 기록부 3쪽 누락 (v1.9) | 기록 목록상 3쪽의 목적지 (Saint-Sulpice) |
-| 11 | **The Unwritten Hour** | Saint-Sulpice area (map pin: Luxembourg Gardens) | 원본·수정본·삭제 승인 | Arts et Métiers 원본 장치 |
-| 12 | **The Clockmaker's Truth** | Arts et Métiers | 인물 책임 분리, 장치 정상화, 최종 추리 | 시즌 완결 |
+| 11 | **The Unwritten Hour** | Saint-Sulpice area (map pin: Luxembourg Gardens) | *(v2.0)* Who hid the truth? 3쪽 발견(9번 상자) → Victor 서류의 거짓 → 서명 → Victor 고백 | E.M.의 옛 기계 → Arts et Métiers |
+| 12 | **The Clockmaker's Truth** | Arts et Métiers | *(v2.0)* E.M. = Émile = Clockmaker(바퀴·시계·톱니 도장), 동기와 잘못, 기계 고치기, 최종 보드, 3쪽 보존 | 시즌 완결 |
 
 **지명 주의:** Case 05의 Notre-Dame과 Case 11의 Luxembourg Gardens는 지도용 구역 앵커다. 화면에는 실제 사건 장소를 명확히 표시하며, 역사적 시설 내부에 실재하지 않는 우편실·비밀 보관실이 있다고 단정하지 않는다.
 
@@ -360,6 +360,31 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 **Keep hidden:** 누가 삭제를 승인했는지, 에밀이 왜 단서를 남겼는지.
 
 ## CASE 11 — THE UNWRITTEN HOUR
+
+### v2.0 확정 명세 (2026-10-26, 사용자 지시에 따른 어린이용 단순화 — 아래 v1.0 기획안보다 우선)
+**상세:** `docs/SEASON2_CASE11_SPEC.md` v1.0(대사 영·한, 판정, 힌트, Glossary), 이미지 `docs/SEASON2_CASE11_12_ASSET_SPEC.md` v1.0.
+**핵심 질문:** `Who hid the truth?` · **결론:** `Victor hid the truth.` · **Location:** Saint-Sulpice 인근 가상 Archive Annex. Map pin: Luxembourg Gardens.
+**Intro:** Victor Delacroix가 별관에서 옛 시험 서류를 보고 있다. 서류들이 곧 봉인되기 전에 마지막으로 보러 왔다. 방명록에 서명한다(곡선 V, 긴 밑줄, 끝의 점 — M3 단서).
+- **M1 · The Missing Page:** Victor는 `There was no page 3.`라고 말한다. 별관의 큰 장부에서 한 장이 찢겨 나갔다. 다음 장을 연필로 문지르면 눌린 글씨가 드러난다: `Page 3 → Box 9.` / `Lock it. No one may read it.` 그 아래 서명. 선반에서 9번 상자를 찾는다(상자에 보라색 도장 봉인). Case 10 `The Hour Was Recorded`로 사라진 쪽임을 확인한다. **원본 3쪽 4줄:** `3:00 The clocks are wrong! One hour behind!` / `3:10 E.M.: "Stop the test!"` / `3:20 V.D.: "No. Keep going."` / `4:00 E.M. stops the machine.` Victor는 V.D.가 자신이라고 인정하고, E.M.은 기계를 다루던 사람이며 오래전에 떠났다고 말한다. **증거:** `Page 3`.
+- **M2 · Two Papers:** Victor's paper(`The test began at 1:00.` / `All the clocks were fine.` + 보라색 도장). 2번 줄을 Page 3 또는 T1 Drum Tape로 반박한다. Victor의 말 `My office never changed any papers.`는 **Case 07 수정 슬립의 도장 = Victor 서류의 도장**으로 반박한다(오페라 기록을 바꾼 이유와 공연 날짜는 정하지 않음). `Which paper tells the truth?` → Page 3. **증거:** `Victor's Paper`.
+- **M3 · Who Signed It?:** 문지른 서명을 투사지(Case 05)로 따라 그려 방명록 서명 3개와 비교한다 → Victor. **증거:** `Victor's Name`. 도장은 사무실 것(누구나 사용 가능)이고, 서명은 사람의 것이다.
+- **Final · Victor's Truth:** 질문 3개(3시에 무슨 일이? / 누구의 서류가 거짓? / 누가 숨기라고 서명했나?)에 증거를 하나씩 제시한다. 고백: `Yes. I hid the page.` / `The test was my job.` / `The clocks went wrong.` / `I was afraid.` / `I didn't want people to know.` 선택 질문(증거 제시): Bag Sketch → `That's one of our office bags. It took page 3 here.`, The Torn Hour → `That's our form for changing a time.`, Wrong Hour Test → `That little model showed the mistake. I wanted the tests to stop.` **가방을 든 사람과 바늘을 뗀 사람은 정하지 않는다.** 올해 시계는 바꾸지 않았다(`Not one clock.`). **증거:** `Victor's Truth`.
+- **Case Closed:** `Maybe E.M. knows. His old machine is at Arts et Métiers.` → 지도 Arts et Métiers.
+
+**End hook:** `Who left the clues for me?`
+**새로 확정한 사실 (v2.0):**
+- Victor는 봉인 전 마지막 열람차 별관에 왔다.
+- 3쪽은 별관 9번 상자에 봉인되어 있었고, 별관 장부의 해당 쪽(숨기라는 지시와 Victor의 서명)은 찢겨 나갔다.
+- 원본 3쪽 4줄과 이니셜 E.M./V.D., 4:00에 E.M.이 기계를 멈췄다.
+- 바늘 없는 시계 + 잎 도장 = **Victor의 시험 사무실 도장**(개인을 가리키지 않음). Case 07 오페라 기록 변경은 그 사무실이 했다.
+- Victor's paper(요약 기록)는 시계가 괜찮았다고 거짓으로 적었다.
+- 방패 배지 가방 = 사무실 가방이며 3쪽을 별관으로 옮겼다. Case 08의 떨어진 종이 = 사무실의 시각 변경 양식.
+- Victor는 시험이 멈추길 바랐다(정원 모형의 바늘이 없던 이유와 연결).
+
+**Keep hidden / 미확정 (v2.0):** E.M.의 이름·얼굴(Case 12), 가방을 든 사람, 바늘을 뗀 사람, 장부 쪽을 찢은 사람(암시만), 오페라 기록을 바꾼 구체적 이유, Case 08 종이의 FILE 번호·시각, 시험 날짜, 별도 "경고 보고서"(3쪽의 경고 줄로 대체).
+**v1.0 기획안에서 바뀐 것:** 제본 흔적·보존 코드 → 찢긴 장부 쪽 문지르기 / 원본·수정본 대조 → Victor's paper 1줄 + 도장 비교 / 승인 코드·부서 직인 → 서명 비교 / 과거·현재 타임라인 → 증거 3회 제시와 고백.
+
+### v1.0 기획안 (참고용, v2.0 확정 명세로 대체됨)
 **Location:** fictional archive annex in the Saint-Sulpice area (map anchor remains Luxembourg Gardens).  
 **Opening question:** `Who ordered the missing pages removed?`
 
@@ -373,6 +398,30 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 **Evidence rule:** Victor의 책임은 승인 코드·부서 직인·원본/수정본 대조처럼 **에밀과 독립적인 문서**로만 입증한다. 런던 사건의 범인인 에밀(Clockmaker)의 진술이나 그가 남긴 단서만으로 Victor를 지목하지 않는다. 플레이어는 에밀이 문서를 꾸몄을 가능성도 독립 기록(Case 07 무대 큐카드, Case 10 독립 시간 기록, Case 11 승인 기록)으로 배제할 수 있어야 한다.
 
 ## CASE 12 — THE CLOCKMAKER'S TRUTH
+
+### v2.0 확정 명세 (2026-10-26, 사용자 지시에 따른 어린이용 단순화 — 아래 v1.0 기획안보다 우선)
+**상세:** `docs/SEASON2_CASE12_SPEC.md` v1.0, 이미지 `docs/SEASON2_CASE11_12_ASSET_SPEC.md` v1.0.
+**핵심 질문:** `Who is the Clockmaker?` / `Why did he leave the clues?` · **Location:** Arts et Métiers의 가상 옛 기계 방(옛 시험 기계, 벽시계, 작업대). Map pin: Arts et Métiers.
+**Intro:** 기계의 작은 시계 셋이 벽시계보다 한 시간 늦다. 등을 돌린 사람이 돌아선다(얼굴 공개, 이름표 `???`). `You came. Good.`
+- **M1 · What's His Name?:** Case 05 Clock III의 덧붙인 작은 바퀴(살 4개)와 같은 바퀴를 기계 안 3개 중에서 고른다. 그 옆 이름표 `Made by Émile Moreau` + 두 바늘 도장 → **E.M. = Émile Moreau**(증명 ① Émile이 그 바퀴를 만들었다). **증거:** `The Name Tag`.
+- **M2 · Who Is the Clockmaker?:** Season 1 Clockmaker의 회중시계(`ep12_e4`)를 열면 안에 **같은 바퀴**(증명 ②). `But wait. Anyone can use a wheel.` → 작업대의 Émile 도구 중 **끝이 톱니 8개인 작은 도장**을 종이에 눌러 Case 01 `The Clockmaker's Mark`와 비교 → 같은 표식(증명 ③ 도구 흔적). 세 증거를 놓은 뒤 `Who is the Clockmaker?` → Émile. 그 뒤 대화로 확인: `You made this wheel.` / `Yes, I did.` / `It's inside the Clockmaker's watch.` / `That's right.` / `And your tool makes his mark.` / `You found it.` / `You're the Clockmaker!` / `Yes. I am.` **이유(질문·답변):** `Why did you stop Big Ben?` → `I wanted people to look.` / `Look for what?` → `The missing page.` / 빅벤 아래 비밀 상자 속 숨겨진 서류 목록, 빅벤이 멈춰야 열림 / `But you scared people.` → `I know. I was wrong.` · `Why didn't you find page 3 yourself?` → `I didn't know where it was.` / `And people didn't believe me.` / `Even if I found it… they'd say I made it up.` · `Why did you leave clues for me?` → `You stopped me with clues.` / `People trust clues.` / `So I left clues for you.` · 선택: `Old test papers were kept at the star.` / `I hoped they'd point to page 3.` · 선택: 역 시계, Clock III, 편지를 숨김, `That was wrong.` **증거:** `The Clockmaker's Mark Tool`.
+- **M3 · Fix the Machine:** 시험 날 Émile이 기계를 멈추고 세 시계를 손으로 고쳤지만, Victor가 시험을 모두 멈춰 기계는 틀린 채 남았다. 카드 `Stop · Turn · Fix(pin) · Start`로 벽시계(시험 시계 아님)에 맞춘다. 바뀐 것은 이 기계뿐이다. **증거:** `The Fixed Machine`.
+- **Final · The Final Case Board:** `Did Paris lose an hour?` → `No. The clocks were wrong.` / `What was hidden?` → `Page 3 about the clocks.` / `Who hid it?` → `Victor.` / `Who is the Clockmaker?` → `Émile.` / `Why did Émile leave clues?` → `He wanted us to find the truth.`(증거: Case 06 편지) / `Was it OK to scare people?` → `No. He made bad choices.` **증거:** `The Case File`.
+- **Ending:** Victor의 기록(Case 11 진술 카드, Victor 미등장) `"Yes. I hid the page."` → Émile `And I made bad choices.` / `I scared people. I'm sorry.` / `I will tell everyone what I did.` → 탐정 `The clocks were wrong.` / `Victor hid the truth.` / `Émile left the clues.` / `But now everyone can know.` → `Page 3 goes into a glass case.` / `No one can hide it again.` → `The hour was never gone.` / `The truth was waiting to be found.` → `CASE CLOSED.`
+
+**새로 확정한 사실 (v2.0):**
+- 기계 바퀴 이름표 `Made by Émile Moreau`(두 바늘 도장). Clock III의 덧붙인 바퀴는 Émile이 만드는 같은 바퀴다(Box 23 부품이 Clock III에 들어갔다고는 말하지 않음).
+- Clockmaker의 회중시계 안에 그 바퀴가 있다(각인 없음).
+- Émile의 톱니 도장 도구가 Case 01 Clockmaker 표식을 만든다 → 톱니 표식과 두 바늘 표식은 같은 사람(Case 05 열린 질문 해결).
+- 기계는 시험 날 이후 틀린 채 남았다(Émile이 지난주 다시 조작했다는 안은 폐기).
+- Émile은 3쪽이 숨겨진 것은 알았지만 위치는 몰랐다. 시험 기록이 Star Room에 보관된다는 것만 알았다.
+- 찾아도 "꾸며 냈다"는 말을 들을 것이라 탐정이 증거로 찾게 했다.
+- 3쪽은 봉인되는 대신 유리 상자에 보존되어 누구나 볼 수 있다(결정한 사람은 말하지 않음).
+
+**Keep hidden / 미확정 (v2.0):** Big Ben이 멈춰야 하는 정확한 위치(§2.6), 보관함 자료의 경위·현재 상태, 편지 4417 보존 지시자, Case 07 익명 그림 쪽지·`P. KNEW THE BAG.`·슬립이 배경막 뒤에 있던 이유, Case 03 명판을 남긴 사람(Émile의 `I left clues for you.`로 포괄), P.의 행방, Case 01 `letter M`(TIME 자물쇠 글자, 재해석 금지), 처벌·체포 장면.
+**v1.0 기획안에서 바뀐 것:** M1 Box 23 부품 대조 → 바퀴 비교 + 이름표 / M2 `Émile's Statement + Victor's Order` → 바퀴·시계·톱니 도장(진술은 증거 뒤 확인용) / M3 정상화 퍼즐 유지 / Final 5질문 → 쉬운 5질문 + 잘못 확인 1문항 / 엔딩에 기록 보존 장면 추가.
+
+### v1.0 기획안 (참고용, v2.0 확정 명세로 대체됨)
 **Location:** Arts et Métiers, fictional special conservation exhibit.  
 **Opening question:** `Who changed the clocks, who erased the records — and why?`
 
@@ -430,10 +479,15 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | Torn time-change paper (`The Matching Seal` / `The Torn Hour`: FILE 번호·시 숫자 찢김, `:00 →`) | Case 08 | Case 11–12 (미확정) | 가방이 시간 변경 양식의 종이를 운반했다는 물증; 대상 기록은 미확정 |
 | P.'s last sketch (같은 가방 + 정원의 작은 모형 시계) | Case 08 | Case 09 | 다음 조사 장소(Luxembourg Gardens)의 물증; 모형의 기능은 Case 09에서 |
 | Trial map and gear diagram | Case 09 | Case 10, 12 | 제한된 시험망의 작동 방식. *(v1.7)* 시험 시계 T1 Arc · T2 Seine Quays · T3 Arts et Métiers, 기록 꼬리표 `KEPT AT THE STAR` → T1 |
-| Why the bag was beside the little clock (P.'s last sketch) | Case 08–09 | Case 11 (예정) | *(v1.7)* 미해결 단서로 관리. Case 09에서 공개하지 않음. 구체적 이유는 미창작 |
+| Why the bag was beside the little clock (P.'s last sketch) | Case 08–09 | Case 11 | *(v2.0)* 가방 = Victor 사무실 가방(3쪽을 별관으로 옮김). Victor는 모형이 실수를 보여 주므로 시험이 멈추길 바랐다 → 정원 탑의 바늘이 없던 이유. 가방을 든 사람·바늘을 뗀 사람은 미확정 |
 | Independent time log | Case 10 | Case 12 | 실제 시간 소멸 부정. *(v1.9)* `T1 Drum Tape`(3시 없음, 2시대 두 번) + `Independent Time Log`(Photo 2: T1 2:30, 시험 시계가 아닌 시계 셋 3:30) + `The Shadow Check`(해 2:00 / 3:30) → `The Hour Was Recorded`. T1에 한정, T2·T3 미확정 |
 | Trial Log p.3 missing / RECORD LIST `SENT TO` | Case 10 | Case 11 | *(v1.9)* 3:00–4:00 쪽이 Star Room의 책에 없음. 목록상 목적지 `SAINT-SULPICE · ARCHIVE ANNEX`(도착 여부·보낸 사람·이유·내용 미확정) |
-| Original test log / removal order | Case 11 | Case 12 | Victor의 삭제 지시와 Émile의 경고 |
+| Original test log / removal order | Case 11 | Case 12 | Victor의 삭제 지시와 Émile의 경고. *(v2.0)* 원본 3쪽(E.M. "Stop", V.D. "Keep going"), 찢긴 장부 쪽의 지시·서명(문지르기) |
+| *(v2.0)* Office stamp ↔ Victor's paper | Case 07–08 | Case 11 M2 | 바늘 없는 시계 + 잎 = Victor 사무실 도장. 오페라 기록 변경도 그 사무실(이유·날짜 미확정) |
+| *(v2.0)* Torn time-change paper | Case 08 | Case 11 Final | 사무실의 시각 변경 양식. 사무실 가방에서 떨어짐. FILE 번호·시각 미확정 |
+| *(v2.0)* Émile's small wheel | Case 05 | Case 12 M1–M2 | Clock III 바퀴 = 기계 바퀴(이름표 É. Moreau) = Clockmaker 시계 속 바퀴 |
+| *(v2.0)* Gear mark ↔ two hands | Case 01·05 | Case 12 M2 | Émile의 톱니 도장이 Clockmaker 표식을 찍음 → 같은 사람 |
+| *(v2.0)* `PARIS` watch | Season 1 → Case 01 | Case 12 M2 | 열면 Émile의 바퀴. 정체 증명 ② |
 
 **Notebook design principle:** 매 Case 최소 1회 이미 얻은 단서를 실제 풀이에 활용한다. 플레이어가 증거를 기억 못 해도 Notebook에서 다시 확인 가능해야 한다. 앞선 Case를 재플레이해야만 풀 수 있는 구조는 금지.
 
@@ -454,8 +508,8 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 | 08 | 화가가 본 것은 기록 가방을 옮기는 행위. 그 가방에서 Case 07 슬립과 같은 양식·도장의 **시간 변경 종이**가 떨어졌다(`A paper for changing a time fell from the bag.`). 가방에는 방패 배지가 있다. 같은 가방이 정원의 작은 모형 시계 옆에 있었다 → Luxembourg Gardens | 얼굴·개인 신원·소속, 배지 의미, 종이의 대상 기록과 시각, 기록 변경자·지시자, 모형 시계의 기능(Chronos 시험), 그림 날짜 |
 | 09 | 일부 시험 시계가 하나의 기준값에 연결될 수 있음(시험 시계는 세 곳, 잘못된 설정 하나가 이어진 시계만 함께 바꿈), Clockmaker의 톱니 표식이 시험 장치 설계 문양과 같음, 두 바늘은 No. 7 수리 메모에 있음(서로 다른 종이), 별 표식 → Arc de Triomphe | Clockmaker 실명·동기, 두 표식의 동일인 여부, 삭제 책임, 실제 시간 소멸 여부, 가방이 정원에 온 이유 |
 | 10 | 시간이 실제로 사라진 것은 아님. *(v1.9)* 과거 시험 날 실제 3:00–4:00 동안 T1은 한 시간 늦게 표시했고 4:00에 정상으로 돌아왔다. 시험 시계가 아닌 시계들과 해가 그 시각을 증명한다. Trial Log 3쪽(3:00–4:00)이 없고, 목록상 목적지는 Saint-Sulpice Archive Annex | 삭제 승인자, 3쪽 내용·보낸 사람·이유·도착 여부, T1이 틀린 원인·책임자, T2·T3 결과, 제본 흔적, Émile·Victor·Clockmaker 관련 |
-| 11 | Victor가 과거 삭제를 승인함 | Émile의 현재 행동 동기 전체 |
-| 12 | Clockmaker = Émile, 런던 계획의 목적(작업실 안 보관함의 파리 시험 자료와 Big Ben 정지 잠금 원리), 런던·파리 행동의 동기와 책임, Victor의 별개 책임, 전체 진상 | 모두 공개 (§2.6 미확정 항목은 확정 전 언급 금지) |
+| 11 | Victor가 과거 삭제를 승인함. *(v2.0)* 시계가 틀렸다(3쪽), Victor's paper는 거짓, 사무실 도장, Victor의 서명, 고백(두려워서). 3쪽의 E.M.이 "멈춰요"라고 했다 | Émile의 현재 행동 동기 전체. *(v2.0)* E.M.의 이름·얼굴, Clockmaker, 런던 |
+| 12 | Clockmaker = Émile, 런던 계획의 목적(작업실 안 보관함의 파리 시험 자료와 Big Ben 정지 잠금 원리), 런던·파리 행동의 동기와 책임, Victor의 별개 책임, 전체 진상. *(v2.0)* 얼굴(Intro) → 이름(M1) → Clockmaker 동일인(M2) → 동기(M2 질문) 순 | 모두 공개 (§2.6 미확정 항목은 확정 전 언급 금지) |
 
 ---
 
@@ -471,7 +525,7 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 8→9 **화가의 정원 모형 스케치**가 Luxembourg Gardens를 가리킨다. *(v1.6)* 마지막 그림 속 가방이 Bag Sketch와 같은 가방(납작함, 버클 2개, 방패 배지)이고, 그림의 궁전·분수가 있는 둥근 연못·꽃밭이 지도의 Luxembourg Gardens와 일치한다.  
 9→10 **시험망 기록 코드와 Arc de Triomphe의 표식**이 다음 자료를 가리킨다. *(v1.7)* M2 기록 꼬리표 `TRIAL RECORDS · KEPT AT THE STAR`의 별이 M1 시계 모형 T1의 받침 별과 같고, T1은 지도의 Arc de Triomphe에 놓여 있다.  
 10→11 **누락 페이지 보존 목록**이 Saint-Sulpice 인근 기록실을 가리킨다. *(v1.9)* Trial Log 뒤표지 안쪽 RECORD LIST의 `p.3 · SENT TO: SAINT-SULPICE · ARCHIVE ANNEX`. 목록에 적힌 목적지일 뿐이므로, 3쪽이 실제로 거기 있는지는 Case 11에서 확인한다.  
-11→12 **원본 장치 보존 목록**이 Arts et Métiers를 가리킨다.
+11→12 **원본 장치 보존 목록**이 Arts et Métiers를 가리킨다. *(v2.0)* 원본 3쪽의 E.M.이 "기계를 멈췄다"는 기록, Victor의 `His old machine is at Arts et Métiers.`(곧 봉인될 서류와 같은 목록), 지도에서 Case 09 T3 자리.
 
 **원칙:** 다음 장소는 우연히 발견하지 않는다. 각 Case의 Final이 다음 장소로 갈 **검증 가능한 물증**을 남긴다.
 
@@ -515,4 +569,9 @@ No. 7 공방 → 편지 4417 → 오페라의 변경된 기록 → 화가의 목
 - **v1.6 (2026-10-23):** 사용자 승인에 따라 Case 08 확정 명세 추가. 제목 `The Painter's Last Sketch` 유지(가제 `The Hidden Bag` 폐기). Intro는 Case 07 슬립 뒷면 재표시(Case 07 데이터 변경 없음). M1 Case 02 Hidden Sketch 그림(배치) + inscription(black gate)으로 세 모퉁이 중 Corner 2 선택, M2 연필화 3장을 하늘 밝기·가로등으로 순서 배열(그림자는 근거로 쓰지 않음) + 겹쳐 보기 + "종이는 가방에서 떨어졌다" 추론, 방패 배지 유지, M3 P.의 쪽지(주웠다는 사실만) + 펼치기 + Case 07 슬립과 같은 점·없는 점(FILE 번호·시 숫자 찢김, `:00 →`), Final 종이를 그림 여백 확대 그림에 겹치기 + 증거 보드(Case 07 슬립 직접 제공) → `A paper for changing a time fell from the bag.`, Case Closed Next Lead(같은 가방 확인 → 지도로 Luxembourg Gardens). §3 P. 행, §5 08행, §6 Case 08(v1.0 기획안은 참고용으로 보존), §7 슬립 도장·가방 그림 행 갱신과 찢긴 종이·마지막 그림 행 추가, §8 08행, §9 8→9 갱신. Case 01–07, Case 09–12 기획, Season 1 설정은 변경 없음.
 - **v1.7 (2026-10-23):** 사용자 승인에 따라 Case 09 확정 명세 추가(간소화, 5–7분). M1 시계 모형 3개를 지도에 놓기(T1 Arc · T2 Seine Quays · T3 Arts et Métiers, 받침 표식 별·아치 세 개·종), M2 톱니 2개 끼우기 + `The gears move the model. The real trial used wires.` + 기록 꼬리표 `KEPT AT THE STAR`, M3 Notebook 표식 두 개를 설계도 EMBLEM(Case 01 clue 톱니 8개 아이콘 기준)과 수리 메모 두 바늘에 잇기(동일인 결론 금지, Recall 시스템 변경 없음), Final 바늘 다시 끼우기 연출(Case 07·08 도장과 연결 안 함) + 4:00 → 3:00 TEST + 3지선다, Case Closed 별 → T1 → Arc de Triomphe. 가방이 정원에 온 이유는 Case 11 회수 예정 미해결 단서로 등록(이유 미창작). §6 Case 09(v1.0 기획안은 참고용으로 보존), §7 표식·시험 지도 행 갱신과 가방 미해결 행 추가, §8 09행, §9 9→10 갱신. Case 01–08, Case 10–12 기획, Season 1 설정은 변경 없음.
 - **v1.8 (2026-10-23):** Case 08 → 09 → 10 연결 대사 원칙 추가(§6 Case 09 `연결 원칙`, Final 직후 문장 교체). 퍼즐·에셋·증거·시험 시계 위치·4:00 → 3:00·미해결 단서(가방 방문 목적, Case 11)는 변경 없음. Case 01–08, Case 10–12, Season 1 설정 변경 없음.
+- **v2.0 (2026-10-26):** 사용자 지시에 따라 Case 11·12 확정 명세(8–12세용 단순화)를 추가했다. 확정 사실(§1, §2.1–2.6, §3의 핵심 설정)은 변경하지 않았고, 두 Case의 v1.0 기획안만 대체했다(기획안은 참고용으로 보존).
+  - **Case 11:** 찢긴 장부 쪽 문지르기 → 9번 상자 3쪽(E.M./V.D.) → Victor's paper 거짓 + 사무실 도장 비교(Case 07) → 서명 비교 → 증거 3회 제시와 고백. 가방·정원 바늘은 증거 제시에 대한 짧은 답으로 회수했다.
+  - **Case 12:** 바퀴 이름표(É. Moreau) → 회중시계 속 같은 바퀴 → 톱니 도장으로 Clockmaker 표식 확인 → 대화로 정체 확인 → 동기 질문·답변(3쪽 위치는 몰랐음) → 기계 고치기(시험 날 이후 틀린 채, Émile 재조작안 폐기) → 쉬운 최종 보드 → Victor 기록·Émile 사과·3쪽 보존 엔딩.
+  - §2.6 미확정 항목 처리 메모, §3 Émile·Victor 공개 타이밍, §5 11·12행, §6 Case 11·12, §7 회수 행 추가, §8 11·12행, §9 11→12를 갱신했다.
+  - 미확정으로 남긴 것: §2.6의 "특정 위치" 등, 편지 4417 보존 지시자, Case 07 익명 쪽지·`P. KNEW THE BAG.`, Case 03 명판 작성자, P.의 행방, 가방을 든 사람.
 - **v1.9 (2026-10-24):** 사용자 승인에 따라 Case 10 확정 명세 추가. Star Room(가상)에서 M1 T1 드럼 테이프 점프 찾기(3시 없음), M2 지붕 사진 시계 4개를 시험 시계 / 아닌 시계로 분류(T1 2:30 vs 독립 시계 3:30, T2·T3 미확정, Case 09 모형 연동을 증거로 쓰지 않음), M3 해 토큰(`InkGlyph.sun`, 이미지 없음)으로 해시계 그림자 방향·길이 재현(해 2:00 / 3:30), Final 테이프 위 시간축 정렬(두 번째 2:30) + Trial Log 3쪽 누락 + 3지선다, Case Closed Case 03 회상 한 줄 + RECORD LIST `SENT TO`(목적지만, 도착 미확정) → Saint-Sulpice. 실제 시간/T1 표시 타임라인 확정(실제 3:00 한 시간 뒤로, 실제 4:00 정상 복귀, 원인·주체 비공개). Bible v1.0 Case 10 M2 `The Signal Table`(Case 09 Final과 중복)과 증거 `Signal Test Result`, `Missing Page Reference`는 폐기(`The Shadow Check`, `The Hour Was Recorded`로 대체). §5 10행, §6 Case 10(v1.0 기획안은 참고용으로 보존), §7 독립 시간 기록 행 갱신과 3쪽 누락 행 추가, §8 10행, §9 10→11 갱신. Case 01–09, Case 11–12 기획, Season 1 설정은 변경 없음. *(같은 날 보정: 에셋 검수 승인에 따라 Case 10 상세 문서 참조를 v1.1로, Star Room 묘사를 "문짝의 별·벽의 황동 명판"으로 맞춤. 스토리·퍼즐 변경 없음.)*

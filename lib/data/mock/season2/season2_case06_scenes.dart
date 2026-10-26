@@ -108,8 +108,8 @@ const season2LetterMaps = <String, LetterMap>{
 /// of the Letter's Trail (Case 05); the note follows the tag's order; the
 /// envelope is found by the corner from Clock III; the letter is in it.
 const season2Case06EvidenceLinks = <String, EvidenceLink>{
-  's2_ep06_e1': EvidenceLink(to: 's2_ep05_e4', line: 'LETTER No. 4417, held on 16 May at 4:00 PM, as on its slip.'),
-  's2_ep06_e2': EvidenceLink(to: 's2_ep06_e1', line: 'Letters that must be kept safe go downstairs.'),
+  's2_ep06_e1': EvidenceLink(to: 's2_ep05_e4', line: 'LETTER No. 4417, held on 16 May at 4:00 PM, like its slip.'),
+  's2_ep06_e2': EvidenceLink(to: 's2_ep06_e1', line: 'Letters to keep safe go downstairs.'),
   's2_ep06_e3': EvidenceLink(to: 's2_ep05_e3', line: 'The torn corner from Clock III, No. 4417 on its label.'),
   's2_ep06_e4': EvidenceLink(to: 's2_ep06_e3', line: 'Found inside the torn envelope.'),
 };

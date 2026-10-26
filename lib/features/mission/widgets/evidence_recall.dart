@@ -54,6 +54,40 @@ HeldEvidence? recalledEvidence(List<ArchiveEntry> archive, EvidenceRecall recall
   return null;
 }
 
+/// Pieces of evidence of an earlier season ([ids]: Season 1's `ep12_e4`,
+/// the Clockmaker's watch, shown in Season 2) that the detective holds:
+/// their case is solved in its own season's record ([solved]), or shown for
+/// reference ([reference]: operator access or the season preview, where an
+/// earlier season need not be played). Pieces of the season played
+/// ([seasonId]), or of no case, are never here. Ids are kept unique across
+/// seasons (Season 2's begin `s2_`), so a piece is found by its id alone.
+List<HeldEvidence> earlierSeasonEvidence({
+  required Iterable<String> ids,
+  required List<Episode> allEpisodes,
+  required String seasonId,
+  required bool Function(Episode episode) solved,
+  required bool reference,
+}) => [
+  for (final id in ids)
+    for (final e in allEpisodes)
+      if (e.seasonId != seasonId && (reference || solved(e)))
+        for (final m in e.allMissions)
+          if (m.evidence case final v? when v.id == id) (evidence: v, episode: e, location: m.location),
+];
+
+/// [earlierSeasonEvidence] from the saves, read now.
+List<HeldEvidence> heldEarlierEvidence(WidgetRef ref, Iterable<String> ids) {
+  if (ids.isEmpty) return const [];
+  final repo = ref.read(progressRepositoryProvider);
+  return earlierSeasonEvidence(
+    ids: ids,
+    allEpisodes: ref.read(allEpisodesProvider),
+    seasonId: ref.read(selectedSeasonIdProvider),
+    solved: (e) => repo.loadSeason(e.seasonId).isSolved(e.id),
+    reference: ref.read(operatorAccessProvider) || ref.read(seasonPreviewProvider),
+  );
+}
+
 /// Under a mission played with evidence of an earlier case
 /// ([Mission.recall]): a small card on the page's foot. Tapped, the
 /// notebook's evidence opens to pick from; the right one is laid on the
@@ -80,14 +114,12 @@ class _EvidenceRecallDockState extends ConsumerState<EvidenceRecallDock> {
 
   Future<void> _pick() async {
     ref.read(audioServiceProvider).play(GameSound.notebookOpen);
-    final brought = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      shape: paperSheetShape,
-      showDragHandle: false,
-      builder: (context) => _RecallSheet(recall: widget.recall),
+    final recall = widget.recall;
+    final brought = await showEvidencePicker(
+      context,
+      judge: (e) => e.id == recall.evidenceId ? null : recall.missFor(e.id),
     );
-    if (brought == true && mounted) {
+    if (brought == recall.evidenceId && mounted) {
       final game = ref.read(gameControllerProvider.notifier);
       game.recordExamined(_key);
       game.recordEvidenceViewed(widget.recall.evidenceId);
@@ -232,33 +264,65 @@ class _EvidenceRecallDockState extends ConsumerState<EvidenceRecallDock> {
   }
 }
 
-/// The notebook's evidence, case by case, to pick the one that fits: the
-/// right one closes the sheet (`true`); another says why it does not fit,
-/// and the detective picks again. Each piece can be looked at closer first.
-class _RecallSheet extends ConsumerStatefulWidget {
-  const _RecallSheet({required this.recall});
+/// Opens the notebook's evidence to pick one (see [EvidencePickSheet]):
+/// the id of the piece taken, or null when the sheet is closed without one.
+Future<String?> showEvidencePicker(
+  BuildContext context, {
+  String? Function(Evidence evidence)? judge,
+  String ask = EvidencePickSheet.defaultAsk,
+  List<HeldEvidence> earlier = const [],
+}) => showModalBottomSheet<String>(
+  context: context,
+  isScrollControlled: true,
+  shape: paperSheetShape,
+  showDragHandle: false,
+  builder: (context) => EvidencePickSheet(judge: judge, ask: ask, earlier: earlier),
+);
 
-  final EvidenceRecall recall;
+/// The notebook's evidence, case by case, to pick from. [judge] says why a
+/// piece does not fit (the detective then picks again) or null when it
+/// does: then the sheet closes with its id. Without [judge] every piece is
+/// taken (a talk answers what was shown itself). Each piece can be looked
+/// at closer first. [earlier]: pieces of earlier seasons also in the
+/// detective's hands, after this season's cases.
+class EvidencePickSheet extends ConsumerStatefulWidget {
+  const EvidencePickSheet({super.key, this.judge, this.ask = defaultAsk, this.earlier = const []});
+
+  static const defaultAsk = 'Which clue fits? Tap it to bring it.';
+
+  final String? Function(Evidence evidence)? judge;
+  final String ask;
+  final List<HeldEvidence> earlier;
 
   @override
-  ConsumerState<_RecallSheet> createState() => _RecallSheetState();
+  ConsumerState<EvidencePickSheet> createState() => _EvidencePickSheetState();
 }
 
-class _RecallSheetState extends ConsumerState<_RecallSheet> {
+class _EvidencePickSheetState extends ConsumerState<EvidencePickSheet> {
   /// The line for the last piece picked that does not fit, or null.
   String? _miss;
 
   void _choose(Evidence e) {
-    if (e.id == widget.recall.evidenceId) {
-      Navigator.of(context).pop(true);
+    final miss = widget.judge?.call(e);
+    if (miss == null) {
+      Navigator.of(context).pop(e.id);
       return;
     }
-    setState(() => _miss = widget.recall.missFor(e.id));
+    setState(() => _miss = miss);
   }
 
   @override
   Widget build(BuildContext context) {
-    final cases = heldEvidence(ref.watch(seasonArchiveProvider));
+    final seasons = ref.watch(seasonsProvider);
+    String cityOf(Episode e) => seasons.firstWhere((s) => s.id == e.seasonId, orElse: () => seasons.first).city;
+    final cases = <(String, List<HeldEvidence>)>[
+      for (final (episode, held) in heldEvidence(ref.watch(seasonArchiveProvider)))
+        ('CASE ${episode.numberLabel} · ${episode.title.toUpperCase()}', held),
+      // An earlier season's case, named by its city too (its Case 12 is not
+      // this season's).
+      for (final h in widget.earlier)
+        ('${cityOf(h.episode).toUpperCase()} · CASE ${h.episode.numberLabel} · ${h.episode.title.toUpperCase()}', [h]),
+    ];
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.8,
@@ -275,7 +339,7 @@ class _RecallSheetState extends ConsumerState<_RecallSheet> {
                   duration: const Duration(milliseconds: 200),
                   child: _miss == null
                       ? Text(
-                          'Which clue fits? Tap it to bring it.',
+                          widget.ask,
                           key: const ValueKey('recall-ask'),
                           textAlign: TextAlign.center,
                           style: AppText.title(size: 18),
@@ -298,8 +362,8 @@ class _RecallSheetState extends ConsumerState<_RecallSheet> {
               controller: scroll,
               padding: const EdgeInsets.fromLTRB(20, 0, 20, AppSpace.xl),
               children: [
-                for (final (episode, held) in cases) ...[
-                  Text('CASE ${episode.numberLabel} · ${episode.title.toUpperCase()}', style: AppText.eyebrow(color: AppColors.inkBrown)),
+                for (final (header, held) in cases) ...[
+                  Text(header, style: AppText.eyebrow(color: AppColors.inkBrown)),
                   const SizedBox(height: AppSpace.sm),
                   GridView(
                     shrinkWrap: true,

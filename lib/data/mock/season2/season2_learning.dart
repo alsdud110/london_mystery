@@ -53,8 +53,8 @@ const Map<String, LearningObjective> season2Learning = {
     dependency: LanguageDependency.essential,
     level: LearningLevel.comprehension,
     skill: LanguageSkill.sentenceMeaning,
-    objective: '안내문의 "IF ONE CLOCK IS ONE HOUR BEHIND"를 이해하고, 10:00인 두 시계와 비교해 한 시간 늦은 9:00 시계를 찾는다.',
-    expressions: ['one hour behind', 'REPORT IT TO THE LOST PROPERTY DESK'],
+    objective: '안내문의 "If one clock is ONE HOUR BEHIND"를 이해하고, 10:00인 두 시계와 비교해 한 시간 늦은 9:00 시계를 찾는다.',
+    expressions: ['one hour behind', 'report it to the LOST PROPERTY DESK'],
   ),
   // Only the order words put the shuffled cards in order.
   's2_ep01_m2': LearningObjective(
@@ -69,8 +69,8 @@ const Map<String, LearningObjective> season2Learning = {
     dependency: LanguageDependency.essential,
     level: LearningLevel.application,
     skill: LanguageSkill.sentenceMeaning,
-    objective: '"MOVE ITS HANDS FORWARD ONE HOUR"를 이해하고 9:00에서 한 시간 앞으로 시계를 맞춘다(10:00).',
-    expressions: ['MOVE ITS HANDS FORWARD ONE HOUR', 'TO MATCH THE HALL CLOCK'],
+    objective: '"Move its hands FORWARD one hour"를 이해하고 9:00에서 한 시간 앞으로 시계를 맞춘다(10:00).',
+    expressions: ['Move its hands FORWARD one hour', 'to match the hall clock'],
   ),
   // No picture on the lock: the four letters make a word only by knowing it.
   's2_ep01_final': LearningObjective(

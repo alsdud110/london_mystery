@@ -39,8 +39,8 @@ const Map<String, dynamic> season2Episode06Json = {
   'place': 'LOUVRE POST ROOM',
   'synopsis': [
     'Letter No. 4417 was held at the Louvre post room.',
-    'Now it is not there.',
-    'Was it stolen? Or is it hidden?',
+    'Now it is not there. Was it stolen? Or is it hidden?',
+    'What can it tell us about the missing hour?',
   ],
   'objectives': [
     'Find the tag of Letter 4417.',
@@ -50,13 +50,11 @@ const Map<String, dynamic> season2Episode06Json = {
   'introScene': 'louvrePostRoom',
   'intro': [
     'Letter No. 4417 stopped at the Louvre post room.',
-    'It was held there. It was never delivered.',
-    'You follow its trail to a small door near the Louvre.',
-    'Behind it is a quiet post room. Nobody is at the desk.',
+    'It was never delivered.',
+    'The post room is quiet. Nobody is at the desk.',
     'Letter 4417 should be here.',
   ],
-  'caseSummary':
-      "You turned over the tags, followed the porter's note to the archive, fitted the torn corner to its envelope and read the letter. It was never stolen. Someone kept it safe.",
+  'caseSummary': 'Letter 4417 was kept safe, not stolen. Its back points to the opera archive.',
   'keyWords': ['tag', 'parcel', 'keep it safe', 'past', 'second', 'left', 'torn', 'show'],
   'hook': 'What is in File 3–4 of the opera archive?',
   'missions': [
@@ -67,10 +65,8 @@ const Map<String, dynamic> season2Episode06Json = {
       'location': 'THE HOLD RACK',
       'scene': 'holdRack',
       'story': [
-        'Behind the desk is a wooden rack with many slots.',
-        'One slot is empty.',
-        'Paper tags hang on four slots. Each tag has two sides.',
-        'Look closely. Which one matches our clue?',
+        'Behind the desk is a wooden rack. One slot is empty.',
+        'Four paper tags hang on it. Each tag has two sides.',
       ],
       'letterIntro': "The Letter's Trail in your notebook says:",
       'letter': 'LETTER No. 4417\n16 MAY · 4:00 PM\nHELD · LOUVRE POST ROOM',
@@ -98,14 +94,14 @@ const Map<String, dynamic> season2Episode06Json = {
       'answer': 'd',
       'hints': [
         "Read each tag's front. Is it a LETTER? Is the number 4417?",
-        'Ink hides a number on two tags. Turn them over. Check the day and the time.',
+        'Ink hides a number on two tags. Turn them over. Check the day and time.',
       ],
       'clue': {
         'id': 's2_ep06_c1',
         'title': 'Kept Safe',
         'value': 'PRESERVATION ORDER',
         'symbol': 'letter',
-        'note': 'The tag of Letter 4417: 16 MAY · 4:00 PM · HELD. PRESERVATION ORDER: keep it safe.',
+        'note': 'Held on 16 MAY at 4:00 PM. PRESERVATION ORDER: keep it safe.',
       },
       'evidence': {
         'id': 's2_ep06_e1',
@@ -117,8 +113,7 @@ const Map<String, dynamic> season2Episode06Json = {
       },
       'successMessage': "Wait! It wasn't stolen.",
       'transition': [
-        'The back of Tag D says PRESERVATION ORDER.',
-        'That means: keep it safe.',
+        'Tag D says PRESERVATION ORDER: keep it safe.',
         'Someone kept it safe.',
         'But where is it now?',
       ],
@@ -137,12 +132,11 @@ const Map<String, dynamic> season2Episode06Json = {
         'The post room book has two lines for Letter 4417.',
         '16 MAY · 4:00 PM · HELD.',
         '17 MAY · MORNING · MOVED.',
-        'First it was held. The next morning, it was moved.',
         'A plan of the building hangs on the wall.',
       ],
       'letterIntro': "A porter's note is pinned to the plan:",
       'letter':
-          'Letters that must be kept safe go downstairs.\n'
+          'Letters to keep safe go downstairs.\n'
           'Go down the stairs.\n'
           'Walk past the statue.\n'
           'Take the second door on the left.',
@@ -154,12 +148,12 @@ const Map<String, dynamic> season2Episode06Json = {
         {
           'id': 'a',
           'label': 'Door A',
-          'feedback': 'Not yet! Walk past the statue first.',
+          'feedback': 'Not yet. Walk past the statue first.',
         },
         {
           'id': 'b',
           'label': 'Door B',
-          'feedback': 'Not yet! Walk past the statue first.',
+          'feedback': 'Not yet. Walk past the statue first.',
         },
         {
           'id': 'c',
@@ -196,14 +190,14 @@ const Map<String, dynamic> season2Episode06Json = {
         'icon': 'letter',
         'description': 'Pinned to the plan of the building, in the post room.',
         'inscription':
-            'Letters that must be kept safe go downstairs: down the stairs, past the statue, the second door on the left. '
+            'Down the stairs, past the statue, the second door on the left. '
             '17 MAY, morning: Letter No. 4417 moved to the archive.',
       },
       'successMessage': 'The letter went to the archive!',
       'transition': [
-        'Behind the second door on the left is the archive.',
+        'Behind Door E is the archive.',
         'Tall cabinets. Hundreds of small drawers.',
-        'Letter 4417 must be here somewhere.',
+        'Letter 4417 must be here.',
       ],
       'nextMissionId': 's2_ep06_m3',
       'skills': ['reading', 'problemSolving'],
@@ -217,11 +211,10 @@ const Map<String, dynamic> season2Episode06Json = {
       'location': 'THE ARCHIVE',
       'scene': 'archiveRoom',
       'story': [
-        'Each drawer in the archive has a label.',
-        'Torn letters are kept here, safe and flat.',
-        'But a torn letter often loses its number.',
+        'Torn letters are kept here. Each drawer has a label.',
+        'Many torn letters have lost their numbers.',
       ],
-      'letterIntro': 'Inside Clock III, you found a torn envelope corner. Its label says:',
+      'letterIntro': 'The torn envelope corner from Clock III says:',
       'letter': 'No. 4417\n\nFind the envelope it was torn from.',
       // The envelope whose torn edge the corner from Clock III fits.
       'type': 'multipleChoice',
@@ -230,7 +223,7 @@ const Map<String, dynamic> season2Episode06Json = {
         {
           'id': 'x',
           'label': 'Envelope 1',
-          'feedback': 'The torn edges do not match. Try another one.',
+          'feedback': 'The torn edges do not match.',
         },
         {'id': 'y', 'label': 'Envelope 2'},
         {
@@ -257,14 +250,13 @@ const Map<String, dynamic> season2Episode06Json = {
         'icon': 'letter',
         'description': 'Found in a drawer of the archive.',
         'inscription':
-            'The corner from Clock III fits it exactly: Letter No. 4417. On its seal, a tiny drawing of a grand building.',
+            'The corner from Clock III fits it: Letter No. 4417. On its seal, a tiny drawing of a grand building.',
       },
       'successMessage': 'There it is! Letter 4417!',
       'transition': [
-        'The corner fits. This is Letter 4417!',
+        'The corner fits. This is Letter 4417.',
         "But what's this little picture on the seal?",
-        'A grand building, drawn very small.',
-        'You open the envelope. Inside is a letter.',
+        'Inside the envelope is a letter.',
       ],
       'nextMissionId': 's2_ep06_final',
       'skills': ['reading', 'problemSolving'],
@@ -279,9 +271,7 @@ const Map<String, dynamic> season2Episode06Json = {
     'location': 'THE ARCHIVE TABLE',
     'scene': 'archiveRoom',
     'story': [
-      'You unfold the letter on the table.',
-      'It has only two lines, and a small drawing.',
-      'The same building as on the seal.',
+      'Two lines, and a drawing of the building on the seal.',
       'A map of Paris hangs on the wall.',
     ],
     'letterIntro': 'The letter says:',
@@ -314,7 +304,7 @@ const Map<String, dynamic> season2Episode06Json = {
       {
         'id': 'notreDame',
         'label': 'Notre-Dame',
-        'feedback': 'Look at its two tall towers. The drawing has a dome.',
+        'feedback': 'It has two tall towers. The drawing has a dome.',
       },
       {
         'id': 'eiffelTower',
@@ -325,7 +315,7 @@ const Map<String, dynamic> season2Episode06Json = {
     ],
     'answer': 'palaisGarnier',
     'hints': [
-      'Look at the top of the drawing. What shape is the roof? What stands on it?',
+      'Look at the roof in the drawing. What shape is it? What stands on it?',
       'The letter says "the show remembers". Where do people go to see a show?',
     ],
     'evidence': {
@@ -340,7 +330,6 @@ const Map<String, dynamic> season2Episode06Json = {
     // After the case is closed: the post-case scene, then the case report.
     'transition': [
       'The drawing is the Palais Garnier, the opera house.',
-      'You turn the letter over.',
       'On the back: OPERA ARCHIVE · FILE 3–4.',
       'The mystery continues at the opera house!',
     ],
@@ -356,14 +345,11 @@ const Map<String, dynamic> season2Episode06Json = {
     'trail': '지나간 길, 흔적',
     'desk': '책상, 접수대',
     'rack': '선반, 걸이',
-    'slots': '칸들',
     'slot': '칸',
     'empty': '빈',
     'tag': '꼬리표',
     'tags': '꼬리표들',
     'sides': '면들',
-    'closely': '자세히',
-    'matches': '맞다, 일치하다',
     'clue': '단서',
     'parcel': '소포',
     'ink': '잉크',
@@ -392,8 +378,7 @@ const Map<String, dynamic> season2Episode06Json = {
     'drawer': '서랍',
     'label': '이름표, 라벨',
     'torn': '찢어진',
-    'flat': '평평하게',
-    'loses': '잃어버린다',
+    'lost': '잃어버렸다',
     'envelope': '봉투',
     'corner': '모서리',
     'edge': '가장자리',
@@ -401,7 +386,6 @@ const Map<String, dynamic> season2Episode06Json = {
     'fits': '꼭 맞는다',
     'seal': '봉인',
     'grand': '웅장한',
-    'unfold': '펼치다',
     'drawing': '그림',
     'lie': '거짓말하다',
     'show': '공연',

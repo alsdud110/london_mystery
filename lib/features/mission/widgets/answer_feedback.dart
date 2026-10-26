@@ -172,6 +172,9 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
         child: Transform.translate(offset: Offset(0, 8 * (1 - _o(a))), child: child),
       );
 
+  /// A title written as a sentence (it has lower-case letters), not a name.
+  static bool _isSentence(String title) => title.contains(RegExp('[a-z]'));
+
   @override
   Widget build(BuildContext context) {
     final d = widget.discovery;
@@ -244,9 +247,17 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
                           // 2. What was found or worked out.
                           _rise(
                             _title,
-                            // Its numbers in the reading face ("It fits at 4:00!").
-                            Text.rich(AppText.liningDigits(d.title, AppText.placeTitle(size: 26, color: AppColors.paperLight).copyWith(height: 1.2)),
-                                textAlign: TextAlign.center),
+                            // A name ("THE ROSETTA STONE") in the display face,
+                            // its numbers in the reading face. A sentence ("The
+                            // old clock is one hour behind!") is read, so it is
+                            // set in the reading face: the display face's small
+                            // capitals would turn it into a line of capitals.
+                            _isSentence(d.title)
+                                ? Text(d.title,
+                                    textAlign: TextAlign.center,
+                                    style: AppText.title(size: 24, color: AppColors.paperLight).copyWith(height: 1.3))
+                                : Text.rich(AppText.liningDigits(d.title, AppText.placeTitle(size: 26, color: AppColors.paperLight).copyWith(height: 1.2)),
+                                    textAlign: TextAlign.center),
                           ),
                           // 3. The evidence itself, laid down at the scene.
                           if (evidence != null) ...[

@@ -96,16 +96,16 @@ void main() {
 
     test('the words of the case are the ones written for it', () {
       String text(Mission m) => [m.letter, m.question, ...m.story].join('\n');
-      expect(text(paris.missions[0]), contains('IF ONE CLOCK IS ONE HOUR BEHIND,\nREPORT IT TO THE LOST PROPERTY DESK.'));
+      expect(text(paris.missions[0]), contains('If one clock is ONE HOUR BEHIND,\nreport it to the LOST PROPERTY DESK.'));
       for (final line in [
         'FIRST, the hall clock struck ten.',
-        'NEXT, a man with a pocket watch entered the waiting room.',
+        'NEXT, a man with a pocket watch came in.',
         'AFTER THAT, the old clock showed nine.',
       ]) {
         expect(text(paris.missions[1]), contains(line));
       }
-      expect(text(paris.missions[2]), contains('THE OLD CLOCK IS ONE HOUR BEHIND.'));
-      expect(text(paris.missions[2]), contains('MOVE ITS HANDS FORWARD ONE HOUR\nTO MATCH THE HALL CLOCK.'));
+      expect(text(paris.missions[2]), contains('The old clock is one hour behind.'));
+      expect(text(paris.missions[2]), contains('Move its hands FORWARD one hour\nto match the hall clock.'));
       expect(paris.missions[0].letter, contains('10:00'));
       expect(paris.missions[0].letter, contains('9:00'));
     });
@@ -258,7 +258,7 @@ void main() {
       expect({for (final c in hall.clocks) c.optionId}, {for (final o in m1.options) o.id});
       expect({for (final c in hall.clocks) c.optionId: c.time}, {'a': '10:00', 'b': '10:00', 'c': '9:00'});
       expect(hall.clock(m1.answer).name, 'THE OLD CLOCK');
-      expect(hall.notice, contains('IF ONE CLOCK IS ONE HOUR BEHIND, REPORT IT TO THE LOST PROPERTY DESK.'));
+      expect(hall.notice, contains('If one clock is ONE HOUR BEHIND, report it to the LOST PROPERTY DESK.'));
       // Its trains leave after ten: the board never says which clock is right.
       for (final d in hall.departures) {
         expect(d.time.compareTo('10:00'), greaterThan(0), reason: d.time);
@@ -807,7 +807,7 @@ void main() {
         }
 
         await order(['c', 'b', 'a']);
-        expect(findReadableContaining('The man came NEXT, not first.'), findsWidgets);
+        expect(findReadableContaining('The man came NEXT. What happened FIRST?'), findsWidgets);
         await shot('m2_wrong');
         await tapText(t, 'TRY AGAIN', after: const Duration(milliseconds: 600));
         // The order taken back, then put right.

@@ -19,6 +19,7 @@ import '../../../widgets/ink_icon.dart';
 import '../../../widgets/paper.dart';
 import '../../../widgets/paper_background.dart';
 import '../../../widgets/place_scenery.dart';
+import '../../../widgets/typewriter_text.dart';
 import '../../game/game_providers.dart';
 
 /// A mission played by talking to the people at its place (see
@@ -677,84 +678,95 @@ class _Conversation extends StatelessWidget {
   /// The answer shown is a statement in the notes.
   final bool recorded;
 
-  /// From this height the portrait stands over the words, leaving them about
-  /// [_wordsRoom]; below it, beside them.
-  static const _stackFrom = 470.0;
-  static const _wordsRoom = 190.0;
-
   @override
   Widget build(BuildContext context) {
     final answer = question == null ? null : speaker.answers[question!.id];
-    // The words come once the portrait flying in has landed.
-    Widget words({required bool beside}) => _AfterLanding(
+    final line = answer?.line ?? speaker.greeting;
+    final note = !recorded ? null : (fresh != null && answer?.statementId == fresh ? _Note.recorded : _Note.kept);
+    // Keep the existing witness selection, questioning and deduction panel.
+    // Only the active conversation is presented as a cinematic scene.
+    final words = _AfterLanding(
       flying: flying,
       id: speaker.id,
       delay: const Duration(milliseconds: 150),
-      child: _Speech(
-        speaker: speaker,
-        question: question,
-        line: answer?.line ?? speaker.greeting,
-        note: !recorded
-            ? null
-            : (fresh != null && answer?.statementId == fresh ? _Note.recorded : _Note.kept),
-        beside: beside,
-      ),
+      child: _Speech(speaker: speaker, question: question, line: line, note: note),
     );
-    // The mission, one quiet line over the talk: what the questions are for.
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _MissionStrip(goal: goal),
-        Expanded(child: _scene(words)),
-      ],
-    );
-  }
-
-  Widget _scene(Widget Function({required bool beside}) words) {
-    return LayoutBuilder(
-      builder: (context, box) {
-        const pad = AppSpace.lg;
-        const vpad = AppSpace.sm;
-        final w = box.maxWidth - 2 * pad;
-        final h = box.maxHeight - 2 * vpad;
-        if (h >= _stackFrom) {
-          final portraitHeight = (h - _wordsRoom).clamp(200.0, 340.0);
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(pad, vpad, pad, vpad),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: portraitHeight,
-                  child: _Portrait(speaker: speaker, flying: flying),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final compact = constraints.maxHeight < 310;
+              final usual = compact
+                  ? (constraints.maxHeight * 0.48).clamp(108.0, 148.0)
+                  : (constraints.maxHeight * 0.42).clamp(145.0, 205.0);
+              // A long answer, or large text: the card grows to hold the
+              // words whole (the portrait gives way above it), never past
+              // the space there is; beyond that, the card scrolls.
+              final speechHeight = math.max(
+                usual,
+                math.min(
+                  _Speech.heightFor(context, line: line, note: note != null, width: constraints.maxWidth - 2 * AppSpace.md),
+                  constraints.maxHeight - (compact ? 4 : AppSpace.sm) - AppSpace.sm,
                 ),
-                const SizedBox(height: AppSpace.sm),
-                Expanded(child: words(beside: false)),
-              ],
-            ),
-          );
-        }
-        const aspect = ArtAssets.witnessPortraitAspect;
-        // The words keep a readable width first (wider with larger text):
-        // on a small screen the person gives way, never what they say.
-        final wordsWidth = MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 215.0 : 160.0;
-        final portraitWidth = math.max(0.0, math.min(math.min(w * 0.5, h * aspect), w - wordsWidth - AppSpace.md - 4));
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(pad, vpad, pad, vpad),
-          child: Row(
-            children: [
-              SizedBox(
-                width: portraitWidth,
-                height: portraitWidth / aspect,
-                child: _Portrait(speaker: speaker, flying: flying),
-              ),
-              const SizedBox(width: AppSpace.md + 4),
-              Expanded(
-                child: SizedBox(height: h, child: words(beside: true)),
-              ),
-            ],
+              );
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  // The original location image remains the backdrop. No
+                  // new artwork or synthetic replacement is introduced.
+                  Positioned.fill(
+                    child: Image.asset(
+                      scene.background,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const ColoredBox(
+                        color: AppColors.navyDeep,
+                      ),
+                    ),
+                  ),
+                  // Darkened stage separates the witness from the setting.
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColors.navyDeep.withValues(alpha: 0.22),
+                            AppColors.navyDeep.withValues(alpha: 0.12),
+                            AppColors.navyDeep.withValues(alpha: 0.85),
+                          ],
+                          stops: const [0, 0.42, 1],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Keep the existing portrait artwork and arrival animation.
+                  Positioned(
+                    top: compact ? 4 : AppSpace.sm,
+                    bottom: speechHeight * 0.48,
+                    left: AppSpace.lg,
+                    right: AppSpace.lg,
+                    child: _Portrait(speaker: speaker, flying: flying),
+                  ),
+                  // Cinematic dialogue is anchored over the lower part of
+                  // the scene rather than placed beside a small portrait.
+                  Positioned(
+                    left: AppSpace.md,
+                    right: AppSpace.md,
+                    bottom: AppSpace.sm,
+                    height: speechHeight,
+                    child: words,
+                  ),
+                ],
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
@@ -788,13 +800,12 @@ class _Portrait extends StatelessWidget {
 
 /// What was asked (small, the detective's) and the answer (the person's,
 /// larger, in their paper card), with their name plate.
-class _Speech extends StatelessWidget {
+class _Speech extends StatefulWidget {
   const _Speech({
     required this.speaker,
     required this.question,
     required this.line,
     required this.note,
-    this.beside = false,
   });
 
   final DialogueSpeaker speaker;
@@ -804,18 +815,55 @@ class _Speech extends StatelessWidget {
   /// How the answer is in the notes (null: it is not a statement).
   final _Note? note;
 
-  /// Beside the portrait: the words sit level with the person, and their
-  /// card points to them.
-  final bool beside;
+  /// The words' style (the size they keep at any text scale: the card
+  /// grows, the words are never made smaller).
+  static TextStyle get _lineStyle => AppText.letter(size: 18, color: AppColors.ink);
+
+  /// The height [line] needs to be read whole, at the text size of
+  /// [context], in a card [width] wide: the name plate, the card's edge and
+  /// padding, the note's mark ([note]) and the words themselves.
+  static double heightFor(BuildContext context, {required String line, required bool note, required double width}) {
+    final scaler = MediaQuery.textScalerOf(context);
+    double measure(String text, TextStyle style, [double max = double.infinity]) =>
+        (TextPainter(text: TextSpan(text: text, style: style), textDirection: TextDirection.ltr, textScaler: scaler)
+              ..layout(maxWidth: max))
+            .height;
+    final inner = math.max(1.0, width - 2 * AppSpace.lg - 2 * AppLine.ink);
+    final name = measure('A', AppText.mark(color: AppColors.goldLight, size: 15));
+    final mark = note ? math.max(AppIconSize.tiny, measure('A', AppText.eyebrow(color: AppColors.burgundy))) + AppSpace.xs : 0.0;
+    final words = measure('"$line"', _lineStyle, inner);
+    // A little to spare for rounding (a line never cut by a hair).
+    return name + AppSpace.sm + 2 * AppLine.ink + 2 * AppSpace.md + mark + words + 4;
+  }
+
+  @override
+  State<_Speech> createState() => _SpeechState();
+}
+
+class _SpeechState extends State<_Speech> {
+  bool _skipTyping = false;
+
+  @override
+  void didUpdateWidget(covariant _Speech oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.line != widget.line ||
+        oldWidget.question?.id != widget.question?.id ||
+        oldWidget.speaker.id != widget.speaker.id) {
+      _skipTyping = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final speaker = widget.speaker;
+    final question = widget.question;
+    final line = widget.line;
+    final note = widget.note;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final isNew = note == _Note.recorded;
     final edge = isNew ? AppColors.gold : AppLine.faint();
     final edgeWidth = isNew ? AppLine.ink : AppLine.hairline;
     return Column(
-      mainAxisAlignment: beside ? MainAxisAlignment.center : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // One line, never wrapped (a long name is set a little smaller).
@@ -879,13 +927,23 @@ class _Speech extends StatelessWidget {
                             ),
                             const SizedBox(height: AppSpace.xs),
                           ],
-                          // Beside the person with larger text, a little smaller:
-                          // a long answer still reads whole in a short space.
-                          Text(
-                            '"$line"',
-                            style: AppText.letter(
-                              size: beside && MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 16 : 18,
-                              color: AppColors.ink,
+                          // The case Story Sequence's typewriter reveal, at one
+                          // size (the card grows for a long answer: see
+                          // [_Speech.heightFor]). Tapping the spoken line reveals
+                          // it immediately; witness selection, questions and
+                          // evidence comparison remain unchanged.
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              if (!_skipTyping) setState(() => _skipTyping = true);
+                            },
+                            child: TypewriterText(
+                              '"$line"',
+                              key: ValueKey('talk-typewriter-${speaker.id}-${question?.id ?? 'greeting'}'),
+                              style: _Speech._lineStyle,
+                              textAlign: TextAlign.start,
+                              skip: _skipTyping,
+                              sound: false,
                             ),
                           ),
                         ],
@@ -894,16 +952,6 @@ class _Speech extends StatelessWidget {
                   ),
                 ),
               ),
-              // The card's point, toward the person speaking.
-              if (beside)
-                Positioned(
-                  left: -11,
-                  top: 22,
-                  child: CustomPaint(
-                    size: const Size(12, 22),
-                    painter: _CardPoint(fill: AppColors.paperLight, edge: edge, width: edgeWidth),
-                  ),
-                ),
             ],
           ),
         ),
@@ -914,46 +962,6 @@ class _Speech extends StatelessWidget {
 
 /// How an answer is in the notes: written down just now, or already.
 enum _Note { recorded, kept }
-
-/// The small point on the left of a speech card, toward the speaker: paper
-/// filled, its two outer sides in the card's edge ink.
-class _CardPoint extends CustomPainter {
-  const _CardPoint({required this.fill, required this.edge, required this.width});
-
-  final Color fill;
-  final Color edge;
-  final double width;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Over the card's edge by a pixel, so the paper runs on without a seam.
-    final tip = Offset(0, size.height / 2);
-    final top = Offset(size.width + 1, 0);
-    final bottom = Offset(size.width + 1, size.height);
-    canvas.drawPath(
-      Path()
-        ..moveTo(top.dx, top.dy)
-        ..lineTo(tip.dx, tip.dy)
-        ..lineTo(bottom.dx, bottom.dy)
-        ..close(),
-      Paint()..color = fill,
-    );
-    canvas.drawPath(
-      Path()
-        ..moveTo(top.dx - 1, top.dy)
-        ..lineTo(tip.dx, tip.dy)
-        ..lineTo(bottom.dx - 1, bottom.dy),
-      Paint()
-        ..color = edge
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = width
-        ..strokeJoin = StrokeJoin.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_CardPoint old) => old.fill != fill || old.edge != edge || old.width != width;
-}
 
 /// The mission, one line over the talk: a magnifier and what to find out.
 class _MissionStrip extends StatelessWidget {

@@ -48,16 +48,14 @@ const Map<String, dynamic> season2Episode03Json = {
   // begins.
   'introScene': 'paintersMessage',
   'intro': [
-    'The painter left one last message. Always higher.',
-    'You turn the canvas over once more. Beside the words, you notice a small drawing.',
+    'The painter left one last message: Always higher.',
+    'You turn the canvas over again. Beside the words is a small drawing.',
     'A tall iron tower. The Eiffel Tower.',
-    'By the time you arrive, the sky is turning gold. Something strange is waiting near the entrance.',
-    'Two records describe the same inspection. But something does not match.',
+    'At its entrance, two records describe the same inspection. They do not match.',
   ],
-  'caseSummary':
-      'You compared two records, followed the lift to the Service Level, opened the iron door and linked your evidence. Inside the machine, a brass plaque was waiting.',
+  'caseSummary': 'Two records, one hour apart. In that hour, someone went up to the Service Level.',
   'keyWords': ['inspection', 'record', 'service', 'first', 'next', 'finally'],
-  'hook': 'One hour is missing, and the clock is still running. Who left the message, and why does it lead to the river?',
+  'hook': 'Who left the plaque about the missing hour? And why does it lead to the river?',
   'missions': [
     {
       'id': 's2_ep03_m1',
@@ -66,15 +64,13 @@ const Map<String, dynamic> season2Episode03Json = {
       'location': 'THE TOWER ENTRANCE',
       'scene': 'towerEntrance',
       'story': [
-        'At the foot of the Eiffel Tower, the lamps are coming on.',
-        'By the gate stands a notice board for visitors.',
-        'In the ticket booth, someone has left the maintenance log.',
+        'At the foot of the tower, the lamps are coming on.',
+        'By the gate: a notice for visitors. In the ticket booth: the maintenance log.',
       ],
       'letterIntro': 'Your notebook says:',
       'letter':
           'Two records.\n'
           'The same day. The same job.\n\n'
-          'Read them both, line by line.\n'
           'Find the two lines that do not match.',
       // A line picked on each record (`notice:log`): only the times differ.
       'type': 'matchPairs',
@@ -86,14 +82,14 @@ const Map<String, dynamic> season2Episode03Json = {
       ],
       'answer': 'time:time',
       'feedback': {
-        'date:date': 'Both records say 12 MAY. The dates match. Look again.',
-        'job:job': 'Both records say LIFT INSPECTION. The jobs match. Look again.',
-        'date:job': 'Compare the same line on both records: date with date, time with time.',
-        'date:time': 'Compare the same line on both records: date with date, time with time.',
-        'job:date': 'Compare the same line on both records: date with date, time with time.',
-        'job:time': 'Compare the same line on both records: date with date, time with time.',
-        'time:date': 'Compare the same line on both records: date with date, time with time.',
-        'time:job': 'Compare the same line on both records: date with date, time with time.',
+        'date:date': 'Both records say 12 MAY. The dates match.',
+        'job:job': 'Both records say LIFT INSPECTION. The jobs match.',
+        'date:job': 'Compare the same line on both: date with date, time with time.',
+        'date:time': 'Compare the same line on both: date with date, time with time.',
+        'job:date': 'Compare the same line on both: date with date, time with time.',
+        'job:time': 'Compare the same line on both: date with date, time with time.',
+        'time:date': 'Compare the same line on both: date with date, time with time.',
+        'time:job': 'Compare the same line on both: date with date, time with time.',
       },
       'hints': [
         'Read each record line by line: the date, the job, the time.',
@@ -112,13 +108,12 @@ const Map<String, dynamic> season2Episode03Json = {
         'icon': 'letter',
         'description': 'Found at the entrance of the Eiffel Tower.',
         'inscription':
-            'VISITOR NOTICE: LIFT INSPECTION, 4:00 PM. MAINTENANCE LOG: LIFT INSPECTION, 3:00 PM. '
-            'The same day, the same job, one hour apart.',
+            'Visitor notice: LIFT INSPECTION, 4:00 PM. Maintenance log: LIFT INSPECTION, 3:00 PM. '
+            'One hour apart.',
       },
       'successMessage': 'The times do not match!',
       'transition': [
-        "The visitor notice says four o'clock.",
-        "The maintenance log says three o'clock.",
+        'The visitor notice says 4:00. The maintenance log says 3:00.',
         'The same day. The same job. One hour apart.',
         'At the bottom of the log, a pencil line: CHECK THE LIFT LOG.',
       ],
@@ -134,8 +129,7 @@ const Map<String, dynamic> season2Episode03Json = {
       'location': 'THE TOWER LIFT',
       'scene': 'towerLift',
       'story': [
-        'The old lift has brass gates and wooden walls.',
-        'On one wall hangs a brass route plate. On the other, the lift log.',
+        'On one wall of the old lift: a brass route plate. On the other: the lift log.',
         "Where did the lift go after three o'clock?",
       ],
       'letterIntro': 'Your notebook says:',
@@ -155,12 +149,12 @@ const Map<String, dynamic> season2Episode03Json = {
         {
           'id': 'first',
           'label': 'First',
-          'feedback': 'First is a stop on the passenger route. The 3:20 trip has an S. What does S mean?',
+          'feedback': 'First is a passenger stop. The 3:20 trip has an S. What does S mean?',
         },
         {
           'id': 'top',
           'label': 'Top',
-          'feedback': 'Top is a stop on the passenger route. The 3:20 trip has an S. What does S mean?',
+          'feedback': 'Top is a passenger stop. The 3:20 trip has an S. What does S mean?',
         },
         {'id': 'service', 'label': 'Service Level'},
       ],
@@ -187,9 +181,8 @@ const Map<String, dynamic> season2Episode03Json = {
       },
       'successMessage': 'You found the missing stop!',
       'transition': [
-        'At 3:20, the lift left the passenger route.',
-        'It went up to the Service Level. It came back down at 4:25.',
-        'You ride the lift up. The gates open onto a dark iron platform.',
+        'At 3:20, the lift went up to the Service Level. It came back down at 4:25.',
+        'You ride up. The gates open onto a dark iron platform.',
         'On an iron door, a sign: SERVICE ACCESS ONLY.',
       ],
       'nextMissionId': 's2_ep03_m3',
@@ -204,11 +197,10 @@ const Map<String, dynamic> season2Episode03Json = {
       'location': 'THE SERVICE LEVEL',
       'scene': 'serviceDoor',
       'story': [
-        'The Service Level is dark and quiet.',
-        'Visitors never come up here.',
-        'The iron door is locked with a heavy padlock. It has three dials.',
+        'The Service Level is dark and quiet. Visitors never come here.',
+        'A heavy padlock with three dials locks the iron door.',
       ],
-      'letterIntro': 'The sign says SERVICE ACCESS ONLY. Beside the door, a note is pinned:',
+      'letterIntro': 'Beside the door, a note is pinned:',
       'letter':
           'INSPECTION STEPS\n\n'
           // Not in order: the order words set the dials.
@@ -225,7 +217,7 @@ const Map<String, dynamic> season2Episode03Json = {
       ],
       'answer': 'clock,lift,key',
       'codeLength': 3,
-      'orderFeedback': 'The right pictures, but not in the right order. Read the note: FIRST, NEXT, FINALLY.',
+      'orderFeedback': 'Right pictures, wrong order. Read the note: FIRST, NEXT, FINALLY.',
       'hints': [
         'Read the note again. FIRST, NEXT and FINALLY tell you the order.',
         'Dial 1 is what you do FIRST. Dial 2 is NEXT. Dial 3 is FINALLY.',
@@ -243,17 +235,15 @@ const Map<String, dynamic> season2Episode03Json = {
         'icon': 'key',
         'description': 'Behind the locked iron door at the Service Level.',
         'inscription':
-            'A hidden machine room. Only the service staff can come in. At the back stands an old time-recording machine. '
-            'On the floor, a square mark in the dust where a heavy crate stood.',
+            'A hidden machine room for the service staff. At the back: an old time-recording machine. '
+            'On the floor: a square mark in the dust, where a heavy crate stood.',
       },
       'successMessage': 'The lock is open!',
       'transition': [
-        'Click. The padlock opens.',
-        'Behind the iron door is a small hidden room.',
-        'Wheels, cables and gears. And at the back, an old machine with a clock.',
+        'Click. Behind the iron door is a small hidden room.',
+        'Wheels, cables and gears. At the back, an old machine with a clock.',
         // Where Case 04's crate comes from: it stood here, and is gone.
         'On the floor, a square mark in the dust. A heavy crate stood here. Now it is gone.',
-        'Two time cards are still inside it.',
       ],
       'nextMissionId': 's2_ep03_final',
       'skills': ['reading', 'problemSolving'],
@@ -268,8 +258,7 @@ const Map<String, dynamic> season2Episode03Json = {
     'location': 'THE HIDDEN SERVICE ROOM',
     'scene': 'timeMachine',
     'story': [
-      'The old machine has a clock face and a slot for time cards.',
-      'Two cards are inside. They show two different times.',
+      'The old machine has a slot for time cards. Two cards are inside.',
       'What really happened at the tower?',
     ],
     'letterIntro': 'The two time cards say:',
@@ -277,8 +266,8 @@ const Map<String, dynamic> season2Episode03Json = {
         'OFFICIAL TIME — 4:00\n'
         'RECORDED TIME — 3:00\n\n'
         // The cards say what the two records at the entrance said (M1).
-        'One hour apart, like the visitor notice\n'
-        'and the maintenance log at the entrance.',
+        'One hour apart, like the two records\n'
+        'at the entrance.',
     // Each question's evidence (`question:e1+e2`, in the evidence's order),
     // then what can be concluded (`why:…`). The order the evidence was found
     // in answers nothing: question 3 needs two pieces.
@@ -287,7 +276,7 @@ const Map<String, dynamic> season2Episode03Json = {
     'options': [
       {'id': 'q1', 'label': 'What was wrong with the inspection records?'},
       {'id': 'q2', 'label': 'Where did the lift go?'},
-      {'id': 'q3', 'label': 'What supports the conclusion that someone entered the service area?'},
+      {'id': 'q3', 'label': 'What shows that someone went into the service area?'},
       {'id': 'why', 'label': 'What can we conclude?'},
     ],
     'answer': 'q1:e1,q2:e2,q3:e2+e3,why:entered',
@@ -296,30 +285,30 @@ const Map<String, dynamic> season2Episode03Json = {
       'q1:e2': 'Question 1 is about the inspection records. Which evidence shows them?',
       'q1:e3': 'Question 1 is about the inspection records. Which evidence shows them?',
       'q1:e2+e3': 'Question 1 is about the inspection records. Which evidence shows them?',
-      'q1:e1+e2': 'Question 1 needs one piece of evidence only: the two records.',
-      'q1:e1+e3': 'Question 1 needs one piece of evidence only: the two records.',
-      'q1:e1+e2+e3': 'Question 1 needs one piece of evidence only: the two records.',
-      'q2:': "Where did the lift go? Which evidence shows the lift's trips?",
-      'q2:e1': "Where did the lift go? Which evidence shows the lift's trips?",
-      'q2:e3': "Where did the lift go? Which evidence shows the lift's trips?",
-      'q2:e1+e3': "Where did the lift go? Which evidence shows the lift's trips?",
-      'q2:e1+e2': 'Question 2 needs one piece of evidence only: where the lift went.',
-      'q2:e2+e3': 'Question 2 needs one piece of evidence only: where the lift went.',
-      'q2:e1+e2+e3': 'Question 2 needs one piece of evidence only: where the lift went.',
-      'q3:': 'Question 3 needs two pieces of evidence. Where did the lift go, and what was there?',
+      'q1:e1+e2': 'Question 1 needs only one piece: the two records.',
+      'q1:e1+e3': 'Question 1 needs only one piece: the two records.',
+      'q1:e1+e2+e3': 'Question 1 needs only one piece: the two records.',
+      'q2:': "Which evidence shows the lift's trips?",
+      'q2:e1': "Which evidence shows the lift's trips?",
+      'q2:e3': "Which evidence shows the lift's trips?",
+      'q2:e1+e3': "Which evidence shows the lift's trips?",
+      'q2:e1+e2': 'Question 2 needs only one piece: where the lift went.',
+      'q2:e2+e3': 'Question 2 needs only one piece: where the lift went.',
+      'q2:e1+e2+e3': 'Question 2 needs only one piece: where the lift went.',
+      'q3:': 'Question 3 needs two pieces. Where did the lift go? What was there?',
       'q3:e1': 'The notices were at the entrance. Question 3 is about the service area.',
       'q3:e1+e2': 'The notices were at the entrance. Question 3 is about the service area.',
       'q3:e1+e3': 'The notices were at the entrance. Question 3 is about the service area.',
       'q3:e1+e2+e3': 'The notices were at the entrance. Question 3 is about the service area.',
-      'q3:e2': 'The lift log shows where the lift went. What did you find there, behind the door?',
+      'q3:e2': 'The lift log shows where the lift went. What did you find behind the door?',
       'q3:e3': 'You found the room. But what shows that someone went up there?',
       'why:': 'Choose what the evidence shows.',
       'why:vanished': 'We have no proof of that yet.',
-      'why:still': 'Read the lift log again. The lift went up at 3:20 and came down at 4:25.',
+      'why:still': 'Read the lift log again. The lift went up at 3:20.',
     },
     'hints': [
       'Open each piece of evidence. What does each one show?',
-      'Question 3 needs two pieces of evidence: where the lift went, and what was behind the door.',
+      'Question 3 needs two pieces: where the lift went, and what was behind the door.',
     ],
     'evidence': {
       'id': 's2_ep03_e4',
@@ -335,14 +324,12 @@ const Map<String, dynamic> season2Episode03Json = {
     'transition': [
       'One hour is missing.',
       'The clock is still running.',
-      'You look beneath the message.',
-      'Three small waves are engraved into the brass.',
-      'Below them is a single word.',
+      'Under the words: three small waves, and one word.',
       'SEINE.',
       'The river that runs through Paris.',
       // The crate gone from the floor (M3) went the same way: Case 04
       // follows it. Where on the river, the plaque's back says.
-      'Beside the square mark in the dust, you find a torn shipping tag.',
+      'By the square mark in the dust lies a torn shipping tag:',
       'FROM: SERVICE LEVEL. TO: THE RIVER.',
       'Who left this message?',
       'And why does it lead to the river?',
@@ -399,14 +386,9 @@ const Map<String, dynamic> season2Episode03Json = {
     'recorded': '기록된',
     'evidence': '증거',
     'conclude': '결론을 내리다',
-    'conclusion': '결론',
-    'supports': '뒷받침하다',
-    'entered': '들어갔다',
     'proof': '증거, 증명',
     'missing': '없어진',
     'running': '움직이는, 돌아가는',
-    'beneath': '~아래에',
-    'engraved': '새겨진',
     'brass': '황동, 놋쇠',
     'waves': '물결들',
     'river': '강',

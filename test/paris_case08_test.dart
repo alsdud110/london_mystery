@@ -702,7 +702,7 @@ void main() {
         await wrongThenTryAgain('What colour is the gate?', 'm1_corner1');
         // The Hidden Sketch brought: two wrong picks say why first.
         await bring('s2_ep02_e3', wrong: [
-          ('s2_ep07_e3', 'That sketch brought you to Abbesses. Find the one he hid in his studio.'),
+          ('s2_ep07_e3', 'That sketch brought you here. Find the one he hid in his studio.'),
           ('s2_ep02_e1', 'That street has a red door. Look for steps and a gate.'),
         ]);
         await shot('m1_sketch_brought');

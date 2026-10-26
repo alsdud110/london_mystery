@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,8 +7,9 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../data/models/episode.dart';
-import '../../data/models/season.dart' show SeasonIds;
+import '../../data/models/season.dart' show Season, SeasonIds;
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../../widgets/game_dialog.dart';
@@ -142,6 +145,9 @@ class GameMasterScreen extends ConsumerWidget {
               if (playtestToolsEnabled) ...[
                 const SizedBox(height: 24),
                 const Divider(),
+                const CaseShortcuts(),
+                const SizedBox(height: 24),
+                const Divider(),
                 Text('플레이 테스트 도구', style: AppText.title(size: 20)),
                 Text('테스트 빌드에서만 보입니다. 원하는 사건을 처음부터 플레이할 수 있게 기기를 준비합니다.', style: AppText.caption()),
                 const SizedBox(height: 12),
@@ -232,6 +238,185 @@ class GameMasterScreen extends ConsumerWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The case shortcuts: a season, then any of its cases, opened at its case
+/// file without changing a save (see [jumpToCase]). Every season of the
+/// game is listed, released or not; a planned case not in the game yet is
+/// shown, shut, as COMING SOON. Operator builds only (as every test tool).
+class CaseShortcuts extends ConsumerStatefulWidget {
+  const CaseShortcuts({super.key});
+
+  @override
+  ConsumerState<CaseShortcuts> createState() => _CaseShortcutsState();
+}
+
+class _CaseShortcutsState extends ConsumerState<CaseShortcuts> {
+  /// The season picked; null: the one being played.
+  String? _seasonId;
+
+  void _open(String seasonId, Episode e) {
+    final refused = jumpToCase(ref, seasonId, e.id);
+    if (refused == null) {
+      context.go(Routes.caseFile(e.id));
+      return;
+    }
+    GameDialog.confirmPlain(
+      context,
+      title: 'CASE ${e.numberLabel}을 열 수 없습니다',
+      message: switch (refused) {
+        CaseJumpRefusal.noDetective => '이 기기에 탐정이 아직 없습니다. 탐정을 먼저 만든 뒤 다시 시도해 주세요.',
+        CaseJumpRefusal.noOperatorTools => '테스트 빌드에서만 사용할 수 있습니다.',
+        CaseJumpRefusal.notOpen => '이 사건은 아직 게임에 없습니다.',
+      },
+      confirmLabel: '확인',
+      cancelLabel: '닫기',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Never in a build without operator tools (a release build).
+    if (!ref.watch(operatorToolsAvailableProvider)) return const SizedBox.shrink();
+    final seasons = ref.watch(seasonsProvider);
+    final all = ref.watch(allEpisodesProvider);
+    final picked = seasons.firstWhere(
+      (s) => s.id == (_seasonId ?? ref.watch(selectedSeasonIdProvider)),
+      orElse: () => seasons.first,
+    );
+    final cases = SeasonAvailability.casesOf(picked.id, all);
+    final planned = math.max(cases.length, picked.plannedCases ?? 0);
+
+    return Column(
+      key: const ValueKey('case-shortcuts'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('사건 바로가기', style: AppText.title(size: 20)),
+        Text(
+          '시즌과 사건을 고르면 그 사건 파일로 바로 이동합니다. 진행 기록은 지우거나 바꾸지 않으며, '
+          '이전 사건을 풀지 않아도 열립니다. 이번 실행 동안만 OPERATOR MODE와 SEASON PREVIEW가 켜집니다.',
+          style: AppText.caption(),
+        ),
+        const SizedBox(height: 12),
+        Text('SELECT SEASON', style: AppText.eyebrow()),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            for (final (i, s) in seasons.indexed) ...[
+              if (i > 0) const SizedBox(width: 8),
+              Expanded(
+                child: _SeasonChoice(
+                  key: ValueKey('shortcut-season-${s.id}'),
+                  season: s,
+                  cases: SeasonAvailability.casesOf(s.id, all).length,
+                  selected: s.id == picked.id,
+                  onTap: () => setState(() => _seasonId = s.id),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 16),
+        Text('${picked.city.toUpperCase()} — CASE SELECT', style: AppText.eyebrow()),
+        const SizedBox(height: 8),
+        for (var n = 1; n <= planned; n++)
+          if (n <= cases.length)
+            _CaseRow(
+              key: ValueKey('shortcut-case-${cases[n - 1].id}'),
+              number: cases[n - 1].numberLabel,
+              title: cases[n - 1].title,
+              onTap: () => _open(picked.id, cases[n - 1]),
+            )
+          else
+            _CaseRow(
+              key: ValueKey('shortcut-planned-${picked.id}-$n'),
+              number: n.toString().padLeft(2, '0'),
+              title: picked.upcomingTitles[n] ?? '',
+              comingSoon: true,
+            ),
+      ],
+    );
+  }
+}
+
+class _SeasonChoice extends StatelessWidget {
+  const _SeasonChoice({super.key, required this.season, required this.cases, required this.selected, required this.onTap});
+
+  final Season season;
+  final int cases;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final ink = selected ? AppColors.paperLight : AppColors.navy;
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(64),
+          backgroundColor: selected ? AppColors.navy : null,
+          side: const BorderSide(color: AppColors.navy, width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        ),
+        onPressed: onTap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(season.city.toUpperCase(), style: AppText.button(size: 16, color: ink)),
+            const SizedBox(height: 2),
+            Text(
+              'Season ${season.number} · $cases Cases',
+              textAlign: TextAlign.center,
+              style: AppText.caption(color: ink.withValues(alpha: 0.8)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CaseRow extends StatelessWidget {
+  const _CaseRow({super.key, required this.number, required this.title, this.onTap, this.comingSoon = false});
+
+  final String number;
+  final String title;
+  final VoidCallback? onTap;
+  final bool comingSoon;
+
+  @override
+  Widget build(BuildContext context) {
+    final ink = comingSoon ? AppColors.muted : AppColors.navy;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          alignment: Alignment.centerLeft,
+          side: BorderSide(color: ink.withValues(alpha: comingSoon ? 0.4 : 1)),
+        ),
+        // A case not in the game yet: shown, never opened.
+        onPressed: comingSoon ? null : onTap,
+        child: Row(
+          children: [
+            Text('CASE $number', style: AppText.button(size: 14, color: ink)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                comingSoon ? (title.isEmpty ? 'Coming Soon' : '$title — Coming Soon') : title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.bodyText(size: 15, color: ink),
+              ),
+            ),
+            if (!comingSoon) const InkIcon(InkGlyph.arrow, size: AppIconSize.small, color: AppColors.navy),
+          ],
         ),
       ),
     );

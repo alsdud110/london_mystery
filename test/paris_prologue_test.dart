@@ -98,9 +98,12 @@ void main() {
       expect(find.text('THE MISSING HOUR'), findsOneWidget);
       expect(find.text('10:00'), findsNWidgets(2));
       expect(find.text('9:00'), findsOneWidget);
-      expect(find.text('One hour has gone missing.'), findsOneWidget);
+      // The case and its mystery: an hour gone, and who took it.
+      expect(find.text('One hour is missing in Paris.'), findsOneWidget);
+      expect(find.text('Who took it? And why?'), findsOneWidget);
       await next(t);
-      // 5 — the promise.
+      // 5 — the promise: the detective's goal for the season.
+      expect(find.text('Follow the clues. Find out who took the hour.'), findsOneWidget);
       expect(find.text('SEASON TWO'), findsOneWidget);
       expect(find.text('PARIS STANDS STILL'), findsOneWidget);
       expect(find.text('12 CASES'), findsOneWidget);

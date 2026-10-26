@@ -206,7 +206,7 @@ final Map<String, ShowStripScene> season2ShowStripScenes = {
     stripPixels: const ScenePixels(2172, 724),
     stripPaper: const Rect.fromLTRB(37, 275, 2137, 448),
     stripSlice: const Rect.fromLTRB(150, 300, 2024, 423),
-    task: 'Slide the show. The audience must be in first. The show must end at CURTAIN DOWN.',
+    task: 'Slide the show. Start after the doors open. End at CURTAIN DOWN.',
     checkLabel: 'CHECK',
   ),
 };

@@ -273,7 +273,7 @@ final Map<String, BlotterScene> season2Blotters = {
     glassOnDesk: 150,
     mark: makerMark,
     readTask: 'Drag the mirror over each note. You can tap a note too.',
-    chooseTask: "All three notes are read. Which one has the maker's own mark? Then choose the place it says.",
+    chooseTask: "Which note has the maker's own mark? Choose the place it names.",
     chooseLabel: 'THIS IS WHERE',
     hideaway: hideaway,
     receipt: const ['16 MAY — ONE LETTER COLLECTED FROM No. 7.', 'LETTER No. 4417'],
@@ -310,7 +310,7 @@ final Map<String, PostTrailScene> season2PostTrails = {
     stageView: _workshop.rect(1000, 100, 1536, 820),
     stageLabel: 'The workshop door, a line of light under it',
     pickTask: 'Tap a slip, then tap its place on the trail.',
-    placeTask: 'Now tap its place on the trail above: 1st, 2nd or 3rd.',
+    placeTask: 'Now tap its place above: 1st, 2nd or 3rd.',
     submitLabel: 'FOLLOW THE LETTER',
   ),
 };

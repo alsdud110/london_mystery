@@ -12,6 +12,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/abbesses_puzzles.dart';
+import '../../data/models/case_talk.dart';
 import '../../data/models/mission.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/scene_deduction.dart';
@@ -55,6 +56,7 @@ import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/archive_drawers.dart';
 import 'widgets/blotter_mirror.dart';
+import 'widgets/case_talk.dart';
 import 'widgets/clock_wall.dart';
 import 'widgets/clockwork_garden.dart';
 import 'widgets/clock_question.dart';
@@ -186,6 +188,22 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// kept while the page is open). Null after a restart.
   SubmitOutcome? _pocketSolve;
   bool _pocketOpen = false;
+
+  /// A mission with a talk after its puzzle (Cases 11–12): its reward, held
+  /// for the Discovery Moment until the talk is finished. Null after a
+  /// restart.
+  SubmitOutcome? _talkSolve;
+
+  /// The talks around this mission's puzzle, if it has any.
+  TalkMission? get _talks => ref.read(talkMissionOfProvider)(_mission);
+
+  /// The talk before the puzzle is still to be finished.
+  bool _talkBeforePending(Mission m, TalkMission? talks, GameProgress progress) =>
+      talks?.before != null && !progress.hasExamined(TalkMission.beforeKey(m.id));
+
+  /// The talk after the puzzle is still to be finished (the puzzle solved).
+  bool _talkAfterPending(Mission m, TalkMission? talks, GameProgress progress) =>
+      talks?.after != null && progress.isCompleted(m.id) && !progress.hasExamined(TalkMission.afterKey(m.id));
 
   @override
   void initState() {
@@ -329,7 +347,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // examined have no letter step: back from them is the place.
     final talking =
         _stage == MissionStage.puzzle &&
-        SeasonCatalog.dialogue(_mission) != null;
+        (SeasonCatalog.dialogue(_mission) != null ||
+            ref.read(caseTalkOfProvider)(_mission) != null ||
+            _talkBeforePending(_mission, _talks, ref.read(gameControllerProvider)));
     final reading =
         _stage == MissionStage.puzzle &&
         SeasonCatalog.deduction(_mission) != null;
@@ -1146,6 +1166,61 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
             ref.read(gameControllerProvider.notifier).recordRecheck(m),
       );
 
+  /// The talk before or after the mission's puzzle (see [TalkMission]):
+  /// saved as it goes under [stateKey]; going on from it is kept under the
+  /// same name with the things looked at, and [onDone] follows.
+  Widget _aroundTalkStage(Mission m, TalkScene talk, String stateKey, GameProgress progress, VoidCallback onDone) =>
+      CaseTalk(
+        key: ValueKey(stateKey),
+        scene: talk,
+        progress: TalkProgress.decode(progress.puzzleStateOf(stateKey), talk),
+        onProgress: (p) => ref.read(gameControllerProvider.notifier).recordPuzzleState(stateKey, p.encode()),
+        onFinish: () {
+          ref.read(gameControllerProvider.notifier).recordExamined(stateKey);
+          onDone();
+        },
+      );
+
+  /// The talk before the puzzle finished: the puzzle (already this step).
+  void _afterTalkBefore() {
+    if (mounted) setState(() {});
+  }
+
+  /// The talk after the puzzle finished: the mission's Discovery Moment,
+  /// then its story (as any solved mission's).
+  Future<void> _afterTalkAfter(Mission m) async {
+    final audio = ref.read(audioServiceProvider);
+    final solve = _talkSolve;
+    _talkSolve = null;
+    await showDiscoveryMoment(
+      context,
+      mission: m,
+      discovery: SeasonCatalog.discovery(m),
+      xp: XpBreakdown.of(m, ref.read(gameControllerProvider)),
+      coins: solve?.coins ?? 0,
+      firstSolve: solve?.firstSolve ?? false,
+      newBadges: solve?.newBadges ?? const [],
+      onEvidenceLaid: () => audio.play(GameSound.paperPlace),
+      showDetective: true,
+    );
+    if (mounted) context.go(Routes.story(m.id));
+  }
+
+  /// A talk with one person (Season 2, Cases 11–12): saved as it goes in
+  /// the mission's puzzle state under `missionId:talk`
+  /// ([caseTalkStateKey]), so it opens again where it was left; finished,
+  /// it answers the mission's puzzle with the talk's answer.
+  Widget _caseTalkStage(Mission m, TalkScene talk, GameProgress progress) {
+    final key = caseTalkStateKey(m.id);
+    return CaseTalk(
+      key: const ValueKey('puzzle'),
+      scene: talk,
+      progress: TalkProgress.decode(progress.puzzleStateOf(key), talk),
+      onProgress: (p) => ref.read(gameControllerProvider.notifier).recordPuzzleState(key, p.encode()),
+      onFinish: () => _submit(m, talk.answer),
+    );
+  }
+
   /// The bar's title on a searched or talked-to place: its name, and how far
   /// the detective has got under it — two short lines that keep their size
   /// (never cut, whatever the text size).
@@ -1253,6 +1328,12 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         // A real lock on the scene opens (a heavy one, a padlock); anything
         // else is a discovery.
         audio.play(solveSoundOf(m));
+        // A talk after the puzzle: the person reacts first (the moment comes
+        // after it).
+        if (_talks?.after != null) {
+          setState(() => _talkSolve = outcome);
+          return;
+        }
         // The keeper's ledger: its second page is read first (the moment
         // comes after it).
         if (SeasonCatalog.keeperHut(m) != null) {
@@ -1333,6 +1414,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // The mission's own scene, from its season's content.
     final scene = SeasonCatalog.investigation(m);
     final talk = SeasonCatalog.dialogue(m);
+    final caseTalk = ref.watch(caseTalkOfProvider)(m);
+    final talks = ref.watch(talkMissionOfProvider)(m);
+    final talkBefore = _talkBeforePending(m, talks, progress);
+    final talkAfter = _talkAfterPending(m, talks, progress);
     final clock = SeasonCatalog.clock(m);
     final explore = SeasonCatalog.explore(m);
     final inspect = SeasonCatalog.inspection(m);
@@ -1369,8 +1454,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final shadow = SeasonCatalog.shadowCheck(m);
 
     final Widget body = solved
+        // The talk after the puzzle, until the detective goes on from it.
+        ? talkAfter
+            ? _aroundTalkStage(m, talks!.after!, TalkMission.afterKey(m.id), progress, () => _afterTalkAfter(m))
         // The ledger's second page, until it is read.
-        ? hut != null && !progress.hasExamined(GameProgress.examinedKey(m.id, KeeperHutScene.page2Id))
+        : hut != null && !progress.hasExamined(GameProgress.examinedKey(m.id, KeeperHutScene.page2Id))
             ? _ledgerAfterStage(m, hut)
             // Clock III opened, until what is in it is read.
             : blotter != null && !progress.hasExamined(GameProgress.examinedKey(m.id, BlotterScene.openedId))
@@ -1409,6 +1497,8 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                 // the place's own scene: the thing is found after.)
                 onInvestigate: () => _goTo(
                   talk != null ||
+                          caseTalk != null ||
+                          talkBefore ||
                           hall != null ||
                           studio != null ||
                           records != null ||
@@ -1526,6 +1616,15 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               inspect,
               progress.hintsFor(m.id),
             ),
+            // The talk before the puzzle comes first, whatever the puzzle.
+            MissionStage.puzzle when talkBefore => _aroundTalkStage(
+              m,
+              talks!.before!,
+              TalkMission.beforeKey(m.id),
+              progress,
+              _afterTalkBefore,
+            ),
+            MissionStage.puzzle when caseTalk != null => _caseTalkStage(m, caseTalk, progress),
             MissionStage.puzzle when talk != null => _talkStage(
               m,
               talk,
@@ -1551,9 +1650,12 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     // A searched place, past its place page: in the dark, the room's picture
     // leading; the search names the place and counts what is found up top.
     final dark =
-        (scene != null || talk != null) &&
-        !solved &&
-        _stage != MissionStage.story;
+        ((scene != null || talk != null || caseTalk != null) &&
+            !solved &&
+            _stage != MissionStage.story) ||
+        // A talk around the puzzle, on its own dark page too.
+        (talkBefore && !solved && _stage == MissionStage.puzzle) ||
+        talkAfter;
     final searching = dark && scene != null && _stage == MissionStage.puzzle;
     final talking = dark && talk != null && _stage == MissionStage.puzzle;
     final content = AnimatedSwitcher(
@@ -1569,6 +1671,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final recalling =
         recall != null &&
         !solved &&
+        !talkBefore &&
         (_stage == MissionStage.puzzle ||
             (_stage == MissionStage.letter && _letterOpened));
     // The page keeps one shape for the whole mission (the card only comes

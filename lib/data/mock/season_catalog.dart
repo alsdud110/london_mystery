@@ -1,4 +1,5 @@
 import '../models/abbesses_puzzles.dart';
+import '../models/case_talk.dart';
 import '../models/clock_puzzle.dart';
 import '../models/dialogue.dart';
 import '../models/discovery.dart';
@@ -66,6 +67,8 @@ class SeasonContent {
     this.deductions = const {},
     this.decodes = const {},
     this.dialogues = const {},
+    this.talks = const {},
+    this.talkMissions = const {},
     this.clocks = const {},
     this.stationClocks = const {},
     this.compares = const {},
@@ -150,6 +153,15 @@ class SeasonContent {
   final Map<String, DeductionScene> deductions;
   final Map<String, DecodeScene> decodes;
   final Map<String, DialogueScene> dialogues;
+
+  /// Missions played by talking with one person (Season 2, Cases 11–12):
+  /// questions asked, evidence shown, the talk's answer the mission's (see
+  /// [TalkScene], the `CaseTalk` page).
+  final Map<String, TalkScene> talks;
+
+  /// Missions played with their own puzzle and a talk before and/or after
+  /// it (see [TalkMission]).
+  final Map<String, TalkMission> talkMissions;
   final Map<String, ClockPuzzle> clocks;
 
   /// Missions played by comparing a place's clocks (Season 2, Case 01 M1).
@@ -453,6 +465,10 @@ abstract final class SeasonCatalog {
   static DecodeScene? decode(Mission m) => ofMission(m.id)?.decodes[m.id];
 
   static DialogueScene? dialogue(Mission m) => ofMission(m.id)?.dialogues[m.id];
+
+  static TalkScene? caseTalk(Mission m) => ofMission(m.id)?.talks[m.id];
+
+  static TalkMission? talkMission(Mission m) => ofMission(m.id)?.talkMissions[m.id];
 
   static ClockPuzzle? clock(Mission m) => ofMission(m.id)?.clocks[m.id];
 

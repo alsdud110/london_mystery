@@ -37,8 +37,8 @@ const Map<String, dynamic> season2Episode04Json = {
   'place': 'SEINE QUAYS · PARIS',
   'synopsis': [
     'The brass plaque had three small waves and one word: SEINE.',
-    'On its back, three short lines lead you to the river.',
-    'Somewhere on the quays, a mark is waiting.',
+    'Three lines on its back lead you to the river.',
+    'The crate from the tower went there too. Where is it now?',
   ],
   'objectives': [
     'Find the right mark on the quay wall.',
@@ -50,12 +50,10 @@ const Map<String, dynamic> season2Episode04Json = {
     'Three small waves. One word: SEINE.',
     'You hold the brass plaque up to a street lamp.',
     'On its back, someone has scratched three short lines.',
-    'The river is only a short walk away.',
-    'Old stone walls. Green bookstalls. Dark, quiet water.',
+    'Down by the river: old stone walls and dark, quiet water.',
     'Somewhere on these quays, a mark is waiting for you.',
   ],
-  'caseSummary':
-      "You followed three waves to the River Keeper, read the keeper's ledger, put a torn label back together and crossed out three wrong addresses. One address was left.",
+  'caseSummary': 'Three waves, a ledger and a torn label led you to one address.',
   'keyWords': ['waves', 'arrow', 'towards', 'moved', 'collected', 'delivery'],
   'hook': 'Do not trust the clocks. Whose hands made them?',
   'missions': [
@@ -66,9 +64,8 @@ const Map<String, dynamic> season2Episode04Json = {
       'location': 'THE QUAY WALL',
       'scene': 'quayWall',
       'story': [
-        'Down by the river, the old stone wall is cold and wet.',
-        'Four marks are carved into it, side by side.',
-        'Each mark has waves, an arrow and a word.',
+        'Four marks are carved into the old quay wall.',
+        'Each one has waves, an arrow and a word.',
       ],
       'letterIntro': 'The back of the brass plaque says:',
       'letter':
@@ -84,31 +81,31 @@ const Map<String, dynamic> season2Episode04Json = {
           'label': 'Mark A',
           // Each wrong mark breaks one line: the feedback names that line
           // (as numbered on the puzzle page), never the right mark.
-          'feedback': 'Look at line 2 again: the arrow. Where does the arrow on Mark A point? Is the river up there?',
+          'feedback': 'Look at line 2 again. Where does the arrow on Mark A point?',
         },
         {
           'id': 'b',
           'label': 'Mark B',
-          'feedback': 'Look at line 3 again: the word. Mark B has three waves and points down to the river. But read its word. Do booksellers watch the water?',
+          'feedback': 'Look at line 3 again. Read the word. Do booksellers watch the water?',
         },
         {
           'id': 'c',
           'label': 'Mark C',
-          'feedback': 'Look at line 1 again: the waves. Count the waves on Mark C. How many does the plaque say?',
+          'feedback': 'Look at line 1 again. Count the waves on Mark C.',
         },
         {'id': 'd', 'label': 'Mark D'},
       ],
       'answer': 'd',
       'hints': [
-        'The back of the plaque gives you three things to check. Read it one line at a time.',
-        'Check every mark three ways. How many waves? Does the arrow point towards the river? Does it name someone who watches the water?',
+        'The plaque gives you three things to check. Read one line at a time.',
+        'For each mark: How many waves? Where does the arrow point? Who does it name?',
       ],
       'clue': {
         'id': 's2_ep04_c1',
         'title': "The Keeper's Steps",
         'value': 'QUAY 3',
         'symbol': 'map',
-        'note': "Beside the mark, the keeper's steps go down to the water. A small sign says QUAY 3.",
+        'note': "Beside the mark, the keeper's steps go down to the water. QUAY 3.",
       },
       'evidence': {
         'id': 's2_ep04_e1',
@@ -116,11 +113,10 @@ const Map<String, dynamic> season2Episode04Json = {
         'icon': 'map',
         'description': 'Carved into the quay wall, beside stone steps to the water.',
         'inscription':
-            "Three waves and an arrow pointing down towards the river: RIVER KEEPER. Beside it, the keeper's steps go down to the water. QUAY 3.",
+            "Three waves and an arrow down to the river: RIVER KEEPER. Beside it, the keeper's steps go down to the water. QUAY 3.",
       },
       'successMessage': "You found the River Keeper's mark!",
       'transition': [
-        'Three waves. An arrow pointing down to the river. RIVER KEEPER.',
         "Beside the mark, the keeper's steps go down to the water.",
         'A small sign on the wall says QUAY 3.',
         'At the bottom of the steps stands a little wooden hut.',
@@ -137,8 +133,7 @@ const Map<String, dynamic> season2Episode04Json = {
       'location': "THE KEEPER'S HUT",
       'scene': 'keeperHut',
       'story': [
-        'The little hut stands right by the water.',
-        'Its door is open, and a lamp is burning inside.',
+        "The keeper's hut is open. A lamp is burning inside.",
         'The river keeper writes down every box that comes and goes.',
       ],
       'letterIntro': 'Your notebook says:',
@@ -151,39 +146,39 @@ const Map<String, dynamic> season2Episode04Json = {
           'Where is the crate now?',
       // The box circled in the ledger.
       'type': 'multipleChoice',
-      'question': "Which box did the tower's crate end up in?",
+      'question': "Which box is the tower's crate in now?",
       'options': [
         {
           'id': 'box4',
           'label': 'Box 4',
-          'feedback': 'Box 4 holds old books from the bookstalls. You are looking for something from the Eiffel Tower.',
+          'feedback': 'Box 4 holds old books. They are not from the Eiffel Tower.',
         },
         {
           'id': 'box9',
           'label': 'Box 9',
-          'feedback': 'Box 9 came from the Eiffel Tower, but it is on Quay 1. Your River Mark says QUAY 3.',
+          'feedback': 'Box 9 is on Quay 1. Your River Mark says QUAY 3.',
         },
         {
           'id': 'box12',
           'label': 'Box 12',
-          'feedback': 'Box 12 is lamp oil from Pont Neuf. You are looking for something from the Eiffel Tower.',
+          'feedback': 'Box 12 is lamp oil from Pont Neuf, not from the Eiffel Tower.',
         },
         {
           'id': 'box17',
           'label': 'Box 17',
-          'feedback': 'Yes, the heavy crate went into Box 17. But read the last line of the page. Did it stay there?',
+          'feedback': 'The heavy crate went into Box 17. Read the last line. Did it stay there?',
         },
         {
           'id': 'box6',
           'label': 'Box 6',
-          'feedback': 'Box 6 came from the Eiffel Tower, but it is on Quay 2. Your River Mark says QUAY 3.',
+          'feedback': 'Box 6 is on Quay 2. Your River Mark says QUAY 3.',
         },
         {'id': 'box23', 'label': 'Box 23'},
       ],
       'answer': 'box23',
       'hints': [
-        'Look for the things that came from the Eiffel Tower. Which one is on Quay 3?',
-        'Find that box number again lower down the page. What happened to it on 14 May?',
+        'Find the things from the Eiffel Tower. Which one is on Quay 3?',
+        'Find that box again lower down the page. What happened on 14 May?',
       ],
       'clue': {
         'id': 's2_ep04_c2',
@@ -201,13 +196,13 @@ const Map<String, dynamic> season2Episode04Json = {
             '13 MAY: a heavy crate from the Eiffel Tower, Quay 3, Box 17. '
             '14 MAY: Box 17 moved to Box 23. '
             "15 MAY: Box 23 collected for No. 7. Delivery: through the keeper's steps. "
-            'These lines are signed with two clock hands.',
+            'Each line is signed with two clock hands.',
       },
       'successMessage': 'You found the box!',
       'transition': [
         'Box 17 was moved to Box 23.',
         'Then Box 23 was collected for No. 7.',
-        'Those lines are signed with the same mark: two clock hands.',
+        'Each line is signed with the same mark: two clock hands.',
         'Outside, green boxes stand in a row along the quay.',
       ],
       'nextMissionId': 's2_ep04_m3',
@@ -223,13 +218,11 @@ const Map<String, dynamic> season2Episode04Json = {
       'scene': 'quayBoxes',
       'story': [
         'Four green boxes stand on the river wall.',
-        'Each one has a number on its lid.',
         'One of them holds what came from the tower.',
       ],
       'letterIntro': 'Your notebook says:',
       'letter':
-          'BOX 23.\n\n'
-          'Open the right box.\n'
+          'Open BOX 23.\n'
           'Put the torn label back together.\n'
           'Read where it was sent.',
       // Each piece set in its slot (`piece:slot`); the scrap from another
@@ -244,26 +237,26 @@ const Map<String, dynamic> season2Episode04Json = {
       ],
       'answer': 'p1:top,p2:middle,p3:bottom',
       'feedback': {
-        'decoy:top': 'That scrap is a different paper: thinner, blue-grey, with blue ink. It is not from this label.',
-        'decoy:middle': 'That scrap is a different paper: thinner, blue-grey, with blue ink. It is not from this label.',
-        'decoy:bottom': 'That scrap is a different paper: thinner, blue-grey, with blue ink. It is not from this label.',
-        'p1:middle': 'The piece with the brass eyelet is where a label is tied. It goes at the top.',
-        'p1:bottom': 'The piece with the brass eyelet is where a label is tied. It goes at the top.',
-        'p2:top': 'A label says where it is FROM first. What it holds comes next.',
-        'p2:bottom': 'What the parcel holds comes before where it is going. Read the torn edges: do they meet?',
-        'p3:top': 'Where a parcel goes comes last on a label. Look for the line with TO.',
-        'p3:middle': 'Where a parcel goes comes last on a label. Look for the line with TO.',
+        'decoy:top': 'That scrap is a different paper: thin and blue-grey, with blue ink.',
+        'decoy:middle': 'That scrap is a different paper: thin and blue-grey, with blue ink.',
+        'decoy:bottom': 'That scrap is a different paper: thin and blue-grey, with blue ink.',
+        'p1:middle': 'A label is tied by its brass eyelet. That piece goes at the top.',
+        'p1:bottom': 'A label is tied by its brass eyelet. That piece goes at the top.',
+        'p2:top': 'A label says FROM first. CONTENTS comes next.',
+        'p2:bottom': 'CONTENTS comes before TO. Do the torn edges meet?',
+        'p3:top': 'Where a parcel goes comes last. Find the line with TO.',
+        'p3:middle': 'Where a parcel goes comes last. Find the line with TO.',
       },
       'hints': [
-        'One scrap is a different paper: thinner, blue-grey, with blue ink. Leave it out.',
-        'A label is read from the top: FROM, then CONTENTS, then TO. The piece with the brass eyelet goes at the top.',
+        'One scrap is a different paper: thin and blue-grey. Leave it out.',
+        'Top to bottom: FROM, CONTENTS, TO. The eyelet piece goes at the top.',
       ],
       'clue': {
         'id': 's2_ep04_c3',
         'title': 'Passage D…',
         'value': 'PASSAGE D…',
         'symbol': 'letter',
-        'note': 'The label was sent TO: THE WATCHMAKERS. The number is washed away. The address stops at PASSAGE D…',
+        'note': 'TO: THE WATCHMAKERS. The number is washed away. Then PASSAGE D…',
       },
       'evidence': {
         'id': 's2_ep04_e3',
@@ -279,8 +272,7 @@ const Map<String, dynamic> season2Episode04Json = {
         'FROM: EIFFEL TOWER — SERVICE LEVEL.',
         'CONTENTS: CLOCK PARTS.',
         'TO: THE WATCHMAKERS. PASSAGE D…',
-        'The rest of the label is torn off.',
-        "In the keeper's hut, an old street book sits on a shelf.",
+        "Back in the keeper's hut, an old street book sits on a shelf.",
       ],
       'nextMissionId': 's2_ep04_final',
       'skills': ['reading', 'problemSolving'],
@@ -295,15 +287,14 @@ const Map<String, dynamic> season2Episode04Json = {
     'location': "THE KEEPER'S HUT",
     'scene': 'keeperHutInside',
     'story': [
-      'You take the old street book down from the shelf.',
-      'Four of its streets are full of watchmakers.',
-      'Only one of them can be the address on the label.',
+      "Four streets in the keeper's street book have watchmakers.",
+      'Only one can be the address on the label.',
     ],
     'letterIntro': 'Your notebook says:',
     'letter':
         'Cross out every address that cannot be right.\n'
         'Use your evidence to show why.\n\n'
-        'The one that is left is the address.',
+        'The one left is the address.',
     // Each wrong address crossed out with what rules it out (`address:e1+e2`,
     // in the evidence's order, up to two pieces). The address left is not
     // part of the answer: it is what is left.
@@ -317,31 +308,31 @@ const Map<String, dynamic> season2Episode04Json = {
     ],
     'answer': 'quai:e3,pont:e1+e2,horloge:e2',
     'feedback': {
-      'quai:e1': 'The River Mark is about the steps. Look at how the address on the label starts.',
-      'quai:e2': 'This street has a No. 7 too. Look at how the address on the label starts.',
+      'quai:e1': 'Look at the label. How does its address start?',
+      'quai:e2': 'This street has a No. 7 too. How does the label start?',
       'quai:e1+e2': 'Look at the torn label. Does its address start with QUAI?',
-      'quai:e1+e3': 'The label is all you need here. One piece of evidence is enough.',
-      'quai:e2+e3': 'The label is all you need here. One piece of evidence is enough.',
-      'pont:e1': "Yes, the keeper's steps are on Quay 3. But how was the crate delivered? Add the evidence that tells you.",
-      'pont:e2': "Yes, the delivery went through the keeper's steps. But where are those steps? Add the evidence that tells you.",
-      'pont:e3': 'PASSAGE DU PONT starts with PASSAGE D. The label fits it. Think about its gate on Quay 1.',
-      'pont:e1+e3': 'The label fits PASSAGE DU PONT. Think about its gate: how was the crate delivered, and where are the steps?',
-      'pont:e2+e3': 'The label fits PASSAGE DU PONT. Think about its gate: how was the crate delivered, and where are the steps?',
-      'horloge:e1': "This gate is at the keeper's steps on Quay 3, just as the River Mark says. Look at the house numbers.",
-      'horloge:e3': "PASSAGE DE L'HORLOGE starts with PASSAGE D. The label fits it. Look at the house numbers.",
-      'horloge:e1+e2': 'The ledger is all you need here. Which house number was the box for?',
-      'horloge:e2+e3': 'The ledger is all you need here. Which house number was the box for?',
-      'horloge:e1+e3': 'Look at the house numbers. Which evidence gives you a house number?',
-      'horlogers:e1': 'Check every line again: how the name starts, the house numbers, and where the gate is. Does your evidence rule this address out?',
-      'horlogers:e2': 'Check every line again: how the name starts, the house numbers, and where the gate is. Does your evidence rule this address out?',
-      'horlogers:e3': 'Check every line again: how the name starts, the house numbers, and where the gate is. Does your evidence rule this address out?',
-      'horlogers:e1+e2': 'Check every line again: how the name starts, the house numbers, and where the gate is. Does your evidence rule this address out?',
-      'horlogers:e1+e3': 'Check every line again: how the name starts, the house numbers, and where the gate is. Does your evidence rule this address out?',
-      'horlogers:e2+e3': 'Check every line again: how the name starts, the house numbers, and where the gate is. Does your evidence rule this address out?',
+      'quai:e1+e3': 'The label alone is enough here.',
+      'quai:e2+e3': 'The label alone is enough here.',
+      'pont:e1': "The keeper's steps are on Quay 3. Add one more: how was the crate delivered?",
+      'pont:e2': "The delivery went through the keeper's steps. Add one more: where are those steps?",
+      'pont:e3': 'The label fits this name. Look at its gate: Quay 1.',
+      'pont:e1+e3': 'The label fits this name. Look at its gate: which steps, on which quay?',
+      'pont:e2+e3': 'The label fits this name. Look at its gate: which steps, on which quay?',
+      'horloge:e1': 'This gate is on Quay 3, like the River Mark. Look at the house numbers.',
+      'horloge:e3': 'The label fits this name. Look at the house numbers.',
+      'horloge:e1+e2': 'The ledger alone is enough. Which house was the box for?',
+      'horloge:e2+e3': 'The ledger alone is enough. Which house was the box for?',
+      'horloge:e1+e3': 'Look at the house numbers. Which evidence has a house number?',
+      'horlogers:e1': 'Check its name, its house numbers and its gate. Does your evidence rule it out?',
+      'horlogers:e2': 'Check its name, its house numbers and its gate. Does your evidence rule it out?',
+      'horlogers:e3': 'Check its name, its house numbers and its gate. Does your evidence rule it out?',
+      'horlogers:e1+e2': 'Check its name, its house numbers and its gate. Does your evidence rule it out?',
+      'horlogers:e1+e3': 'Check its name, its house numbers and its gate. Does your evidence rule it out?',
+      'horlogers:e2+e3': 'Check its name, its house numbers and its gate. Does your evidence rule it out?',
     },
     'hints': [
-      'Read each address line by line: its name, its house numbers, and where its gate is.',
-      'Each wrong address breaks one thing you found: how the label starts, the house number in the ledger, or the steps the delivery went through.',
+      'Read each address: its name, its house numbers and its gate.',
+      "Each wrong address breaks one clue: the label's start, the ledger's house number, or the keeper's steps.",
     ],
     'evidence': {
       'id': 's2_ep04_e4',
@@ -356,7 +347,6 @@ const Map<String, dynamic> season2Episode04Json = {
     // After the case is closed: the post-case scene, then the case report.
     'transition': [
       'PASSAGE DES HORLOGERS.',
-      'The passage of the watchmakers.',
       'Behind the iron gate, the workshops are dark and quiet.',
       'Do not trust the clocks.',
       'Follow the hands that made them.',

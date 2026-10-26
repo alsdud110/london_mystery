@@ -205,11 +205,10 @@ void main() {
 
     test('the opening picks up the label\'s last words, in the second person; Case 04 is as it was', () {
       expect(case05.intro, [
-        'The last piece of the label said two things.',
         'Do not trust the clocks. Follow the hands that made them.',
-        'The iron gate is not locked. Behind it, a door says No. 7.',
-        'Inside, dozens of clocks hang on the walls.',
-        'Their hands are moving, but the room is strangely silent.',
+        'The gate is not locked. Behind it, a door says No. 7.',
+        'Inside, clocks cover the walls.',
+        'Their hands move, but the room is silent.',
         'Someone worked here. Not long ago.',
       ]);
       for (final line in [...case05.intro, ...case05.synopsis, ...case05.objectives, for (final m in case05.allMissions) ...m.story]) {

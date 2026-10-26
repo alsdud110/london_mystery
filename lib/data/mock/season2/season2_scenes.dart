@@ -140,10 +140,10 @@ final Map<String, StationClocksScene> season2StationClocks = {
     noticeTitle: 'STATION NOTICE',
     notice: [
       'All our clocks show Paris time.',
-      'IF ONE CLOCK IS ONE HOUR BEHIND, REPORT IT TO THE LOST PROPERTY DESK.',
+      'If one clock is ONE HOUR BEHIND, report it to the LOST PROPERTY DESK.',
     ],
     noticeKeys: ['ONE HOUR BEHIND', 'LOST PROPERTY DESK'],
-    boardFirstLine: 'The Lost Property desk. What should you report? Read the departure board first.',
+    boardFirstLine: 'What should you report? Read the departure board first.',
     clocksFirstLine: 'Look at all three clocks first. Which one is different?',
     reportHow: 'Compare the three clocks. Tap the one to report.',
   ),
@@ -160,8 +160,8 @@ final Map<String, Exhibit> season2Exhibits = {
     pixels: ScenePixels(1774, 887),
     title: 'THE LOST TICKET',
     description:
-        'An old train ticket, torn at the edges. PARIS is printed on its red stub. '
-        'In the middle, a white church on a hill. On the right: MONTMARTRE, PARIS, number 72831.',
+        'An old train ticket. PARIS on the red stub. A white church in the middle. '
+        'On the right: MONTMARTRE, PARIS, number 72831.',
     caption: 'Someone dropped it under the old clock this morning.',
   ),
 };
@@ -357,11 +357,11 @@ final Map<String, CompareScene> season2Compares = {
       PictureSpot('lamp', _street.rect(395, 135, 550, 330), label: 'The lamp beside the steps'),
     ],
     task: 'Find the three changes.',
-    missLine: 'The same on both. Read the note again: where should you look?',
+    missLine: 'The same on both. Read the note again.',
     foundLines: {
-      'clock': 'Above the red door: a small clock in the painting. The street has none!',
-      'window': 'The street has a window here. In the painting, it is missing!',
-      'lamp': 'The lamp beside the steps: bright in the painting, dim on the street.',
+      'clock': 'Above the red door: a small clock. The street has none.',
+      'window': 'The street has a window here. In the painting, it is missing.',
+      'lamp': 'The lamp beside the steps is bright in the painting. On the street, it is not.',
     },
     checklist: {
       'clock': 'Look above the red door.',
@@ -452,12 +452,12 @@ final Map<String, StudioScene> season2Studios = {
     task: 'Find the three paintings he put away.',
     deskTask: 'Now read the notes on his desk.',
     matchTask: 'Match each note to its painting.',
-    missLine: 'Nothing here. Look in the places where things are put away.',
-    deskFirstLine: 'Three notes. Find the paintings first: where did he put them away?',
+    missLine: 'Nothing here. Where would he put things away?',
+    deskFirstLine: 'Three notes. Find the paintings first. Where did he put them away?',
     matchHow: 'Tap a note.',
     matchPainting: 'Now tap the painting for note {note}.',
     matchDone: 'Every note has a painting. Tap CHECK.',
-    matchDrag: 'Tap a note again to let it go. You can also drag a note onto a painting.',
+    matchDrag: 'Tap a note again to let it go. Or drag a note onto a painting.',
     // The desk, the trunk, the crate and the window above them.
     opening: _studio.rect(0, 640, 1024, 1440),
   ),

@@ -258,8 +258,8 @@ const season2TowerTest = TowerTestScene(
     4: 'The tower still says four. Move it one hour back.',
     0: 'Just one hour back: from 4 to 3.',
   },
-  testedLines: ['The tower says three.', 'T1, T2 and T3 went to three with it. The garden clock still says four.'],
-  afterLines: ['The model shows what could happen. But what really happened?', 'We know what the model can do.', 'The records may tell us.'],
+  testedLines: ['The tower says three.', 'T1, T2 and T3 went with it. The garden clock still says four.'],
+  afterLines: ['The model shows what could happen. But what really happened?', 'The records may tell us.'],
   lead: StarLead(
     title: 'THE DRUM UNDER T1',
     tag: 'TRIAL RECORDS · KEPT AT THE STAR',
@@ -272,7 +272,7 @@ const season2TowerTest = TowerTestScene(
     mapFile: _map,
     mapPixels: _wide,
     spot: MapSpot(id: 'arcDeTriomphe', name: 'Arc de Triomphe', at: Offset(0.128, 0.246)),
-    doneLines: ['T1 stands at the Arc de Triomphe.', 'Twelve roads meet there, like a star.', 'The real records may be kept there. We must read them.'],
+    doneLines: ['T1 stands at the Arc de Triomphe.', 'Twelve roads meet there, like a star.', 'The real records may be kept there.'],
   ),
   leadLabel: 'FOLLOW THE STAR',
 );
