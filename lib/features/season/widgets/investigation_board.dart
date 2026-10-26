@@ -594,6 +594,19 @@ class _FigureNote extends StatelessWidget {
           ],
         ),
       'clockmakerWatch' => picture(ArtAssets.objects['pocketWatch']!, InkGlyph.clock),
+      // Paris: the Clockmaker's face, once Case 12 has shown it.
+      'emile' => ClipOval(
+          child: Image.asset(
+            'assets/seasons/season_02_paris/characters/emile_base.png',
+            width: art,
+            height: art,
+            fit: BoxFit.cover,
+            alignment: const Alignment(0, -0.62),
+            cacheWidth: (art * MediaQuery.devicePixelRatioOf(context) * 1.6).ceil(),
+            excludeFromSemantics: true,
+            errorBuilder: (context, error, stack) => InkIcon(InkGlyph.gear, size: art * 0.7, color: AppColors.ink),
+          ),
+        ),
       _ => Text('?', style: AppText.title(size: art * 0.75, color: AppColors.burgundy)),
     };
 

@@ -3,6 +3,7 @@ import '../models/case_talk.dart';
 import '../models/clock_puzzle.dart';
 import '../models/dialogue.dart';
 import '../models/discovery.dart';
+import '../models/easy_steps.dart';
 import '../models/episode.dart';
 import '../models/garden_puzzles.dart';
 import '../models/star_puzzles.dart';
@@ -43,6 +44,8 @@ import 'season2/season2_case07_scenes.dart';
 import 'season2/season2_case08_scenes.dart';
 import 'season2/season2_case09_scenes.dart';
 import 'season2/season2_case10_scenes.dart';
+import 'season2/season2_case11_scenes.dart';
+import 'season2/season2_case12_scenes.dart';
 import 'season2/season2_learning.dart';
 import 'season2/season2_mock.dart';
 import 'season2/season2_scenes.dart';
@@ -69,6 +72,8 @@ class SeasonContent {
     this.dialogues = const {},
     this.talks = const {},
     this.talkMissions = const {},
+    this.easySteps = const {},
+    this.endings = const {},
     this.clocks = const {},
     this.stationClocks = const {},
     this.compares = const {},
@@ -162,6 +167,14 @@ class SeasonContent {
   /// Missions played with their own puzzle and a talk before and/or after
   /// it (see [TalkMission]).
   final Map<String, TalkMission> talkMissions;
+
+  /// Missions (and finals) played one small step at a time (Season 2,
+  /// Cases 11–12: see [EasyStepsScene]).
+  final Map<String, EasyStepsScene> easySteps;
+
+  /// Finals with an ending played after their answer, one line at a time
+  /// (Case 12): the case closes once it is seen.
+  final Map<String, List<EndingLine>> endings;
   final Map<String, ClockPuzzle> clocks;
 
   /// Missions played by comparing a place's clocks (Season 2, Case 01 M1).
@@ -347,7 +360,16 @@ final season2Content = SeasonContent(
   cityClocks: season2CityClocksScenes,
   shadowChecks: season2ShadowChecks,
   hourRecords: season2HourRecords,
-  introPictures: {...season2IntroPictures, ...season2Case10IntroPictures},
+  talks: season2Case11Talks,
+  talkMissions: {...season2Case11TalkMissions, ...season2Case12TalkMissions},
+  easySteps: {...season2Case11Steps, ...season2Case12Steps},
+  endings: season2Case12Endings,
+  introPictures: {
+    ...season2IntroPictures,
+    ...season2Case10IntroPictures,
+    ...season2Case11IntroPictures,
+    ...season2Case12IntroPictures,
+  },
   introPlaques: season2IntroPlaques,
   introPapers: season2IntroPapers,
   evidenceArt: {
@@ -359,6 +381,8 @@ final season2Content = SeasonContent(
     ...season2Case08EvidenceArt,
     ...season2Case09EvidenceArt,
     ...season2Case10EvidenceArt,
+    ...season2Case11EvidenceArt,
+    ...season2Case12EvidenceArt,
   },
   exhibits: season2Exhibits,
   lockBoxes: season2LockBoxes,
@@ -372,6 +396,8 @@ final season2Content = SeasonContent(
     ...season2Case08EvidenceLinks,
     ...season2Case09EvidenceLinks,
     ...season2Case10EvidenceLinks,
+    ...season2Case11EvidenceLinks,
+    ...season2Case12EvidenceLinks,
   },
   storyScenes: {
     ...season2StoryScenes,
@@ -384,6 +410,8 @@ final season2Content = SeasonContent(
     ...season2Case08StoryScenes,
     ...season2Case09StoryScenes,
     ...season2Case10StoryScenes,
+    ...season2Case11StoryScenes,
+    ...season2Case12StoryScenes,
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
@@ -469,6 +497,11 @@ abstract final class SeasonCatalog {
   static TalkScene? caseTalk(Mission m) => ofMission(m.id)?.talks[m.id];
 
   static TalkMission? talkMission(Mission m) => ofMission(m.id)?.talkMissions[m.id];
+
+  static EasyStepsScene? easySteps(Mission m) => ofMission(m.id)?.easySteps[m.id];
+
+  /// The ending played after final [m]'s answer, if it has one.
+  static List<EndingLine>? caseEnding(Mission m) => m.isFinal ? ofMission(m.id)?.endings[m.id] : null;
 
   static ClockPuzzle? clock(Mission m) => ofMission(m.id)?.clocks[m.id];
 
@@ -561,9 +594,10 @@ abstract final class SeasonCatalog {
 
   /// Whether final [m]'s case closes only after a step after its answer
   /// (Paris Case 08: P.'s last drawing, matched to the map; Case 09: the
-  /// star followed to the map; Case 10: the record list read), not with
-  /// the answer itself.
-  static bool closesAfterLastStep(Mission m) => m.isFinal && (tornHour(m) != null || towerTest(m) != null || hourRecord(m) != null);
+  /// star followed to the map; Case 10: the record list read; Case 12:
+  /// its ending seen), not with the answer itself.
+  static bool closesAfterLastStep(Mission m) =>
+      m.isFinal && (tornHour(m) != null || towerTest(m) != null || hourRecord(m) != null || caseEnding(m) != null);
 
   /// The picture under case [episodeId]'s opening lines that turns into
   /// another, if any.

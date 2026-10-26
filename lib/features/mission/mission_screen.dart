@@ -13,6 +13,7 @@ import '../../core/utils/answer_checker.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/abbesses_puzzles.dart';
 import '../../data/models/case_talk.dart';
+import '../../data/models/easy_steps.dart';
 import '../../data/models/mission.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/scene_deduction.dart';
@@ -62,6 +63,7 @@ import 'widgets/clockwork_garden.dart';
 import 'widgets/clock_question.dart';
 import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
+import 'widgets/easy_steps.dart';
 import 'widgets/evidence_recall.dart';
 import 'widgets/exhibit.dart';
 import 'widgets/fly_rail.dart';
@@ -1206,6 +1208,18 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     if (mounted) context.go(Routes.story(m.id));
   }
 
+  /// A puzzle played one small step at a time (Season 2, Cases 11–12): the
+  /// steps done are saved as they are done; the last one answers the
+  /// mission. Nothing wrong is ever sent: its own help says why.
+  Widget _easyStage(Mission m, EasyStepsScene scene, GameProgress progress) => EasyStepsPuzzle(
+        key: const ValueKey('puzzle'),
+        scene: scene,
+        eyebrow: 'MISSION ${m.numberLabel}',
+        done: EasyStepsState.decode(progress.puzzleStateOf(m.id), scene),
+        onDone: (n) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, EasyStepsState.encode(n)),
+        onFinish: (a) => _submit(m, a),
+      );
+
   /// A talk with one person (Season 2, Cases 11–12): saved as it goes in
   /// the mission's puzzle state under `missionId:talk`
   /// ([caseTalkStateKey]), so it opens again where it was left; finished,
@@ -1452,6 +1466,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final tape = SeasonCatalog.drumTape(m);
     final city = SeasonCatalog.cityClocks(m);
     final shadow = SeasonCatalog.shadowCheck(m);
+    final easy = SeasonCatalog.easySteps(m);
 
     final Widget body = solved
         // The talk after the puzzle, until the detective goes on from it.
@@ -1499,6 +1514,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                   talk != null ||
                           caseTalk != null ||
                           talkBefore ||
+                          easy != null ||
                           hall != null ||
                           studio != null ||
                           records != null ||
@@ -1624,6 +1640,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               progress,
               _afterTalkBefore,
             ),
+            MissionStage.puzzle when easy != null => _easyStage(m, easy, progress),
             MissionStage.puzzle when caseTalk != null => _caseTalkStage(m, caseTalk, progress),
             MissionStage.puzzle when talk != null => _talkStage(
               m,

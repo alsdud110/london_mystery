@@ -370,7 +370,11 @@ class _LandmarkPainter extends CustomPainter {
           Artwork.luxembourgGarden ||
           Artwork.gearBoard ||
           Artwork.arcStarView ||
-          Artwork.starRoom:
+          Artwork.starRoom ||
+          Artwork.annexStreet ||
+          Artwork.annexReadingRoom ||
+          Artwork.artsMetiersHall ||
+          Artwork.oldMachineRoom:
         break;
     }
     canvas.restore();

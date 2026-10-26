@@ -16,6 +16,8 @@ import 'star_records.dart' show PhotoLogView, ShadowCardView, TapeCardView;
 import 'letter_papers.dart' show FittedEnvelopeView, LetterPaperView;
 import 'opera_papers.dart';
 import 'river_papers.dart' show PictureCanvas;
+import '../../../data/models/easy_steps.dart' show EasyEvidence;
+import 'easy_steps.dart' show EasyEvidenceView;
 
 /// Case 05's papers and marks drawn with their words: the maker's mark and
 /// its copies (cut from the one picture of the two clock hands), the cards
@@ -236,6 +238,7 @@ class DrawnEvidenceView extends StatelessWidget {
     final TapeCard c => TapeCardView(card: c),
     final PhotoLog l => PhotoLogView(log: l),
     final ShadowCard c => ShadowCardView(card: c),
+    final EasyEvidence e => EasyEvidenceView(art: e),
     _ => const SizedBox.shrink(),
   };
 }

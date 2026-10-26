@@ -148,6 +148,12 @@ void main() {
       // under its roof.
       Artwork.arcStarView: 'assets/seasons/season_02_paris/cases/case_10/arc_star_view.png',
       Artwork.starRoom: 'assets/seasons/season_02_paris/cases/case_10/star_room.png',
+      // Case 11's street and the Archive Annex's reading room; Case 12's
+      // museum hall and room of old machines.
+      Artwork.annexStreet: 'assets/seasons/season_02_paris/cases/case_11/annex_street.png',
+      Artwork.annexReadingRoom: 'assets/seasons/season_02_paris/cases/case_11/annex_reading_room.png',
+      Artwork.artsMetiersHall: 'assets/seasons/season_02_paris/cases/case_12/arts_metiers_hall.png',
+      Artwork.oldMachineRoom: 'assets/seasons/season_02_paris/cases/case_12/old_machine_room.png',
     };
     expect(ArtAssets.parisScenes, parisScenes);
     expect(LandmarkArt.hasPicture(Artwork.montmartreStreet), isTrue);
@@ -182,9 +188,10 @@ void main() {
     // Case 03's seven (the canvas back and six places at the tower),
     // Case 04's six places on the Seine, and Case 05's four in the workshop;
     // Case 06's four, Case 07's five, Case 08's three in Abbesses,
-    // Case 09's two in the Luxembourg Gardens, and Case 10's two at the
-    // Arc de Triomphe.
-    expect(ArtAssets.scenes, hasLength(69));
+    // Case 09's two in the Luxembourg Gardens, Case 10's two at the
+    // Arc de Triomphe, Case 11's two at Saint-Sulpice and Case 12's two at
+    // Arts et Métiers.
+    expect(ArtAssets.scenes, hasLength(73));
     final all = {
       ...ArtAssets.scenes.values,
       ...ArtAssets.characters.values,

@@ -220,7 +220,7 @@ void main() {
 
   group('in the game', () {
     test('Case 09 is in the game, after Case 08, in the Luxembourg Gardens, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10', 's2_ep11', 's2_ep12']);
       expect(season2AwaitingArtJson, isEmpty);
       expect(const MockEpisodeRepository().fetchEpisode('s2_ep09'), completes);
       expect(case09.number, 9);
@@ -887,8 +887,8 @@ void main() {
       expect(t.getRect(picture), first);
       expect(find.byKey(const ValueKey('intro-picture-garden')), findsOneWidget);
       // No case before it has such a picture: their openings are as they
-      // were (Case 10's, after it, has its own).
-      for (final e in inGame.where((e) => e.id != 's2_ep09' && e.id != 's2_ep10')) {
+      // were (Cases 10–12, after it, have their own).
+      for (final e in inGame.where((e) => e.id != 's2_ep09' && e.id != 's2_ep10' && e.id != 's2_ep11' && e.id != 's2_ep12')) {
         expect(SeasonCatalog.introPicture(e.id), isNull, reason: e.id);
       }
       expect(t.takeException(), isNull);

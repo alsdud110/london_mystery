@@ -202,7 +202,15 @@ enum Artwork {
   // Case 10's places at the Arc de Triomphe: the arch, and the little room
   // under its roof.
   arcStarView,
-  starRoom;
+  starRoom,
+  // Case 11's places at Saint-Sulpice: the quiet street with the Archive
+  // Annex's door, and its reading room.
+  annexStreet,
+  annexReadingRoom,
+  // Case 12's places: the museum hall at Arts et Métiers, and the quiet
+  // room of old machines.
+  artsMetiersHall,
+  oldMachineRoom;
 
   static Artwork fromJson(String value) =>
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));

@@ -8,6 +8,8 @@ import 'episode07_mock.dart';
 import 'episode08_mock.dart';
 import 'episode09_mock.dart';
 import 'episode10_mock.dart';
+import 'episode11_mock.dart';
+import 'episode12_mock.dart';
 
 /// Season 2 as a whole: who the season is. Its cases, casebook lines and
 /// board figures come with its content; until then the season has no cases,
@@ -25,9 +27,16 @@ const Map<String, dynamic> season2InfoJson = {
   'cases': 12,
   // The next cases' titles, told on the Case Closed file before they are
   // in the game ("CASE 05 · THE SILENT WORKSHOP"); never their content.
-  // Case 10 is in the game (its pictures are in, 2026-10-24); Case 11's
-  // title is the story bible's (v1.9, §5).
-  'upcoming': <String, String>{'11': 'The Unwritten Hour'},
+  // None now: all twelve cases are in the game (Cases 11–12, 2026-10-27).
+  'upcoming': <String, String>{},
+  // Once every case is solved: the season's last words (the board, and the
+  // last case's report).
+  'outro': ['The hour was never gone.', 'The truth was waiting to be found.'],
+  'finale': ['Paris did not lose an hour.', 'The truth is safe now.'],
+  // Who was behind it: told on the board only once Case 12 shows it.
+  'figures': [
+    {'after': 's2_ep12', 'figure': 'emile', 'label': 'The Clockmaker'},
+  ],
 };
 
 /// Season 2's cases in case order, by id. The season is not released yet
@@ -44,12 +53,14 @@ const Map<String, Map<String, dynamic>> season2Json = {
   's2_ep08': season2Episode08Json,
   's2_ep09': season2Episode09Json,
   's2_ep10': season2Episode10Json,
+  's2_ep11': season2Episode11Json,
+  's2_ep12': season2Episode12Json,
 };
 
 /// Season 2's cases written but waiting for their pictures, in case order:
 /// never in the game (no case file, board, map or save shows them) until
-/// their pictures are, then moved into [season2Json]. None now: Case 10's
-/// pictures are in (2026-10-24).
+/// their pictures are, then moved into [season2Json]. None now: Cases 11–12's
+/// pictures are in (2026-10-27).
 const Map<String, Map<String, dynamic>> season2AwaitingArtJson = {};
 
 /// Season 2's opening sequence, played once before its Case 01: five short

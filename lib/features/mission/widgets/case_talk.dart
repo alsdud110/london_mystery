@@ -6,6 +6,8 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
 import '../../../data/models/case_talk.dart';
+import '../../../data/models/mission.dart' show Evidence;
+import '../../../widgets/evidence_card.dart' show EvidencePicture, EvidenceThumb;
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
 import '../../../widgets/ink_icon.dart';
@@ -27,14 +29,7 @@ import 'evidence_recall.dart';
 /// opens there again. [onFinish] is called once, when the detective goes on
 /// from a finished talk.
 class CaseTalk extends ConsumerStatefulWidget {
-  const CaseTalk({
-    super.key,
-    required this.scene,
-    required this.progress,
-    required this.onProgress,
-    required this.onFinish,
-    this.pickEvidence,
-  });
+  const CaseTalk({super.key, required this.scene, required this.progress, required this.onProgress, required this.onFinish, this.pickEvidence});
 
   final TalkScene scene;
   final TalkProgress progress;
@@ -62,6 +57,9 @@ class _CaseTalkState extends ConsumerState<CaseTalk> {
   late bool _heardBefore = _p.beatId == TalkScene.openingId ? _p.openingSeen : _p.isDone(_p.beatId) && _p.beatOver(widget.scene);
 
   bool _finishing = false;
+
+  /// Pieces shown from two cards that did not fit, by present (not saved).
+  final Map<String, int> _misses = {};
 
   TalkScene get _scene => widget.scene;
 
@@ -114,16 +112,23 @@ class _CaseTalkState extends ConsumerState<CaseTalk> {
   Future<void> _show() async {
     if (!_p.beatOver(_scene) || _p.nextPresent(_scene) == null) return;
     ref.read(audioServiceProvider).play(GameSound.notebookOpen);
-    final pick = widget.pickEvidence ??
-        (context) => showEvidencePicker(
-              context,
-              ask: 'Which clue will you show?',
-              earlier: heldEarlierEvidence(ref, _scene.earlierEvidence),
-            );
+    final pick =
+        widget.pickEvidence ??
+        (context) => showEvidencePicker(context, ask: 'Which clue will you show?', earlier: heldEarlierEvidence(ref, _scene.earlierEvidence));
     final id = await pick(context);
     if (id == null || !mounted) return;
     final (next, fits) = _p.show(_scene, id);
     ref.read(audioServiceProvider).play(fits ? GameSound.pencilNote : GameSound.paperRustle);
+    _set(next);
+  }
+
+  /// A card picked from the two shown ([TalkPresent.choices]).
+  void _choose(String evidenceId) {
+    final present = _p.nextPresent(_scene);
+    if (!_p.beatOver(_scene) || present == null) return;
+    final (next, fits) = _p.show(_scene, evidenceId);
+    ref.read(audioServiceProvider).play(fits ? GameSound.pencilNote : GameSound.paperRustle);
+    if (!fits) _misses[present.id] = (_misses[present.id] ?? 0) + 1;
     _set(next);
   }
 
@@ -159,11 +164,7 @@ class _CaseTalkState extends ConsumerState<CaseTalk> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.navyDeep.withValues(alpha: 0.25),
-                AppColors.navyDeep.withValues(alpha: 0.15),
-                AppColors.navyDeep.withValues(alpha: 0.9),
-              ],
+              colors: [AppColors.navyDeep.withValues(alpha: 0.25), AppColors.navyDeep.withValues(alpha: 0.15), AppColors.navyDeep.withValues(alpha: 0.9)],
               stops: const [0, 0.4, 1],
             ),
           ),
@@ -204,9 +205,11 @@ class _CaseTalkState extends ConsumerState<CaseTalk> {
                     lineKey: '${_p.beatId}#${_p.line}',
                     skip: _skipTyping,
                     more: !_p.beatOver(_scene),
-                    onTyped: () {
+                    // Typed out whole: said after this frame (a line shown
+                    // whole at a tap is finished while it is being built).
+                    onTyped: () => WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (!_typed && mounted) setState(() => _typed = true);
-                    },
+                    }),
                     onTap: _advance,
                   ),
                 ),
@@ -219,6 +222,8 @@ class _CaseTalkState extends ConsumerState<CaseTalk> {
                 onSkip: _skip,
                 onAsk: _ask,
                 onShow: _show,
+                onChoose: _choose,
+                misses: _misses,
                 onFinish: _finish,
                 onLog: _log,
               ),
@@ -329,7 +334,12 @@ class _Speech extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: AppSpace.xs),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(name!, key: const ValueKey('case-talk-name'), maxLines: 1, style: AppText.mark(color: AppColors.goldLight, size: 15)),
+                  child: Text(
+                    name!,
+                    key: const ValueKey('case-talk-name'),
+                    maxLines: 1,
+                    style: AppText.mark(color: AppColors.goldLight, size: 15),
+                  ),
                 ),
               ),
             ConstrainedBox(
@@ -360,10 +370,7 @@ class _Speech extends StatelessWidget {
                           onFinished: onTyped,
                         ),
                       ),
-                      if (more) ...[
-                        const SizedBox(width: AppSpace.sm),
-                        const InkIcon(InkGlyph.chevron, size: AppIconSize.small, color: AppColors.burgundy),
-                      ],
+                      if (more) ...[const SizedBox(width: AppSpace.sm), const InkIcon(InkGlyph.chevron, size: AppIconSize.small, color: AppColors.burgundy)],
                     ],
                   ),
                 ),
@@ -390,6 +397,8 @@ class _Panel extends StatelessWidget {
     required this.onSkip,
     required this.onAsk,
     required this.onShow,
+    required this.onChoose,
+    required this.misses,
     required this.onFinish,
     required this.onLog,
   });
@@ -402,6 +411,8 @@ class _Panel extends StatelessWidget {
   final VoidCallback onSkip;
   final ValueChanged<TalkQuestion> onAsk;
   final VoidCallback onShow;
+  final ValueChanged<String> onChoose;
+  final Map<String, int> misses;
   final VoidCallback onFinish;
   final VoidCallback onLog;
 
@@ -458,7 +469,10 @@ class _Panel extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpace.sm),
               ],
-              if (present != null) ...[
+              if (present != null && present.choices.isNotEmpty) ...[
+                _EvidenceChoice(present: present, missed: misses[present.id] ?? 0, onChoose: onChoose),
+                const SizedBox(height: AppSpace.sm),
+              ] else if (present != null) ...[
                 Text(
                   present.prompt,
                   key: const ValueKey('case-talk-show-prompt'),
@@ -527,11 +541,7 @@ class _QuestionButton extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
               child: Row(
                 children: [
-                  InkIcon(
-                    asked ? InkGlyph.check : InkGlyph.pen,
-                    size: AppIconSize.small,
-                    color: asked ? AppColors.goldLight : AppColors.burgundy,
-                  ),
+                  InkIcon(asked ? InkGlyph.check : InkGlyph.pen, size: AppIconSize.small, color: asked ? AppColors.goldLight : AppColors.burgundy),
                   const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: Text(
@@ -598,14 +608,292 @@ class _TalkLog extends StatelessWidget {
                   for (final l in scene.beat(b))
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpace.xs),
-                      child: GlossaryText(
-                        who(l).isEmpty ? l.text : '${who(l)}: ${l.text}',
-                        style: AppText.letter(size: 16, color: AppColors.ink),
-                      ),
+                      child: GlossaryText(who(l).isEmpty ? l.text : '${who(l)}: ${l.text}', style: AppText.letter(size: 16, color: AppColors.ink)),
                     ),
                 ],
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// What to show, from two cards right there (no notebook to search): the
+/// question over them, and the two pieces, large. After a second miss, the
+/// line that says which ([TalkPresent.tell]), and that card lit.
+class _EvidenceChoice extends ConsumerWidget {
+  const _EvidenceChoice({required this.present, required this.missed, required this.onChoose});
+
+  final TalkPresent present;
+  final int missed;
+  final ValueChanged<String> onChoose;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final all = {
+      for (final e in ref.watch(allEpisodesProvider))
+        for (final v in e.allEvidence) v.id: v,
+    };
+    final told = missed >= 2 && present.tell != null;
+    final cards = [for (final id in present.choices) ?all[id]];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          told ? present.tell! : present.prompt,
+          key: const ValueKey('case-talk-show-prompt'),
+          textAlign: TextAlign.center,
+          style: AppText.bodyText(size: 18, weight: FontWeight.w700, color: AppColors.goldLight),
+        ),
+        const SizedBox(height: AppSpace.sm),
+        // Both cards as tall as the taller one (the panel scrolls: no
+        // height to stretch to otherwise).
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final e in cards) ...[
+                Expanded(
+                  child: _EvidenceCard(
+                    key: ValueKey('case-talk-choice-${e.id}'),
+                    evidence: e,
+                    lit: missed >= 2 && present.accepted.contains(e.id),
+                    onTap: () => onChoose(e.id),
+                  ),
+                ),
+                if (e != cards.last) const SizedBox(width: AppSpace.md),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EvidenceCard extends StatelessWidget {
+  const _EvidenceCard({super.key, required this.evidence, required this.lit, required this.onTap});
+
+  final Evidence evidence;
+  final bool lit;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: 'Show ${evidence.name}',
+      excludeSemantics: true,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.button),
+          boxShadow: lit ? [BoxShadow(color: AppColors.gold.withValues(alpha: 0.8), blurRadius: 18, spreadRadius: 2)] : AppShadow.onNight,
+        ),
+        child: Material(
+          color: AppColors.paperLight,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.button),
+            side: BorderSide(color: lit ? AppColors.gold : AppColors.goldLight, width: lit ? 4 : 2),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.button),
+            onTap: onTap,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 120),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpace.sm),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EvidenceThumb(evidence: evidence, size: 64),
+                    const SizedBox(height: AppSpace.xs),
+                    Text(
+                      evidence.name,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: AppText.title(size: 16, color: AppColors.navy),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A case's ending, one line at a time, each line on only when the
+/// detective taps on (never hurried): the place behind it, a face or a
+/// piece of evidence, the line in its card. The last line's button closes
+/// the case ([onFinish]).
+class CaseEnding extends ConsumerStatefulWidget {
+  const CaseEnding({super.key, required this.lines, required this.onFinish, this.finishLabel = 'CLOSE THE CASE'});
+
+  final List<EndingLine> lines;
+  final VoidCallback onFinish;
+  final String finishLabel;
+
+  @override
+  ConsumerState<CaseEnding> createState() => _CaseEndingState();
+}
+
+class _CaseEndingState extends ConsumerState<CaseEnding> {
+  int _at = 0;
+  bool _typed = false;
+  bool _skip = false;
+  bool _closing = false;
+
+  bool get _last => _at == widget.lines.length - 1;
+
+  void _next() {
+    if (!_typed) {
+      setState(() => _skip = true);
+      return;
+    }
+    if (_last) {
+      if (_closing) return;
+      _closing = true;
+      widget.onFinish();
+      return;
+    }
+    playUiTap(context, TapRole.select);
+    setState(() {
+      _at++;
+      _typed = false;
+      _skip = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final line = widget.lines[_at];
+    final evidence = line.evidenceId == null
+        ? null
+        : [
+            for (final e in ref.watch(allEpisodesProvider))
+              for (final v in e.allEvidence)
+                if (v.id == line.evidenceId) v,
+          ].firstOrNull;
+    final fade = Duration(milliseconds: still ? 0 : 450);
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        AnimatedSwitcher(
+          duration: fade,
+          child: KeyedSubtree(key: ValueKey('ending-bg-${line.background}'), child: PlaceScenery.file(line.background)),
+        ),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.navyDeep.withValues(alpha: 0.1), AppColors.navyDeep.withValues(alpha: 0.1), AppColors.navyDeep.withValues(alpha: 0.88)],
+              stops: const [0, 0.45, 1],
+            ),
+          ),
+        ),
+        SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
+                  child: AnimatedSwitcher(
+                    duration: fade,
+                    child: evidence != null
+                        ? Center(
+                            key: ValueKey('ending-evidence-${evidence.id}'),
+                            child: _RecordCard(evidence: evidence),
+                          )
+                        : line.portrait != null
+                        ? _Portrait(key: ValueKey('ending-portrait-${line.portrait}'), file: line.portrait!, label: line.name ?? '')
+                        : const SizedBox.expand(key: ValueKey('ending-empty')),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                child: _Speech(
+                  line: switch (line.voice) {
+                    TalkVoice.narrator => TalkLine.narrator(line.text),
+                    TalkVoice.detective => TalkLine.detective(line.text),
+                    TalkVoice.speaker => TalkLine(line.text),
+                  },
+                  name: switch (line.voice) {
+                    TalkVoice.speaker => line.name,
+                    TalkVoice.detective => 'YOU',
+                    TalkVoice.narrator => null,
+                  },
+                  lineKey: 'ending#$_at',
+                  skip: _skip,
+                  more: !_last,
+                  onTyped: () => WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!_typed && mounted) setState(() => _typed = true);
+                  }),
+                  onTap: _next,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.md, AppSpace.md, AppSpace.md),
+                child: GameButton(
+                  key: const ValueKey('ending-next'),
+                  label: !_typed ? 'READ ALL' : (_last ? widget.finishLabel : 'NEXT'),
+                  glyph: _last && _typed ? InkGlyph.folder : InkGlyph.chevron,
+                  style: _last && _typed ? GameButtonStyle.gold : GameButtonStyle.glass,
+                  singleLine: true,
+                  tap: TapRole.primary,
+                  onPressed: _next,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// A record of earlier words, laid over the ending: the evidence card with
+/// its words in quotes.
+class _RecordCard extends StatelessWidget {
+  const _RecordCard({required this.evidence});
+
+  final Evidence evidence;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 360),
+      padding: const EdgeInsets.all(AppSpace.lg),
+      decoration: BoxDecoration(
+        color: AppColors.paperLight,
+        borderRadius: BorderRadius.circular(AppRadius.paper),
+        border: Border.all(color: AppColors.inkBrown.withValues(alpha: 0.5), width: 2),
+        boxShadow: AppShadow.onNight,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Its words as they were said (the record's own picture).
+          EvidencePicture(evidence: evidence, maxHeight: 190),
+          const SizedBox(height: AppSpace.sm),
+          Text(
+            evidence.name.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: AppText.mark(size: 16, color: AppColors.goldDeep),
+          ),
+          const SizedBox(height: AppSpace.xs),
+          Text(
+            evidence.description,
+            textAlign: TextAlign.center,
+            style: AppText.aside(size: 15, color: AppColors.inkBrown),
           ),
         ],
       ),

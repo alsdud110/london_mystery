@@ -1996,11 +1996,43 @@
 <a id="s2-c11"></a>
 
 ### Case 11 — The Unwritten Hour
-- **미구현** — `season2_mock.dart`의 `upcoming`에 제목만 있음(`'11': 'The Unwritten Hour'`). `season2Json`·`season2AwaitingArtJson`(비어 있음)에 데이터 없음. 지도 위치만 `map_world.dart`에 `s2_ep11: luxembourgGardens`로 예약. Case 10 종료 후 `CASE 11 · THE UNWRITTEN HOUR` / `COMING SOON` 표시.
+- **장소:** Saint-Sulpice · Archive Annex (지도: Luxembourg Gardens 핀). **난이도:** 매우 쉬움(2026-10-27) — 한 화면에 할 일 하나, 선택지 2개(9번 상자만 3개), 단서는 같은 화면에, 힌트 무료·무제한(마지막 단계에서 정답 강조), 오답은 기록되지 않음(1회: "Try again! Look here." + 볼 곳 강조, 2회: 정답을 직접 말하고 강조).
+- **구조:** 각 미션 = (Victor 대화) → 단계 퍼즐 → (Victor 반응) → Discovery → 이야기. 대화는 NEXT로 한 줄씩, 진행은 저장됨.
+
+#### Mission 1 — The Missing Page
+- **정답(단계):** ① 큰 장부 탭 → ② 오른쪽 장을 손가락으로 문지르기(드래그 또는 2–3번 탭) → `Page 3 is in Box 9.` / `Lock it. No one may read it.` / 서명이 드러남 → ③ 선반에서 **9번 상자**(오른쪽, 3·12는 오답 안내) → ④ 상자 속 폴더 탭 → ⑤ `TAKE PAGE 3`.
+- **획득:** clue `The Rubbing`, evidence `Page 3`.
+
+#### Mission 2 — Two Papers
+- **정답:** `Were the clocks right?` → **NO** (3쪽: The clocks are wrong!) → `Are they the same?`(오페라 슬립 도장 vs Victor 서류 도장) → **YES**.
+- **획득:** clue `The Same Stamp`, evidence `Victor's Paper`.
+
+#### Mission 3 — Who Signed It?
+- **정답:** 방명록 보기(NEXT) → 큰 장부의 서명과 같은 이름 → **Victor, today**(곡선 V·긴 밑줄·점).
+- **획득:** clue `The Same Name`, evidence `Victor's Name`.
+
+#### Final — Victor's Truth
+- **정답(증거 카드 2장 중 선택):** `What happened at three?` → **Page 3** / `Whose paper was not true?` → **Victor's Paper** / `Who signed the order to hide it?` → **Victor's Name** → (선택) `What about the office bag?` → (필수) `Then who left the clues for me?` → `CLOSE THE CASE`.
+- **획득:** evidence `Victor's Truth`. 사건 종료 후 Case 12가 열림.
 
 <a id="s2-c12"></a>
 
-### Case 12 — (제목 미정)
-- **미구현** — 코드 어디에도 제목 없음. `map_world.dart`에 위치만 `s2_ep12: artsEtMetiers`로 예약. 에피소드 데이터·`upcoming` 항목 없음.
+### Case 12 — The Clockmaker's Truth
+- **장소:** Arts et Métiers (시즌 마지막 사건). 난이도·오답·힌트 규칙은 Case 11과 같음.
 
+#### Mission 1 — Find the Wheel
+- **정답:** Clock III 바퀴(살 4개 X자)와 같은 바퀴 → **Wheel B**(Wheel A는 살 6개) → 이름표 `Made by Émile Moreau` → `TAKE THE TAG`.
+- **획득:** clue `E.M.`, evidence `The Name Tag`.
 
+#### Mission 2 — Who Is the Clockmaker?
+- **정답:** 회중시계 탭(열기) → 시계 아무 곳이나 탭(안의 바퀴 강조) → 도장 탭(톱니 표식 찍힘) → `Are the marks the same?` **YES** → `Who is the Clockmaker?` **Émile** → 대화: `Are you the Clockmaker?` → `Why did you do it?` → `And Big Ben?` → `Why did you leave clues for me?`(한 번에 질문 하나씩).
+- **획득:** clue `Three Clues`, evidence `The Clockmaker's Mark Tool`.
+
+#### Mission 3 — Fix the Machine
+- **정답:** **STOP** 버튼 → 큰 바퀴 탭(자동으로 한 시간 회전, 10:20 → 11:20) → 핀 탭(자동 고정) → **START** 버튼.
+- **획득:** clue `All Agree`(11:20), evidence `The Fixed Machine`.
+
+#### Final — The Final Case Board
+- **정답(질문 6개, 하나씩, 2지선다):** Did Paris lose an hour? **NO** / Were the clocks wrong? **YES** / Who hid page 3? **Victor** / Who is the Clockmaker? **Émile** / Why did Émile leave clues? **To show the truth** / Was Émile right to scare people? **NO** → `CLOSE THE CASE`.
+- **이후:** 엔딩(한 줄씩 NEXT, 11줄) → `CLOSE THE CASE`(사건 종료) → 마지막 두 줄 → `SEE MY CASE REPORT` → `SEASON TWO COMPLETE` → `INVESTIGATION BOARD`(COMPLETED, The Clockmaker 공개) → `DETECTIVE ARCHIVES`.
+- **획득:** evidence `The Case File`.

@@ -145,15 +145,15 @@ void main() {
       expect(again.puzzleStateOf('m'), 'its puzzle', reason: "the mission's own puzzle is kept apart");
     });
 
-    test('no mission of the game is played as a case talk yet; Season 1 keeps its talk', () {
-      for (final e in MockEpisodeRepository.bundled()) {
-        for (final m in e.allMissions) {
-          expect(SeasonCatalog.caseTalk(m), isNull, reason: m.id);
-        }
-      }
-      for (final c in SeasonCatalog.all) {
-        expect(c.talks, isEmpty);
-      }
+    test('only Case 11\'s final is played as a case talk; Season 1 keeps its talk', () {
+      final talked = [
+        for (final e in MockEpisodeRepository.bundled())
+          for (final m in e.allMissions)
+            if (SeasonCatalog.caseTalk(m) != null) m.id,
+      ];
+      expect(talked, ['s2_ep11_final']);
+      expect(season1Content.talks, isEmpty);
+      expect(season1Content.talkMissions, isEmpty);
       expect(season1Content.dialogues.keys, ['ep06_m1']);
     });
   });

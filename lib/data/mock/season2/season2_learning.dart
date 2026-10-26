@@ -39,6 +39,14 @@ const Map<String, CaseLanguageTopic> season2LanguageTopics = {
     title: 'Time words: after, behind, missing',
     titleKo: '시간 표현: after, behind, missing',
   ),
+  's2_ep11': CaseLanguageTopic(
+    title: 'True or not true? Right, wrong and the same',
+    titleKo: '사실일까, 아닐까? right, wrong, the same',
+  ),
+  's2_ep12': CaseLanguageTopic(
+    title: 'Who and why: the same, wrong, and the truth',
+    titleKo: '누가, 왜: the same, wrong, the truth',
+  ),
 };
 
 /// The learning design of every mission of Season 2, by mission id (the
@@ -400,5 +408,71 @@ const Map<String, LearningObjective> season2Learning = {
     skill: LanguageSkill.sentenceMeaning,
     objective: '두 사진의 시각으로 테이프에서 Photo 2의 순간을 찾고 빠진 쪽을 확인한 뒤, 기록이 보여 주는 만큼만 결론("T1 was one hour behind, and the page about it is missing.")을 고른다.',
     expressions: ['Was the hour lost — or was the clock wrong?', 'T1 was one hour behind, and the page about it is missing.'],
+  ),
+  // ── Case 11 — The Unwritten Hour (very easy: one step at a time) ──────
+  // The rubbed line says where page 3 is; the boxes' numbers say the same.
+  's2_ep11_m1': LearningObjective(
+    dependency: LanguageDependency.helpful,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '연필로 문질러 드러난 "Page 3 is in Box 9."를 읽고 9번 상자를 찾아 3쪽을 꺼낸다.',
+    expressions: ['Page 3 is in Box 9.'],
+  ),
+  // Page 3's line against Victor's: only reading them answers.
+  's2_ep11_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '3쪽("The clocks are wrong!")과 Victor의 서류("All the clocks were fine.")를 나란히 읽고 "Were the clocks right?"에 NO로 답한다. 이어서 두 도장이 같은지 본다.',
+    expressions: ['Were the clocks right?'],
+  ),
+  // Two names matched by their shapes.
+  's2_ep11_m3': LearningObjective(
+    dependency: LanguageDependency.exposure,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.vocabulary,
+    objective: '큰 장부에 눌린 서명과 방명록의 두 서명을 비교해 같은 서명(Victor)을 고른다. 영어는 장면을 설명한다.',
+    expressions: ['Match the names.'],
+  ),
+  // Victor's three questions, each answered with the clue that fits.
+  's2_ep11_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: 'Victor의 질문("What happened at three?" 등)을 읽고 두 증거 카드 중 맞는 것을 보여 주어 "Who hid the truth?"의 답에 이른다.',
+    expressions: ['Who hid the truth?'],
+  ),
+  // ── Case 12 — The Clockmaker's Truth (very easy) ──────────────────────
+  // The same wheel, by its spokes.
+  's2_ep12_m1': LearningObjective(
+    dependency: LanguageDependency.exposure,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.vocabulary,
+    objective: 'Clock III의 바퀴와 바큇살 수가 같은 바퀴를 고르고, 이름표 "Made by Émile Moreau"를 읽는다.',
+    expressions: ['Find the same wheel.'],
+  ),
+  // Three clues read, then who they point to.
+  's2_ep12_m2': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.comprehension,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '바퀴·회중시계·톱니 표식 세 단서의 문장을 읽고 "Who is the Clockmaker?"에 답한다.',
+    expressions: ['Who is the Clockmaker?'],
+  ),
+  // Stop, turn, fix, start: one word for each step.
+  's2_ep12_m3': LearningObjective(
+    dependency: LanguageDependency.helpful,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.vocabulary,
+    objective: 'Stop, turn, fix, start 네 단어를 따라 기계를 멈추고, 바퀴를 돌리고, 핀을 꽂고, 다시 켠다.',
+    expressions: ['Fix the old machine.'],
+  ),
+  // Six questions, each with its clue: the whole season in short answers.
+  's2_ep12_final': LearningObjective(
+    dependency: LanguageDependency.essential,
+    level: LearningLevel.application,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '여섯 개의 질문("Did Paris lose an hour?" 등)을 증거와 함께 읽고 두 답 중 하나를 골라 시즌의 진실을 정리한다.',
+    expressions: ['Did Paris lose an hour?'],
   ),
 };

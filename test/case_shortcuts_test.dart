@@ -79,12 +79,12 @@ void main() {
     await wait(t, const Duration(seconds: 3));
   });
 
-  testWidgets('Paris with Season 1 unsolved: every case 01-10 opens; 11 and 12 are coming soon', (t) async {
+  testWidgets('Paris with Season 1 unsolved: every case 01-12 opens; none is coming soon', (t) async {
     final ref = await pumpApp(t, await testOverrides(prefs: detective));
     final london = savesOf(ref, SeasonIds.london);
     expect(ref.read(seasonAvailabilityProvider(SeasonIds.paris))!.canEnter, isFalse, reason: 'locked for the player');
     final paris = SeasonAvailability.casesOf(SeasonIds.paris, ref.read(allEpisodesProvider));
-    expect(paris, hasLength(10));
+    expect(paris, hasLength(12));
     for (final e in paris) {
       await openGameMaster(t, ref);
       await tapKey(t, 'shortcut-season-${SeasonIds.paris}');
@@ -93,7 +93,7 @@ void main() {
       expect(ref.read(selectedSeasonIdProvider), SeasonIds.paris);
       expect(ref.read(seasonProvider).solvedEpisodeIds, isEmpty, reason: 'the cases before it stay unsolved');
     }
-    // Case 10's file: its investigation begins at its Mission 1 story intro.
+    // Case 12's file: its investigation begins at its Mission 1 story intro.
     await tapText(t, 'BEGIN INVESTIGATION', after: const Duration(milliseconds: 1200));
     expect(pathOf(ref), Routes.intro);
     expect(savesOf(ref, SeasonIds.london), london, reason: "Season 1's saves are untouched");
@@ -101,12 +101,9 @@ void main() {
     await openGameMaster(t, ref);
     await tapKey(t, 'shortcut-season-${SeasonIds.paris}');
     for (final n in [11, 12]) {
-      final row = find.byKey(ValueKey('shortcut-planned-${SeasonIds.paris}-$n'));
-      await t.scrollUntilVisible(row, 200, scrollable: find.byType(Scrollable).first);
-      expect(find.descendant(of: row, matching: find.textContaining('Coming Soon')), findsOneWidget, reason: '$n');
-      expect(t.widget<OutlinedButton>(find.descendant(of: row, matching: find.byType(OutlinedButton))).onPressed, isNull);
+      expect(find.byKey(ValueKey('shortcut-planned-${SeasonIds.paris}-$n')), findsNothing, reason: '$n is in the game');
     }
-    expect(find.textContaining('The Unwritten Hour'), findsOneWidget, reason: "Case 11's planned title");
+    expect(find.textContaining('Coming Soon'), findsNothing);
     await wait(t, const Duration(seconds: 3));
   });
 

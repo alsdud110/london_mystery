@@ -228,7 +228,7 @@ void main() {
 
   group('the case', () {
     test('Case 04 is in the game, after Case 03, on the Seine, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10', 's2_ep11', 's2_ep12']);
       expect(case04.number, 4);
       expect(case04.title, "The River's Secret");
       expect(case04.place, 'SEINE QUAYS · PARIS');

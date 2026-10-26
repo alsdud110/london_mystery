@@ -98,7 +98,7 @@ class TalkSpeaker {
 /// once every step in [requires] is done; it can be asked again.
 @immutable
 class TalkQuestion {
-  const TalkQuestion({required this.id, required this.text, required this.beat, this.requires = const {}});
+  const TalkQuestion({required this.id, required this.text, required this.beat, this.requires = const {}, this.repeatable = true});
 
   final String id;
 
@@ -106,11 +106,20 @@ class TalkQuestion {
   final String text;
   final List<TalkLine> beat;
   final Set<String> requires;
+
+  /// It stays to be asked again once asked; false: it goes once asked (a
+  /// talk for a child alone: only the questions still to ask, never more
+  /// than two). Its answer stays in the talk log.
+  final bool repeatable;
 }
 
 /// Evidence the detective can show, once every step in [requires] is done:
 /// one of [accepted] (notebook evidence ids) plays [beat] and is done; any
 /// other plays its line in [misses], else [miss] (never counted as wrong).
+///
+/// With [choices] (two evidence ids), the two pieces are shown as cards
+/// right there to pick from, instead of the notebook (Cases 11–12, for a
+/// child alone); after a second miss, [tell] says which one, and it is lit.
 @immutable
 class TalkPresent {
   const TalkPresent({
@@ -121,7 +130,15 @@ class TalkPresent {
     this.misses = const {},
     this.miss = const TalkLine('I don\'t see what that means.'),
     this.requires = const {},
+    this.choices = const [],
+    this.tell,
   });
+
+  /// The pieces to pick from, shown as cards (empty: the notebook).
+  final List<String> choices;
+
+  /// Said over the cards after a second miss: which one, plainly.
+  final String? tell;
 
   final String id;
 
@@ -139,7 +156,8 @@ class TalkPresent {
 /// One talk with one person: what is said first ([opening]), the questions
 /// to ask and the evidence to show, in whatever order a case needs (each
 /// step opened by the steps it [TalkQuestion.requires]). It is finished once
-/// every step in [finishWhen] is done; then the detective goes on with
+/// every step in [finishWhen] is done (none: once the [opening] is heard,
+/// a talk that is only listened to); then the detective goes on with
 /// [finishLabel], and [answer] is what the talk gives (a mission's puzzle
 /// answer, when the talk is the puzzle).
 @immutable
@@ -157,7 +175,7 @@ class TalkScene {
     this.finishLabel = 'CONTINUE',
     this.answer = '',
     this.earlierEvidence = const [],
-  }) : assert(finishWhen.isNotEmpty, 'a talk must be able to finish') {
+  }) {
     final ids = [for (final q in questions) q.id, for (final p in presents) p.id];
     assert(ids.toSet().length == ids.length, 'step ids must be unique');
     assert(!ids.contains(openingId), '"$openingId" is the opening');
@@ -279,14 +297,16 @@ class TalkProgress {
     return s.hiddenName!;
   }
 
-  /// Every step in [TalkScene.finishWhen] is done.
-  bool finished(TalkScene scene) => hasAll(scene.finishWhen);
+  /// Every step in [TalkScene.finishWhen] is done (a talk with none: its
+  /// opening heard to its end).
+  bool finished(TalkScene scene) =>
+      scene.finishWhen.isEmpty ? openingSeen || (beatId == TalkScene.openingId && beatOver(scene)) : hasAll(scene.finishWhen);
 
   /// The questions that can be asked now (asked ones included: they can be
   /// asked again), in the scene's order. None while a beat is still said.
   List<TalkQuestion> questions(TalkScene scene) => [
         for (final q in scene.questions)
-          if (hasAll(q.requires)) q,
+          if (hasAll(q.requires) && (q.repeatable || !isDone(q.id))) q,
       ];
 
   /// The evidence that can be shown now: open steps not done yet.
@@ -389,4 +409,29 @@ class TalkProgress {
 
   @override
   int get hashCode => Object.hash(Object.hashAll(done), beatId, line, openingSeen);
+}
+
+/// One line of a case's ending (the `CaseEnding` page): who says it and how it is
+/// shown — the place behind it, a face, a piece of evidence laid over it.
+@immutable
+class EndingLine {
+  const EndingLine(
+    this.text, {
+    this.voice = TalkVoice.narrator,
+    this.name,
+    this.portrait,
+    required this.background,
+    this.evidenceId,
+  });
+
+  final String text;
+  final TalkVoice voice;
+
+  /// The name plate (a speaker's line; the detective's is YOU).
+  final String? name;
+  final String? portrait;
+  final String background;
+
+  /// A piece of evidence laid over the place (a record of earlier words).
+  final String? evidenceId;
 }

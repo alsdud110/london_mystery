@@ -52,11 +52,11 @@ void main() {
   final inGame = MockEpisodeRepository.bundled();
   final s1 = season1Cases();
 
-  /// A stand-in case after the real Case 10: Case 07's missions under ids of
+  /// A stand-in case after the real Case 12: Case 07's missions under ids of
   /// their own (so none of Case 07's scenes: plain choices), M1 and M3
   /// played with a recall.
   Episode case08() {
-    final text = jsonEncode(season2Json['s2_ep07']).replaceAll('"s2_ep07', '"s2_ep11');
+    final text = jsonEncode(season2Json['s2_ep07']).replaceAll('"s2_ep07', '"s2_ep13');
     final json = jsonDecode(text) as Map<String, dynamic>;
     final missions = json['missions'] as List;
     missions[0] = {
@@ -100,7 +100,7 @@ void main() {
         },
       },
     };
-    return Episode.fromJson({...json, 'number': 11, 'seasonId': SeasonIds.paris});
+    return Episode.fromJson({...json, 'number': 13, 'seasonId': SeasonIds.paris});
   }
 
   final fixture = case08();
@@ -122,7 +122,7 @@ void main() {
     }
   });
 
-  /// The app with Season 1 and Paris Cases 01–10 solved, the stand-in case
+  /// The app with Season 1 and Paris Cases 01–12 solved, the stand-in case
   /// open, its missions before [missionId] solved; [missionId] opened at
   /// its place.
   Future<WidgetRef> open(WidgetTester t, Size size, String missionId) async {
@@ -159,7 +159,7 @@ void main() {
     await wait(t, const Duration(milliseconds: 300));
     final g = ref.read(gameControllerProvider.notifier);
     expect(g.openSeason(SeasonIds.paris), isTrue);
-    for (final e in game.where((e) => e.seasonId == SeasonIds.paris && e.number <= 10)) {
+    for (final e in game.where((e) => e.seasonId == SeasonIds.paris && e.number <= 12)) {
       expect(g.openEpisode(e.id), isTrue, reason: e.id);
       g.startInvestigation();
       for (final m in e.allMissions) {
@@ -168,7 +168,9 @@ void main() {
       // Case 08 closes with its last drawing, Case 09 with its star, Case 10
       // with its record list, after their finals' answers.
       if (SeasonCatalog.closesAfterLastStep(e.finalMission)) {
-        final step = SeasonCatalog.hourRecord(e.finalMission) != null
+        final step = SeasonCatalog.caseEnding(e.finalMission) != null
+            ? 'ending'
+            : SeasonCatalog.hourRecord(e.finalMission) != null
             ? HourRecordScene.leadId
             : SeasonCatalog.towerTest(e.finalMission) != null
             ? TowerTestScene.leadId
@@ -176,7 +178,7 @@ void main() {
         expect(g.closeCase(GameProgress.examinedKey(e.finalMission.id, step)), isTrue, reason: e.id);
       }
     }
-    expect(g.openEpisode('s2_ep11'), isTrue, reason: 'the stand-in case opens after the real Case 10');
+    expect(g.openEpisode('s2_ep13'), isTrue, reason: 'the stand-in case opens after the real Case 12');
     g.startInvestigation();
     for (final m in fixture.missions.takeWhile((m) => m.id != missionId)) {
       expect(g.submitAnswer(m, m.answer).result, SubmitResult.correct);

@@ -144,6 +144,9 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
     // report is as it always was.
     final next = ref.watch(nextSeasonProvider);
     final finale = nextCase == null && next != null && ref.watch(seasonOverviewProvider).complete ? next : null;
+    // The last case of the last season there is (Paris, for now): the
+    // season is complete and nothing comes after it yet.
+    final seasonDone = nextCase == null && next == null && ref.watch(seasonOverviewProvider).complete;
     final paper = _iv(0, 0.25);
     // The detective who closed it rises behind the file as it lands, just
     // before the stamp comes down.
@@ -197,6 +200,19 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                               onPlayAgain: _playAgain,
                             )
                           else ...[
+                            if (seasonDone) ...[
+                              // The whole season solved: said so, with its
+                              // last words, and the way to the archives.
+                              Text(
+                                '${season.label} COMPLETE',
+                                key: const ValueKey('season-complete'),
+                                style: AppText.mark(color: AppColors.goldLight, size: 20),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: AppSpace.sm),
+                              for (final line in season.finale.isEmpty ? season.outro : season.finale)
+                                Text(line, style: AppText.cinematicPrompt(size: 20), textAlign: TextAlign.center),
+                            ] else
                             // What the case left unanswered is told by the post-case
                             // scene before this report (Episode.hook is not repeated
                             // here: it would echo that scene, or spoil the next case).
@@ -243,6 +259,17 @@ class _CaseSolvedScreenState extends ConsumerState<CaseSolvedScreen> with Single
                               tap: TapRole.primary,
                               onPressed: () => context.go(toBoard ? Routes.season : Routes.caseFile(nextCase.id)),
                             ),
+                            if (seasonDone) ...[
+                              const SizedBox(height: AppSpace.sm),
+                              GameButton(
+                                key: const ValueKey('to-archives'),
+                                label: 'DETECTIVE ARCHIVES',
+                                glyph: InkGlyph.seal,
+                                singleLine: true,
+                                style: GameButtonStyle.outline,
+                                onPressed: () => context.go(Routes.seasons),
+                              ),
+                            ],
                             const SizedBox(height: AppSpace.md),
                             // For grown-ups (behind the parent gate): secondary, and
                             // the lock says it asks first.

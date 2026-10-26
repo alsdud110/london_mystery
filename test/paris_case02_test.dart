@@ -193,7 +193,7 @@ void main() {
 
   group('the case', () {
     test('Case 02 is in the game, after Case 01, with its four puzzles and evidence', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10', 's2_ep11', 's2_ep12']);
       expect(season2AwaitingArtJson.keys, isNot(contains('s2_ep02')));
       expect(SeasonCatalog.isAwaitingArt('s2_ep02'), isFalse);
       expect(const MockEpisodeRepository().fetchEpisode('s2_ep02'), completion(isA<Episode>()));
@@ -487,10 +487,10 @@ void main() {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       expect(game.openSeason(SeasonIds.paris), isTrue);
-      expect(c.read(episodeCatalogProvider).map((e) => e.id), ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
+      expect(c.read(episodeCatalogProvider).map((e) => e.id), ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10', 's2_ep11', 's2_ep12']);
       expect(c.read(seasonProvider.notifier).isUnlocked('s2_ep02'), isFalse);
       expect(game.openEpisode('s2_ep02'), isFalse, reason: 'no way round Case 01');
-      expect(c.read(seasonOverviewProvider).marks, [CaseMark.current, CaseMark.sealed, CaseMark.sealed, CaseMark.sealed, CaseMark.sealed, CaseMark.sealed, CaseMark.sealed, CaseMark.sealed, CaseMark.sealed, CaseMark.sealed]);
+      expect(c.read(seasonOverviewProvider).marks, [CaseMark.current, for (var i = 0; i < 11; i++) CaseMark.sealed]);
       solve(c, case01);
       expect(c.read(seasonProvider.notifier).isUnlocked('s2_ep02'), isTrue);
       final board = c.read(seasonOverviewProvider);

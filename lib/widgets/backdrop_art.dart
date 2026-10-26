@@ -177,6 +177,15 @@ abstract final class BackdropArt {
     '$_paris/case_10/arc_star_view.png': _focus(380, 180, 1120, 720),
     '$_paris/case_10/star_room.png': _focus(130, 80, 1480, 900),
     '$_paris/case_10/roof_photo.png': const BackdropPicture(_wide),
+    // Case 11: the street and its little door; the reading room (its
+    // middle kept calm for the people talked to).
+    '$_paris/case_11/annex_street.png': _focus(300, 120, 1250, 900),
+    '$_paris/case_11/annex_reading_room.png': _focus(250, 150, 1300, 900),
+    // Case 12: the museum hall, the room of old machines (its plinth in
+    // the middle), and the morning the case ends on (the glass case).
+    '$_paris/case_12/arts_metiers_hall.png': _focus(250, 100, 1300, 900),
+    '$_paris/case_12/old_machine_room.png': _focus(150, 150, 1300, 850),
+    '$_paris/case_12/finale_morning.png': _focus(300, 200, 1250, 950),
   };
 
   /// The part of Case 09's garden left of its post clock (fractions): the

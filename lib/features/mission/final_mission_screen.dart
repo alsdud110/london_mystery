@@ -13,6 +13,8 @@ import '../../core/utils/audio_service.dart';
 import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/abbesses_puzzles.dart';
+import '../../data/models/case_talk.dart';
+import '../../data/models/easy_steps.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/garden_puzzles.dart';
 import '../../data/models/letter_puzzles.dart';
@@ -43,6 +45,8 @@ import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/canvas_choice.dart';
+import 'widgets/case_talk.dart';
+import 'widgets/easy_steps.dart';
 import 'widgets/clockwork_garden.dart';
 import 'widgets/star_records.dart';
 import 'widgets/evidence_board.dart';
@@ -819,6 +823,79 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     );
   }
 
+  /// Where Case 12's ending counts as seen (the case closes with it).
+  String get _endingKey => GameProgress.examinedKey(_mission.id, 'ending');
+
+  /// The final played as a talk (Case 11: Victor shown the clues), on its
+  /// own night page; finished, it answers the final.
+  Widget _talkFinal(Mission m, TalkScene talk, GameProgress progress) {
+    final key = caseTalkStateKey(m.id);
+    return _finalPage(
+      child: CaseTalk(
+        key: const ValueKey('final-talk'),
+        scene: talk,
+        progress: TalkProgress.decode(progress.puzzleStateOf(key), talk),
+        onProgress: (p) => ref.read(gameControllerProvider.notifier).recordPuzzleState(key, p.encode()),
+        onFinish: () => _submit(talk.answer),
+      ),
+    );
+  }
+
+  /// The final played one small step at a time (Case 12's case board), on
+  /// the night desk; its last step answers the final.
+  Widget _easyFinal(Mission m, EasyStepsScene scene, GameProgress progress) => _finalPage(
+    desk: true,
+    child: Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: EasyStepsPuzzle(
+          key: const ValueKey('final-steps'),
+          scene: scene,
+          dark: true,
+          eyebrow: 'FINAL MISSION',
+          done: EasyStepsState.decode(progress.puzzleStateOf(m.id), scene),
+          onDone: (n) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, EasyStepsState.encode(n)),
+          onFinish: _submit,
+        ),
+      ),
+    ),
+  );
+
+  /// The ending after the final's answer (Case 12), one line at a time:
+  /// seen, the case closes, and its last lines follow (its story).
+  Widget _endingPage(Mission m, List<EndingLine> lines) => _finalPage(
+    bar: false,
+    child: CaseEnding(
+      key: const ValueKey('final-ending'),
+      lines: lines,
+      onFinish: () {
+        ref.read(gameControllerProvider.notifier).closeCase(_endingKey);
+        context.go(Routes.story(m.id));
+      },
+    ),
+  );
+
+  /// A final's own page: the night, the bar's way back to the map (none on
+  /// the ending, which plays to its end).
+  Widget _finalPage({required Widget child, bool desk = false, bool bar = true}) => Scaffold(
+    backgroundColor: AppColors.navyDeep,
+    appBar: bar
+        ? AppBar(
+            backgroundColor: AppColors.navyDeep,
+            foregroundColor: AppColors.goldLight,
+            iconTheme: const IconThemeData(color: AppColors.goldLight),
+            titleTextStyle: AppText.mark(color: AppColors.goldLight, size: 17),
+            title: const Text('FINAL MISSION'),
+            leading: IconButton(
+              tooltip: 'Back to map',
+              icon: const InkIcon(InkGlyph.back),
+              onPressed: () => context.go(Routes.map),
+            ),
+          )
+        : null,
+    body: desk ? DeskBackground(child: SafeArea(child: child)) : SafeArea(top: !bar, child: child),
+  );
+
   @override
   Widget build(BuildContext context) {
     final m = ref.watch(currentEpisodeProvider).finalMission;
@@ -826,6 +903,14 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     // Answered: the case closed, or its last step after the answer to do
     // (Paris Case 08's last drawing; the case closes with it).
     final solved = progress.isCaseSolved || progress.finalAwaitsLastStep(ref.watch(currentEpisodeProvider));
+    // Cases 11–12: the final on a page of its own (a talk, the case board),
+    // then the ending before anything else.
+    final talkFinal = ref.watch(caseTalkOfProvider)(m);
+    final easy = SeasonCatalog.easySteps(m);
+    final ending = SeasonCatalog.caseEnding(m);
+    if (!solved && talkFinal != null) return _talkFinal(m, talkFinal, progress);
+    if (!solved && easy != null) return _easyFinal(m, easy, progress);
+    if (ending != null && progress.isCompleted(m.id) && !progress.hasExamined(_endingKey)) return _endingPage(m, ending);
     final box = _box;
     final canvases = _canvases;
     final board = _board;

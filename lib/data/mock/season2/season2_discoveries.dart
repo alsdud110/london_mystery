@@ -53,6 +53,14 @@ const Map<String, DiscoveryType> season2DiscoveryTypes = {
   's2_ep10_m1': DiscoveryType.evidenceFound, // T1's tape: no three o'clock
   's2_ep10_m2': DiscoveryType.deduction, // T1 one hour behind the other clocks
   's2_ep10_m3': DiscoveryType.deduction, // the sun says 3:30 too
+  // ── Case 11 — The Unwritten Hour ────────────────────────────────────
+  's2_ep11_m1': DiscoveryType.evidenceFound, // page 3, in Box 9
+  's2_ep11_m2': DiscoveryType.deduction, // Victor's paper is not true
+  's2_ep11_m3': DiscoveryType.deduction, // the name is Victor's
+  // ── Case 12 — The Clockmaker's Truth ────────────────────────────────
+  's2_ep12_m1': DiscoveryType.clueFound, // the tag: E.M. is Émile Moreau
+  's2_ep12_m2': DiscoveryType.deduction, // Émile is the Clockmaker
+  's2_ep12_m3': DiscoveryType.evidenceFound, // the machine, fixed
 };
 
 /// The Discovery Moments of Season 2's regular missions in [cases] (case id

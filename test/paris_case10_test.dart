@@ -46,7 +46,7 @@ import 'helpers.dart';
 /// Season 2, Case 10 — The Hour of Shadows: its six pictures (as delivered,
 /// the sundial's hour lines and the photo's clock faces where the scenes
 /// say), its story and puzzles as the spec says them, its rules (unlock
-/// after Case 09, saves, Case 11 coming soon), and a child playing it
+/// after Case 09, saves, Case 11 next), and a child playing it
 /// through on three phones. Nothing is told before its time: what page 3
 /// says, who sent it and why, why T1 went wrong, T2 and T3, and any name.
 ///
@@ -234,7 +234,8 @@ void main() {
 
   group('in the game', () {
     test('Case 10 is in the game, after Case 09, at the Arc de Triomphe, with its four puzzles', () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10']);
+      // Cases 11 and 12 follow it (2026-10-27).
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes.keys, ['s2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10', 's2_ep11', 's2_ep12']);
       expect(season2AwaitingArtJson, isEmpty);
       expect(case10.number, 10);
       expect(case10.title, 'The Hour of Shadows');
@@ -258,8 +259,9 @@ void main() {
       expect(season2DiscoveryTypes['s2_ep10_m1'], DiscoveryType.evidenceFound);
     });
 
-    test("Case 11 is told next by its title only; the bible's Case 10 is the one played", () {
-      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, {11: 'The Unwritten Hour'});
+    test("Case 11 follows it in the game (no title left to tell); the bible's Case 10 is the one played", () {
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, isEmpty);
+      expect(SeasonCatalog.byId(SeasonIds.paris)!.episodes['s2_ep11']!['title'], 'The Unwritten Hour');
       final bible = File('docs/SEASON2_PARIS_STORY_BIBLE.md').readAsStringSync();
       // v2.0 (2026-10-26) added Cases 11–12; Case 10's section is as v1.9 wrote it.
       expect(bible, contains('**Version:** 2.0'));
@@ -564,7 +566,7 @@ void main() {
       expect(c.read(progressRepositoryProvider).load('s2_ep09').examined.any((k) => k.startsWith('s2_ep10')), isFalse);
     });
 
-    test('solved: Paris is 10 of 12, Case 11 is coming soon, nothing opens it; London is as it was', () async {
+    test('solved: Paris is 10 of 12, Case 11 opens next; London is as it was', () async {
       final c = await start();
       final game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -573,10 +575,10 @@ void main() {
       }
       final board = c.read(seasonOverviewProvider);
       expect(board.solvedCount, 10);
-      expect(board.comingSoonCase, 11);
+      expect(board.comingSoonCase, isNull, reason: 'Case 11 is in the game');
       final available = c.read(seasonAvailabilityProvider(SeasonIds.paris))!;
       expect((available.solvedCount, available.plannedCount), (10, 12));
-      expect(game.openEpisode('s2_ep11'), isFalse, reason: 'no Case 11 to open');
+      expect(game.openEpisode('s2_ep11'), isTrue, reason: 'Case 11 opens once Case 10 is solved');
       expect(c.read(progressRepositoryProvider).loadSeason(SeasonIds.london).solvedEpisodeIds, hasLength(12));
     });
   });
@@ -918,15 +920,15 @@ void main() {
         expect(findReadable('The mystery continues at Saint-Sulpice!'), findsOneWidget);
         await shot('final_scene');
         await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 4000));
-        await reveal(t, find.byKey(const ValueKey('next-case-coming-soon')));
-        expect(find.text('CASE 11 · THE UNWRITTEN HOUR'), findsOneWidget);
-        expect(find.text('COMING SOON'), findsOneWidget);
+        // Case 11 is in the game: the report opens it (never "coming soon").
+        await reveal(t, find.text('OPEN CASE 11'));
+        expect(find.byKey(const ValueKey('next-case-coming-soon')), findsNothing);
         await shot('case_closed');
 
         final board = ref.read(seasonOverviewProvider);
         expect(board.solvedCount, 10);
-        expect(board.comingSoonCase, 11);
-        expect(game.openEpisode('s2_ep11'), isFalse);
+        expect(board.comingSoonCase, isNull);
+        expect(game.openEpisode('s2_ep11'), isTrue);
         expect(ref.read(walletProvider).balance, greaterThan(coinsAtStart), reason: 'the case paid its coins');
         await wait(t, const Duration(seconds: 3));
       });

@@ -298,6 +298,12 @@ abstract final class ArtAssets {
     // Case 10: the arch, and the room under its roof.
     Artwork.arcStarView: '$_paris10/arc_star_view.png',
     Artwork.starRoom: '$_paris10/star_room.png',
+    // Case 11: the street and the Archive Annex's reading room.
+    Artwork.annexStreet: '$_paris11/annex_street.png',
+    Artwork.annexReadingRoom: '$_paris11/annex_reading_room.png',
+    // Case 12: the museum hall and the room of old machines.
+    Artwork.artsMetiersHall: '$_paris12/arts_metiers_hall.png',
+    Artwork.oldMachineRoom: '$_paris12/old_machine_room.png',
   };
 
   static const _paris01 = 'assets/seasons/season_02_paris/cases/case_01';
@@ -308,6 +314,8 @@ abstract final class ArtAssets {
   static const _paris06 = 'assets/seasons/season_02_paris/cases/case_06';
   static const _paris07 = 'assets/seasons/season_02_paris/cases/case_07';
   static const _paris08 = 'assets/seasons/season_02_paris/cases/case_08';
+  static const _paris11 = 'assets/seasons/season_02_paris/cases/case_11';
+  static const _paris12 = 'assets/seasons/season_02_paris/cases/case_12';
   static const _paris09 = 'assets/seasons/season_02_paris/cases/case_09';
   static const _paris10 = 'assets/seasons/season_02_paris/cases/case_10';
 
@@ -420,6 +428,10 @@ abstract final class ArtAssets {
     // Case 10: both wide.
     Artwork.arcStarView: 1536 / 1024,
     Artwork.starRoom: 1536 / 1024,
+    Artwork.annexStreet: 1536 / 1024,
+    Artwork.annexReadingRoom: 1536 / 1024,
+    Artwork.artsMetiersHall: 1536 / 1024,
+    Artwork.oldMachineRoom: 1536 / 1024,
   };
 
   /// Width / height of the picture of [a] ([scenePrint] unless listed).

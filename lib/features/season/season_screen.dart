@@ -563,6 +563,19 @@ class _Dossier extends StatelessWidget {
                 style: AppText.caption(color: AppColors.inkBrown),
               ),
               const SizedBox(height: AppSpace.xs),
+            ] else ...[
+              // The last season there is, complete: on to the archives,
+              // where every season's file is kept.
+              GameButton(
+                key: const ValueKey('complete-to-archives'),
+                label: 'DETECTIVE ARCHIVES',
+                glyph: InkGlyph.seal,
+                arrow: true,
+                singleLine: true,
+                tap: TapRole.primary,
+                onPressed: () => context.go(Routes.seasons),
+              ),
+              const SizedBox(height: AppSpace.xs),
             ],
             Center(
               child: InkTextButton(
