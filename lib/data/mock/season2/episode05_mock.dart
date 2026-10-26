@@ -202,12 +202,13 @@ const Map<String, dynamic> season2Episode05Json = {
       ],
       'letterIntro': 'Your notebook says:',
       'letter':
-          'Read the backwards notes in the mirror.\n'
-          "Trust only the maker's own mark.\n"
-          'Where does it tell you to look?',
-      // The place the note with the maker's own mark names.
+          'The note is backwards.\n'
+          'Read it in the mirror.\n'
+          'Which clock does it name?',
+      // The place the maker's note names. Played very easy since 2026-10-27
+      // (`season2Case05Steps`): the mirror tapped, then Clock II or III.
       'type': 'multipleChoice',
-      'question': "Which place does the maker's own note name?",
+      'question': 'Which clock?',
       'options': [
         {
           'id': 'corner',
@@ -228,8 +229,8 @@ const Map<String, dynamic> season2Episode05Json = {
       ],
       'answer': 'clock3',
       'hints': [
-        'Hold the mirror over each note. Then look at the mark under it.',
-        "The maker's own note says: the clock that turns back. Which clock is that?",
+        'The note is backwards. A mirror turns it round.',
+        'The mirror says: the clock that turns back.',
       ],
       'clue': {
         'id': 's2_ep05_c3',
@@ -280,12 +281,13 @@ const Map<String, dynamic> season2Episode05Json = {
     'letter':
         '16 MAY — ONE LETTER COLLECTED FROM No. 7.\n'
         'LETTER No. 4417.\n\n'
-        'Find its slips.\n'
-        'Put them in order.',
-    // Each of the letter's slips in its place on the trail (`slot:slip`);
-    // the slips of other letters fit nowhere.
+        'Find its slip.',
+    // Played very easy since 2026-10-27 (`season2Case05Steps`): letter
+    // 4417's slip found beside 4471's, then its trail shown. The answer is
+    // still each of its slips in its place on the trail (`slot:slip`), so
+    // saves and the archive are as before.
     'type': 'matchPairs',
-    'question': 'Where did the letter go? Put its slips in order.',
+    'question': 'Find letter 4417.',
     'options': [
       {'id': 's1', 'label': 'COLLECTED · PASSAGE BOX'},
       {'id': 's2', 'label': 'SORTED · CENTRAL OFFICE'},
@@ -309,8 +311,8 @@ const Map<String, dynamic> season2Episode05Json = {
       'third:s2': 'Read the times. Which came last?',
     },
     'hints': [
-      'Look at the letter number on each slip. Is it the same as on the receipt?',
-      'Three slips are for letter No. 4417. Put them in time order.',
+      'Read each number: 4, 4, 1, 7.',
+      'Find 4417, not 4471.',
     ],
     'evidence': {
       'id': 's2_ep05_e4',
@@ -387,7 +389,6 @@ const Map<String, dynamic> season2Episode05Json = {
     'held': '보관됐다, 멈춰 있었다',
     'delivered': '배달됐다',
     'trail': '지나간 길, 흔적',
-    'order': '순서',
     'gears': '톱니바퀴들',
     'spring': '태엽, 용수철',
     'pendulum': '시계추',

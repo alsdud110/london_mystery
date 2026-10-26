@@ -1,5 +1,6 @@
 import 'dart:ui' show Offset, Rect;
 
+import '../../models/easy_steps.dart';
 import '../../models/river_puzzles.dart' show DrawnEvidenceArt, RiverEvidenceArt;
 import '../../models/scene_exhibit.dart' show EvidenceLink;
 import '../../models/scene_explore.dart' show ScenePixels;
@@ -312,6 +313,165 @@ final Map<String, PostTrailScene> season2PostTrails = {
     pickTask: 'Tap a slip, then tap its place on the trail.',
     placeTask: 'Now tap its place above: 1st, 2nd or 3rd.',
     submitLabel: 'FOLLOW THE LETTER',
+  ),
+};
+
+// ── M3 and the final, very easy (the user's rules of 2026-10-27) ─────────
+// M3: one note, blotted backwards on the blotter; a tap on the hand mirror
+// reads it (the words in its glass); then which clock: Clock II and Clock
+// III as they hang on the wall (M2's, each with what M2 found), the
+// mirror's words over them. Clock III opened: the envelope corner and its receipt,
+// LETTER No. 4417. The final: which slip is letter 4417's (4471's beside
+// it), then its trail written out, to the Louvre post room. The mirror's
+// glass, (240, 174)–(656, 590) of its picture, holds the words.
+const _deskPicture = EasyPicture(
+  file: '$_case05/writing_desk_blotter.png',
+  pixels: _desk,
+  crop: Rect.fromLTRB(228, 170, 1036, 762),
+  label: 'A big sheet of blotting paper; one note is blotted on it, backwards',
+);
+
+const _mirrorPicture = EasyPicture(
+  file: '$_case05/hand_mirror.png',
+  pixels: _mirror,
+  label: 'A small hand mirror with a brass frame',
+);
+
+const _blotted = PicturePanel(
+  id: 'blotter',
+  picture: _deskPicture,
+  writing: [
+    EasyWriting('THE CLOCK', at: Rect.fromLTRB(300, 340, 964, 440), size: 88, mirrored: true),
+    EasyWriting('THAT TURNS BACK.', at: Rect.fromLTRB(300, 480, 964, 580), size: 88, mirrored: true),
+  ],
+);
+
+/// A clock of the wall (M2's picture), its numeral on its plate.
+PicturePanel _wallClock(String id) {
+  final c = season2ClockWalls['s2_ep05_m2']!.clocks.firstWhere((c) => c.id == id);
+  return PicturePanel(
+    id: 'clock-$id',
+    picture: EasyPicture(
+      file: '$_case05/wall_of_clocks.png',
+      pixels: _wall,
+      crop: Rect.fromLTRB(c.centre.dx - 150, 90, c.centre.dx + 150, 742),
+      label: 'Clock ${c.numeral} on the workshop wall',
+    ),
+    writing: [
+      EasyWriting(
+        c.numeral,
+        at: Rect.fromLTRB(c.plateAt.left * _wall.width + 20, c.plateAt.top * _wall.height + 8, c.plateAt.right * _wall.width - 20, c.plateAt.bottom * _wall.height - 8),
+        size: 40,
+        ink: EasyInk.typed,
+      ),
+    ],
+  );
+}
+
+const _mirrorRead = PicturePanel(
+  id: 'mirror',
+  picture: _mirrorPicture,
+  writing: [
+    EasyWriting('THE CLOCK', at: Rect.fromLTRB(290, 262, 606, 352), size: 80, strong: true),
+    EasyWriting('THAT TURNS', at: Rect.fromLTRB(262, 356, 634, 436), size: 70, strong: true),
+    EasyWriting('BACK.', at: Rect.fromLTRB(304, 440, 592, 520), size: 80, strong: true),
+  ],
+);
+
+final _trail = season2PostTrails['s2_ep05_final']!;
+
+/// Case 05's M3 and final played one small step at a time. Their answers
+/// are the missions' own (the place the maker's note names; letter 4417's
+/// three slips in order), so the saves and the Case Archive are as before.
+final Map<String, EasyStepsScene> season2Case05Steps = {
+  's2_ep05_m3': EasyStepsScene(
+    title: 'THE BLOTTED PAGE',
+    answer: 'clock3',
+    steps: [
+      const EasyStep(
+        id: 'mirror',
+        say: 'Tap the mirror.',
+        panels: [
+          _blotted,
+          PicturePanel(id: 'mirror', picture: _mirrorPicture),
+        ],
+        does: EasyDo.tap,
+        target: EasyMark('mirror'),
+        hints: ['The note is backwards. A mirror turns it round.', 'Tap the hand mirror.'],
+        done: 'THE CLOCK THAT TURNS BACK.',
+        after: [_blotted, _mirrorRead],
+      ),
+      EasyStep(
+        id: 'clock',
+        say: 'Which clock?',
+        panels: const [
+          PaperPanel(
+            id: 'mirror-words',
+            title: 'THE MIRROR SAYS',
+            lines: [EasyLine('THE CLOCK THAT TURNS BACK.', strong: true)],
+            old: false,
+            aspect: 2.4,
+          ),
+        ],
+        does: EasyDo.choose,
+        options: [
+          EasyOption(id: 'ii', label: 'CLOCK II\nruns fast', panel: _wallClock('ii'), feedback: 'Clock II runs fast. Which clock turns back?'),
+          EasyOption(id: 'iii', label: 'CLOCK III\nturns back', panel: _wallClock('iii')),
+        ],
+        answer: 'iii',
+        hints: const ['The mirror says: the clock that turns back.', 'Find "turns back" under the clocks.'],
+        lookHere: const [EasyMark('mirror-words')],
+        tell: 'Clock III turns back.',
+        done: 'Clock III! No letter inside. Only a receipt.',
+        after: const [
+          PicturePanel(
+            id: 'clock',
+            picture: EasyPicture(file: '$_case05/clock_back_extra_wheel.png', pixels: _back, label: 'The back of Clock III, opened'),
+            caption: 'Clock III, opened',
+          ),
+          DrawnPanel(id: 'receipt', drawn: hideaway, caption: 'LETTER No. 4417'),
+        ],
+      ),
+    ],
+  ),
+  's2_ep05_final': EasyStepsScene(
+    title: "THE LETTER'S TRAIL",
+    answer: 'first:s1,second:s2,third:s3',
+    finishLabel: 'FOLLOW THE LETTER',
+    steps: [
+      EasyStep(
+        id: 'letter',
+        say: 'Find letter 4417.',
+        does: EasyDo.choose,
+        options: [
+          EasyOption(
+            id: '4471',
+            label: 'LETTER 4471',
+            panel: DrawnPanel(id: 'slip4471', drawn: _trail.paperOf(_trail.slipOf('s5'))),
+            feedback: 'This is 4471. Read the numbers again: 4417.',
+          ),
+          EasyOption(id: '4417', label: 'LETTER 4417', panel: DrawnPanel(id: 'slip4417', drawn: _trail.paperOf(_trail.slipOf('s1')))),
+        ],
+        answer: '4417',
+        hints: ['Read each number: 4, 4, 1, 7.', 'Find 4417, not 4471.'],
+        tell: 'Look: this slip says 4417.',
+        done: 'Letter 4417! Here is where it went.',
+        after: [
+          PaperPanel(
+            id: 'trail',
+            title: 'LETTER No. 4417 · 16 MAY',
+            lines: [
+              EasyLine('9:00 AM — COLLECTED'),
+              EasyLine('11:00 AM — SORTED'),
+              EasyLine('4:00 PM — HELD', strong: true),
+              EasyLine('LOUVRE POST ROOM', strong: true),
+            ],
+            old: false,
+            aspect: 1.1,
+          ),
+        ],
+      ),
+    ],
   ),
 };
 

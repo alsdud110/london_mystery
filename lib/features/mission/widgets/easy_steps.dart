@@ -15,7 +15,9 @@ import '../../../widgets/glossary_text.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/landmark_art.dart' show ClockHandsPainter;
 import '../../game/game_providers.dart';
+import 'opera_papers.dart' show PixelCrop;
 import 'question_widgets.dart' show ShakeOnChange;
+import 'workshop_papers.dart' show DrawnEvidenceView;
 
 /// A puzzle of Cases 11–12 played one step at a time ([EasyStepsScene]):
 /// what to do in a few words on top (and HINT beside it, free at any
@@ -167,6 +169,7 @@ class _EasyStepsPuzzleState extends ConsumerState<EasyStepsPuzzle> {
   @override
   Widget build(BuildContext context) {
     final step = _step;
+    final stepDone = _stepDone;
     final dark = widget.dark;
     final ink = dark ? AppColors.paperLight : AppColors.navy;
     final panels = _stepDone ? (step.after ?? step.panels) : step.panels;
@@ -225,7 +228,9 @@ class _EasyStepsPuzzleState extends ConsumerState<EasyStepsPuzzle> {
                       : _Panels(
                           panels: panels,
                           dark: dark,
-                          builder: (panel, size) => _panelFor(panel, step, size),
+                          // The step and whether it is done as built: a step
+                          // fading out keeps its own (never the next one's).
+                          builder: (panel, size) => _panelFor(panel, step, size, done: stepDone),
                         ),
                 ),
               ),
@@ -272,12 +277,13 @@ class _EasyStepsPuzzleState extends ConsumerState<EasyStepsPuzzle> {
     );
   }
 
-  /// A panel of the step, lit where it should be, its targets tappable.
-  Widget _panelFor(EasyPanel panel, EasyStep step, Size size) {
+  /// A panel of the step, lit where it should be, its targets tappable
+  /// ([done]: the step is done, nothing to tap).
+  Widget _panelFor(EasyPanel panel, EasyStep step, Size size, {required bool done}) {
     final glows = <Rect?>[];
     final taps = <(Rect?, VoidCallback, String)>[];
-    if (!_stepDone) {
-      if (step.does == EasyDo.tap && (step.target?.panel ?? step.panels.first.id) == panel.id) {
+    if (!done) {
+      if (step.does == EasyDo.tap && (step.target?.panel ?? step.panels.firstOrNull?.id) == panel.id) {
         // The thing to tap is always lit (nothing is hidden); a large one
         // lights what to look at in it instead.
         if (step.lit.isEmpty) glows.add(step.target?.area);
@@ -291,7 +297,7 @@ class _EasyStepsPuzzleState extends ConsumerState<EasyStepsPuzzle> {
           if (m.panel == panel.id) glows.add(m.area);
         }
       }
-      if (step.does == EasyDo.choose && panel == step.panels.first) {
+      if (step.does == EasyDo.choose && panel == step.panels.firstOrNull) {
         for (final o in step.options) {
           if (o.area == null) continue;
           taps.add((o.area, () => _choose(o.id), o.label ?? o.id));
@@ -303,7 +309,7 @@ class _EasyStepsPuzzleState extends ConsumerState<EasyStepsPuzzle> {
       return _RubView(
         panel: panel,
         rubbed: _rubbed,
-        done: _stepDone || step.does != EasyDo.rub,
+        done: done || step.does != EasyDo.rub,
         onRub: _rub,
       );
     }
@@ -723,11 +729,13 @@ class _Panels extends StatelessWidget {
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.topCenter,
                               child: ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: math.max(sizes[i].width, 110)),
+                                constraints: BoxConstraints(maxWidth: twoLines ? math.max(sizes[i].width, 110) : double.infinity),
                                 child: Text(
                                   panels[i].caption!,
                                   textAlign: TextAlign.center,
                                   maxLines: twoLines ? 2 : 1,
+                                  // One line: made smaller to fit, never cut.
+                                  softWrap: twoLines,
                                   style: AppText.bodyText(
                                     size: 15,
                                     weight: FontWeight.w700,
@@ -795,6 +803,9 @@ class EasyPanelView extends ConsumerWidget {
       QuotePanel() => _QuoteView(panel: p),
       GearMarkPanel() => _GearMarkView(panel: p),
       EvidencePanel() => _EvidenceView(evidence: _evidenceOf(ref, p.evidenceId)),
+      DrawnPanel(:final drawn, :final crop, :final pixels) => crop == null || pixels == null
+          ? DrawnEvidenceView(drawn: drawn)
+          : PixelCrop(pixels: pixels, crop: crop, child: DrawnEvidenceView(drawn: drawn)),
       RubPanel() => _RubView(panel: p, rubbed: const {}, done: true, onRub: (_) {}),
     };
     // A paper, a quote or evidence lit as a whole, or tapped as a whole.
@@ -869,23 +880,23 @@ TextStyle _inkStyle(EasyInk ink, double size) => switch (ink) {
   EasyInk.brass => AppText.mark(size: size, color: AppColors.goldLight).copyWith(height: 1.1),
 };
 
-/// Words on a picture, fitted into their place.
-Widget _writing(EasyWriting w, double s, {double opacity = 1}) => Opacity(
-  opacity: opacity,
-  child: FittedBox(
-    fit: BoxFit.scaleDown,
-    alignment: Alignment.center,
-    child: Text(
-      w.text,
-      maxLines: 1,
-      style: _inkStyle(w.ink, w.size * s).copyWith(
-        decoration: w.strong ? TextDecoration.underline : null,
-        decorationColor: AppColors.burgundy,
-        decorationThickness: 2,
-      ),
+/// Words on a picture, fitted into their place (backwards when blotted).
+Widget _writing(EasyWriting w, double s, {double opacity = 1}) {
+  Widget text = Text(
+    w.text,
+    maxLines: 1,
+    style: _inkStyle(w.ink, w.size * s).copyWith(
+      decoration: w.strong ? TextDecoration.underline : null,
+      decorationColor: AppColors.burgundy,
+      decorationThickness: 2,
     ),
-  ),
-);
+  );
+  if (w.mirrored) text = Transform.flip(flipX: true, child: text);
+  return Opacity(
+    opacity: opacity,
+    child: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.center, child: text),
+  );
+}
 
 /// A picture laid on another (in grey when it is a rubbing).
 Widget _layer(EasyLayer l, {double opacity = 1}) {

@@ -11,9 +11,11 @@ import 'package:london_mystery/app.dart';
 import 'package:london_mystery/core/constants/app_constants.dart';
 import 'package:london_mystery/core/router/app_router.dart';
 import 'package:london_mystery/core/utils/answer_checker.dart';
+import 'package:london_mystery/data/mock/season2/season2_case05_scenes.dart' show season2Blotters;
 import 'package:london_mystery/data/mock/season2/season2_learning.dart';
 import 'package:london_mystery/data/mock/season_catalog.dart';
 import 'package:london_mystery/data/models/discovery.dart';
+import 'package:london_mystery/data/models/easy_steps.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/learning.dart';
@@ -32,6 +34,7 @@ import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/game_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'easy_play.dart';
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
 
@@ -89,8 +92,13 @@ void main() {
 
   final bench = SeasonCatalog.markCompare(m1)!;
   final wall = SeasonCatalog.clockWall(m2)!;
-  final blotter = SeasonCatalog.blotter(m3)!;
+  // M3's old blotter: no longer played (very easy since 2026-10-27), its
+  // measured pictures and papers still drawn on.
+  final blotter = season2Blotters[m3.id]!;
   final trail = SeasonCatalog.postTrail(fin)!;
+  // M3 and the final, played very easy (the user's rules of 2026-10-27).
+  final steps3 = SeasonCatalog.easySteps(m3)!;
+  final stepsF = SeasonCatalog.easySteps(fin)!;
 
   group('its pictures', () {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -201,6 +209,15 @@ void main() {
       expect(ParisLandmark.notreDame.at, const Offset(0.732, 0.566));
       expect(SeasonMap.landmarkOf(m1.id), ParisLandmark.notreDame);
       expect(SeasonCatalog.byId(SeasonIds.paris)!.season.upcomingTitles, isEmpty, reason: 'Cases 06 to 12 are in the game; no title is left to tell');
+      // M3 and the final are played very easy (2026-10-27); M1 and M2 as
+      // they were. The final's trail stays for the page after its answer.
+      expect(SeasonCatalog.blotter(m3), isNull);
+      for (final m in [m3, fin]) {
+        expect(SeasonCatalog.easySteps(m)?.answer, m.answer, reason: '${m.id}: its own answer, so saves are as before');
+      }
+      for (final m in [m1, m2]) {
+        expect(SeasonCatalog.easySteps(m), isNull, reason: m.id);
+      }
     });
 
     test('the opening picks up the label\'s last words, in the second person; Case 04 is as it was', () {
@@ -264,20 +281,91 @@ void main() {
       expect(wall.watchLabel, 'WATCH THE CLOCKS');
     });
 
-    test('M3: only the brown note has the maker\'s own mark; it names the clock that turns back', () {
-      expect({for (final n in blotter.notes) n.id: n.mark}, {'blue': null, 'black': MarkCopy.oneHand, 'brown': MarkCopy.exact});
-      final brown = blotter.notes.singleWhere((n) => n.mark == MarkCopy.exact);
-      expect(brown.lines.join(' '), 'The letter is ready. I hid it in the clock that turns back. On 16 May, it goes to the post.');
-      expect(blotter.notes.firstWhere((n) => n.id == 'blue').lines.join(' '), 'Please put my letter in the post box at the corner.');
-      expect(blotter.notes.firstWhere((n) => n.id == 'black').lines.join(' '), 'The letter is in the tin of springs.');
-      expect(m3.answer, 'clock3');
-      for (final o in m3.options) {
-        expect(AnswerChecker.isCorrect(m3, o.id), o.id == 'clock3');
-        if (o.id != 'clock3') expect(o.feedback, isNotNull, reason: o.id);
+    test('M3, very easy: one blotted note, read with a tap on the mirror; then Clock II or Clock III; Clock III opened', () {
+      expect([for (final s in steps3.steps) s.id], ['mirror', 'clock']);
+      final [mirror, clock] = steps3.steps;
+      // One note, backwards on the blotter: the maker's own words.
+      expect(mirror.say, 'Tap the mirror.');
+      expect(mirror.does, EasyDo.tap);
+      expect(mirror.target!.panel, 'mirror');
+      final blotted = mirror.panels.first as PicturePanel;
+      expect(blotted.picture.file, blotter.desk);
+      expect(blotted.picture.view, blotter.blotter, reason: 'the blotting paper, whole');
+      expect([for (final w in blotted.writing) w.text].join(' '), 'THE CLOCK THAT TURNS BACK.');
+      expect(blotted.writing.every((w) => w.mirrored), isTrue, reason: 'backwards, as blotted');
+      for (final w in blotted.writing) {
+        expect(blotter.blotter.contains(w.at.topLeft) && blotter.blotter.contains(w.at.bottomRight), isTrue, reason: w.text);
       }
-      expect(blotter.receipt.first, '16 MAY — ONE LETTER COLLECTED FROM No. 7.');
-      expect(blotter.hideaway.lines.last, 'LETTER No. 4417');
+      final brown = blotter.notes.singleWhere((n) => n.mark == MarkCopy.exact);
+      expect(brown.lines.join(' ').toUpperCase(), contains('THE CLOCK THAT TURNS BACK'), reason: "the maker's own note");
+      // Tapped: the words in the mirror's glass, the right way round.
+      expect(mirror.done, 'THE CLOCK THAT TURNS BACK.');
+      final read = mirror.after!.last as PicturePanel;
+      expect(read.picture.file, blotter.mirror);
+      expect(read.writing.any((w) => w.mirrored), isFalse);
+      expect([for (final w in read.writing) w.text].join(' '), 'THE CLOCK THAT TURNS BACK.');
+      final glass = Rect.fromCircle(center: blotter.glassCentre, radius: blotter.glassRadius);
+      for (final w in read.writing) {
+        for (final corner in [w.at.topLeft, w.at.topRight, w.at.bottomLeft, w.at.bottomRight]) {
+          expect((corner - blotter.glassCentre).distance, lessThanOrEqualTo(blotter.glassRadius), reason: '${w.text}: in the glass');
+        }
+        expect(glass.contains(w.at.center), isTrue);
+      }
+      // Which clock: Clock II and Clock III as they hang on the wall, each
+      // with what M2 found, under the mirror's words.
+      expect(clock.say, 'Which clock?');
+      expect([for (final o in clock.options) o.label], ['CLOCK II\nruns fast', 'CLOCK III\nturns back']);
+      expect(clock.answer, 'iii');
+      final words = clock.panels.single as PaperPanel;
+      expect([for (final l in words.lines) l.text], ['THE CLOCK THAT TURNS BACK.']);
+      for (final o in clock.options) {
+        final card = o.panel! as PicturePanel;
+        final c = wall.clocks.firstWhere((c) => c.id == o.id);
+        expect(card.picture.file, wall.wall);
+        final dial = Rect.fromCircle(center: c.centre, radius: c.radius);
+        expect(card.picture.view.contains(dial.topLeft) && card.picture.view.contains(dial.bottomRight), isTrue, reason: '${o.id}: its dial');
+        final plate = Rect.fromLTRB(c.plateAt.left * 1536, c.plateAt.top * 1024, c.plateAt.right * 1536, c.plateAt.bottom * 1024);
+        expect(card.picture.view.contains(plate.topLeft) && card.picture.view.contains(plate.bottomRight), isTrue, reason: '${o.id}: its plate');
+        expect(card.writing.single.text, c.numeral);
+        expect(plate.contains(card.writing.single.at.topLeft) && plate.contains(card.writing.single.at.bottomRight), isTrue, reason: '${o.id}: its numeral on its plate');
+        for (final other in wall.clocks.where((x) => x.id != o.id)) {
+          expect(card.picture.view.contains(other.centre), isFalse, reason: '${o.id}: ${other.id} not on its card');
+        }
+      }
+      expect(m2.options.firstWhere((o) => o.id == 'ii').feedback, startsWith('Clock II runs fast'), reason: 'as M2 found it');
+      expect(m2.answer, 'iii', reason: 'Clock III turns back, as M2 found');
+      // Clock III opened: the receipt, LETTER No. 4417.
+      expect(clock.done, 'Clock III! No letter inside. Only a receipt.');
+      final receipt = clock.after!.last as DrawnPanel;
+      expect(receipt.drawn, same(blotter.hideaway));
+      expect(blotter.hideaway.lines, ['16 MAY', 'ONE LETTER COLLECTED', 'FROM No. 7', 'LETTER No. 4417']);
       expect(blotter.hideaway.tag, 'No. 4417');
+      expect((clock.after!.first as PicturePanel).picture.file, blotter.hideawayBack);
+      // Nothing of the receipt before Clock III is chosen.
+      expect([mirror.say, ...mirror.hints, ?mirror.done, clock.say, ...clock.hints, for (final p in clock.panels) ?p.caption].join(' '), isNot(contains('4417')));
+      expect(steps3.answer, m3.answer);
+      expect(AnswerChecker.isCorrect(m3, steps3.answer), isTrue);
+      expect(m3.question, 'Which clock?');
+    });
+
+    test('Final, very easy: letter 4417 found beside 4471; then its trail, to the Louvre post room', () {
+      final step = stepsF.steps.single;
+      expect(step.say, 'Find letter 4417.');
+      expect([for (final o in step.options) o.label], ['LETTER 4471', 'LETTER 4417']);
+      expect([for (final o in step.options) (o.panel! as DrawnPanel).drawn], [isA<WrittenPaper>(), isA<WrittenPaper>()]);
+      expect((step.option('4471')!.panel! as DrawnPanel).drawn, isA<WrittenPaper>().having((p) => p.lines.join(' '), 'lines', contains('4471')));
+      expect((step.option('4417')!.panel! as DrawnPanel).drawn, isA<WrittenPaper>().having((p) => p.lines.join(' '), 'lines', contains('4417')));
+      expect(step.answer, '4417');
+      expect(step.option('4471')!.feedback, 'This is 4471. Read the numbers again: 4417.');
+      final route = step.after!.single as PaperPanel;
+      expect(route.title, 'LETTER No. 4417 · 16 MAY');
+      expect([for (final l in route.lines) l.text], ['9:00 AM — COLLECTED', '11:00 AM — SORTED', '4:00 PM — HELD', 'LOUVRE POST ROOM']);
+      // The trail shown is the slips' own.
+      final ours = [for (final id in ['s1', 's2', 's3']) trail.slipOf(id)];
+      expect([for (final s in ours) '${s.time} — ${s.record}'], [for (final l in route.lines.take(3)) l.text]);
+      expect(ours.last.where, 'LOUVRE POST ROOM');
+      expect(stepsF.answer, fin.answer);
+      expect(stepsF.finishLabel, 'FOLLOW THE LETTER');
     });
 
     test('Final: only letter 4417\'s three slips, in time order, make the trail; it stops at the Louvre post room', () {
@@ -345,12 +433,13 @@ void main() {
     });
 
     test('every word in its glossary is in its text', () {
-      // Its text: the missions' words, and the papers read in its puzzles
-      // (the clocks' backs, the blotted notes, the slips), dotted too.
+      // Its text: the missions' words, the clocks' backs read in M2, and
+      // what the very-easy steps say and show, dotted too.
       final text = [
         everything(case05.allMissions, e: case05),
         for (final c in wall.clocks) c.backNote,
-        for (final n in blotter.notes) ...n.lines,
+        easyWords(steps3),
+        easyWords(stepsF),
       ].join('\n').toLowerCase();
       for (final w in case05.glossary.keys) {
         expect(text, contains(w), reason: w);
@@ -425,7 +514,7 @@ void main() {
       expect(c.read(currentEpisodeProvider).id, 's2_ep05');
     });
 
-    test('what is compared, watched, read and set on the trail is saved and comes back after a restart', () async {
+    test('what is compared, watched and the step reached is saved and comes back after a restart', () async {
       var c = await start();
       var game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -441,7 +530,9 @@ void main() {
       game.recordExamined(GameProgress.examinedKey(m2.id, ClockWallScene.watchedId));
       game.recordExamined(GameProgress.examinedKey(m2.id, ClockWallScene.backKey('iii')));
       expect(game.submitAnswer(m2, m2.answer).result, SubmitResult.correct);
-      game.recordExamined(GameProgress.examinedKey(m3.id, BlotterScene.noteKey('brown')));
+      // M3 left with the mirror read (one step done).
+      game.recordPuzzleState(m3.id, EasyStepsState.encode(1));
+      // An old save of the final: two slips set on the trail.
       game.recordPuzzleState(fin.id, TrailState.encode({'first': 's1', 'second': 's5'}, trail));
 
       c.dispose();
@@ -453,8 +544,8 @@ void main() {
       expect(p.wrongCount(m1.id), 1);
       expect(p.hasExamined('${m1.id}:sheet-a'), isTrue);
       expect(p.hasExamined('${m2.id}:watched') && p.hasExamined('${m2.id}:back-iii'), isTrue);
-      expect(p.hasExamined('${m3.id}:note-brown'), isTrue);
-      expect(TrailState.decode(p.puzzleStateOf(fin.id), trail), {'first': 's1', 'second': 's5'});
+      expect(EasyStepsState.decode(p.puzzleStateOf(m3.id), steps3), 1, reason: 'back on which clock');
+      expect(EasyStepsState.decode(p.puzzleStateOf(fin.id), stepsF), 0, reason: 'an old save starts the steps at the first');
 
       for (final m in [m3, fin]) {
         expect(game.submitAnswer(m, m.answer).result, SubmitResult.correct, reason: m.id);
@@ -588,6 +679,11 @@ void main() {
         }
 
         Set<String> examined() => ref.read(gameControllerProvider).examined.toSet();
+        void finger(String key) {
+          final r = t.getRect(find.byKey(ValueKey(key)));
+          expect(r.width >= 44 && r.height >= 44, isTrue, reason: '$tag $key: finger-sized ($r)');
+        }
+
         void nothingOfTheLetter(String where) {
           expect(find.textContaining('4417', findRichText: true), findsNothing, reason: where);
           expect(find.textContaining('LOUVRE', findRichText: true), findsNothing, reason: where);
@@ -699,84 +795,60 @@ void main() {
         await tapKey('clocks-check');
         await finish(m2.transition.first, 'm2');
 
-        // ── M3: the blotter, the mirror, Clock III ──────────────────────
+        // ── M3: the mirror, then which clock (very easy) ────────────────
+        final play = EasyPlay(t, 'c05_$tag');
         await visit(m3.id);
         await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 900));
-        expect(find.byKey(const ValueKey('hand-mirror')), findsOneWidget);
-        expect(find.byKey(const ValueKey('blotter-check')), findsNothing, reason: 'every note read first');
+        play.expectSay('Tap the mirror.');
+        expect(find.byKey(const ValueKey('easy-panel-blotter')), findsOneWidget);
+        expect(find.byKey(const ValueKey('easy-panel-mirror')), findsOneWidget);
         nothingOfTheLetter('M3');
-        await shot('m3_desk');
-        final view = blotter.blotter.inflate(28);
-        Future<void> readNote(String id) async {
-          await reveal(t, find.byKey(const ValueKey('blotter')));
-          final box = t.getRect(find.byKey(const ValueKey('blotter')));
-          final note = blotter.notes.firstWhere((n) => n.id == id);
-          final k = box.width / view.width;
-          await t.tapAt(box.topLeft + (note.at.center - view.topLeft) * k);
-          await wait(t, const Duration(milliseconds: 400));
-        }
-
-        await readNote('blue');
-        expect(find.byKey(const ValueKey('note-read-blue')), findsOneWidget);
-        await shot('m3_mirror_blue');
-        // Dragged down from the blue note to the black one.
-        await reveal(t, find.byKey(const ValueKey('blotter')));
-        final box = t.getRect(find.byKey(const ValueKey('blotter')));
-        final k = box.width / view.width;
-        final from = box.topLeft + (blotter.notes[0].at.center - view.topLeft) * k;
-        final to = box.topLeft + (blotter.notes[1].at.center - view.topLeft) * k;
-        final g = await t.startGesture(from);
-        for (var i = 1; i <= 10; i++) {
-          await g.moveTo(Offset.lerp(from, to, i / 10)!);
-          await t.pump(const Duration(milliseconds: 16));
-        }
-        await g.up();
-        await wait(t, const Duration(milliseconds: 400));
-        expect(examined(), contains('s2_ep05_m3:note-black'), reason: 'the mirror dragged over it');
-        await readNote('brown');
-        expect(find.byKey(const ValueKey('note-read-brown')), findsOneWidget);
-        await shot('m3_notes');
-        await tapKey('place-springs');
-        await tapKey('blotter-check');
-        await wrongThenTryAgain('How many hands?', 'm3');
-        await tapKey('place-clock3');
-        await tapKey('blotter-check', after: const Duration(milliseconds: 1200));
-        expect(ref.read(gameControllerProvider).isCompleted(m3.id), isTrue);
-        expect(find.byKey(const ValueKey('hideaway-paper')), findsOneWidget, reason: 'Clock III opened first');
-        expect(find.text('16 MAY — ONE LETTER COLLECTED FROM No. 7.\nLETTER No. 4417'), findsOneWidget);
+        final mirrorPicture = (steps3.steps.first.panels.last as PicturePanel).picture;
+        final reach = play.sizeOn('mirror', mirrorPicture, mirrorPicture.view);
+        expect(reach.width >= 44 && reach.height >= 44, isTrue, reason: '$tag: the mirror is finger-sized ($reach)');
+        await shot('m3_blotter');
+        await play.tapOn('mirror', mirrorPicture, null);
+        expect(findReadable('THE CLOCK THAT TURNS BACK.'), findsOneWidget, reason: 'read in the mirror');
+        nothingOfTheLetter('M3, the mirror read');
+        await shot('m3_mirror_read');
+        await play.next();
+        play.expectSay('Which clock?');
+        expect(findReadable('THE CLOCK THAT TURNS BACK.'), findsOneWidget, reason: "the mirror's words over the clocks");
+        expect(find.text('CLOCK III\nturns back'), findsOneWidget);
+        finger('easy-option-ii');
+        finger('easy-option-iii');
+        await play.tapKey('easy-option-ii');
+        expect(findReadable('Clock II runs fast. Which clock turns back?'), findsOneWidget);
+        expect(ref.read(gameControllerProvider).wrongCount(m3.id), 0, reason: 'a wrong answer costs nothing');
+        await shot('m3_wrong');
+        await play.tapKey('easy-option-iii');
+        expect(findReadable('Clock III! No letter inside. Only a receipt.'), findsOneWidget);
+        expect(find.textContaining('4417', findRichText: true), findsWidgets, reason: 'the receipt: LETTER No. 4417');
         expect(find.textContaining('LOUVRE'), findsNothing);
         await shot('m3_clock3');
-        await tapKey('hideaway-continue', after: const Duration(milliseconds: 300));
-        expect(examined(), contains('s2_ep05_m3:opened'));
+        await play.next();
         await finish(m3.transition.first, 'm3');
+        expect(ref.read(gameControllerProvider).isCompleted(m3.id), isTrue);
 
-        // ── Final: the slips under the door ─────────────────────────────
+        // ── Final: letter 4417, then its trail (very easy) ──────────────
         router.go(Routes.finalMission);
         await wait(t, const Duration(milliseconds: 1600));
-        expect(find.byKey(const ValueKey('trail-stage')), findsOneWidget);
-        expect(find.byKey(const ValueKey('trail-held')), findsNothing, reason: 'the slip is laid on the stage with the solve');
-        await shot('final_page');
-        Future<void> place(String slip, String slot) async {
-          await tapKey('slip-$slip');
-          await tapKey('trail-slot-$slot');
+        play.expectSay('Find letter 4417.');
+        expect(find.textContaining('LOUVRE'), findsNothing, reason: 'where it stopped, only once it is found');
+        await shot('final_find');
+        await play.tapKey('easy-option-4471');
+        expect(findReadable('This is 4471. Read the numbers again: 4417.'), findsOneWidget);
+        expect(ref.read(gameControllerProvider).wrongCount(fin.id), 0);
+        await play.tapKey('easy-option-4417');
+        expect(findReadable('Letter 4417! Here is where it went.'), findsOneWidget);
+        for (final line in ['9:00 AM — COLLECTED', '11:00 AM — SORTED', '4:00 PM — HELD', 'LOUVRE POST ROOM']) {
+          expect(find.text(line), findsOneWidget, reason: 'the trail, at once: $line');
         }
-
-        await tapKey('slip-s5');
-        expect(find.byKey(const ValueKey('slip-large')), findsOneWidget);
-        await shot('final_slip_large');
-        await tapKey('trail-slot-second');
-        await place('s1', 'first');
-        await place('s3', 'third');
-        expect(TrailState.decode(ref.read(gameControllerProvider).puzzleStateOf(fin.id), trail), {'first': 's1', 'second': 's5', 'third': 's3'});
-        await shot('final_trail_wrong');
-        await tapKey('trail-submit');
-        await wrongThenTryAgain('Is it 4417?', 'final');
-        await place('s2', 'second');
         await shot('final_trail');
-        await tapKey('trail-submit');
-        await wait(t, const Duration(milliseconds: 3600));
+        expect(find.text('FOLLOW THE LETTER'), findsOneWidget);
+        await play.next(after: const Duration(milliseconds: 3600));
         expect(ref.read(gameControllerProvider).isCaseSolved, isTrue);
-        expect(find.byKey(const ValueKey('trail-held')), findsOneWidget);
+        expect(find.byKey(const ValueKey('trail-held')), findsOneWidget, reason: 'the slip that says where it stopped');
         await shot('final_solved');
         await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
         expect(find.text(fin.transition.first), findsOneWidget);

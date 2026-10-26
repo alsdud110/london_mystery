@@ -287,19 +287,20 @@ const Map<String, dynamic> season2Episode04Json = {
     'location': "THE KEEPER'S HUT",
     'scene': 'keeperHutInside',
     'story': [
-      "Four streets in the keeper's street book have watchmakers.",
+      "The keeper's street book lists the watchmakers' streets.",
       'Only one can be the address on the label.',
     ],
     'letterIntro': 'Your notebook says:',
     'letter':
-        'Cross out every address that cannot be right.\n'
-        'Use your evidence to show why.\n\n'
-        'The one left is the address.',
-    // Each wrong address crossed out with what rules it out (`address:e1+e2`,
-    // in the evidence's order, up to two pieces). The address left is not
-    // part of the answer: it is what is left.
+        'CLUE 1: PASSAGE\n'
+        'CLUE 2: No. 7\n\n'
+        'Find the address.',
+    // Played very easy since 2026-10-27 (`season2Case04Steps`): two
+    // addresses, the label's two clues beside them. The answer is still
+    // each wrong address of the street book crossed out with what rules it
+    // out (`address:e1+e2`), so saves and the archive are as before.
     'type': 'matchPairs',
-    'question': 'Which address is the right one?',
+    'question': 'Find the address.',
     'options': [
       {'id': 'quai', 'label': "QUAI DE L'HORLOGE"},
       {'id': 'pont', 'label': 'PASSAGE DU PONT'},
@@ -331,8 +332,8 @@ const Map<String, dynamic> season2Episode04Json = {
       'horlogers:e2+e3': 'Check its name, its house numbers and its gate. Does your evidence rule it out?',
     },
     'hints': [
-      'Read each address: its name, its house numbers and its gate.',
-      "Each wrong address breaks one clue: the label's start, the ledger's house number, or the keeper's steps.",
+      'Both streets are a PASSAGE. Now read CLUE 2.',
+      'CLUE 2 is No. 7. Which address has No. 7?',
     ],
     'evidence': {
       'id': 's2_ep04_e4',
@@ -399,7 +400,6 @@ const Map<String, dynamic> season2Episode04Json = {
     'watchmakers': '시계공들',
     'washed': '씻겨 나간',
     'address': '주소',
-    'cross': '(줄을 그어) 지우다',
     'passage': '좁은 골목길',
     'gate': '대문, 철문',
     'workshops': '작업장, 공방',
@@ -407,7 +407,6 @@ const Map<String, dynamic> season2Episode04Json = {
     'evidence': '증거',
     'bookseller': '책 파는 사람',
     'chain': '쇠사슬',
-    'houses': '집들 (번지)',
     'shops': '가게들',
     'iron': '철로 된',
   },

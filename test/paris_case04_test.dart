@@ -15,6 +15,7 @@ import 'package:london_mystery/core/utils/answer_checker.dart';
 import 'package:london_mystery/data/mock/season2/season2_learning.dart';
 import 'package:london_mystery/data/mock/season_catalog.dart';
 import 'package:london_mystery/data/models/discovery.dart';
+import 'package:london_mystery/data/models/easy_steps.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/learning.dart';
@@ -33,6 +34,7 @@ import 'package:london_mystery/widgets/game_button.dart';
 import 'package:london_mystery/widgets/ink_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'easy_play.dart';
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
 
@@ -91,6 +93,9 @@ void main() {
   final boxes = SeasonCatalog.quayBoxes(m3)!;
   final book = SeasonCatalog.streetBook(fin)!;
   final label = boxes.label;
+  // The final, played very easy (the user's rules of 2026-10-27); its street
+  // book and gate stay for the page after the answer.
+  final stepsF = SeasonCatalog.easySteps(fin)!;
 
   group('its pictures', () {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -386,6 +391,41 @@ void main() {
       expect(File('lib/data/mock/season2/episode04_mock.dart').readAsStringSync(), contains("never given as fact"));
     });
 
+    test('Final, very easy: two addresses, the label\'s two clues beside them; only No. 7 on a PASSAGE fits', () {
+      final step = stepsF.steps.single;
+      expect(step.say, 'Find the address.');
+      expect(step.does, EasyDo.choose);
+      // The clues, each under the evidence it comes from.
+      expect([for (final p in step.panels) (p as EvidencePanel).evidenceId], [m3.evidence!.id, m2.evidence!.id]);
+      expect([for (final p in step.panels) p.caption], ['CLUE 1: PASSAGE', 'CLUE 2: No. 7']);
+      expect(m3.evidence!.inscription, contains('PASSAGE D…'), reason: 'the label says PASSAGE');
+      expect(m2.evidence!.inscription, contains('collected for No. 7'), reason: 'the ledger says No. 7');
+      // Two addresses, both from the keeper's street book; only one is No. 7.
+      expect([for (final o in step.options) o.label], ['PASSAGE DU PONT — No. 3', 'PASSAGE DES HORLOGERS — No. 7']);
+      final names = {for (final e in book.entries) e.id: e.name};
+      expect(names['pont'], 'PASSAGE DU PONT');
+      expect(names['horlogers'], 'PASSAGE DES HORLOGERS');
+      expect(step.answer, 'horlogers');
+      expect(step.option('pont')!.feedback, 'Look at CLUE 2. Is it No. 3?');
+      expect(step.lookHere.single.panel, 'ledger');
+      expect(step.done, 'PASSAGE DES HORLOGERS, No. 7!');
+      // The story's address is as it was: PASSAGE DES HORLOGERS, No. 7.
+      expect(fin.evidence!.inscription, contains('PASSAGE DES HORLOGERS'));
+      expect(case05Place(), 'PASSAGE DES HORLOGERS · No. 7');
+      // Its answer is the final's own, so saves are as before; the gate is
+      // looked at on the page after it.
+      expect(stepsF.answer, fin.answer);
+      expect(AnswerChecker.isCorrect(fin, stepsF.answer), isTrue);
+      expect(stepsF.finishLabel, 'GO TO THE GATE');
+      expect(stepsF.seen, isEmpty, reason: 'the gate is still looked at');
+      expect(fin.question, 'Find the address.');
+      // The last piece and its message are never on the steps.
+      final words = easyWords(stepsF);
+      for (final secret in ['ES HORLOGERS.', 'Do not trust', 'hands that made']) {
+        expect(words, isNot(contains(secret)), reason: secret);
+      }
+    });
+
     test('the last piece and its message are never told before the final is solved', () {
       final before = [
         everything([m1, m2, m3]),
@@ -418,7 +458,7 @@ void main() {
       final text = [
         everything(case04.allMissions, e: case04),
         for (final p in hut.pages) for (final e in p.entries) e.words,
-        for (final e in book.entries) ...e.lines,
+        easyWords(stepsF),
       ].join('\n').toLowerCase();
       for (final w in case04.glossary.keys) {
         expect(text, contains(w), reason: w);
@@ -544,6 +584,7 @@ void main() {
       expect(p.hasExamined('${m3.id}:box12'), isTrue);
       expect(LabelState.decode(p.puzzleStateOf(m3.id), boxes), {'top': 'p1', 'middle': 'decoy'});
       expect(CrossOutState.decode(p.puzzleStateOf(fin.id), book), {'quai': {'e3'}});
+      expect(EasyStepsState.decode(p.puzzleStateOf(fin.id), stepsF), 0, reason: 'an old save: the final starts at its step');
 
       for (final m in [m2, m3, fin]) {
         expect(game.submitAnswer(m, m.answer).result, SubmitResult.correct, reason: m.id);
@@ -881,62 +922,30 @@ void main() {
         // ── Final: the street book, then the gate ───────────────────────
         router.go(Routes.finalMission);
         await wait(t, const Duration(milliseconds: 1600));
-        expect(find.byKey(const ValueKey('gate-stage')), findsOneWidget);
         expect(find.byKey(const ValueKey('stage-gate')), findsNothing, reason: 'nothing of the gate before the solve');
         expect(find.byKey(const ValueKey('gate-sign')), findsNothing);
         nothingOfTheLastPiece('the final, before the solve');
+        // Very easy: the two clues, two addresses.
+        final play = EasyPlay(t, 'c04_$tag');
+        play.expectSay('Find the address.');
+        expect(findReadable('CLUE 1: PASSAGE'), findsOneWidget);
+        expect(findReadable('CLUE 2: No. 7'), findsOneWidget);
+        expect(find.byKey(const ValueKey('book-entry-quai')), findsNothing, reason: 'no addresses to cross out');
+        for (final k in ['easy-option-pont', 'easy-option-horlogers']) {
+          final r = t.getRect(find.byKey(ValueKey(k)));
+          expect(r.width >= 44 && r.height >= 44, isTrue, reason: '$tag $k: finger-sized');
+        }
         await shot('final_page');
-        // The book is read a page at a time: every address line is 14 on
-        // screen (its type size times how much the page is scaled), its
-        // name larger.
-        double onScreen(String key) {
-          final f = find.byKey(ValueKey(key));
-          final size = t.widget<Text>(f).style!.fontSize!;
-          return size * t.getRect(f).height / t.getSize(f).height;
-        }
-
-        for (final page in [0, 1]) {
-          if (page == 1) await tapKey('book-page-1');
-          for (final e in book.entries.where((e) => e.page == page)) {
-            await reveal(t, find.byKey(ValueKey('book-entry-${e.id}')));
-            for (var i = 0; i < e.lines.length; i++) {
-              expect(onScreen('book-line-${e.id}-$i'), closeTo(14, 0.05), reason: '$tag ${e.id} line $i');
-            }
-            expect(onScreen('book-name-${e.id}'), greaterThan(14));
-          }
-          await shot('final_book_page_${page + 1}');
-        }
-        await tapKey('book-page-0');
-        Future<void> crossOut(String address, List<String> evidence) async {
-          await tapKey('book-entry-$address');
-          for (final e in evidence) {
-            await tapKey('book-evidence-$e', after: const Duration(milliseconds: 200));
-          }
-          await tapKey('book-cross', after: const Duration(milliseconds: 500));
-        }
-
-        await tapKey('book-entry-pont');
-        expect(find.byKey(const ValueKey('book-panel-name')), findsOneWidget);
+        await play.tapKey('easy-option-pont');
+        expect(findReadable('Look at CLUE 2. Is it No. 3?'), findsOneWidget);
+        expect(ref.read(gameControllerProvider).wrongCount(fin.id), 0, reason: 'a wrong answer costs nothing');
+        await shot('final_wrong');
+        await play.tapKey('easy-option-horlogers');
+        expect(findReadable('PASSAGE DES HORLOGERS, No. 7!'), findsOneWidget);
+        nothingOfTheLastPiece('the final, the address chosen');
         await shot('final_address');
-        await tapKey('book-evidence-e1', after: const Duration(milliseconds: 200));
-        await tapKey('book-cross', after: const Duration(milliseconds: 500));
-        await wrongThenTryAgain('how was the crate delivered?', 'final');
-        // Up to two pieces: a third cannot be added.
-        await tapKey('book-evidence-e2', after: const Duration(milliseconds: 200));
-        await tapKey('book-evidence-e3', after: const Duration(milliseconds: 200));
-        expect(find.text('Two pieces at most.'), findsOneWidget);
-        await tapKey('book-cross', after: const Duration(milliseconds: 500));
-        expect(find.byKey(const ValueKey('book-crossed-pont')), findsOneWidget, reason: 'River Mark + Ledger');
-        await crossOut('quai', ['e3']);
-        await tapKey('book-page-1');
-        await crossOut('horloge', ['e2']);
-        expect(find.byKey(const ValueKey('book-crossed-horloge')), findsOneWidget);
-        expect(find.byKey(const ValueKey('book-page-0')), findsNothing, reason: 'one address left: its page stays open');
-        expect(find.text(book.addressTask), findsOneWidget);
-        nothingOfTheLastPiece('the final, one address left');
-        await shot('final_crossed');
-        await tapKey('book-submit');
-        await wait(t, const Duration(milliseconds: 3600));
+        expect(find.text('GO TO THE GATE'), findsOneWidget);
+        await play.next(after: const Duration(milliseconds: 3600));
         expect(ref.read(gameControllerProvider).isCaseSolved, isTrue);
         expect(find.byKey(const ValueKey('stage-gate')), findsOneWidget, reason: 'the gate of the address');
         expect(find.byKey(const ValueKey('gate-sign')), findsOneWidget);
@@ -1024,3 +1033,6 @@ void main() {
     });
   });
 }
+
+/// Where Case 05 is, as its file says.
+String? case05Place() => MockEpisodeRepository.bundled().firstWhere((e) => e.id == 's2_ep05').place;

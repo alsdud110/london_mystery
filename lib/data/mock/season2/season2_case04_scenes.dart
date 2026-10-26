@@ -1,5 +1,6 @@
 import 'dart:ui' show Rect;
 
+import '../../models/easy_steps.dart';
 import '../../models/river_puzzles.dart';
 import '../../models/scene_exhibit.dart' show EvidenceLink;
 import '../../models/scene_explore.dart' show ScenePixels;
@@ -429,5 +430,43 @@ final Map<String, StoryScenes> season2Case04StoryScenes = {
       crop: _gate.rect(0, 40, 1024, 1064),
       label: 'A wrought-iron gate under a stone arch, its lamps lit',
     ),
+  ),
+};
+
+// ── The final, very easy (the user's rules of 2026-10-27) ────────────────
+// Two addresses, not four; the label's two clues on the same screen, each
+// under the evidence it comes from (the label: PASSAGE; the ledger: No. 7).
+// The address itself is the story's: PASSAGE DES HORLOGERS, No. 7. The
+// street book, the crossing out and the gate's scrap stay as they were for
+// the page after the answer (the gate is looked at there).
+
+/// Case 04's final played one small step at a time. Its answer is the
+/// mission's own (each wrong address of the street book ruled out), so the
+/// save and the Case Archive are as before.
+const Map<String, EasyStepsScene> season2Case04Steps = {
+  's2_ep04_final': EasyStepsScene(
+    title: "THE WATCHMAKER'S ADDRESS",
+    answer: 'quai:e3,pont:e1+e2,horloge:e2',
+    finishLabel: 'GO TO THE GATE',
+    steps: [
+      EasyStep(
+        id: 'address',
+        say: 'Find the address.',
+        panels: [
+          EvidencePanel(id: 'label', evidenceId: 's2_ep04_e3', caption: 'CLUE 1: PASSAGE'),
+          EvidencePanel(id: 'ledger', evidenceId: 's2_ep04_e2', caption: 'CLUE 2: No. 7'),
+        ],
+        does: EasyDo.choose,
+        options: [
+          EasyOption(id: 'pont', label: 'PASSAGE DU PONT — No. 3', feedback: 'Look at CLUE 2. Is it No. 3?'),
+          EasyOption(id: 'horlogers', label: 'PASSAGE DES HORLOGERS — No. 7'),
+        ],
+        answer: 'horlogers',
+        hints: ['Both streets are a PASSAGE. Now read CLUE 2.', 'CLUE 2 is No. 7. Which address has No. 7?'],
+        lookHere: [EasyMark('ledger')],
+        tell: 'PASSAGE DES HORLOGERS has No. 7.',
+        done: 'PASSAGE DES HORLOGERS, No. 7!',
+      ),
+    ],
   ),
 };

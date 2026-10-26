@@ -76,7 +76,8 @@ void main() {
         yield (scene.lever, (scene.leverPixels.width, scene.leverPixels.height));
         yield (scene.pin, (scene.pinPixels.width, scene.pinPixels.height));
         yield (scene.wallDial, (scene.wallDialPixels.width, scene.wallDialPixels.height));
-      case EvidencePanel() || GearMarkPanel():
+      // A drawn paper's pictures are its case's (checked by that case).
+      case EvidencePanel() || GearMarkPanel() || DrawnPanel():
         break;
     }
   }

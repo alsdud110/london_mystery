@@ -169,7 +169,8 @@ class SeasonContent {
   final Map<String, TalkMission> talkMissions;
 
   /// Missions (and finals) played one small step at a time (Season 2,
-  /// Cases 11–12: see [EasyStepsScene]).
+  /// Cases 11–12, and the very-easy missions of Cases 04, 05 and 07: see
+  /// [EasyStepsScene]).
   final Map<String, EasyStepsScene> easySteps;
 
   /// Finals with an ending played after their answer, one line at a time
@@ -338,14 +339,13 @@ final season2Content = SeasonContent(
   streetBooks: season2StreetBooks,
   markCompares: season2MarkCompares,
   clockWalls: season2ClockWalls,
-  blotters: season2Blotters,
+  // Case 05's M3 (the blotter), Case 07's M1 (the show strip) and M2 (the
+  // lighting desk) are played very easy since 2026-10-27 (`easySteps`).
   postTrails: season2PostTrails,
   holdRacks: season2HoldRackScenes,
   planRoutes: season2PlanScenes,
   archives: season2ArchiveScenes,
   letterMaps: season2LetterMapScenes,
-  showStrips: season2ShowStripScenes,
-  lightBoards: season2LightBoardScenes,
   flyRails: season2FlyRailScenes,
   lightTables: season2LightTableScenes,
   cornerChoices: season2CornerChoices,
@@ -362,7 +362,15 @@ final season2Content = SeasonContent(
   hourRecords: season2HourRecords,
   talks: season2Case11Talks,
   talkMissions: {...season2Case11TalkMissions, ...season2Case12TalkMissions},
-  easySteps: {...season2Case11Steps, ...season2Case12Steps},
+  // Case 04's final, Case 05's M3 and final, Case 07's M1, M2 and final:
+  // very easy since 2026-10-27, like Cases 11–12.
+  easySteps: {
+    ...season2Case04Steps,
+    ...season2Case05Steps,
+    ...season2Case07Steps,
+    ...season2Case11Steps,
+    ...season2Case12Steps,
+  },
   endings: season2Case12Endings,
   introPictures: {
     ...season2IntroPictures,

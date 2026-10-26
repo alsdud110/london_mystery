@@ -1344,23 +1344,21 @@
 
 #### Final — The Watchmaker's Address
 **목표**
-- 거리 책의 주소 4개 중 틀린 3개를 증거로 지우고 남은 주소를 제출한다.
+- 두 단서(CLUE 1: PASSAGE, CLUE 2: No. 7)에 모두 맞는 주소를 두 개 중에서 고른다. (2026-10-27 초간단 버전)
 **퍼즐 유형**
-- 소거 추론 + 증거 연결 (주소마다 증거 1~2개)
+- 2지선다 (EasyStepsPuzzle, 1단계)
 **정답**
-- `quai:e3,pont:e1+e2,horloge:e2` → 남는 주소 `PASSAGE DES HORLOGERS`
-  - QUAI DE L'HORLOGE ← The Torn Delivery Label (주소가 PASSAGE로 시작)
-  - PASSAGE DU PONT ← The River Mark + The Keeper's Ledger (관리인 계단은 Quay 3, 배달은 그 계단으로 / 이 문은 Quay 1)
-  - PASSAGE DE L'HORLOGE ← The Keeper's Ledger (No. 7인데 집 번호 1~5)
-- 증거 조합이 정확히 위와 같아야 함(더 많거나 적으면 오답 피드백). 최대 2개.
+- `PASSAGE DES HORLOGERS — No. 7` (단계 option `horlogers`)
+- 미션 정답 데이터는 그대로 `quai:e3,pont:e1+e2,horloge:e2` (저장·아카이브 호환). 단계를 마치면 이 값이 제출된다.
+- 오답 `PASSAGE DU PONT — No. 3`: "Look at CLUE 2. Is it No. 3?" (감점 없음, 두 번째 오답이면 정답을 알려 주고 강조)
 **풀이 방법**
-1. 거리 책 1쪽에서 주소 탭 → 증거 카드 선택 → CROSS IT OUT (지울 때마다 즉시 판정, 틀리면 TRY AGAIN).
-2. 1쪽: QUAI DE L'HORLOGE(e3), PASSAGE DU PONT(e1+e2). 2쪽으로 넘겨 PASSAGE DE L'HORLOGE(e2).
-3. "One address is left." → THIS IS THE ADDRESS → LOOK AT THE GATE → 다음(gate-next) 3번 → CONTINUE INVESTIGATION.
+1. 화면 위: 찢어진 라벨(CLUE 1: PASSAGE)과 관리인 장부(CLUE 2: No. 7).
+2. `PASSAGE DES HORLOGERS — No. 7` 탭 → "PASSAGE DES HORLOGERS, No. 7!" → `GO TO THE GATE`.
+3. 사건 해결 화면 → LOOK AT THE GATE → 다음(gate-next) 3번 → CONTINUE INVESTIGATION.
 **필요한 단서**
-- M1 The River Mark(QUAY 3), M2 The Keeper's Ledger(No. 7, 관리인 계단 배달), M3 The Torn Delivery Label(PASSAGE D…)
-**힌트**
-- "Read each address: its name, its house numbers and its gate." / "Each wrong address breaks one clue: the label's start, the ledger's house number, or the keeper's steps."
+- M2 The Keeper's Ledger(No. 7), M3 The Torn Delivery Label(PASSAGE D…) — 둘 다 화면에 함께 표시
+**힌트** (무료, 횟수 제한 없음)
+- "Both streets are a PASSAGE. Now read CLUE 2." / "CLUE 2 is No. 7. Which address has No. 7?"
 
 <a id="s2-c05"></a>
 
@@ -1410,41 +1408,38 @@
 
 #### Mission 3 — The Blotted Page
 **목표**
-- 압지에 거꾸로 찍힌 쪽지 3장을 거울로 읽고, 진짜 표식이 있는 쪽지가 가리키는 곳을 고른다.
+- 압지에 거꾸로 찍힌 쪽지를 거울로 읽고, 그 쪽지가 말하는 시계(Clock III)를 고른다. (2026-10-27 초간단 버전)
 **퍼즐 유형**
-- 거울 읽기(장면 조작) + 객관식
+- 탭 → 2지선다 (EasyStepsPuzzle, 2단계)
 **정답**
-- `Clock III` (option `clock3`) — 갈색 쪽지 "The letter is ready. I hid it in the clock that turns back."(진짜 표식)
-- 오답: The post box at the corner(파란 쪽지, 표식 없음), The tin of springs(검은 쪽지, 바늘 하나 = 가짜), The desk drawer(어느 쪽지에도 없음).
+- `CLOCK III` (단계 option `iii`) → 미션 정답 `clock3` 제출
 **풀이 방법**
-1. INVESTIGATE → 손거울을 압지의 각 쪽지(파랑·검정·갈색) 위로 드래그(또는 쪽지 탭). 세 장 모두 읽어야 확인 버튼 등장.
-2. 장소 선택지 중 `Clock III` 선택 → THIS IS WHERE.
-3. Clock III 내부(봉투 귀퉁이 + 영수증 LETTER No. 4417) 표시 → 계속.
+1. INVESTIGATE → "Tap the mirror." 손거울 탭 → 거울 속에 "THE CLOCK THAT TURNS BACK." → NEXT.
+2. "Which clock?" 벽의 Clock II(runs fast) / Clock III(turns back) 중 `CLOCK III` 탭.
+3. Clock III 내부(뒷면 + 봉투 귀퉁이 + 영수증 LETTER No. 4417) 자동 표시 → DONE.
 **필요한 단서**
-- M1 제작자 표식, M2 The Backward Clock(거꾸로 가는 시계 = Clock III)
-**힌트**
-- "Hold the mirror over each note. Then look at the mark under it." / "The maker's own note says: the clock that turns back. Which clock is that?"
+- 거울로 읽은 쪽지, M2에서 찾은 내용(시계 카드 아래 표시)
+**힌트** (무료)
+- 1단계: "The note is backwards. A mirror turns it round." / "Tap the hand mirror."
+- 2단계: "The mirror says: the clock that turns back." / "Find “turns back” under the clocks."
 
 <a id="s2-c05-final"></a>
 
 #### Final — The Letter's Trail
 **목표**
-- 우편 전표 5장 중 편지 No. 4417의 전표 3장을 시간순으로 놓는다.
+- 두 전표 중 편지 No. 4417의 전표를 찾는다. 찾으면 편지의 이동 경로가 자동으로 나온다. (2026-10-27 초간단 버전)
 **퍼즐 유형**
-- 증거 선별 + 순서 맞추기 (matchPairs, 슬롯 1st/2nd/3rd)
+- 2지선다 (전표 그림 카드, EasyStepsPuzzle 1단계)
 **정답**
-- `first:s1,second:s2,third:s3`
-  - 1st: COLLECTED · PASSAGE BOX (4417, 16 MAY 9:00 AM)
-  - 2nd: SORTED · CENTRAL OFFICE (4417, 11:00 AM)
-  - 3rd: HELD · LOUVRE POST ROOM (4417, 4:00 PM)
-- 제외: COLLECTED · CORNER BOX(No. 4471), DELIVERED · RUE DU BAC(3 MAY, No. 2903).
+- `LETTER 4417` (단계 option `4417`) → 미션 정답 `first:s1,second:s2,third:s3` 제출 (저장·아카이브 호환)
+- 오답 `LETTER 4471`: "This is 4471. Read the numbers again: 4417."
 **풀이 방법**
-1. 전표 탭(크게 보기) → 위의 슬롯 1st/2nd/3rd 탭 — 세 장 배치.
-2. FOLLOW THE LETTER → CONTINUE INVESTIGATION.
+1. `LETTER 4417` 전표 탭 → 경로 자동 표시: 9:00 AM — COLLECTED / 11:00 AM — SORTED / 4:00 PM — HELD / LOUVRE POST ROOM.
+2. `FOLLOW THE LETTER` → CONTINUE INVESTIGATION.
 **필요한 단서**
-- M3 영수증 "16 MAY — ONE LETTER COLLECTED FROM No. 7. LETTER No. 4417"
-**힌트**
-- "Look at the letter number on each slip. Is it the same as on the receipt?" / "Three slips are for letter No. 4417. Put them in time order."
+- M3 영수증 LETTER No. 4417 (화면 문장 "Find letter 4417."에도 표시)
+**힌트** (무료)
+- "Read each number: 4, 4, 1, 7." / "Find 4417, not 4471."
 
 <a id="s2-c06"></a>
 
@@ -1565,50 +1560,37 @@
 
 #### Mission 1 — The Show Strip
 **목표**
-- 2시간 10분짜리 공연 띠를 시계 위에서 밀어, 문이 열린(3:30) 뒤 시작하고 CURTAIN DOWN(6:10)에 끝나는 시작 시각을 찾는다.
-
+- 공연이 실제로 시작한 시각을 고른다. 문은 3:30에 열린다. (2026-10-27 초간단 버전)
 **퍼즐 유형**
-- 슬라이드(시간 띠 맞추기) → CHECK로 판정
-
+- 2지선다 (EasyStepsPuzzle, 1단계)
 **정답**
-- `START 4:00 PM · END 6:10 PM` (option `fit`, "Start at 4:00, end at 6:10").
-- 띠의 초기값은 3:00(10분 단위 이동). 판정은 띠 위치로 자동 결정: 3:00 = `office`, 3:30 이전 = `early`, 그 외 = `end`.
-
+- `4:00 PM` (단계 option `4`) → 미션 정답 `fit` 제출
+- 오답 `3:00 PM`: "At 3:00 PM, the doors are not open yet."
 **풀이 방법**
-1. INVESTIGATE → (선택) FILE 3 / FILE 4 탭해 읽기 → `BACK TO THE TABLE`.
-2. 띠를 오른쪽으로 드래그하거나 "10분 뒤(Ten minutes later)" 화살표 버튼을 **6번** → 표시 `START 4:00 PM`, `END 6:10 PM`.
-3. `CHECK`.
-
+1. INVESTIGATE → FILE 3의 "DOORS OPEN · 3:30 PM"과 "The show starts after the doors open." 확인.
+2. `4:00 PM` 탭 → "Yes, 4:00 PM! THE SHOW ENDED AT 6:10 PM." + FILE 3(3:00 PM이라고 적힘)·FILE 4(2시간 10분) 함께 표시 → DONE.
 **필요한 단서**
-- FILE 3: DOORS OPEN 3:30 · CURTAIN UP 3:00 · CURTAIN DOWN 6:10 / FILE 4: 10+60+20+40분 = 2시간 10분.
-
-**힌트**
-- "The show strip can't get shorter or longer." / "Put the END flag on the CURTAIN DOWN pin."
+- FILE 3: DOORS OPEN 3:30 (화면에 표시)
+**힌트** (무료)
+- "Read FILE 3: DOORS OPEN · 3:30 PM." / "The show starts after 3:30 PM."
 
 <a id="s2-c07-m2"></a>
 
 #### Mission 2 — The Ghost Light
 **목표**
-- 조명 레버로 무대를 옛 사진("3:00 PM · CURTAIN UP!")과 똑같이 밝힌다.
-
+- GHOST LIGHT 스위치 하나를 켜서 빈 무대를 확인하고, 큐 카드와 쪽지를 차례로 본다. (2026-10-27 초간단 버전)
 **퍼즐 유형**
-- 장면 조작(레버 4개 ON/OFF) → 사진과 비교
-
+- 탭(스위치 1개) → 보기 → 보기 (EasyStepsPuzzle, 3단계)
 **정답**
-- **GHOST LIGHT만 ON**, HOUSE LIGHTS·FOOTLIGHTS·BIG SPOT은 OFF (option `match`). 시작 시 모두 OFF.
-- 다른 조합은 첫 번째로 다른 조명 기준으로 오답 피드백(`ghostOff`/`house`/`foot`/`spot`).
-
+- GHOST LIGHT 레버 탭(ON) → 미션 정답 `match` 제출
 **풀이 방법**
-1. INVESTIGATE → (선택) 옛 사진, THE LIGHTING BOOK 탭해 읽기.
-2. 첫 번째 레버(GHOST LIGHT)를 탭(또는 위로 밀기)해 ON.
-3. `IT MATCHES THE PHOTO`.
-4. 정답 후: 책의 **큐 카드**(SHOW No. 34 · CUE 1 · CURTAIN UP · 4:00) 탭 → 닫기 → **쪽지(scrap)** 탭 → 닫기 → `CONTINUE` (카드→쪽지 순서 필수).
-
+1. INVESTIGATE → "Turn on the ghost light." 레버(TAP TO TURN ON) 탭 → 레버가 올라가 ON, 무대에 고스트 라이트가 켜짐 → "Only the ghost light: an empty stage, not a show." → NEXT.
+2. "Read the cue card." SHOW No. 34 · CUE 1 · CURTAIN UP · 4:00 → NEXT.
+3. "Look at the scrap." 작은 시계가 있는 빨간 문 그림 → NEXT.
 **필요한 단서**
-- Lighting Book: "GHOST LIGHT: one lamp on an empty stage."
-
-**힌트**
-- "Look at the photo. How many lights are on?" / "Read the Lighting Book. Which light is for an empty stage?"
+- 없음 (스위치가 하나뿐)
+**힌트** (무료)
+- "The ghost light has one lever." / "Tap the lever. It is lit."
 
 <a id="s2-c07-m3"></a>
 
@@ -1638,31 +1620,23 @@
 
 #### Final — The Changed Record
 **목표**
-- 바뀐 기록(FILE 3)을 찾아 라이트 테이블에서 패치 아래 옛 시각을 드러내고, 슬립의 두 시각을 핀으로 연결한다.
-
+- FILE 3을 찾아 라이트 테이블의 불을 켜고, 패치 위의 새 시각을 고른다. (2026-10-27 초간단 버전)
 **퍼즐 유형**
-- 복합 (기록 선택 → 드래그 배치 → 스위치 → 핀 연결)
-
+- 그림 카드 2지선다 → 탭(스위치) → 2지선다 (EasyStepsPuzzle, 3단계, 드래그 없음)
 **정답**
-- 데이터 `old:under,new:patch` (순서 무관):
-  - 슬립의 `4:00`(옛 시각) 핀 → CURTAIN UP 줄 **패치 위로 비쳐 보이는 4:00 PM**(불 켠 뒤에만 보임).
-  - 슬립의 `3:00`(새 시각) 핀 → **패치 위에 쓰인 3:00 PM**.
-
+- `FILE 3` → 스위치 탭 → `3:00 PM` (새 시각) → 미션 정답 `old:under,new:patch` 제출 (저장·아카이브 호환)
+- 오답: FILE 4 = "That is FILE 4, the programme. Find FILE 3." / 4:00 PM = "4:00 PM is the old time, under the patch."
 **풀이 방법**
-1. 상자의 **FILE 3** 탭 (FILE 4는 "agree on 4:00" 오답).
-2. FILE 3을 유리판으로 드래그하거나 `PUT IT ON THE TABLE`.
-3. 오른쪽 **조명 스위치** 탭(불 켜기) → 슬립 핀이 나타남.
-4. `4:00` 핀 탭 → FILE 3의 패치 위 비친 4:00 PM 탭 (드래그도 가능).
-5. `3:00` 핀 탭 → 패치의 3:00 PM 탭 → 정답.
-6. `TURN THE SLIP OVER` → 뒷면(ABBESSES, P. KNEW THE BAG.) 확인 → `BACK TO THE TABLE` → 이후 CONTINUE INVESTIGATION (뒷면 확인 전엔 다음으로 못 감).
-
+1. "Find FILE 3." `FILE 3` 카드 탭 → 라이트 테이블에 자동으로 놓임 → NEXT.
+2. "Turn on the light." 테이블 오른쪽 황동 스위치(TAP TO TURN ON) 탭 → 불이 켜지고 패치 아래 4:00 PM이 비침 → NEXT.
+3. "What is the new time?" `3:00 PM` 탭 → "THE TIME WAS CHANGED!" + Amendment Slip 뒷면(ABBESSES, P. KNEW THE BAG.) 자동 표시 → DONE.
+4. 사건 해결 화면 → CONTINUE INVESTIGATION (뒷면은 이미 봤으므로 TURN THE SLIP OVER 없음).
 **필요한 단서**
-- Amendment Slip (M3): FILE 3 · CURTAIN UP: 4:00 to 3:00. 큐 카드(M2) 4:00.
-
-**힌트**
-- "Which line has an extra piece of paper?" / "Turn on the light. The old time is under the patch."
-
----
+- 화면의 FILE 3 확대(불 켠 뒤 3:00 PM 아래 4:00 PM)
+**힌트** (무료)
+- 1단계: "Look at the top of each paper." / "FILE 3 has a big 3 in its circle."
+- 2단계: "The switch is on the right of the table." / "Tap the brass switch."
+- 3단계: "The new time is on the patch, on top." / "The old time is under the patch."
 
 <a id="s2-c08"></a>
 

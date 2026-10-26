@@ -76,11 +76,11 @@ const Map<String, dynamic> season2Episode07Json = {
           'INTERVAL · 20 MIN\n'
           'ACT TWO · 40 MIN\n'
           'THE WHOLE SHOW: 2 HOURS 10 MINUTES',
-      // What the start the strip is slid to says (see `season2ShowStrips`):
-      // the office's 3:00, before the doors open, or not down at CURTAIN
-      // DOWN; only 4:00 fits.
+      // When the show started: only after the doors open (3:30), so 4:00.
+      // Played very easy since 2026-10-27 (`season2Case07Steps`): 3:00 PM
+      // or 4:00 PM, FILE 3's DOORS OPEN beside the question.
       'type': 'multipleChoice',
-      'question': 'When did the show really start?',
+      'question': 'When did the show start?',
       'options': [
         {
           'id': 'office',
@@ -101,8 +101,8 @@ const Map<String, dynamic> season2Episode07Json = {
       ],
       'answer': 'fit',
       'hints': [
-        "The show strip can't get shorter or longer.",
-        'Put the END flag on the CURTAIN DOWN pin.',
+        'Read FILE 3: DOORS OPEN · 3:30 PM.',
+        'The show starts after 3:30 PM.',
       ],
       'clue': {
         'id': 's2_ep07_c1',
@@ -139,7 +139,7 @@ const Map<String, dynamic> season2Episode07Json = {
       'scene': 'operaStage',
       'story': [
         'At the back of the hall is the old lighting desk.',
-        'Four levers. One old book: THE LIGHTING BOOK.',
+        'The ghost light has its own lever.',
       ],
       'letterIntro': 'The Lighting Book says:',
       'letter':
@@ -147,10 +147,10 @@ const Map<String, dynamic> season2Episode07Json = {
           'We use it before the doors open, and at night.\n'
           'HOUSE LIGHTS: for the audience.\n'
           'FOOTLIGHTS and BIG SPOT: for the show.',
-      // The first light that differs from the old photo, in the desk's
-      // order (see `season2LightBoards`); only the ghost light matches.
+      // The stage lit like the old photo: the ghost light alone. Played
+      // very easy since 2026-10-27 (`season2Case07Steps`): its one switch.
       'type': 'multipleChoice',
-      'question': 'Light the stage like the old photo.',
+      'question': 'Turn on the ghost light.',
       'options': [
         {
           'id': 'ghostOff',
@@ -176,8 +176,8 @@ const Map<String, dynamic> season2Episode07Json = {
       ],
       'answer': 'match',
       'hints': [
-        'Look at the photo. How many lights are on?',
-        'Read the Lighting Book. Which light is for an empty stage?',
+        'The ghost light has one lever.',
+        'Tap the lever. It is lit.',
       ],
       'clue': {
         'id': 's2_ep07_c2',
@@ -287,11 +287,12 @@ const Map<String, dynamic> season2Episode07Json = {
     ],
     'letterIntro': 'The Amendment Slip says:',
     'letter': 'FILE 3 · PERFORMANCE No. 34\nCURTAIN UP: 4:00 to 3:00',
-    // The slip's two times pinned to FILE 3 (`pin:spot`): its old time on
-    // the time under the patch, its new time on the patch. The pins and the
-    // records tried are checked by `ChangedRecord` (season2_case07_scenes).
+    // The slip's two times on FILE 3 (`pin:spot`): its old time under the
+    // patch, its new time on the patch. Played very easy since 2026-10-27
+    // (`season2Case07Steps`): FILE 3 found, the light turned on, the new
+    // time chosen; the answer is as before, so saves and the archive are.
     'type': 'matchPairs',
-    'question': 'Which record was changed?',
+    'question': 'What is the new time?',
     'options': [
       {'id': 'old', 'label': '4:00 on the slip'},
       {'id': 'new', 'label': '3:00 on the slip'},
@@ -308,8 +309,8 @@ const Map<String, dynamic> season2Episode07Json = {
       'new:under': "That's the old time, under the patch. Where is the new one?",
     },
     'hints': [
-      'Which line has an extra piece of paper?',
-      'Turn on the light. The old time is under the patch.',
+      'Find FILE 3. Then turn on the light.',
+      'The new time is on the patch, on top.',
     ],
     'evidence': {
       'id': 's2_ep07_e4',
@@ -362,7 +363,6 @@ const Map<String, dynamic> season2Episode07Json = {
     'hall': '공연장, 홀',
     'lighting': '조명',
     'desk': '책상, 조작대',
-    'levers': '레버들',
     'ghost': '유령 (GHOST LIGHT: 빈 무대에 켜 두는 등)',
     'lamp': '등, 램프',
     'empty': '빈',

@@ -1,5 +1,6 @@
 import 'dart:ui' show Offset, Rect;
 
+import '../../models/easy_steps.dart';
 import '../../models/opera_puzzles.dart';
 import '../../models/river_puzzles.dart' show DrawnEvidenceArt, RiverEvidenceArt;
 import '../../models/scene_exhibit.dart' show EvidenceLink;
@@ -461,5 +462,209 @@ final Map<String, StoryScenes> season2Case07StoryScenes = {
       label: 'A pencil sketch of Montmartre: stone steps, a street lamp, a metro entrance',
       cutOut: true,
     ),
+  ),
+};
+
+// ── M1, M2 and the final, very easy (the user's rules of 2026-10-27) ─────
+// M1: when the show started, FILE 3's DOORS OPEN beside the question; once
+// it is 4:00, FILE 3 (its 3:00) and FILE 4 side by side. M2: one switch,
+// the ghost light's: the lever up, the stage lit; then the cue card, then
+// the scrap. The final: FILE 3 found (FILE 4 beside it), the light table
+// turned on (the 4:00 under the patch shows), the new time, and the slip's
+// back. Every paper is drawn as its evidence is.
+//
+// The desk, cropped round its first column: the ghost light's slot (342,
+// 332)–(378, 564), its plate (288, 621)–(430, 670) (the light's name on
+// it), its state under it; the next slot (613–649) is left out. The lever is drawn as the desk draws it (250 desk pixels tall,
+// its shaft on the slot's middle): down, (268, 341)–(453, 619); up, its
+// knob above the slot, (268, 199)–(453, 477).
+const _stageView = Rect.fromLTRB(250, 40, 1290, 760);
+
+const _darkStage = PicturePanel(
+  id: 'stage',
+  picture: EasyPicture(file: '$_case07/stage_base.png', pixels: _stage, crop: _stageView, label: 'The opera stage, dark'),
+);
+
+const _ghostStage = PicturePanel(
+  id: 'stage',
+  picture: EasyPicture(
+    file: '$_case07/stage_ghost.png',
+    pixels: _stage,
+    crop: _stageView,
+    label: 'The empty stage, lit only by one bare bulb on a stand',
+  ),
+);
+
+const _deskColumn = EasyPicture(
+  file: '$_case07/lighting_desk.png',
+  pixels: _desk,
+  crop: Rect.fromLTRB(120, 185, 560, 730),
+  label: 'The lighting desk: the ghost light\'s lever in its slot',
+);
+
+const _leverDown = Rect.fromLTRB(268, 341, 453, 619);
+const _leverUp = Rect.fromLTRB(268, 199, 453, 477);
+
+PicturePanel _ghostSwitch({required bool on, String? caption}) => PicturePanel(
+  id: 'desk',
+  picture: _deskColumn,
+  layers: [EasyLayer(file: '$_case07/lighting_lever.png', at: on ? _leverUp : _leverDown)],
+  writing: [
+    const EasyWriting('GHOST LIGHT', at: Rect.fromLTRB(292, 627, 426, 665), size: 34, ink: EasyInk.typed),
+    EasyWriting(on ? 'ON' : 'OFF', at: const Rect.fromLTRB(290, 678, 430, 726), size: 44, ink: EasyInk.brass, strong: on),
+  ],
+  caption: caption,
+);
+
+// The light table, cropped to its glass and switch (the switch's target
+// from the glass's edge to the table's); FILE 3 up close, its
+// three lines and the patch, (120, 506)–(900, 1010) of the record (under
+// its title).
+const _tablePicture = Rect.fromLTRB(180, 120, 1536, 760);
+const _fileLines = Rect.fromLTRB(120, 506, 900, 1010);
+
+PicturePanel _lightTable({required bool on, String? caption}) => PicturePanel(
+  id: 'table',
+  picture: EasyPicture(
+    file: on ? '$_case07/light_table_on.png' : '$_case07/light_table_off.png',
+    pixels: _table,
+    crop: _tablePicture,
+    label: on ? 'The light table, its glass lit from under' : 'The light table, its light off; a brass switch on its right edge',
+  ),
+  caption: caption,
+);
+
+DrawnPanel _file3Close({required bool lit}) => DrawnPanel(
+  id: 'file3',
+  drawn: _file3.seen(lit ? RecordLight.lit : RecordLight.unlit),
+  crop: _fileLines,
+  pixels: _record,
+  caption: 'FILE 3',
+);
+
+/// Case 07's M1, M2 and final played one small step at a time. Their
+/// answers are the missions' own (the start that fits, the stage like the
+/// photo, the slip pinned to the change), so the saves and the Case
+/// Archive are as before.
+final Map<String, EasyStepsScene> season2Case07Steps = {
+  's2_ep07_m1': EasyStepsScene(
+    title: 'THE SHOW STRIP',
+    answer: 'fit',
+    steps: [
+      EasyStep(
+        id: 'start',
+        say: 'When did the show start?',
+        panels: [
+          DrawnPanel(
+            id: 'doors',
+            drawn: _file3,
+            crop: const Rect.fromLTRB(120, 340, 900, 610),
+            pixels: _record,
+            caption: 'The show starts after the doors open.',
+          ),
+        ],
+        does: EasyDo.choose,
+        options: const [
+          EasyOption(id: '3', label: '3:00 PM', feedback: 'At 3:00 PM, the doors are not open yet.'),
+          EasyOption(id: '4', label: '4:00 PM'),
+        ],
+        answer: '4',
+        hints: const ['Read FILE 3: DOORS OPEN · 3:30 PM.', 'The show starts after 3:30 PM.'],
+        lookHere: const [EasyMark('doors')],
+        tell: 'The show started at 4:00 PM.',
+        done: 'Yes, 4:00 PM! THE SHOW ENDED AT 6:10 PM.',
+        after: [
+          DrawnPanel(id: 'file3', drawn: _file3, caption: 'FILE 3 says 3:00 PM.'),
+          const DrawnPanel(id: 'file4', drawn: _file4, caption: 'FILE 4: 2 HOURS 10 MINUTES'),
+        ],
+      ),
+    ],
+  ),
+  's2_ep07_m2': EasyStepsScene(
+    title: 'THE GHOST LIGHT',
+    answer: 'match',
+    steps: [
+      EasyStep(
+        id: 'switch',
+        say: 'Turn on the ghost light.',
+        panels: [_darkStage, _ghostSwitch(on: false, caption: 'TAP TO TURN ON')],
+        does: EasyDo.tap,
+        target: const EasyMark('desk', Rect.fromLTRB(230, 190, 490, 730)),
+        hints: const ['The ghost light has one lever.', 'Tap the lever. It is lit.'],
+        done: 'Only the ghost light: an empty stage, not a show.',
+        after: [_ghostStage, _ghostSwitch(on: true)],
+      ),
+      const EasyStep(
+        id: 'cue',
+        say: 'Read the cue card.',
+        panels: [DrawnPanel(id: 'cue', drawn: _cue, caption: 'Kept at the lighting desk')],
+        hints: ['CUE 1 · CURTAIN UP · 4:00.'],
+      ),
+      const EasyStep(
+        id: 'scrap',
+        say: 'Look at the scrap.',
+        panels: [
+          PicturePanel(
+            id: 'scrap',
+            picture: EasyPicture(
+              file: '$_case07/scrap_clock_door.png',
+              pixels: ScenePixels(1254, 1254),
+              crop: Rect.fromLTRB(161, 182, 1076, 1073),
+              label: 'A scrap of paper tucked in the book: a tiny drawing of a small clock above a red door',
+            ),
+            caption: 'A small clock above a red door.',
+          ),
+        ],
+        hints: ['It was tucked in the Lighting Book.'],
+      ),
+    ],
+  ),
+  's2_ep07_final': EasyStepsScene(
+    title: 'THE CHANGED RECORD',
+    answer: 'old:under,new:patch',
+    seen: const [ChangedRecord.chosenId, ChangedRecord.placedId, ChangedRecord.litId, ChangedRecord.slipBackId],
+    steps: [
+      EasyStep(
+        id: 'file',
+        say: 'Find FILE 3.',
+        does: EasyDo.choose,
+        options: [
+          EasyOption(id: 'file3', label: 'FILE 3', panel: DrawnPanel(id: 'pick3', drawn: _file3)),
+          const EasyOption(id: 'file4', label: 'FILE 4', panel: DrawnPanel(id: 'pick4', drawn: _file4), feedback: 'That is FILE 4, the programme. Find FILE 3.'),
+        ],
+        answer: 'file3',
+        hints: const ['Look at the top of each paper.', 'FILE 3 has a big 3 in its circle.'],
+        tell: 'This one is FILE 3.',
+        done: 'FILE 3 is on the light table.',
+        after: [_lightTable(on: false), _file3Close(lit: false)],
+      ),
+      EasyStep(
+        id: 'light',
+        say: 'Turn on the light.',
+        panels: [_lightTable(on: false, caption: 'TAP TO TURN ON'), _file3Close(lit: false)],
+        does: EasyDo.tap,
+        target: const EasyMark('table', Rect.fromLTRB(1320, 420, 1536, 760)),
+        lit: const [EasyMark('table', Rect.fromLTRB(1355, 500, 1490, 680))],
+        hints: const ['The switch is on the right of the table.', 'Tap the brass switch.'],
+        done: 'Look! A hidden 4:00 PM under the patch.',
+        after: [_lightTable(on: true), _file3Close(lit: true)],
+      ),
+      EasyStep(
+        id: 'time',
+        say: 'What is the new time?',
+        panels: [_file3Close(lit: true)],
+        does: EasyDo.choose,
+        options: const [
+          EasyOption(id: '3', label: '3:00 PM'),
+          EasyOption(id: '4', label: '4:00 PM', feedback: '4:00 PM is the old time, under the patch.'),
+        ],
+        answer: '3',
+        hints: const ['The new time is on the patch, on top.', 'The old time is under the patch.'],
+        lookHere: const [EasyMark('file3')],
+        tell: 'The new time is 3:00 PM, on the patch.',
+        done: 'THE TIME WAS CHANGED!',
+        after: [DrawnPanel(id: 'slip', drawn: _amendment.turned(), caption: 'ABBESSES · P. KNEW THE BAG.')],
+      ),
+    ],
   ),
 };

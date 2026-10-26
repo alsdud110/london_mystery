@@ -189,14 +189,14 @@ const Map<String, LearningObjective> season2Learning = {
     objective: '배송표의 FROM, CONTENTS, TO 순서를 이해해 찢어진 조각을 위에서 아래로 맞추고, 내용이 다른 종이 조각(TO: BOOKSTALL 12)을 구별한다.',
     expressions: ['Put the torn label back together.', 'Read where it was sent.'],
   ),
-  // Each address is ruled out by what an English line says (PASSAGE, the
-  // house numbers, the steps on Quay 3).
+  // Very easy since 2026-10-27: two addresses, both a PASSAGE; the house
+  // number (No. 7) decides, so it is exposure.
   's2_ep04_final': LearningObjective(
-    dependency: LanguageDependency.essential,
-    level: LearningLevel.application,
+    dependency: LanguageDependency.exposure,
+    level: LearningLevel.exposure,
     skill: LanguageSkill.sentenceMeaning,
-    objective: '주소록 항목의 이름, 번지 범위(Houses 1 to 5), 문 위치(the steps on Quay 1)를 읽고 증거와 비교해 틀린 주소 셋을 지운 뒤 남은 주소를 찾는다.',
-    expressions: ['Cross out every address that cannot be right.', 'Use your evidence to show why.'],
+    objective: '라벨의 CLUE 1: PASSAGE와 장부의 CLUE 2: No. 7을 읽고, PASSAGE DU PONT — No. 3과 PASSAGE DES HORLOGERS — No. 7 중 두 단서에 모두 맞는 주소를 고른다.',
+    expressions: ['Find the address.', 'CLUE 2: No. 7'],
   ),
   // ── Case 05 — The Silent Workshop ──────────────────────────────────────
   // The note says what a copy is; the stamps are compared by their lines
@@ -217,23 +217,23 @@ const Map<String, LearningObjective> season2Learning = {
     objective: '수리 카드의 "I added one small wheel."과 "Now its hands turn the wrong way."를 두 조건으로 읽고, 1분 뒤 시각과 시계 뒷면을 비교해 둘 다 맞는 Clock III를 찾는다.',
     expressions: ['I added one small wheel.', 'Now its hands turn the wrong way.'],
   ),
-  // The brown note names the place only as "the clock that turns back":
-  // read, then joined with Clock III from M2.
+  // Very easy since 2026-10-27: the mirror's words and the notebook's line
+  // share "turns back", so the key words are enough.
   's2_ep05_m3': LearningObjective(
-    dependency: LanguageDependency.essential,
-    level: LearningLevel.application,
+    dependency: LanguageDependency.helpful,
+    level: LearningLevel.exposure,
     skill: LanguageSkill.sentenceMeaning,
-    objective: '거울로 읽은 세 쪽지 중 진짜 서명이 있는 쪽지의 "I hid it in the clock that turns back."을 이해하고, M2에서 찾은 거꾸로 도는 시계(Clock III)와 연결한다.',
-    expressions: ["Trust only the maker's own mark.", "Which place does the maker's own note name?"],
+    objective: '거울로 읽은 쪽지 "THE CLOCK THAT TURNS BACK."을 노트의 CLOCK II runs fast / CLOCK III turns back과 맞춰 Clock III를 고르고, 그 안의 영수증 LETTER No. 4417을 찾는다.',
+    expressions: ['the clock that turns back', 'Which clock?'],
   ),
-  // The slips are read for their letter number, date and record words, then
-  // put in time order.
+  // Very easy since 2026-10-27: 4417 is found among two numbers; its trail
+  // (COLLECTED, SORTED, HELD at the Louvre post room) is then shown.
   's2_ep05_final': LearningObjective(
-    dependency: LanguageDependency.essential,
-    level: LearningLevel.application,
+    dependency: LanguageDependency.exposure,
+    level: LearningLevel.exposure,
     skill: LanguageSkill.sentenceMeaning,
-    objective: '영수증의 LETTER No. 4417과 날짜를 우편 전표와 비교해 다른 편지의 전표를 빼고, COLLECTED, SORTED, HELD 기록을 시간순으로 배열해 편지가 멈춘 곳을 찾는다.',
-    expressions: ['Find its slips.', 'Put them in order.'],
+    objective: 'LETTER 4471과 LETTER 4417 중 영수증의 편지 번호를 찾고, 이어서 9:00 AM — COLLECTED, 11:00 AM — SORTED, 4:00 PM — HELD(LOUVRE POST ROOM) 경로를 읽는다.',
+    expressions: ['Find letter 4417.'],
   ),
   // ── Case 06 — The Letter That Never Arrived ────────────────────────────
   // The tags are read against the Letter's Trail: LETTER or PARCEL, the
@@ -271,23 +271,22 @@ const Map<String, LearningObjective> season2Learning = {
     expressions: ['But the show remembers.'],
   ),
   // ── Case 07 — The Phantom Performance ──────────────────────────────────
-  // FILE 3's DOORS OPEN and CURTAIN DOWN and FILE 4's whole show are read
-  // together: only then does one start fit (the strip does the sums).
+  // Very easy since 2026-10-27: FILE 3's DOORS OPEN · 3:30 PM decides
+  // between 3:00 PM and 4:00 PM (the show starts after the doors open).
   's2_ep07_m1': LearningObjective(
-    dependency: LanguageDependency.essential,
-    level: LearningLevel.application,
-    skill: LanguageSkill.sentenceMeaning,
-    objective: 'FILE 3의 DOORS OPEN · 3:30 PM, CURTAIN DOWN · 6:10 PM과 FILE 4의 "THE WHOLE SHOW: 2 HOURS 10 MINUTES"를 함께 읽고, 관객이 들어온 뒤 시작해 CURTAIN DOWN에 끝나는 시작 시각(4:00)을 찾는다.',
-    expressions: ['DOORS OPEN · 3:30 PM', 'THE WHOLE SHOW: 2 HOURS 10 MINUTES'],
-  ),
-  // The photo is matched by its lights; the book says what one lamp alone
-  // means: an empty stage.
-  's2_ep07_m2': LearningObjective(
     dependency: LanguageDependency.essential,
     level: LearningLevel.comprehension,
     skill: LanguageSkill.sentenceMeaning,
-    objective: 'Lighting Book의 "GHOST LIGHT: one lamp on an empty stage."를 이해하고 사진과 같게 고스트 라이트만 켜서, 3:00이라고 적힌 사진이 공연이 아니라 빈 무대임을 안다.',
-    expressions: ['GHOST LIGHT: one lamp on an empty stage.', 'Light the stage like the old photo.'],
+    objective: 'FILE 3의 DOORS OPEN · 3:30 PM과 "The show starts after the doors open."을 읽고, 3:00 PM과 4:00 PM 중 문이 열린 뒤인 4:00 PM을 고른다. 이어서 THE SHOW ENDED AT 6:10 PM과 FILE 3의 3:00 PM을 함께 본다.',
+    expressions: ['DOORS OPEN · 3:30 PM', 'When did the show start?'],
+  ),
+  // Very easy since 2026-10-27: one switch, named GHOST LIGHT.
+  's2_ep07_m2': LearningObjective(
+    dependency: LanguageDependency.exposure,
+    level: LearningLevel.exposure,
+    skill: LanguageSkill.sentenceMeaning,
+    objective: '"Turn on the ghost light."를 읽고 GHOST LIGHT 스위치를 켠 뒤, 빈 무대(Only the ghost light: an empty stage, not a show.)와 Cue Card의 CUE 1 · CURTAIN UP · 4:00, 쪽지의 작은 시계와 빨간 문을 본다.',
+    expressions: ['Turn on the ghost light.'],
   ),
   // The clue's two words decide: the door's colour, and what is right
   // above it (a small clock, not a lamp, not a tower far off).
@@ -298,14 +297,14 @@ const Map<String, LearningObjective> season2Learning = {
     objective: '"Above the red door: a small clock."의 red door와 above(바로 위)를 두 조건으로 읽고, 램프·먼 시계탑·파란 문 배경막과 구별해 맞는 배경막을 찾는다.',
     expressions: ['Above the red door: a small clock.', 'look right above the door'],
   ),
-  // The slip's change is read as old → new, and found on FILE 3: the new
-  // time on the patch, the old one under it.
+  // Very easy since 2026-10-27: FILE 3 lit, the new time (on the patch)
+  // told from the old (under it).
   's2_ep07_final': LearningObjective(
     dependency: LanguageDependency.essential,
-    level: LearningLevel.application,
+    level: LearningLevel.comprehension,
     skill: LanguageSkill.sentenceMeaning,
-    objective: '수정 슬립의 "CURTAIN UP: 4:00 to 3:00"을 원래 시각에서 바뀐 시각으로 이해하고, 라이트 테이블에서 덧붙인 종이 위의 3:00과 그 아래의 4:00에 핀을 연결해 FILE 3이 바뀌었음을 증명한다.',
-    expressions: ['CURTAIN UP: 4:00 to 3:00', 'Which record was changed?'],
+    objective: 'FILE 3을 찾아 라이트 테이블에 올리고 불을 켠 뒤, 덧붙인 종이 위의 3:00 PM(새 시각)과 그 아래 비치는 4:00 PM(원래 시각)을 구별해 "What is the new time?"에 답한다.',
+    expressions: ['What is the new time?', 'Find FILE 3.'],
   ),
   // ── Case 08 — The Painter's Last Sketch ────────────────────────────────
   // The Hidden Sketch decides two ways: its picture (where the lamp

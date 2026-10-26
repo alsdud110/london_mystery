@@ -5,9 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'river_puzzles.dart' show DrawnEvidence;
 import 'scene_explore.dart' show ScenePixels;
 
-/// Season 2, Cases 11–12: puzzles played one small step at a time, made for
-/// a child playing alone (`docs/SEASON2_CASE11_SPEC.md`, the very-easy
-/// rules of 2026-10-27). Every step asks for one thing, said in a few words
+/// Season 2, Cases 11–12 (and, since 2026-10-27, Case 04's final, Case 05's
+/// M3 and final, Case 07's M1, M2 and final): puzzles played one small step
+/// at a time, made for a child playing alone (`docs/SEASON2_CASE11_SPEC.md`,
+/// the very-easy rules of 2026-10-27). Every step asks for one thing, said in a few words
 /// at the top ("Tap the big book."); what it needs is on the same screen
 /// (never a notebook to search, never a memory test); a choice has two
 /// answers; a wrong answer costs nothing (the first time the place to look
@@ -52,16 +53,18 @@ enum EasyInk {
 }
 
 /// Words written on a picture at [at] (the picture's pixels), [size] pixels
-/// high; [strong]: underlined in red, the line that matters.
+/// high; [strong]: underlined in red, the line that matters; [mirrored]:
+/// written backwards, as ink blotted on a page (read in a mirror).
 @immutable
 class EasyWriting {
-  const EasyWriting(this.text, {required this.at, this.size = 48, this.ink = EasyInk.pen, this.strong = false});
+  const EasyWriting(this.text, {required this.at, this.size = 48, this.ink = EasyInk.pen, this.strong = false, this.mirrored = false});
 
   final String text;
   final Rect at;
   final double size;
   final EasyInk ink;
   final bool strong;
+  final bool mirrored;
 }
 
 /// Another picture laid on a picture at [at] (its pixels): a stamp in its
@@ -166,6 +169,21 @@ final class EvidencePanel extends EasyPanel {
 
   @override
   double get aspect => 1;
+}
+
+/// A paper of the case as its evidence is drawn (FILE 3, the cue card, the
+/// receipt…: see `DrawnEvidenceView`), whole or, with [crop], only that
+/// part of it ([pixels]: its size, in whose pixels [crop] is).
+final class DrawnPanel extends EasyPanel {
+  const DrawnPanel({required super.id, required this.drawn, this.crop, this.pixels, super.caption})
+      : assert(crop == null || pixels != null, 'a crop needs the paper\'s pixels');
+
+  final DrawnEvidence drawn;
+  final Rect? crop;
+  final ScenePixels? pixels;
+
+  @override
+  double get aspect => crop == null ? drawn.aspect : crop!.width / crop!.height;
 }
 
 /// Someone's words, as said: their portrait, name and the line.
@@ -432,7 +450,7 @@ class EasyStep {
 /// ("THE BIG BOOK").
 @immutable
 class EasyStepsScene {
-  const EasyStepsScene({required this.title, required this.steps, required this.answer, this.finishLabel = 'DONE'});
+  const EasyStepsScene({required this.title, required this.steps, required this.answer, this.finishLabel = 'DONE', this.seen = const []});
 
   final String title;
   final List<EasyStep> steps;
@@ -440,6 +458,12 @@ class EasyStepsScene {
 
   /// The way on from the last step's done line.
   final String finishLabel;
+
+  /// Things of the mission counted as looked at once the last step is
+  /// done (`GameProgress.examinedKey(missionId, thing)`), before the
+  /// answer: what the steps already showed (the slip's back), so the page
+  /// after the answer does not ask for it again.
+  final List<String> seen;
 }
 
 /// The saved step: how many steps are done ("step=2"); a save that cannot

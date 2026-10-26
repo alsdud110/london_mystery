@@ -17,6 +17,7 @@ import 'package:london_mystery/data/mock/season2/season2_learning.dart';
 import 'package:london_mystery/data/mock/season2/season2_mock.dart';
 import 'package:london_mystery/data/mock/season_catalog.dart';
 import 'package:london_mystery/data/models/discovery.dart';
+import 'package:london_mystery/data/models/easy_steps.dart';
 import 'package:london_mystery/data/models/episode.dart';
 import 'package:london_mystery/data/models/game_progress.dart';
 import 'package:london_mystery/data/models/learning.dart';
@@ -30,13 +31,13 @@ import 'package:london_mystery/data/models/season_progress.dart';
 import 'package:london_mystery/data/repositories/episode_repository.dart';
 import 'package:london_mystery/features/game/game_controller.dart';
 import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/mission/widgets/light_board.dart' show LitStage;
 import 'package:london_mystery/features/mission_map/map_world.dart';
 import 'package:london_mystery/features/season/season_overview.dart';
 import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/game_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'easy_play.dart';
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
 
@@ -62,10 +63,18 @@ void main() {
   final rail = season2FlyRails[m3.id]!;
   final record = season2ChangedRecords[fin.id]!;
 
-  final stripScene = SeasonCatalog.showStrip(m1)!;
-  final lightScene = SeasonCatalog.lightBoard(m2)!;
+  // M2's old lighting desk: no longer played (very easy since 2026-10-27),
+  // its measured pictures still drawn on.
+  final lightScene = season2LightBoardScenes[m2.id]!;
   final railScene = SeasonCatalog.flyRail(m3)!;
   final tableScene = SeasonCatalog.lightTable(fin)!;
+
+  // M1, M2 and the final, played very easy (the user's rules of 2026-10-27).
+  final steps1 = SeasonCatalog.easySteps(m1)!;
+  final steps2 = SeasonCatalog.easySteps(m2)!;
+  final stepsF = SeasonCatalog.easySteps(fin)!;
+
+  String stepWords(EasyStepsScene scene) => easyWords(scene);
 
   setUpAll(() async {
     // Real fonts, so text sizes (and any overflow) match the device.
@@ -341,8 +350,14 @@ void main() {
       expect(ParisLandmark.cases['s2_ep07'], ParisLandmark.palaisGarnier);
       expect(case07.introScene, Artwork.palaisGarnierNight);
       expect([for (final m in case07.allMissions) m.scene], [Artwork.operaArchive, Artwork.operaStage, Artwork.flyRail, Artwork.lightTable]);
-      expect(SeasonCatalog.showStrip(m1)?.strip, same(strip));
-      expect(SeasonCatalog.lightBoard(m2)?.board, same(board));
+      // M1, M2 and the final are played very easy (2026-10-27); M3 is as
+      // it was. The final's light table stays for the page after its answer.
+      expect(SeasonCatalog.showStrip(m1), isNull);
+      expect(SeasonCatalog.lightBoard(m2), isNull);
+      for (final m in [m1, m2, fin]) {
+        expect(SeasonCatalog.easySteps(m)?.answer, m.answer, reason: '${m.id}: its own answer, so saves are as before');
+      }
+      expect(SeasonCatalog.easySteps(m3), isNull);
       expect(SeasonCatalog.flyRail(m3)?.rail, same(rail));
       expect(SeasonCatalog.lightTable(fin)?.record, same(record));
       for (final m in case07.allMissions) {
@@ -379,77 +394,85 @@ void main() {
       expect(SeasonCatalog.evidenceLink('s2_ep07_e1')!.to, 's2_ep06_e4');
     });
 
-    test('M1: the show is 2 hours 10 minutes; in after 3:30 and down at 6:10, it starts only at 4:00', () {
-      expect(strip.length, 130);
-      expect([for (final p in strip.parts) (p.name, p.minutes)], [('OVERTURE', 10), ('ACT ONE', 60), ('INTERVAL', 20), ('ACT TWO', 40)]);
-      expect((strip.doorsOpen, strip.officeStart, strip.curtainDown), (pm(3, 30), pm(3), pm(6, 10)));
-      expect((strip.from, strip.to, strip.earliest, strip.latest, strip.step, strip.initial), (pm(2, 30), pm(6, 30), pm(2, 30), pm(4, 20), 10, pm(3)));
-      expect(strip.endOf(strip.latest), strip.to, reason: 'the strip never leaves the clock');
-      expect(strip.starts, hasLength(12));
+    test('M1, very easy: 3:00 PM or 4:00 PM, FILE 3\'s DOORS OPEN beside it; then the end and the two records', () {
+      expect(steps1.steps, hasLength(1));
+      final step = steps1.steps.single;
+      expect(step.say, 'When did the show start?');
+      expect(step.does, EasyDo.choose);
+      expect([for (final o in step.options) o.label], ['3:00 PM', '4:00 PM']);
+      expect(step.answer, '4');
+      expect(step.option('3')!.feedback, 'At 3:00 PM, the doors are not open yet.');
+      // The clue on the same screen: FILE 3 itself, up to DOORS OPEN.
+      final doors = step.panels.single as DrawnPanel;
+      expect(doors.drawn, same(tableScene.file3));
+      final doorsRow = tableScene.file3.row(RecordSpot.doors);
+      expect('${doorsRow.label} ${doorsRow.time}', 'DOORS OPEN · 3:30 PM');
+      expect(doors.crop!.contains(doorsRow.labelAt.topLeft) && doors.crop!.contains(doorsRow.timeAt.bottomRight), isTrue);
+      expect(doors.crop!.bottom, lessThan(tableScene.file3.row(RecordSpot.patch).labelAt.top), reason: "not FILE 3's 3:00 yet");
+      expect(doors.caption, 'The show starts after the doors open.');
+      expect(step.lookHere.single.panel, 'doors');
+      // Then the end, and the two records side by side: FILE 3 still says
+      // 3:00 (the mismatch the case goes on from), FILE 4 the whole show.
+      expect(step.done, 'Yes, 4:00 PM! THE SHOW ENDED AT 6:10 PM.');
+      expect([for (final p in step.after!) (p as DrawnPanel).drawn], [same(tableScene.file3), same(tableScene.programme)]);
+      expect([for (final p in step.after!) p.caption], ['FILE 3 says 3:00 PM.', 'FILE 4: 2 HOURS 10 MINUTES']);
+      expect([for (final row in tableScene.file3.rows) '${row.label} ${row.time}'], ['DOORS OPEN · 3:30 PM', 'CURTAIN UP · 3:00 PM', 'CURTAIN DOWN · 6:10 PM']);
+      expect(tableScene.programme.whole, 'THE WHOLE SHOW:\n2 HOURS 10 MINUTES');
+      // The show really fits only from 4:00 to 6:10 (the rules, unchanged).
       expect(strip.fitting, [pm(4)]);
-      expect(strip.endOf(pm(3)), pm(5, 10), reason: '"it would end at 5:10, not 6:10"');
-      for (final s in strip.starts) {
-        final v = strip.verdict(s);
-        if (s == pm(3)) {
-          expect(v, StripVerdict.office);
-        } else if (s <= pm(3, 30)) {
-          expect(v, StripVerdict.early, reason: clockOf(s));
-        } else if (s != pm(4)) {
-          expect(v, StripVerdict.end, reason: clockOf(s));
-        } else {
-          expect(v, StripVerdict.fit);
-        }
-      }
-      // The edges: the doors' own time is still too early; ten minutes
-      // after it the audience is in.
-      expect(strip.verdict(pm(3, 30)), StripVerdict.early);
-      expect(strip.verdict(pm(3, 40)), StripVerdict.end);
-      expect(strip.verdict(pm(2, 30)), StripVerdict.early);
-      expect(strip.verdict(pm(4, 20)), StripVerdict.end);
-      expect(strip.snap(pm(4) + 4), pm(4));
-      expect(strip.snap(pm(4) + 6), pm(4, 10));
-      expect(strip.snap(pm(1)), strip.earliest);
-      expect(strip.snap(pm(9)), strip.latest);
-      expect({for (final o in m1.options) o.id}, {for (final v in StripVerdict.values) v.name});
-      expect(m1.answer, StripVerdict.fit.name);
-      String feedback(StripVerdict v) => AnswerChecker.feedbackFor(m1, v.name)!;
-      expect(feedback(StripVerdict.office), "That's the office's 3:00. But the doors open at 3:30.");
-      expect(feedback(StripVerdict.early), 'The doors are not open yet. Nobody is in the seats.');
-      expect(feedback(StripVerdict.end), 'The audience is in. Now look at the END flag. Is it at CURTAIN DOWN?');
-      expect(AnswerChecker.isCorrect(m1, 'fit'), isTrue);
-      expect(m1.hints, ["The show strip can't get shorter or longer.", 'Put the END flag on the CURTAIN DOWN pin.']);
-      expect(stripScene.task, 'Slide the show. Start after the doors open. End at CURTAIN DOWN.');
+      expect(strip.endOf(pm(4)), strip.curtainDown);
+      expect(AnswerChecker.isCorrect(m1, steps1.answer), isTrue);
+      expect(m1.question, 'When did the show start?');
+      expect(m1.evidence!.inscription, contains('CURTAIN UP 3:00 PM'));
+      expect(m1.evidence!.inscription, endsWith('It only fits from 4:00 to 6:10.'));
       // FILE 4 says no start time.
-      expect([...stripScene.programme.title, stripScene.programme.whole].join(' '), isNot(matches(RegExp(r'\d:\d\d'))));
+      expect([...tableScene.programme.title, tableScene.programme.whole].join(' '), isNot(matches(RegExp(r'\d:\d\d'))));
       expect(m1.successMessage, 'It fits at 4:00!');
       expect(m1.transition.last, "Is that true? Let's look at the stage.");
+      expect(stepWords(steps1).toLowerCase(), isNot(contains('changed')), reason: 'M1 never says the record was changed');
     });
 
-    test('M2: of the sixteen settings of the levers, only the ghost light alone matches the photo', () {
-      final settings = LightBoard.settings;
-      expect(settings, hasLength(16));
-      expect([for (final s in settings) if (board.verdict(s) == LightBoard.matchId) s], [
-        {StageLight.ghost},
-      ]);
-      // The first light that differs, in the desk's order.
-      expect(board.verdict({}), 'ghostOff');
-      expect(board.verdict({StageLight.house, StageLight.foot}), 'ghostOff');
-      expect(board.verdict({StageLight.ghost, StageLight.house, StageLight.spot}), 'house');
-      expect(board.verdict({StageLight.ghost, StageLight.foot, StageLight.spot}), 'foot');
-      expect(board.verdict({StageLight.ghost, StageLight.spot}), 'spot');
-      for (final s in settings) {
-        expect({for (final o in m2.options) o.id}, contains(board.verdict(s)));
+    test('M2, very easy: one switch, the ghost light\'s; the stage lit; then the cue card and the scrap', () {
+      expect([for (final s in steps2.steps) s.id], ['switch', 'cue', 'scrap']);
+      final [sw, cue, scrap] = steps2.steps;
+      expect(sw.say, 'Turn on the ghost light.');
+      expect(sw.does, EasyDo.tap);
+      // One switch: one lever, named GHOST LIGHT; no other light to set.
+      final [dark, desk] = sw.panels.cast<PicturePanel>();
+      expect(dark.picture.file, endsWith('stage_base.png'));
+      expect(desk.caption, 'TAP TO TURN ON');
+      expect(desk.layers.single.file, lightScene.lever);
+      expect([for (final w in desk.writing) w.text], ['GHOST LIGHT', 'OFF']);
+      expect(desk.picture.view.contains(lightScene.slots.first.slot.topLeft) && desk.picture.view.contains(lightScene.slots.first.slot.bottomRight), isTrue);
+      for (final other in lightScene.slots.skip(1)) {
+        expect(desk.picture.view.overlaps(other.slot), isFalse, reason: '${other.light.name}: not on screen');
       }
-      expect(m2.answer, LightBoard.matchId);
-      expect(AnswerChecker.feedbackFor(m2, 'ghostOff'), 'Look at the middle of the photo. One small lamp is glowing.');
-      expect(AnswerChecker.feedbackFor(m2, 'house'), 'In the photo, the seats are dark.');
-      expect(AnswerChecker.feedbackFor(m2, 'foot'), 'In the photo, the front of the stage is dark.');
-      expect(AnswerChecker.feedbackFor(m2, 'spot'), 'Do you see a big circle of light in the photo?');
-      expect(m2.question, 'Light the stage like the old photo.');
-      expect(lightScene.photo.caption, '3:00 PM · CURTAIN UP!');
-      expect(m2.letter, contains('GHOST LIGHT: one lamp on an empty stage.'));
+      expect(sw.target!.panel, 'desk');
+      expect(sw.target!.area!.contains(desk.layers.single.at.center), isTrue, reason: 'the lever is where it is tapped');
+      // Tapped: the lever up, ON, and the stage lit by the ghost light alone.
+      final [lit, up] = sw.after!.cast<PicturePanel>();
+      expect(lit.picture.file, lightScene.lit[StageLight.ghost]);
+      expect(lit.picture.view, dark.picture.view);
+      expect(up.layers.single.at.top, lessThan(desk.layers.single.at.top), reason: 'the lever up');
+      expect([for (final w in up.writing) w.text], ['GHOST LIGHT', 'ON']);
+      expect(sw.done, lightScene.emptyLine, reason: 'the empty stage, as the photo shows it');
+      expect(lightScene.photo.stage, lightScene.lit[StageLight.ghost], reason: 'the old photo is the ghost light alone');
+      expect(board.verdict({StageLight.ghost}), LightBoard.matchId);
+      // Then the cue card, then the scrap, in order, each with NEXT.
+      expect(cue.say, 'Read the cue card.');
+      expect((cue.panels.single as DrawnPanel).drawn, same(lightScene.cue));
       expect(lightScene.cue.heading, 'SHOW No. 34');
       expect(lightScene.cue.lines, ['CUE 1 · CURTAIN UP', '4:00']);
+      expect(scrap.say, 'Look at the scrap.');
+      expect((scrap.panels.single as PicturePanel).picture.file, lightScene.scrap);
+      expect(scrap.panels.single.caption, lightScene.scrapLine.replaceFirst('A tiny drawing: a', 'A'));
+      expect([cue.does, scrap.does], [EasyDo.next, EasyDo.next]);
+      // What the steps showed counts as seen: the page after the answer
+      // never asks for it again.
+      expect(steps2.seen, isEmpty, reason: 'M2 has no page after its answer now');
+      expect(steps2.answer, LightBoard.matchId);
+      expect(AnswerChecker.isCorrect(m2, steps2.answer), isTrue);
+      expect(m2.question, 'Turn on the ghost light.');
       // The photo proves an empty stage, not when it was taken.
       expect(m2.clue!.note, isNot(contains('4:00')));
       expect(m2.transition, containsAll(['The photo shows an empty stage, not a performance.', 'CUE 1 · CURTAIN UP · 4:00.']));
@@ -521,8 +544,7 @@ void main() {
       final r = tableScene.file3;
       expect((r.patch.newTime, r.patch.oldTime), ('3:00 PM', '4:00 PM'));
       expect([for (final row in r.rows) '${row.label} ${row.time}'], ['DOORS OPEN · 3:30 PM', 'CURTAIN UP · 3:00 PM', 'CURTAIN DOWN · 6:10 PM']);
-      expect(fin.question, 'Which record was changed?');
-      expect([tableScene.lightTask, tableScene.pinTask], ['Turn on the light. Look at each line.', 'Pin the slip to the change.']);
+      expect(fin.question, 'What is the new time?');
       expect(fin.successMessage, 'The record was changed!');
       // After the case: the slip's back leads to Case 08.
       expect(tableScene.slip.back.sign, 'ABBESSES');
@@ -533,11 +555,60 @@ void main() {
       expect(SeasonCatalog.evidenceLink('s2_ep07_e4')!.to, 's2_ep07_e3');
     });
 
+    test('Final, very easy: FILE 3 found, laid on the table; the light on; the new time; then the slip\'s back', () {
+      expect([for (final s in stepsF.steps) s.id], ['file', 'light', 'time']);
+      final [file, light, time] = stepsF.steps;
+      // FILE 3 or FILE 4, as their evidence is drawn; FILE 3 laid on the
+      // table at once (no drag).
+      expect(file.say, 'Find FILE 3.');
+      expect([for (final o in file.options) o.label], ['FILE 3', 'FILE 4']);
+      expect([for (final o in file.options) (o.panel! as DrawnPanel).drawn], [same(tableScene.file3), same(tableScene.programme)]);
+      expect(file.answer, record.changed);
+      expect(file.done, 'FILE 3 is on the light table.');
+      // One switch, lit on the table; tapped, the table lit and the 4:00
+      // under the patch shows through.
+      expect(light.say, 'Turn on the light.');
+      expect(light.does, EasyDo.tap);
+      final table = light.panels.first as PicturePanel;
+      expect(table.caption, 'TAP TO TURN ON');
+      expect(table.picture.file, tableScene.table);
+      expect(light.lit.single.area, tableScene.switchAt, reason: 'the switch itself glows');
+      expect(light.target!.area!.contains(tableScene.switchAt.topLeft) && light.target!.area!.contains(tableScene.switchAt.bottomRight), isTrue);
+      expect(light.target!.area!.overlaps(tableScene.glass), isFalse, reason: 'the glass is not the switch');
+      expect(table.picture.view.contains(light.target!.area!.topLeft) && table.picture.view.contains(light.target!.area!.bottomRight.translate(-0.01, -0.01)), isTrue);
+      expect(file.after!.map((p) => p.id), ['table', 'file3'], reason: 'the table and FILE 3, as the next step starts');
+      expect((light.panels.last as DrawnPanel).drawn, isA<OfficeRecord>().having((r) => r.light, 'light', RecordLight.unlit));
+      expect((light.after!.first as PicturePanel).picture.file, tableScene.tableOn);
+      expect((light.after!.last as DrawnPanel).drawn, isA<OfficeRecord>().having((r) => r.light, 'light', RecordLight.lit));
+      final close = light.after!.last as DrawnPanel;
+      final r = tableScene.file3;
+      for (final at in [r.patch.at, r.patch.oldAt, r.patch.newAt, r.row(RecordSpot.doors).labelAt, r.row(RecordSpot.down).timeAt]) {
+        expect(close.crop!.contains(at.topLeft) && close.crop!.contains(at.bottomRight), isTrue, reason: '$at on the close-up');
+      }
+      // The new time: on the patch, on top.
+      expect(time.say, 'What is the new time?');
+      expect([for (final o in time.options) o.label], [r.patch.newTime, r.patch.oldTime]);
+      expect(time.answer, '3');
+      expect(time.option('4')!.feedback, '4:00 PM is the old time, under the patch.');
+      expect(time.done, 'THE TIME WAS CHANGED!');
+      // Then the slip's back, at once: ABBESSES, P. KNEW THE BAG.
+      final back = time.after!.single as DrawnPanel;
+      expect(back.drawn, isA<AmendmentSlip>().having((s) => s.showBack, 'back', isTrue));
+      expect((back.drawn as AmendmentSlip).back.sign, 'ABBESSES');
+      expect((back.drawn as AmendmentSlip).back.note, 'P. KNEW THE BAG.');
+      expect(back.caption, 'ABBESSES · P. KNEW THE BAG.');
+      // The answer is the final's own; what the steps did counts as done, so
+      // the page after it shows FILE 3 lit and goes straight on.
+      expect(stepsF.answer, fin.answer);
+      expect(stepsF.seen, [ChangedRecord.chosenId, ChangedRecord.placedId, ChangedRecord.litId, ChangedRecord.slipBackId]);
+    });
+
     test('nothing is told before its time; who changed the record, any name behind it, and time itself vanishing, never', () {
       // Before M2 is solved: no ghost light's verdict, no cue card's 4:00.
       expect(beforeSolved(m2).toLowerCase(), isNot(contains('cue card')));
+      expect(stepWords(steps1).toLowerCase(), isNot(contains('cue card')));
       // Before M3 is solved: no slip, no pocket.
-      final beforeM3 = [everything([m1, m2]), beforeSolved(m3)].join('\n').toLowerCase();
+      final beforeM3 = [everything([m1, m2]), stepWords(steps1), stepWords(steps2), beforeSolved(m3)].join('\n').toLowerCase();
       for (final secret in ['pocket', 'slip', '4:00 to 3:00']) {
         expect(beforeM3, isNot(contains(secret)), reason: secret);
       }
@@ -548,6 +619,9 @@ void main() {
       }
       // M1 never says the record was changed.
       expect(everything([m1]).toLowerCase(), isNot(contains('changed')));
+      // The final's steps show the slip's back only once the new time is chosen.
+      expect(stepsF.steps.last.after!.single.caption, contains('ABBESSES'));
+      expect([for (final s in stepsF.steps) ...[s.say, ...s.hints, for (final p in s.panels) ?p.caption]].join(' ').toUpperCase(), isNot(contains('ABBESSES')));
       final all = [everything(case07.allMissions, e: case07), File('lib/data/mock/season2/season2_case07_scenes.dart').readAsStringSync()].join('\n').toUpperCase();
       for (final banned in ['VICTOR', 'DELACROIX', 'ÉMILE', 'EMILE', 'CLOCKMAKER', 'THIEF', 'V.D.', 'RECORD WAS REMOVED', 'TIME VANISHED', 'HOUR VANISHED', 'P. PAINTED', 'P. HID']) {
         expect(all, isNot(contains(banned)), reason: banned);
@@ -567,11 +641,10 @@ void main() {
     test('every word in its glossary is in its text', () {
       final text = [
         everything(case07.allMissions, e: case07),
-        stripScene.task,
-        lightScene.task,
+        stepWords(steps1),
+        stepWords(steps2),
+        stepWords(stepsF),
         railScene.task,
-        tableScene.lightTask,
-        tableScene.pinTask,
       ].join('\n').toLowerCase();
       for (final w in case07.glossary.keys) {
         expect(text, contains(w), reason: w);
@@ -642,7 +715,7 @@ void main() {
       expect(c.read(currentEpisodeProvider).id, 's2_ep07');
     });
 
-    test('what is looked at, lowered, chosen, lit and pinned is saved and comes back after a restart', () async {
+    test('the steps reached, the backdrops lowered and the answers are saved and come back after a restart', () async {
       var c = await start();
       var game = c.read(gameControllerProvider.notifier);
       game.openSeason(SeasonIds.paris);
@@ -654,10 +727,15 @@ void main() {
       expect(game.submitAnswer(m1, 'office').result, SubmitResult.tryAgain);
       expect(game.submitAnswer(m2, m2.answer).result, SubmitResult.locked, reason: 'missions in order');
       expect(game.submitAnswer(m1, m1.answer).result, SubmitResult.correct);
-      game.recordExamined(GameProgress.examinedKey(m2.id, LightBoard.photoId));
+      // M2 left on its second step (the switch on, the cue card next).
+      game.recordPuzzleState(m2.id, EasyStepsState.encode(1));
+
+      c.dispose();
+      c = await start();
+      game = c.read(gameControllerProvider.notifier);
+      expect(EasyStepsState.decode(c.read(gameControllerProvider).puzzleStateOf(m2.id), steps2), 1, reason: 'back on the cue card');
       expect(game.submitAnswer(m2, 'house').result, SubmitResult.tryAgain);
       expect(game.submitAnswer(m2, m2.answer).result, SubmitResult.correct);
-      game.recordExamined(GameProgress.examinedKey(m2.id, LightBoard.cueId));
       game.recordExamined(GameProgress.examinedKey(m3.id, FlyRail.loweredKey('lampRed')));
 
       c.dispose();
@@ -667,25 +745,19 @@ void main() {
       var p = c.read(gameControllerProvider);
       expect(p.isCompleted(m1.id) && p.isCompleted(m2.id), isTrue);
       expect((p.wrongCount(m1.id), p.wrongCount(m2.id)), (1, 1));
-      expect(p.hasExamined('${m2.id}:photo') && p.hasExamined('${m2.id}:cue'), isTrue);
-      expect(p.hasExamined('${m2.id}:scrap'), isFalse, reason: 'the scrap is found again');
       expect(p.hasExamined('${m3.id}:backdrop-lampRed'), isTrue);
       expect(game.submitAnswer(m3, 'lampRed').result, SubmitResult.tryAgain);
       expect(game.submitAnswer(m3, m3.answer).result, SubmitResult.correct);
       game.recordExamined(GameProgress.examinedKey(m3.id, FlyRail.pocketId));
       expect(game.submitAnswer(fin, ChangedRecord.pickPart('file4')).result, SubmitResult.tryAgain);
-      for (final k in [ChangedRecord.chosenId, ChangedRecord.placedId, ChangedRecord.litId, ChangedRecord.pinnedKey('old')]) {
-        game.recordExamined(GameProgress.examinedKey(fin.id, k));
-      }
+      // The final left with the light on (two steps done).
+      game.recordPuzzleState(fin.id, EasyStepsState.encode(2));
 
       c.dispose();
       c = await start();
       game = c.read(gameControllerProvider.notifier);
       p = c.read(gameControllerProvider);
-      for (final k in ['file3', 'placed', 'lit', 'pin-old']) {
-        expect(p.hasExamined('${fin.id}:$k'), isTrue, reason: k);
-      }
-      expect(p.hasExamined('${fin.id}:pin-new'), isFalse);
+      expect(EasyStepsState.decode(p.puzzleStateOf(fin.id), stepsF), 2, reason: 'back on the new time');
       expect(game.submitAnswer(fin, 'new:under').result, SubmitResult.tryAgain);
       expect(game.submitAnswer(fin, fin.answer).result, SubmitResult.correct);
       p = c.read(gameControllerProvider);
@@ -837,111 +909,61 @@ void main() {
         await shot('opening');
         await tapText(t, "I'M READY", after: const Duration(milliseconds: 1600));
 
-        // ── M1: the show strip ──────────────────────────────────────────
+        // ── M1: when the show started (very easy) ───────────────────────
+        final play = EasyPlay(t, 'c07_$tag');
         await visit(m1.id);
         expect(find.byKey(const ValueKey('story-picture')), findsOneWidget, reason: 'the archive');
         await shot('m1_place');
         await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 900));
-        expect(find.byKey(const ValueKey('strip-task')), findsOneWidget);
-        expect(find.byKey(const ValueKey('pin-doors')), findsOneWidget);
-        expect(find.byKey(const ValueKey('pin-down')), findsOneWidget);
-        expect(find.byKey(const ValueKey('pin-office')), findsOneWidget);
-        String readout() => t.widget<Text>(find.byKey(const ValueKey('strip-readout'))).textSpan!.toPlainText();
-        expect(readout(), contains('START 3:00 PM'));
-        expect(readout(), contains('END 5:10 PM'));
-        await reveal(t, find.byKey(const ValueKey('strip-check')));
-        await shot('m1_strip');
-        // The strip, its flags and the clock's pins: all on screen.
-        final timeline = t.getRect(find.byKey(const ValueKey('strip-timeline')));
-        for (final k in ['flag-start', 'flag-end', 'pin-doors', 'pin-down', 'pin-office']) {
-          final r = t.getRect(find.byKey(ValueKey(k)));
-          expect(r.left >= timeline.left - 0.5 && r.right <= timeline.right + 0.5, isTrue, reason: '$tag $k inside ($r)');
-          expect(r.left >= 0 && r.right <= size.width, isTrue, reason: '$tag $k on screen');
-        }
-        finger('strip-earlier');
-        finger('strip-later');
-        // FILE 3 read closer.
-        await tapKey('paper-file3', after: const Duration(milliseconds: 500));
-        expect(find.text('CURTAIN DOWN ·'), findsWidgets);
-        await shot('m1_file3');
-        await tapKey('paper-done', after: const Duration(milliseconds: 400));
-        await tapKey('strip-check');
-        await wrongThenTryAgain("That's the office's 3:00.", 'm1_office');
-        // Dragged right six steps: 4:00 (the pins of the clock in reach).
-        final k = (timeline.width - 28) / (strip.to - strip.from);
-        await reveal(t, find.byKey(const ValueKey('show-strip')));
-        final from = t.getCenter(find.byKey(const ValueKey('show-strip')));
-        final g = await t.startGesture(from);
-        for (var i = 1; i <= 10; i++) {
-          await g.moveTo(from + Offset(50 * k * i / 10, 0));
-          await t.pump(const Duration(milliseconds: 16));
-        }
-        await g.up();
-        await wait(t, const Duration(milliseconds: 300));
-        expect(readout(), contains('START 3:50 PM'), reason: 'dragged five steps');
-        await tapKey('strip-check');
-        await wrongThenTryAgain('Now look at the END flag.', 'm1_end');
-        await tapKey('strip-later', after: const Duration(milliseconds: 300));
-        expect(readout(), contains('START 4:00 PM'));
-        expect(readout(), contains('END 6:10 PM'));
-        await shot('m1_fit');
-        await tapKey('strip-check');
+        play.expectSay('When did the show start?');
+        expect(find.byKey(const ValueKey('easy-panel-doors')), findsOneWidget, reason: "FILE 3's DOORS OPEN beside the question");
+        expect(findReadable('The show starts after the doors open.'), findsOneWidget);
+        expect(find.byKey(const ValueKey('show-strip')), findsNothing, reason: 'no strip to slide');
+        finger('easy-option-3');
+        finger('easy-option-4');
+        await shot('m1_question');
+        await play.tapKey('easy-option-3');
+        expect(find.byKey(const ValueKey('easy-line-wrong')), findsOneWidget);
+        expect(findReadable('At 3:00 PM, the doors are not open yet.'), findsOneWidget);
+        expect(ref.read(gameControllerProvider).wrongCount(m1.id), 0, reason: 'a wrong answer costs nothing');
+        await shot('m1_wrong');
+        await play.tapKey('easy-option-4');
+        expect(findReadable('Yes, 4:00 PM! THE SHOW ENDED AT 6:10 PM.'), findsOneWidget);
+        expect(find.byKey(const ValueKey('easy-panel-file3')), findsOneWidget);
+        expect(find.byKey(const ValueKey('easy-panel-file4')), findsOneWidget);
+        expect(findReadable('FILE 3 says 3:00 PM.'), findsOneWidget, reason: 'the two times, side by side');
+        await shot('m1_done');
+        await play.next();
         await finish(m1.transition.first, 'm1');
         expect(ref.read(gameControllerProvider).isCompleted(m1.id), isTrue);
 
-        // ── M2: the lighting desk ───────────────────────────────────────
+        // ── M2: the ghost light (very easy) ─────────────────────────────
         await visit(m2.id);
         await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 900));
-        expect(find.byType(LitStage), findsOneWidget);
-        expect(find.byKey(const ValueKey('photo-caption')), findsOneWidget);
-        for (final l in StageLight.values) {
-          expect(t.widget<Text>(find.byKey(ValueKey('lever-state-${l.name}'))).data, 'OFF', reason: '${l.name}: off at first');
-          finger('lever-tap-${l.name}');
-        }
-        await shot('m2_desk');
-        await tapKey('old-photo', after: const Duration(milliseconds: 500));
-        expect(find.byKey(const ValueKey('photo-close')), findsOneWidget);
-        expect(find.byKey(const ValueKey('photo-compare-stage')), findsOneWidget, reason: 'the photo beside the stage');
-        expect(examined(), contains('s2_ep07_m2:photo'));
-        await shot('m2_photo');
-        await tapKey('photo-done', after: const Duration(milliseconds: 400));
-        await tapKey('lighting-book', after: const Duration(milliseconds: 500));
-        expect(find.byKey(const ValueKey('book-close')), findsOneWidget);
-        await shot('m2_book');
-        await tapKey('book-done', after: const Duration(milliseconds: 400));
-        await tapKey('lever-tap-house', after: const Duration(milliseconds: 400));
-        await tapKey('lever-tap-ghost', after: const Duration(milliseconds: 400));
-        expect(t.widget<LitStage>(find.byType(LitStage)).on, {StageLight.house, StageLight.ghost}, reason: 'two lights on together');
-        await shot('m2_two_lights');
-        await tapKey('lights-check');
-        await wrongThenTryAgain('In the photo, the seats are dark.', 'm2_house');
-        // A slide down turns the house lights off.
-        await reveal(t, find.byKey(const ValueKey('lever-tap-house')));
-        await t.drag(find.byKey(const ValueKey('lever-tap-house')), const Offset(0, 60));
-        await wait(t, const Duration(milliseconds: 400));
-        expect(t.widget<LitStage>(find.byType(LitStage)).on, {StageLight.ghost});
-        await tapKey('lights-check');
-        await wait(t, const Duration(milliseconds: 900));
-        expect(ref.read(gameControllerProvider).isCompleted(m2.id), isTrue);
-        // The cue card first, then the scrap; then on.
-        expect(find.byKey(const ValueKey('book-page-34')), findsOneWidget);
-        expect(find.byKey(const ValueKey('scrap')), findsNothing, reason: 'the cue card first');
-        expect(t.widget<GameButton>(find.byKey(const ValueKey('cue-continue'))).onPressed, isNull);
-        await shot('m2_page_34');
-        await tapKey('cue-card', after: const Duration(milliseconds: 500));
-        expect(find.byKey(const ValueKey('cue-close')), findsOneWidget);
+        play.expectSay('Turn on the ghost light.');
+        expect(findReadable('TAP TO TURN ON'), findsOneWidget);
+        expect(find.byKey(const ValueKey('lights-check')), findsNothing, reason: 'no levers to set');
+        final desk = (steps2.steps.first.panels[1] as PicturePanel).picture;
+        final lever = steps2.steps.first.target!.area!;
+        final reach = play.sizeOn('desk', desk, lever);
+        expect(reach.width >= 44 && reach.height >= 44, isTrue, reason: '$tag: the switch is finger-sized ($reach)');
+        await shot('m2_switch');
+        await play.tapOn('desk', desk, lever);
+        expect(findReadable('Only the ghost light: an empty stage, not a show.'), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is Image && w.image is AssetImage && (w.image as AssetImage).assetName.endsWith('stage_ghost.png')), findsOneWidget, reason: 'the stage lit');
+        expect(find.text('ON'), findsOneWidget, reason: 'the switch up');
+        await shot('m2_lit');
+        await play.next();
+        play.expectSay('Read the cue card.');
         expect(find.text('4:00'), findsWidgets);
-        expect(examined(), contains('s2_ep07_m2:cue'));
-        await shot('m2_cue_card');
-        await tapKey('cue-done', after: const Duration(milliseconds: 700));
-        await tapKey('scrap', after: const Duration(milliseconds: 500));
-        expect(find.byKey(const ValueKey('scrap-close')), findsOneWidget);
-        expect(findReadable(lightScene.scrapLine), findsOneWidget);
+        await shot('m2_cue');
+        await play.tapKey('easy-button-cue', after: const Duration(milliseconds: 700));
+        play.expectSay('Look at the scrap.');
+        expect(findReadable('A small clock above a red door.'), findsOneWidget);
         await shot('m2_scrap');
-        await tapKey('scrap-done', after: const Duration(milliseconds: 400));
-        await tapKey('cue-continue');
-        expect(examined(), contains('s2_ep07_m2:scrap'));
+        await play.tapKey('easy-button-scrap');
         await finish(m2.transition.first, 'm2');
+        expect(ref.read(gameControllerProvider).isCompleted(m2.id), isTrue);
 
         // ── M3: the rope rail ───────────────────────────────────────────
         await visit(m3.id);
@@ -986,92 +1008,50 @@ void main() {
         expect(examined(), contains('s2_ep07_m3:pocket'));
         await finish(m3.transition.first, 'm3');
 
-        // ── Final: the light table ──────────────────────────────────────
+        // ── Final: the light table (very easy) ──────────────────────────
         router.go(Routes.finalMission);
         await wait(t, const Duration(milliseconds: 1600));
-        expect(find.byKey(const ValueKey('record-stage')), findsOneWidget);
-        expect(find.byKey(const ValueKey('box-label')), findsOneWidget);
-        await shot('final_page');
-        await tapKey('record-file4', after: const Duration(milliseconds: 300));
-        await wrongThenTryAgain('agree on 4:00', 'final_file4');
-        await tapKey('record-file3', after: const Duration(milliseconds: 600));
-        expect(examined(), contains('s2_ep07_final:file3'));
-        await reveal(t, find.byKey(const ValueKey('light-table')));
-        await shot('final_table');
-        // FILE 3 dragged onto the glass.
-        final file3At = t.getCenter(find.byKey(const ValueKey('drag-file3')));
-        final tableAt = t.getCenter(find.byKey(const ValueKey('light-table')));
-        final d = await t.startGesture(file3At);
-        for (var i = 1; i <= 12; i++) {
-          await d.moveTo(Offset.lerp(file3At, tableAt, i / 12)!);
-          await t.pump(const Duration(milliseconds: 16));
-        }
-        await d.up();
-        await wait(t, const Duration(milliseconds: 600));
-        expect(examined(), contains('s2_ep07_final:placed'));
-        expect(find.byKey(const ValueKey('record-close-up')), findsOneWidget);
-        expect(find.descendant(of: find.byKey(const ValueKey('record-close-up')), matching: find.byKey(const ValueKey('record-old-time'))), findsNothing, reason: 'the old time is not seen before the light');
-        expect(find.byKey(const ValueKey('board-slip')), findsNothing, reason: 'the light first');
-        await reveal(t, find.byKey(const ValueKey('light-switch')));
+        play.expectSay('Find FILE 3.');
+        finger('easy-option-file3');
+        finger('easy-option-file4');
+        await shot('final_find');
+        await play.tapKey('easy-option-file4');
+        expect(findReadable('That is FILE 4, the programme. Find FILE 3.'), findsOneWidget);
+        await play.tapKey('easy-option-file3');
+        expect(findReadable('FILE 3 is on the light table.'), findsOneWidget, reason: 'laid on it: no drag');
+        await shot('final_on_table');
+        await play.next();
+        play.expectSay('Turn on the light.');
+        expect(findReadable('TAP TO TURN ON'), findsOneWidget);
+        Finder oldTime() => find.descendant(of: find.byKey(const ValueKey('easy-panel-file3')), matching: find.byKey(const ValueKey('record-old-time')));
+        expect(oldTime(), findsNothing, reason: 'the old time is not seen before the light');
+        final table = (stepsF.steps[1].panels.first as PicturePanel).picture;
+        final light = stepsF.steps[1].target!.area!;
+        final reachSwitch = play.sizeOn('table', table, light);
+        expect(reachSwitch.width >= 44 && reachSwitch.height >= 44, isTrue, reason: '$tag: the switch is finger-sized ($reachSwitch)');
         await shot('final_unlit');
-        await tapKey('light-switch', after: const Duration(milliseconds: 800));
-        expect(examined(), contains('s2_ep07_final:lit'));
-        expect(find.descendant(of: find.byKey(const ValueKey('record-close-up')), matching: find.byKey(const ValueKey('record-old-time'))), findsOneWidget, reason: 'the old time shows through');
-        expect(find.descendant(of: find.byKey(const ValueKey('record-close-up')), matching: find.byKey(const ValueKey('patch-edge'))), findsOneWidget);
-        expect(find.byKey(const ValueKey('board-slip')), findsOneWidget);
-        finger('pin-old');
-        finger('pin-new');
-        await reveal(t, find.byKey(const ValueKey('record-close-up')));
+        await play.tapOn('table', table, light);
+        expect(oldTime(), findsOneWidget, reason: 'the hidden 4:00 PM shows through');
+        expect(findReadable('Look! A hidden 4:00 PM under the patch.'), findsOneWidget);
         await shot('final_lit');
-        // Where a place on FILE 3 is on screen now.
-        Offset onRecord(RecordSpot s) {
-          final at = t.getRect(find.byKey(const ValueKey('record-close-up')));
-          return at.topLeft + (tableScene.pin(s).at - tableScene.closeUp.topLeft) * (at.width / tableScene.closeUp.width);
-        }
-
-        // The old time tapped onto the patch: that is the new time.
-        await tapKey('pin-old', after: const Duration(milliseconds: 300));
-        expect(findReadable('Now tap the line on FILE 3.'), findsOneWidget);
-        await t.tapAt(onRecord(RecordSpot.patch));
-        await wrongThenTryAgain("That's the new time on top.", 'final_old_on_patch');
-        // The light off, the old time dropped on the patch: the light first.
-        await tapKey('light-switch', after: const Duration(milliseconds: 700));
-        await reveal(t, find.byKey(const ValueKey('pin-old')));
-        Future<void> dragPin(String pin, RecordSpot to) async {
-          final from = t.getCenter(find.byKey(ValueKey('pin-$pin')));
-          final target = onRecord(to);
-          final g = await t.startGesture(from);
-          for (var i = 1; i <= 14; i++) {
-            await g.moveTo(Offset.lerp(from, target, i / 14)!);
-            await t.pump(const Duration(milliseconds: 16));
-          }
-          await g.up();
-          await wait(t, const Duration(milliseconds: 400));
-        }
-
-        await dragPin('old', RecordSpot.patch);
-        await wrongThenTryAgain('Turn on the light first.', 'final_unlit_pin');
-        await tapKey('light-switch', after: const Duration(milliseconds: 700));
-        await reveal(t, find.byKey(const ValueKey('pin-old')));
-        await dragPin('old', RecordSpot.under);
-        expect(examined(), contains('s2_ep07_final:pin-old'));
-        await shot('final_old_pinned');
-        await tapKey('pin-new', after: const Duration(milliseconds: 300));
-        await t.tapAt(onRecord(RecordSpot.patch));
-        await wait(t, const Duration(milliseconds: 3600));
+        await play.next();
+        play.expectSay('What is the new time?');
+        await play.tapKey('easy-option-4');
+        expect(findReadable('4:00 PM is the old time, under the patch.'), findsOneWidget);
+        expect(ref.read(gameControllerProvider).wrongCount(fin.id), 0, reason: 'a wrong answer costs nothing');
+        await play.tapKey('easy-option-3');
+        expect(findReadable('THE TIME WAS CHANGED!'), findsOneWidget);
+        // The slip's back, at once: Abbesses, and P. KNEW THE BAG.
+        expect(find.byKey(const ValueKey('slip-sketch')), findsOneWidget);
+        expect(find.text('ABBESSES'), findsOneWidget);
+        expect(findReadable('ABBESSES · P. KNEW THE BAG.'), findsOneWidget);
+        await shot('final_slip_back');
+        await play.next(after: const Duration(milliseconds: 3600));
         expect(ref.read(gameControllerProvider).isCaseSolved, isTrue);
         expect(findReadableContaining('The record was changed!'), findsWidgets);
+        expect(find.byKey(const ValueKey('final-turn-slip')), findsNothing, reason: 'the back was already shown');
+        expect(examined(), containsAll(['s2_ep07_final:file3', 's2_ep07_final:placed', 's2_ep07_final:lit', 's2_ep07_final:slip-back']));
         await shot('final_solved');
-        // The slip turned over: Abbesses, and P. KNEW THE BAG.
-        await tapKey('final-turn-slip', after: const Duration(milliseconds: 600));
-        expect(find.byKey(const ValueKey('slip-back')), findsOneWidget);
-        expect(find.byKey(const ValueKey('slip-sign')), findsOneWidget);
-        expect(find.byKey(const ValueKey('slip-sign-close')), findsOneWidget, reason: 'the metro sign up close, readable');
-        expect(find.text('ABBESSES'), findsNWidgets(2));
-        expect(find.text('P. KNEW THE BAG.'), findsOneWidget);
-        await shot('final_slip_back');
-        await tapKey('slip-back-done', after: const Duration(milliseconds: 500));
-        expect(examined(), contains('s2_ep07_final:slip-back'));
         await tapText(t, 'CONTINUE INVESTIGATION', after: const Duration(milliseconds: 900));
         expect(find.text(fin.transition.first), findsOneWidget);
         await t.tapAt(Offset(size.width / 2, size.height / 2));
@@ -1092,24 +1072,35 @@ void main() {
       });
     }
 
-    testWidgets('back again after a restart: the cue card read, the backdrops lowered, the pins pressed in are as left', (t) async {
+    testWidgets('back again after a restart: the step reached, the backdrops lowered are as left; an old save still plays', (t) async {
       final ref = await open(t, const Size(390, 844));
       final game = ref.read(gameControllerProvider.notifier);
+      final play = EasyPlay(t, 'c07_resume');
       expect(game.openEpisode('s2_ep07'), isTrue);
       game.startInvestigation();
       game.submitAnswer(m1, m1.answer);
-      // Solved, the cue card read, the scrap not yet found (a restart).
+      // M2 left on the cue card (the switch turned on before a restart).
       game.markMissionStarted(m2.id);
-      game.submitAnswer(m2, m2.answer);
-      game.recordExamined(GameProgress.examinedKey(m2.id, LightBoard.cueId));
+      game.recordPuzzleState(m2.id, EasyStepsState.encode(1));
       final router = ref.read(routerProvider);
       router.go(Routes.mission(m2.id));
       await wait(t, const Duration(milliseconds: 1400));
-      expect(find.byKey(const ValueKey('book-page-34')), findsOneWidget, reason: 'the page, not the solved file');
-      expect(find.byKey(const ValueKey('scrap')), findsOneWidget, reason: 'the cue card was read: the scrap is there');
-      expect(t.widget<GameButton>(find.byKey(const ValueKey('cue-continue'))).onPressed, isNull, reason: 'the scrap is found first');
+      if (find.text('INVESTIGATE').evaluate().isNotEmpty) await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 900));
+      play.expectSay('Read the cue card.');
+      expect(find.byKey(const ValueKey('easy-dot-1')), findsOneWidget);
+      await play.shot('m2_resumed');
+      // An old save: M2 solved the old way, its scrap never found. The
+      // solved file shows (no old lighting book to finish).
+      game.submitAnswer(m2, m2.answer);
+      game.recordExamined(GameProgress.examinedKey(m2.id, LightBoard.cueId));
+      router.go(Routes.map);
+      await wait(t, const Duration(milliseconds: 1400));
+      router.go(Routes.mission(m2.id));
+      await wait(t, const Duration(milliseconds: 1400));
+      expect(find.byKey(const ValueKey('book-page-34')), findsNothing);
+      expect(find.byKey(const ValueKey('solved')), findsOneWidget);
+      expect(t.takeException(), isNull);
       // M3: the backdrops lowered before have their tick.
-      game.recordExamined(GameProgress.examinedKey(m2.id, LightBoard.scrapId));
       game.markMissionStarted(m3.id);
       game.recordExamined(GameProgress.examinedKey(m3.id, FlyRail.loweredKey('clockBlue')));
       router.go(Routes.map);
@@ -1118,7 +1109,8 @@ void main() {
       await wait(t, const Duration(milliseconds: 1400));
       expect(find.byKey(const ValueKey('rope-rail')), findsOneWidget, reason: 'started before: straight to the rail');
       expect(find.descendant(of: find.byKey(const ValueKey('rope-rail')), matching: find.byType(Row)), findsNWidgets(4));
-      // The final: chosen, placed, lit and the old pin pressed in.
+      // The final, from an old save: FILE 3 chosen, placed, lit and the old
+      // pin pressed in. It starts at its first step, and plays to the end.
       game.submitAnswer(m3, m3.answer);
       game.recordExamined(GameProgress.examinedKey(m3.id, FlyRail.pocketId));
       for (final k in [ChangedRecord.chosenId, ChangedRecord.placedId, ChangedRecord.litId, ChangedRecord.pinnedKey('old')]) {
@@ -1126,10 +1118,14 @@ void main() {
       }
       router.go(Routes.finalMission);
       await wait(t, const Duration(milliseconds: 1600));
-      expect(find.byKey(const ValueKey('record-close-up')), findsOneWidget, reason: 'FILE 3 on the glass');
-      expect(find.descendant(of: find.byKey(const ValueKey('record-close-up')), matching: find.byKey(const ValueKey('record-old-time'))), findsOneWidget, reason: 'the light on again');
-      expect(find.byKey(const ValueKey('board-slip')), findsOneWidget);
-      expect(t.widget<Semantics>(find.descendant(of: find.byKey(const ValueKey('pin-old')), matching: find.byType(Semantics)).first).properties.label, contains('pinned'));
+      play.expectSay('Find FILE 3.');
+      await play.tapKey('easy-option-file3');
+      await play.next();
+      await play.tapOn('table', (stepsF.steps[1].panels.first as PicturePanel).picture, stepsF.steps[1].target!.area);
+      await play.next();
+      await play.tapKey('easy-option-3');
+      await play.next(after: const Duration(milliseconds: 3600));
+      expect(ref.read(gameControllerProvider).isCaseSolved, isTrue);
       expect(t.takeException(), isNull);
       await wait(t, const Duration(seconds: 3));
     });

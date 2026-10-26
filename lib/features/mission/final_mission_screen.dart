@@ -841,8 +841,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
     );
   }
 
-  /// The final played one small step at a time (Case 12's case board), on
-  /// the night desk; its last step answers the final.
+  /// The final played one small step at a time (Case 12's case board; the
+  /// very-easy finals of Cases 04, 05 and 07), on the night desk; its last
+  /// step answers the final (what the steps showed counted as looked at
+  /// first: the page after the answer does not ask for it again).
   Widget _easyFinal(Mission m, EasyStepsScene scene, GameProgress progress) => _finalPage(
     desk: true,
     child: Center(
@@ -852,10 +854,16 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
           key: const ValueKey('final-steps'),
           scene: scene,
           dark: true,
-          eyebrow: 'FINAL MISSION',
+          // The bar says FINAL MISSION: the steps' own title only (whole, on
+          // the smallest phone).
           done: EasyStepsState.decode(progress.puzzleStateOf(m.id), scene),
           onDone: (n) => ref.read(gameControllerProvider.notifier).recordPuzzleState(m.id, EasyStepsState.encode(n)),
-          onFinish: _submit,
+          onFinish: (a) {
+            for (final thing in scene.seen) {
+              ref.read(gameControllerProvider.notifier).recordExamined(GameProgress.examinedKey(m.id, thing));
+            }
+            _submit(a);
+          },
         ),
       ),
     ),

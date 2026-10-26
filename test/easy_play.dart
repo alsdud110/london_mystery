@@ -25,6 +25,26 @@ Future<void> loadGameFonts() async {
   }
 }
 
+/// Every word a very-easy puzzle says or shows: its title, each step's
+/// words, hints, answers and help, and what its panels have written on them.
+String easyWords(EasyStepsScene scene) => [
+      scene.title,
+      for (final s in scene.steps) ...[
+        s.say,
+        ?s.question,
+        ?s.done,
+        ?s.tell,
+        s.wrong,
+        ...s.hints,
+        for (final o in s.options) ...[?o.label, ?o.feedback],
+        for (final p in [...s.panels, ...?s.after, for (final o in s.options) ?o.panel]) ...[
+          ?p.caption,
+          if (p is PaperPanel) ...[p.title, for (final l in p.lines) l.text],
+          if (p is PicturePanel) for (final w in p.writing) w.text,
+        ],
+      ],
+    ].join('\n');
+
 /// Playing Cases 11–12 as a child does, in widget tests: the talks line by
 /// line, the steps tapped where they are lit. `LM_SHOTS=folder` saves a
 /// picture of each moment.
