@@ -19,6 +19,7 @@ import '../../../widgets/ink_icon.dart';
 import '../../../widgets/paper.dart';
 import '../../../widgets/paper_background.dart';
 import '../../../widgets/place_scenery.dart';
+import '../../../widgets/typewriter_text.dart';
 import '../../game/game_providers.dart';
 
 /// A mission played by talking to the people at its place (see
@@ -677,16 +678,12 @@ class _Conversation extends StatelessWidget {
   /// The answer shown is a statement in the notes.
   final bool recorded;
 
-  /// From this height the portrait stands over the words, leaving them about
-  /// [_wordsRoom]; below it, beside them.
-  static const _stackFrom = 470.0;
-  static const _wordsRoom = 190.0;
-
   @override
   Widget build(BuildContext context) {
     final answer = question == null ? null : speaker.answers[question!.id];
-    // The words come once the portrait flying in has landed.
-    Widget words({required bool beside}) => _AfterLanding(
+    // Keep the existing witness selection, questioning and deduction panel.
+    // Only the active conversation is presented as a cinematic scene.
+    final words = _AfterLanding(
       flying: flying,
       id: speaker.id,
       delay: const Duration(milliseconds: 150),
@@ -697,64 +694,74 @@ class _Conversation extends StatelessWidget {
         note: !recorded
             ? null
             : (fresh != null && answer?.statementId == fresh ? _Note.recorded : _Note.kept),
-        beside: beside,
       ),
     );
-    // The mission, one quiet line over the talk: what the questions are for.
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _MissionStrip(goal: goal),
-        Expanded(child: _scene(words)),
-      ],
-    );
-  }
-
-  Widget _scene(Widget Function({required bool beside}) words) {
-    return LayoutBuilder(
-      builder: (context, box) {
-        const pad = AppSpace.lg;
-        const vpad = AppSpace.sm;
-        final w = box.maxWidth - 2 * pad;
-        final h = box.maxHeight - 2 * vpad;
-        if (h >= _stackFrom) {
-          final portraitHeight = (h - _wordsRoom).clamp(200.0, 340.0);
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(pad, vpad, pad, vpad),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: portraitHeight,
-                  child: _Portrait(speaker: speaker, flying: flying),
-                ),
-                const SizedBox(height: AppSpace.sm),
-                Expanded(child: words(beside: false)),
-              ],
-            ),
-          );
-        }
-        const aspect = ArtAssets.witnessPortraitAspect;
-        // The words keep a readable width first (wider with larger text):
-        // on a small screen the person gives way, never what they say.
-        final wordsWidth = MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 215.0 : 160.0;
-        final portraitWidth = math.max(0.0, math.min(math.min(w * 0.5, h * aspect), w - wordsWidth - AppSpace.md - 4));
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(pad, vpad, pad, vpad),
-          child: Row(
-            children: [
-              SizedBox(
-                width: portraitWidth,
-                height: portraitWidth / aspect,
-                child: _Portrait(speaker: speaker, flying: flying),
-              ),
-              const SizedBox(width: AppSpace.md + 4),
-              Expanded(
-                child: SizedBox(height: h, child: words(beside: true)),
-              ),
-            ],
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final compact = constraints.maxHeight < 310;
+              final speechHeight = compact
+                  ? (constraints.maxHeight * 0.48).clamp(108.0, 148.0)
+                  : (constraints.maxHeight * 0.42).clamp(145.0, 205.0);
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  // The original location image remains the backdrop. No
+                  // new artwork or synthetic replacement is introduced.
+                  Positioned.fill(
+                    child: Image.asset(
+                      scene.background,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const ColoredBox(
+                        color: AppColors.navyDeep,
+                      ),
+                    ),
+                  ),
+                  // Darkened stage separates the witness from the setting.
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColors.navyDeep.withValues(alpha: 0.22),
+                            AppColors.navyDeep.withValues(alpha: 0.12),
+                            AppColors.navyDeep.withValues(alpha: 0.85),
+                          ],
+                          stops: const [0, 0.42, 1],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Keep the existing portrait artwork and arrival animation.
+                  Positioned(
+                    top: compact ? 4 : AppSpace.sm,
+                    bottom: speechHeight * 0.48,
+                    left: AppSpace.lg,
+                    right: AppSpace.lg,
+                    child: _Portrait(speaker: speaker, flying: flying),
+                  ),
+                  // Cinematic dialogue is anchored over the lower part of
+                  // the scene rather than placed beside a small portrait.
+                  Positioned(
+                    left: AppSpace.md,
+                    right: AppSpace.md,
+                    bottom: AppSpace.sm,
+                    height: speechHeight,
+                    child: words,
+                  ),
+                ],
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
@@ -788,7 +795,7 @@ class _Portrait extends StatelessWidget {
 
 /// What was asked (small, the detective's) and the answer (the person's,
 /// larger, in their paper card), with their name plate.
-class _Speech extends StatelessWidget {
+class _Speech extends StatefulWidget {
   const _Speech({
     required this.speaker,
     required this.question,
@@ -809,7 +816,29 @@ class _Speech extends StatelessWidget {
   final bool beside;
 
   @override
+  State<_Speech> createState() => _SpeechState();
+}
+
+class _SpeechState extends State<_Speech> {
+  bool _skipTyping = false;
+
+  @override
+  void didUpdateWidget(covariant _Speech oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.line != widget.line ||
+        oldWidget.question?.id != widget.question?.id ||
+        oldWidget.speaker.id != widget.speaker.id) {
+      _skipTyping = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final speaker = widget.speaker;
+    final question = widget.question;
+    final line = widget.line;
+    final note = widget.note;
+    final beside = widget.beside;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final isNew = note == _Note.recorded;
     final edge = isNew ? AppColors.gold : AppLine.faint();
@@ -881,11 +910,24 @@ class _Speech extends StatelessWidget {
                           ],
                           // Beside the person with larger text, a little smaller:
                           // a long answer still reads whole in a short space.
-                          Text(
-                            '"$line"',
-                            style: AppText.letter(
-                              size: beside && MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 16 : 18,
-                              color: AppColors.ink,
+                          // Reuse the case Story Sequence's typewriter reveal.
+                          // Tapping the spoken line reveals it immediately; witness
+                          // selection, questions and evidence comparison remain unchanged.
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              if (!_skipTyping) setState(() => _skipTyping = true);
+                            },
+                            child: TypewriterText(
+                              '"$line"',
+                              key: ValueKey('talk-typewriter-${speaker.id}-${question?.id ?? 'greeting'}'),
+                              style: AppText.letter(
+                                size: beside && MediaQuery.textScalerOf(context).scale(1) > 1.1 ? 16 : 18,
+                                color: AppColors.ink,
+                              ),
+                              textAlign: TextAlign.start,
+                              skip: _skipTyping,
+                              sound: false,
                             ),
                           ),
                         ],
