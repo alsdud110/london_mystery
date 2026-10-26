@@ -132,7 +132,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
         fit: StackFit.expand,
         children: [
           if (story?.after case final after?)
-            PlaceScenery.picture(StoryPictureView(after, imageKey: const ValueKey('scene-backdrop')))
+            PlaceScenery.story(after, imageKey: const ValueKey('scene-backdrop'))
           else
             PlaceScenery(
               afterCase

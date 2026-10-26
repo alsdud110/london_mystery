@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import '../data/models/backdrop.dart';
 import '../data/models/mission.dart';
+import '../data/models/scene_explore.dart' show ScenePixels;
 import 'art_assets.dart';
+import 'backdrop_art.dart';
+import 'scene_backdrop.dart';
 
 /// The scene of a place, everywhere the game shows one (mission, final case,
 /// image choices, the unlocked-place card, the Case Solved photo).
@@ -23,13 +27,26 @@ class LandmarkArt extends StatelessWidget {
     this.showSky = true,
     this.solved = 0,
     this.showName = true,
-  }) : _picture = true;
+  }) : _picture = true,
+       _backdrop = false;
 
   /// The code drawing of [artwork] only, never its picture (what shows when
   /// a picture is missing).
   const LandmarkArt.drawing(this.artwork, {super.key, this.borderRadius = 24, this.showSky = true, this.solved = 0})
     : showName = true,
-      _picture = false;
+      _picture = false,
+      _backdrop = false;
+
+  /// The place filling the screen behind the story: its picture without
+  /// its paper edge or name plate, laid by its [BackdropArt] look (its
+  /// landmark kept whole, never enlarged into a blur), or its drawing.
+  const LandmarkArt.backdrop(this.artwork, {super.key})
+    : borderRadius = 0,
+      showSky = true,
+      solved = 0,
+      showName = false,
+      _picture = true,
+      _backdrop = true;
 
   final Artwork artwork;
   final double borderRadius;
@@ -46,6 +63,7 @@ class LandmarkArt extends StatelessWidget {
   final double solved;
 
   final bool _picture;
+  final bool _backdrop;
 
   /// Places inside a landmark with no drawing of their own yet, and the
   /// drawing used for each. A stand-in lends its *drawing* only, never its
@@ -72,6 +90,14 @@ class LandmarkArt extends StatelessWidget {
   };
 
 
+  /// The pixel size of [artwork]'s picture, from its [BackdropArt] entry, or
+  /// a size of its ratio (only the ratio is needed to lay it).
+  static ScenePixels _pixelsOf(Artwork artwork) {
+    final file = ArtAssets.scene(artwork);
+    final known = file == null ? null : BackdropArt.of(file)?.pixels;
+    return known ?? ScenePixels(1000 * ArtAssets.sceneAspect(artwork), 1000);
+  }
+
   /// Whether [artwork] shows a picture file (not the code drawing).
   static bool hasPicture(Artwork artwork, {double solved = 0}) => ArtAssets.scene(artwork, solved: solved) != null;
 
@@ -89,12 +115,24 @@ class LandmarkArt extends StatelessWidget {
     final file = _picture ? ArtAssets.scene(artwork, solved: solved) : null;
     // A clock face picture: its hands drawn over it (Case 02).
     final hands = ArtAssets.clockHands[artwork];
+    if (_backdrop) {
+      if (file == null) return drawn;
+      final art = BackdropArt.of(file);
+      return SceneBackdrop(
+        file: file,
+        pixels: art?.pixels ?? _pixelsOf(artwork),
+        look: art?.look ?? const BackdropLook(),
+        fallback: drawn,
+        overlay: hands == null ? null : ClockHands(hands, solved: solved, aspect: ArtAssets.sceneAspect(artwork)),
+      );
+    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: file == null
           ? drawn
           : _ScenePicture(
               file,
+              pixels: _pixelsOf(artwork),
               showName: showName,
               fallback: drawn,
               overlay: hands == null ? null : ClockHands(hands, solved: solved, aspect: ArtAssets.sceneAspect(artwork)),
@@ -104,12 +142,14 @@ class LandmarkArt extends StatelessWidget {
 }
 
 /// A scene picture: whole (contain), with its own paper frame and name plate.
-/// Without the name plate ([showName] false), the part above it fills the
-/// frame instead.
+/// Without the name plate ([showName] false: an image-choice answer, whose
+/// name would tell it), the part above the plate and inside the paper edge
+/// covers the frame instead.
 class _ScenePicture extends StatelessWidget {
-  const _ScenePicture(this.file, {required this.showName, required this.fallback, this.overlay});
+  const _ScenePicture(this.file, {required this.pixels, required this.showName, required this.fallback, this.overlay});
 
   final String file;
+  final ScenePixels pixels;
   final bool showName;
   final Widget fallback;
 
@@ -138,32 +178,13 @@ class _ScenePicture extends StatelessWidget {
         ),
       );
     }
-    final spec = ArtAssets.scenePrint;
-    // The part of the picture to show, in fractions of its size.
-    final left = spec.frame;
-    final top = spec.frame;
-    final width = 1 - 2 * spec.frame;
-    final height = (showName ? 1 - spec.frame : spec.nameTop) - top;
-    return FittedBox(
-      fit: BoxFit.cover,
-      clipBehavior: Clip.hardEdge,
-      child: ClipRect(
-        child: Align(
-          // Places the part [left, top, width, height] in the clip.
-          alignment: Alignment(2 * left / (1 - width) - 1, 2 * top / (1 - height) - 1),
-          widthFactor: width,
-          heightFactor: height,
-          child: SizedBox.fromSize(
-            size: spec.size,
-            child: Image.asset(
-              file,
-              fit: BoxFit.cover,
-              excludeFromSemantics: true,
-              errorBuilder: (context, error, stack) => fallback,
-            ),
-          ),
-        ),
-      ),
+    // A landmark print: the scene above its plate, inside its paper edge.
+    final bounds = BackdropArt.of(file)?.look.bounds ?? BackdropArt.printScene;
+    return SceneBackdrop(
+      file: file,
+      pixels: pixels,
+      look: BackdropLook(fit: BackdropFit.cover, bounds: bounds, focus: bounds),
+      fallback: fallback,
     );
   }
 }

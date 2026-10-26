@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -11,12 +10,11 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/mock/season_catalog.dart';
-import '../../data/models/episode.dart';
 import '../mission/widgets/clockwork_garden.dart' show IntroPictureView;
 import '../mission/widgets/river_papers.dart' show PlaqueBackView;
 import '../mission/widgets/workshop_papers.dart' show DrawnEvidenceView;
 import '../../widgets/game_button.dart';
-import '../../widgets/landmark_art.dart';
+import '../../widgets/place_scenery.dart';
 import '../../widgets/paper_background.dart';
 import '../../widgets/typewriter_text.dart';
 import '../game/game_controller.dart';
@@ -152,7 +150,13 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          _IntroScene(ref.read(currentEpisodeProvider)),
+          // The place the case opens on, in the dark under the narration (the
+          // London map while the place has no picture: Case 01's Royal
+          // Archive), never so dark that the place is lost.
+          PlaceScenery(
+            ref.read(currentEpisodeProvider).introScene,
+            map: SeasonMap.forSeason(ref.read(currentEpisodeProvider).seasonId),
+          ),
           InkSurface(
             night: true,
             child: SafeArea(
@@ -323,75 +327,6 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// The place the case opens on, filling the screen in the dark under the
-/// narration: the case's [Episode.introScene] picture, or its season's map
-/// while the place has none (Case 01's Royal Archive: the London map), or
-/// only the night while the season has no map. Dimmed so the words lead,
-/// never so dark that the place is lost.
-class _IntroScene extends StatelessWidget {
-  const _IntroScene(this.episode);
-
-  final Episode episode;
-
-  @override
-  Widget build(BuildContext context) {
-    final scene = episode.introScene;
-    final map = SeasonMap.forSeason(episode.seasonId);
-    final picture = scene != null && LandmarkArt.hasPicture(scene)
-        // The print without its paper edge and name plate, as the whole scene.
-        ? LandmarkArt(scene, showName: false, borderRadius: 0)
-        : map == null
-        ? const SizedBox.expand()
-        : LayoutBuilder(
-            builder: (context, box) => Image.asset(
-              map.artwork,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              cacheWidth: math.min(
-                (math.max(box.maxWidth, box.maxHeight * map.aspect) * MediaQuery.devicePixelRatioOf(context)).ceil(),
-                map.pixels.width.toInt(),
-              ),
-              excludeFromSemantics: true,
-              errorBuilder: (context, error, stack) => const SizedBox.expand(),
-            ),
-          );
-    const shade = AppColors.navyDeep;
-    return RepaintBoundary(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // A small print shown screen-sized: softened a touch so it reads as
-          // a scene in the dark rather than an enlarged photo.
-          ImageFiltered(imageFilter: ui.ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5), child: picture),
-          // Night over the place, a little deeper at the edges and where the
-          // button and the last words sit.
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                radius: 1.0,
-                colors: [shade.withValues(alpha: 0.6), shade.withValues(alpha: 0.82)],
-              ),
-            ),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  for (final a in const [0.25, 0.0, 0.0, 0.45]) shade.withValues(alpha: a),
-                ],
-                stops: const [0, 0.2, 0.7, 1],
               ),
             ),
           ),
