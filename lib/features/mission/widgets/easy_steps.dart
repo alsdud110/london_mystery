@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1351,6 +1352,18 @@ class _EvidenceView extends StatelessWidget {
   }
 }
 
+/// A pan that takes the drag after the same distance a scroll would (a
+/// plain pan waits twice as long). Being nearer the finger, it hears the
+/// move first, so on the page being rubbed the rub wins, in any direction;
+/// everywhere else the step page scrolls as before.
+class _RubPanRecognizer extends PanGestureRecognizer {
+  _RubPanRecognizer();
+
+  @override
+  bool hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop) =>
+      globalDistanceMoved.abs() > computeHitSlop(pointerDeviceKind, gestureSettings);
+}
+
 /// The page rubbed with a finger (Case 11 M1): where it is rubbed goes grey,
 /// and the words pressed into it come out; once enough is rubbed, all of
 /// them. A tap rubs a patch, so a finger that cannot drag gets there too.
@@ -1446,16 +1459,28 @@ class _RubViewState extends State<_RubView> with SingleTickerProviderStateMixin 
                 builder: (context, box) => Semantics(
                   button: true,
                   label: 'Rub the page',
-                  child: GestureDetector(
+                  // A finger on the page rubs it, whichever way it moves:
+                  // even while the step page can scroll (a small phone,
+                  // large text, a hint shown), the rub claims the drag as
+                  // soon as a scroll would ([_RubPanRecognizer]).
+                  child: RawGestureDetector(
                     key: const ValueKey('easy-rub'),
                     behavior: HitTestBehavior.opaque,
-                    onTapDown: (d) {
-                      final cell = _cellAt(d.localPosition, box.biggest);
-                      if (cell != null) widget.onRub(_around(cell, 1));
-                    },
-                    onPanUpdate: (d) {
-                      final cell = _cellAt(d.localPosition, box.biggest);
-                      if (cell != null) widget.onRub(_around(cell, 0).followedBy(_around(cell, 0).map((c) => c % _RubView.columns == _RubView.columns - 1 ? c : c + 1)));
+                    gestures: {
+                      TapGestureRecognizer: GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+                        TapGestureRecognizer.new,
+                        (r) => r.onTapDown = (d) {
+                          final cell = _cellAt(d.localPosition, box.biggest);
+                          if (cell != null) widget.onRub(_around(cell, 1));
+                        },
+                      ),
+                      _RubPanRecognizer: GestureRecognizerFactoryWithHandlers<_RubPanRecognizer>(
+                        _RubPanRecognizer.new,
+                        (r) => r.onUpdate = (d) {
+                          final cell = _cellAt(d.localPosition, box.biggest);
+                          if (cell != null) widget.onRub(_around(cell, 0).followedBy(_around(cell, 0).map((c) => c % _RubView.columns == _RubView.columns - 1 ? c : c + 1)));
+                        },
+                      ),
                     },
                     child: widget.rubbed.isEmpty
                         // A pencil that shows the rubbing, until it starts.
