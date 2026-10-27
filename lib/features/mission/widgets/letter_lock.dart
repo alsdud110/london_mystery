@@ -105,7 +105,14 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
                   children: [
                     const InkIcon(InkGlyph.gear, size: AppIconSize.small, color: AppColors.goldLight),
                     const SizedBox(width: AppSpace.xs),
-                    Text('THE CLOCKMAKER\'S LOCK', style: AppText.eyebrow(color: AppColors.goldLight)),
+                    // Wraps under large text rather than running off the plate.
+                    Flexible(
+                      child: Text(
+                        'THE CLOCKMAKER\'S LOCK',
+                        style: AppText.eyebrow(color: AppColors.goldLight),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: AppSpace.md),

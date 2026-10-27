@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -176,103 +177,115 @@ class _EasyStepsPuzzleState extends ConsumerState<EasyStepsPuzzle> {
     final pictureOptions = step.does == EasyDo.choose && step.options.any((o) => o.panel != null);
     final textOptions = step.does == EasyDo.choose && step.options.every((o) => o.panel == null && o.area == null);
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _Header(
-            eyebrow: [?widget.eyebrow, _scene.title].join(' · '),
-            at: _at,
-            of: _scene.steps.length,
-            dark: dark,
-          ),
-          const SizedBox(height: AppSpace.sm),
-          // What to do now, and the free hint beside it.
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    const padding = EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.md);
+    // The pictures take the room left over, but never less than
+    // [_StagedColumn.minStage]: on a small phone with large text, once a hint
+    // or a wrong answer's help is added, the page scrolls instead.
+    return LayoutBuilder(
+      builder: (context, box) => SingleChildScrollView(
+        padding: padding,
+        child: _StagedColumn(
+          height: box.maxHeight - padding.vertical,
+          top: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: GlossaryText(
-                    step.say,
-                    key: ValueKey('easy-say-${step.id}-$_stepDone'),
-                    style: AppText.title(size: 23, color: ink),
-                  ),
-                ),
+              _Header(
+                eyebrow: [?widget.eyebrow, _scene.title].join(' · '),
+                at: _at,
+                of: _scene.steps.length,
+                dark: dark,
               ),
-              if (!_stepDone) ...[
-                const SizedBox(width: AppSpace.sm),
-                _HintButton(key: const ValueKey('easy-hint'), dark: dark, onTap: _hint),
-              ],
+              const SizedBox(height: AppSpace.sm),
+              // What to do now, and the free hint beside it.
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: GlossaryText(
+                        step.say,
+                        key: ValueKey('easy-say-${step.id}-$_stepDone'),
+                        style: AppText.title(size: 23, color: ink),
+                      ),
+                    ),
+                  ),
+                  if (!_stepDone) ...[
+                    const SizedBox(width: AppSpace.sm),
+                    _HintButton(key: const ValueKey('easy-hint'), dark: dark, onTap: _hint),
+                  ],
+                ],
+              ),
+              const SizedBox(height: AppSpace.sm),
             ],
           ),
-          const SizedBox(height: AppSpace.sm),
-          Expanded(
-            child: ShakeOnChange(
-              trigger: _shake,
-              child: AnimatedSwitcher(
-                duration: Duration(milliseconds: MediaQuery.disableAnimationsOf(context) ? 0 : 300),
-                child: KeyedSubtree(
-                  key: ValueKey('easy-stage-${step.id}'),
-                  child: pictureOptions && !_stepDone
-                      ? _ChoiceCards(
-                          reference: panels,
-                          step: step,
-                          showAnswer: _showAnswer,
-                          showLook: _showLook,
-                          dark: dark,
-                          onChoose: _choose,
-                        )
-                      : _Panels(
-                          panels: panels,
-                          dark: dark,
-                          // The step and whether it is done as built: a step
-                          // fading out keeps its own (never the next one's).
-                          builder: (panel, size) => _panelFor(panel, step, size, done: stepDone),
-                        ),
-                ),
+          stage: ShakeOnChange(
+            trigger: _shake,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: MediaQuery.disableAnimationsOf(context) ? 0 : 300),
+              child: KeyedSubtree(
+                key: ValueKey('easy-stage-${step.id}'),
+                child: pictureOptions && !_stepDone
+                    ? _ChoiceCards(
+                        reference: panels,
+                        step: step,
+                        showAnswer: _showAnswer,
+                        showLook: _showLook,
+                        dark: dark,
+                        onChoose: _choose,
+                      )
+                    : _Panels(
+                        panels: panels,
+                        dark: dark,
+                        // The step and whether it is done as built: a step
+                        // fading out keeps its own (never the next one's).
+                        builder: (panel, size) => _panelFor(panel, step, size, done: stepDone),
+                      ),
               ),
             ),
           ),
-          if (step.question != null && !_stepDone) ...[
-            const SizedBox(height: AppSpace.sm),
-            GlossaryText(
-              step.question!,
-              key: const ValueKey('easy-question'),
-              style: AppText.title(size: 24, color: ink),
-              textAlign: TextAlign.center,
-            ),
-          ],
-          _SayLine(line: _line, kind: _say, dark: dark),
-          const SizedBox(height: AppSpace.xs),
-          if (_stepDone)
-            GameButton(
-              key: const ValueKey('easy-next'),
-              label: _last ? _scene.finishLabel : (step.doneButton ?? 'NEXT'),
-              arrow: true,
-              singleLine: true,
-              style: dark ? GameButtonStyle.gold : GameButtonStyle.navy,
-              tap: TapRole.primary,
-              onPressed: _last ? _finish : _advance,
-            )
-          else if (textOptions)
-            _TextOptions(step: step, showAnswer: _showAnswer, dark: dark, onChoose: _choose)
-          else if (step.does == EasyDo.next)
-            GameButton(
-              key: ValueKey('easy-button-${step.id}'),
-              label: step.button,
-              arrow: step.button == 'NEXT',
-              singleLine: true,
-              style: dark ? GameButtonStyle.gold : GameButtonStyle.navy,
-              tap: TapRole.primary,
-              onPressed: _complete,
-            )
-          else
-            // Tap, rub, pick on the picture: the thing itself is the way on.
-            const SizedBox(height: 56),
-        ],
+          bottom: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (step.question != null && !_stepDone) ...[
+                const SizedBox(height: AppSpace.sm),
+                GlossaryText(
+                  step.question!,
+                  key: const ValueKey('easy-question'),
+                  style: AppText.title(size: 24, color: ink),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              _SayLine(line: _line, kind: _say, dark: dark),
+              const SizedBox(height: AppSpace.xs),
+              if (_stepDone)
+                GameButton(
+                  key: const ValueKey('easy-next'),
+                  label: _last ? _scene.finishLabel : (step.doneButton ?? 'NEXT'),
+                  arrow: true,
+                  singleLine: true,
+                  style: dark ? GameButtonStyle.gold : GameButtonStyle.navy,
+                  tap: TapRole.primary,
+                  onPressed: _last ? _finish : _advance,
+                )
+              else if (textOptions)
+                _TextOptions(step: step, showAnswer: _showAnswer, dark: dark, onChoose: _choose)
+              else if (step.does == EasyDo.next)
+                GameButton(
+                  key: ValueKey('easy-button-${step.id}'),
+                  label: step.button,
+                  arrow: step.button == 'NEXT',
+                  singleLine: true,
+                  style: dark ? GameButtonStyle.gold : GameButtonStyle.navy,
+                  tap: TapRole.primary,
+                  onPressed: _complete,
+                )
+              else
+                // Tap, rub, pick on the picture: the thing itself is the way on.
+                const SizedBox(height: 56),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -781,6 +794,69 @@ class _Panels extends StatelessWidget {
   }
 }
 
+/// The step page: [top] (the header, what to do), [stage] (the pictures)
+/// and [bottom] (the question, the line said, the answers), filling
+/// [height]: the stage takes what is left, but never less than [minStage].
+/// Taller than [height] then (a small phone, large text, a hint or a wrong
+/// answer's help shown): the page around it scrolls, the pictures still
+/// readable.
+class _StagedColumn extends MultiChildRenderObjectWidget {
+  _StagedColumn({required this.height, required Widget top, required Widget stage, required Widget bottom})
+    : super(children: [top, stage, bottom]);
+
+  final double height;
+
+  /// The smallest the pictures get: an evidence card still shows its
+  /// picture and its two-line name.
+  static const minStage = 200.0;
+
+  @override
+  _RenderStagedColumn createRenderObject(BuildContext context) => _RenderStagedColumn(height);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderStagedColumn renderObject) => renderObject.height = height;
+}
+
+class _StagedParentData extends ContainerBoxParentData<RenderBox> {}
+
+class _RenderStagedColumn extends RenderBox
+    with ContainerRenderObjectMixin<RenderBox, _StagedParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _StagedParentData> {
+  _RenderStagedColumn(this._height);
+
+  double _height;
+  set height(double value) {
+    if (value == _height) return;
+    _height = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! _StagedParentData) child.parentData = _StagedParentData();
+  }
+
+  @override
+  void performLayout() {
+    final top = firstChild!, stage = childAfter(top)!, bottom = childAfter(stage)!;
+    final width = constraints.maxWidth;
+    final loose = BoxConstraints.tightFor(width: width);
+    top.layout(loose, parentUsesSize: true);
+    bottom.layout(loose, parentUsesSize: true);
+    final stageHeight = math.max(_StagedColumn.minStage, _height - top.size.height - bottom.size.height);
+    stage.layout(BoxConstraints.tightFor(width: width, height: stageHeight));
+    (top.parentData! as _StagedParentData).offset = Offset.zero;
+    (stage.parentData! as _StagedParentData).offset = Offset(0, top.size.height);
+    (bottom.parentData! as _StagedParentData).offset = Offset(0, top.size.height + stageHeight);
+    size = constraints.constrain(Size(width, top.size.height + stageHeight + bottom.size.height));
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) => defaultPaint(context, offset);
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) => defaultHitTestChildren(result, position: position);
+}
+
 /// One panel drawn: a picture with its words and pictures laid on it, a
 /// paper, a piece of evidence, someone's words, the gear mark, the machine.
 /// [glows]: places lit (null: all of it); [taps]: places that can be tapped
@@ -1265,7 +1341,9 @@ class _EvidenceView extends StatelessWidget {
           children: [
             Expanded(child: EvidencePicture(evidence: e, maxHeight: math.max(56, box.maxHeight - 72))),
             const SizedBox(height: AppSpace.xs),
-            Text(e.name, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: AppText.title(size: 15, color: AppColors.navy).copyWith(height: 1.1)),
+            // Up to three lines: a long name in large text on a narrow card
+            // is read whole.
+            Text(e.name, maxLines: 3, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: AppText.title(size: 15, color: AppColors.navy).copyWith(height: 1.1)),
           ],
         ),
       ),

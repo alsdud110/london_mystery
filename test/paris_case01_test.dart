@@ -881,11 +881,15 @@ void main() {
         await finger.up();
         await t.pump(const Duration(milliseconds: 300));
         expect(find.descendant(of: find.byKey(const ValueKey('lock-slot-2')), matching: find.text('E')), findsOneWidget, reason: 'dragged into the third slot');
-        expect(find.text('E'), findsNWidgets(2), reason: 'the letter shows in the box\'s own slot too');
+        expect(find.text('E'), findsNWidgets(3), reason: "the letter shows in the box's own slot too, and stays on the desk");
+        expect(find.bySemanticsLabel('Letter E, in the lock. Tap to take it out.'), findsOneWidget, reason: 'the desk keeps it, marked as in the lock');
         // A real word, the wrong one: ITEM.
         for (final l in ['I', 'T', 'M']) {
           await t.tap(find.bySemanticsLabel('Letter $l'));
           await t.pump(const Duration(milliseconds: 150));
+        }
+        for (final l in ['I', 'T', 'E', 'M']) {
+          expect(find.bySemanticsLabel('Letter $l, in the lock. Tap to take it out.'), findsOneWidget, reason: '$l: still on the desk once in the lock');
         }
         expect(open, findsWidgets);
         await Scrollable.ensureVisible(t.element(find.byKey(const ValueKey('lock-box-shut'))));
