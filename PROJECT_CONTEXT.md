@@ -62,7 +62,8 @@
 ## Difficulty System (난이도 시스템, 2026-10-27 도입 결정)
 
 - **인수인계 문서: `docs/DIFFICULTY_IMPLEMENTATION.md`** — 조사 결과(실제 파일 경로), 확정 정책, 기술 설계, PART별 상태·작업 이력, 다음 세션 인수인계, Case별 콘텐츠 적용 진행표. 난이도 관련 세부 사항은 그 문서가 기준이다(이 섹션은 요약).
-- **현재 진행 PART: PART 0(조사·설계) · PART 1(난이도 모델·저장 구조) COMPLETED → 다음은 PART 2(프로필 생성 난이도 선택 UI), 미착수.**
+- **현재 진행 PART: PART 0(조사·설계) · PART 1(모델·저장) · PART 2(프로필 생성 난이도 선택 UI) COMPLETED → 다음은 PART 3(시즌 난이도 변경·초기화 정책), 미착수. PART 3은 시작 전에 미확정 정책(지갑 Q3, 마지막 시즌 안내 Q6, 고정 시점 Q7, "진행 중" 판정)을 사용자에게 확인해야 한다** — `docs/DIFFICULTY_IMPLEMENTATION.md` G.
+- PART 2로 생긴 것: CREATE YOUR DETECTIVE(`/register`)의 이름 줄 아래 **CHOOSE YOUR LEVEL** — ROOKIE/JUNIOR/MASTER 세로 카드(각 카드 영어 설명 `Difficulty.blurb`, 선택 = antique gold 테두리 + 체크 원, 비선택 = 빈 원, 카드 전체 탭, 화면 읽기 selected/탭), 기본 Rookie, START INVESTIGATION 시 `createDetective(difficulty:)`로 프로필에 저장. 위젯 `DifficultyChoice`(`detective_form.dart`). `/detective` 설정 화면에는 없음. **`DetectiveDesk` 레이아웃: 폼이 화면보다 길면 폼만 스크롤되고 버튼은 아래에 고정**(다 들어가면 예전처럼 종이와 버튼이 함께 가운데) — 생성·설정 화면 공통. 키보드가 올라오면 난이도 영역은 접힘(선택 유지)
 - PART 1로 생긴 것(화면 변화 없음): `lib/data/models/difficulty.dart`(`Difficulty` rookie/junior/master — 저장 식별자 `storageId`와 표시 이름 `label` 분리, 모르는 값 → rookie), 프로필 기본 난이도 `DetectiveProfile.difficulty`(`lm.detective.v1`에 `"difficulty"`, 없으면 rookie, `setDifficulty`), 시즌 고정 난이도 `SeasonProgress.difficulty`(London·Paris 각자 기록, 고정될 때만 JSON에 기록, `SeasonNotifier.fixDifficulty` — 호출하는 화면은 아직 없음), 실효 난이도 `seasonDifficultyProvider(seasonId)`·`currentDifficultyProvider` = 시즌 고정값 ?? 프로필 난이도(조회는 저장하지 않음). 키·스키마 변경 없음. 테스트 `test/difficulty_persistence_test.dart`. 2026-10-27 전체 `flutter test` 2277 통과, analyze 0 issues
 - 계획: PART 0 조사·설계 / 1 모델·저장 / 2 프로필 생성 UI / 3 시즌 난이도 변경·초기화 / 4 개발자 모드 개선 / 5 난이도별 영어 콘텐츠 시스템 / 6 London 콘텐츠 / 7 Paris 콘텐츠·최종 검증(6·7은 Case 단위로 세분 가능, 세부 작업마다 테스트·문서·커밋)
 - 확정 정책 요약:
@@ -77,7 +78,7 @@
 ## Play Flow (현재)
 
 ### 시즌 진입
-Title(`/`) → **CREATE YOUR DETECTIVE**(`/register`: BOY/GIRL + 이름 → START INVESTIGATION, 기기당 1명) → How to Play(처음 1회) → Season Cover(`/season`, 시즌 시작 전) → Opening 5장면 + Case 01 파일(`/season/prologue`) → Story Intro(`/intro`) → Map(`/map`)
+Title(`/`) → **CREATE YOUR DETECTIVE**(`/register`: BOY/GIRL + 이름 + 난이도(ROOKIE 기본/JUNIOR/MASTER) → START INVESTIGATION, 기기당 1명) → How to Play(처음 1회) → Season Cover(`/season`, 시즌 시작 전) → Opening 5장면 + Case 01 파일(`/season/prologue`) → Story Intro(`/intro`) → Map(`/map`)
 
 ### 일반 Mission (38개)
 ```
@@ -367,6 +368,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-27 — **난이도 시스템 PART 2(프로필 생성 난이도 선택 UI)**: CREATE YOUR DETECTIVE에 CHOOSE YOUR LEVEL 카드 3개(기본 Rookie) → 프로필 `difficulty` 저장. `DetectiveDesk`는 폼이 넘칠 때 버튼을 화면 아래에 고정(기존 "도착 시 버튼이 화면에" 보장 유지). 게임 문장 변화 없음. 새 테스트 15개, 전체 2292 통과, analyze 0. 다음: PART 3
 - 2026-10-27 — **난이도 시스템 PART 1(모델·저장 구조)**: `Difficulty` enum, 프로필 기본 난이도(`lm.detective.v1`의 `difficulty`, 없으면 rookie), 시즌별 고정 난이도(`SeasonProgress.difficulty`, 고정 시에만 기록), 실효 난이도 provider, `createDetective`의 선택 인자(UI 미연결). 화면·콘텐츠 변화 없음. 새 테스트 21개, 전체 2277 통과, analyze 0. 다음: PART 2
 - 2026-10-27 — **난이도 시스템 PART 0(조사·설계 문서)**: 코드 변경 없음. `docs/DIFFICULTY_IMPLEMENTATION.md` 신규(프로필·저장·마이그레이션·시즌 해금·개발자 도구·콘텐츠·힌트·글로서리 구조 조사, Difficulty enum·프로필/시즌별 저장·콘텐츠 패치와 fallback·힌트 정책·개발자 세션 격리·마이그레이션 설계, PART 계획, Case별 진행표). 이 파일에 *Difficulty System* 섹션 추가. 다음: PART 1
 - 2026-10-19 — **Case 01 Case Closed 파일: 기울어진 사건 사진 → 왕관 하나**(사용자 요청). 탐정 이름 옆 작은 열린 상자 사진(흰 폴라로이드·회전·그림자, 그 위로 SOLVED 도장이 찍혀 갈색 선처럼 보임)을 Case 01에서만 빼고, 사건 제목 아래 가운데에 `assets/art/objects/crown_cutout.png`(원본 `crown.png`는 불투명 양피지 바탕이라 보존, `tool/crown_cutout/cutout_test.dart`로 오려냄: 밝고 노란기 적은 양피지를 테두리에서·아치 사이 큰 구멍(2500px+)까지 제거, 띠의 하이라이트 유지, 모서리 반짝이 표식 제거, 512² 정사각) 프레임·그림자 없이 카드 폭 42%(96–150dp). SOLVED 도장은 사진 자리(빈 칸)에 그대로 찍힘, 이름 칸 침범 없음. `ArtAssets.caseClosedEmblems`(ep01만), 다른 사건은 기존 사진. 테스트 `case01_case_closed_test`

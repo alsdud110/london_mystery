@@ -10,6 +10,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/models/difficulty.dart';
 import '../../data/models/profile.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/game_button.dart';
@@ -22,8 +23,9 @@ import 'detective_form.dart';
 import 'how_to_play_state.dart';
 
 /// CREATE YOUR DETECTIVE: the device's one detective, made once — a picture
-/// (boy or girl) and a name — then the investigation begins. No account,
-/// nothing sent anywhere.
+/// (boy or girl), a name and the level of English its seasons start at
+/// (Rookie unless another is chosen) — then the investigation begins. No
+/// account, nothing sent anywhere.
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
@@ -35,6 +37,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _name = TextEditingController();
   DetectiveAvatar? _avatar;
+  Difficulty _difficulty = Difficulty.standard;
 
   @override
   void dispose() {
@@ -50,7 +53,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       return;
     }
     if (!named) return;
-    final error = ref.read(gameControllerProvider.notifier).createDetective(_name.text, _avatar);
+    final error = ref
+        .read(gameControllerProvider.notifier)
+        .createDetective(_name.text, _avatar, difficulty: _difficulty);
     if (error != null) {
       showGameToast(context, error, glyph: InkGlyph.pen);
       return;
@@ -70,6 +75,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       avatar: _avatar,
       onAvatar: (a) => setState(() => _avatar = a),
       name: _name,
+      difficulty: _difficulty,
+      onDifficulty: (d) => setState(() => _difficulty = d),
       action: 'START INVESTIGATION',
       onAction: _submit,
     );
@@ -78,8 +85,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
 /// The detective's form laid on the desk, the office of the title page
 /// behind it, dimmed: [heading], [question], the picture choice, the name
-/// line, and [action]. Shared by CREATE YOUR DETECTIVE and the detective's
-/// settings. With the keyboard up (half a small phone), the emblem folds
+/// line, the level (only with [onDifficulty]: CREATE YOUR DETECTIVE), and
+/// [action]. Shared by CREATE YOUR DETECTIVE and the detective's settings.
+/// With the keyboard up (half a small phone), the emblem and the level fold
 /// away and the pictures shrink so the line and the button stay in view.
 class DetectiveDesk extends StatelessWidget {
   const DetectiveDesk({
@@ -93,6 +101,8 @@ class DetectiveDesk extends StatelessWidget {
     required this.name,
     required this.action,
     required this.onAction,
+    this.difficulty = Difficulty.standard,
+    this.onDifficulty,
     this.note,
   });
 
@@ -105,6 +115,11 @@ class DetectiveDesk extends StatelessWidget {
   final TextEditingController name;
   final String action;
   final VoidCallback onAction;
+
+  /// The level chosen, shown only with [onDifficulty] (a new detective; the
+  /// settings change it elsewhere).
+  final Difficulty difficulty;
+  final ValueChanged<Difficulty>? onDifficulty;
 
   /// A quiet line under the button (e.g. what a change keeps).
   final String? note;
@@ -135,122 +150,170 @@ class DetectiveDesk extends StatelessWidget {
           body: InkSurface(
             night: true,
             child: SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  // A narrower sheet than the screen: the office shows around it.
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSpace.xxl,
-                    vertical: typing ? AppSpace.sm : AppSpace.lg,
-                  ),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    child: Form(
-                      key: formKey,
-                      // Laid on the desk as the page comes up (a short fade
-                      // and settle; none with reduced motion).
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 0, end: 1),
-                        duration: still ? Duration.zero : const Duration(milliseconds: 300),
-                        curve: Curves.easeOutCubic,
-                        builder: (context, t, child) => Opacity(
-                          opacity: t,
-                          child: Transform.translate(offset: Offset(0, 10 * (1 - t)), child: child),
-                        ),
-                        child: Column(
-                          children: [
-                            PaperSheet(
-                              ruled: true,
-                              tilt: -0.006,
-                              padding: EdgeInsets.fromLTRB(
-                                AppSpace.lg,
-                                typing ? AppSpace.md : AppSpace.xl,
-                                AppSpace.lg,
-                                AppSpace.lg,
-                              ),
-                              child: Column(
-                                children: [
-                                  AnimatedSize(
-                                    duration: const Duration(milliseconds: 200),
-                                    curve: Curves.easeOut,
-                                    child: typing
-                                        ? const SizedBox(width: double.infinity)
-                                        : Column(
-                                            children: [
-                                              // The letterhead: one line, fitted to the paper.
-                                              FittedBox(
-                                                fit: BoxFit.scaleDown,
-                                                child: Text(
-                                                  'LONDON DETECTIVE AGENCY',
-                                                  maxLines: 1,
-                                                  style: AppText.eyebrow(),
-                                                  textAlign: TextAlign.center,
+              // Laid on the desk as the page comes up (a short fade and
+              // settle; none with reduced motion).
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: 1),
+                duration: still ? Duration.zero : const Duration(milliseconds: 300),
+                curve: Curves.easeOutCubic,
+                builder: (context, t, child) => Opacity(
+                  opacity: t,
+                  child: Transform.translate(offset: Offset(0, 10 * (1 - t)), child: child),
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    // The form and its button together in the middle, as
+                    // the page always was; when the form is taller than the
+                    // screen it scrolls and the button stays under it, on
+                    // screen — in reach of the thumb, above the keyboard too.
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          heightFactor: 1,
+                          child: SingleChildScrollView(
+                            // A narrower sheet than the screen: the office shows around it.
+                            padding: EdgeInsets.fromLTRB(
+                              AppSpace.xxl,
+                              typing ? AppSpace.sm : AppSpace.lg,
+                              AppSpace.xxl,
+                              typing ? AppSpace.md : AppSpace.lg,
+                            ),
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 400),
+                              child: PaperSheet(
+                                ruled: true,
+                                tilt: -0.006,
+                                padding: EdgeInsets.fromLTRB(
+                                  AppSpace.lg,
+                                  typing ? AppSpace.md : AppSpace.xl,
+                                  AppSpace.lg,
+                                  AppSpace.lg,
+                                ),
+                                child: Column(
+                                  children: [
+                                    AnimatedSize(
+                                      duration: const Duration(milliseconds: 200),
+                                      curve: Curves.easeOut,
+                                      child: typing
+                                          ? const SizedBox(width: double.infinity)
+                                          : Column(
+                                              children: [
+                                                // The letterhead: one line, fitted to the paper.
+                                                FittedBox(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    'LONDON DETECTIVE AGENCY',
+                                                    maxLines: 1,
+                                                    style: AppText.eyebrow(),
+                                                    textAlign: TextAlign.center,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(height: AppSpace.sm),
-                                              if (!short) ...[
-                                                const BrassEmblem(size: 48),
                                                 const SizedBox(height: AppSpace.sm),
+                                                if (!short) ...[
+                                                  const BrassEmblem(size: 48),
+                                                  const SizedBox(height: AppSpace.sm),
+                                                ],
                                               ],
-                                            ],
-                                          ),
-                                  ),
-                                  Text(
-                                    heading,
-                                    style: AppText.mark(color: AppColors.burgundy),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: AppSpace.xs),
-                                  Text(
-                                    question,
-                                    style: AppText.title(size: typing ? 20 : 23),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: short && !typing ? AppSpace.xs : AppSpace.sm),
-                                  // A small phone: the label takes the
-                                  // ornament's place, so the form still fits.
-                                  if (typing || !short) ...[
-                                    const OrnamentRule(),
-                                    SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
-                                  ],
-                                  // A printed label over the pictures, as the
-                                  // name line has its own: the player picks
-                                  // how their detective looks (the cases are
-                                  // the same for both).
-                                  if (!typing) ...[
-                                    Text(
-                                      'CHOOSE YOUR DETECTIVE',
-                                      textAlign: TextAlign.center,
-                                      style: AppText.eyebrow(color: AppColors.muted).copyWith(letterSpacing: 1.5),
+                                            ),
                                     ),
-                                    SizedBox(height: short ? AppSpace.xs : AppSpace.sm),
+                                    Text(
+                                      heading,
+                                      style: AppText.mark(color: AppColors.burgundy),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: AppSpace.xs),
+                                    Text(
+                                      question,
+                                      style: AppText.title(size: typing ? 20 : 23),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: short && !typing ? AppSpace.xs : AppSpace.sm),
+                                    // A small phone: the label takes the
+                                    // ornament's place, so the form still fits.
+                                    if (typing || !short) ...[
+                                      const OrnamentRule(),
+                                      SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
+                                    ],
+                                    // A printed label over the pictures, as the
+                                    // name line has its own: the player picks
+                                    // how their detective looks (the cases are
+                                    // the same for both).
+                                    if (!typing) ...[
+                                      Text(
+                                        'CHOOSE YOUR DETECTIVE',
+                                        textAlign: TextAlign.center,
+                                        style: AppText.eyebrow(color: AppColors.muted).copyWith(letterSpacing: 1.5),
+                                      ),
+                                      SizedBox(height: short ? AppSpace.xs : AppSpace.sm),
+                                    ],
+                                    AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
+                                    SizedBox(height: typing ? AppSpace.sm : AppSpace.lg),
+                                    DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),
+                                    // The level, under its printed label as
+                                    // the pictures are; folded away while the
+                                    // name is written (the choice is kept).
+                                    if (onDifficulty case final onLevel?)
+                                      AnimatedSize(
+                                        duration: const Duration(milliseconds: 200),
+                                        curve: Curves.easeOut,
+                                        child: typing
+                                            ? const SizedBox(width: double.infinity)
+                                            : Column(
+                                                children: [
+                                                  SizedBox(height: short ? AppSpace.md : AppSpace.lg),
+                                                  Text(
+                                                    'CHOOSE YOUR LEVEL',
+                                                    textAlign: TextAlign.center,
+                                                    style: AppText.eyebrow(color: AppColors.muted)
+                                                        .copyWith(letterSpacing: 1.5),
+                                                  ),
+                                                  SizedBox(height: short ? AppSpace.xs : AppSpace.sm),
+                                                  DifficultyChoice(selected: difficulty, onChanged: onLevel),
+                                                ],
+                                              ),
+                                      ),
                                   ],
-                                  AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
-                                  SizedBox(height: typing ? AppSpace.sm : AppSpace.lg),
-                                  DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),
-                                ],
+                                ),
                               ),
                             ),
-                            SizedBox(height: typing ? AppSpace.md : AppSpace.lg),
-                            GameButton(
-                              label: action,
-                              arrow: true,
-                              singleLine: true, // one line on a 360-wide phone
-                              style: GameButtonStyle.glass,
-                              tap: TapRole.primary,
-                              onPressed: onAction,
-                            ),
-                            if (note != null && !typing) ...[
-                              const SizedBox(height: AppSpace.md),
-                              Text(
-                                note!,
-                                textAlign: TextAlign.center,
-                                style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.85)),
-                              ),
-                            ],
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          AppSpace.xxl,
+                          0,
+                          AppSpace.xxl,
+                          typing ? AppSpace.sm : AppSpace.lg,
+                        ),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 400),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GameButton(
+                                label: action,
+                                arrow: true,
+                                singleLine: true, // one line on a 360-wide phone
+                                style: GameButtonStyle.glass,
+                                tap: TapRole.primary,
+                                onPressed: onAction,
+                              ),
+                              if (note != null && !typing) ...[
+                                const SizedBox(height: AppSpace.md),
+                                Text(
+                                  note!,
+                                  textAlign: TextAlign.center,
+                                  style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.85)),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

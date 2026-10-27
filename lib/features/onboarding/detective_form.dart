@@ -7,6 +7,7 @@ import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/models/detective_name.dart';
+import '../../data/models/difficulty.dart';
 import '../../data/models/profile.dart';
 import '../../widgets/art_assets.dart';
 import '../../widgets/game_button.dart';
@@ -133,6 +134,118 @@ class _AvatarCard extends StatelessWidget {
               Text(
                 avatar.label,
                 style: AppText.mark(color: ink, size: 15).copyWith(letterSpacing: 2),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// CHOOSE YOUR LEVEL: ROOKIE / JUNIOR / MASTER, one printed card under the
+/// other, each with its line of what it means. The chosen one is ringed in
+/// antique gold with a tick (never the colour alone); the others carry an
+/// empty ring. A whole card is the target.
+class DifficultyChoice extends StatelessWidget {
+  const DifficultyChoice({super.key, required this.selected, required this.onChanged});
+
+  final Difficulty selected;
+  final ValueChanged<Difficulty> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (i, d) in Difficulty.values.indexed) ...[
+          if (i > 0) const SizedBox(height: AppSpace.sm),
+          _DifficultyCard(
+            difficulty: d,
+            selected: selected == d,
+            onTap: () {
+              if (selected != d) playUiTap(context, TapRole.select);
+              onChanged(d);
+            },
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _DifficultyCard extends StatelessWidget {
+  const _DifficultyCard({required this.difficulty, required this.selected, required this.onTap});
+
+  final Difficulty difficulty;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final duration = reduce ? Duration.zero : const Duration(milliseconds: 180);
+    return Semantics(
+      button: true,
+      selected: selected,
+      inMutuallyExclusiveGroup: true,
+      label: '${difficulty.label.toLowerCase()} level. ${difficulty.blurb}',
+      // The card's own tap, so a screen reader can choose it too.
+      onTap: onTap,
+      excludeSemantics: true,
+      child: GestureDetector(
+        key: ValueKey('difficulty-${difficulty.storageId}'),
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: duration,
+          curve: Curves.easeOutCubic,
+          constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
+          decoration: BoxDecoration(
+            color: selected ? AppColors.paperLight : AppColors.parchment.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(AppRadius.paper),
+            border: Border.all(
+              color: selected ? AppColors.gold : AppLine.faint(0.3),
+              width: selected ? AppLine.ink : AppLine.hairline,
+            ),
+          ),
+          child: Row(
+            children: [
+              // The mark: a tick in a gold ring when chosen, an empty ring
+              // when not — the choice reads without its colour.
+              AnimatedContainer(
+                duration: duration,
+                width: AppIconSize.regular,
+                height: AppIconSize.regular,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: selected ? AppColors.gold : AppLine.faint(0.35),
+                    width: selected ? AppLine.ink : AppLine.rule,
+                  ),
+                ),
+                child: selected
+                    ? const Center(child: InkIcon(InkGlyph.check, size: AppIconSize.tiny, color: AppColors.goldDeep))
+                    : null,
+              ),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      difficulty.label,
+                      style: AppText.mark(color: selected ? AppColors.goldDeep : AppColors.muted, size: 15)
+                          .copyWith(letterSpacing: 2),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      difficulty.blurb,
+                      style: AppText.caption(color: selected ? AppColors.ink : AppColors.muted),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

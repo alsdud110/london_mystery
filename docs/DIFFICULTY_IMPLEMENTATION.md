@@ -218,7 +218,8 @@ enum Difficulty {
 }
 ```
 - 저장은 enum `.name`이 아니라 **`storageId`**(PART 0 초안의 `.name` 저장에서 변경 — 화면 이름·enum 이름과 저장 식별자를 분리하라는 PART 1 요구). 대소문자 구분(`'Rookie'`은 모르는 값 → rookie).
-- PART 0 초안의 `blurb`(카드 영어 설명)는 **PART 2**, `fallbackChain`은 **PART 5**에서 필요할 때 추가한다(이번 PART 범위 밖).
+- **PART 2에서 추가**: `final String blurb` — 프로필 생성 카드의 영어 설명(Rookie "Short English sentences. Easy words and simple clues." / Junior "Everyday English. Read clues and connect the dots." / Master "Advanced English. Read carefully and think deeply."). 화면 문구라 저장과 무관.
+- `fallbackChain`은 **PART 5**에서 필요할 때 추가한다.
 
 ### D-2. 프로필 저장 구조 — **PART 1 구현 완료**
 - `DetectiveProfile.difficulty`(`lib/data/models/profile.dart`, 기본 `Difficulty.standard` = rookie) — **"다음에 시작하는 시즌에 쓸 난이도"(기본값)**.
@@ -311,7 +312,7 @@ enum Difficulty {
 |---|---|---|
 | PART 0 | 조사 및 설계 문서 | **COMPLETED** (2026-10-27) |
 | PART 1 | 난이도 모델 및 저장 구조 | **COMPLETED** (2026-10-27) |
-| PART 2 | 프로필 생성 난이도 UI | NOT STARTED |
+| PART 2 | 프로필 생성 난이도 UI | **COMPLETED** (2026-10-27) |
 | PART 3 | 시즌 난이도 변경 및 초기화 정책 | NOT STARTED |
 | PART 4 | 개발자 모드 개선 | NOT STARTED |
 | PART 5 | 난이도별 영어 콘텐츠 시스템 | NOT STARTED |
@@ -357,62 +358,93 @@ enum Difficulty {
   - `flutter test test/difficulty_persistence_test.dart` → **21 passed**. 검증: enum 직렬화·모르는 값, 난이도 없는 옛 프로필 → rookie·다른 필드 불변, rookie/junior/master 프로필, 모르는 문자열, 옛 시즌 기록(고정 전 JSON 모양 유지), 시즌 난이도 없음 → 프로필 따름, London junior/Paris master 독립, 프로필 변경 후 시즌 고정값 유지, 저장·복원 5회 반복 동일, 앱 재시작 후 동일, 고정해도 진행·해결·해금 불변, 조회는 저장하지 않음, 같은 값 고정은 쓰기 없음, NEW ADVENTURE 난이도 유지, createDetective 기본 rookie/지정값.
   - `flutter analyze` → **No issues found**.
   - 전체 `flutter test` → **2277 passed, 0 failed, 0 skipped**(약 4분 6초). 기존 테스트 수정·삭제·skip 없음.
-- **커밋 해시**: PART 1 커밋(메시지 `feat: add difficulty model and persistence`). 자기 해시는 이 커밋에 넣지 않는다 — **PART 2 작업자가 `git log --oneline --grep "add difficulty model"`으로 확인해 이 칸을 채운다.**
+- **커밋 해시**: `8c9b4c84cb5191178c3dc8aef6b7c152627daea2` (`feat: add difficulty model and persistence`) — PART 2 커밋에서 기록.
 - **남은 위험**:
   - 다른(선택되지 않은) 시즌의 `seasonDifficultyProvider`는 저장소 값을 읽어 자동 갱신되지 않음(D-3) — PART 3에서 다른 시즌 기록을 바꾸면 invalidate 필요.
   - 이전 빌드로 다운그레이드 후 프로필을 다시 저장하면 `difficulty`가 사라짐 → rookie로 읽힘(허용, D-8).
   - 아직 아무 화면도 난이도를 쓰지 않음 — 사용자 화면 변화 없음(의도).
 
-<!-- PART 2 이후 작업자는 아래에 같은 형식으로 추가한다 -->
+### PART 2 — 프로필 생성 난이도 선택 UI
+- **작업 날짜**: 2026-10-27
+- **시작 상태**: `main`, HEAD `8c9b4c8`(PART 1), 미커밋 `.claude/settings.json`만(커밋하지 않음).
+- **구현 내용**:
+  - CREATE YOUR DETECTIVE(`/register`) 폼 안, 이름 줄 아래에 **CHOOSE YOUR LEVEL** + 세로 카드 3개(ROOKIE / JUNIOR / MASTER, 각 카드에 `Difficulty.blurb`). 별도 BottomSheet·새 화면·이미지·사운드 없음(선택 시 기존 UI 탭 소리 `TapRole.select`만 — 아바타 카드와 동일).
+  - 위젯 `DifficultyChoice` / `_DifficultyCard`(`lib/features/onboarding/detective_form.dart`, `AvatarChoice` 옆): 카드 전체가 탭 대상(`HitTestBehavior.opaque`, 최소 높이 `kMinInteractiveDimension` 48). 선택 = antique gold(`AppColors.gold`) 2px 테두리 + 밝은 종이 + 금색 원 안의 체크(`InkGlyph.check`, `goldDeep`), 비선택 = 옅은 테두리 + 빈 원 → **색만으로 구분하지 않음**. 글자: 이름 `AppText.mark`, 설명 `AppText.caption`(토큰만 사용).
+  - 접근성: 카드마다 `Semantics(button, selected, inMutuallyExclusiveGroup, label "rookie level. <설명>", onTap)`. (`excludeSemantics`만 쓰면 탭 동작이 화면 읽기에서 빠지므로 `onTap`을 명시 — 참고: 기존 아바타 카드 `_AvatarCard`는 같은 이유로 화면 읽기 탭 동작이 없다. 범위 밖이라 그대로 둠.)
+  - 기본 선택 Rookie(`_RegisterScreenState._difficulty = Difficulty.standard`). 키보드가 올라오면(이름 입력 중) 난이도 영역은 엠블럼처럼 접히고 선택은 유지.
+  - **레이아웃 변경(`DetectiveDesk`)**: 폼이 화면보다 길면 **폼만 스크롤되고 START INVESTIGATION은 그 아래 화면에 고정**(`Column(center)[Flexible(Center(heightFactor:1, SingleChildScrollView(PaperSheet))), 버튼]`). 폼이 화면에 다 들어가면(태블릿 등) 예전처럼 종이와 버튼이 함께 가운데. 이유: 카드 3개(약 310dp)를 넣으면 360×640·390×844에서 버튼이 첫 화면 밖으로 밀려, 기존 테스트가 지키는 "도착 시 버튼이 화면에 있음"(`title_screen_test`)과 생성 흐름 약 14개 테스트가 깨졌다(버튼까지 스크롤하면 포커스된 이름 칸이 캐럿을 보이려 되돌아 스크롤하며 탭이 무시됨). 버튼 고정으로 기존 테스트 수정 없이 모두 통과. `DetectiveDesk`는 `/detective` 설정 화면도 쓰므로 그 화면도 같은 규칙(폼이 넘칠 때만 버튼 고정)을 따른다 — 설정 화면에 난이도 UI는 없음.
+  - 저장 연결: START INVESTIGATION → `createDetective(name, avatar, difficulty: _difficulty)` → 기존 `lm.detective.v1` 프로필의 `difficulty`. 새 저장 키 없음.
+- **변경 파일**:
+  - `lib/data/models/difficulty.dart`(`blurb`), `lib/features/onboarding/detective_form.dart`(`DifficultyChoice`), `lib/features/onboarding/register_screen.dart`(`_difficulty` 상태·`createDetective` 인자, `DetectiveDesk`의 선택적 `difficulty`/`onDifficulty`와 레이아웃)
+  - 신규 테스트 `test/difficulty_selection_test.dart`
+  - 문서 `docs/DIFFICULTY_IMPLEMENTATION.md`, `PROJECT_CONTEXT.md`
+- **화면 크기별 검증**(실제 폰트 로드, `difficulty_selection_test`): 360×640(1.0·1.3배), 390×844(1.0·1.3배), 430×932, 800×1280(태블릿) — overflow 없음, 카드 설명 잘림 없음(`didExceedMaxLines == false`, 카드 폭 안), 카드 높이 ≥ 44, 아바타 두 장 온전, 버튼 탭 가능, Master 선택 후 생성. 키보드(360×640, 약 300dp): 이름 줄·버튼이 키보드 위, 난이도 영역 접힘, 키보드 내린 뒤 선택 유지. 스크린샷(`LM_SCREENSHOTS`)으로 360×640·390×844·1.3배·태블릿 육안 확인.
+- **테스트 결과**(실제 실행):
+  - `flutter test test/difficulty_selection_test.dart` → **15 passed**(표시·Rookie 기본·Junior/Master 선택·선택 해제·카드 모서리 탭·세 난이도 각각 생성·저장·재시작 복원·이름/아바타 저장·`/detective`에 난이도 UI 없음·6개 크기·키보드·난이도 없는 기존 프로필 호환(읽기만으로 레코드 재작성 없음))
+  - `flutter analyze` → **No issues found**
+  - 전체 `flutter test` → **2292 passed, 0 failed, 0 skipped**(약 4분). 기존 테스트 수정·삭제·skip 없음.
+- **커밋 해시**: PART 2 커밋(메시지 `feat: add difficulty selection to detective profile`) — **PART 3 작업자가 `git log --oneline --grep "difficulty selection"`으로 확인해 이 칸을 채운다.**
+- **남은 위험·미해결**:
+  - 360×640 같은 작은 화면에서는 Junior·Master 카드가 첫 화면 아래에 있어 스크롤해야 보인다(Rookie 카드 일부와 고정 버튼은 보임). 아이가 다른 난이도를 못 보고 Rookie로 시작할 수 있음 — 기본값이 Rookie라 진행에는 문제없고, PART 3에서 `/detective`로 바꿀 수 있게 된다. 실제 플레이테스트에서 관찰 필요.
+  - 폼이 넘치는 화면에서는 종이 아래쪽이 스크롤 영역 경계에서 잘려 보인다(스크롤 단서 역할). 페이드 등 장식은 넣지 않음.
+  - 실기기(iOS/Android) 확인은 하지 않음 — 위젯 테스트·스크린샷만.
+
+<!-- PART 3 이후 작업자는 아래에 같은 형식으로 추가한다 -->
 
 ---
 
 ## G. 다음 세션 인수인계
 
 ### 현재 완료된 PART
-**PART 0**(조사·설계, `042afac`), **PART 1**(난이도 모델·저장 구조, 커밋 `feat: add difficulty model and persistence` — 해시는 `git log --oneline --grep "add difficulty model"`).
-코드에는 이제 난이도 저장·조회 API가 있지만, **아직 어떤 화면도 난이도를 보여주거나 바꾸지 않는다.**
+**PART 0**(조사·설계, `042afac`), **PART 1**(모델·저장, `8c9b4c8`), **PART 2**(프로필 생성 난이도 선택 UI, 커밋 `feat: add difficulty selection to detective profile` — 해시는 `git log --oneline --grep "difficulty selection"`).
+지금 상태: 새 탐정은 생성 화면에서 고른 난이도(기본 Rookie)가 프로필에 저장된다. **시즌 고정(`fixDifficulty`)을 호출하는 곳은 아직 없고, 기존 탐정이 난이도를 바꿀 화면도 없으며, 게임 문장은 난이도와 무관하게 같다.**
 
 ### 다음 PART
-**PART 2 — 프로필 생성 난이도 선택 UI**
+**PART 3 — 시즌 난이도 변경 및 초기화 정책**
 
-### PART 2 작업 범위
-1. CREATE YOUR DETECTIVE(`/register`) 화면에 난이도 선택을 **같은 화면 안의 심플한 카드형 UI**로 통합(별도 BottomSheet·새 화면 금지). 순서: ① 아바타 BOY/GIRL ② 탐정 이름 ③ 난이도 ROOKIE/JUNIOR/MASTER.
-2. 기본 선택 = Rookie(아무것도 고르지 않아도 START INVESTIGATION 가능 — 기존 흐름·테스트 유지).
-3. 각 카드에 짧은 영어 설명(섹션 A 표 — Rookie: "Short English sentences. Easy words. Clear clues and simple explanations." / Junior: "Everyday English. More detailed sentences. Connect clues to understand the mystery." / Master: "Advanced English. Richer vocabulary. More indirect clues and challenging reading."). 문구는 `Difficulty`에 두는 것을 권장(예: `Difficulty.blurb`) — 위젯에 하드코딩하지 않음.
-4. START INVESTIGATION → `createDetective(name, avatar, difficulty: 선택값)`(인자는 PART 1에서 이미 준비됨).
-5. 선택 상태가 분명하게 보이고(선택/비선택 대비, 눌림 피드백), 접근성 라벨(예: "Difficulty: Rookie, selected")과 충분한 터치 영역.
+### ⚠ PART 3 시작 전 사용자 확인 필수 (미확정 정책 — 임의로 확정·구현 금지)
+섹션 I의 Q1~Q8을 다시 읽는다. PART 3에 직접 걸린 항목은 **구현 전에 사용자에게 묻고 답을 이 문서 I에 기록**한다.
+- **Q3 지갑**: 시즌 초기화 때 코인·산 Tip을 어떻게? (지갑은 시즌 공용 `lm.p.<id>.wallet.v1`, 미션 보상 평생 1회 `mission:<missionId>`, 산 Tip `tip:<missionId>:<n>`, 잔액 = 항목 합)
+- **Q6**: 마지막 시즌(Paris) 완료 후에도 "다음 시즌 난이도" 안내를 띄울지(다음 시즌이 없음).
+- **Q7 고정 시점**: 시즌 난이도를 언제 고정할지 — 프롤로그 완료 / 첫 사건 인트로 진입 / 첫 미션 시작 등. "시작 전 자유 변경"의 경계가 이것으로 정해진다.
+- **C-2 "진행 중" 판정 규칙**: 문서의 [제안](프롤로그 봄 또는 해결 사건 있음 또는 그 시즌 사건 저장에 introSeen/완료 미션 있음)을 그대로 쓸지. Q7과 일관되어야 한다(고정됨 = 진행 중으로 보는 것이 가장 단순).
+- **Q4**(NEW ADVENTURE 후 난이도 유지)는 PART 1에서 "유지"로 동작 중 — 바꿀 필요가 있는지만 확인.
+- Q1·Q2·Q8은 PART 5, Q5는 PART 4 — PART 3에서 건드리지 않는다.
 
-**PART 2에서 하지 않는 것**: 기존 탐정의 난이도 변경(`/detective` 설정 화면) — 진행 중 시즌 초기화 확인이 필요하므로 **PART 3**. 시즌 고정 시점(`fixDifficulty` 호출) — PART 3. 개발자 모드 — PART 4. 콘텐츠 — PART 5~7.
+### PART 3 작업 범위
+1. **시즌별 난이도 고정**: Q7에서 정한 시점에 `SeasonNotifier.fixDifficulty(profile.difficulty)`(PART 1 API) 호출. 이미 고정된 시즌은 다시 고정하지 않음. 후보 지점: Season Cover BEGIN(`season_screen.dart` `_begin`, ~:157-161), Paris 프롤로그 완료(`paris_prologue.dart` ~:74,87 `markPrologueSeen` 옆), 사건 시작 `SeasonActions.investigate`/`GameController.openEpisode`, Story Intro(`/intro`).
+2. **`/detective`에서 난이도 변경 진입**: 설정 화면(`lib/features/onboarding/detective_settings_screen.dart`, `DetectiveDesk`에 `difficulty`/`onDifficulty`를 넘기면 PART 2의 같은 카드 UI가 나온다). 저장은 `_save()`에서 이름·아바타 뒤에 처리. 화면 하단 문구 `note: 'Your cases, XP, coins and badges stay as they are.'`는 난이도 변경이 초기화를 부를 때 사실과 달라지므로 문구 조정 필요.
+3. **시즌 상태 판정**(시작 전 / 진행 중 / 완료 — C-2): 완료는 기존 `SeasonAvailability.isCompleted`(`game_providers.dart` ~:174) / `SeasonOverview.complete` 재사용.
+4. **시즌 진행 중 변경 확인**: 기존 `game_dialog.dart` 계열 확인 대화상자(NEW ADVENTURE 확인과 같은 스타일). 동의 → 그 시즌만 초기화 + 새 난이도로 프로필·시즌 저장. 취소 → 진행 기록·난이도 모두 그대로(테스트로 증명).
+5. **현재 시즌 진행 데이터 초기화**(C-3): 그 시즌의 사건 목록으로 키를 하나씩 만들어 **빈 저장으로 덮어쓰기**(삭제 아님), 시즌 기록도 함께. **다른 시즌·완료 시즌 기록은 바이트 단위로 보존**(테스트).
+6. **시즌 완료 후 다음 시즌 난이도 선택**: 마지막 사건 Case Closed의 `_SeasonFinale`(`case_solved_screen.dart` ~:145-148,190-196) 또는 Season Completed 보드 `_Completed`(`season_screen.dart` ~:741-764) 근처에서 1회. 물었다는 사실을 완료 시즌의 `SeasonProgress`에 새 필드(예: `nextDifficultyAsked`, 값이 있을 때만 JSON 기록 — PART 1의 `difficulty`와 같은 방식)로 저장해 반복 안내 금지. 새 난이도는 다음 시즌부터(프로필 기본 난이도 변경 → 다음 시즌 고정 시점에 반영).
 
-### 수정 예상 파일
-- `lib/features/onboarding/register_screen.dart` — `_RegisterScreenState`(`_avatar` 옆에 `_difficulty` 상태, `:37`, `:53`의 createDetective 호출), `DetectiveDesk`(`:84`, 아바타·이름 줄 `:227-229`)
-- `lib/features/onboarding/detective_form.dart` — 아바타 카드(`AvatarChoice` `:42`, `_AvatarCard` `:81`)와 같은 계열의 난이도 선택 위젯(예: `DifficultyChoice`)을 여기에 추가 권장
-- `lib/data/models/difficulty.dart` — 카드 영어 설명(`blurb`) 추가
-- 테스트: 새 위젯 테스트 + 필요 시 `test/onboarding_personal_test.dart`, `test/small_screen_test.dart`
-- 문서: 이 파일(E·F·G·D-1), `PROJECT_CONTEXT.md`
+### PART 3 주의 사항
+- **시즌 공용 지갑**: 시즌 초기화가 지갑을 건드리는지는 Q3 답에 따른다. 답이 없으면 지갑은 건드리지 않는다(현재 Play again과 같은 규칙: 다시 푼 미션 코인 0).
+- **시즌별 키 분리**(C-3): London `lm.p.<id>.progress.v1`(ep01, 접미사 없음) + `.progress.v1.ep02`~`.ep12` + `.season.v1` / Paris `.progress.v1.s2_ep01`~`.s2_ep12` + `.season.v1.s2_paris`. **접두사 매칭으로 지우지 말 것**(`progress.v1.`은 두 시즌을 덮고, `season.v1`은 Paris 키의 접두사). 키는 `AppConstants.progressKeyFor(episodeId)`/`seasonKeyFor(seasonId)`로 만든다.
+- **기존 저장 복원**: safe mode(`legacyFallback`)에서 London 키가 *없으면* 예전 원본 `lm.progress.v1*`/`lm.season.v1`을 읽는다(`progress_repository.dart` ~:111-118, :150-155) → 삭제하면 옛 진행이 되살아남. **빈 값으로 덮어쓴다.** ep01 사건 저장이 해결이면 `SeasonNotifier._fromSaves`가 ep01을 다시 해결로 표시(~:330-334) → 사건 저장과 시즌 기록을 함께 초기화.
+- **원자성·중간 실패 복구**: 여러 키는 반드시 `repo.transaction(() { ... })` 안에서 쓴다 — `SaveJournal`이 저널 키(`lm.p.<id>.journal.v1`)에 먼저 모두 쓰고, 앱이 중간에 꺼지면 다음 시작 때 `SharedPrefsProgressRepository` 생성 시 `_journal.recover()`(~:55)가 끝까지 다시 쓴다. 초기화 + 난이도 고정 + (필요 시) 지갑을 **한 트랜잭션**으로. 중간 종료 시나리오 테스트 권장(기존 저널 테스트 참고: `grep -l "journal" test`).
+- **메모리 상태 동기화**: 초기화 후 `seasonProvider`·`gameControllerProvider`(열린 사건)·`recentUnlockProvider` 등을 기존 `_wipe`(`game_controller.dart` ~:424-438)처럼 정리하거나 invalidate. 
+- **다른 시즌 난이도 조회 갱신**: `seasonDifficultyProvider(다른 시즌)`은 저장소를 읽기만 해서 자동 갱신되지 않는다(D-3). 선택되지 않은 시즌 기록을 바꾸면 `ref.invalidate(seasonDifficultyProvider(id))`(또는 `seasonAvailabilityProvider`처럼 갱신 경로 마련).
+- **완료 시즌 보존**: London 완료 후 Paris 진행 중에 난이도를 바꾸면 Paris만 초기화. London 기록·해금(Paris 해금 조건 = London 마지막 사건 해결)은 그대로여야 한다. 반대로 London이 진행 중이면 Paris는 아직 잠겨 있으므로 London 초기화가 Paris에 영향 없음.
+- **선택 시즌과 다른 시즌**: `/detective`에서 바꿀 때 어느 시즌이 "현재"인지 = `selectedSeasonIdProvider`. 다른 시즌이 동시에 진행 중일 수 있는지(운영자 미리보기 제외) 확인.
+- PART 2 레이아웃: `DetectiveDesk`는 폼이 넘칠 때만 버튼을 아래에 고정한다. 설정 화면에 카드 3개를 넣으면 작은 화면에서 이 동작이 생긴다(정상).
+- 기존 미커밋 파일(`.claude/settings.json`)은 커밋하지 않는다. 원격 푸시 금지. F의 PART 2 커밋 해시 칸을 채운다.
 
-### 주의 사항
-- **`DetectiveDesk`는 생성 화면과 `/detective` 설정 화면(`detective_settings_screen.dart:62-63`)이 함께 쓴다.** 난이도 카드는 생성 화면에만 나오게 선택적 매개변수로 넣는다(설정 화면 변경은 PART 3).
-- 생성 화면을 지나가는 기존 테스트가 약 40개(`createDetective`/register 흐름 — `grep -l "register\|createDetective" test`). 기본값 Rookie가 선택되어 있으면 흐름은 바뀌지 않아야 한다. **360×640에서 START INVESTIGATION이 계속 보이거나 스크롤로 닿아야 한다**(키보드가 올라온 `compact`/`short` 상태 포함 — `AvatarChoice`가 이미 이 두 상태를 처리하는 방식을 따른다).
-- 디자인: `CLAUDE.md` 2~19절(게임 정체성 우선, 일반 Material 카드 느낌 금지, 토큰 `AppColors`/`AppSpace`/`AppText` 사용, 과한 장식 금지). 디자인 스킬 `design-taste-frontend` 우선, 마무리 `impeccable`. 종이(casebook) 위 UI이므로 기존 아바타 카드와 같은 시각 언어.
-- 저장 식별자(`storageId`)와 화면 이름(`label`)을 섞지 않는다.
-- 이전 PART의 커밋 해시 칸(F의 PART 1)을 실제 해시로 채운다.
-- 기존 미커밋 파일(`.claude/settings.json`)은 커밋하지 않는다. 원격 푸시 금지.
+### PART 3 수정 예상 파일
+- `lib/features/onboarding/detective_settings_screen.dart`(난이도 변경 진입·확인), `lib/features/game/game_controller.dart`(시즌 초기화 + 고정, 트랜잭션), `lib/features/game/game_providers.dart`(시즌 상태 판정·다른 시즌 갱신), `lib/data/models/season_progress.dart`(`nextDifficultyAsked`), 고정 시점 화면(Q7 결과에 따라 `season_screen.dart`/`paris_prologue.dart`/`season_actions.dart`/`story_intro_screen.dart` 중), 완료 안내(`case_solved_screen.dart` 또는 `season_screen.dart`), 확인 대화상자(`lib/widgets/game_dialog.dart` 재사용)
+- 테스트: 신규(예: `test/difficulty_season_policy_test.dart`) + 영향: `season_flow_test`, `multi_season_test`, `single_detective_test`, `profile_reset_test`, `investigation_board_flow_test`, `season_screen_test`
 
-### 검증 방법
-- `flutter analyze` → 0 issues
-- 새 위젯 테스트: 기본 Rookie 선택, 다른 카드 선택 → 생성된 프로필의 `difficulty`가 그 값(`ProfileStore(prefs).profile!.difficulty`), 아무것도 안 고르면 rookie, 세 카드의 영어 설명 표시, 접근성 라벨, 360×640·390×844·글자 1.3배에서 overflow 없음·CTA 접근 가능
-- 관련 기존 테스트: `onboarding_personal_test`, `single_detective_test`, `small_screen_test`, `title_screen_test`, `how_to_play_test`
-- UI 변경이라 전체 `flutter test` 회귀 후 통과 수·시간 기록
-- 가능하면 스크린샷(`LM_SCREENSHOTS=<폴더> flutter test <파일>`)으로 시각 확인
+### PART 3 검증 방법
+- 시나리오 테스트: ① 시작 전 변경 → 확인 없이 프로필만, ② 진행 중 변경 + 취소 → 저장 스냅샷 동일, ③ 진행 중 변경 + 동의 → 그 시즌 키만 초기화·새 난이도 고정·다른 시즌 바이트 동일·완료 시즌 해금 유지, ④ safe mode에서 London 초기화 후 옛 진행이 되살아나지 않음, ⑤ 트랜잭션 중간 종료 후 재시작 → 모두 적용 또는 모두 미적용, ⑥ 시즌 완료 후 안내 1회·재시작 후 다시 안 뜸·새 난이도가 다음 시즌에 고정, ⑦ 지갑은 Q3 답대로.
+- `flutter analyze` 0, 관련 테스트 + 전체 `flutter test`(저장·시즌 공용 동작 변경 → 전체 회귀 필수), UI는 360×640·390×844·1.3배.
 
-### 완료 조건
-- 프로필 생성 화면에서 난이도를 고를 수 있고, 고른 값이 `lm.detective.v1`에 저장됨(테스트로 증명)
-- 기본 Rookie, 기존 생성 흐름·설정 화면 불변
-- analyze 0 issues, 관련 테스트 + 전체 회귀 통과(실제 결과 기록)
-- 이 문서 E(PART 2 = COMPLETED)·F(이력, PART 1 해시)·G(PART 3 인수인계) 갱신, `PROJECT_CONTEXT.md` 진행 상태 갱신
-- PART 2 변경 파일만 커밋(푸시 없음), 커밋 후 실제 해시 확인
+### PART 3 완료 조건
+- 위 범위 구현, 미확정 정책은 사용자 답을 받아 I에 기록한 뒤 구현
+- analyze 0 issues, 관련 + 전체 회귀 통과(실제 결과 기록)
+- 이 문서 E(PART 3)·F(이력, PART 2 해시)·G(PART 4 인수인계)·I 갱신, `PROJECT_CONTEXT.md` 진행 상태 갱신
+- PART 3 변경 파일만 커밋(푸시 없음)
+
 
 ### 모든 PART 공통 작업 규칙 (PART 1~7)
 1. 시작 시 `PROJECT_CONTEXT.md`와 이 문서를 읽는다.
