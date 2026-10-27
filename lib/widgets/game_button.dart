@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,10 +72,81 @@ class GameButton extends StatefulWidget {
   State<GameButton> createState() => _GameButtonState();
 }
 
-class _GameButtonState extends State<GameButton> {
+class _GameButtonState extends State<GameButton> with TickerProviderStateMixin {
   bool _pressed = false;
 
+  /// The ready navy button catches the eye: a soft brass glint crosses it
+  /// ([_glint]); then it floats, lifting a little off the page and settling,
+  /// slowly, [_bobs] times, its shadow left on the page below (fainter and
+  /// wider as it rises); then it rests on the page a moment. While it rests
+  /// it waits on a timer, not on frames.
+  late final AnimationController _float = AnimationController(vsync: this, duration: _bob * _bobs);
+  late final AnimationController _glint = AnimationController(vsync: this, duration: _glintSweep);
+  Timer? _floatWait;
+  static const _bob = Duration(milliseconds: 2400);
+  static const _bobs = 3;
+  static const _glintSweep = Duration(milliseconds: 1100);
+  static const _floatRest = Duration(milliseconds: 1200);
+  static const _floatFirst = Duration(milliseconds: 600);
+
+  /// How far it lifts at the top of a bob.
+  static const _lift = 2.0;
+
   bool get _enabled => widget.onPressed != null;
+
+  bool get _floats =>
+      widget.style == GameButtonStyle.navy && _enabled && !(MediaQuery.maybeDisableAnimationsOf(context) ?? false);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncFloat();
+  }
+
+  @override
+  void didUpdateWidget(GameButton old) {
+    super.didUpdateWidget(old);
+    _syncFloat();
+  }
+
+  @override
+  void dispose() {
+    _floatWait?.cancel();
+    _float.dispose();
+    _glint.dispose();
+    super.dispose();
+  }
+
+  void _syncFloat() {
+    if (!_floats) {
+      _floatWait?.cancel();
+      _floatWait = null;
+      _float.reset();
+      _glint.reset();
+    } else if (_floatWait == null && !_float.isAnimating && !_glint.isAnimating) {
+      _floatWait = Timer(_floatFirst, _rise);
+    }
+  }
+
+  void _rise() {
+    if (!mounted || !_floats) {
+      _floatWait = null;
+      return;
+    }
+    _glint.forward(from: 0).whenCompleteOrCancel(() {
+      if (!mounted || !_floats) return;
+      _glint.reset();
+      _float.forward(from: 0).whenCompleteOrCancel(() {
+        if (!mounted) return;
+        _float.reset();
+        _floatWait = _floats ? Timer(_floatRest, _rise) : null;
+      });
+    });
+  }
+
+  /// How high it is now, 0 (on the page) to 1 (the top of a bob): eased,
+  /// so it lingers at the top and bottom.
+  double get _height => (1 - math.cos(2 * math.pi * _bobs * _float.value)) / 2;
 
   void _onTap() {
     final tap = widget.tap;
@@ -196,6 +270,47 @@ class _GameButtonState extends State<GameButton> {
             ],
           );
 
+    // A raised button stands on a darker edge and presses down into it; the
+    // box keeps the same size, so nothing around it moves. A floating one's
+    // shadow is drawn by the float instead (left on the page below it).
+    final face = Container(
+      constraints: widget.singleLine
+          ? const BoxConstraints.tightFor(height: 56)
+          : const BoxConstraints(minHeight: 56),
+      decoration: raised
+          ? BoxDecoration(
+              color: depth,
+              borderRadius: BorderRadius.circular(AppRadius.button),
+              boxShadow: _pressed || _floats ? null : const [BoxShadow(color: _shadow, blurRadius: 8, offset: Offset(0, 4))],
+            )
+          : null,
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 70),
+        padding: EdgeInsets.only(
+          top: raised && _pressed ? depthPx : 0,
+          bottom: raised && !_pressed ? depthPx : 0,
+        ),
+        child: CustomPaint(
+          foregroundPainter: _floats ? _Glint(_glint) : null,
+          child: Container(
+            constraints: widget.singleLine ? const BoxConstraints.expand() : const BoxConstraints(minHeight: 56 - depthPx),
+            padding: EdgeInsets.symmetric(
+              horizontal: widget.singleLine ? AppSpace.lg : AppSpace.xl,
+              vertical: widget.singleLine ? 0 : AppSpace.md + 2,
+            ),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(AppRadius.button),
+              border: Border.all(color: border, width: AppLine.hairline),
+            ),
+            // The printed inner rule: an engraved ticket, not a web button.
+            foregroundDecoration: _InnerRule(rule),
+            child: content,
+          ),
+        ),
+      ),
+    );
+
     return Semantics(
       button: true,
       enabled: _enabled,
@@ -209,43 +324,34 @@ class _GameButtonState extends State<GameButton> {
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 150),
           opacity: !_enabled ? 0.5 : 1,
-          // A raised button stands on a darker edge and presses down into
-          // it; the box keeps the same size, so nothing around it moves.
-          child: Container(
-            constraints: widget.singleLine
-                ? const BoxConstraints.tightFor(height: 56)
-                : const BoxConstraints(minHeight: 56),
-            decoration: raised
-                ? BoxDecoration(
-                    color: depth,
-                    borderRadius: BorderRadius.circular(AppRadius.button),
-                    boxShadow: _pressed ? null : const [BoxShadow(color: Color(0x332A2622), blurRadius: 8, offset: Offset(0, 4))],
-                  )
-                : null,
-            child: AnimatedPadding(
-              duration: const Duration(milliseconds: 70),
-              padding: EdgeInsets.only(
-                top: raised && _pressed ? depthPx : 0,
-                bottom: raised && !_pressed ? depthPx : 0,
-              ),
-              child: Container(
-                constraints: widget.singleLine ? const BoxConstraints.expand() : const BoxConstraints(minHeight: 56 - depthPx),
-                padding: EdgeInsets.symmetric(
-                  horizontal: widget.singleLine ? AppSpace.lg : AppSpace.xl,
-                  vertical: widget.singleLine ? 0 : AppSpace.md + 2,
-                ),
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: BorderRadius.circular(AppRadius.button),
-                  border: Border.all(color: border, width: AppLine.hairline),
-                ),
-                // The printed inner rule: an engraved ticket, not a web button.
-                foregroundDecoration: _InnerRule(rule),
-                child: content,
-              ),
-            ),
-          ),
+          child: _floats ? AnimatedBuilder(animation: _float, builder: (context, child) => _floating(child!), child: face) : face,
         ),
+      ),
+    );
+  }
+
+  static const _shadow = Color(0x332A2622);
+
+  /// [face] lifted by the float; its shadow stays on the page, fainter and
+  /// wider the higher the button is (none while pressed in).
+  Widget _floating(Widget face) {
+    final h = _pressed ? 0.0 : _height;
+    return Transform.translate(
+      offset: Offset(0, -_lift * h),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.button),
+          boxShadow: _pressed
+              ? null
+              : [
+                  BoxShadow(
+                    color: _shadow.withValues(alpha: _shadow.a * (1 - 0.35 * h)),
+                    blurRadius: 8 + 5 * h,
+                    offset: Offset(0, 4 + _lift * h + 1.5 * h),
+                  ),
+                ],
+        ),
+        child: face,
       ),
     );
   }
@@ -345,6 +451,38 @@ class CompactButton extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A soft band of brass light crossing a ready navy [GameButton]'s face on a
+/// slant, left to right, as [progress] runs (nothing at rest).
+class _Glint extends CustomPainter {
+  _Glint(this.progress) : super(repaint: progress);
+
+  final Animation<double> progress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final t = progress.value;
+    if (t <= 0 || t >= 1) return;
+    final face = Offset.zero & size;
+    final band = face.width * 0.4;
+    final x = face.left - band + (face.width + 2 * band) * Curves.easeInOut.transform(t);
+    final glow = AppColors.goldLight.withValues(alpha: 0.32);
+    canvas.save();
+    canvas.clipRRect(RRect.fromRectAndRadius(face, const Radius.circular(AppRadius.button)));
+    canvas.drawRect(
+      face,
+      Paint()
+        ..shader = LinearGradient(
+          colors: [glow.withValues(alpha: 0), glow, glow.withValues(alpha: 0)],
+          transform: const GradientRotation(-0.35),
+        ).createShader(Rect.fromLTWH(x - band / 2, face.top, band, face.height)),
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_Glint old) => old.progress != progress;
 }
 
 /// The hairline printed just inside a [GameButton]'s edge.
