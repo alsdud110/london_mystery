@@ -871,16 +871,57 @@ class SearchTapRing extends StatelessWidget {
 
 /// The detective's pencilled slip over the room: what the last tap found
 /// (read aloud by screen readers as it changes). Nothing before the first
-/// tap.
-class PencilSlip extends StatelessWidget {
+/// tap; each line goes after [shown], leaving the picture clear again.
+class PencilSlip extends StatefulWidget {
   const PencilSlip({super.key, required this.line, this.nudge});
 
   final String? line;
   final String? nudge;
 
+  /// How long a line stays on the picture.
+  static const shown = Duration(milliseconds: 2500);
+
+  @override
+  State<PencilSlip> createState() => _PencilSlipState();
+}
+
+class _PencilSlipState extends State<PencilSlip> {
+  Timer? _timer;
+  bool _gone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _start();
+  }
+
+  @override
+  void didUpdateWidget(PencilSlip old) {
+    super.didUpdateWidget(old);
+    if (old.line != widget.line || old.nudge != widget.nudge) {
+      _gone = false;
+      _start();
+    }
+  }
+
+  void _start() {
+    _timer?.cancel();
+    if (widget.line == null) return;
+    _timer = Timer(PencilSlip.shown, () {
+      if (mounted) setState(() => _gone = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final text = line;
+    final text = _gone ? null : widget.line;
+    final nudge = widget.nudge;
     return Semantics(
       liveRegion: true,
       child: AnimatedSwitcher(
@@ -903,7 +944,7 @@ class PencilSlip extends StatelessWidget {
                       if (nudge != null) ...[
                         const SizedBox(height: 2),
                         Text(
-                          nudge!,
+                          nudge,
                           textAlign: TextAlign.center,
                           style: AppText.caption(color: AppColors.goldDeep),
                         ),

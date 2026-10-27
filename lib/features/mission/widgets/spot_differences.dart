@@ -15,7 +15,7 @@ import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/paper_background.dart';
-import 'investigation_search.dart' show SearchTapRing;
+import 'investigation_search.dart' show PencilSlip, SearchTapRing;
 import 'search_stage.dart';
 import 'zoom_picture.dart';
 
@@ -96,7 +96,7 @@ class _SpotDifferencesState extends State<SpotDifferences> {
     _lineTimer?.cancel();
     setState(() => _line = line);
     if (line == null) return;
-    _lineTimer = Timer(const Duration(milliseconds: 2500), () {
+    _lineTimer = Timer(PencilSlip.shown, () {
       if (mounted) setState(() => _line = null);
     });
   }
