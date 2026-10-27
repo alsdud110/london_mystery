@@ -15,6 +15,7 @@ import 'season2_case08_scenes.dart';
 import 'season2_learning.dart';
 import 'season2_levels_04_06.dart';
 import 'season2_levels_07_09.dart';
+import 'season2_levels_10_12.dart';
 import 'season2_scenes.dart';
 
 /// Season 2's words at each level (the game's own words are Rookie's).
@@ -31,6 +32,8 @@ import 'season2_scenes.dart';
 /// `season2_levels_04_06.dart` (`docs/difficulty_reviews/PARIS_CASE_04_06.md`).
 /// Written (PART 7C): Cases 07–09, in `season2_levels_07_09.dart`
 /// (`docs/difficulty_reviews/PARIS_CASE_07_09.md`).
+/// Written (PART 7D): Cases 10–12, in `season2_levels_10_12.dart`
+/// (`docs/difficulty_reviews/PARIS_CASE_10_12.md`): the whole season.
 ///
 /// At every level the same: the times, the answers, every id and order, the
 /// papers the puzzles are read from (the station notice, the clerk's three
@@ -58,6 +61,10 @@ final Map<Difficulty, Map<String, Map<String, Object?>>> season2CasePatches = {
     's2_ep07': {'glossary': rookieWords07},
     's2_ep08': {'glossary': rookieWords08},
     's2_ep09': rookie09,
+    // PART 7D (season2_levels_10_12.dart): the game's own words, reviewed.
+    's2_ep10': {'glossary': words10},
+    's2_ep11': {'glossary': words11},
+    's2_ep12': {'glossary': words12},
   },
   Difficulty.junior: {
     's2_ep01': _junior01,
@@ -69,6 +76,9 @@ final Map<Difficulty, Map<String, Map<String, Object?>>> season2CasePatches = {
     's2_ep07': junior07,
     's2_ep08': junior08,
     's2_ep09': junior09,
+    's2_ep10': junior10,
+    's2_ep11': junior11,
+    's2_ep12': junior12,
   },
   Difficulty.master: {
     's2_ep01': _master01,
@@ -80,6 +90,9 @@ final Map<Difficulty, Map<String, Map<String, Object?>>> season2CasePatches = {
     's2_ep07': master07,
     's2_ep08': master08,
     's2_ep09': master09,
+    's2_ep10': master10,
+    's2_ep11': master11,
+    's2_ep12': master12,
   },
 };
 
@@ -98,6 +111,10 @@ const Map<String, Set<Difficulty>> season2WrittenLevels = {
   's2_ep07': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   's2_ep08': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   's2_ep09': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  // PART 7D.
+  's2_ep10': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  's2_ep11': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  's2_ep12': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
 };
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -1466,6 +1483,8 @@ const Set<String> season2SameAtEveryLevel = {
   ...sameAtEveryLevel0406,
   // PART 7C: Cases 07–09.
   ...sameAtEveryLevel0709,
+  // PART 7D: Cases 10–12.
+  ...sameAtEveryLevel1012,
 };
 
 /// Season 2's puzzle tables at Junior and Master: only what differs (and
@@ -1565,7 +1584,15 @@ final Map<Difficulty, SeasonContent> season2Variants = {
     planRoutes: {'s2_ep06_m2': season2PlanScenes['s2_ep06_m2']!},
     archives: juniorScenes0406.archives,
     letterMaps: {'s2_ep06_final': season2LetterMapScenes['s2_ep06_final']!},
-    easySteps: {...juniorScenes0406.easySteps, ...juniorScenes0709.easySteps},
+    easySteps: {...juniorScenes0406.easySteps, ...juniorScenes0709.easySteps, ...juniorScenes1012.easySteps},
+    // PART 7D: Cases 10–12 (season2_levels_10_12.dart).
+    drumTapes: juniorScenes1012.drumTapes,
+    cityClocks: juniorScenes1012.cityClocks,
+    shadowChecks: juniorScenes1012.shadowChecks,
+    hourRecords: juniorScenes1012.hourRecords,
+    talks: juniorScenes1012.talks,
+    talkMissions: juniorScenes1012.talkMissions,
+    endings: juniorScenes1012.endings,
     // PART 7C: Cases 07–09 (season2_levels_07_09.dart).
     flyRails: {'s2_ep07_m3': season2FlyRailScenes['s2_ep07_m3']!},
     lightTables: {'s2_ep07_final': season2LightTableScenes['s2_ep07_final']!},
@@ -1606,6 +1633,8 @@ final Map<Difficulty, SeasonContent> season2Variants = {
       ...juniorLearning0406,
       // PART 7C: Cases 07–09.
       ...juniorLearning0709,
+      // PART 7D: Cases 10–12.
+      ...juniorLearning1012,
     },
   ),
   Difficulty.master: SeasonContent(
@@ -1708,7 +1737,15 @@ final Map<Difficulty, SeasonContent> season2Variants = {
     planRoutes: {'s2_ep06_m2': season2PlanScenes['s2_ep06_m2']!},
     archives: masterScenes0406.archives,
     letterMaps: {'s2_ep06_final': season2LetterMapScenes['s2_ep06_final']!},
-    easySteps: {...masterScenes0406.easySteps, ...masterScenes0709.easySteps},
+    easySteps: {...masterScenes0406.easySteps, ...masterScenes0709.easySteps, ...masterScenes1012.easySteps},
+    // PART 7D: Cases 10–12 (season2_levels_10_12.dart).
+    drumTapes: masterScenes1012.drumTapes,
+    cityClocks: masterScenes1012.cityClocks,
+    shadowChecks: masterScenes1012.shadowChecks,
+    hourRecords: masterScenes1012.hourRecords,
+    talks: masterScenes1012.talks,
+    talkMissions: masterScenes1012.talkMissions,
+    endings: masterScenes1012.endings,
     // PART 7C: Cases 07–09 (season2_levels_07_09.dart).
     flyRails: {'s2_ep07_m3': season2FlyRailScenes['s2_ep07_m3']!},
     lightTables: {'s2_ep07_final': season2LightTableScenes['s2_ep07_final']!},
@@ -1753,6 +1790,8 @@ final Map<Difficulty, SeasonContent> season2Variants = {
       ...masterLearning0406,
       // PART 7C: Cases 07–09.
       ...masterLearning0709,
+      // PART 7D: Cases 10–12.
+      ...masterLearning1012,
     },
   ),
 };

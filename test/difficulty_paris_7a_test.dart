@@ -160,7 +160,7 @@ void main() {
         }
       }
       // Later cases are later PARTs'; the newest PART's test holds the
-      // whole set written so far (difficulty_paris_7c_test.dart).
+      // whole set written so far (difficulty_paris_7d_test.dart).
       expect(season2Content.writtenLevels.keys, containsAll(cases));
     });
 

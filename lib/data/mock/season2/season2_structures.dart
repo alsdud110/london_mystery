@@ -1,6 +1,7 @@
 import 'dart:ui' show Offset, Rect, Size;
 
 import '../../models/abbesses_puzzles.dart';
+import '../../models/case_talk.dart';
 import '../../models/easy_steps.dart';
 import '../../models/garden_puzzles.dart';
 import '../../models/investigation.dart' show InvestigationSpot;
@@ -10,12 +11,14 @@ import '../../models/painter_puzzles.dart';
 import '../../models/river_puzzles.dart';
 import '../../models/scene_exhibit.dart';
 import '../../models/scene_explore.dart' show ScenePixels;
+import '../../models/star_puzzles.dart';
 import '../../models/station_clocks.dart';
 import '../../models/tower_puzzles.dart';
 import '../../models/workshop_puzzles.dart';
 
 /// What a Season 2 scene is beyond its words (`DifficultyContent.structureOf`
-/// for the scenes of Cases 01–09, and the very easy steps): its pictures and where things are on them,
+/// for the scenes of Cases 01–12: the very easy steps, the talks and the
+/// case's ending): its pictures and where things are on them,
 /// its ids and their order, the times, answers and documents its puzzle is
 /// read from. A level may give a scene its own words, never another one of
 /// these. Null: not a kind known here.
@@ -480,6 +483,59 @@ String? season2StructureOf(Object? entry) => switch (entry) {
           '${t.lead.spot.id}:${t.lead.spot.name}:${_at(t.lead.spot.at)}',
           t.lead.doneLines.length,
         ].join('|'),
+      // ── Cases 10–12 (PART 7D) ──────────────────────────────────────────
+      final DrumTapeScene d => _tape(d),
+      final CityClocksScene c => [
+          'cityClocks',
+          _roofPhoto(c.photo),
+          c.trialMapId,
+          c.lensScale,
+          c.lensSize,
+          c.sortedLines.length,
+        ].join('|'),
+      final ShadowCheckScene sc => [
+          'shadowCheck',
+          '${sc.sundial.file}:${_px(sc.sundial.pixels)}:${_at(sc.sundial.hub)}:${sc.sundial.radius}:${sc.sundial.plate}:${sc.sundial.lines.map((l) => '${l.time}@${l.angle}').join(',')}:${sc.sundial.shortest}:${sc.sundial.longest}:${sc.sundial.snap}',
+          _roofPhoto(sc.photo),
+          for (final p in sc.photos) '${p.id}:${p.number}:${p.t1}:${p.sun}',
+          sc.plateWords,
+        ].join('|'),
+      final HourRecordScene h => [
+          'hourRecord',
+          '${h.room.file}:${_px(h.room.pixels)}:${_at(h.room.plateCentre)}:${h.room.plateSize}:${h.room.plateAngle}:${h.room.plateLines.join(',')}:${_rect(h.room.doorStar)}:${h.room.things.map(_rect).join(';')}',
+          _tape(h.tape),
+          h.photo1Mark,
+          h.photo2Mark,
+          for (final p in h.photos) '${p.id}:${p.number}:${p.t1}:${p.sun}',
+          h.backLabel,
+          h.rightLabel,
+          h.foundLines.length,
+          h.logFile,
+          _px(h.logPixels),
+          _rect(h.leftPage),
+          _rect(h.rightPage),
+          _rect(h.emblem),
+          h.logTitle,
+          for (final p in h.pages) '${p.id}:${p.number}:${p.from}:${p.to}:${p.inBook}',
+          h.afterLines.length,
+          h.lead.title,
+          h.lead.heading,
+          for (final l in h.lead.lines) '${l.id}:${l.text}',
+          h.lead.answer,
+          h.lead.mapFile,
+          _px(h.lead.mapPixels),
+          '${h.lead.spot.id}:${h.lead.spot.name}:${_at(h.lead.spot.at)}',
+          h.lead.doneLines.length,
+        ].join('|'),
+      // A talk: who speaks, each step's id and what it needs, and every beat
+      // line by line (who says it and how): a saved talk is a step and a
+      // line number. What is said is its words.
+      final TalkScene t => _talk(t),
+      final TalkMission m => ['talkMission', m.before == null ? null : _talk(m.before!), m.after == null ? null : _talk(m.after!)].join('#'),
+      final List<EndingLine> l => [
+          'ending',
+          for (final e in l) '${e.voice.name}:${e.name}:${e.portrait}:${e.background}:${e.evidenceId}',
+        ].join('|'),
       // Played one small step at a time: the steps, what each shows and
       // asks, its answer, how many free hints lead to it and where the
       // answer is lit. What each step says (its line, hints, wrong-answer
@@ -633,3 +689,41 @@ String _form(TornForm f) =>
 /// A trial clock's model: its picture, place and sign (its line for a
 /// wrong place is its words).
 String _model(TrialModel m) => [m.id, m.name, m.file, m.spot, m.sign].join(',');
+
+String _tape(DrumTapeScene d) => [
+      'drumTape',
+      d.drumFile,
+      _px(d.drumPixels),
+      _at(d.slot),
+      _rect(d.plate),
+      d.header,
+      for (final m in d.marks) '${m.id}:${m.printed}:${m.real}',
+    ].join(',');
+
+String _roofPhoto(RoofPhoto p) => [
+      p.file,
+      _px(p.pixels),
+      for (final c in p.clocks) '${c.id}:${c.name}:${_at(c.centre)}:${c.rx}:${c.ry}:${c.trial}:${c.photo1}:${c.photo2}:${_rect(c.card)}',
+      '${_at(p.dial.hub)}:${p.dial.rx}:${p.dial.ry}:${p.dial.gnomonTurn}',
+      _rect(p.t1Crop),
+      _rect(p.dialCrop),
+    ].join(',');
+
+/// A beat: its lines' voices and moods, in order (their words not read).
+String _beat(List<TalkLine> lines) => lines.map((l) => '${l.voice.name}/${l.mood}').join(';');
+
+String _talk(TalkScene t) => [
+      'talk',
+      t.id,
+      '${t.speaker.id}:${t.speaker.name}:${t.speaker.hiddenName}:${t.speaker.revealedBy}:${t.speaker.portraits}:${t.speaker.baseMood}',
+      _beat(t.opening),
+      for (final q in t.questions) 'q:${q.id}:${q.requires.toList()..sort()}:${q.repeatable}:${_beat(q.beat)}',
+      for (final p in t.presents)
+        'p:${p.id}:${p.accepted.toList()..sort()}:${p.choices.join(',')}:${p.requires.toList()..sort()}:${_beat(p.beat)}:${p.misses.keys.join(',')}:${_beat([...p.misses.values, p.miss])}:${p.tell != null}',
+      (t.finishWhen.toList()..sort()).join(','),
+      t.place,
+      t.background,
+      t.finishLabel,
+      t.answer,
+      t.earlierEvidence.join(','),
+    ].join('|');
