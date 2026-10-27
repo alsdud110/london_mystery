@@ -12,7 +12,9 @@ enum CoinSource {
   /// A mission solved.
   mission,
 
-  /// A mission solved before coins existed, paid when the wallet was made.
+  /// A mission solved before coins existed, paid when the wallet was made —
+  /// or, at 0 coins, a solved mission whose pay was not in the record when
+  /// its season started over (marked paid so it never pays twice).
   backfill,
 
   /// A Detective Tip unlocked (paid, free, or given as help).

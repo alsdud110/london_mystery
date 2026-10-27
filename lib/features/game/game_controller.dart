@@ -9,6 +9,7 @@ import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/profile.dart';
+import '../../data/models/season_progress.dart';
 import '../../data/models/wallet.dart';
 import 'game_providers.dart';
 import 'scoring.dart';
@@ -417,6 +418,74 @@ class GameController extends Notifier<GameProgress> {
   Future<void> resetAll() async {
     _wipe();
     await ref.read(detectiveProfileProvider.notifier).change((p) => p.startedOver());
+  }
+
+  /// The season being played fixes its level, once: when its first intro
+  /// (Case 01's) is entered. A season not begun takes the detective's level;
+  /// one played before levels existed keeps the standard level it was played
+  /// at. A season already fixed is left as it is.
+  void settleSeasonLevel() {
+    final level = ref.read(seasonLevelProvider(ref.read(selectedSeasonIdProvider)));
+    if (level == null || level.fixed != null) return;
+    ref.read(seasonProvider.notifier).fixDifficulty(level.level);
+  }
+
+  /// RESTART SEASON: season [seasonId] is played again from its Case 01, at
+  /// [level] (fixed for it at once: the detective chose it for this season),
+  /// and [level] becomes the detective's. Only that season's saves start
+  /// over — each case save (missions, clues, evidence, XP, badges, hints
+  /// opened, puzzles; the name kept) and its record (its prologue seen kept).
+  /// Every other season, the profile and the coins stay: a mission solved
+  /// before pays nothing when solved again, tips bought stay the
+  /// detective's (see [WalletController.settleSolved]).
+  ///
+  /// The season's saves and the coins are written together (all or none,
+  /// finished at the next start if the app stops half way, see
+  /// [ProgressRepository.transaction]); the saves are overwritten, never
+  /// removed, so nothing older (the saves from before profiles, read in safe
+  /// mode) shows through. The detective's level is saved after: stopped in
+  /// between, the season is already at [level], only a later season's level
+  /// is as before.
+  void restartSeason(String seasonId, Difficulty level) {
+    final repo = ref.read(progressRepositoryProvider);
+    final cases = SeasonAvailability.casesOf(seasonId, ref.read(allEpisodesProvider));
+    if (cases.isEmpty) return;
+    final playing = seasonId == ref.read(selectedSeasonIdProvider);
+    final name = state.detectiveName ?? sessionProfile(ref).detectiveName;
+    final kept = repo.loadSeason(seasonId);
+    final fresh = GameProgress(detectiveName: name);
+    // The wallet exists before its record is relied on (a first wallet's
+    // pay-back is worked out from the saves as they still are).
+    ref.read(walletProvider);
+    repo.transaction(() {
+      ref.read(walletProvider.notifier).settleSolved([
+        for (final e in cases)
+          for (final m in e.allMissions)
+            if (repo.load(e.id).isCompleted(m.id)) m,
+      ]);
+      for (final e in cases) {
+        repo.save(fresh, e.id);
+      }
+      repo.saveSeason(
+        SeasonProgress(activeEpisodeId: cases.first.id, prologueSeen: kept.prologueSeen, difficulty: level),
+        seasonId,
+      );
+    });
+    ref.read(recentUnlockProvider.notifier).set(null);
+    ref.read(recentSolveProvider.notifier).clear();
+    if (playing) {
+      state = fresh;
+      ref.read(seasonProvider.notifier).reload(); // back to its Case 01
+    }
+    ref.read(seasonSavesRevisionProvider.notifier).bump();
+    ref.read(detectiveProfileProvider.notifier).change((p) => p.copyWith(difficulty: level));
+  }
+
+  /// READY FOR YOUR NEXT MYSTERY? answered on the complete season played:
+  /// [level] for the seasons to come (null: the level kept). Not asked again.
+  Future<void> answerNextLevel(Difficulty? level) async {
+    if (level != null) await ref.read(detectiveProfileProvider.notifier).setDifficulty(level);
+    ref.read(seasonProvider.notifier).markNextLevelAsked();
   }
 
   /// Wipes every save of the detective (and plays nothing back), keeping

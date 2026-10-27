@@ -166,7 +166,7 @@
 - 3단계, 기본 Rookie(섹션 A). 불변 조건(섹션 A)은 테스트로 강제한다(D-4).
 - 난이도는 **시즌 단위로 고정**된다. 한 시즌을 플레이하는 동안 그 시즌의 텍스트 난이도는 바뀌지 않는다(바꾸려면 C-2의 초기화).
 
-### C-2. 시즌 난이도 변경 정책 — 상태 정의 [제안]
+### C-2. 시즌 난이도 변경 정책 — 상태 정의 (PART 3에서 **APPROVED** 정책으로 확정·구현 — 아래 표는 PART 0 초안이고, 실제 규칙은 I의 Q7·Q9와 F의 PART 3 항목이 기준)
 | 시즌 상태 | 판정 [제안] | 난이도 변경 시 동작 |
 |---|---|---|
 | 시작 전 | 시즌 기록 없음 또는 (`prologueSeen == false` && `solvedEpisodeIds` 비어 있음 && 그 시즌 어떤 사건 저장에도 `introSeen`/`completedMissionIds` 없음) | 프로필 난이도만 바꿈. 확인 없음 |
@@ -240,7 +240,8 @@ enum Difficulty {
   - `currentDifficultyProvider` — 선택 시즌의 실효 난이도. **콘텐츠 선택(PART 5)은 이것을 쓴다.**
   - 조회는 아무것도 저장하지 않는다(테스트로 고정: 조회 전후 SharedPreferences 스냅샷 동일, 조회만 한 시즌의 기록 키가 생기지 않음).
 - `nextDifficultyAsked`(완료 후 안내 1회)는 PART 0 초안과 달리 **PART 1에서 추가하지 않았다** — 안내 기능(PART 3)과 함께 추가한다(지금 넣으면 쓰는 곳 없는 필드).
-- **시즌의 실효 난이도** = `seasonProgress.difficulty ?? profile.difficulty`.
+- **시즌의 실효 난이도**(PART 1) = `seasonProgress.difficulty ?? profile.difficulty`.
+- **PART 3에서 변경(승인 정책 4)**: 실효 난이도 = 고정값 ?? (시즌 시작 전이면 프로필 난이도, 진행 기록이 있는 옛 시즌·완료 시즌이면 Rookie). 판정은 `SeasonLevel.of`/`seasonLevelProvider` — F의 PART 3 항목 참고. 고정 시점은 Story Intro 진입(`settleSeasonLevel`), `nextDifficultyAsked`는 `nextLevelAsked`라는 이름으로 PART 3에서 추가.
   - 시즌이 "시작"되는 순간(그 시즌의 첫 사건 인트로 진입 또는 프롤로그 완료 — PART 3에서 한 곳으로 정함) `seasonProgress.difficulty`가 비어 있으면 그때의 `profile.difficulty`로 고정.
   - 시작 전 시즌은 고정값이 없으므로 프로필 변경이 바로 반영된다(= "시즌 시작 전 자유 변경").
 - Provider: `seasonDifficultyProvider(seasonId)` / `currentDifficultyProvider`(선택 시즌) — `seasonProvider`와 `detectiveProfileProvider`를 watch.
@@ -313,7 +314,7 @@ enum Difficulty {
 | PART 0 | 조사 및 설계 문서 | **COMPLETED** (2026-10-27) |
 | PART 1 | 난이도 모델 및 저장 구조 | **COMPLETED** (2026-10-27) |
 | PART 2 | 프로필 생성 난이도 UI | **COMPLETED** (2026-10-27) |
-| PART 3 | 시즌 난이도 변경 및 초기화 정책 | NOT STARTED |
+| PART 3 | 시즌 난이도 변경 및 초기화 정책 | **COMPLETED** (2026-10-27) |
 | PART 4 | 개발자 모드 개선 | NOT STARTED |
 | PART 5 | 난이도별 영어 콘텐츠 시스템 | NOT STARTED |
 | PART 6 | London Season 1 콘텐츠 적용 (Case 단위 세분 가능) | NOT STARTED |
@@ -383,68 +384,110 @@ enum Difficulty {
   - `flutter test test/difficulty_selection_test.dart` → **15 passed**(표시·Rookie 기본·Junior/Master 선택·선택 해제·카드 모서리 탭·세 난이도 각각 생성·저장·재시작 복원·이름/아바타 저장·`/detective`에 난이도 UI 없음·6개 크기·키보드·난이도 없는 기존 프로필 호환(읽기만으로 레코드 재작성 없음))
   - `flutter analyze` → **No issues found**
   - 전체 `flutter test` → **2292 passed, 0 failed, 0 skipped**(약 4분). 기존 테스트 수정·삭제·skip 없음.
-- **커밋 해시**: PART 2 커밋(메시지 `feat: add difficulty selection to detective profile`) — **PART 3 작업자가 `git log --oneline --grep "difficulty selection"`으로 확인해 이 칸을 채운다.**
+- **커밋 해시**: `0da1dac7375008f83039713f21e892e2fee47f40` (`feat: add difficulty selection to detective profile`) — PART 3 커밋에서 기록.
+- **PART 3에서 바뀐 점(참고)**: 이 PART의 "`/detective`에 난이도 UI 없음" 테스트는 PART 3 요구(설정 화면에서 난이도 변경)에 맞춰 "시즌 시작 전 자유 변경" 테스트로 갱신됨.
 - **남은 위험·미해결**:
   - 360×640 같은 작은 화면에서는 Junior·Master 카드가 첫 화면 아래에 있어 스크롤해야 보인다(Rookie 카드 일부와 고정 버튼은 보임). 아이가 다른 난이도를 못 보고 Rookie로 시작할 수 있음 — 기본값이 Rookie라 진행에는 문제없고, PART 3에서 `/detective`로 바꿀 수 있게 된다. 실제 플레이테스트에서 관찰 필요.
   - 폼이 넘치는 화면에서는 종이 아래쪽이 스크롤 영역 경계에서 잘려 보인다(스크롤 단서 역할). 페이드 등 장식은 넣지 않음.
   - 실기기(iOS/Android) 확인은 하지 않음 — 위젯 테스트·스크린샷만.
 
-<!-- PART 3 이후 작업자는 아래에 같은 형식으로 추가한다 -->
+### PART 3 — 시즌 난이도 변경 및 초기화 정책
+- **작업 날짜**: 2026-10-27
+- **시작 상태**: `main`, HEAD `0da1dac`(PART 2), 미커밋 `.claude/settings.json`만(커밋하지 않음).
+- **승인 정책**(사용자 최종 승인, I의 Q3·Q6·Q7·Q9): 코인·구매 힌트 유지 + 중복 지급 금지 / Paris 완료 후 안내 생략 / Case 01 인트로 최초 진입 시 고정 / 기존 진행 데이터까지 고려한 진행 중 판정.
+- **구현 내용**:
+  - **시즌 상태·난이도 판정** `SeasonLevel.of`(`game_providers.dart`): 완료 = 시즌 마지막 사건 해결 + 계획 사건 수 충족(다음 시즌 해금과 같은 규칙) / 진행 중 = 기록에 난이도 고정됨 **또는**(기존 사용자) 해결 사건·인트로 본 사건·해결 미션이 하나라도 있음 / 그 외 시작 전(프롤로그만 본 상태 포함). 난이도 = 고정값 ?? (시작 전이면 프로필 난이도, 아니면 **Rookie** — 기존 진행분은 유일한 영어였던 base로 플레이된 것). `seasonLevelProvider(seasonId)`(읽기 전용, 저장 없음), `seasonDifficultyProvider`는 이것을 사용(PART 1의 "고정값 ?? 프로필"에서 변경), `levelSeasonProvider`(난이도 변경이 적용될 시즌 = 플레이 중 시즌, 완료됐으면 다음 시즌, 마지막 시즌 완료면 null), `nextLevelQuestionProvider`(완료 안내 조건), `seasonSavesRevisionProvider`(다른 시즌 저장을 바꾼 뒤 다시 읽게 하는 카운터).
+  - **고정 시점**: Story Intro 화면(`story_intro_screen.dart`) `initState` 다음 프레임에 `GameController.settleSeasonLevel()` — 고정값이 없을 때만 `fixDifficulty`(시작 전 → 프로필 난이도, 기존 진행 시즌 → Rookie). 일반 플레이에서 시즌의 첫 인트로는 Case 01. 사건 파일·시즌 화면·조회는 고정하지 않음(테스트). 기존 사용자의 진행 중 시즌은 읽을 때 Rookie로 계산되고, 다음 인트로 진입 때 Rookie로 저장된다(읽기 경로는 쓰지 않음).
+  - **`/detective`**(`detective_settings_screen.dart`): PART 2의 카드(`DetectiveDesk` `difficulty`/`onDifficulty`) 재사용, 생성 화면 동작 불변. 대상 시즌이 시작 전/없음 → 자유 변경, SAVE CHANGES 때 프로필 저장. 진행 중 → 다른 카드를 누르면 `RestartSeasonDialog`("Restart your season?" + 승인 문구, **KEEP MY LEVEL = 굵은 안전 버튼**, RESTART SEASON = 다시 해 보기 잉크색 링크, 바깥 탭으로 닫으면 유지). RESTART → `restartSeason` → 토스트 → `/season`(시즌 화면, Case 01부터). 진행 중 시즌의 카드에는 그 시즌의 난이도가 표시됨.
+  - **시즌 초기화** `GameController.restartSeason(seasonId, level)`: 아래 키만, **한 트랜잭션**(SaveJournal)으로 — ① 그 시즌 해결 미션 중 지갑 기록에 보상 항목이 없는 것을 0코인 항목으로 기록(`WalletController.settleSolved`), ② 그 시즌 모든 사건 저장을 `GameProgress(detectiveName: 이름)`으로 **덮어쓰기**(삭제 아님), ③ 시즌 기록을 `SeasonProgress(activeEpisodeId: Case 01, prologueSeen: 기존값 유지, difficulty: 새 난이도)`로 덮어쓰기(새 난이도로 즉시 고정 — 사용자가 이 시즌을 위해 고른 값). 트랜잭션 뒤 메모리 상태 정리(열린 사건·시즌 기록 다시 읽기, 최근 해금/해결 연출 초기화, revision 증가) → 마지막으로 프로필 난이도 저장.
+  - **완료 후 안내** `NextLevelQuestion`(`lib/features/season/next_level_question.dart`): London 마지막 사건 Case Closed의 `_SeasonFinale`에서 GO TO PARIS 바로 위에 READY FOR YOUR NEXT MYSTERY? + 설명 + "Your level: …" + 잉크 링크 KEEP MY LEVEL / CHANGE LEVEL(굵은 버튼은 GO TO PARIS와 INVESTIGATION BOARD 두 개 그대로 — 기존 테스트 조건). CHANGE LEVEL → `ChooseLevelDialog`(같은 카드 3개 + CHOOSE <LEVEL> + Not now). 답하면 `answerNextLevel`(바꾸면 프로필 저장 → 완료 시즌 기록에 `nextLevelAsked: true`). GO TO PARIS는 가로막지 않음(답하지 않고 가도 Paris로 이동, 그때 Paris는 Case 01 인트로에서 프로필 난이도로 고정). Paris가 시작되면·답했으면·다음 시즌이 없으면 표시 안 함. Season Completed 보드에는 넣지 않음(보드 버튼 화면 배치 테스트 보호, Case Closed가 항상 먼저 나옴).
+- **시즌 초기화 대상 키**(`<id>` = 프로필 id, 키는 `AppConstants.progressKeyFor`/`seasonKeyFor`로 생성):
+  - London: `lm.p.<id>.progress.v1`(ep01), `lm.p.<id>.progress.v1.ep02` ~ `.ep12`, `lm.p.<id>.season.v1`
+  - Paris: `lm.p.<id>.progress.v1.s2_ep01` ~ `.s2_ep12`, `lm.p.<id>.season.v1.s2_paris`
+  - 함께 바뀌는 키: `lm.p.<id>.wallet.v1`(항목 **추가만** — 0코인 정산 항목, 잔액 불변), 트랜잭션 중에만 `lm.p.<id>.journal.v1`, 트랜잭션 뒤 `lm.detective.v1`(프로필 `difficulty`만)
+- **보존 대상**: `lm.detective.v1`의 id·이름·아바타·기타 필드(난이도만 갱신), 다른 시즌의 사건·시즌 키(바이트 동일, 테스트), 지갑의 기존 항목 전부(잔액·구매 힌트 `tip:<missionId>:<n>`·보상 `mission:<missionId>`·광고 보상), `lm.p.<id>.selectedSeason.v1`, `lm.onboarding.v1.<id>`(How to Play), `lm.settings.sound`, 레거시 원본(`lm.progress.v1*`, `lm.season.v1`, `lm.wallet.v1`), 다른 프로필 네임스페이스, 시즌의 `prologueSeen`.
+- **코인 중복 지급 방지**: 기존 지갑이 이미 영구 지급 기록(원장)이다 — 보상 키 `mission:<missionId>`(일반 미션 5코인·Final=사건 보상 10코인, 미션 id는 시즌 간 고유 → 시즌·사건·미션을 모두 식별), 같은 키는 한 번만 기록, 잔액 = 항목 합. 지갑을 초기화하지 않으므로 재플레이 시 `rewardMission`이 0을 돌려줌. 시즌 완료 보상은 별도로 없음(확인). 지급 기록이 없는 해결 미션(지급 여부 확인 불가)은 초기화 전에 0코인 `backfill` 항목으로 "지급됨" 처리 → 이후에도 지급 안 함, 잔액 불변. 기록과 초기화가 같은 트랜잭션이라 불일치 없음. 구매한 힌트는 지갑의 `tip:` 항목으로 남아 다시 열면 무료(`alreadyYours`). NEW ADVENTURE·Game Master 초기화는 기존대로 새 지갑(변경 없음).
+- **저장 중단 복구**: 기존 `SaveJournal` 사용 — 트랜잭션의 모든 쓰기를 저널 키 하나에 먼저 기록한 뒤 각 키를 쓰고 저널을 지움. 중간 종료 시 다음 시작에 저장소가 만들어질 때 `recover()`가 저널을 끝까지 다시 쓴다(같은 값 재기록은 무해). 저널이 깨져 있으면(통째로 쓰이지 않음) 어떤 쓰기도 시작되지 않은 것이므로 버림 → 초기화 전 상태 그대로. 프로필(`lm.detective.v1`)은 저널 범위(프로필 네임스페이스) 밖이라 트랜잭션 **뒤에** 따로 저장 — 그 사이 종료되면 시즌은 이미 새 난이도로 고정·초기화된 상태이고 프로필 기본값만 이전 값(다음 시즌 기본값에만 영향, 일관성 유지). 테스트: 실제 초기화가 쓰는 키 집합으로 "저널 + 첫 쓰기만 적용" 상태를 만들어 재시작 → 전부 적용됨 확인.
+- **변경 파일**:
+  - `lib/data/models/season_progress.dart`(`nextLevelAsked`, 참일 때만 JSON 기록), `lib/data/models/wallet.dart`(문서 주석)
+  - `lib/features/game/game_providers.dart`(`SeasonLevelStatus`/`SeasonLevel`, `seasonLevelProvider`, `seasonDifficultyProvider` 변경, `levelSeasonProvider`, `nextLevelQuestionProvider`, `seasonSavesRevisionProvider`, `SeasonNotifier.markNextLevelAsked`/`reload`)
+  - `lib/features/game/game_controller.dart`(`settleSeasonLevel`, `restartSeason`, `answerNextLevel`), `lib/features/game/wallet_controller.dart`(`settleSolved`)
+  - `lib/features/onboarding/story_intro_screen.dart`(진입 시 고정), `lib/features/onboarding/detective_settings_screen.dart`(난이도 변경 + `RestartSeasonDialog`), 신규 `lib/features/season/next_level_question.dart`(`NextLevelQuestion`, `ChooseLevelDialog`), `lib/features/result/case_solved_screen.dart`(안내 배치)
+  - 테스트: 신규 `test/difficulty_season_policy_test.dart`(30), 갱신 `test/difficulty_persistence_test.dart`(정책 4에 맞춰 1개 — 진행 기록 있는 옛 시즌은 프로필이 아니라 Rookie), `test/difficulty_selection_test.dart`(PART 2의 "설정 화면에 난이도 없음" → PART 3 동작)
+  - 문서 `docs/DIFFICULTY_IMPLEMENTATION.md`, `PROJECT_CONTEXT.md`
+- **테스트 결과**(실제 실행):
+  - `test/difficulty_season_policy_test.dart` **30 passed** — 요청 시나리오 1~31 대응: Rookie/Junior/Master로 London 시작·고정, 고정 후 프로필 변경, London/Paris 독립(한쪽 초기화 시 다른 쪽 바이트 동일), 프롤로그만 → 자유 변경, Case 01 인트로 진입 시 고정(사건 파일만으로는 고정 안 됨, 위젯), 기존 진행 사용자(진행 중·Rookie·읽기 무쓰기·다음 인트로에 Rookie 고정, 완료 시즌 인식), 변경 취소(KEEP MY LEVEL·바깥 탭 → 저장 스냅샷 동일, 360×640·390×844), 승인(RESTART SEASON → Case 01·새 난이도·잔액 유지·`/season`), London만·Paris만 초기화, 다른 시즌 완료 기록·XP·해금 보존, 프로필 보존, 코인 잔액·구매 힌트 보존(다시 열기 무료), XP·증거 재계산(초기화 시즌 0, 다른 시즌 불변), 중간 종료 후 복구, safe mode 레거시 부활 방지(원본 키는 그대로), 재플레이 시 미션·Final 보상 0·미해결 미션은 정상 지급, 지급 기록 없는 기존 저장 → 0코인 정산·잔액 불변·잔액 = 항목 합, London 완료 안내(조건·KEEP·CHANGE→Master·London 난이도 유지·재시작 후 재표시 없음·Paris 시작 후/Paris 완료 후 미표시·GO TO PARIS 정상, 답 없이 GO TO PARIS도 정상), 안내 필드 없는 기존 기록 호환, 다른 시즌 초기화 후 조회 최신화.
+  - `flutter analyze` → **No issues found**
+  - 전체 `flutter test` → **2322 passed, 0 failed, 0 skipped**(약 4분 43초). 기존 테스트 삭제·skip 없음(갱신 2개는 위에 기록).
+  - 스크린샷(`LM_SCREENSHOTS`, 실제 폰트) 360×640·390×844: 재시작 확인창, 완료 안내, 난이도 선택 대화상자 — 잘림·가림 없음 육안 확인.
+- **커밋 해시**: PART 3 커밋(메시지 `feat: enforce season difficulty change policy`) — **PART 4 작업자가 `git log --oneline --grep "season difficulty change policy"`로 확인해 이 칸을 채운다.**
+- **남은 위험**:
+  - 운영자 도구(사건 바로가기·CASE NN부터)로 인트로에 들어가면 **실제 사용자 시즌 난이도가 고정**된다(현재 개발 상태가 일반 데이터와 분리되어 있지 않음) — PART 4에서 격리로 해결 대상.
+  - `seasonLevelProvider`는 사건 저장을 저장소에서 읽는다(현재 사건 진행을 감시하지 않음). 새 흐름에서는 인트로 고정이 진행보다 먼저라 문제없으나, 고정 없이 진행이 생기는 새 경로를 만들면 갱신 경로(`seasonSavesRevisionProvider.bump` 또는 감시)를 추가해야 한다.
+  - 완료 안내는 Case Closed에만 있다. 사용자가 그것을 지나쳐 보드에서 GO TO PARIS를 눌러도 Paris Case 01 인트로 전까지는 `/detective`에서 자유 변경 가능.
+  - 프로필 난이도 저장은 트랜잭션 밖(위 복구 항목) — 극히 짧은 구간의 종료 시 "다음 시즌 기본값"만 이전 값.
+  - 이전 빌드로 다운그레이드 시 `nextLevelAsked`·`difficulty` 필드 유실 가능(기본값으로 안전하게 읽힘).
+  - 실기기 확인은 하지 않음.
+
+<!-- PART 4 이후 작업자는 아래에 같은 형식으로 추가한다 -->
 
 ---
 
 ## G. 다음 세션 인수인계
 
 ### 현재 완료된 PART
-**PART 0**(조사·설계, `042afac`), **PART 1**(모델·저장, `8c9b4c8`), **PART 2**(프로필 생성 난이도 선택 UI, 커밋 `feat: add difficulty selection to detective profile` — 해시는 `git log --oneline --grep "difficulty selection"`).
-지금 상태: 새 탐정은 생성 화면에서 고른 난이도(기본 Rookie)가 프로필에 저장된다. **시즌 고정(`fixDifficulty`)을 호출하는 곳은 아직 없고, 기존 탐정이 난이도를 바꿀 화면도 없으며, 게임 문장은 난이도와 무관하게 같다.**
+**PART 0**(조사·설계, `042afac`), **PART 1**(모델·저장, `8c9b4c8`), **PART 2**(생성 화면 난이도 선택, `0da1dac`), **PART 3**(시즌 난이도 정책, 커밋 `feat: enforce season difficulty change policy` — 해시는 `git log --oneline --grep "season difficulty change policy"`).
+지금 상태: 시즌 난이도가 Case 01 인트로에서 고정되고, `/detective`에서 정책대로 바꿀 수 있으며(진행 중이면 시즌 재시작), London 완료 후 Paris 난이도를 한 번 묻는다. **게임 문장은 아직 난이도와 무관하게 같다(PART 5~7).** 개발자/운영자 도구는 여전히 **실제 사용자 데이터에 쓴다.**
 
 ### 다음 PART
-**PART 3 — 시즌 난이도 변경 및 초기화 정책**
+**PART 4 — 개발자 모드 개선**
 
-### ⚠ PART 3 시작 전 사용자 확인 필수 (미확정 정책 — 임의로 확정·구현 금지)
-섹션 I의 Q1~Q8을 다시 읽는다. PART 3에 직접 걸린 항목은 **구현 전에 사용자에게 묻고 답을 이 문서 I에 기록**한다.
-- **Q3 지갑**: 시즌 초기화 때 코인·산 Tip을 어떻게? (지갑은 시즌 공용 `lm.p.<id>.wallet.v1`, 미션 보상 평생 1회 `mission:<missionId>`, 산 Tip `tip:<missionId>:<n>`, 잔액 = 항목 합)
-- **Q6**: 마지막 시즌(Paris) 완료 후에도 "다음 시즌 난이도" 안내를 띄울지(다음 시즌이 없음).
-- **Q7 고정 시점**: 시즌 난이도를 언제 고정할지 — 프롤로그 완료 / 첫 사건 인트로 진입 / 첫 미션 시작 등. "시작 전 자유 변경"의 경계가 이것으로 정해진다.
-- **C-2 "진행 중" 판정 규칙**: 문서의 [제안](프롤로그 봄 또는 해결 사건 있음 또는 그 시즌 사건 저장에 introSeen/완료 미션 있음)을 그대로 쓸지. Q7과 일관되어야 한다(고정됨 = 진행 중으로 보는 것이 가장 단순).
-- **Q4**(NEW ADVENTURE 후 난이도 유지)는 PART 1에서 "유지"로 동작 중 — 바꿀 필요가 있는지만 확인.
-- Q1·Q2·Q8은 PART 5, Q5는 PART 4 — PART 3에서 건드리지 않는다.
+### PART 4 목표 (섹션 A·C-4 확정 정책)
+- TESTER / BOY 가상 프로필(일반 사용자 프로필은 바꾸지 않음), 개발자 모드 안에서 난이도 자유 선택
+- 개발자 전용 **메모리 저장소**, 일반 사용자 저장 데이터 **완전 격리**(XP·증거·힌트·퍼즐·코인·시즌 난이도·완료 안내 모두)
+- **진입할 때마다 테스트 진행 초기화**, 같은 개발자 세션 안에서는 유지
+- 개발자 모드에서 Case 자유 선택(London·Paris)
+- 개발자 모드 종료 후 일반 사용자 상태 복원(진입 전과 동일)
+- Game Master의 "다음 플레이어용 초기화"(`resetForNextPlayer`)는 **변경·삭제하지 않음**
+- **미결정 Q5**(개발자 모드에서 난이도를 바꿀 때 dev 진행을 초기화할지): 제안 = 초기화 없이 즉시 전환. PART 4 요청서에 답이 없으면 구현 전에 사용자에게 확인.
 
-### PART 3 작업 범위
-1. **시즌별 난이도 고정**: Q7에서 정한 시점에 `SeasonNotifier.fixDifficulty(profile.difficulty)`(PART 1 API) 호출. 이미 고정된 시즌은 다시 고정하지 않음. 후보 지점: Season Cover BEGIN(`season_screen.dart` `_begin`, ~:157-161), Paris 프롤로그 완료(`paris_prologue.dart` ~:74,87 `markPrologueSeen` 옆), 사건 시작 `SeasonActions.investigate`/`GameController.openEpisode`, Story Intro(`/intro`).
-2. **`/detective`에서 난이도 변경 진입**: 설정 화면(`lib/features/onboarding/detective_settings_screen.dart`, `DetectiveDesk`에 `difficulty`/`onDifficulty`를 넘기면 PART 2의 같은 카드 UI가 나온다). 저장은 `_save()`에서 이름·아바타 뒤에 처리. 화면 하단 문구 `note: 'Your cases, XP, coins and badges stay as they are.'`는 난이도 변경이 초기화를 부를 때 사실과 달라지므로 문구 조정 필요.
-3. **시즌 상태 판정**(시작 전 / 진행 중 / 완료 — C-2): 완료는 기존 `SeasonAvailability.isCompleted`(`game_providers.dart` ~:174) / `SeasonOverview.complete` 재사용.
-4. **시즌 진행 중 변경 확인**: 기존 `game_dialog.dart` 계열 확인 대화상자(NEW ADVENTURE 확인과 같은 스타일). 동의 → 그 시즌만 초기화 + 새 난이도로 프로필·시즌 저장. 취소 → 진행 기록·난이도 모두 그대로(테스트로 증명).
-5. **현재 시즌 진행 데이터 초기화**(C-3): 그 시즌의 사건 목록으로 키를 하나씩 만들어 **빈 저장으로 덮어쓰기**(삭제 아님), 시즌 기록도 함께. **다른 시즌·완료 시즌 기록은 바이트 단위로 보존**(테스트).
-6. **시즌 완료 후 다음 시즌 난이도 선택**: 마지막 사건 Case Closed의 `_SeasonFinale`(`case_solved_screen.dart` ~:145-148,190-196) 또는 Season Completed 보드 `_Completed`(`season_screen.dart` ~:741-764) 근처에서 1회. 물었다는 사실을 완료 시즌의 `SeasonProgress`에 새 필드(예: `nextDifficultyAsked`, 값이 있을 때만 JSON 기록 — PART 1의 `difficulty`와 같은 방식)로 저장해 반복 안내 금지. 새 난이도는 다음 시즌부터(프로필 기본 난이도 변경 → 다음 시즌 고정 시점에 반영).
+### 현재 개발자(운영자) 모드 — 조사 결과 (2026-10-27, 줄 번호는 바뀌었을 수 있으니 심볼로 찾을 것)
+- **진입 경로**: Start 화면 `_openGameMaster`(`lib/features/onboarding/start_screen.dart`) → `ParentGate.show`(곱셈, `lib/features/game_master/parent_gate.dart`) → `gameMasterAccessProvider.grant()` → `context.push('/game-master')`. 라우터 가드: 통과권 없으면 `/`(`app_router.dart` redirect). 화면 `lib/features/game_master/game_master_screen.dart`("GAME MASTER", 현장 운영 도구 + 디버그/`--dart-define=LM_PLAYTEST=true` 빌드에서만 "플레이 테스트 도구" — `operatorToolsInBuild = kDebugMode || LM_PLAYTEST`, `game_providers.dart`).
+- **종료 경로**: **명시적 종료 없음.** `gameMasterAccessProvider`·`operatorAccessSwitchProvider`(OPERATOR MODE)·`seasonPreviewSwitchProvider`(SEASON PREVIEW)는 저장하지 않는 메모리 `Notifier` — 앱 재시작 시 꺼짐. 뒤로 가기는 pop뿐.
+- **실제 사용자 데이터를 수정하는 기존 기능**(`lib/features/game_master/playtest_tools.dart`):
+  - `startPlaytestAt`("CASE NN부터", London 전용): `newAdventure()`로 **실제 프로필 저장 전부 삭제** + 이전 사건을 해결 상태로 실제 저장에 기록 + 시즌 해결 표시.
+  - `jumpToCase`("사건 바로가기", Paris 지원): 실제 `selectedSeason.v1`·시즌 `activeEpisodeId` 저장, 이후 미션 해결은 실제 XP·코인·배지. **PART 3 이후 인트로에 들어가면 실제 시즌 난이도가 고정된다**(`settleSeasonLevel`).
+  - `restartCurrentCase`(`playAgain`): 실제 열린 사건 초기화.
+  - `resetForNextPlayer`: `resetAll`(진행+프로필 비움) + How to Play 기록 삭제 + 레거시 원본 삭제 — **유지 대상**.
+  - OPERATOR MODE: 모든 사건 열기(해결은 실제 저장). SEASON PREVIEW: 미출시 시즌 열기.
+  - 상수 `playtestDetectiveName = 'TESTER'`(탐정이 없을 때 쓰는 이름) 이미 있음.
+- **라우터·Provider 생명주기**:
+  - `main.dart` → `DeviceDetectiveGate`(`lib/features/onboarding/detective_hold_screen.dart`)가 `ProviderScope(overrides: [sharedPreferencesProvider, episodeRepositoryProvider, allEpisodesProvider] + profileSessionProvider)`로 `LondonMysteryApp`을 감싼다. `LondonMysteryApp`(`lib/app.dart`)은 `routerProvider`(`lib/core/router/app_router.dart`)를 읽고, 라우터의 redirect는 **자기 `ref`로** `gameControllerProvider`·`currentEpisodeProvider`·`selectedSeasonIdProvider` 등을 읽는다.
+  - 저장소 Provider는 하나: `progressRepositoryProvider`(`game_providers.dart`) → `SharedPrefsProgressRepository(prefs, profileId, legacyFallback)`. 메모리 구현 `InMemoryProgressRepository`(`lib/data/repositories/progress_repository.dart`, `transaction` 포함) 있음. 사건·시즌·선택 시즌·지갑이 모두 이 저장소를 거친다.
+  - 프로필은 저장소가 아니라 `ProfileStore`(`lm.detective.v1`)에 직접 쓴다: `DetectiveProfileNotifier.change`(`setAvatar`/`setDifficulty`), `WalletController.build`의 백필 완료 표시.
+  - **주의(Riverpod 스코프)**: 중첩 `ProviderScope`에서 일부 Provider만 override하면, override하지 않은 Provider(예: `routerProvider`, `gameControllerProvider`)는 `dependencies` 선언이 없는 한 **루트 컨테이너에 남아 루트 저장소를 읽을 수 있다.** 권장: 개발자 세션마다 **독립된 컨테이너**(새 `ProviderScope`를 `DeviceDetectiveGate`처럼 루트로 교체, `key`로 세션 번호 → 진입마다 새 컨테이너)를 만들고 저장 관련 Provider를 모두 메모리로 override. 테스트로 "dev 세션 동안 SharedPreferences 스냅샷 불변"을 반드시 증명.
+- **How to Play 기록 저장 경로**: `lib/features/onboarding/how_to_play_state.dart`(`howToPlaySeenProvider`)가 저장소를 거치지 않고 SharedPreferences 키 `lm.onboarding.v1.<profileId>`에 직접 쓴다(`forget()`은 GM 초기화). dev 세션에서는 override 필요(예: 본 것으로 고정). 소리 설정 `lm.settings.sound`(`SoundEnabledNotifier`)도 prefs 직접 — 기기 설정이라 공유 허용 가능(결정해서 문서화).
+- **PART 3에서 추가한 저장·보상 처리와의 연관**(dev 세션에서 메모리로만 가야 하는 쓰기):
+  - `GameController.settleSeasonLevel`(Story Intro 진입 시 시즌 기록에 난이도 고정), `restartSeason`(사건·시즌·지갑 트랜잭션 + 프로필 난이도), `answerNextLevel`(프로필 난이도 + 시즌 `nextLevelAsked`), `WalletController.settleSolved`(지갑 0코인 항목).
+  - `seasonLevelProvider`·`seasonSavesRevisionProvider`·`nextLevelQuestionProvider`는 컨테이너별 — 독립 컨테이너면 자동 격리.
+  - 프로필 난이도는 `ProfileStore`로 직접 저장되므로 dev 세션에서는 `detectiveProfileProvider`(또는 `profileStoreProvider`)를 메모리 구현으로 바꿔야 TESTER 난이도 선택이 실제 프로필에 새지 않는다.
 
-### PART 3 주의 사항
-- **시즌 공용 지갑**: 시즌 초기화가 지갑을 건드리는지는 Q3 답에 따른다. 답이 없으면 지갑은 건드리지 않는다(현재 Play again과 같은 규칙: 다시 푼 미션 코인 0).
-- **시즌별 키 분리**(C-3): London `lm.p.<id>.progress.v1`(ep01, 접미사 없음) + `.progress.v1.ep02`~`.ep12` + `.season.v1` / Paris `.progress.v1.s2_ep01`~`.s2_ep12` + `.season.v1.s2_paris`. **접두사 매칭으로 지우지 말 것**(`progress.v1.`은 두 시즌을 덮고, `season.v1`은 Paris 키의 접두사). 키는 `AppConstants.progressKeyFor(episodeId)`/`seasonKeyFor(seasonId)`로 만든다.
-- **기존 저장 복원**: safe mode(`legacyFallback`)에서 London 키가 *없으면* 예전 원본 `lm.progress.v1*`/`lm.season.v1`을 읽는다(`progress_repository.dart` ~:111-118, :150-155) → 삭제하면 옛 진행이 되살아남. **빈 값으로 덮어쓴다.** ep01 사건 저장이 해결이면 `SeasonNotifier._fromSaves`가 ep01을 다시 해결로 표시(~:330-334) → 사건 저장과 시즌 기록을 함께 초기화.
-- **원자성·중간 실패 복구**: 여러 키는 반드시 `repo.transaction(() { ... })` 안에서 쓴다 — `SaveJournal`이 저널 키(`lm.p.<id>.journal.v1`)에 먼저 모두 쓰고, 앱이 중간에 꺼지면 다음 시작 때 `SharedPrefsProgressRepository` 생성 시 `_journal.recover()`(~:55)가 끝까지 다시 쓴다. 초기화 + 난이도 고정 + (필요 시) 지갑을 **한 트랜잭션**으로. 중간 종료 시나리오 테스트 권장(기존 저널 테스트 참고: `grep -l "journal" test`).
-- **메모리 상태 동기화**: 초기화 후 `seasonProvider`·`gameControllerProvider`(열린 사건)·`recentUnlockProvider` 등을 기존 `_wipe`(`game_controller.dart` ~:424-438)처럼 정리하거나 invalidate. 
-- **다른 시즌 난이도 조회 갱신**: `seasonDifficultyProvider(다른 시즌)`은 저장소를 읽기만 해서 자동 갱신되지 않는다(D-3). 선택되지 않은 시즌 기록을 바꾸면 `ref.invalidate(seasonDifficultyProvider(id))`(또는 `seasonAvailabilityProvider`처럼 갱신 경로 마련).
-- **완료 시즌 보존**: London 완료 후 Paris 진행 중에 난이도를 바꾸면 Paris만 초기화. London 기록·해금(Paris 해금 조건 = London 마지막 사건 해결)은 그대로여야 한다. 반대로 London이 진행 중이면 Paris는 아직 잠겨 있으므로 London 초기화가 Paris에 영향 없음.
-- **선택 시즌과 다른 시즌**: `/detective`에서 바꿀 때 어느 시즌이 "현재"인지 = `selectedSeasonIdProvider`. 다른 시즌이 동시에 진행 중일 수 있는지(운영자 미리보기 제외) 확인.
-- PART 2 레이아웃: `DetectiveDesk`는 폼이 넘칠 때만 버튼을 아래에 고정한다. 설정 화면에 카드 3개를 넣으면 작은 화면에서 이 동작이 생긴다(정상).
-- 기존 미커밋 파일(`.claude/settings.json`)은 커밋하지 않는다. 원격 푸시 금지. F의 PART 2 커밋 해시 칸을 채운다.
+### PART 4 수정 예상 파일
+- `lib/features/game_master/game_master_screen.dart`(DEVELOPER MODE 진입 버튼·종료), `lib/features/game_master/playtest_tools.dart`(dev 세션 안에서 동작하도록), `lib/features/onboarding/detective_hold_screen.dart`(`DeviceDetectiveGate` — 세션 교체 지점) 또는 새 `lib/features/game_master/dev_session.dart`, `lib/features/game/game_providers.dart`(메모리 프로필 구현 등), `lib/core/router/app_router.dart`(dev 세션 표시/종료 경로가 필요하면), `lib/features/onboarding/how_to_play_state.dart`(override 지점)
+- 테스트: 신규 dev 세션 테스트 + 영향: `test/playtest_tools_test.dart`, `test/profile_reset_test.dart`, `test/single_detective_test.dart`
 
-### PART 3 수정 예상 파일
-- `lib/features/onboarding/detective_settings_screen.dart`(난이도 변경 진입·확인), `lib/features/game/game_controller.dart`(시즌 초기화 + 고정, 트랜잭션), `lib/features/game/game_providers.dart`(시즌 상태 판정·다른 시즌 갱신), `lib/data/models/season_progress.dart`(`nextDifficultyAsked`), 고정 시점 화면(Q7 결과에 따라 `season_screen.dart`/`paris_prologue.dart`/`season_actions.dart`/`story_intro_screen.dart` 중), 완료 안내(`case_solved_screen.dart` 또는 `season_screen.dart`), 확인 대화상자(`lib/widgets/game_dialog.dart` 재사용)
-- 테스트: 신규(예: `test/difficulty_season_policy_test.dart`) + 영향: `season_flow_test`, `multi_season_test`, `single_detective_test`, `profile_reset_test`, `investigation_board_flow_test`, `season_screen_test`
+### PART 4 검증 방법
+- 진입 → TESTER/BOY, 일반 프로필 불변; 난이도 선택; London·Paris Case 자유 선택; Mission 2까지 진행 → 종료 → 재진입 → 같은 Case가 Mission 1부터(진입마다 초기화); 같은 세션 안에서는 유지.
+- dev 세션 전후 **SharedPreferences 스냅샷이 바이트 단위로 동일**(인트로 고정·미션 해결·힌트·코인·시즌 재시작·완료 안내 포함).
+- 종료 후 일반 사용자 화면·진행·난이도·지갑이 진입 전과 동일.
+- `resetForNextPlayer` 기존 동작 불변(기존 테스트).
+- `flutter analyze` 0, 관련 + 전체 `flutter test`.
 
-### PART 3 검증 방법
-- 시나리오 테스트: ① 시작 전 변경 → 확인 없이 프로필만, ② 진행 중 변경 + 취소 → 저장 스냅샷 동일, ③ 진행 중 변경 + 동의 → 그 시즌 키만 초기화·새 난이도 고정·다른 시즌 바이트 동일·완료 시즌 해금 유지, ④ safe mode에서 London 초기화 후 옛 진행이 되살아나지 않음, ⑤ 트랜잭션 중간 종료 후 재시작 → 모두 적용 또는 모두 미적용, ⑥ 시즌 완료 후 안내 1회·재시작 후 다시 안 뜸·새 난이도가 다음 시즌에 고정, ⑦ 지갑은 Q3 답대로.
-- `flutter analyze` 0, 관련 테스트 + 전체 `flutter test`(저장·시즌 공용 동작 변경 → 전체 회귀 필수), UI는 360×640·390×844·1.3배.
-
-### PART 3 완료 조건
-- 위 범위 구현, 미확정 정책은 사용자 답을 받아 I에 기록한 뒤 구현
+### PART 4 완료 조건
+- 위 목표 구현, Q5 답 반영(문서 I에 기록)
 - analyze 0 issues, 관련 + 전체 회귀 통과(실제 결과 기록)
-- 이 문서 E(PART 3)·F(이력, PART 2 해시)·G(PART 4 인수인계)·I 갱신, `PROJECT_CONTEXT.md` 진행 상태 갱신
-- PART 3 변경 파일만 커밋(푸시 없음)
-
+- 이 문서 E(PART 4)·F(이력, PART 3 해시)·G(PART 5 인수인계) 갱신, `PROJECT_CONTEXT.md` 진행 상태 갱신
+- PART 4 변경 파일만 커밋(푸시 없음)
 
 ### 모든 PART 공통 작업 규칙 (PART 1~7)
 1. 시작 시 `PROJECT_CONTEXT.md`와 이 문서를 읽는다.
@@ -512,11 +555,12 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 |---|---|---|---|
 | Q1 | 현재 텍스트를 Rookie(base)로 볼 것인가? | **예** — 기존 사용자 화면·테스트 불변 | PART 5 전 |
 | Q2 | "힌트 제공 방식"을 UI로도 다르게(Rookie는 GET A TIP 강조) 할 것인가, 문구만 다르게 할 것인가? | 개수·가격 동일, UI 강조만 차이 | PART 5 |
-| Q3 | 시즌 초기화 시 지갑(코인·산 Tip)을 어떻게? | 건드리지 않음(다시 푼 미션 코인 0) | PART 3 |
+| Q3 | 시즌 초기화 시 지갑(코인·산 Tip)을 어떻게? | **APPROVED (2026-10-27)**: 코인 잔액·구매한 힌트·다른 시즌 보상 유지, 재플레이 보상 중복 지급 금지(지급 여부를 확인할 수 없으면 지급하지 않음), 기존 잔액 임의 변경 금지 — PART 3 구현 | PART 3 |
 | Q4 | NEW ADVENTURE 후 프로필 난이도 유지? | 유지(이름·아바타처럼) — **PART 1 현재 동작이 이것(테스트로 고정)**. 바꾸려면 사용자 결정 필요 | PART 1~3 |
 | Q5 | 개발자 모드에서 난이도 변경 시 dev 진행 초기화? | 초기화 없이 즉시 텍스트만 전환 | PART 4 |
-| Q6 | 마지막 시즌(Paris) 완료 후 "다음 시즌 난이도" 안내? | 다음 시즌이 없으면 묻지 않음 | PART 3 |
-| Q7 | 시즌 "시작" 시점(난이도 고정 시점): 프롤로그 완료 vs 첫 사건 인트로 | 첫 사건 인트로 진입(프롤로그는 다시 보지 않으므로) | PART 3 |
+| Q6 | 마지막 시즌(Paris) 완료 후 "다음 시즌 난이도" 안내? | **APPROVED (2026-10-27)**: London 완료 후 Paris 진입 전에 변경 기회, Paris 완료 후 생략, 시즌 3 추가 시 확장 가능(다음 시즌이 있으면 묻는 일반 규칙) — PART 3 구현 | PART 3 |
+| Q7 | 시즌 "시작" 시점(난이도 고정 시점) | **APPROVED (2026-10-27)**: 그 시즌 Case 01 인트로 최초 진입 시 고정. 프롤로그만 본 상태는 변경 가능. 진행 중에는 초기화 없이 변경 불가 — PART 3 구현 | PART 3 |
+| Q9 | "진행 중 시즌" 판정 | **APPROVED (2026-10-27)**: Case 01 인트로 진입으로 난이도가 고정됨 + 마지막 Case 미완료. 기존 사용자: 고정값이 없어도 실제 진행 기록이 있으면 진행 중, 진행 기록 삭제·강제 재시작 없음, 최초 확인 시 Rookie로 고정, 읽기 경로는 저장하지 않음 — PART 3 구현 | PART 3 |
 | Q8 | 부모 보고서의 학습 설계(`learning` expressions)를 난이도별로 둘 것인가? | 우선 base만, Junior·Master 표현은 PART 6~7에서 검토 | PART 5 |
 
 ### 확인된 위험

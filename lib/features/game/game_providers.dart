@@ -10,6 +10,7 @@ import '../../data/mock/season_catalog.dart';
 import '../../data/models/case_talk.dart';
 import '../../data/models/difficulty.dart';
 import '../../data/models/episode.dart';
+import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/profile.dart';
 import '../../data/models/season.dart';
@@ -370,6 +371,16 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
     if (state.difficulty != difficulty) _set(state.copyWith(difficulty: difficulty));
   }
 
+  /// READY FOR YOUR NEXT MYSTERY? answered on this (complete) season: not
+  /// asked again.
+  void markNextLevelAsked() {
+    if (!state.nextLevelAsked) _set(state.copyWith(nextLevelAsked: true));
+  }
+
+  /// The season as saved again (after its saves were rewritten together,
+  /// e.g. a season restarted).
+  void reload() => state = _fromSaves();
+
   /// Forgets the season in memory (storage is cleared by the repository).
   void reset() => state = SeasonProgress.empty;
 
@@ -392,16 +403,138 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
 
 final seasonProvider = NotifierProvider<SeasonNotifier, SeasonProgress>(SeasonNotifier.new);
 
-/// The level season [seasonId] is played at: the level fixed in its own
-/// record, or the detective's while it has none. Only reads: asking never
-/// saves anything. The season being played follows its record live; another
+/// Where a season stands for its level (see [SeasonLevel]).
+enum SeasonLevelStatus {
+  /// Not begun: its level is the detective's and changes freely (watching
+  /// the season's opening only does not begin it).
+  notStarted,
+
+  /// Begun and not complete: its level stays until the season restarts.
+  inProgress,
+
+  /// Its last case solved: its level is kept for good.
+  completed,
+}
+
+/// A season's level and where the season stands (difficulty policy,
+/// docs/DIFFICULTY_IMPLEMENTATION.md C-2).
+@immutable
+class SeasonLevel {
+  const SeasonLevel({required this.status, required this.level, this.fixed});
+
+  final SeasonLevelStatus status;
+
+  /// The level the season is played at.
+  final Difficulty level;
+
+  /// The level saved in the season's record (null: not fixed yet).
+  final Difficulty? fixed;
+
+  /// The season has begun (in progress or complete): changing its level
+  /// means playing it again from the start.
+  bool get begun => status != SeasonLevelStatus.notStarted;
+
+  /// Works it out from a season's saves. A season is begun once its level is
+  /// fixed (its Case 01 intro entered) — or, for saves from before levels
+  /// existed, once anything of it was played (a case solved, an intro seen,
+  /// a mission solved). Such a season was played at the standard level (the
+  /// game's only English then), so it reads as Rookie, whatever the
+  /// detective's level is now. Complete: its last case solved, as many cases
+  /// as planned (the rule that opens the next season).
+  static SeasonLevel of({
+    required SeasonProgress record,
+    required List<Episode> cases,
+    required GameProgress Function(String caseId) caseSave,
+    required int plannedCases,
+    required Difficulty profileLevel,
+  }) {
+    final complete = cases.isNotEmpty && cases.length >= plannedCases && record.isSolved(cases.last.id);
+    final played = record.difficulty != null ||
+        record.solvedEpisodeIds.isNotEmpty ||
+        cases.any((e) {
+          final p = caseSave(e.id);
+          return p.introSeen || p.completedMissionIds.isNotEmpty;
+        });
+    final status = complete
+        ? SeasonLevelStatus.completed
+        : played
+        ? SeasonLevelStatus.inProgress
+        : SeasonLevelStatus.notStarted;
+    return SeasonLevel(
+      status: status,
+      fixed: record.difficulty,
+      level: record.difficulty ?? (status == SeasonLevelStatus.notStarted ? profileLevel : Difficulty.standard),
+    );
+  }
+}
+
+/// Bumped whenever a season's saves are changed other than through the
+/// season being played (a season restarted): what is read of the other
+/// seasons is read again.
+class SeasonSavesRevision extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void bump() => state++;
+}
+
+final seasonSavesRevisionProvider = NotifierProvider<SeasonSavesRevision, int>(SeasonSavesRevision.new);
+
+/// Season [seasonId]'s level and where it stands (null: no such season).
+/// Only reads: asking never saves anything, and never begins a season. The
+/// season being played follows its record and open case live; another
 /// season is read as saved.
-final seasonDifficultyProvider = Provider.family<Difficulty, String>((ref, seasonId) {
+final seasonLevelProvider = Provider.family<SeasonLevel?, String>((ref, seasonId) {
+  ref.watch(seasonSavesRevisionProvider);
+  final seasons = ref.watch(seasonsProvider);
+  final season = seasons.where((s) => s.id == seasonId).firstOrNull;
+  if (season == null) return null;
   final profileLevel = ref.watch(detectiveProfileProvider.select((p) => p.difficulty));
-  final fixed = seasonId == ref.watch(selectedSeasonIdProvider)
-      ? ref.watch(seasonProvider.select((s) => s.difficulty))
-      : ref.watch(progressRepositoryProvider).loadSeason(seasonId).difficulty;
-  return fixed ?? profileLevel;
+  final repo = ref.watch(progressRepositoryProvider);
+  final cases = SeasonAvailability.casesOf(seasonId, ref.watch(allEpisodesProvider));
+  final playing = seasonId == ref.watch(selectedSeasonIdProvider);
+  // The case saves are read as saved: a season is begun by its first intro
+  // fixing its level in the record (watched), before anything is played.
+  final record = playing ? ref.watch(seasonProvider) : repo.loadSeason(seasonId);
+  return SeasonLevel.of(
+    record: record,
+    cases: cases,
+    caseSave: repo.load,
+    plannedCases: season.plannedCases ?? 0,
+    profileLevel: profileLevel,
+  );
+});
+
+/// The level season [seasonId] is played at (see [SeasonLevel.level]).
+final seasonDifficultyProvider = Provider.family<Difficulty, String>(
+  (ref, seasonId) =>
+      ref.watch(seasonLevelProvider(seasonId))?.level ?? ref.watch(detectiveProfileProvider.select((p) => p.difficulty)),
+);
+
+/// The season a change of the detective's level is about: the season being
+/// played — or, once it is complete, the season after it (its level is
+/// still to come). Null: the last season is complete (a change is only for
+/// seasons to come).
+final levelSeasonProvider = Provider<String?>((ref) {
+  final seasons = ref.watch(seasonsProvider);
+  final playing = ref.watch(selectedSeasonIdProvider);
+  if (ref.watch(seasonLevelProvider(playing))?.status != SeasonLevelStatus.completed) return playing;
+  final i = seasons.indexWhere((s) => s.id == playing);
+  return i >= 0 && i + 1 < seasons.length ? seasons[i + 1].id : null;
+});
+
+/// The season after the one being played, while READY FOR YOUR NEXT
+/// MYSTERY? is to be asked: the season played is complete, the next one can
+/// be entered and has not begun, and the question was not answered yet.
+/// Null otherwise (the last season complete: nothing comes after it).
+final nextLevelQuestionProvider = Provider<SeasonAvailability?>((ref) {
+  final next = ref.watch(nextSeasonProvider);
+  if (next == null || !next.canEnter) return null;
+  final playing = ref.watch(selectedSeasonIdProvider);
+  if (ref.watch(seasonLevelProvider(playing))?.status != SeasonLevelStatus.completed) return null;
+  if (ref.watch(seasonProvider.select((s) => s.nextLevelAsked))) return null;
+  if (ref.watch(seasonLevelProvider(next.season.id))?.begun ?? true) return null;
+  return next;
 });
 
 /// The level of the season being played.

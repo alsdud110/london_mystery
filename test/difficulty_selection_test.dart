@@ -202,7 +202,10 @@ void main() {
     await wait(t, const Duration(seconds: 1));
   });
 
-  testWidgets('the detective\'s settings show no level', (t) async {
+  // PART 2 kept the level off the settings; PART 3 puts it there (season
+  // policy). A season not begun yet: changed freely, with SAVE CHANGES.
+  testWidgets('the detective\'s settings: the level chosen shows, and changes freely before the season begins', (t) async {
+    final semantics = t.ensureSemantics();
     final prefs = await openRegister(t);
     await fillIn(t);
     await pick(t, Difficulty.master);
@@ -210,14 +213,16 @@ void main() {
     ref.read(routerProvider).go(Routes.detective);
     await wait(t, const Duration(milliseconds: 600));
     expect(ref.read(routerProvider).routerDelegate.currentConfiguration.uri.path, Routes.detective);
-    expect(find.byKey(const ValueKey('avatar-girl')), findsOneWidget, reason: 'the settings page is up');
-    expect(find.text('CHOOSE YOUR LEVEL'), findsNothing);
-    for (final d in Difficulty.values) {
-      expect(card(d), findsNothing);
-      expect(find.text(d.blurb), findsNothing);
-    }
-    expect(ProfileStore(prefs).profile!.difficulty, Difficulty.master, reason: 'the settings leave it');
-    await wait(t, const Duration(seconds: 1));
+    expect(find.text('CHOOSE YOUR LEVEL'), findsOneWidget);
+    expectChosen(t, Difficulty.master);
+    await pick(t, Difficulty.junior);
+    expect(find.byKey(const ValueKey('restart-season-dialog')), findsNothing, reason: 'nothing begun: nothing to ask');
+    expectChosen(t, Difficulty.junior);
+    expect(ProfileStore(prefs).profile!.difficulty, Difficulty.master, reason: 'saved with SAVE CHANGES');
+    await tapText(t, 'SAVE CHANGES', after: const Duration(milliseconds: 900));
+    expect(ProfileStore(prefs).profile!.difficulty, Difficulty.junior);
+    semantics.dispose();
+    await wait(t, const Duration(seconds: 3));
   });
 
   for (final (size, scale) in [

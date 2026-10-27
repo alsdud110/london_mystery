@@ -97,6 +97,23 @@ class WalletController extends Notifier<Wallet> {
     return coins;
   }
 
+  /// Before a season starts over: every solved mission of [missions] whose
+  /// pay is not in the record is marked paid, at 0 coins, so playing it
+  /// again never pays (whether it was ever paid cannot be told, and paying
+  /// twice is never allowed). The balance does not change. Returns how many
+  /// were marked.
+  int settleSolved(Iterable<Mission> missions) {
+    var next = state;
+    for (final m in missions) {
+      next = next.adding(
+        CoinEntry(key: Wallet.missionKey(m.id), amount: 0, source: CoinSource.backfill, at: GameController.now()),
+      );
+    }
+    final marked = next.entries.length - state.entries.length;
+    _set(next);
+    return marked;
+  }
+
   /// Unlocks a tip only if it is free, already owned, or affordable.
   /// Insufficient balance never unlocks or charges the tip.
   TipUnlock unlockTip(Mission mission, int tip) {

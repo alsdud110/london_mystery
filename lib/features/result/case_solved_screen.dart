@@ -28,6 +28,7 @@ import '../../widgets/train_ticket.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
+import '../season/next_level_question.dart';
 import '../season/season_actions.dart';
 import '../season/season_overview.dart';
 import 'detective_report.dart';
@@ -389,6 +390,9 @@ class _SeasonFinale extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         if (open) ...[
+          // Before the next season begins: keep the level or choose another
+          // for it (asked once; nothing when there is nothing to ask).
+          const NextLevelQuestion(),
           GameButton(
             key: const ValueKey('go-to-next-season'),
             label: 'GO TO $to',

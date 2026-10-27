@@ -239,7 +239,10 @@ void main() {
       expect(c.read(sharedPreferencesProvider).getString(parisKey), parisBefore);
     });
 
-    test('a season without a level follows the detective\'s; a fixed one does not', () async {
+    // PART 3 (approved policy 4): a season played before levels existed is
+    // under way at the standard level, whatever the detective's level is; a
+    // season not begun follows the detective's; a fixed one keeps its own.
+    test('a season not begun follows the detective\'s; one played before levels is Rookie; a fixed one keeps its own', () async {
       final c = await containerWith({
         AppConstants.detectiveStorageKey: recordJson(oldProfileJson()),
         londonKey: jsonEncode(oldLondon),
@@ -248,8 +251,8 @@ void main() {
       expect(c.read(seasonDifficultyProvider(SeasonIds.paris)), Difficulty.rookie);
 
       await c.read(detectiveProfileProvider.notifier).setDifficulty(Difficulty.junior);
-      expect(c.read(currentDifficultyProvider), Difficulty.junior, reason: 'not fixed: the detective\'s');
-      expect(c.read(seasonDifficultyProvider(SeasonIds.paris)), Difficulty.junior);
+      expect(c.read(currentDifficultyProvider), Difficulty.rookie, reason: 'London was played (cases solved): Rookie');
+      expect(c.read(seasonDifficultyProvider(SeasonIds.paris)), Difficulty.junior, reason: 'Paris not begun: the detective\'s');
 
       c.read(seasonProvider.notifier).fixDifficulty(Difficulty.junior);
       await c.read(detectiveProfileProvider.notifier).setDifficulty(Difficulty.master);

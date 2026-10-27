@@ -15,6 +15,7 @@ class SeasonProgress {
     this.solvedEpisodeIds = const [],
     this.prologueSeen = false,
     this.difficulty,
+    this.nextLevelAsked = false,
   });
 
   final String activeEpisodeId;
@@ -31,6 +32,11 @@ class SeasonProgress {
   /// so the detective's own level applies (see [difficultyOr]).
   final Difficulty? difficulty;
 
+  /// The season is complete and the detective has answered READY FOR YOUR
+  /// NEXT MYSTERY? (kept their level or chose one for the next season): the
+  /// question is not asked again.
+  final bool nextLevelAsked;
+
   static const empty = SeasonProgress();
 
   bool isSolved(String episodeId) => solvedEpisodeIds.contains(episodeId);
@@ -44,12 +50,14 @@ class SeasonProgress {
     List<String>? solvedEpisodeIds,
     bool? prologueSeen,
     Difficulty? difficulty,
+    bool? nextLevelAsked,
   }) =>
       SeasonProgress(
         activeEpisodeId: activeEpisodeId ?? this.activeEpisodeId,
         solvedEpisodeIds: solvedEpisodeIds ?? this.solvedEpisodeIds,
         prologueSeen: prologueSeen ?? this.prologueSeen,
         difficulty: difficulty ?? this.difficulty,
+        nextLevelAsked: nextLevelAsked ?? this.nextLevelAsked,
       );
 
   /// [episodeId] solved (solving it again changes nothing).
@@ -66,14 +74,17 @@ class SeasonProgress {
       prologueSeen: json['prologueSeen'] == true,
       // Missing (saved before difficulty) or unreadable: not fixed.
       difficulty: Difficulty.tryParse(json['difficulty']),
+      nextLevelAsked: json['nextLevelAsked'] == true,
     );
   }
 
-  /// Written only once fixed, so a record without one keeps its old shape.
+  /// The level and the question answered are written only once there, so
+  /// a record without them keeps its old shape.
   Map<String, dynamic> toJson() => {
         'activeEpisodeId': activeEpisodeId,
         'solvedEpisodeIds': solvedEpisodeIds,
         if (prologueSeen) 'prologueSeen': true,
         if (difficulty != null) 'difficulty': difficulty!.storageId,
+        if (nextLevelAsked) 'nextLevelAsked': true,
       };
 }

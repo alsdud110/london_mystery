@@ -44,6 +44,16 @@ class _StoryIntroScreenState extends ConsumerState<StoryIntroScreen> {
   bool _precacheStarted = false;
 
   @override
+  void initState() {
+    super.initState();
+    // Entering the season's first intro (Case 01's) fixes the season's level
+    // (once; never while the page is being built).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(gameControllerProvider.notifier).settleSeasonLevel();
+    });
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_precacheStarted) return;
