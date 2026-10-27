@@ -514,6 +514,15 @@ enum Difficulty {
 - **테스트 결과**(실제 실행): 신규 30 + PART 5 29 통과 · `flutter analyze` No issues · 전체 `flutter test` **2390 passed, 0 failed**(4분 47초).
 - **남은 위험**: 사람(원어민) 검토·실기기·360×640/글자 1.3배 화면 확인 없음. Case 04+는 아직 기준본이라 Junior/Master 시즌에서 문체 차이(사실은 일치). 새 어휘 glossary 자동 검사 없음. 자세한 것은 보고서 10절.
 
+### PART 7A — Paris Cases 01~03 영어 콘텐츠 (브랜치 `feat/difficulty-paris-01-03`)
+- **작업 날짜**: 2026-10-27 · 기반 `b6fb71e`(PART 5) · London PART 6과 병렬(별도 worktree). 상세 검토 보고서(실제 영어 원문·전체 문장 표): **`docs/difficulty_reviews/PARIS_CASE_01_03.md`**.
+- **결과**: `s2_ep01`~`s2_ep03`를 Rookie(검토)·Junior·Master로 `season2WrittenLevels`에 등록, `missingAt` 모두 빈 목록, `problems()` 빈 목록. Rookie = 기준본 문장 유지 + glossary만 추가(문장 변경 없음 → 기존 사용자 화면 불변). Junior·Master = 사건 파일·모든 미션 텍스트·오답 줄·단서/증거 설명·장면 문장·학습 표현. PART 5 샘플(`s2_ep01_m1`) 유지.
+- **엔진 변경(최소)**: 새 파일 `lib/data/mock/season2/season2_structures.dart`(장면 10종 구조 추출 — 좌표는 전체 정밀도), `DifficultyContent.structureOf`가 먼저 `season2StructureOf`를 보도록 한 줄, `season2Content`에 `writtenLevels` 한 줄. `season2CasePatches`·`season2Variants`는 `const` → `final`(장면 빌더가 기준 객체를 복사).
+- **의도적으로 모든 난이도 동일**: 조작 안내, 퍼즐 자료 문서(역 안내문·직원 메모 순서 줄·화가 메모 머리글·점검 메모·시간 카드·기록/노선판/증거판), 화가의 인용, 명판, 증거 이름·글귀, 선택지 라벨. 장면 5종(`canvases`·`records`·`lifts`·`dialLocks`·`evidenceBoards`)은 기준 객체 그대로(`season2SameAtEveryLevel`). 줄 단위 목록은 테스트 `keptAtEveryLevel`이 고정.
+- **테스트**: 신규 `test/difficulty_paris_7a_test.dart` 26개(완료·대체 없음·Rookie 불변·glossary, 구조/정답/오답 판정/코인/힌트 가격, 장면 구조·조작 안내, Case별 금지어·필수 표현 × 3난이도, 힌트 정답 비노출, Discovery 제목, 학습 표현·보고서, 옛 저장 호환, 화면 3개). `flutter analyze` 0, 전체 `flutter test` **2386 passed / 0 failed / 0 skipped**(약 4분 55초). 기존 테스트 수정·삭제·skip 없음.
+- **문서 표 E·G는 London 세션과 충돌을 피하려고 수정하지 않음** — 병합 후 E의 PART 7 행을 "IN PROGRESS (7A 완료)"로 갱신.
+- **PART 7B 시작점**: Case 04~06. 같은 파일에 추가, 새 장면 종류마다 `season2StructureOf`에 구조 추출 먼저(EasySteps 포함). 보고서 §16 참고.
+
 ---
 
 ## G. 다음 세션 인수인계
@@ -638,9 +647,9 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 | 범위 | ID | Rookie | Junior | Master | 커밋 | 비고 |
 |---|---|---|---|---|---|---|
 | Paris 프롤로그·시즌 문구 | `s2_paris` | base | — | — | | `season2PrologueJson`, 버튼 문구는 위젯 하드코딩 |
-| Case 01 | `s2_ep01` | base | WIP (M1 샘플: 일부 필드) | WIP (M1 샘플: 일부 필드) | PART 5 | M1의 story·question·hints·success(= Discovery 제목)·학습 표현 |
-| Case 02 | `s2_ep02` | base | — | — | | |
-| Case 03 | `s2_ep03` | base | — | — | | |
+| Case 01 | `s2_ep01` | ✓ (base + glossary) | ✓ | ✓ | PART 7A | 프롤로그 연결·TIME 비노출·"The Clockmaker steals an hour" 유지 |
+| Case 02 | `s2_ep02` | ✓ (base + glossary) | ✓ | ✓ | PART 7A | 화가 인용·TOUJOURS PLUS HAUT 유지, Case 03 장소 비노출 |
+| Case 03 | `s2_ep03` | ✓ (base + glossary) | ✓ | ✓ | PART 7A | 시간 소멸 단정 금지, 장면 4종 모든 난이도 동일 |
 | Case 04 | `s2_ep04` | base | — | — | | Final EasySteps |
 | Case 05 | `s2_ep05` | base | — | — | | M3·Final EasySteps |
 | Case 06 | `s2_ep06` | base | — | — | | |
