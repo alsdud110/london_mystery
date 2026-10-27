@@ -139,6 +139,16 @@ class GameController extends Notifier<GameProgress> {
   /// The app is in the foreground again: the clock continues from here.
   void resumePlayClock() => _activeSince ??= now();
 
+  /// The game taken off the screen without being left (developer mode's
+  /// test session in its place): the clock stops, the time played so far
+  /// kept in memory and saved with the next save — nothing is written now.
+  void holdPlayClock() {
+    if (_activeSince == null) return;
+    final stretch = _stretchMillis(now());
+    if (stretch > 0) state = state.copyWith(playMillis: (state.playMillis ?? 0) + stretch);
+    _activeSince = null;
+  }
+
   /// Creates the device's detective: [rawName], [avatar] and the level its
   /// seasons start at ([difficulty]). Returns an error message (kid-friendly)
   /// or null on success. There is only ever one detective: refused while one

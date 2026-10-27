@@ -1,17 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/models/difficulty.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/profile.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../onboarding/how_to_play_state.dart';
+import 'dev_session.dart';
 
 /// Playtest tools appear in debug builds, or in a build made with
 /// `--dart-define=LM_PLAYTEST=true`. A normal release build never shows them.
 const playtestToolsEnabled = operatorToolsInBuild;
 
-/// Name used when the device has no detective yet.
+/// Name used when the device has no detective yet, and developer mode's
+/// test detective.
 const playtestDetectiveName = 'TESTER';
+
+/// In a game with developer mode (a [DevSessionHost] above it), the test
+/// tools run in a test session only, never on the player's own saves. A
+/// game without one (a test of the tools themselves) runs them where it is.
+bool onPlayerSaves(WidgetRef ref) => ref.read(devSessionProvider)?.active == false;
 
 /// Sets the device up to play [episodeId] from its beginning, as if the
 /// cases before it had been solved: they count as solved for the season
@@ -20,8 +28,10 @@ const playtestDetectiveName = 'TESTER';
 /// detective is wiped (the saves from before profiles stay); the detective
 /// keeps its name and picture. Only the saves change; the game rules are the
 /// same as in play. A case of the first season only: the wipe starts the
-/// game over in it (refused before anything is wiped otherwise).
+/// game over in it (refused before anything is wiped otherwise). Refused on
+/// the player's own saves (see [onPlayerSaves]).
 Future<void> startPlaytestAt(WidgetRef ref, String episodeId) async {
+  if (onPlayerSaves(ref)) throw StateError('test tools run in a developer test session only');
   final firstSeason = ref.read(seasonsProvider).first.id;
   final catalog = SeasonAvailability.casesOf(firstSeason, ref.read(allEpisodesProvider));
   final at = catalog.indexWhere((e) => e.id == episodeId);
@@ -70,6 +80,10 @@ enum CaseJumpRefusal {
 
   /// No such case in that season, or the season cannot be entered.
   notOpen,
+
+  /// The player's own saves (developer mode is not on): the shortcut runs in
+  /// a test session only (see [onPlayerSaves]).
+  playerSaves,
 }
 
 /// The Game Master's case shortcut: opens case [episodeId] of season
@@ -85,6 +99,7 @@ enum CaseJumpRefusal {
 /// the player's own unlocks. A mission solved meanwhile is saved as in play.
 CaseJumpRefusal? jumpToCase(WidgetRef ref, String seasonId, String episodeId) {
   if (!ref.read(operatorToolsAvailableProvider)) return CaseJumpRefusal.noOperatorTools;
+  if (onPlayerSaves(ref)) return CaseJumpRefusal.playerSaves;
   if (!ref.read(gameControllerProvider).hasDetective) return CaseJumpRefusal.noDetective;
   final cases = SeasonAvailability.casesOf(seasonId, ref.read(allEpisodesProvider));
   if (!cases.any((e) => e.id == episodeId)) return CaseJumpRefusal.notOpen;
@@ -97,9 +112,30 @@ CaseJumpRefusal? jumpToCase(WidgetRef ref, String seasonId, String episodeId) {
   return null;
 }
 
+/// Developer mode: the test session plays at [level] from now on — TESTER's
+/// level, and the season played if its level is fixed already. A case under
+/// way starts again from its Mission 1 (the level changed in the middle of
+/// it); a case not begun is only played at the new level. No question asked
+/// (a test session's saves are thrown away anyway). Refused (false) outside
+/// a test session: the player's own level changes only by the season rules.
+/// Returns whether the case played started again.
+bool changeTestLevel(WidgetRef ref, Difficulty level) {
+  if (!(ref.read(devSessionProvider)?.active ?? false)) return false;
+  ref.read(detectiveProfileProvider.notifier).setDifficulty(level);
+  if (ref.read(seasonProvider).difficulty != null) ref.read(seasonProvider.notifier).fixDifficulty(level);
+  final p = ref.read(gameControllerProvider);
+  final begun = p.introSeen || p.completedMissionIds.isNotEmpty;
+  if (begun) ref.read(gameControllerProvider.notifier).playAgain();
+  return begun;
+}
+
 /// Clears the open case only (clues, XP, badges, hints), keeping the name
 /// and every other case: the same as "Play again" on the Case Solved page.
-void restartCurrentCase(WidgetRef ref) => ref.read(gameControllerProvider.notifier).playAgain();
+/// Nothing on the player's own saves (see [onPlayerSaves]).
+void restartCurrentCase(WidgetRef ref) {
+  if (onPlayerSaves(ref)) return;
+  ref.read(gameControllerProvider.notifier).playAgain();
+}
 
 /// The game master's reset for the next player: wipes the game and the
 /// detective (the next child creates their own and sees How to Play again)

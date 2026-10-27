@@ -8,13 +8,17 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../data/models/difficulty.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/season.dart' show Season, SeasonIds;
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
+import '../onboarding/detective_form.dart';
 import '../../widgets/game_dialog.dart';
+import '../../widgets/game_toast.dart';
 import '../../widgets/ink_icon.dart';
 import '../../widgets/paper_background.dart';
+import 'dev_session.dart';
 import 'playtest_tools.dart';
 
 /// Operator tools for the play space: the answer key for helpers, the
@@ -81,6 +85,17 @@ class GameMasterScreen extends ConsumerWidget {
     context.go(Routes.caseFile(e.id));
   }
 
+  void _changeLevel(BuildContext context, WidgetRef ref, Difficulty level) {
+    if (level == ref.read(detectiveProfileProvider).difficulty) return;
+    final episode = ref.read(currentEpisodeProvider);
+    final restarted = changeTestLevel(ref, level);
+    showGameToast(
+      context,
+      restarted ? 'CASE ${episode.numberLabel} restarts as ${level.label}.' : 'Test level: ${level.label}.',
+      glyph: InkGlyph.check,
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final episode = ref.watch(currentEpisodeProvider);
@@ -88,6 +103,12 @@ class GameMasterScreen extends ConsumerWidget {
     final catalog = SeasonAvailability.casesOf(ref.watch(seasonsProvider).first.id, ref.watch(allEpisodesProvider));
     final operatorOn = ref.watch(operatorAccessProvider);
     final previewOn = ref.watch(seasonPreviewProvider);
+    final dev = ref.watch(devSessionProvider);
+    final testing = dev?.active ?? false;
+    // The test tools run in a test session — never on the player's own
+    // saves. (A game without developer mode, a test of the tools, has them
+    // where it is.)
+    final tools = playtestToolsEnabled && (testing || dev == null);
 
     return Scaffold(
       appBar: AppBar(
@@ -107,6 +128,18 @@ class GameMasterScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
             children: [
+              if (testing) ...[
+                _DeveloperModeHeader(onExit: dev!.exit),
+                const SizedBox(height: 16),
+                Text('TEST LEVEL', style: AppText.eyebrow()),
+                const SizedBox(height: 8),
+                DifficultyChoice(
+                  selected: ref.watch(detectiveProfileProvider.select((p) => p.difficulty)),
+                  onChanged: (d) => _changeLevel(context, ref, d),
+                ),
+                const SizedBox(height: 24),
+                const Divider(),
+              ],
               Text('현장 운영 도구', style: AppText.title(size: 22)),
               Text('CASE ${episode.numberLabel} · ${episode.title}', style: AppText.eyebrow()),
               const SizedBox(height: 4),
@@ -142,7 +175,28 @@ class GameMasterScreen extends ConsumerWidget {
                     ),
                 ],
               ),
-              if (playtestToolsEnabled) ...[
+              // The player's own game: the tools are reached through a test
+              // session of their own.
+              if (playtestToolsEnabled && dev != null && !testing) ...[
+                const SizedBox(height: 24),
+                const Divider(),
+                Text('개발자 모드 (DEVELOPER MODE)', style: AppText.title(size: 20)),
+                Text(
+                  '테스트 빌드에서만 보입니다. TESTER(BOY) 탐정으로 새 테스트 세션을 시작합니다. '
+                  '사건 바로가기·CASE NN부터·OPERATOR MODE 등 테스트 도구는 그 안에서 쓰며, '
+                  '테스트 기록은 메모리에만 있고 이 기기의 진행 기록은 바뀌지 않습니다. '
+                  '나가면 테스트 기록은 모두 사라지고 다시 들어오면 처음부터 시작합니다.',
+                  style: AppText.caption(),
+                ),
+                const SizedBox(height: 12),
+                FilledButton(
+                  key: const ValueKey('enter-developer-mode'),
+                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52), backgroundColor: AppColors.navy),
+                  onPressed: dev.enter,
+                  child: const Text('START DEVELOPER MODE'),
+                ),
+              ],
+              if (tools) ...[
                 const SizedBox(height: 24),
                 const Divider(),
                 const CaseShortcuts(),
@@ -223,19 +277,23 @@ class GameMasterScreen extends ConsumerWidget {
               ],
               // The one destructive action, set apart from the test tools below a
               // rule and in the try-again ink, so it is never tapped by mistake.
-              const SizedBox(height: 32),
-              const Divider(),
-              const SizedBox(height: 8),
-              // Custom Asset Required: a reset glyph.
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(56),
-                  foregroundColor: AppColors.tryAgain,
-                  side: const BorderSide(color: AppColors.tryAgain, width: 1.5),
+              // The player's own game only: a test session has nothing to reset
+              // for a next player (it is thrown away on leaving).
+              if (!testing) ...[
+                const SizedBox(height: 32),
+                const Divider(),
+                const SizedBox(height: 8),
+                // Custom Asset Required: a reset glyph.
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(56),
+                    foregroundColor: AppColors.tryAgain,
+                    side: const BorderSide(color: AppColors.tryAgain, width: 1.5),
+                  ),
+                  onPressed: () => _reset(context, ref),
+                  child: const Text('다음 플레이어를 위해 기기 초기화'),
                 ),
-                onPressed: () => _reset(context, ref),
-                child: const Text('다음 플레이어를 위해 기기 초기화'),
-              ),
+              ],
             ],
           ),
         ),
@@ -272,6 +330,7 @@ class _CaseShortcutsState extends ConsumerState<CaseShortcuts> {
         CaseJumpRefusal.noDetective => '이 기기에 탐정이 아직 없습니다. 탐정을 먼저 만든 뒤 다시 시도해 주세요.',
         CaseJumpRefusal.noOperatorTools => '테스트 빌드에서만 사용할 수 있습니다.',
         CaseJumpRefusal.notOpen => '이 사건은 아직 게임에 없습니다.',
+        CaseJumpRefusal.playerSaves => '사건 바로가기는 개발자 모드(테스트 세션) 안에서만 쓸 수 있습니다.',
       },
       confirmLabel: '확인',
       cancelLabel: '닫기',
@@ -338,6 +397,43 @@ class _CaseShortcutsState extends ConsumerState<CaseShortcuts> {
               title: picked.upcomingTitles[n] ?? '',
               comingSoon: true,
             ),
+      ],
+    );
+  }
+}
+
+/// The top of the Game Master's page in a test session: who is playing
+/// (TESTER, nothing kept on the device) and the way out.
+class _DeveloperModeHeader extends StatelessWidget {
+  const _DeveloperModeHeader({required this.onExit});
+
+  final VoidCallback onExit;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      key: const ValueKey('developer-mode-header'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('DEVELOPER MODE', style: AppText.title(size: 22, color: AppColors.burgundy)),
+        Text('TESTER · BOY', style: AppText.eyebrow()),
+        const SizedBox(height: 4),
+        Text(
+          '테스트 세션입니다. 여기서 한 진행·코인·힌트·난이도는 메모리에만 있고 이 기기의 진행 기록에는 쓰이지 않습니다. '
+          '나가면 모두 사라지고, 다시 들어오면 처음부터 시작합니다.',
+          style: AppText.caption(),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          key: const ValueKey('exit-developer-mode'),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(52),
+            foregroundColor: AppColors.burgundy,
+            side: const BorderSide(color: AppColors.burgundy, width: 1.5),
+          ),
+          onPressed: onExit,
+          child: const Text('EXIT DEVELOPER MODE'),
+        ),
       ],
     );
   }

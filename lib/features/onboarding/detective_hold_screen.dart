@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -12,6 +11,7 @@ import '../../widgets/game_dialog.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
 import '../game/game_providers.dart';
+import '../game_master/dev_session.dart';
 import '../game_master/parent_gate.dart';
 
 /// Starts the game with the device's detective ([ProfileSession]), or — when
@@ -47,7 +47,9 @@ class _DeviceDetectiveGateState extends State<DeviceDetectiveGate> {
 
   @override
   Widget build(BuildContext context) => switch (_start) {
-        final ProfileSession session => ProviderScope(
+        // The player's game, and developer mode's test sessions in its place
+        // while it is on (see DevSessionHost).
+        final ProfileSession session => DevSessionHost(
             overrides: [...widget.overrides, profileSessionProvider.overrideWithValue(session)],
             child: widget.child,
           ),

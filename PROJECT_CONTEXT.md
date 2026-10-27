@@ -62,7 +62,8 @@
 ## Difficulty System (난이도 시스템, 2026-10-27 도입 결정)
 
 - **인수인계 문서: `docs/DIFFICULTY_IMPLEMENTATION.md`** — 조사 결과(실제 파일 경로), 확정 정책, 기술 설계, PART별 상태·작업 이력, 다음 세션 인수인계, Case별 콘텐츠 적용 진행표. 난이도 관련 세부 사항은 그 문서가 기준이다(이 섹션은 요약).
-- **현재 진행 PART: PART 0~3 COMPLETED → 다음은 PART 4(개발자 모드 개선 — dev 세션 데이터 격리), 미착수.** 인수인계: `docs/DIFFICULTY_IMPLEMENTATION.md` G.
+- **현재 진행 PART: PART 0~4 COMPLETED → 다음은 PART 5(난이도별 영어 콘텐츠 시스템 — 구조만, 전체 문장은 PART 6·7), 미착수. 시작 전 Q1(현재 영어 = Rookie base?)·Q2·Q8 확인 필요.** 인수인계: `docs/DIFFICULTY_IMPLEMENTATION.md` G.
+- PART 4로 생긴 것(개발자 모드): `DevSessionHost`(`lib/features/game_master/dev_session.dart`, `DeviceDetectiveGate`가 사용) — 플레이어 컨테이너는 실행 내내 유지, **START DEVELOPER MODE**(테스트 빌드의 Game Master)마다 부모 없는 새 테스트 컨테이너 + `MemoryPreferences`(메모리 저장소) + TESTER/BOY/Rookie. 테스트 도구(CASE NN부터·사건 바로가기·처음부터·OPERATOR MODE·SEASON PREVIEW)는 테스트 세션의 Game Master에만, TEST LEVEL 카드(바꾸면 진행 중 Case만 Mission 1부터), EXIT DEVELOPER MODE·첫 페이지 시스템 Back으로 종료, 화면 우측 상단 `TESTER` 리본. 종료하면 플레이어 게임이 그대로(기기 저장 바이트 동일 — 테스트로 검증). 다음 플레이어 초기화·NEW ADVENTURE는 플레이어 쪽에서 기존 그대로
 - **확정(APPROVED, 2026-10-27) 시즌 정책**: ① 시즌 초기화 시 코인 잔액·구매 힌트·다른 시즌 보상 유지, 재플레이 보상 중복 지급 금지 ② London 완료 후 Paris 진입 전에 난이도 변경 기회, Paris 완료 후 생략 ③ 시즌 난이도는 그 시즌 Case 01 인트로 최초 진입 시 고정(프롤로그만 본 상태는 변경 가능) ④ 진행 중 = 고정됨(또는 기존 사용자의 실제 진행 기록 있음) + 마지막 사건 미완료, 기존 진행 시즌은 Rookie
 - PART 3으로 생긴 것: `SeasonLevel`/`seasonLevelProvider`(시즌 상태·난이도 판정, 읽기 전용), Story Intro 진입 시 `settleSeasonLevel`, `/detective`에서 난이도 변경(진행 중이면 "Restart your season?" — KEEP MY LEVEL / RESTART SEASON), `GameController.restartSeason`(그 시즌 사건·시즌 키만 빈 저장으로 덮어쓰기 + 지급 기록 없는 해결 미션 0코인 정산, 한 트랜잭션), London 마지막 Case Closed의 READY FOR YOUR NEXT MYSTERY?(KEEP MY LEVEL / CHANGE LEVEL 잉크 링크, GO TO PARIS 그대로), 시즌 기록 `nextLevelAsked`. 지갑은 원래 영구 지급 원장(`mission:<missionId>` 평생 1회)이라 시즌 초기화에서 지우지 않는다
 - PART 2로 생긴 것: CREATE YOUR DETECTIVE(`/register`)의 이름 줄 아래 **CHOOSE YOUR LEVEL** — ROOKIE/JUNIOR/MASTER 세로 카드(각 카드 영어 설명 `Difficulty.blurb`, 선택 = antique gold 테두리 + 체크 원, 비선택 = 빈 원, 카드 전체 탭, 화면 읽기 selected/탭), 기본 Rookie, START INVESTIGATION 시 `createDetective(difficulty:)`로 프로필에 저장. 위젯 `DifficultyChoice`(`detective_form.dart`). `/detective` 설정 화면에는 없음. **`DetectiveDesk` 레이아웃: 폼이 화면보다 길면 폼만 스크롤되고 버튼은 아래에 고정**(다 들어가면 예전처럼 종이와 버튼이 함께 가운데) — 생성·설정 화면 공통. 키보드가 올라오면 난이도 영역은 접힘(선택 유지)
@@ -287,7 +288,7 @@ lib/
 - **Notebook**: THIS CASE(CLUES / EVIDENCE / BADGES) + CASE ARCHIVE(12 사건 폴더, SOLVED 사건은 전체 Evidence·Clue; **Operator Mode면 열린 사건 외 전부 `REFERENCE`로 전체 공개 — 기록 없음**). 증거 상세·단서 메모의 영어는 **원래 사건 glossary**로 단어 뜻 보기(`GlossaryText(episode:)`, `caseOfEvidence`/`caseOfClue`). 경로: 미션 앱바 노트북 / Final `OPEN MY NOTEBOOK` → `OPEN THE CASE ARCHIVE`(이전 해결 사건이 있을 때). 이전 사건 Evidence 글귀까지 Final에서 4탭
 - **Play Time**: foreground 활성 시간만(`playMillis`), Story Intro 종료부터 Final 해결까지
 - **Parent Report**: Case Closed → Parent Gate(곱셈) → 1회용 통과권. **측정된 사실만**(TYPE B P0): English in This Case(사건 언어 주제 + 미션별 학습 설계, "측정 결과 아님" 명시) → Words Checked(실제 찾아본 단어 + 뜻) → **Detective Actions**(새 기록: 막혔을 때 다시 확인한 미션 수, 수첩에서 살펴본 증거 수 — 옛 세이브는 "기록 없음") → Play Record(해결 미션, 열어 본 힌트, 첫 시도 n/기록 m, 플레이 시간) → Game Master's Note(관찰 사실). 영어 별점·정답률·능력 단정 문구 없음. 시도 기록 없는 미션/사건(플레이테스트 도구 seed, 옛 세이브)·단어 기록 없는 세이브 → "기록 없음"
-- **Game Master / Playtest tools**(debug 또는 `--dart-define=LM_PLAYTEST=true`): CASE NN부터, 지금 사건 처음부터, OPERATOR MODE(모든 사건 열기, 해결 기록 없음). 현장 비치용 QR 카드·카메라 없음(2026-10-19 Case 01 M5가 화면 안 카드 조사로 바뀌며 제거)
+- **Game Master / Playtest tools**(debug 또는 `--dart-define=LM_PLAYTEST=true`): CASE NN부터, 지금 사건 처음부터, OPERATOR MODE(모든 사건 열기, 해결 기록 없음). **2026-10-27(난이도 PART 4)부터 이 도구들은 개발자 모드(TESTER 메모리 테스트 세션) 안에서만** 보이고 동작한다 — 플레이어의 저장에는 쓰지 않음(*Difficulty System* 참고). 현장 비치용 QR 카드·카메라 없음(2026-10-19 Case 01 M5가 화면 안 카드 조사로 바뀌며 제거)
 
 ---
 
@@ -370,6 +371,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-27 — **난이도 시스템 PART 4(개발자 테스트 세션 격리)**: 개발자 모드 = 진입마다 새 독립 컨테이너(부모 없음) + 메모리 저장소 + TESTER/BOY/Rookie, 테스트 도구는 그 안에서만, TEST LEVEL 변경 시 현재 Case Mission 1부터, EXIT·시스템 Back으로 종료, 플레이어 게임은 같은 컨테이너로 복귀(기기 저장 바이트 동일). 새 테스트 9개, 기존 테스트 무수정, 전체 2331 통과, analyze 0. 다음: PART 5
 - 2026-10-27 — **난이도 시스템 PART 3(시즌 난이도 정책, 사용자 승인 정책 4개)**: Case 01 인트로 진입 시 시즌 난이도 고정, `/detective` 난이도 변경(진행 중이면 확인 후 그 시즌만 재시작 — 코인·구매 힌트·다른 시즌 보존, 재플레이 중복 지급 없음, 저널로 중간 종료 복구, safe mode 레거시 부활 방지), London 완료 후 Paris 난이도 1회 안내(Paris 완료 후 없음), 기존 진행 시즌은 Rookie·진행 보존. 새 테스트 30개, 전체 2322 통과, analyze 0. 다음: PART 4
 - 2026-10-27 — **난이도 시스템 PART 2(프로필 생성 난이도 선택 UI)**: CREATE YOUR DETECTIVE에 CHOOSE YOUR LEVEL 카드 3개(기본 Rookie) → 프로필 `difficulty` 저장. `DetectiveDesk`는 폼이 넘칠 때 버튼을 화면 아래에 고정(기존 "도착 시 버튼이 화면에" 보장 유지). 게임 문장 변화 없음. 새 테스트 15개, 전체 2292 통과, analyze 0. 다음: PART 3
 - 2026-10-27 — **난이도 시스템 PART 1(모델·저장 구조)**: `Difficulty` enum, 프로필 기본 난이도(`lm.detective.v1`의 `difficulty`, 없으면 rookie), 시즌별 고정 난이도(`SeasonProgress.difficulty`, 고정 시에만 기록), 실효 난이도 provider, `createDetective`의 선택 인자(UI 미연결). 화면·콘텐츠 변화 없음. 새 테스트 21개, 전체 2277 통과, analyze 0. 다음: PART 2
