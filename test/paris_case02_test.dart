@@ -700,36 +700,44 @@ void main() {
         expect(find.byKey(const ValueKey('story-picture')), findsOneWidget, reason: 'the street');
         await shot('m1_place');
         await openLetter();
-        expect(find.byKey(const ValueKey('compare-picture')), findsOneWidget);
-        expect(find.byKey(const ValueKey('compare-painted')), findsOneWidget, reason: 'it opens on the painting');
+        // The painting over the street, both whole on the page at once.
+        expect(find.byKey(const ValueKey('compare-picture-painted')), findsOneWidget);
+        expect(find.byKey(const ValueKey('compare-picture-real')), findsOneWidget);
+        expect(find.byKey(const ValueKey('compare-painted')), findsOneWidget);
+        expect(find.byKey(const ValueKey('compare-real')), findsOneWidget);
         expect(find.text('THE PAINTING'), findsWidgets);
+        expect(find.text('THE STREET'), findsWidgets);
+        final painting = t.getRect(find.byKey(const ValueKey('compare-picture-painted')));
+        final street = t.getRect(find.byKey(const ValueKey('compare-picture-real')));
+        expect(painting.bottom, lessThanOrEqualTo(street.top), reason: 'the painting above the street');
+        expect(painting.size, street.size, reason: 'the same size');
         await shot('m1_painting');
         // A tap on nothing changed: never wrong, a line to read the note again.
-        await tapOn('compare-picture', const Offset(0.62, 0.52));
+        await tapOn('compare-picture-painted', const Offset(0.62, 0.52));
         expect(find.text(compare.missLine), findsOneWidget);
-        // The street: the same spot, the other picture.
-        await t.tap(find.byKey(const ValueKey('compare-show-real')));
-        await wait(t, const Duration(milliseconds: 400));
-        expect(find.byKey(const ValueKey('compare-real')), findsOneWidget);
-        await shot('m1_street');
-        // Above the red door: the clock (found on the street's picture too).
-        await tapOn('compare-picture', compare.changes[0].area.center);
+        // Read, it goes, the pictures clear again.
+        await wait(t, const Duration(milliseconds: 3000));
+        expect(find.text(compare.missLine), findsNothing, reason: 'the line clears by itself');
+        // Above the red door, on the street's picture: the clock, ringed on both.
+        await tapOn('compare-picture-real', compare.changes[0].area.center);
         expect(find.byKey(const ValueKey('found-clock')), findsOneWidget);
+        expect(find.byKey(const ValueKey('found-clock-real')), findsOneWidget);
+        await shot('m1_street');
         expect(find.text(compare.foundLines['clock']!), findsOneWidget);
         expect(examined(), contains('s2_ep02_m1:clock'));
         // Out and back in: it opens as it was left.
         router.go(Routes.map);
         await wait(t, const Duration(milliseconds: 1400));
         await visit(m1.id);
-        expect(find.byKey(const ValueKey('compare-picture')), findsOneWidget, reason: 'back on the puzzle');
+        expect(find.byKey(const ValueKey('compare-picture-painted')), findsOneWidget, reason: 'back on the puzzle');
         expect(find.byKey(const ValueKey('found-clock')), findsOneWidget, reason: 'still found');
         // The whole picture again after a zoom.
         await t.tap(find.byKey(const ValueKey('picture-whole')));
         await wait(t, const Duration(milliseconds: 300));
-        await tapOn('compare-picture', compare.changes[1].area.center);
+        await tapOn('compare-picture-painted', compare.changes[1].area.center);
         expect(find.byKey(const ValueKey('found-window')), findsOneWidget);
         await shot('m1_two_found');
-        await tapOn('compare-picture', compare.changes[2].area.center);
+        await tapOn('compare-picture-painted', compare.changes[2].area.center);
         await finish(m1.transition.first, 'm1');
         expect(ref.read(gameControllerProvider).isCompleted(m1.id), isTrue);
 

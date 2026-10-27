@@ -311,9 +311,6 @@ class PicturePuzzleProgress {
   /// A painting's id, `desk` or `match`: open over the picture.
   String? open;
 
-  /// The comparing page's picture: the painting (true) or the place.
-  bool showPainted = true;
-
   /// The matching page: each note's painting, by note id.
   final Map<String, String> pairs = {};
 

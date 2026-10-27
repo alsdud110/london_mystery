@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,16 +14,17 @@ import '../../../widgets/detective_tips.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
 import '../../../widgets/ink_icon.dart';
-import 'investigation_search.dart' show PencilSlip, SearchTapRing;
+import '../../../widgets/paper_background.dart';
+import 'investigation_search.dart' show SearchTapRing;
 import 'search_stage.dart';
 import 'zoom_picture.dart';
 
-/// A place compared with a painting of it ([CompareScene]): one picture at a
-/// time fills the top of the page, THE STREET or THE PAINTING (switched
-/// under it, the same spot kept in view), looked at closer with a pinch.
-/// A tap on a change, on either picture, finds it (a gold ring on both, its
-/// line of the note ticked); a tap anywhere else is never wrong. Every
-/// change found, [onComplete] checks the mission's answer.
+/// A place compared with a painting of it ([CompareScene]): THE PAINTING
+/// over THE STREET at the top of the page, each whole, looked at closer
+/// together with a pinch on either. A tap on a change, on either picture,
+/// finds it (a gold ring on both, its line of the note ticked); a tap
+/// anywhere else is never wrong. Every change found, [onComplete] checks
+/// the mission's answer.
 ///
 /// What was found lives in [progress] and is saved through [onFound], so it
 /// stays found after a restart.
@@ -55,9 +57,16 @@ class SpotDifferences extends StatefulWidget {
 }
 
 class _SpotDifferencesState extends State<SpotDifferences> {
+  /// The paper between the two pictures.
+  static const _gap = AppSpace.sm;
+
+  /// Each picture opens whole.
+  static const _whole = Rect.fromLTRB(0, 0, 1, 1);
+
   final _zoom = TransformationController();
   int _reset = 0;
   String? _line;
+  Timer? _lineTimer;
   Offset? _tapAt;
   int _tapCount = 0;
   bool _completing = false;
@@ -76,15 +85,20 @@ class _SpotDifferencesState extends State<SpotDifferences> {
 
   @override
   void dispose() {
+    _lineTimer?.cancel();
     _zoom.dispose();
     super.dispose();
   }
 
-  void _show(bool painted) {
-    if (_p.showPainted == painted) return;
-    HapticFeedback.selectionClick();
-    _p.showPainted = painted;
-    widget.onChanged();
+  /// Shows [line] under the street for a moment, then clears the picture
+  /// again.
+  void _say(String? line) {
+    _lineTimer?.cancel();
+    setState(() => _line = line);
+    if (line == null) return;
+    _lineTimer = Timer(const Duration(milliseconds: 2500), () {
+      if (mounted) setState(() => _line = null);
+    });
   }
 
   void _tap(Offset at, Size shown) {
@@ -99,17 +113,17 @@ class _SpotDifferencesState extends State<SpotDifferences> {
 
   void _look(PictureSpot? change) {
     if (change == null) {
-      setState(() => _line = _scene.missLine);
+      _say(_scene.missLine);
       return;
     }
     if (_p.has(change.id)) {
-      setState(() => _line = 'You found this one already.');
+      _say('You found this one already.');
       return;
     }
     HapticFeedback.mediumImpact();
     _p.found.add(change.id);
     widget.onFound(change.id);
-    _line = _scene.foundLines[change.id];
+    _say(_scene.foundLines[change.id]);
     widget.onChanged();
     if (_p.allFound(_ids)) _complete();
   }
@@ -131,56 +145,83 @@ class _SpotDifferencesState extends State<SpotDifferences> {
   Widget build(BuildContext context) {
     final scene = _scene;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
-    final painted = _p.showPainted;
-    final name = painted ? scene.paintedLabel : scene.realLabel;
-    return SearchStage(
-      // Taller than the picture at the screen's width: it opens a little
-      // closer, on the door, the windows above it and the lamp.
-      idealHeight: (width) => width / scene.pixels.aspect * 1.6,
-      picture: (context, viewport) => Stack(
-        children: [
-          Positioned.fill(
-            child: ZoomPicture(
-              viewport: viewport,
-              pixels: scene.pixels,
-              opening: scene.opening,
-              controller: _zoom,
-              resetCount: _reset,
-              builder: (size) => _ComparePicture(
-                key: const ValueKey('compare-picture'),
-                scene: scene,
-                progress: _p,
-                size: size,
-                tapAt: _tapAt,
-                tapCount: _tapCount,
-                still: still,
-                onTap: (at) => _tap(at, size),
-                onChange: _look,
+    final aspect = scene.pixels.aspect;
+    // One picture, whole: the painting or the street, its name on it. Both
+    // share one zoom, so a pinch on either looks closer at the same spot.
+    Widget panel(bool painted, Size size) => Container(
+          width: size.width,
+          height: size.height,
+          // A print's fine edge on the paper.
+          foregroundDecoration: BoxDecoration(border: Border.all(color: AppLine.faint(0.4), width: AppLine.hairline)),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: ZoomPicture(
+                  viewport: size,
+                  pixels: scene.pixels,
+                  opening: _whole,
+                  controller: _zoom,
+                  resetCount: _reset,
+                  builder: (pictureSize) => _ComparePicture(
+                    key: ValueKey(painted ? 'compare-picture-painted' : 'compare-picture-real'),
+                    scene: scene,
+                    progress: _p,
+                    painted: painted,
+                    size: pictureSize,
+                    tapAt: _tapAt,
+                    tapCount: _tapCount,
+                    still: still,
+                    onTap: (at) => _tap(at, pictureSize),
+                    onChange: _look,
+                  ),
+                ),
               ),
-            ),
+              Positioned(
+                left: AppSpace.sm,
+                top: AppSpace.sm,
+                child: IgnorePointer(
+                  child: _PictureTag(
+                    key: ValueKey(painted ? 'compare-tag-painted' : 'compare-tag-real'),
+                    label: painted ? scene.paintedLabel : scene.realLabel,
+                  ),
+                ),
+              ),
+              // What the last tap found, a subtitle over the street's
+              // cobbles: every change is in the pictures' upper part.
+              if (!painted)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: IgnorePointer(child: _Subtitle(line: _line)),
+                ),
+            ],
           ),
-          // What is shown now, named on it (small, over its top corner).
-          Positioned(
-            left: AppSpace.sm,
-            top: AppSpace.sm,
-            child: IgnorePointer(child: _PictureTag(key: const ValueKey('compare-tag'), label: name)),
+        );
+    return SearchStage(
+      // The painting over the street, each whole at the screen's width.
+      idealHeight: (width) => 2 * width / aspect + _gap,
+      picture: (context, viewport) {
+        // Each picture whole in its half; narrower than the screen when the
+        // page is short, centred.
+        final half = math.max(0.0, (viewport.height - _gap) / 2);
+        final size = Size(math.min(viewport.width, half * aspect), math.min(half, viewport.width / aspect));
+        return PaperBackground(
+          child: Column(
+            children: [
+              SizedBox(height: half, child: Center(child: panel(true, size))),
+              const SizedBox(height: _gap),
+              SizedBox(height: half, child: Center(child: panel(false, size))),
+            ],
           ),
-        ],
-      ),
-      note: PencilSlip(line: _line),
+        );
+      },
+      note: const SizedBox.shrink(),
       caption: Padding(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _Switch(
-              left: scene.realLabel,
-              right: scene.paintedLabel,
-              rightOn: painted,
-              onLeft: () => _show(false),
-              onRight: () => _show(true),
-            ),
-            const SizedBox(height: AppSpace.sm),
             GlossaryText(scene.task, key: const ValueKey('compare-task'), textAlign: TextAlign.center, style: AppText.task()),
             const SizedBox(height: AppSpace.xs),
             // The note's lines, ticked as their changes are found; on a short
@@ -205,14 +246,16 @@ class _SpotDifferencesState extends State<SpotDifferences> {
   }
 }
 
-/// The picture shown: the street or the painting, a ring on every change
-/// found (the same place on both), the last tap's ring, and a button for
-/// screen readers on each place the note sends the detective to.
+/// One of the two pictures: the street or the painting, a ring on every
+/// change found (the same place on both), the last tap's ring (on both),
+/// and, on the painting only, a button for screen readers on each place
+/// the note sends the detective to.
 class _ComparePicture extends StatelessWidget {
   const _ComparePicture({
     super.key,
     required this.scene,
     required this.progress,
+    required this.painted,
     required this.size,
     required this.tapAt,
     required this.tapCount,
@@ -223,6 +266,7 @@ class _ComparePicture extends StatelessWidget {
 
   final CompareScene scene;
   final PicturePuzzleProgress progress;
+  final bool painted;
   final Size size;
   final Offset? tapAt;
   final int tapCount;
@@ -232,7 +276,6 @@ class _ComparePicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final painted = progress.showPainted;
     return Semantics(
       label: painted ? 'The painting of the street' : 'The street as it really is',
       child: GestureDetector(
@@ -254,7 +297,7 @@ class _ComparePicture extends StatelessWidget {
               if (progress.has(c.id))
                 Positioned.fromRect(
                   rect: placeOn(c.area, size).inflate(4),
-                  child: FoundRing(key: ValueKey('found-${c.id}'), still: still),
+                  child: FoundRing(key: ValueKey(painted ? 'found-${c.id}' : 'found-${c.id}-real'), still: still),
                 ),
             if (tapAt != null)
               Positioned(
@@ -262,73 +305,20 @@ class _ComparePicture extends StatelessWidget {
                 top: tapAt!.dy * size.height - 22,
                 child: SearchTapRing(key: ValueKey('tap-$tapCount'), still: still),
               ),
-            for (final c in scene.changes)
-              Positioned.fromRect(
-                rect: placeOn(c.area, size),
-                child: Semantics(
-                  button: true,
-                  label: progress.has(c.id) ? '${c.label}, found' : c.label,
-                  onTap: () => onChange(c),
-                  child: const SizedBox.expand(),
+            if (painted)
+              for (final c in scene.changes)
+                Positioned.fromRect(
+                  rect: placeOn(c.area, size),
+                  child: Semantics(
+                    button: true,
+                    label: progress.has(c.id) ? '${c.label}, found' : c.label,
+                    onTap: () => onChange(c),
+                    child: const SizedBox.expand(),
+                  ),
                 ),
-              ),
           ],
         ),
       ),
-    );
-  }
-}
-
-/// The two pictures' names, side by side: the one shown is navy.
-class _Switch extends StatelessWidget {
-  const _Switch({required this.left, required this.right, required this.rightOn, required this.onLeft, required this.onRight});
-
-  final String left;
-  final String right;
-  final bool rightOn;
-  final VoidCallback onLeft;
-  final VoidCallback onRight;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget side(String label, bool on, VoidCallback onTap, Key key) => Expanded(
-          child: Semantics(
-            button: true,
-            selected: on,
-            label: 'Show $label',
-            excludeSemantics: true,
-            child: GestureDetector(
-              key: key,
-              behavior: HitTestBehavior.opaque,
-              onTap: onTap,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                constraints: const BoxConstraints(minHeight: 48),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs),
-                decoration: BoxDecoration(
-                  color: on ? AppColors.navy : AppColors.parchment.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(AppRadius.button),
-                  border: Border.all(color: on ? AppColors.navyDeep : AppLine.faint(0.3), width: AppLine.hairline),
-                ),
-                child: MediaQuery.withClampedTextScaling(
-                  maxScaleFactor: 1.3,
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: AppText.button(size: 15, color: on ? AppColors.goldLight : AppColors.navy),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-    return Row(
-      children: [
-        side(left, !rightOn, onLeft, const ValueKey('compare-show-real')),
-        const SizedBox(width: AppSpace.sm),
-        side(right, rightOn, onRight, const ValueKey('compare-show-painted')),
-      ],
     );
   }
 }
@@ -418,6 +408,44 @@ class _CheckLine extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// What the last tap found, along the bottom of the street's picture
+/// (read aloud by screen readers as it changes). Nothing before the first
+/// tap.
+class _Subtitle extends StatelessWidget {
+  const _Subtitle({required this.line});
+
+  final String? line;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = line;
+    return Semantics(
+      liveRegion: true,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: text == null
+            ? const SizedBox.shrink(key: ValueKey('no-subtitle'))
+            : Container(
+                key: ValueKey(text),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
+                color: AppColors.navyDeep.withValues(alpha: 0.82),
+                child: MediaQuery.withClampedTextScaling(
+                  maxScaleFactor: 1.2,
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppText.letter(size: 15, color: AppColors.parchment),
+                  ),
+                ),
+              ),
       ),
     );
   }
