@@ -166,7 +166,7 @@
 
 - 문서처럼 "읽어서 푸는" 문자열은 구조에 포함했다. 그래서 어느 난이도도 문서를 바꿀 수 없다.
 - 조작 안내 문자열(task·버튼 라벨)은 구조 밖에 두었다. 대신 테스트가 세 난이도에서 같은지 확인한다.
-- 난이도별 변형은 빌더(`_wall`·`_hut`·`_boxes`·`_clocks`·`_archive`·`_steps`)로 만든다. 빌더는 기준 객체의 구조 필드를 그대로 복사하고 문장만 받는다. EasySteps는 패널·선택지 패널·`after` 목록을 **같은 객체**로 공유한다(테스트가 `identical`로 확인).
+- 난이도별 변형은 빌더(`_wall`·`_hut`·`_boxes`·`_clocks`·`_archive`·`_steps`)로 만든다(`_steps`는 7C에서 `retold`로 공개, 지금은 `difficulty/level_words.dart`에 있다. 나머지는 각 Case 파일 `difficulty/ep04_levels.dart`~`ep06_levels.dart`). 빌더는 기준 객체의 구조 필드를 그대로 복사하고 문장만 받는다. EasySteps는 패널·선택지 패널·`after` 목록을 **같은 객체**로 공유한다(테스트가 `identical`로 확인).
 - 결과: `problems()` 빈 목록. 두 난이도 × 14개 표 항목의 구조 문자열이 기준과 같다(테스트).
 
 ## G. 학습 표현 (부모 보고서)
@@ -221,7 +221,7 @@
 
 ## K. PART 7C 인수인계 (Case 07~09)
 
-- 같은 방식: 새 파일 `lib/data/mock/season2/season2_levels_07_09.dart`(사건 패치·장면 빌더·학습 표현)를 만들고, `season2_difficulty.dart`에서 패치·`season2WrittenLevels`·`season2SameAtEveryLevel`·`season2Variants`(표·learning)에 연결한다.
+- 같은 방식: 새 파일 `lib/data/mock/season2/season2_levels_07_09.dart`(사건 패치·장면 빌더·학습 표현)를 만들고, `season2_difficulty.dart`에서 패치·`season2WrittenLevels`·`season2SameAtEveryLevel`·`season2Variants`(표·learning)에 연결한다. (7C·7D의 묶음 파일은 2026-10-27 Case별 `difficulty/epNN_levels.dart`로 분리됐다, `77e65d2`.)
 - 먼저 `season2StructureOf`에 구조 추출을 추가해야 하는 장면: Case 07 `flyRails`·`lightTables`(+ EasySteps M1·M2·Final — EasySteps 구조 검사는 이번에 추가됨), Case 08 `cornerChoices`·`morningSketches`·`tornSlips`·`tornHours`, Case 09 `trialMaps`·`gearBoards`·`makerMarks`·`towerTests`. `DrawnPanel`이 쓰는 `AmendmentSlip`·`CueCard`·`MorningSketch`·`TornForm`·`TrialMapPaper` 등은 `_drawn`이 아직 객체 동일성으로만 비교한다. 그러니 변형에서 같은 객체를 공유하거나 `_drawn`에 추가해야 한다.
 - 이번에 남긴 7B 테스트의 `keptAtEveryLevel`·`unreachable()` 방식을 그대로 쓴다. Case 07 Final(very easy)도 옛 오답 맵이 도달 불가인지 먼저 확인한다.
 - 바이블 고정: Case 07 확정 명세 v1.5(수정 슬립, 이름·이니셜 없음, CURTAIN UP 4:00→3:00, ABBESSES, `P. KNEW THE BAG.`), Case 08 v1.6, Case 09 v1.7. Case 06 끝 질문 `What is in File 3–4 of the opera archive?`는 Case 07 시작과 이어진다.
@@ -510,7 +510,7 @@
 
 ## 부록 B. 재현 방법
 
-- 원본: `lib/data/mock/season2/season2_levels_04_06.dart`(Junior·Master 사건 패치 `junior04`~`master06`, Rookie 패치 `rookie05`, 장면 `juniorScenes0406`/`masterScenes0406`, 학습 표현, glossary). 연결: `season2_difficulty.dart`.
+- 원본: `lib/data/mock/season2/difficulty/ep04_levels.dart`~`ep06_levels.dart`(Case별 Rookie 패치 `rookie04`~`rookie06`, Junior·Master 사건 패치 `junior04`~`master06`, 장면 `juniorScenes04`/`masterScenes04` 등, 모든 난이도 동일 장면 `sameAtEveryLevel04` 등, 학습 표현 `juniorLearning04` 등, glossary). 공통 빌더 `retold`·`StepWords`·`levelObjective`: `difficulty/level_words.dart`. 연결: `season2_difficulty.dart`. (PART 7B 당시 원본은 `season2_levels_04_06.dart` 한 파일이었고, 2026-10-27 Case별로 분리, `77e65d2`, 내용 불변.)
 - 적용 결과: `DifficultyContent.episodeAt(<기준 사건>, Difficulty.junior|master)` → 미션별 `SeasonCatalog.easySteps(m)`·`keeperHut(m)` 등.
 - 확인: `DifficultyContent.missingAt('s2_ep05', Difficulty.master)`(빈 목록), `DifficultyContent.problems()`(빈 목록).
 - 부록 A와 §D 통계는 위 API로 세 Case의 세 난이도 문장을 같은 위치끼리 뽑은 것이다. 위치 체계는 테스트의 `fields()`·`sceneWords()`와 같다.

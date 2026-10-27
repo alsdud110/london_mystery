@@ -186,7 +186,7 @@
 | `TalkMission` | before/after 대화 구조 |
 | `List<EndingLine>` | 줄마다 화자·이름·초상·배경·증거 id |
 
-- 빌더: `_drum`·`_city`·`_shadow`·`_hour`·`_talk`(줄마다 `_say`가 화자와 표정을 복사)·`_mission`·`_ending`, 그리고 7B의 `retold`.
+- 빌더: `_drum`·`_city`·`_shadow`·`_hour`·`_talk`(줄마다 `_say`가 화자와 표정을 복사)·`_mission`·`_ending`, 그리고 7B의 `retold`. (2026-10-27 Case별 분리 후: `_drum`·`_city`·`_shadow`·`_hour` → `ep10_levels.dart`, `_ending` → `ep12_levels.dart`, Case 11·12가 함께 쓰는 대화 빌더는 `difficulty/level_words.dart`에서 공개 이름 `retoldTalk`·`retoldMission`·`talkWordsOnly`(`_say`·`_beat`는 그 파일 안에서 private), Victor의 대사 상수 `hidThePage`도 같은 파일.)
 - EasySteps 패널은 같은 객체를 공유한다. `QuotePanel`(Émile·Victor의 말), `GearMarkPanel`, `RubPanel`, `MachinePanel`은 7B 구조 검사에 들어 있다.
 - 결과: `problems()` 빈 목록. 두 난이도의 Case 10~12 표 항목 18개가 기준 구조와 같다. **시즌의 모든 표 항목이 두 난이도 변형에 들어 있다**(테스트).
 
@@ -728,6 +728,6 @@
 
 ## 부록 B. 재현 방법
 
-- 원본은 `lib/data/mock/season2/season2_levels_10_12.dart`이고, `season2_difficulty.dart`에 연결돼 있다.
+- 원본은 `lib/data/mock/season2/difficulty/ep10_levels.dart`~`ep12_levels.dart`(공통 빌더는 `difficulty/level_words.dart`)이고, `season2_difficulty.dart`에 연결돼 있다. (PART 7D 당시 원본은 `season2_levels_10_12.dart` 한 파일이었고, 2026-10-27 Case별로 분리, `77e65d2`, 내용 불변.)
 - 부록 A와 §D 통계는 `DifficultyContent.episodeAt`·`SeasonCatalog`의 실제 적용 결과에서 뽑았다. 위치 체계는 테스트의 `fields()`와 같다.
 - 개발자 모드에서 확인하려면: Game Master → START DEVELOPER MODE → TEST LEVEL → Paris Case 10~12.

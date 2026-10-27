@@ -151,7 +151,7 @@
 | `TowerTestScene` | 시계 그림·시작 4·목표 3, 시험 시계(연결 여부), 오답 시각 키, 줄 수, 별 단서(제목·꼬리표·모형·정답 t1·지도 장소) |
 
 - 줄 단위 문장은 **개수만** 구조에 넣었다(`rightLines`처럼). 정답에 따라 말하는 줄은 **키**를 넣었다.
-- 난이도별 변형은 빌더로 만든다: `_morning`·`_slip`·`_corner`·`_map`·`_gears`·`_plan`·`_tower`, 그리고 7B의 `retold`(이번에 `_steps`에서 공개 이름으로 바꿈, 동작 불변). 모두 기준 객체의 구조 필드를 복사한다.
+- 난이도별 변형은 빌더로 만든다: `_morning`·`_slip`·`_corner`·`_map`·`_gears`·`_plan`·`_tower`, 그리고 7B의 `retold`(이번에 `_steps`에서 공개 이름으로 바꿈, 동작 불변. 지금은 `difficulty/level_words.dart`). 모두 기준 객체의 구조 필드를 복사한다. 사건 전용 빌더는 그 Case 파일에 있다(`_morning`·`_slip`·`_corner` → `ep08_levels.dart`, `_map`·`_gears`·`_plan`·`_tower` → `ep09_levels.dart`).
 - 결과: `problems()` 빈 목록. 2개 난이도 × 13개 표 항목의 구조 문자열이 기준과 같다.
 
 ## G. 학습 표현
@@ -538,6 +538,6 @@
 
 ## 부록 B. 재현 방법
 
-- 원본: `lib/data/mock/season2/season2_levels_07_09.dart`. 연결: `season2_difficulty.dart`. 회상 오답 줄 패치: `difficulty_content.dart`의 `_applyMission`·`_missionProblems`.
+- 원본: `lib/data/mock/season2/difficulty/ep07_levels.dart`~`ep09_levels.dart`(Case별 Rookie·Junior·Master 패치, 장면 `juniorScenes07` 등, `sameAtEveryLevel07`·`08`, 학습 표현 `juniorLearning07` 등). 공통 빌더 `retold`·`levelObjective`: `difficulty/level_words.dart`. 연결: `season2_difficulty.dart`. (PART 7C 당시 원본은 `season2_levels_07_09.dart` 한 파일이었고, 2026-10-27 Case별로 분리, `77e65d2`, 내용 불변.) 회상 오답 줄 패치: `difficulty_content.dart`의 `_applyMission`·`_missionProblems`.
 - 확인 방법: `DifficultyContent.episodeAt(...)`, `missingAt('s2_ep08', Difficulty.master)`, `problems()`.
 - 부록 A와 §D 통계는 위 API로 뽑은 것이다. 위치 체계는 테스트의 `fields()`와 같다(회상 포함).

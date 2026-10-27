@@ -482,7 +482,7 @@ enum Difficulty {
 - **콘텐츠 완료 검증(fallback이 누락을 숨기지 않게)**: `DifficultyContent.missingAt(caseId, level)` — Junior·Master에서 그 난이도 **자신의** 문장이 없는 텍스트(사건 intro·synopsis, 미션 story·letterIntro·letter·question·prompt·hints·successMessage·transition, 그림 전용 표를 뺀 모든 미션별 표 항목)를 나열. Master가 Junior 문장으로 대체되는 것도 "누락"으로 셈. Rookie는 기준본이 Rookie라 요구 없음(Q1 — 검토 표시만). `writtenLevels`에 표시한 사건·난이도는 테스트가 `missingAt` 빈 목록을 강제.
 - **샘플 적용 미션**(실제 콘텐츠):
   - **London Case 02 M1 `ep02_m1`**(Map + Dart 객체): Junior·Master의 story, letter(`{detectiveName}` 유지), question, hints(2개), 오답 줄(815·832·917 키 유지), successMessage; Junior만 transition(→ Master는 Junior 문장으로 대체 — 실제 데이터로 fallback 확인); 객체 `ClockPuzzle`(question·lead, 조작 안내 guide는 모든 난이도 동일); 학습 표현(그 난이도 편지 속 표현). 사실·정답(8:17, 입력 817)·단서·증거 불변, 9:17 미노출. 파일 `lib/data/mock/season1/season1_difficulty.dart`.
-  - **Paris Case 01 M1 `s2_ep01_m1`**(Map + Discovery): Junior·Master의 story, question, hints, successMessage(= Discovery 제목), 학습 표현. 안내문·시계 시각·정답(옵션 c)·단서 T·증거 불변. 파일 `lib/data/mock/season2/season2_difficulty.dart`.
+  - **Paris Case 01 M1 `s2_ep01_m1`**(Map + Discovery): Junior·Master의 story, question, hints, successMessage(= Discovery 제목), 학습 표현. 안내문·시계 시각·정답(옵션 c)·단서 T·증거 불변. 파일 `lib/data/mock/season2/season2_difficulty.dart`(지금은 `season2/difficulty/ep01_levels.dart`, 등록은 `season2_difficulty.dart` — F의 *Paris 난이도 파일 Case별 분리*).
   - Rookie override는 **출고 콘텐츠에 넣지 않음**(기존 사용자 화면 불변, Q1 — Rookie 검토는 PART 6~7). Rookie override 동작은 테스트용 합성 패치로 검증. 기존 문장 고정 테스트 갱신 없음.
 - **콘텐츠 불변 조건 검증**: 두 시즌 모든 사건 × 세 난이도에서 `structureOfEpisode`(사건 ID·번호, 미션 ID·순서·타입·정답·허용 답·코드 길이·형식·다이얼 기호·옵션 id 순서·그림·힌트 개수·단서 id/value·증거 id/글귀·다음 미션·스킬·지도 좌표·오답 키·recall) 동일, 코인(`coinsFor`)·Final 여부 동일, `AnswerChecker` 판정 동일(샘플), 옵션 수·순서 동일, 힌트 개수·가격·구매 상태 동일.
 - **변경 파일**:
@@ -533,17 +533,17 @@ enum Difficulty {
 ### PART 7B — Paris Cases 04~06 영어 콘텐츠 (main)
 - **작업 날짜**: 2026-10-27 · 로컬 `main` 직접(병렬 개발 중단 — 사용자 지시). 시작 시 로컬 main이 `b6fb71e`라 `origin/main` `611c5ea`로 fast-forward(사용자 승인). 상세 검토 보고서: **`docs/difficulty_reviews/PARIS_CASE_04_06.md`**(사건별 조사, A/B/C 분류, 실제 영어 원문 전체 표, 스토리 보호, 구조 검사, 학습 표현, 남은 위험).
 - **결과**: `s2_ep04`~`s2_ep06`를 Rookie·Junior·Master로 `season2WrittenLevels`에 등록. `missingAt` 모두 빈 목록, `problems()` 빈 목록. Rookie = 기준본 + glossary + Rookie 패치 2줄(Case 05 M1 story[0], M3 증거 설명 — 기준 JSON 불변). Junior·Master = 사건 파일·모든 미션 텍스트·오답 줄·단서/증거 설명, 장면 문장 5종(`riverMarks`·`keeperHuts`·`quayBoxes`·`clockWalls`·`archives`), EasySteps 3개(Case 04 Final, Case 05 M3·Final — say·무료 힌트·오답 줄·tell·done), 학습 표현 12개, glossary.
-- **파일**: 콘텐츠 `lib/data/mock/season2/season2_levels_04_06.dart`(신규), 연결 `season2_difficulty.dart`(패치·writtenLevels·`season2SameAtEveryLevel`·variants), 구조 검사 `season2_structures.dart`(장면 11종 + `EasyStepsScene`·패널 7종). 엔진(`difficulty_content.dart`)·모델·화면 코드는 수정하지 않음.
+- **파일**: 콘텐츠 `lib/data/mock/season2/season2_levels_04_06.dart`(신규, 지금은 `season2/difficulty/ep04_levels.dart`~`ep06_levels.dart`로 분리 — F의 *Paris 난이도 파일 Case별 분리*), 연결 `season2_difficulty.dart`(패치·writtenLevels·`season2SameAtEveryLevel`·variants), 구조 검사 `season2_structures.dart`(장면 11종 + `EasyStepsScene`·패널 7종). 엔진(`difficulty_content.dart`)·모델·화면 코드는 수정하지 않음.
 - **의도적으로 모든 난이도 동일**: 퍼즐 문서(명판 뒷면·장부·라벨·거리 책자·쪽지·수리 카드·영수증·슬립·꼬리표·짐꾼 쪽지·편지), 바이블 v1.4 확정 대사(`Wait! It wasn't stolen.`, `Someone kept it safe.`, `We found our next clue!`, `The mystery continues at the opera house!`), Case 05·06 끝 질문, 선택지 라벨, 조작 안내. 장면 6종(`streetBooks`·`markCompares`·`postTrails`·`holdRacks`·`planRoutes`·`letterMaps`)은 기준 객체 그대로. very easy 전환으로 **화면에 나올 수 없는 옛 오답 줄 36개**(`s2_ep04_final`·`s2_ep05_final` feedback, `s2_ep05_m3` 선택지 오답)는 기준본 유지 — 테스트 `unreachable()`에 명시.
 - **테스트**: 신규 `test/difficulty_paris_7b_test.dart` 30개(완료·누락, 고유 문장, Rookie, glossary, 구조·정답·코인·힌트 가격, 장면 14개 구조·조작 안내, EasySteps 불변, 사건별 비밀 × 3난이도, 힌트 정답 비노출·구매 기록, Discovery, 학습 표현·보고서(프로필 변경 후에도 시즌 난이도), 옛 저장, 화면 5개 — 390×844 × 3난이도, 360×640 + 글자 1.3배, 834×1194 태블릿). 기존 테스트 수정 1곳(의도적): `difficulty_paris_7a_test.dart`의 "written = 정확히 01~03" → "01~06". 삭제·skip 없음.
 - **검증**: 관련 회귀 202개 통과, `flutter analyze` No issues, 전체 `flutter test` **2446 passed, 0 failed, 0 skipped**(5분 9초).
-- **PART 7C 시작점**: Case 07~09. `season2_levels_07_09.dart` 추가, 새 장면(`flyRails`·`lightTables`·`cornerChoices`·`morningSketches`·`tornSlips`·`tornHours`·`trialMaps`·`gearBoards`·`makerMarks`·`towerTests`)마다 `season2StructureOf` 먼저. EasySteps 구조 검사는 이번에 추가됨(`DrawnPanel`의 새 문서 종류는 `_drawn`에 추가하거나 같은 객체 공유). 보고서 K절.
+- **PART 7C 시작점**: Case 07~09. `season2_levels_07_09.dart` 추가(지금은 `difficulty/ep07_levels.dart`~`ep09_levels.dart`), 새 장면(`flyRails`·`lightTables`·`cornerChoices`·`morningSketches`·`tornSlips`·`tornHours`·`trialMaps`·`gearBoards`·`makerMarks`·`towerTests`)마다 `season2StructureOf` 먼저. EasySteps 구조 검사는 이번에 추가됨(`DrawnPanel`의 새 문서 종류는 `_drawn`에 추가하거나 같은 객체 공유). 보고서 K절.
 
 
 ### PART 7C — Paris Cases 07~09 영어 콘텐츠 (main, `98bae78`)
 - **작업 날짜**: 2026-10-27 · 시작 HEAD `19f924d`. 상세 검토 보고서: **`docs/difficulty_reviews/PARIS_CASE_07_09.md`**.
 - **결과**: `s2_ep07`~`s2_ep09` 세 난이도 `writtenLevels`, `missingAt`·`problems()` 빈 목록. Rookie = 기준본 + glossary + 패치 1줄(Case 09 M3 `mended` → `fixed`). Junior·Master = 사건·미션 전 문장(회상 제목·안내·오답 줄, 최종 보드 오답 18개 포함), 장면 7종(`morningSketches`·`tornSlips`·`tornHours`·`trialMaps`·`gearBoards`·`makerMarks`·`towerTests`), EasySteps 3개(Case 07 M1·M2·Final), 학습 표현 12개.
-- **엔진 최소 확장**: `DifficultyContent`가 회상 오답 줄 `recall.feedback`(증거 id 키, 키는 불변·검사)을 패치(Case 08 M1·M3 화면에 실제로 나옴). 구조 검사 10종 추가(`FlyRail`·`LightTable`·`CornerChoice`·`MorningSketches`·`TornSlip`·`TornHour`·`TrialMap`·`GearBoard`·`MakerMarks`·`TowerTest`). 7B의 `_steps` 헬퍼를 공개 이름 `retold`로(동작 불변).
+- **엔진 최소 확장**: `DifficultyContent`가 회상 오답 줄 `recall.feedback`(증거 id 키, 키는 불변·검사)을 패치(Case 08 M1·M3 화면에 실제로 나옴). 구조 검사 10종 추가(`FlyRail`·`LightTable`·`CornerChoice`·`MorningSketches`·`TornSlip`·`TornHour`·`TrialMap`·`GearBoard`·`MakerMarks`·`TowerTest`). 7B의 `_steps` 헬퍼를 공개 이름 `retold`로(동작 불변, 지금은 `season2/difficulty/level_words.dart`).
 - **모든 난이도 동일**: 퍼즐 문서(FILE 3/4·Lighting Book·큐 카드·Painted Street·수정 슬립·스케치 메모·꼬리표·쪽지·증거 목록·작은 파리/톱니판 글·노트 표식·시험 카드), 보드 질문·결론, 장면 3종(`flyRails`·`lightTables`·`cornerChoices`). 도달 불가 옛 오답 줄 15개(Case 07 very easy)는 기준본 유지(`unreachable()`).
 - **테스트**: 신규 `test/difficulty_paris_7c_test.dart` 30개. 기존 테스트 수정(의도적): 7A·7B의 "written = 정확히 그때까지" 단언 → 자기 사건 포함 확인(전체 집합은 최신 PART 테스트가 고정), 7B의 "Case 07 미작성" 단언 제거. 관련 회귀 286개, analyze 0, 전체 **2476 passed / 0 failed / 0 skipped**(5분 16초).
 
@@ -564,6 +564,13 @@ enum Difficulty {
 - **미지원**: Case 06 M1 증인 대화(`dialogues/ep06_m1`, `DialogueScene`) — `structureOf`에 없음(기존 테스트가 미지원으로 고정), 엔진 확장 금지 지시로 기준본 대사 유지. 따라서 ep06 `writtenLevels` = {rookie}, `missingAt` = [`dialogues/ep06_m1`]. M1 편지(증언 기록)는 대화와 같은 사실로 작성.
 - **테스트**: 신규 `test/difficulty_london_levels.dart`(6A 검사를 사건 목록으로 일반화) + `difficulty_london_6b/6c/6d_test.dart`(사건별 추리 보호 × 3난이도, 시즌 전체 누락 검사). 기존 수정 1곳(의도적): `difficulty_content_test.dart` Coverage의 "ep04 미작성" 전제 → ep06 대화 누락으로 같은 규칙 검증. `flutter analyze` No issues · 전체 `flutter test` **2573 passed / 0 failed**(4분 33초).
 - **남은 위험**: 원어민 검토·실기기 화면 확인 없음, 새 어휘 glossary 자동 검사 없음, Case 06 M1 대화는 세 난이도 모두 기준본 문체.
+
+### Paris 난이도 파일 Case별 분리 (main, `77e65d2`)
+- **작업 날짜**: 2026-10-27 · 시작 HEAD `c4484a7`. 파일 구조만 변경 — 영어 문장·glossary·학습 표현·퍼즐·정답·엔진·UI 변경 없음.
+- **구조**: London과 같은 `lib/data/mock/season2/difficulty/ep01_levels.dart`~`ep12_levels.dart`(Case마다 `rookieNN`·`juniorNN`·`masterNN` 패치, 장면 `juniorScenesNN`/`masterScenesNN`, 모든 난이도 동일 장면 `sameAtEveryLevelNN`(04~08만), 학습 표현 `juniorLearningNN`/`masterLearningNN`, 그 Case 전용 상수·빌더). `season2_difficulty.dart`는 등록만(`season2CasePatches`·`season2WrittenLevels`·`season2SameAtEveryLevel`·`season2Variants`, 키·타입·fallback 동일). 삭제: `season2_levels_04_06.dart`·`season2_levels_07_09.dart`·`season2_levels_10_12.dart`.
+- **공통 파일** `difficulty/level_words.dart`(여러 Case가 실제로 같이 쓰는 것만, 본문 불변): `retold`·`StepWords`(Case 04·05·07·11·12), 학습 헬퍼 `levelObjectiveWith`(01~03의 `_learn`)·`levelObjective`(04~12 묶음마다 같던 `_learn` 복사본 하나로), Case 11·12의 대화 빌더 `retoldTalk`·`retoldMission`·`talkWordsOnly`(옛 `_talk`·`_mission`·`_only`)와 상수 `hidThePage`.
+- **동일성 검증**: 변경 전후 덤프(패치 12×3, writtenLevels, sameAtEveryLevel, 변형 표 항목 104×2의 구조 문자열과 학습 메타데이터, 키 순서 포함) 동일. 소스의 문자열 리터럴 6,086개 다중집합 동일(차이는 import 경로뿐).
+- **검증**: `flutter analyze` No issues · 전체 `flutter test` **2581 passed / 0 failed**(4분 24초). 테스트 수정 없음.
 
 ---
 

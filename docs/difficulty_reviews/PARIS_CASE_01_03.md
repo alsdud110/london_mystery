@@ -2,7 +2,7 @@
 
 - 작성: 2026-10-27 · 브랜치 `feat/difficulty-paris-01-03` · 기반 커밋 `b6fb71e`(PART 5)
 - 범위: Season 2 *Paris Stands Still*의 Case 01 *The Ticking Watch*, Case 02 *The Vanishing Painter*, Case 03 *The Tower's Secret* — Rookie 검토 + Junior·Master 전체 작성
-- 콘텐츠 원본: `lib/data/mock/season2/season2_difficulty.dart` (사건 JSON 패치 `season2CasePatches`, 장면·학습 설계 `season2Variants`, 완료 표시 `season2WrittenLevels`)
+- 콘텐츠 원본: `lib/data/mock/season2/difficulty/ep01_levels.dart`~`ep03_levels.dart` (Case별 Rookie 패치·Junior·Master 사건 JSON 패치·장면 문장·학습 표현; 학습 헬퍼 `levelObjectiveWith`는 `difficulty/level_words.dart`). 등록: `lib/data/mock/season2/season2_difficulty.dart` (`season2CasePatches`, `season2Variants`, 완료 표시 `season2WrittenLevels`). PART 7A 당시에는 모두 `season2_difficulty.dart` 한 파일에 있었고, 2026-10-27 Case별로 분리(`77e65d2`, 내용 불변).
 - 검증: `test/difficulty_paris_7a_test.dart`(26), 기존 전체 회귀 포함 2,386 통과
 - 이 문서 끝의 **부록 A**는 실제 적용된 콘텐츠에서 자동 추출한 *모든* Rookie/Junior/Master 문장 표다(재현 방법은 부록 B).
 
@@ -270,7 +270,7 @@
 
 ## 16. PART 7B 인수인계 (Case 04~06)
 
-- 같은 파일 `season2_difficulty.dart`에 `_junior04…` 형식으로 추가하고 `season2WrittenLevels`에 등록. 장면 객체는 이 PART의 빌더 패턴(기준 객체에서 구조 필드 복사)을 따른다.
+- 같은 파일 `season2_difficulty.dart`에 `_junior04…` 형식으로 추가하고 `season2WrittenLevels`에 등록. (실제로는 7B~7D가 묶음 파일로 만들었고, 지금은 Case별 `difficulty/epNN_levels.dart`에 두고 `season2_difficulty.dart`에서 등록한다.) 장면 객체는 이 PART의 빌더 패턴(기준 객체에서 구조 필드 복사)을 따른다.
 - 새로 쓰는 장면 종류(Case 04 `riverMarks`·`keeperHuts`·`quayBoxes`, Case 05 `streetBooks`·`markCompares`·`clockWalls`, Case 06 `postTrails`·`holdRacks`·`planRoutes`·`archives`·`letterMaps`…, EasySteps `Case 04 Final`, `Case 05 M3·Final`)마다 **먼저 `season2StructureOf`에 구조 추출을 추가**해야 `problems()`가 통과한다. EasySteps는 무료·무제한 힌트와 정답 위치 강조가 구조.
 - Case 03 → 04 연결(SEINE, FROM: SERVICE LEVEL. TO: THE RIVER., 사라진 상자)과 Case 05 우편 기록(16 MAY 9:00/11:00/4:00 HELD)은 바이블 §1 고정 사실.
 - 7A 테스트의 `keptAtEveryLevel` 방식(의도적으로 같은 줄을 명시하고 나머지는 모두 달라야 함)을 Case 04~06에도 적용 권장.
@@ -577,7 +577,7 @@
 
 ## 부록 B. 재현 방법
 
-- 원본: `lib/data/mock/season2/season2_difficulty.dart` — Junior·Master의 모든 사건 JSON 문장(`_junior01`~`_master03`), 장면 문장(`season2Variants`), 학습 표현, glossary.
+- 원본: `lib/data/mock/season2/difficulty/ep01_levels.dart`~`ep03_levels.dart` — Rookie 패치(`rookie01`~`rookie03`), Junior·Master의 모든 사건 JSON 문장(`junior01`~`master03`), 장면 문장(`juniorScenes01`·`masterScenes01` 등), 학습 표현(`juniorLearning01` 등), glossary. 등록은 `season2_difficulty.dart`(`season2CasePatches`·`season2Variants`).
 - 난이도 적용 결과 보기: `DifficultyContent.episodeAt(<기준 사건>, Difficulty.junior|master)` → `Episode`(장면은 그 미션으로 `SeasonCatalog.stationClocks(m)` 등).
 - 미작성 확인: `DifficultyContent.missingAt('s2_ep02', Difficulty.master)`(빈 목록이어야 함), 구조 위반: `DifficultyContent.problems()`.
 - 부록 A는 위 API로 세 Case의 Rookie·Junior·Master 문장을 같은 위치끼리 나란히 뽑은 것이다(테스트 `test/difficulty_paris_7a_test.dart`의 `fields()`와 같은 위치 체계).
