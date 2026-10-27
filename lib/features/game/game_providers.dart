@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/audio_service.dart';
+import '../../data/content/difficulty_content.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/case_talk.dart';
 import '../../data/models/difficulty.dart';
@@ -80,8 +81,25 @@ final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
 });
 
 /// Every case of every season, season by season in case order (pre-loaded
-/// before the app starts; defaults to the bundled content).
+/// before the app starts; defaults to the bundled content), in the game's
+/// own words (the base). What the cases are — their ids, missions, order,
+/// answers — is the same at every level, so everything that counts, opens
+/// or unlocks cases reads them here. What the player reads comes from
+/// [playedEpisodesProvider].
 final allEpisodesProvider = Provider<List<Episode>>((ref) => MockEpisodeRepository.bundled());
+
+/// Every case as played in this game session: each in its season's level's
+/// words ([seasonDifficultyProvider]: the season's fixed level, else the
+/// detective's), its missions carrying that level for their puzzle tables.
+/// Worked out in each session from the base ([allEpisodesProvider]) — a
+/// developer test session plays its own levels, never the player's.
+final playedEpisodesProvider = Provider<List<Episode>>((ref) {
+  final levels = <String, Difficulty>{};
+  return [
+    for (final e in ref.watch(allEpisodesProvider))
+      DifficultyContent.episodeAt(e, levels[e.seasonId] ??= ref.watch(seasonDifficultyProvider(e.seasonId))),
+  ];
+});
 
 /// The talk a mission is played as ([SeasonCatalog.caseTalk]) and the talks
 /// around a mission's puzzle ([SeasonCatalog.talkMission]), as the mission
@@ -92,11 +110,12 @@ final talkMissionOfProvider = Provider<TalkMission? Function(Mission m)>((ref) =
 /// Every season of the game, in play order.
 final seasonsProvider = Provider<List<Season>>((ref) => [for (final s in SeasonCatalog.all) s.season]);
 
-/// Every case of the season being played, in case order. Every page of a
-/// case (case files, map, notebook, report) reads its cases here.
+/// Every case of the season being played, in case order, in its level's
+/// words. Every page of a case (case files, map, notebook, report) reads its
+/// cases here.
 final episodeCatalogProvider = Provider<List<Episode>>((ref) {
   final seasonId = ref.watch(selectedSeasonIdProvider);
-  return [for (final e in ref.watch(allEpisodesProvider)) if (e.seasonId == seasonId) e];
+  return [for (final e in ref.watch(playedEpisodesProvider)) if (e.seasonId == seasonId) e];
 });
 
 /// The case [evidenceId] was found in (its glossary explains its words), or
@@ -338,7 +357,9 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
         repo.load().isCaseSolved) {
       season = season.markSolved(AppConstants.currentEpisodeId);
     }
-    final catalog = ref.read(episodeCatalogProvider);
+    // The season's cases as they are (the base): the record never waits on
+    // the words (which depend on the season's level, read from this record).
+    final catalog = SeasonAvailability.casesOf(_seasonId, ref.read(allEpisodesProvider));
     if (catalog.isNotEmpty && !catalog.any((e) => e.id == season.activeEpisodeId)) {
       season = season.copyWith(activeEpisodeId: catalog.first.id);
     }
@@ -389,7 +410,12 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
   /// of the season opens. This is the one place that decides it: the case
   /// files, the case-file link and [GameController.openEpisode] all ask here.
   bool isUnlocked(String episodeId) =>
-      unlockRule(ref.read(episodeCatalogProvider), state, episodeId, operator: ref.read(operatorAccessProvider));
+      unlockRule(
+        SeasonAvailability.casesOf(_seasonId, ref.read(allEpisodesProvider)),
+        state,
+        episodeId,
+        operator: ref.read(operatorAccessProvider),
+      );
 
   /// [isUnlocked] for any season record (the season board also asks it of
   /// the season as it was a moment ago, to animate what just opened).

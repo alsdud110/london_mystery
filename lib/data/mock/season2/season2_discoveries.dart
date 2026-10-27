@@ -1,5 +1,6 @@
 import '../../models/discovery.dart';
 import '../../models/episode.dart';
+import '../../models/mission.dart';
 
 /// What kind of discovery each regular mission of Season 2 gives, by
 /// mission id: its Discovery Moment then names it (DEDUCTION, CLUE FOUND,
@@ -63,12 +64,19 @@ const Map<String, DiscoveryType> season2DiscoveryTypes = {
   's2_ep12_m3': DiscoveryType.evidenceFound, // the machine, fixed
 };
 
+/// The Discovery Moment of Season 2's regular mission [m] (null: none): its
+/// kind ([season2DiscoveryTypes]) and its own success line — read from [m]
+/// as it is played, so at its level (never a line made earlier from the
+/// game's own words).
+Discovery? season2DiscoveryOf(Mission m) => switch (season2DiscoveryTypes[m.id]) {
+  final type? => Discovery(type: type, timing: DiscoveryTiming.fromPuzzle, title: m.successMessage, detail: ''),
+  null => null,
+};
+
 /// The Discovery Moments of Season 2's regular missions in [cases] (case id
-/// → case json): each its kind ([season2DiscoveryTypes]) and its own success
-/// line.
+/// → case json), at the game's own words (see [season2DiscoveryOf]).
 Map<String, Discovery> season2DiscoveriesOf(Map<String, Map<String, dynamic>> cases) => {
   for (final json in cases.values)
     for (final m in Episode.fromJson(json).missions)
-      if (season2DiscoveryTypes[m.id] case final type?)
-        m.id: Discovery(type: type, timing: DiscoveryTiming.fromPuzzle, title: m.successMessage, detail: ''),
+      m.id: ?season2DiscoveryOf(m),
 };

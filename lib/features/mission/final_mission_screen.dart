@@ -393,7 +393,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
   /// earlier case's given on it (Case 08: Case 07's Amendment Slip).
   Map<String, Evidence> _boardEvidence(EvidenceBoardSpec board) {
     final all = {
-      for (final episode in ref.read(allEpisodesProvider))
+      for (final episode in ref.read(playedEpisodesProvider))
         for (final e in episode.allEvidence) e.id: e,
       for (final e in ref.read(currentEpisodeProvider).allEvidence) e.id: e,
     };

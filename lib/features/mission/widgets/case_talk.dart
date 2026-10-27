@@ -633,7 +633,7 @@ class _EvidenceChoice extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final all = {
-      for (final e in ref.watch(allEpisodesProvider))
+      for (final e in ref.watch(playedEpisodesProvider))
         for (final v in e.allEvidence) v.id: v,
     };
     final told = missed >= 2 && present.tell != null;
@@ -776,7 +776,7 @@ class _CaseEndingState extends ConsumerState<CaseEnding> {
     final evidence = line.evidenceId == null
         ? null
         : [
-            for (final e in ref.watch(allEpisodesProvider))
+            for (final e in ref.watch(playedEpisodesProvider))
               for (final v in e.allEvidence)
                 if (v.id == line.evidenceId) v,
           ].firstOrNull;

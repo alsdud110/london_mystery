@@ -81,7 +81,7 @@ List<HeldEvidence> heldEarlierEvidence(WidgetRef ref, Iterable<String> ids) {
   final repo = ref.read(progressRepositoryProvider);
   return earlierSeasonEvidence(
     ids: ids,
-    allEpisodes: ref.read(allEpisodesProvider),
+    allEpisodes: ref.read(playedEpisodesProvider),
     seasonId: ref.read(selectedSeasonIdProvider),
     solved: (e) => repo.loadSeason(e.seasonId).isSolved(e.id),
     reference: ref.read(operatorAccessProvider) || ref.read(seasonPreviewProvider),

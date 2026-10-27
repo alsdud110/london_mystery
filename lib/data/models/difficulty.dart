@@ -36,4 +36,13 @@ enum Difficulty {
 
   /// The level saved as [id]; anything unreadable is [standard].
   static Difficulty parse(Object? id) => tryParse(id) ?? standard;
+
+  /// Where this level's words are looked for, first to last, before the
+  /// game's own words (the base, which is Rookie's): Master falls back on
+  /// Junior's words, then the base; Junior and Rookie on the base.
+  List<Difficulty> get fallbackChain => switch (this) {
+        rookie => const [rookie],
+        junior => const [junior],
+        master => const [master, junior],
+      };
 }

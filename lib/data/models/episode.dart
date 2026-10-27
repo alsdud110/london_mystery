@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'difficulty.dart';
 import 'mission.dart';
 import 'season.dart' show SeasonIds;
 
@@ -21,7 +22,12 @@ class Episode {
     this.introScene,
     this.place,
     this.seasonId = SeasonIds.london,
+    this.difficulty = Difficulty.standard,
   });
+
+  /// The level whose words this case carries (its missions carry it too).
+  /// Never part of [toJson] (see [Mission.difficulty]).
+  final Difficulty difficulty;
 
   final String id;
 
@@ -86,15 +92,20 @@ class Episode {
 
   String get numberLabel => number.toString().padLeft(2, '0');
 
-  factory Episode.fromJson(Map<String, dynamic> json) => Episode(
+  /// [difficulty]: the level the JSON's words were chosen for (see
+  /// `DifficultyContent.episodeAt`), carried by the case and its missions.
+  factory Episode.fromJson(Map<String, dynamic> json, {Difficulty difficulty = Difficulty.standard}) => Episode(
+        difficulty: difficulty,
         id: json['id'] as String,
         number: json['number'] as int,
         title: json['title'] as String,
         synopsis: (json['synopsis'] as List).cast<String>(),
         objectives: (json['objectives'] as List).cast<String>(),
         intro: (json['intro'] as List).cast<String>(),
-        missions: [for (final m in json['missions'] as List) Mission.fromJson(m as Map<String, dynamic>)],
-        finalMission: Mission.fromJson(json['finalMission'] as Map<String, dynamic>, finale: true),
+        missions: [
+          for (final m in json['missions'] as List) Mission.fromJson(m as Map<String, dynamic>, difficulty: difficulty),
+        ],
+        finalMission: Mission.fromJson(json['finalMission'] as Map<String, dynamic>, finale: true, difficulty: difficulty),
         glossary: {
           for (final e in (json['glossary'] as Map? ?? const {}).entries)
             e.key.toString().toLowerCase(): e.value.toString(),

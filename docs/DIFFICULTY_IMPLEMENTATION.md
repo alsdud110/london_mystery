@@ -316,7 +316,7 @@ enum Difficulty {
 | PART 2 | 프로필 생성 난이도 UI | **COMPLETED** (2026-10-27) |
 | PART 3 | 시즌 난이도 변경 및 초기화 정책 | **COMPLETED** (2026-10-27) |
 | PART 4 | 개발자 모드 개선 | **COMPLETED** (2026-10-27) |
-| PART 5 | 난이도별 영어 콘텐츠 시스템 | NOT STARTED |
+| PART 5 | 난이도별 영어 콘텐츠 시스템 | **COMPLETED** (2026-10-27) |
 | PART 6 | London Season 1 콘텐츠 적용 (Case 단위 세분 가능) | NOT STARTED |
 | PART 7 | Paris Season 2 콘텐츠 적용 및 최종 검증 (Case 단위 세분 가능) | NOT STARTED |
 
@@ -453,63 +453,134 @@ enum Difficulty {
   - `test/developer_session_test.dart` **9 passed** — 요청 1~37 대응: 프로필 격리(TESTER/BOY/Rookie, 종료 후 KIM/GIRL/Junior·이름 표시 복원), 진행 격리(London·Paris Case, 미션·Final, 증거, 코인, 힌트 구매, 시즌 완료, 실제 데이터 불변), 재진입 초기화(첫 상태·진행 후 종료·재진입 시 Mission 1부터·같은 세션 페이지 이동/rebuild 유지·앱 재시작 시 세션 없음), 난이도(Rookie 기본·Junior·Master, 진행 중 Case 재시작·Mission 1부터, 확인창 없음, 실제 난이도 유지), 스냅샷 바이트 동일(How to Play 포함), 기존 도구(CASE NN부터·바로가기·처음부터·OPERATOR MODE를 테스트 세션에서), 플레이어 Game Master에는 도구 없음·함수 호출 거부, NEW ADVENTURE·다음 플레이어 초기화 동작 유지, 시스템 Back으로 종료, 탐정 없는 기기에서 진입.
   - `flutter analyze` → **No issues found**
   - 전체 `flutter test` → **2331 passed, 0 failed, 0 skipped**(약 4분 8초). **기존 테스트 수정·삭제·skip 없음.**
-- **커밋 해시**: PART 4 커밋(메시지 `feat: isolate and reset developer test sessions`) — **PART 5 작업자가 `git log --oneline --grep "developer test sessions"`로 확인해 이 칸을 채운다.**
+- **커밋 해시**: `1f144ed6130899375bdc1c21033f4347da0b8904` (`feat: isolate and reset developer test sessions`) — PART 5 커밋에서 기록. 이후 정책 승인(Q1·Q2·Q8) 문서 커밋 `6c99c63`("파트4 정책 설정", 사용자 커밋).
 - **남은 위험·미해결**:
   - 기존 도구 UI 테스트(`playtest_tools_test`, `case_shortcuts_test`, `operator_access_test` 등)는 호스트 없이 실행되어 **예전처럼 그 컨테이너의 저장소에 쓰는 동작**을 검사한다(앱에는 항상 호스트가 있어 플레이어 세션에서는 도구가 보이지도 동작하지도 않음). 호스트가 있는 실제 구성은 `developer_session_test`가 검사.
   - 테스트 세션의 소리 켜기/끄기는 메모리 설정만 바뀌고, 공유 오디오는 플레이어의 소리 설정을 따른다(기기 설정 공유 — 의도).
   - 실기기(Android Back·iOS)에서 확인하지 않음. 앱이 백그라운드로 가면 테스트 세션의 시계만 멈춤(플레이어 시계는 이미 보류 상태).
   - PART 5에서 난이도별 콘텐츠를 만들 때 `allEpisodesProvider`를 **각 컨테이너 안에서** 난이도로 파생해야 한다 — 지금 테스트 세션은 플레이어 컨테이너의 `allEpisodesProvider` 값을 복사해 쓴다(G 참고).
 
-<!-- PART 5 이후 작업자는 아래에 같은 형식으로 추가한다 -->
+### PART 5 — 난이도별 영어 콘텐츠 선택 엔진
+- **작업 날짜**: 2026-10-27
+- **시작 상태**: `main`, HEAD `6c99c63`(Q1·Q2·Q8 승인 문서), 미커밋 `.claude/settings.json`만(커밋하지 않음). 문서와 코드 대조: 정적 조회는 "약 112곳"이 아니라 **`SeasonCatalog`의 미션별 표 조회 53개 메서드**(한 파일 `lib/data/mock/season_catalog.dart`)를 화면 쪽이 호출하는 구조 — 공통 진입점은 이 53개 메서드. 앱 코드에서 `SeasonCatalog`를 우회하는 조회(`clockPuzzleOf`, `learningOf`, `discoveryOf`)는 **테스트에서만** 쓰임(기준본 확인용, 그대로 둠).
+- **콘텐츠 경로 조사 결과**:
+  - Map(JSON) 콘텐츠: 사건·미션·선택지·단서·증거·힌트·오답 줄·스토리·편지·전환 문장 = `season{1,2}/episodeNN_mock.dart` → `MockEpisodeRepository.bundled()` → `main.dart`에서 `allEpisodesProvider`로 미리 로드 → 화면은 `episodeCatalogProvider`/`currentEpisodeProvider`(사건 파일·지도·미션·Final·Story·Notebook·Case Closed·부모 보고서 `DetectiveReport.from(currentEpisode)`)로 읽음.
+  - Dart 객체 콘텐츠: 퍼즐·대화·EasySteps·Discovery(Season 1)·학습 설계 등 53개 표(`SeasonContent.missionTables`) → `SeasonCatalog.xxx(Mission m)`.
+  - 사건 ID·증거 ID로 찾는 표(`introPictures`·`introPlaques`·`introPapers`·`evidenceArt`·`evidenceLinks`·`languageTopics`), 시즌 프롤로그(`season1InfoJson['prologue']`, `season2PrologueJson`)는 **아직 난이도 비대상**(기준본만) — 대부분 그림·한국어·조작 문구. 필요하면 PART 6~7에서 같은 방식으로 확장(G 참고).
+  - Paris Discovery 제목: 기존 `season2DiscoveriesOf(season2Json)`이 **앱 시작 시 기준본 `successMessage`로 미리 만든 표** → 난이도 문장이 적용되어도 기준본 제목이 남는 경로였다(확인).
+- **구현 — 엔진 구조**(`lib/data/content/difficulty_content.dart`, `DifficultyContent`, 순수 함수 — 난이도를 들고 있지 않음):
+  1. **기준 콘텐츠**(불변): 기존 사건 JSON·표 = Rookie 기준본(Q1).
+  2. **난이도별 override 데이터**(시즌별): `SeasonContent.casePatches`(난이도 → 사건 ID → 사건 JSON 패치), `SeasonContent.variants`(난이도 → 그 난이도에서 달라지는 표 항목만 담은 `SeasonContent`), `SeasonContent.writtenLevels`(사건 ID → 다 작성했다고 표시한 난이도, PART 6~7이 채움).
+  3. **세션별 최종 콘텐츠**: `playedEpisodesProvider`(`game_providers.dart`) = 기준 사건 목록(`allEpisodesProvider`)의 각 사건을 **그 사건 시즌의 유효 난이도**(`seasonDifficultyProvider` — PART 3 API 재사용: 시즌 고정값 → 시작 전이면 프로필 → Rookie)로 `DifficultyContent.episodeAt` 해 만든 목록. `episodeCatalogProvider`(→ `currentEpisodeProvider`)가 이것을 쓴다. 새 난이도 저장값 없음.
+- **Fallback**(`Difficulty.fallbackChain`): Rookie = Rookie override → 기준본 / Junior = Junior override → 기준본 / Master = Master override → Junior override → 기준본. Map은 **필드 단위**(체인을 뒤에서부터 차례로 덮음), Dart 객체는 **객체 단위**(그 난이도의 표에 항목이 있으면 그 객체 전체).
+- **Map 기반 적용**: 패치 형식 `{'<사건 텍스트 필드>': …, 'glossary': {단어: 뜻}, 'missions': {'<미션 id>': {'<미션 텍스트 필드>': …, 'options': {'<옵션 id>': {'label'|'feedback'|'altText': …}}, 'feedback': {'<기존 오답 문자열>': '<줄>'}, 'clue': {'title'|'note'}, 'evidence': {'name'|'description'}, 'recall': {'title'|'prompt'|'miss'}}}}`. 허용 필드: 사건 `title, synopsis, objectives, intro, caseSummary, keyWords, hook, place` + glossary(추가) / 미션 `title, location, story, letterIntro, letter, question, prompt, hints, successMessage, transition, orderFeedback` + 위 부분들. **보호(변경 불가)**: 사건·미션·옵션·단서·증거 ID, `answer`, `acceptedAnswers`, `codeLength`, `codeFormat`, `dialSymbols`, `type`, `scene`, `nextMissionId`, `skills`, 지도 좌표, `Clue.value/symbol`, `Evidence.inscription/icon/symbols`(일부 글귀가 퍼즐 데이터), 옵션 수·순서·그림, 오답 줄의 **키**(오답 문자열), 힌트 **개수**, `hideOptionNames`, `recall.evidence`. 허용되지 않은 것은 **적용하지 않고**(`apply`가 건너뜀) `DifficultyContent.problems()`가 오류로 보고 → 테스트가 빈 목록을 강제. 기준 JSON은 복사 후 적용(불변).
+- **Dart 객체 적용**: `Mission`·`Episode`에 직렬화하지 않는 `difficulty` 필드 추가(`toJson` 불변 → 기존 FNV 해시 테스트 그대로). `SeasonCatalog`의 53개 미션별 조회를 공통 `_pick(m, table)`로 교체 — 미션의 난이도 체인대로 `variants`를 먼저 보고 없으면 기준 표. **호출부 무수정**. 표시 문장과 판정 값 분리: 선택지 판정은 원래 옵션 **id**, 입력형은 `answer`/`acceptedAnswers`(보호), 오답 줄은 키 보호·값만 변경 → 이번 PART에 퍼즐 리팩터링 불필요. 객체 구조 검증: `DifficultyContent.structureOf`(현재 `ClockPuzzle`·`Discovery`·`LearningObjective`) — 구조 검사가 없는 종류의 난이도 객체는 **오류로 보고**(PART 6~7이 쓰는 종류마다 추가), 기준과 다른 타입·기준에 없는 항목도 오류.
+- **세션 격리**: 전역 상태 없음 — 난이도는 `Mission/Episode` 객체에 실려 다니고, 최종 목록은 각 컨테이너의 `playedEpisodesProvider`가 계산. `DevSessionHost`는 플레이어 컨테이너의 **기준** 목록(`allEpisodesProvider`)만 복사하고(PART 4 그대로), 테스트 세션은 자기 TESTER 난이도로 직접 계산 → PART 4 위험 해소. 순환 의존을 막기 위해 구조만 쓰는 곳(`SeasonNotifier._fromSaves`·`isUnlocked`, 시즌 해금·상태 계산)은 기준 목록을 읽는다. 다른 사건의 증거 글을 보여 주는 곳(`final_mission_screen` 증거판, `evidence_recall`, `easy_steps`, `case_talk`)은 `playedEpisodesProvider`로 변경.
+- **힌트(Q2)**: 힌트 문구는 미션 패치의 `hints`(개수 같아야 적용·검증), EasySteps 등 객체 힌트는 객체 variant. 가격(`tipPrices`)·코인·구매 기록(`tip:<missionId>:<n>` — 미션 id 기준이라 난이도와 무관)·사용 단계·해금 조건 **불변**, UI 변경 없음.
+- **부모 보고서(Q8)**: 학습 설계도 미션별 표(`learning`)라 `variants[level].learning`으로 난이도별 표현을 둔다. 보고서는 `currentEpisodeProvider`(= 그 시즌 유효 난이도의 사건)로 만들어 지므로 **완료·고정된 시즌은 프로필이 바뀌어도 그 시즌 난이도의 표현**(테스트). 일치성 검사 `LearningCheck`(`lib/data/content/learning_check.dart`): 소문자화, 둥근 따옴표 정규화, 단어 안 아포스트로피만 유지(인용 부호는 구분자), 그 밖의 기호는 공백, 공백 압축, **단어 경계 일치**(`hour`는 `hours`에 없음); 검사 범위 = 미션 화면 텍스트(스토리·편지 앞말·편지·질문·prompt·선택지·힌트) + `recallFrom` 미션의 보관 텍스트(단서·증거 포함). 테스트가 **두 시즌 모든 미션 × 세 난이도**를 검사(제외 없음).
+- **Paris Discovery**: 미리 만든 표를 없애고 `SeasonContent.discoveryOf`(Season 2 = `season2DiscoveryOf(m)`)가 **플레이 중인 미션의 `successMessage`로 즉석 생성** → 기준본 제목 누출 경로 제거. `SeasonCatalog.discovery(m)` 순서: 난이도별/기준 표 → `discoveryOf(m)` → fallback. 테스트: Paris 모든 미션 × 세 난이도에서 제목 = 그 난이도 미션의 success 줄.
+- **콘텐츠 완료 검증(fallback이 누락을 숨기지 않게)**: `DifficultyContent.missingAt(caseId, level)` — Junior·Master에서 그 난이도 **자신의** 문장이 없는 텍스트(사건 intro·synopsis, 미션 story·letterIntro·letter·question·prompt·hints·successMessage·transition, 그림 전용 표를 뺀 모든 미션별 표 항목)를 나열. Master가 Junior 문장으로 대체되는 것도 "누락"으로 셈. Rookie는 기준본이 Rookie라 요구 없음(Q1 — 검토 표시만). `writtenLevels`에 표시한 사건·난이도는 테스트가 `missingAt` 빈 목록을 강제.
+- **샘플 적용 미션**(실제 콘텐츠):
+  - **London Case 02 M1 `ep02_m1`**(Map + Dart 객체): Junior·Master의 story, letter(`{detectiveName}` 유지), question, hints(2개), 오답 줄(815·832·917 키 유지), successMessage; Junior만 transition(→ Master는 Junior 문장으로 대체 — 실제 데이터로 fallback 확인); 객체 `ClockPuzzle`(question·lead, 조작 안내 guide는 모든 난이도 동일); 학습 표현(그 난이도 편지 속 표현). 사실·정답(8:17, 입력 817)·단서·증거 불변, 9:17 미노출. 파일 `lib/data/mock/season1/season1_difficulty.dart`.
+  - **Paris Case 01 M1 `s2_ep01_m1`**(Map + Discovery): Junior·Master의 story, question, hints, successMessage(= Discovery 제목), 학습 표현. 안내문·시계 시각·정답(옵션 c)·단서 T·증거 불변. 파일 `lib/data/mock/season2/season2_difficulty.dart`.
+  - Rookie override는 **출고 콘텐츠에 넣지 않음**(기존 사용자 화면 불변, Q1 — Rookie 검토는 PART 6~7). Rookie override 동작은 테스트용 합성 패치로 검증. 기존 문장 고정 테스트 갱신 없음.
+- **콘텐츠 불변 조건 검증**: 두 시즌 모든 사건 × 세 난이도에서 `structureOfEpisode`(사건 ID·번호, 미션 ID·순서·타입·정답·허용 답·코드 길이·형식·다이얼 기호·옵션 id 순서·그림·힌트 개수·단서 id/value·증거 id/글귀·다음 미션·스킬·지도 좌표·오답 키·recall) 동일, 코인(`coinsFor`)·Final 여부 동일, `AnswerChecker` 판정 동일(샘플), 옵션 수·순서 동일, 힌트 개수·가격·구매 상태 동일.
+- **변경 파일**:
+  - 신규 `lib/data/content/difficulty_content.dart`, `lib/data/content/learning_check.dart`, `lib/data/mock/season1/season1_difficulty.dart`, `lib/data/mock/season2/season2_difficulty.dart`
+  - 수정 `lib/data/models/difficulty.dart`(`fallbackChain`), `lib/data/models/mission.dart`·`episode.dart`(비직렬화 `difficulty`), `lib/data/mock/season_catalog.dart`(`casePatches`·`variants`·`discoveryOf`·`writtenLevels`·`missionTables`, `_pick`, 53개 조회, discovery), `lib/data/mock/season2/season2_discoveries.dart`(`season2DiscoveryOf`), `lib/features/game/game_providers.dart`(`playedEpisodesProvider`, `episodeCatalogProvider`, 시즌 기록의 기준 목록 사용), `lib/features/mission/final_mission_screen.dart`, `lib/features/mission/widgets/evidence_recall.dart`·`easy_steps.dart`·`case_talk.dart`(증거 글 = played)
+  - 신규 테스트 `test/difficulty_content_test.dart`(29)
+  - 문서 `docs/DIFFICULTY_IMPLEMENTATION.md`, `PROJECT_CONTEXT.md`
+- **테스트 결과**(실제 실행):
+  - `test/difficulty_content_test.dart` **29 passed** — 요청 A~G 1~39 대응 + 완료 검증 + 실제 화면(Case 02 M1 시계 퍼즐이 세 난이도 각각의 문장으로 표시).
+  - `flutter analyze` → **No issues found**
+  - 전체 `flutter test` → **2360 passed, 0 failed, 0 skipped**(약 4분 23초). **기존 테스트 수정·삭제·skip 없음**(기존 FNV 해시·개인화 줄·학습 표현·Discovery·Paris UX 테스트 모두 그대로 통과).
+- **커밋 해시**: PART 5 커밋(메시지 `feat: add difficulty-aware content architecture`) — **PART 6 작업자가 `git log --oneline --grep "difficulty-aware content"`로 확인해 이 칸을 채운다.**
+- **남은 위험·미해결**:
+  - 구조 검사(`structureOf`)가 있는 객체 종류는 3개뿐 — 다른 종류(대화·EasySteps·Paris 장면 등)에 난이도 객체를 넣으면 `problems()`가 오류를 내므로 PART 6~7에서 종류별로 구조 추출(정답·단계 수·선택지 수/순서)을 먼저 추가해야 한다. 특히 `StationClocksScene` 같은 Paris 장면은 텍스트와 정답 데이터(시계 시각 등)가 한 객체에 섞여 있고 `copyWith`가 없어, 변형을 만들 때 구조 필드를 그대로 옮겨 써야 한다.
+  - 사건/증거 ID 기준 표·시즌 프롤로그·위젯 하드코딩 문구는 난이도 비대상(위 조사 결과).
+  - `playedEpisodesProvider`는 시즌 난이도가 바뀔 때 24개 사건을 JSON 왕복으로 다시 만든다(시즌 난이도는 드물게 바뀜). 성능은 따로 측정하지 않았다 — 전체 테스트 시간은 PART 4(약 4분 8초)와 비슷한 약 4분 23초.
+  - 실기기 확인 없음.
+
+<!-- PART 6 이후 작업자는 아래에 같은 형식으로 추가한다 -->
 
 ---
 
 ## G. 다음 세션 인수인계
 
 ### 현재 완료된 PART
-**PART 0**(`042afac`), **PART 1**(`8c9b4c8`), **PART 2**(`0da1dac`), **PART 3**(`19c1801`), **PART 4**(개발자 테스트 세션 격리, 커밋 `feat: isolate and reset developer test sessions` — 해시는 `git log --oneline --grep "developer test sessions"`).
-지금 상태: 난이도는 프로필·시즌별로 저장·고정·변경되고(PART 1~3), 개발자 모드는 TESTER 메모리 세션에서 난이도를 바꿔 볼 수 있다(PART 4). **하지만 게임의 영어 문장은 아직 모든 난이도에서 같다.** "지금 적용할 난이도"는 `currentDifficultyProvider`(선택 시즌의 실효 난이도, `game_providers.dart`)가 이미 알려 준다.
+**PART 0**(`042afac`), **PART 1**(`8c9b4c8`), **PART 2**(`0da1dac`), **PART 3**(`19c1801`), **PART 4**(`1f144ed`), 정책 승인 문서(`6c99c63`), **PART 5**(난이도별 콘텐츠 엔진, 커밋 `feat: add difficulty-aware content architecture` — 해시는 `git log --oneline --grep "difficulty-aware content"`).
+지금 상태: 엔진·검증 도구가 있고, 실제 난이도 문장은 샘플 2개(London `ep02_m1`, Paris `s2_ep01_m1`)의 일부 필드뿐. 나머지는 모두 기준본(Rookie)으로 대체된다.
 
 ### 다음 PART
-**PART 5 — 난이도별 영어 콘텐츠 시스템** (구조만. London·Paris 전체 문장 작성은 PART 6·7)
+**PART 6 — London Cases 01~12 영어 콘텐츠** (6A: 01~03 / 6B: 04~06 / 6C: 07~09 / 6D: 10~12, 묶음마다 테스트·문서·개별 커밋)
 
-### PART 5 전제 — 사용자 확정 (2026-10-27, 섹션 I)
-- **Q1 = 예**: 기존 영어 = Rookie 기준본(base). PART 6~7에서 Rookie 문장도 검토하므로 **구조는 Rookie 변형도 허용**(대체 순서 `Master → Junior → base`, `Rookie → base`). Rookie 변형을 실제로 넣는 것은 PART 6~7(넣으면 그 사건의 해시·문자열 고정 테스트를 의도적으로 갱신·기록).
-- **Q2 = 문구 + 기존 UI 범위 안의 강조**: 힌트 개수·가격·정답 불변. 난이도별로 힌트·안내 문구의 **직접성**만 다르게(Rookie = 가장 직접적, Master = 가장 간접적이되 조작 안내는 명확). 새 UI 요소·새 힌트 단계는 만들지 않는다.
-- **Q8 = 예**: 부모 보고서의 학습 영어 표현은 **실제 플레이 난이도**(그 사건 시즌의 고정 난이도, `seasonDifficultyProvider`)에 맞춘다 → PART 5 범위에 "난이도별 학습 표현 구조 + `learning_objectives_test`를 난이도별로 확장(표현이 그 난이도의 실제 문장에 있는지)" 추가. 내용 작성은 PART 6~7. 관련 파일: `lib/data/models/learning.dart`, `season1_learning.dart`, `season2_learning.dart`, `lib/features/result/detective_report.dart`·`parent_report_screen.dart`.
+### 각 묶음에서 할 일
+1. Rookie 기준본 검토·개선(Q1) — 바꾸기로 한 문장은 **Rookie 패치**로 넣는 것을 우선(기준 JSON 불변 → 기존 해시 유지). 기준 JSON 자체를 고치면 `test/final_small_pass_test.dart`의 사건 FNV 해시와 문자열 단언, `test/personalized_lines.dart`를 **의도적으로** 갱신하고 F에 기록.
+2. Junior·Master 문장 작성(사건 `intro`·`synopsis`, 각 미션 `story`·`letterIntro`·`letter`·`question`·`prompt`(있으면)·`hints`(개수 동일)·`successMessage`·`transition`, 필요하면 선택지 `label`·오답 줄 값·단서 `title/note`·증거 `name/description`).
+3. 힌트 직접성(Q2): Rookie 직접·구체 / Junior 단계적 / Master 간접·추론 중심. 조작 안내(“Drag…”, “Tap…”)는 모든 난이도에서 명확하게 — 보통 그대로 둔다.
+4. 퍼즐 객체(그 사건 미션이 쓰는 `SeasonContent.missionTables` 항목: 대화·탐색·EasySteps·Discovery·시계 등)의 Junior·Master 객체 — **먼저 그 종류의 `DifficultyContent.structureOf`를 추가**(정답·단계 수·선택지 id 순서·그림처럼 바뀌면 안 되는 것만 뽑는 문자열). 없으면 `problems()`가 오류.
+5. 학습 표현(Q8): `variants[level].learning[미션]` — 표현은 **그 난이도의 실제 문장**에 단어 단위로 있어야 함(`LearningCheck`, 테스트 F-36이 자동 검사).
+6. 다 쓴 사건은 `season1Content`의 `writtenLevels: {'ep0N': {Difficulty.junior, Difficulty.master}}`(Rookie 검토 끝나면 `Difficulty.rookie`도)에 표시 → 테스트가 `DifficultyContent.missingAt` 빈 목록을 강제(대체로 숨지 못함). 섹션 H 표 갱신.
+7. 관련 테스트(아래) + 전체 회귀, 문서(E·F·G·H), PROJECT_CONTEXT, 묶음별 커밋(푸시 없음).
 
-### PART 5 작업 범위 (D-4·D-5 설계를 코드로)
-1. **텍스트 선택 구조**: base(=현재 콘텐츠) + 난이도별 변형(Junior·Master, Q1 답에 따라 Rookie 패치 가능). 변형이 없으면 `Master → Junior → base` 순으로 대체(`Difficulty.fallbackChain` 추가).
-2. **JSON 콘텐츠(사건·미션·단서·증거)**: 사건 ID → 패치 맵을 base JSON에 깊은 병합(목록 원소는 `id`로 매칭) 후 `Episode.fromJson`. **텍스트 키 화이트리스트만 허용**, 정답·구조 키(`answer`, `acceptedAnswers`, `codeLength`, `dialSymbols`, `nextMissionId`, `id`, `value`, 옵션 수·순서, 증거 id)는 패치 금지(테스트로 강제). `Mission.feedback`은 **키 = 오답 문자열**이라 값만 변경.
-3. **타입 객체(약 60개 부가 테이블: 대화·EasySteps·퍼즐 장면)**: `SeasonContent`에 난이도별 대체 테이블(객체 통째 교체). `Mission`·`Episode`에 직렬화하지 않는 `difficulty` 필드를 두고(`toJson`에 넣지 않음 → `final_small_pass_test` FNV 해시 불변) `SeasonCatalog.xxx(Mission m)`가 `m.difficulty`로 고르게 → **약 112개 호출부 무수정**. 사건 ID로 찾는 테이블은 `Episode.difficulty` 사용.
-4. **난이도 반영 위치**: `allEpisodesProvider`(현재 `main.dart`에서 미리 만든 카탈로그로 override)를 "base 카탈로그 + 시즌별 실효 난이도(`seasonDifficultyProvider`)로 파생"으로 바꾼다. **PART 4 주의**: `DevSessionHost`는 테스트 세션에 플레이어 컨테이너의 `allEpisodesProvider` **값**을 복사해 넣는다(`dev_session.dart` `_newTestSession`). 난이도 파생을 `allEpisodesProvider` 자체에 넣으면 테스트 세션이 플레이어의 난이도로 고정된 카탈로그를 받게 되므로, **base 카탈로그용 Provider를 따로 두고(그것을 복사) 난이도 파생 Provider는 각 컨테이너 안에서 계산**되게 할 것. 개발자 모드 TEST LEVEL로 문장이 바뀌는지 테스트.
-5. **파생 텍스트**: Season 2 Discovery 제목은 `season2DiscoveriesOf(season2Json)`(`season_catalog.dart`)가 **base `successMessage`로 정적 생성** → 난이도 적용 미션으로 다시 만들어야 한다. `Mission.answerLabel`(GM 정답표)은 base 유지 가능.
-6. **단어 뜻(롱프레스) 호환**: 난이도 패치는 사건 `glossary`에 단어를 **추가**(삭제 없음). `GlossaryText`는 `widget.episode ?? currentEpisodeProvider`의 glossary를 쓰므로 난이도 적용 `Episode`가 흘러가면 자동. Master의 어려운 단어가 glossary에 있는지 검사하는 테스트 도입 검토.
-7. **힌트 구조**: 미션당 힌트 **개수·가격(`tipPrices`)·XP·코인 불변**, 문구만 난이도별(Q2 답에 따라 UI 강조 차이). 모든 난이도에서 "힌트·스토리가 정답을 말하지 않음"(`season_content_test` 규칙) 검사 확장.
-8. **불변 조건 테스트**: 모든 난이도에서 정답·선택지 수/순서·증거 ID·단서 value·미션 수·힌트 개수가 base와 같음. 타입 객체는 모델별 구조 추출 비교. 커버리지 테스트로 섹션 H 표와 실제 변형 존재를 맞춤.
-9. **샘플**: 미션 1~2개에만 Junior·Master 변형을 넣어 파이프라인 검증(전체 작성은 PART 6·7). 위젯 하드코딩 영어(약 360개, 대부분 조작 안내)는 목록화만 — 조작 안내는 난이도와 무관하게 동일 유지가 원칙.
+### 콘텐츠 추가 API·데이터 형식 (예시)
+파일: `lib/data/mock/season1/season1_difficulty.dart`(커지면 `season1/difficulty/ep03.dart` 등으로 나누고 여기서 합치기).
+```dart
+const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
+  Difficulty.junior: {
+    'ep03': {
+      'intro': ['…', '…'],                       // 사건 텍스트: 값 전체를 교체
+      'glossary': {'footprint': '발자국'},        // 단어 뜻: 추가(삭제 없음)
+      'missions': {
+        'ep03_m1': {
+          'story': ['…'], 'letter': '…{detectiveName}…', 'question': '…',
+          'hints': ['…', '…'],                    // 기준본과 같은 개수
+          'successMessage': '…', 'transition': ['…'],
+          'options': {'b': {'label': '…', 'feedback': '…'}},   // 옵션 id로
+          'feedback': {'KINGS CROSS': '…'},       // 키 = 기준본의 오답 문자열 그대로
+          'clue': {'note': '…'}, 'evidence': {'description': '…'},
+        },
+      },
+    },
+  },
+  Difficulty.master: { /* 같은 형식. 비운 필드는 Junior → 기준본으로 대체 */ },
+};
 
-### PART 5 주의 사항
-- 위젯에 미션별/난이도별 분기 금지(콘텐츠는 데이터). 탐정 이름 치환(`{detectiveName}`, `DetectiveName`)은 모든 난이도 동일 규칙.
-- 기존 콘텐츠 고정 테스트: `test/final_small_pass_test.dart`(FNV 해시 — base `toJson` 불변이면 유지), `test/personalized_lines.dart`, `test/season_content_test.dart`, `test/learning_objectives_test.dart`(expressions가 미션 영어의 부분 문자열 — base 기준).
-- 추리 보호 규칙(PROJECT_CONTEXT *핵심 Reasoning 구조*·*Continuity Guardrails*: Case 06 grey/hat/card, 07 old gate, 08 button/coat/red 등 금지어, 02 after·09 whose·04 never sleep 표현 연결)은 변형 텍스트에도 적용 — PART 5에서 검사 틀을 만들어 PART 6·7이 쓰게.
-- Season 2 콘텐츠를 만질 때는 `docs/SEASON2_PARIS_STORY_BIBLE.md` 먼저(CLAUDE.md 22절).
-- 개발자 테스트 세션(PART 4)과 플레이어 세션은 컨테이너가 다르다 — 정적 전역 상태(예: `SeasonCatalog`의 static 캐시)에 "현재 난이도"를 두지 말 것(두 세션이 섞인다). 난이도는 `Mission/Episode` 객체에 실어 보낸다.
-- 기존 미커밋 파일(`.claude/settings.json`)은 커밋하지 않는다. 원격 푸시 금지. F의 PART 4 커밋 해시 칸을 채운다.
+const Map<Difficulty, SeasonContent> season1Variants = {
+  Difficulty.junior: SeasonContent(info: {}, episodes: {},
+    dialogues: {'ep06_m1': DialogueScene(/* 구조 필드는 기준본과 동일하게 */)},
+    discoveries: {'ep03_m1': Discovery(/* type·timing·showEvidence·seasonClue 동일 */)},
+    learning: {'ep03_m1': LearningObjective(/* dependency·level·skill·recallFrom 동일 */ expressions: ['…'])},
+  ),
+};
+```
+확인 명령: `DifficultyContent.problems()`(빈 목록이어야 함), `DifficultyContent.missingAt('ep03', Difficulty.master)`(작성 진행 상황), `DifficultyContent.episodeAt(baseEpisode, level)`(난이도 적용 결과 보기), 개발자 모드 TEST LEVEL로 화면 확인.
 
-### PART 5 수정 예상 파일
-- `lib/data/models/difficulty.dart`(`fallbackChain`), `lib/data/models/mission.dart`·`episode.dart`(비직렬화 `difficulty`), `lib/data/repositories/episode_repository.dart`(패치 병합), `lib/data/mock/season_catalog.dart`(난이도별 테이블·조회, Season 2 Discovery 재생성), `lib/features/game/game_providers.dart`(base 카탈로그 / 난이도 파생 카탈로그), `lib/main.dart`, `lib/features/game_master/dev_session.dart`(base 카탈로그 복사), 신규 `lib/data/mock/season1/difficulty/…`·`season2/difficulty/…`(샘플)
-- 테스트: 신규 콘텐츠 시스템 테스트 + 영향: `season_content_test`, `final_small_pass_test`, `learning_objectives_test`, `developer_session_test`
+### 정답 판정·추리와 텍스트가 결합된 곳 (London — 바꿀 때 주의, PROJECT_CONTEXT *핵심 Reasoning 구조*·*Continuity Guardrails*)
+| Case | 위치 | 결합 내용 |
+|---|---|---|
+| 01 | `episode01_mock.dart` m01~m05·final, `season1_decodes.dart`(m05 해독 장면) | 자물쇠 그림(clock·train·park·museum) → 장소 숫자 7·9·2·4 → 7924. 증거 `inscription`(예: 'BUCKINGHAM PALACE')은 보호 필드. 개인화 줄 6개(m01·m05 편지 등, `test/personalized_lines.dart`) — `{detectiveName}` 유지. 까마귀 표식 금지. "P.S. I love trains!"(Old Letter, → Case 11) 유지 |
+| 02 | `episode02_mock.dart` m1~final, `season1_clocks.dart` | m1 "between eight and nine"·"two more small marks" → **8:17**(입력 817, 오답 키 815·832·917). m3 "The hour is the gallery. The minutes are the picture." → Gallery 8·Picture 17. Final "one hour after the clock stops" → **9:17은 Final 전 어디에도 쓰지 말 것** |
+| 03 | `episode03_mock.dart`, `season1_investigations.dart`(m1 현장) | m3 젖은 발자국 "trains and smoke" + 택시 "north, clock tower" → King's Cross. Final 힌트에 train/station 금지, 마지막 Tip = Notebook footprint. Miss Rose = red coat + blue scarf, Red Button(→ Case 08) |
+| 04 | `episode04_mock.dart` | m1 Black Wax Seal(까마귀) + m3 "Black birds live there" → RAVEN. m2 "Platform 1/4/7/9" 짐꾼 문장·"but no clock". "where trains never sleep"(→ Case 11 m3 Tip) |
+| 05 | `episode05_mock.dart` | 5시 · 기어 4 · 까마귀 7 → **745**, 자물쇠 질문의 **순서 문장**이 퍼즐(찾은 순서 547 → `orderFeedback`) |
+| 06 | `episode06_mock.dart`, `season1_dialogues.dart`(m1 증인 대화) | Final 화면에 **grey/hat/card 금지**. m2 카드 뒷면 "the colour of my hat" → m1 증언 grey hat. 대화 진술 문장이 비교 퍼즐(`DialogueScene` 구조 검사 필요) |
+| 07 | `episode07_mock.dart` | Grey 경로 "다리 건너 왼쪽" + m3 Joined Map "north". Discovery에 **"old gate" 금지**, Final 보기는 A~D 글자만 |
+| 08 | `episode08_mock.dart` | Mrs Robin "Gallery 8에 간 적 없다" + 긴 빨간 코트 + Case 03 Red Button → Final 화면에 **button/coat/red 금지** |
+| 09 | `episode09_mock.dart` | **whose** 구문이 퍼즐("the one whose key you used" → 쓴 사람이 아님) — 모든 난이도에서 whose 구문 유지 |
+| 10 | `episode10_mock.dart` | m2 NORTH·TOWER·BRIDGE·THREE → m3 **보기 이름 자체가 퍼즐**(Tower of London 함정, `hideOptionNames` 아님) → 옵션 `label` 바꾸지 말 것. **Final = 문장 순서 퍼즐**(옵션 문장이 퍼즐, 정답은 id 순서) — 문장을 바꾸면 순서 논리가 그대로인지 확인 |
+| 11 | `episode11_mock.dart` | Case 01 Old Letter "Signed: The Shadow / P.S. I love trains!" → The Shadow. m3 그림 이름 숨김(`altText`가 묘사) — 택시 기사 묘사 "two big arches, clock tower". m2 경비원 "the station that never sleeps" ↔ m3 Tip. Post-Case에 "under Big Ben"/"door" 금지 |
+| 12 | `episode12_mock.dart` | m2 "after the train from Edinburgh"(4번 승강장 두 열차 중 11:40), Final 첫 줄 "the platform **whose** clock is small and red", 톱니 8 · 까마귀 7 → **487**(찾은 순서 847 → `orderFeedback`). 마지막 줄 **PARIS.** |
+- 공통: 입력형 정답은 `answer`/`acceptedAnswers`(보호)·오답 줄 키(보호)로 판정 — 표시 문장만 바꾸면 판정은 안전. 위험한 것은 **문장 자체가 추리 단서인 곳**(위 표) — 그 표현을 난이도별로 바꾸면 추리 사슬이 깨질 수 있다. 기존 보호 테스트(`final_small_pass_test`, `wave1/2_reasoning_test`, `case02/09_reasoning_test`, `type_b_phase2/3a/3b_test`, `cross_case_language_test`)는 **기준본**을 검사한다 → 묶음마다 해당 사건의 금지어·필수 표현 검사를 **세 난이도로 확장**하는 테스트를 추가할 것.
+- 사건 간 연결 표현(04 → 11 never sleep, 02 → 12 after, 09 → 12 whose, 03 → 08 Red Button, 01 → 11 P.S.)은 앞뒤 사건이 같은 난이도에서 같은 표현을 쓰는지 함께 확인(시즌 난이도는 시즌 전체에 하나).
 
-### PART 5 검증 방법
-- 샘플 미션이 Rookie/Junior/Master에서 다른 문장, 정답·구조 동일, 변형 없는 필드는 대체 규칙대로, 기존 사용자(Rookie/base) 화면 불변(해시 테스트 유지), 개발자 TEST LEVEL 변경 시 문장 변화, 플레이어 세션 문장은 플레이어 시즌 난이도.
-- `flutter analyze` 0, 관련 + 전체 `flutter test`.
+### PART 6 수정 예상 파일
+- `lib/data/mock/season1/season1_difficulty.dart`(또는 `season1/difficulty/*`), `lib/data/mock/season_catalog.dart`(`writtenLevels`), `lib/data/content/difficulty_content.dart`(`structureOf`에 새 객체 종류)
+- 테스트: 묶음별 신규(예: `test/difficulty_london_6a_test.dart` — 금지어·필수 표현·정답 판정을 세 난이도로), 영향: `difficulty_content_test`, `learning_objectives_test`, `final_small_pass_test`(Rookie 기준 JSON을 고친 경우만)
 
-### PART 5 완료 조건
-- 위 구조 구현(콘텐츠 전체 적용은 제외), Q1·Q2·Q8 답 기록
-- analyze 0 issues, 관련 + 전체 회귀 통과(실제 결과 기록)
-- 이 문서 E(PART 5)·F(이력, PART 4 해시)·G(PART 6 인수인계)·H 갱신, `PROJECT_CONTEXT.md` 갱신
-- PART 5 변경 파일만 커밋(푸시 없음)
+### PART 6 검증 방법·완료 조건
+- 묶음의 사건마다: `problems()` 빈 목록, `missingAt(case, junior|master)` 빈 목록(그리고 `writtenLevels` 표시), 세 난이도 모두 정답·구조 불변(`structureOfEpisode`), 학습 표현 일치(F-36), 추리 금지어·필수 표현 테스트 통과, 개발자 모드로 세 난이도 화면 확인(360×640·390×844).
+- `flutter analyze` 0, 관련 + 전체 `flutter test`(시즌 전체 묶음이라 전체 회귀), 문서 E·F·G·H·PROJECT_CONTEXT 갱신, 묶음별 커밋(푸시 없음). F의 PART 5 커밋 해시 칸 채우기.
 
 ### 모든 PART 공통 작업 규칙 (PART 1~7)
 1. 시작 시 `PROJECT_CONTEXT.md`와 이 문서를 읽는다.
@@ -529,7 +600,8 @@ enum Difficulty {
 
 ## H. 콘텐츠 적용 진행표
 
-상태 표기: `—` 미착수 / `WIP` 작성 중 / `✓` 적용·테스트 통과 / `base` 현재 텍스트를 그대로 사용(D-5 제안대로라면 Rookie = base).
+상태 표기: `—` 미착수 / `WIP` 작성 중 / `✓` 적용·테스트 통과 / `base` 현재 텍스트를 그대로 사용(Q1: Rookie = base).
+`✓`는 그 사건이 `SeasonContent.writtenLevels`에 그 난이도로 표시되고 `DifficultyContent.missingAt`이 빈 목록일 때만(테스트가 강제). 진행 상황은 `DifficultyContent.missingAt('<사건 id>', Difficulty.junior|master)`로 확인.
 Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `✓`.
 
 ### London — Season 1 (`s1_london`)
@@ -537,7 +609,7 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 |---|---|---|---|---|---|---|
 | 시즌 프롤로그·outro·finale | `s1_london` | base | — | — | | `season1InfoJson` |
 | Case 01 | `ep01` | base | — | — | | 미션 5 + Final, 개인화 줄 있음 |
-| Case 02 | `ep02` | base | — | — | | 8:17 → 9:17 보호 |
+| Case 02 | `ep02` | base | WIP (M1 샘플: 일부 필드) | WIP (M1 샘플: 일부 필드) | PART 5 | 8:17 → 9:17 보호. M1의 story·letter·question·hints·오답 줄·success·ClockPuzzle·학습 표현(Junior만 transition) |
 | Case 03 | `ep03` | base | — | — | | trains and smoke / Red Button(→08) |
 | Case 04 | `ep04` | base | — | — | | Platform 4(→12), RAVEN |
 | Case 05 | `ep05` | base | — | — | | 745 순서 질문 |
@@ -553,7 +625,7 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 | 범위 | ID | Rookie | Junior | Master | 커밋 | 비고 |
 |---|---|---|---|---|---|---|
 | Paris 프롤로그·시즌 문구 | `s2_paris` | base | — | — | | `season2PrologueJson`, 버튼 문구는 위젯 하드코딩 |
-| Case 01 | `s2_ep01` | base | — | — | | |
+| Case 01 | `s2_ep01` | base | WIP (M1 샘플: 일부 필드) | WIP (M1 샘플: 일부 필드) | PART 5 | M1의 story·question·hints·success(= Discovery 제목)·학습 표현 |
 | Case 02 | `s2_ep02` | base | — | — | | |
 | Case 03 | `s2_ep03` | base | — | — | | |
 | Case 04 | `s2_ep04` | base | — | — | | Final EasySteps |

@@ -2,6 +2,7 @@ import '../models/abbesses_puzzles.dart';
 import '../models/case_talk.dart';
 import '../models/clock_puzzle.dart';
 import '../models/dialogue.dart';
+import '../models/difficulty.dart';
 import '../models/discovery.dart';
 import '../models/easy_steps.dart';
 import '../models/episode.dart';
@@ -28,6 +29,7 @@ import 'season1/episode01_mock.dart';
 import 'season1/season1_clocks.dart';
 import 'season1/season1_decodes.dart';
 import 'season1/season1_deductions.dart';
+import 'season1/season1_difficulty.dart';
 import 'season1/season1_dialogues.dart';
 import 'season1/season1_discoveries.dart';
 import 'season1/season1_explores.dart';
@@ -35,6 +37,7 @@ import 'season1/season1_inspections.dart';
 import 'season1/season1_investigations.dart';
 import 'season1/season1_learning.dart';
 import 'season1/season1_mock.dart';
+import 'season2/season2_difficulty.dart';
 import 'season2/season2_discoveries.dart';
 import 'season2/season2_case03_scenes.dart';
 import 'season2/season2_case04_scenes.dart';
@@ -124,6 +127,10 @@ class SeasonContent {
     this.storyEvidence = const {},
     this.learning = const {},
     this.languageTopics = const {},
+    this.casePatches = const {},
+    this.variants = const {},
+    this.discoveryOf,
+    this.writtenLevels = const {},
   });
 
   /// The season as JSON (see [Season.fromJson]).
@@ -292,6 +299,89 @@ class SeasonContent {
   /// By case id.
   final Map<String, CaseLanguageTopic> languageTopics;
 
+  /// The words of the cases at each level (see `DifficultyContent`): by
+  /// level, case id → a patch of the case's JSON (its text fields only; its
+  /// ids, answers and order never). A case with no patch at a level reads
+  /// the base (the game's own words, Rookie's).
+  final Map<Difficulty, Map<String, Map<String, Object?>>> casePatches;
+
+  /// The puzzles' own tables at each level (talks, scenes, clocks,
+  /// Discovery Moments, learning…): by level, a season content holding only
+  /// the entries that differ at that level (its info and cases empty). A
+  /// mission finds its entry at its level first (see [SeasonCatalog]).
+  final Map<Difficulty, SeasonContent> variants;
+
+  /// A mission's Discovery Moment made from the mission itself, at its
+  /// level (Season 2: its own success line), when [discoveries] has none.
+  final Discovery? Function(Mission m)? discoveryOf;
+
+  /// By case id: the levels whose words are written for the whole case
+  /// (marked as each case is done, PART 6–7). At a written Junior or Master
+  /// level every text of the case has its own words at that very level —
+  /// checked (`DifficultyContent.missingAt`), never left to fall back on
+  /// another level's. Rookie written: its words were reviewed (the base
+  /// stays wherever they were kept).
+  final Map<String, Set<Difficulty>> writtenLevels;
+
+  /// Every table looked up by mission id (the ones [SeasonCatalog] reads at
+  /// a mission's level), by name: what a level's [variants] may hold, and
+  /// what `DifficultyContent` checks.
+  Map<String, Map<String, Object?>> get missionTables => {
+    'investigations': investigations,
+    'explores': explores,
+    'inspections': inspections,
+    'deductions': deductions,
+    'decodes': decodes,
+    'dialogues': dialogues,
+    'talks': talks,
+    'talkMissions': talkMissions,
+    'easySteps': easySteps,
+    'endings': endings,
+    'clocks': clocks,
+    'stationClocks': stationClocks,
+    'compares': compares,
+    'studios': studios,
+    'layers': layers,
+    'canvases': canvases,
+    'records': records,
+    'lifts': lifts,
+    'dialLocks': dialLocks,
+    'evidenceBoards': evidenceBoards,
+    'riverMarks': riverMarks,
+    'keeperHuts': keeperHuts,
+    'quayBoxes': quayBoxes,
+    'streetBooks': streetBooks,
+    'markCompares': markCompares,
+    'clockWalls': clockWalls,
+    'blotters': blotters,
+    'postTrails': postTrails,
+    'holdRacks': holdRacks,
+    'planRoutes': planRoutes,
+    'archives': archives,
+    'letterMaps': letterMaps,
+    'showStrips': showStrips,
+    'lightBoards': lightBoards,
+    'flyRails': flyRails,
+    'lightTables': lightTables,
+    'cornerChoices': cornerChoices,
+    'morningSketches': morningSketches,
+    'tornSlips': tornSlips,
+    'tornHours': tornHours,
+    'trialMaps': trialMaps,
+    'gearBoards': gearBoards,
+    'makerMarks': makerMarks,
+    'towerTests': towerTests,
+    'drumTapes': drumTapes,
+    'cityClocks': cityClocks,
+    'shadowChecks': shadowChecks,
+    'hourRecords': hourRecords,
+    'exhibits': exhibits,
+    'lockBoxes': lockBoxes,
+    'storyScenes': storyScenes,
+    'discoveries': discoveries,
+    'learning': learning,
+  };
+
   Season get season => Season.fromJson(info);
 
   String get id => season.id;
@@ -312,6 +402,8 @@ final season1Content = SeasonContent(
   storyEvidence: season1StoryEvidence,
   learning: season1Learning,
   languageTopics: season1LanguageTopics,
+  casePatches: season1CasePatches,
+  variants: season1Variants,
 );
 
 /// Season 2 — Paris Stands Still: in the making, not released (its cases
@@ -320,7 +412,8 @@ final season2Content = SeasonContent(
   info: season2InfoJson,
   episodes: season2Json,
   awaitingArt: season2AwaitingArtJson,
-  discoveries: season2DiscoveriesOf(season2Json),
+  // Made from each mission as it is played (its success line at its level).
+  discoveryOf: season2DiscoveryOf,
   released: true,
   storyGreeting: false,
   clocks: season2Clocks,
@@ -423,6 +516,8 @@ final season2Content = SeasonContent(
   },
   learning: season2Learning,
   languageTopics: season2LanguageTopics,
+  casePatches: season2CasePatches,
+  variants: season2Variants,
 );
 
 /// Whether season [seasonId] is out for players (an unknown season is not).
@@ -483,122 +578,138 @@ abstract final class SeasonCatalog {
   static SeasonContent? ofMission(String missionId) =>
       _missionSeason[missionId]?.$1;
 
+  /// [m]'s entry in one of its season's tables (by mission id), at [m]'s
+  /// level: the level's own entry ([SeasonContent.variants], looked for as
+  /// [Difficulty.fallbackChain] says), else the season's base entry. The one
+  /// place every puzzle table is read at a level: the pages ask for [m]'s
+  /// talk, scene or clock as always, and the mission brings its level.
+  static T? _pick<T>(Mission m, Map<String, T> Function(SeasonContent s) table) {
+    final season = ofMission(m.id);
+    if (season == null) return null;
+    for (final level in m.difficulty.fallbackChain) {
+      final variant = season.variants[level];
+      if (variant == null) continue;
+      if (table(variant)[m.id] case final found?) return found;
+    }
+    return table(season)[m.id];
+  }
+
   /// The case of the mission with [missionId], or null.
   static String? episodeOfMission(String missionId) =>
       _missionSeason[missionId]?.$2;
 
   static InvestigationScene? investigation(Mission m) =>
-      ofMission(m.id)?.investigations[m.id];
+      _pick(m, (s) => s.investigations);
 
-  static ExploreScene? explore(Mission m) => ofMission(m.id)?.explores[m.id];
+  static ExploreScene? explore(Mission m) => _pick(m, (s) => s.explores);
 
   static InspectScene? inspection(Mission m) =>
-      ofMission(m.id)?.inspections[m.id];
+      _pick(m, (s) => s.inspections);
 
   static DeductionScene? deduction(Mission m) =>
-      ofMission(m.id)?.deductions[m.id];
+      _pick(m, (s) => s.deductions);
 
-  static DecodeScene? decode(Mission m) => ofMission(m.id)?.decodes[m.id];
+  static DecodeScene? decode(Mission m) => _pick(m, (s) => s.decodes);
 
-  static DialogueScene? dialogue(Mission m) => ofMission(m.id)?.dialogues[m.id];
+  static DialogueScene? dialogue(Mission m) => _pick(m, (s) => s.dialogues);
 
-  static TalkScene? caseTalk(Mission m) => ofMission(m.id)?.talks[m.id];
+  static TalkScene? caseTalk(Mission m) => _pick(m, (s) => s.talks);
 
-  static TalkMission? talkMission(Mission m) => ofMission(m.id)?.talkMissions[m.id];
+  static TalkMission? talkMission(Mission m) => _pick(m, (s) => s.talkMissions);
 
-  static EasyStepsScene? easySteps(Mission m) => ofMission(m.id)?.easySteps[m.id];
+  static EasyStepsScene? easySteps(Mission m) => _pick(m, (s) => s.easySteps);
 
   /// The ending played after final [m]'s answer, if it has one.
-  static List<EndingLine>? caseEnding(Mission m) => m.isFinal ? ofMission(m.id)?.endings[m.id] : null;
+  static List<EndingLine>? caseEnding(Mission m) => m.isFinal ? _pick(m, (s) => s.endings) : null;
 
-  static ClockPuzzle? clock(Mission m) => ofMission(m.id)?.clocks[m.id];
+  static ClockPuzzle? clock(Mission m) => _pick(m, (s) => s.clocks);
 
   static StationClocksScene? stationClocks(Mission m) =>
-      ofMission(m.id)?.stationClocks[m.id];
+      _pick(m, (s) => s.stationClocks);
 
-  static CompareScene? compare(Mission m) => ofMission(m.id)?.compares[m.id];
+  static CompareScene? compare(Mission m) => _pick(m, (s) => s.compares);
 
-  static StudioScene? studio(Mission m) => ofMission(m.id)?.studios[m.id];
+  static StudioScene? studio(Mission m) => _pick(m, (s) => s.studios);
 
-  static LayerScene? layer(Mission m) => ofMission(m.id)?.layers[m.id];
+  static LayerScene? layer(Mission m) => _pick(m, (s) => s.layers);
 
   static CanvasScene? canvasChoice(Mission m) =>
-      ofMission(m.id)?.canvases[m.id];
+      _pick(m, (s) => s.canvases);
 
-  static RecordsScene? records(Mission m) => ofMission(m.id)?.records[m.id];
+  static RecordsScene? records(Mission m) => _pick(m, (s) => s.records);
 
-  static LiftScene? lift(Mission m) => ofMission(m.id)?.lifts[m.id];
+  static LiftScene? lift(Mission m) => _pick(m, (s) => s.lifts);
 
-  static DialLockScene? dialLock(Mission m) => ofMission(m.id)?.dialLocks[m.id];
+  static DialLockScene? dialLock(Mission m) => _pick(m, (s) => s.dialLocks);
 
   static EvidenceBoardScene? evidenceBoard(Mission m) =>
-      ofMission(m.id)?.evidenceBoards[m.id];
+      _pick(m, (s) => s.evidenceBoards);
 
   static RiverMarksScene? riverMarks(Mission m) =>
-      ofMission(m.id)?.riverMarks[m.id];
+      _pick(m, (s) => s.riverMarks);
 
   static KeeperHutScene? keeperHut(Mission m) =>
-      ofMission(m.id)?.keeperHuts[m.id];
+      _pick(m, (s) => s.keeperHuts);
 
-  static BoxesScene? quayBoxes(Mission m) => ofMission(m.id)?.quayBoxes[m.id];
+  static BoxesScene? quayBoxes(Mission m) => _pick(m, (s) => s.quayBoxes);
 
   static StreetBookScene? streetBook(Mission m) =>
-      ofMission(m.id)?.streetBooks[m.id];
+      _pick(m, (s) => s.streetBooks);
 
   static MarkCompareScene? markCompare(Mission m) =>
-      ofMission(m.id)?.markCompares[m.id];
+      _pick(m, (s) => s.markCompares);
 
   static ClockWallScene? clockWall(Mission m) =>
-      ofMission(m.id)?.clockWalls[m.id];
+      _pick(m, (s) => s.clockWalls);
 
-  static BlotterScene? blotter(Mission m) => ofMission(m.id)?.blotters[m.id];
+  static BlotterScene? blotter(Mission m) => _pick(m, (s) => s.blotters);
 
   static PostTrailScene? postTrail(Mission m) =>
-      ofMission(m.id)?.postTrails[m.id];
+      _pick(m, (s) => s.postTrails);
 
-  static HoldRackScene? holdRack(Mission m) => ofMission(m.id)?.holdRacks[m.id];
+  static HoldRackScene? holdRack(Mission m) => _pick(m, (s) => s.holdRacks);
 
-  static PlanScene? planRoute(Mission m) => ofMission(m.id)?.planRoutes[m.id];
+  static PlanScene? planRoute(Mission m) => _pick(m, (s) => s.planRoutes);
 
-  static ArchiveScene? archive(Mission m) => ofMission(m.id)?.archives[m.id];
+  static ArchiveScene? archive(Mission m) => _pick(m, (s) => s.archives);
 
   static LetterMapScene? letterMap(Mission m) =>
-      ofMission(m.id)?.letterMaps[m.id];
+      _pick(m, (s) => s.letterMaps);
 
   static ShowStripScene? showStrip(Mission m) =>
-      ofMission(m.id)?.showStrips[m.id];
+      _pick(m, (s) => s.showStrips);
 
   static LightBoardScene? lightBoard(Mission m) =>
-      ofMission(m.id)?.lightBoards[m.id];
+      _pick(m, (s) => s.lightBoards);
 
-  static FlyRailScene? flyRail(Mission m) => ofMission(m.id)?.flyRails[m.id];
+  static FlyRailScene? flyRail(Mission m) => _pick(m, (s) => s.flyRails);
 
   static LightTableScene? lightTable(Mission m) =>
-      ofMission(m.id)?.lightTables[m.id];
+      _pick(m, (s) => s.lightTables);
 
-  static CornerChoiceScene? cornerChoice(Mission m) => ofMission(m.id)?.cornerChoices[m.id];
+  static CornerChoiceScene? cornerChoice(Mission m) => _pick(m, (s) => s.cornerChoices);
 
-  static MorningSketchesScene? morningSketches(Mission m) => ofMission(m.id)?.morningSketches[m.id];
+  static MorningSketchesScene? morningSketches(Mission m) => _pick(m, (s) => s.morningSketches);
 
-  static TornSlipScene? tornSlip(Mission m) => ofMission(m.id)?.tornSlips[m.id];
+  static TornSlipScene? tornSlip(Mission m) => _pick(m, (s) => s.tornSlips);
 
-  static TornHourScene? tornHour(Mission m) => ofMission(m.id)?.tornHours[m.id];
+  static TornHourScene? tornHour(Mission m) => _pick(m, (s) => s.tornHours);
 
-  static TrialMapScene? trialMap(Mission m) => ofMission(m.id)?.trialMaps[m.id];
+  static TrialMapScene? trialMap(Mission m) => _pick(m, (s) => s.trialMaps);
 
-  static GearBoardScene? gearBoard(Mission m) => ofMission(m.id)?.gearBoards[m.id];
+  static GearBoardScene? gearBoard(Mission m) => _pick(m, (s) => s.gearBoards);
 
-  static MakerMarksScene? makerMarks(Mission m) => ofMission(m.id)?.makerMarks[m.id];
+  static MakerMarksScene? makerMarks(Mission m) => _pick(m, (s) => s.makerMarks);
 
-  static TowerTestScene? towerTest(Mission m) => ofMission(m.id)?.towerTests[m.id];
+  static TowerTestScene? towerTest(Mission m) => _pick(m, (s) => s.towerTests);
 
-  static DrumTapeScene? drumTape(Mission m) => ofMission(m.id)?.drumTapes[m.id];
+  static DrumTapeScene? drumTape(Mission m) => _pick(m, (s) => s.drumTapes);
 
-  static CityClocksScene? cityClocks(Mission m) => ofMission(m.id)?.cityClocks[m.id];
+  static CityClocksScene? cityClocks(Mission m) => _pick(m, (s) => s.cityClocks);
 
-  static ShadowCheckScene? shadowCheck(Mission m) => ofMission(m.id)?.shadowChecks[m.id];
+  static ShadowCheckScene? shadowCheck(Mission m) => _pick(m, (s) => s.shadowChecks);
 
-  static HourRecordScene? hourRecord(Mission m) => ofMission(m.id)?.hourRecords[m.id];
+  static HourRecordScene? hourRecord(Mission m) => _pick(m, (s) => s.hourRecords);
 
   /// Whether final [m]'s case closes only after a step after its answer
   /// (Paris Case 08: P.'s last drawing, matched to the map; Case 09: the
@@ -626,12 +737,12 @@ abstract final class SeasonCatalog {
     return null;
   }
 
-  static Exhibit? exhibit(Mission m) => ofMission(m.id)?.exhibits[m.id];
+  static Exhibit? exhibit(Mission m) => _pick(m, (s) => s.exhibits);
 
-  static LockBoxArt? lockBox(Mission m) => ofMission(m.id)?.lockBoxes[m.id];
+  static LockBoxArt? lockBox(Mission m) => _pick(m, (s) => s.lockBoxes);
 
   static StoryScenes? storyScenes(Mission m) =>
-      ofMission(m.id)?.storyScenes[m.id];
+      _pick(m, (s) => s.storyScenes);
 
   /// The evidence [evidenceId] matches, from its season's content (evidence
   /// ids are never shared between seasons), or null.
@@ -649,8 +760,10 @@ abstract final class SeasonCatalog {
   }
 
   /// [m]'s Discovery Moment: its own, or a solved puzzle for one without.
+  /// Made from [m] itself when its season builds it so (Season 2: its own
+  /// success line, at its level — never a line kept from another level).
   static Discovery discovery(Mission m) =>
-      ofMission(m.id)?.discoveries[m.id] ?? Discovery.fallback(m);
+      _pick(m, (s) => s.discoveries) ?? ofMission(m.id)?.discoveryOf?.call(m) ?? Discovery.fallback(m);
 
   /// The evidence the scene after [m] hands over, if any.
   static Evidence? storyEvidence(Mission m) =>
@@ -659,7 +772,7 @@ abstract final class SeasonCatalog {
       : null;
 
   static LearningObjective? learning(Mission m) =>
-      ofMission(m.id)?.learning[m.id];
+      _pick(m, (s) => s.learning);
 
   static CaseLanguageTopic? languageTopic(String episodeId) =>
       ofEpisode(episodeId)?.languageTopics[episodeId];

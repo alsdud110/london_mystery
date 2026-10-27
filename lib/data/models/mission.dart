@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'difficulty.dart';
+
 /// The puzzle mechanic used by a mission.
 enum MissionType {
   multipleChoice,
@@ -409,9 +411,16 @@ class Mission {
     this.orderFeedback,
     this.hideOptionNames = false,
     this.recall,
+    this.difficulty = Difficulty.standard,
   });
 
   final String id;
+
+  /// The level whose words this mission carries (see `DifficultyContent`):
+  /// its puzzle's own tables (talks, scenes, clocks…) are looked up at it
+  /// too. Never saved, never part of [toJson]: the mission's content is the
+  /// same JSON at every level, only its words differ.
+  final Difficulty difficulty;
   final int number;
   final String title;
   final String location;
@@ -508,8 +517,10 @@ class Mission {
     _ => answer,
   };
 
-  factory Mission.fromJson(Map<String, dynamic> json, {bool finale = false}) => Mission(
+  factory Mission.fromJson(Map<String, dynamic> json, {bool finale = false, Difficulty difficulty = Difficulty.standard}) =>
+      Mission(
     finale: finale,
+    difficulty: difficulty,
     id: json['id'] as String,
     number: json['number'] as int,
     title: json['title'] as String,

@@ -820,7 +820,7 @@ class EasyPanelView extends ConsumerWidget {
   }
 
   static Evidence? _evidenceOf(WidgetRef ref, String id) {
-    for (final e in ref.read(allEpisodesProvider)) {
+    for (final e in ref.read(playedEpisodesProvider)) {
       for (final v in e.allEvidence) {
         if (v.id == id) return v;
       }
