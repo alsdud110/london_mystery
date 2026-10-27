@@ -125,10 +125,12 @@ void main() {
     await openRegister(t);
     expect(find.text('CREATE YOUR DETECTIVE'), findsOneWidget);
     expect(find.text('CHOOSE YOUR LEVEL'), findsOneWidget);
+    // Side by side on a phone this wide: each card's line in a few words
+    // (the whole line is what a screen reader says, below).
     for (final (label, line) in [
-      ('ROOKIE', 'Short English sentences. Easy words and simple clues.'),
-      ('JUNIOR', 'Everyday English. Read clues and connect the dots.'),
-      ('MASTER', 'Advanced English. Read carefully and think deeply.'),
+      ('ROOKIE', 'Short, easy English.'),
+      ('JUNIOR', 'Everyday English.'),
+      ('MASTER', 'Advanced English.'),
     ]) {
       expect(find.text(label), findsOneWidget);
       expect(find.text(line), findsOneWidget);
@@ -137,8 +139,11 @@ void main() {
     double top(Finder f) => t.getRect(f).top;
     expect(top(find.byKey(const ValueKey('avatar-boy'))), lessThan(top(find.byType(TextField))));
     expect(top(find.byType(TextField)), lessThan(top(card(Difficulty.rookie))));
-    expect(top(card(Difficulty.rookie)), lessThan(top(card(Difficulty.junior))));
-    expect(top(card(Difficulty.junior)), lessThan(top(card(Difficulty.master))));
+    // The levels in a row, Rookie first.
+    expect(top(card(Difficulty.junior)), top(card(Difficulty.rookie)));
+    expect(top(card(Difficulty.master)), top(card(Difficulty.rookie)));
+    expect(t.getRect(card(Difficulty.rookie)).right, lessThan(t.getRect(card(Difficulty.junior)).left));
+    expect(t.getRect(card(Difficulty.junior)).right, lessThan(t.getRect(card(Difficulty.master)).left));
     // The cards are on the form, which scrolls; the button is not: it stays
     // on screen, under the form.
     final form = find.byType(SingleChildScrollView).first;
@@ -243,7 +248,10 @@ void main() {
         expect(box.height, greaterThanOrEqualTo(44), reason: '${d.label} touch target');
         expect(box.left, greaterThanOrEqualTo(0));
         expect(box.right, lessThanOrEqualTo(size.width));
-        final line = t.renderObject<RenderParagraph>(find.text(d.blurb));
+        // Side by side, the line in a few words; under one another (too
+        // narrow for three), the whole line.
+        final shown = find.text(d.tagline).evaluate().isNotEmpty ? d.tagline : d.blurb;
+        final line = t.renderObject<RenderParagraph>(find.text(shown));
         expect(line.didExceedMaxLines, isFalse, reason: '${d.label} line not cut');
         expect(line.size.width, lessThanOrEqualTo(box.width), reason: '${d.label} line inside its card');
       }

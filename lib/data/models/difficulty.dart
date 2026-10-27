@@ -6,11 +6,11 @@
 /// Saved by [storageId], never by the enum's name or [label]: a stored id
 /// never changes once released; the words on screen may.
 enum Difficulty {
-  rookie('rookie', 'ROOKIE', 'Short English sentences. Easy words and simple clues.'),
-  junior('junior', 'JUNIOR', 'Everyday English. Read clues and connect the dots.'),
-  master('master', 'MASTER', 'Advanced English. Read carefully and think deeply.');
+  rookie('rookie', 'ROOKIE', 'Short English sentences. Easy words and simple clues.', 'Short, easy English.'),
+  junior('junior', 'JUNIOR', 'Everyday English. Read clues and connect the dots.', 'Everyday English.'),
+  master('master', 'MASTER', 'Advanced English. Read carefully and think deeply.', 'Advanced English.');
 
-  const Difficulty(this.storageId, this.label, this.blurb);
+  const Difficulty(this.storageId, this.label, this.blurb, this.tagline);
 
   /// The id kept in saves (`lm.detective.v1`, a season's record).
   final String storageId;
@@ -20,6 +20,10 @@ enum Difficulty {
 
   /// What the level means, in a line, on its card (CHOOSE YOUR LEVEL).
   final String blurb;
+
+  /// [blurb] in a few words, for a narrow card (three side by side); the
+  /// whole [blurb] is still what a screen reader says.
+  final String tagline;
 
   /// The level of a detective (or a season) that never chose one: every
   /// save from before difficulty existed reads as this.

@@ -16,7 +16,7 @@ import 'package:london_mystery/widgets/art_assets.dart';
 import 'package:london_mystery/widgets/game_button.dart';
 import 'package:london_mystery/widgets/ink_icon.dart';
 
-import 'full_playthrough_test.dart' show wait;
+import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
 
 /// The title screen: the detective's study, the title centred in the
@@ -263,7 +263,7 @@ void main() {
   for (final (size, scale) in const [(Size(360, 640), 1.0), (Size(390, 844), 1.0), (Size(360, 640), 1.3)]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}${scale == 1 ? '' : '_text13'}';
 
-    testWidgets('new player at $tag: title → registration form on the office desk → the casebook', (t) async {
+    testWidgets('new player at $tag: title → registration form over London at night → the casebook', (t) async {
       t.view.physicalSize = size * 3;
       t.view.devicePixelRatio = 3;
       t.platformDispatcher.textScaleFactorTestValue = scale;
@@ -278,25 +278,27 @@ void main() {
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // decode the office
       await wait(t);
       expect(t.takeException(), isNull, reason: 'no overflow');
-      for (final s in ['LONDON DETECTIVE AGENCY', 'CREATE YOUR DETECTIVE', 'Who will take\nthe case?', 'Detective Name']) {
+      for (final s in ['LONDON DETECTIVE AGENCY', 'CREATE YOUR DETECTIVE', 'Who will take\nthe case?', 'YOUR DETECTIVE NAME']) {
         expect(find.text(s), findsOneWidget, reason: s);
       }
-      // The office is behind the form, not a plain page.
+      // London at night is behind the form, not a plain page.
       expect(
         find.byWidgetPredicate((w) =>
             w is Image &&
             w.image is ResizeImage &&
-            ((w.image as ResizeImage).imageProvider as AssetImage).assetName == ArtAssets.titleDetectiveOffice),
+            ((w.image as ResizeImage).imageProvider as AssetImage).assetName == ArtAssets.season1LondonNight),
         findsOneWidget,
       );
       final paper = t.getRect(find.ancestor(of: find.text('CREATE YOUR DETECTIVE'), matching: find.byType(Container)).last);
-      expect(paper.left, greaterThan(20), reason: 'the office shows around the form');
+      expect(paper.left, greaterThan(20), reason: 'the city shows around the form');
       final cta = t.getRect(find.text('START INVESTIGATION'));
       expect(cta.bottom, lessThan(size.height), reason: 'the button is on screen');
       await capture(t, 'register_$tag');
 
       // Keyboard up: the name line and the button stay above the keys.
-      // The keyboard opens when the name line is tapped (no autofocus).
+      // The keyboard opens when the name box is tapped (no autofocus); on a
+      // small phone with large text the form is scrolled to it first.
+      await reveal(t, find.byType(TextField));
       await t.tap(find.byType(TextField));
       await t.pump();
       t.view.viewInsets = FakeViewPadding(bottom: size.height * 3 * 0.45);
@@ -364,7 +366,7 @@ void main() {
 
   for (final (size, scale) in const [(Size(360, 640), 1.0), (Size(390, 844), 1.0), (Size(360, 640), 1.3), (Size(390, 844), 1.3)]) {
     final tag = '${size.width.toInt()}x${size.height.toInt()}${scale == 1 ? '' : '_text13'}';
-    testWidgets('registration at $tag: no focus on arrival, the name centred under its label, tap away to close', (t) async {
+    testWidgets('registration at $tag: no focus on arrival, the name in its box, tap away to close', (t) async {
       t.view.physicalSize = size * 3;
       t.view.devicePixelRatio = 3;
       t.platformDispatcher.textScaleFactorTestValue = scale;
@@ -384,47 +386,46 @@ void main() {
       expect(focused(), isFalse, reason: 'no autofocus');
       expect(t.testTextInput.isVisible, isFalse, reason: 'no keyboard on arrival');
 
-      // The writing space is centred under the label, the hint and a real name alike.
-      // Where the letters themselves are (a text's box can be wider than its
-      // letters, and the floating label is drawn through a transform).
-      double inkX(RenderParagraph p) {
-        final text = p.text.toPlainText();
-        final boxes = p.getBoxesForSelection(TextSelection(baseOffset: 0, extentOffset: text.length));
-        final left = boxes.map((b) => b.left).reduce(math.min), right = boxes.map((b) => b.right).reduce(math.max);
-        final y = boxes.first.toRect().center.dy;
-        return (p.localToGlobal(Offset(left, y)).dx + p.localToGlobal(Offset(right, y)).dx) / 2;
-      }
-
-      final labelX = inkX(t.renderObject<RenderParagraph>(find.text('Detective Name')));
+      // The name box spans the form, under its numbered step; the hint is whole.
+      expect(find.text('YOUR DETECTIVE NAME'), findsOneWidget);
       final paper = t.getRect(find.ancestor(of: find.text('CREATE YOUR DETECTIVE'), matching: find.byType(Container)).last);
-      expect(labelX, closeTo(paper.center.dx, 1.5), reason: 'the label is in the middle of the form');
-      expect(inkX(t.renderObject<RenderParagraph>(find.text('Sherlock'))), closeTo(labelX, 1.5), reason: 'the hint under the label');
+      var box = t.getRect(find.byType(TextField));
+      expect(box.center.dx, closeTo(paper.center.dx, 1.5), reason: 'the box in the middle of the form');
       expect(t.renderObject<RenderParagraph>(find.text('Sherlock')).didExceedMaxLines, isFalse, reason: 'the hint is whole');
-      double typedX() {
+      // Where the typed letters themselves are, across the screen.
+      (double, double) typed() {
         final editable = t.state<EditableTextState>(field).renderEditable;
         final text = editable.text!.toPlainText();
         final boxes = editable.getBoxesForSelection(TextSelection(baseOffset: 0, extentOffset: text.length));
         final left = boxes.map((b) => b.left).reduce(math.min), right = boxes.map((b) => b.right).reduce(math.max);
-        return editable.localToGlobal(Offset((left + right) / 2, 0)).dx;
+        return (editable.localToGlobal(Offset(left, 0)).dx, editable.localToGlobal(Offset(right, 0)).dx);
       }
 
-      // 2–3. Tap the line: focus, keyboard; a short name, then the longest, both centred.
-      await t.tap(find.text('Sherlock'));
+      // 2–3. Tap the box (scrolled to, on a small phone with large text):
+      // focus, keyboard; a short name, then the longest, both written from
+      // the pen, whole, clear of the cross.
+      await reveal(t, find.byType(TextField));
+      await t.tap(find.byType(TextField));
       await t.pump();
       expect(focused(), isTrue);
       expect(t.testTextInput.isVisible, isTrue, reason: 'the keyboard comes when asked');
+      box = t.getRect(find.byType(TextField));
       for (final name in ['OO', 'ABCDEFGHIJKL']) {
         await t.enterText(field, name);
         await t.pump();
-        expect(typedX(), closeTo(labelX, 1.5), reason: '"$name" centred under the label');
+        final (left, right) = typed();
+        expect(left, closeTo(box.left + kMinInteractiveDimension, AppSpace.lg), reason: '"$name" starts after the pen');
+        expect(right, lessThanOrEqualTo(box.right - kMinInteractiveDimension), reason: '"$name" clear of the cross');
       }
+      expect(find.byTooltip('Clear name'), findsOneWidget, reason: 'the cross, with a name written');
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // decode the office
       await t.pump();
       await capture(t, 'register_typing_$tag');
 
       // 4. A blank part of the form: pen down, name kept.
-      final blank = t.getRect(find.text('CREATE YOUR DETECTIVE'));
-      await t.tapAt(Offset(paper.left + 12, blank.center.dy));
+      // (Beside the name's own step, in view with the box.)
+      final blank = t.getRect(find.text('YOUR DETECTIVE NAME'));
+      await t.tapAt(Offset(paper.right - 12, blank.center.dy));
       await t.pump();
       expect(focused(), isFalse, reason: 'tap on the form closes the keyboard');
       expect(t.widget<EditableText>(field).controller.text, 'ABCDEFGHIJKL', reason: 'the name stays');

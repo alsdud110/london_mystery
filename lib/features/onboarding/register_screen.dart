@@ -83,12 +83,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 }
 
-/// The detective's form laid on the desk, the office of the title page
-/// behind it, dimmed: [heading], [question], the picture choice, the name
-/// line, the level (only with [onDifficulty]: CREATE YOUR DETECTIVE), and
-/// [action]. Shared by CREATE YOUR DETECTIVE and the detective's settings.
-/// With the keyboard up (half a small phone), the emblem and the level fold
-/// away and the pictures shrink so the line and the button stay in view.
+/// The detective's form over London at night: a title slip ([heading],
+/// [question]) laid on the form, then its numbered steps — the picture, the
+/// name, the level (only with [onDifficulty]) — and [action] under it.
+/// Shared by CREATE YOUR DETECTIVE and the detective's settings. With the
+/// keyboard up (half a small phone), the letterhead, the question and the
+/// level fold away and the pictures shrink to their words, so the name box
+/// and the button stay in view.
 class DetectiveDesk extends StatelessWidget {
   const DetectiveDesk({
     super.key,
@@ -116,24 +117,127 @@ class DetectiveDesk extends StatelessWidget {
   final String action;
   final VoidCallback onAction;
 
-  /// The level chosen, shown only with [onDifficulty] (a new detective; the
-  /// settings change it elsewhere).
+  /// The level chosen, shown only with [onDifficulty].
   final Difficulty difficulty;
   final ValueChanged<Difficulty>? onDifficulty;
 
   /// A quiet line under the button (e.g. what a change keeps).
   final String? note;
 
+  /// How far the title slip lies over the top of the form.
+  static const _overlap = AppSpace.md;
+
   @override
   Widget build(BuildContext context) {
     final typing = MediaQuery.viewInsetsOf(context).bottom > 0;
-    // A small phone: the emblem stays off and the pictures are shorter, so
-    // the whole form and its button fit the screen.
+    // A small phone: shorter pictures and closer steps, so more of the form
+    // fits the screen.
     final short = MediaQuery.sizeOf(context).height < 700;
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final gap = short ? AppSpace.md : AppSpace.lg;
+    const fold = Duration(milliseconds: 200);
+
+    // Laid on the form, not on the night: the light shadow of paper on paper.
+    final slip = Transform.rotate(
+      angle: -0.012,
+      child: DecoratedBox(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.paper), boxShadow: AppShadow.paperLift),
+        child: PaperSheet(
+          lifted: false,
+          padding: EdgeInsets.fromLTRB(AppSpace.lg, typing ? AppSpace.sm : AppSpace.md, AppSpace.lg, AppSpace.md),
+          child: Column(
+            children: [
+              AnimatedSize(
+                duration: fold,
+                curve: Curves.easeOut,
+                child: typing
+                    ? const SizedBox(width: double.infinity)
+                    : Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpace.xs),
+                        // The letterhead: one line, fitted to the paper.
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'LONDON DETECTIVE AGENCY',
+                            maxLines: 1,
+                            style: AppText.eyebrow(),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+              ),
+              Text(
+                heading,
+                style: AppText.mark(color: AppColors.burgundy),
+                textAlign: TextAlign.center,
+              ),
+              AnimatedSize(
+                duration: fold,
+                curve: Curves.easeOut,
+                child: typing
+                    ? const SizedBox(width: double.infinity)
+                    : Padding(
+                        padding: const EdgeInsets.only(top: AppSpace.xs),
+                        child: Text(
+                          question,
+                          style: AppText.title(size: short ? 21 : 23),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final form = PaperSheet(
+      padding: EdgeInsets.fromLTRB(
+        AppSpace.lg,
+        _overlap + (typing ? AppSpace.md : AppSpace.lg),
+        AppSpace.lg,
+        AppSpace.lg,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. The picture: the player picks how their detective looks (the
+          // cases are the same for both).
+          if (!typing) ...[
+            const FormStep(number: 1, label: 'CHOOSE YOUR DETECTIVE'),
+            SizedBox(height: short ? AppSpace.sm : AppSpace.md),
+          ],
+          AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
+          SizedBox(height: typing ? AppSpace.md : gap),
+          // 2. The name.
+          const FormStep(number: 2, label: 'YOUR DETECTIVE NAME'),
+          SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
+          DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),
+          // 3. The level, folded away while the name is written (the choice
+          // is kept).
+          if (onDifficulty case final onLevel?)
+            AnimatedSize(
+              duration: fold,
+              curve: Curves.easeOut,
+              child: typing
+                  ? const SizedBox(width: double.infinity)
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: gap),
+                        const FormStep(number: 3, label: 'CHOOSE YOUR LEVEL'),
+                        SizedBox(height: short ? AppSpace.sm : AppSpace.md),
+                        DifficultyChoice(selected: difficulty, onChanged: onLevel, row: true),
+                      ],
+                    ),
+            ),
+        ],
+      ),
+    );
+
     return Stack(
       children: [
-        const Positioned.fill(child: OfficeBehind()),
+        const Positioned.fill(child: LondonNightBehind()),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -150,7 +254,7 @@ class DetectiveDesk extends StatelessWidget {
           body: InkSurface(
             night: true,
             child: SafeArea(
-              // Laid on the desk as the page comes up (a short fade and
+              // Laid over the city as the page comes up (a short fade and
               // settle; none with reduced motion).
               child: TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
@@ -163,133 +267,49 @@ class DetectiveDesk extends StatelessWidget {
                 child: Form(
                   key: formKey,
                   child: Column(
-                    // The form and its button together in the middle, as
-                    // the page always was; when the form is taller than the
-                    // screen it scrolls and the button stays under it, on
-                    // screen — in reach of the thumb, above the keyboard too.
+                    // The form and its button together in the middle; when
+                    // the form is taller than the screen it scrolls and the
+                    // button stays under it, on screen — in reach of the
+                    // thumb, above the keyboard too.
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
                         child: Center(
                           heightFactor: 1,
                           child: SingleChildScrollView(
-                            // A narrower sheet than the screen: the office shows around it.
+                            // The city shows around the paper (the safe area
+                            // already keeps it under the back button).
                             padding: EdgeInsets.fromLTRB(
-                              AppSpace.xxl,
-                              typing ? AppSpace.sm : AppSpace.lg,
-                              AppSpace.xxl,
+                              AppSpace.xl,
+                              typing ? AppSpace.sm : AppSpace.md,
+                              AppSpace.xl,
                               typing ? AppSpace.md : AppSpace.lg,
                             ),
                             child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 400),
-                              child: PaperSheet(
-                                ruled: true,
-                                tilt: -0.006,
-                                padding: EdgeInsets.fromLTRB(
-                                  AppSpace.lg,
-                                  typing ? AppSpace.md : AppSpace.xl,
-                                  AppSpace.lg,
-                                  AppSpace.lg,
-                                ),
-                                child: Column(
-                                  children: [
-                                    AnimatedSize(
-                                      duration: const Duration(milliseconds: 200),
-                                      curve: Curves.easeOut,
-                                      child: typing
-                                          ? const SizedBox(width: double.infinity)
-                                          : Column(
-                                              children: [
-                                                // The letterhead: one line, fitted to the paper.
-                                                FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    'LONDON DETECTIVE AGENCY',
-                                                    maxLines: 1,
-                                                    style: AppText.eyebrow(),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: AppSpace.sm),
-                                                if (!short) ...[
-                                                  const BrassEmblem(size: 48),
-                                                  const SizedBox(height: AppSpace.sm),
-                                                ],
-                                              ],
-                                            ),
+                              constraints: const BoxConstraints(maxWidth: 440),
+                              // The slip is laid over the form: below it on
+                              // the page, painted after it.
+                              child: Column(
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  form,
+                                  Transform.translate(
+                                    offset: const Offset(0, _overlap),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+                                      child: slip,
                                     ),
-                                    Text(
-                                      heading,
-                                      style: AppText.mark(color: AppColors.burgundy),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: AppSpace.xs),
-                                    Text(
-                                      question,
-                                      style: AppText.title(size: typing ? 20 : 23),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    SizedBox(height: short && !typing ? AppSpace.xs : AppSpace.sm),
-                                    // A small phone: the label takes the
-                                    // ornament's place, so the form still fits.
-                                    if (typing || !short) ...[
-                                      const OrnamentRule(),
-                                      SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
-                                    ],
-                                    // A printed label over the pictures, as the
-                                    // name line has its own: the player picks
-                                    // how their detective looks (the cases are
-                                    // the same for both).
-                                    if (!typing) ...[
-                                      Text(
-                                        'CHOOSE YOUR DETECTIVE',
-                                        textAlign: TextAlign.center,
-                                        style: AppText.eyebrow(color: AppColors.muted).copyWith(letterSpacing: 1.5),
-                                      ),
-                                      SizedBox(height: short ? AppSpace.xs : AppSpace.sm),
-                                    ],
-                                    AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
-                                    SizedBox(height: typing ? AppSpace.sm : AppSpace.lg),
-                                    DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),
-                                    // The level, under its printed label as
-                                    // the pictures are; folded away while the
-                                    // name is written (the choice is kept).
-                                    if (onDifficulty case final onLevel?)
-                                      AnimatedSize(
-                                        duration: const Duration(milliseconds: 200),
-                                        curve: Curves.easeOut,
-                                        child: typing
-                                            ? const SizedBox(width: double.infinity)
-                                            : Column(
-                                                children: [
-                                                  SizedBox(height: short ? AppSpace.md : AppSpace.lg),
-                                                  Text(
-                                                    'CHOOSE YOUR LEVEL',
-                                                    textAlign: TextAlign.center,
-                                                    style: AppText.eyebrow(color: AppColors.muted)
-                                                        .copyWith(letterSpacing: 1.5),
-                                                  ),
-                                                  SizedBox(height: short ? AppSpace.xs : AppSpace.sm),
-                                                  DifficultyChoice(selected: difficulty, onChanged: onLevel),
-                                                ],
-                                              ),
-                                      ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          AppSpace.xxl,
-                          0,
-                          AppSpace.xxl,
-                          typing ? AppSpace.sm : AppSpace.lg,
-                        ),
+                        padding: EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, typing ? AppSpace.sm : AppSpace.lg),
                         child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 400),
+                          constraints: const BoxConstraints(maxWidth: 440),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -297,7 +317,7 @@ class DetectiveDesk extends StatelessWidget {
                                 label: action,
                                 arrow: true,
                                 singleLine: true, // one line on a 360-wide phone
-                                style: GameButtonStyle.glass,
+                                style: GameButtonStyle.navy,
                                 tap: TapRole.primary,
                                 onPressed: onAction,
                               ),
@@ -325,14 +345,14 @@ class DetectiveDesk extends StatelessWidget {
   }
 }
 
-/// The detective's office from the title page, out of focus and in shadow
-/// around the lamp-lit desk: present, never competing with the form.
-class OfficeBehind extends StatelessWidget {
-  const OfficeBehind({super.key});
+/// London at night behind the form — the river, a lamp, Big Ben — softened
+/// and in shadow: present, never competing with the form.
+class LondonNightBehind extends StatelessWidget {
+  const LondonNightBehind({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const pixels = ArtAssets.titleDetectiveOfficePixels;
+    const pixels = ArtAssets.season1LondonNightPixels;
     return ColoredBox(
       color: AppColors.nightBottom,
       child: RepaintBoundary(
@@ -340,28 +360,22 @@ class OfficeBehind extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             ImageFiltered(
-              imageFilter: ui.ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+              imageFilter: ui.ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
               child: LayoutBuilder(
                 builder: (context, box) => Image.asset(
-                  ArtAssets.titleDetectiveOffice,
+                  ArtAssets.season1LondonNight,
                   fit: BoxFit.cover,
-                  // Low down on the painting: the desk and its lamp light.
-                  alignment: const Alignment(0.2, 0.6),
+                  // The lamp at the left, Big Ben at the right.
+                  alignment: const Alignment(0, -0.2),
                   width: double.infinity,
                   height: double.infinity,
-                  // Blurred anyway: a small decode is enough.
+                  // Softened anyway: a small decode is enough.
                   cacheWidth: math.min(
-                    (math.max(
-                              box.maxWidth,
-                              box.maxHeight * pixels.aspectRatio,
-                            ) *
-                            1.2)
-                        .ceil(),
+                    (math.max(box.maxWidth, box.maxHeight * pixels.aspectRatio) * 1.5).ceil(),
                     pixels.width.toInt(),
                   ),
                   excludeFromSemantics: true,
-                  errorBuilder: (context, error, stack) =>
-                      const SizedBox.expand(),
+                  errorBuilder: (context, error, stack) => const SizedBox.expand(),
                 ),
               ),
             ),
@@ -370,10 +384,7 @@ class OfficeBehind extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   radius: 0.95,
-                  colors: [
-                    AppColors.navyDeep.withValues(alpha: 0.45),
-                    AppColors.navyDeep.withValues(alpha: 0.82),
-                  ],
+                  colors: [AppColors.navyDeep.withValues(alpha: 0.35), AppColors.navyDeep.withValues(alpha: 0.75)],
                 ),
               ),
             ),
