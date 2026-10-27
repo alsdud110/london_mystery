@@ -6,6 +6,9 @@ import 'difficulty/ep03_levels.dart';
 import 'difficulty/ep04_levels.dart';
 import 'difficulty/ep05_levels.dart';
 import 'difficulty/ep06_levels.dart';
+import 'difficulty/ep07_levels.dart';
+import 'difficulty/ep08_levels.dart';
+import 'difficulty/ep09_levels.dart';
 
 /// Season 1's words at each level (Rookie: the game's own words, with a few
 /// lines of its own where the base was harder than Rookie's English).
@@ -22,6 +25,9 @@ const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
     'ep04': ep04Rookie,
     'ep05': ep05Rookie,
     'ep06': ep06Rookie,
+    'ep07': ep07Rookie,
+    'ep08': ep08Rookie,
+    'ep09': ep09Rookie,
   },
   Difficulty.junior: {
     'ep01': ep01Junior,
@@ -30,6 +36,9 @@ const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
     'ep04': ep04Junior,
     'ep05': ep05Junior,
     'ep06': ep06Junior,
+    'ep07': ep07Junior,
+    'ep08': ep08Junior,
+    'ep09': ep09Junior,
   },
   Difficulty.master: {
     'ep01': ep01Master,
@@ -38,6 +47,9 @@ const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
     'ep04': ep04Master,
     'ep05': ep05Master,
     'ep06': ep06Master,
+    'ep07': ep07Master,
+    'ep08': ep08Master,
+    'ep09': ep09Master,
   },
 };
 
@@ -55,8 +67,8 @@ final Map<Difficulty, SeasonContent> season1Variants = {
     decodes: ep01JuniorDecodes,
     investigations: ep03JuniorInvestigations,
     clocks: ep02JuniorClocks,
-    discoveries: const {...ep01JuniorDiscoveries, ...ep02JuniorDiscoveries, ...ep03JuniorDiscoveries, ...ep04JuniorDiscoveries, ...ep05JuniorDiscoveries, ...ep06JuniorDiscoveries},
-    learning: {...ep01JuniorLearning, ...ep02JuniorLearning, ...ep03JuniorLearning, ...ep04JuniorLearning, ...ep05JuniorLearning, ...ep06JuniorLearning},
+    discoveries: const {...ep01JuniorDiscoveries, ...ep02JuniorDiscoveries, ...ep03JuniorDiscoveries, ...ep04JuniorDiscoveries, ...ep05JuniorDiscoveries, ...ep06JuniorDiscoveries, ...ep07JuniorDiscoveries, ...ep08JuniorDiscoveries, ...ep09JuniorDiscoveries},
+    learning: {...ep01JuniorLearning, ...ep02JuniorLearning, ...ep03JuniorLearning, ...ep04JuniorLearning, ...ep05JuniorLearning, ...ep06JuniorLearning, ...ep07JuniorLearning, ...ep08JuniorLearning, ...ep09JuniorLearning},
   ),
   Difficulty.master: SeasonContent(
     info: const {},
@@ -67,8 +79,8 @@ final Map<Difficulty, SeasonContent> season1Variants = {
     decodes: ep01MasterDecodes,
     investigations: ep03MasterInvestigations,
     clocks: ep02MasterClocks,
-    discoveries: const {...ep01MasterDiscoveries, ...ep02MasterDiscoveries, ...ep03MasterDiscoveries, ...ep04MasterDiscoveries, ...ep05MasterDiscoveries, ...ep06MasterDiscoveries},
-    learning: {...ep01MasterLearning, ...ep02MasterLearning, ...ep03MasterLearning, ...ep04MasterLearning, ...ep05MasterLearning, ...ep06MasterLearning},
+    discoveries: const {...ep01MasterDiscoveries, ...ep02MasterDiscoveries, ...ep03MasterDiscoveries, ...ep04MasterDiscoveries, ...ep05MasterDiscoveries, ...ep06MasterDiscoveries, ...ep07MasterDiscoveries, ...ep08MasterDiscoveries, ...ep09MasterDiscoveries},
+    learning: {...ep01MasterLearning, ...ep02MasterLearning, ...ep03MasterLearning, ...ep04MasterLearning, ...ep05MasterLearning, ...ep06MasterLearning, ...ep07MasterLearning, ...ep08MasterLearning, ...ep09MasterLearning},
   ),
 };
 
@@ -84,4 +96,7 @@ const Map<String, Set<Difficulty>> season1WrittenLevels = {
   'ep04': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep05': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep06': {Difficulty.rookie},
+  'ep07': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  'ep08': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  'ep09': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
 };
