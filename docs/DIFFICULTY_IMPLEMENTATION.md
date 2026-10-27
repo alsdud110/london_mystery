@@ -317,7 +317,7 @@ enum Difficulty {
 | PART 3 | 시즌 난이도 변경 및 초기화 정책 | **COMPLETED** (2026-10-27) |
 | PART 4 | 개발자 모드 개선 | **COMPLETED** (2026-10-27) |
 | PART 5 | 난이도별 영어 콘텐츠 시스템 | **COMPLETED** (2026-10-27) |
-| PART 6 | London Season 1 콘텐츠 적용 (Case 단위 세분 가능) | **IN PROGRESS** — 6A(Case 01~03) **COMPLETE** (`7bfa4a7`, main 병합 `908c7eb`) · 6B(04~06)·6C(07~09)·6D(10~12) **PENDING** |
+| PART 6 | London Season 1 콘텐츠 적용 (Case 단위 세분 가능) | **COMPLETE** — 6A(01~03) `7bfa4a7` · 6B(04~06) `7038d4b` · 6C(07~09) `e89a342` · 6D(10~12) — 미지원 1곳: Case 06 M1 증인 대화(`DialogueScene` 구조 검사 없음) |
 | PART 7 | Paris Season 2 콘텐츠 적용 및 최종 검증 (Case 단위 세분 가능) | **COMPLETED** (Case 01~12) — 7A(Case 01~03, `f048688`, main 병합 `6fd8dbb`) · 7B(Case 04~06, `19f924d`) · 7C(Case 07~09, `98bae78`) · 7D(Case 10~12 + 시즌 전체 검증, `85d0461`). Paris 프롤로그·시즌 문구(`s2_paris`)는 범위 밖(기준본) |
 
 상태 값: NOT STARTED / IN PROGRESS / COMPLETED / BLOCKED. 테스트 실패나 미해결 문제가 있으면 COMPLETED로 바꾸지 않는다.
@@ -557,6 +557,14 @@ enum Difficulty {
 - **테스트**: 신규 `test/difficulty_paris_7d_test.dart` 36개(7C 테스트의 전체 집합 단언도 7D로 이동). analyze 0, 전체 **2512 passed / 0 failed / 0 skipped**(5분 14초).
 - **발견(수정 안 함)**: 기준 학습 설계 `s2_ep10_m2`가 `isHonest`가 아님(exposure 의존 + comprehension 수준) — 결정 필요.
 
+### PART 6B·6C·6D — London Cases 04~12 영어 콘텐츠 (main)
+- **작업 날짜**: 2026-10-27 · 시작 HEAD `26d837d`. 커밋: 6B `7038d4b` · 6C `e89a342` · 6D(이 문서 갱신 포함).
+- **결과**: `lib/data/mock/season1/difficulty/ep04_levels.dart`~`ep12_levels.dart`(사건 텍스트 패치, Discovery 27×2, 학습 표현 36×2), `season1_difficulty.dart`에 등록. Rookie = 기준본(패치 없음). Junior·Master = synopsis·intro·caseSummary·hook·glossary, 모든 미션 story·letterIntro·letter·question·prompt·hints·successMessage·transition, 옵션 오답 줄·오답 줄 값·orderFeedback·단서 note·증거 description. 정답·선택지 id/이름/순서·힌트 수·단서 제목·증거 이름/글귀·구조 불변. 엔진·모델·UI 수정 없음.
+- **모든 난이도 동일(퍼즐 자료·조작 안내)**: ep04 m1·m2 letter, final prompt / ep05 m3 prompt, final question / ep06 m2 prompt, m3 letter / ep07 m1·m3·final letter / ep08 m1·m3 letter, m2 prompt / ep09 m2·final prompt, final letter / ep10 final question / ep11 m2 letter·prompt, m3 letter / ep12 m2 letter, m3 prompt. 그 밖의 핵심 문장(where trains never sleep, the colour of my hat, I was never in Gallery 8, whose key you used, the station that never sleeps, after the train from Edinburgh, the platform whose clock is small and red, PARIS. 등)은 바뀐 문장 안에 그대로 유지 — 테스트가 고정.
+- **미지원**: Case 06 M1 증인 대화(`dialogues/ep06_m1`, `DialogueScene`) — `structureOf`에 없음(기존 테스트가 미지원으로 고정), 엔진 확장 금지 지시로 기준본 대사 유지. 따라서 ep06 `writtenLevels` = {rookie}, `missingAt` = [`dialogues/ep06_m1`]. M1 편지(증언 기록)는 대화와 같은 사실로 작성.
+- **테스트**: 신규 `test/difficulty_london_levels.dart`(6A 검사를 사건 목록으로 일반화) + `difficulty_london_6b/6c/6d_test.dart`(사건별 추리 보호 × 3난이도, 시즌 전체 누락 검사). 기존 수정 1곳(의도적): `difficulty_content_test.dart` Coverage의 "ep04 미작성" 전제 → ep06 대화 누락으로 같은 규칙 검증. `flutter analyze` No issues · 전체 `flutter test` **2573 passed / 0 failed**(4분 33초).
+- **남은 위험**: 원어민 검토·실기기 화면 확인 없음, 새 어휘 glossary 자동 검사 없음, Case 06 M1 대화는 세 난이도 모두 기준본 문체.
+
 ---
 
 ## G. 다음 세션 인수인계
@@ -565,13 +573,12 @@ enum Difficulty {
 **PART 0**(`042afac`), **PART 1**(`8c9b4c8`), **PART 2**(`0da1dac`), **PART 3**(`19c1801`), **PART 4**(`1f144ed`), 정책 승인 문서(`6c99c63`), **PART 5**(난이도별 콘텐츠 엔진, 커밋 `feat: add difficulty-aware content architecture` — 해시는 `git log --oneline --grep "difficulty-aware content"`).
 PART 5 = `b6fb71e`. **PART 6A**(London Case 01~03, `7bfa4a7`) · **PART 7A**(Paris Case 01~03, `f048688`) — 둘 다 main 통합(`6fd8dbb`, F의 *PART 6A / 7A 통합*).
 **PART 7B**(Paris Case 04~06, `19f924d`) · **PART 7C**(Case 07~09, `98bae78`) · **PART 7D**(Case 10~12 + 시즌 전체 검증, `85d0461`) — F의 각 항목.
-지금 상태: London `ep01`~`ep03`, **Paris `s2_ep01`~`s2_ep12` 전부**는 세 난이도 작성 완료(`writtenLevels`). London `ep04`~`ep12`와 두 시즌의 프롤로그·시즌 문구는 기준본(Rookie)으로 대체된다.
+지금 상태: **London `ep01`~`ep12`**(Case 06 M1 대화 제외, PART 6A~6D), **Paris `s2_ep01`~`s2_ep12` 전부**는 세 난이도 작성 완료(`writtenLevels`). 두 시즌의 프롤로그·시즌 문구는 기준본(Rookie)으로 대체된다.
 
 ### 다음 PART
-- **London PART 6B — Cases 04~06** (PENDING): `lib/data/mock/season1/difficulty/ep04_levels.dart`~`ep06_levels.dart` 추가 → `season1_difficulty.dart`에서 조립, `season1WrittenLevels`에 표시. **Case 06 `DialogueScene`(m1 증인 대화)은 `DifficultyContent.structureOf`에 구조 검사를 먼저 추가**(진술·질문 id·순서·정답 짝). 장면 객체는 기준본의 텍스트 전용 `copyWith` 패턴(`level_words.dart`의 `relined`). 보호: Case 04 Black Wax Seal·"Black birds live there"(RAVEN)·"where trains never sleep"(→11), Case 05 745·순서 질문 `orderFeedback`, Case 06 Final grey/hat/card 금지·"the colour of my hat". 테스트는 `difficulty_london_6a_test.dart` 형식으로 `difficulty_london_6b_test.dart`.
+- **London PART 6B~6D — Cases 04~12**: **COMPLETE**(F의 *PART 6B·6C·6D*). 남은 London 항목: Case 06 M1 `DialogueScene` 난이도 대사(엔진에 구조 검사 추가 승인 필요), 시즌 프롤로그·시즌 문구.
 - **Paris PART 7B — Cases 04~06**: **COMPLETE**(F의 *PART 7B*, 보고서 `PARIS_CASE_04_06.md`).
 - **Paris PART 7C·7D — Cases 07~12**: **COMPLETE**(F의 *PART 7C*·*PART 7D*, 보고서 `PARIS_CASE_07_09.md`·`PARIS_CASE_10_12.md`). Paris 난이도 콘텐츠 완료. 남은 Paris 항목: 프롤로그·시즌 문구(`s2_paris`, 범위 밖), 도달 불가 옛 오답 줄 51개(7B 36 + 7C 15, 옛 화면이 다시 쓰일 때 검토), `s2_ep10_m2` 학습 설계 정직성.
-- **London PART 6B~6D**: 여전히 **PENDING**(아래 6B 항목). Paris에서 만든 패턴 재사용 가능: 콘텐츠 파일 분리(`season2_levels_NN_NN.dart`), 장면 빌더(기준 객체 구조 필드 복사), 구조 검사 먼저, 테스트 `keptAtEveryLevel`·`unreachable()`, 최신 PART 테스트만 전체 집합 고정, 회상 오답 줄 패치(`recall.feedback`).
 
 **PART 6 — London Cases 01~12 영어 콘텐츠** (6A: 01~03 / 6B: 04~06 / 6C: 07~09 / 6D: 10~12, 묶음마다 테스트·문서·개별 커밋)
 
@@ -672,15 +679,15 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 | Case 01 | `ep01` | ✓ (일부 Rookie 패치) | ✓ | ✓ | PART 6A | 미션 5 + Final, 개인화 줄 있음. 장면 4종 변형 |
 | Case 02 | `ep02` | ✓ (일부 Rookie 패치) | ✓ | ✓ | PART 6A | 8:17 → 9:17 보호. PART 5 샘플 M1 완성 |
 | Case 03 | `ep03` | ✓ (일부 Rookie 패치) | ✓ | ✓ | PART 6A | trains and smoke / Red Button(→08). 수색 장면 변형 |
-| Case 04 | `ep04` | base | — | — | | Platform 4(→12), RAVEN |
-| Case 05 | `ep05` | base | — | — | | 745 순서 질문 |
-| Case 06 | `ep06` | base | — | — | | grey/hat/card 금지어 |
-| Case 07 | `ep07` | base | — | — | | "old gate" 노출 금지 |
-| Case 08 | `ep08` | base | — | — | | button/coat/red 금지어 |
-| Case 09 | `ep09` | base | — | — | | whose 구문이 퍼즐 |
-| Case 10 | `ep10` | base | — | — | | TOWER + BRIDGE |
-| Case 11 | `ep11` | base | — | — | | never sleeps(→04) |
-| Case 12 | `ep12` | base | — | — | | after/whose 재사용, PARIS. |
+| Case 04 | `ep04` | ✓ (base) | ✓ | ✓ | 6B `7038d4b` | Platform 4(→12), RAVEN |
+| Case 05 | `ep05` | ✓ (base) | ✓ | ✓ | 6B `7038d4b` | 745 순서 질문 |
+| Case 06 | `ep06` | ✓ (base) | 패치 적용(M1 대화 제외) | 패치 적용(M1 대화 제외) | 6B `7038d4b` | grey/hat/card 금지어 |
+| Case 07 | `ep07` | ✓ (base) | ✓ | ✓ | 6C `e89a342` | "old gate" 노출 금지 |
+| Case 08 | `ep08` | ✓ (base) | ✓ | ✓ | 6C `e89a342` | button/coat/red 금지어 |
+| Case 09 | `ep09` | ✓ (base) | ✓ | ✓ | 6C `e89a342` | whose 구문이 퍼즐 |
+| Case 10 | `ep10` | ✓ (base) | ✓ | ✓ | 6D | TOWER + BRIDGE |
+| Case 11 | `ep11` | ✓ (base) | ✓ | ✓ | 6D | never sleeps(→04) |
+| Case 12 | `ep12` | ✓ (base) | ✓ | ✓ | 6D | after/whose 재사용, PARIS. |
 
 ### Paris — Season 2 (`s2_paris`)
 | 범위 | ID | Rookie | Junior | Master | 커밋 | 비고 |

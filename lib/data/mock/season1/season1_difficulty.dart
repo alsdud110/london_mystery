@@ -9,6 +9,9 @@ import 'difficulty/ep06_levels.dart';
 import 'difficulty/ep07_levels.dart';
 import 'difficulty/ep08_levels.dart';
 import 'difficulty/ep09_levels.dart';
+import 'difficulty/ep10_levels.dart';
+import 'difficulty/ep11_levels.dart';
+import 'difficulty/ep12_levels.dart';
 
 /// Season 1's words at each level (Rookie: the game's own words, with a few
 /// lines of its own where the base was harder than Rookie's English).
@@ -28,6 +31,9 @@ const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
     'ep07': ep07Rookie,
     'ep08': ep08Rookie,
     'ep09': ep09Rookie,
+    'ep10': ep10Rookie,
+    'ep11': ep11Rookie,
+    'ep12': ep12Rookie,
   },
   Difficulty.junior: {
     'ep01': ep01Junior,
@@ -39,6 +45,9 @@ const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
     'ep07': ep07Junior,
     'ep08': ep08Junior,
     'ep09': ep09Junior,
+    'ep10': ep10Junior,
+    'ep11': ep11Junior,
+    'ep12': ep12Junior,
   },
   Difficulty.master: {
     'ep01': ep01Master,
@@ -50,6 +59,9 @@ const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
     'ep07': ep07Master,
     'ep08': ep08Master,
     'ep09': ep09Master,
+    'ep10': ep10Master,
+    'ep11': ep11Master,
+    'ep12': ep12Master,
   },
 };
 
@@ -67,8 +79,8 @@ final Map<Difficulty, SeasonContent> season1Variants = {
     decodes: ep01JuniorDecodes,
     investigations: ep03JuniorInvestigations,
     clocks: ep02JuniorClocks,
-    discoveries: const {...ep01JuniorDiscoveries, ...ep02JuniorDiscoveries, ...ep03JuniorDiscoveries, ...ep04JuniorDiscoveries, ...ep05JuniorDiscoveries, ...ep06JuniorDiscoveries, ...ep07JuniorDiscoveries, ...ep08JuniorDiscoveries, ...ep09JuniorDiscoveries},
-    learning: {...ep01JuniorLearning, ...ep02JuniorLearning, ...ep03JuniorLearning, ...ep04JuniorLearning, ...ep05JuniorLearning, ...ep06JuniorLearning, ...ep07JuniorLearning, ...ep08JuniorLearning, ...ep09JuniorLearning},
+    discoveries: const {...ep01JuniorDiscoveries, ...ep02JuniorDiscoveries, ...ep03JuniorDiscoveries, ...ep04JuniorDiscoveries, ...ep05JuniorDiscoveries, ...ep06JuniorDiscoveries, ...ep07JuniorDiscoveries, ...ep08JuniorDiscoveries, ...ep09JuniorDiscoveries, ...ep10JuniorDiscoveries, ...ep11JuniorDiscoveries, ...ep12JuniorDiscoveries},
+    learning: {...ep01JuniorLearning, ...ep02JuniorLearning, ...ep03JuniorLearning, ...ep04JuniorLearning, ...ep05JuniorLearning, ...ep06JuniorLearning, ...ep07JuniorLearning, ...ep08JuniorLearning, ...ep09JuniorLearning, ...ep10JuniorLearning, ...ep11JuniorLearning, ...ep12JuniorLearning},
   ),
   Difficulty.master: SeasonContent(
     info: const {},
@@ -79,8 +91,8 @@ final Map<Difficulty, SeasonContent> season1Variants = {
     decodes: ep01MasterDecodes,
     investigations: ep03MasterInvestigations,
     clocks: ep02MasterClocks,
-    discoveries: const {...ep01MasterDiscoveries, ...ep02MasterDiscoveries, ...ep03MasterDiscoveries, ...ep04MasterDiscoveries, ...ep05MasterDiscoveries, ...ep06MasterDiscoveries, ...ep07MasterDiscoveries, ...ep08MasterDiscoveries, ...ep09MasterDiscoveries},
-    learning: {...ep01MasterLearning, ...ep02MasterLearning, ...ep03MasterLearning, ...ep04MasterLearning, ...ep05MasterLearning, ...ep06MasterLearning, ...ep07MasterLearning, ...ep08MasterLearning, ...ep09MasterLearning},
+    discoveries: const {...ep01MasterDiscoveries, ...ep02MasterDiscoveries, ...ep03MasterDiscoveries, ...ep04MasterDiscoveries, ...ep05MasterDiscoveries, ...ep06MasterDiscoveries, ...ep07MasterDiscoveries, ...ep08MasterDiscoveries, ...ep09MasterDiscoveries, ...ep10MasterDiscoveries, ...ep11MasterDiscoveries, ...ep12MasterDiscoveries},
+    learning: {...ep01MasterLearning, ...ep02MasterLearning, ...ep03MasterLearning, ...ep04MasterLearning, ...ep05MasterLearning, ...ep06MasterLearning, ...ep07MasterLearning, ...ep08MasterLearning, ...ep09MasterLearning, ...ep10MasterLearning, ...ep11MasterLearning, ...ep12MasterLearning},
   ),
 };
 
@@ -99,4 +111,7 @@ const Map<String, Set<Difficulty>> season1WrittenLevels = {
   'ep07': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep08': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep09': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  'ep10': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  'ep11': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  'ep12': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
 };
