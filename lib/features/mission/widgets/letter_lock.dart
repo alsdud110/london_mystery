@@ -44,6 +44,8 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
   /// The tiles not in a slot, in their own order.
   List<ChoiceOption> get _loose => [for (final t in _tiles) if (!_slots.contains(t.id)) t];
 
+  bool _placed(String id) => _slots.contains(id);
+
   bool get _full => !_slots.contains(null);
 
   void _report() => widget.onChanged?.call([for (final id in _slots) id == null ? null : _letter(id)]);
@@ -61,8 +63,11 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
     _report();
   }
 
-  /// A loose tile tapped: into the first empty slot.
+  /// A desk tile tapped: into the first empty slot, or, already in the
+  /// lock, back out of it.
   void _tapLoose(String id) {
+    final placed = _slots.indexOf(id);
+    if (placed >= 0) return _tapSlot(placed);
     final empty = _slots.indexOf(null);
     if (empty >= 0) _place(id, empty);
   }
@@ -128,7 +133,8 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
           ),
         ),
         const SizedBox(height: AppSpace.lg),
-        // The letters found, loose on the desk.
+        // The letters found, on the desk: each stays where it lies, faded
+        // while it is in the lock.
         Text(
           _loose.isEmpty ? 'Every letter is in the lock.' : 'Drag a letter into the lock, or tap it.',
           textAlign: TextAlign.center,
@@ -142,13 +148,14 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
             spacing: AppSpace.md,
             runSpacing: AppSpace.sm,
             children: [
-              for (final t in _loose)
+              for (final t in _tiles)
                 Draggable<String>(
                   key: ValueKey('lock-tile-${t.id}'),
                   data: t.id,
+                  maxSimultaneousDrags: _placed(t.id) ? 0 : null,
                   feedback: Material(type: MaterialType.transparency, child: _Tile(t.label, lifted: true)),
                   childWhenDragging: const _TileGap(),
-                  child: _Tile(t.label, onTap: () => _tapLoose(t.id)),
+                  child: _Tile(t.label, used: _placed(t.id), onTap: () => _tapLoose(t.id)),
                 ),
             ],
           ),
@@ -214,33 +221,40 @@ class _Slot extends StatelessWidget {
 
 /// A letter tile: a square of card with a letter stamped on it.
 class _Tile extends StatelessWidget {
-  const _Tile(this.letter, {this.onTap, this.lifted = false});
+  const _Tile(this.letter, {this.onTap, this.lifted = false, this.used = false});
 
   final String letter;
   final VoidCallback? onTap;
   final bool lifted;
+
+  /// On the desk while it is in the lock: faded, and a tap takes it out.
+  final bool used;
 
   /// Comfortably over a fingertip.
   static const size = 56.0;
 
   @override
   Widget build(BuildContext context) {
-    final tile = Container(
-      width: size,
-      height: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: AppColors.paperLight,
-        borderRadius: BorderRadius.circular(AppRadius.paper),
-        border: Border.all(color: AppColors.inkBrown.withValues(alpha: 0.6), width: AppLine.hairline),
-        boxShadow: lifted ? AppShadow.onNight : AppShadow.paperLift,
+    final tile = AnimatedOpacity(
+      duration: const Duration(milliseconds: 150),
+      opacity: used ? 0.4 : 1,
+      child: Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.paperLight,
+          borderRadius: BorderRadius.circular(AppRadius.paper),
+          border: Border.all(color: AppColors.inkBrown.withValues(alpha: 0.6), width: AppLine.hairline),
+          boxShadow: lifted ? AppShadow.onNight : (used ? null : AppShadow.paperLift),
+        ),
+        child: Text(letter, style: AppText.logo(size: 30, color: AppColors.navy)),
       ),
-      child: Text(letter, style: AppText.logo(size: 30, color: AppColors.navy)),
     );
     if (onTap == null) return tile;
     return Semantics(
       button: true,
-      label: 'Letter $letter',
+      label: used ? 'Letter $letter, in the lock. Tap to take it out.' : 'Letter $letter',
       excludeSemantics: true,
       child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: tile),
     );
