@@ -1,14 +1,18 @@
 import 'dart:ui' show Offset, Rect, Size;
 
+import '../../models/easy_steps.dart';
 import '../../models/investigation.dart' show InvestigationSpot;
+import '../../models/letter_puzzles.dart';
 import '../../models/painter_puzzles.dart';
+import '../../models/river_puzzles.dart';
 import '../../models/scene_exhibit.dart';
 import '../../models/scene_explore.dart' show ScenePixels;
 import '../../models/station_clocks.dart';
 import '../../models/tower_puzzles.dart';
+import '../../models/workshop_puzzles.dart';
 
 /// What a Season 2 scene is beyond its words (`DifficultyContent.structureOf`
-/// for the scenes of Cases 01–03): its pictures and where things are on them,
+/// for the scenes of Cases 01–06, and the very easy steps): its pictures and where things are on them,
 /// its ids and their order, the times, answers and documents its puzzle is
 /// read from. A level may give a scene its own words, never another one of
 /// these. Null: not a kind known here.
@@ -136,6 +140,205 @@ String? season2StructureOf(Object? entry) => switch (entry) {
           _rect(b.riverAt),
           b.riverWord,
         ].join('|'),
+      // ── Cases 04–06 (PART 7B) ──────────────────────────────────────────
+      // The papers a puzzle is read from (the plaque's back, the marks'
+      // words, the ledger, the label, the street book, the repair card, the
+      // slips, the tags, the porter's plan, the drawers, the letter) are
+      // part of what it is; the ways to play are kept by the tests.
+      final RiverMarksScene r => [
+          'riverMarks',
+          r.wall,
+          _px(r.pixels),
+          for (final m in r.marks)
+            [m.id, m.name, _rect(m.area), _rect(m.wordAt), m.closeUp, _rect(m.closeWordAt), m.word, m.waves, m.arrowDown].join(','),
+          _px(r.closePixels),
+          _rect(r.signAt),
+          r.sign,
+          season2StructureOf(r.plaqueFront),
+          _plaque(r.plaqueBack),
+          // Said line by line, one for each of the plaque's.
+          r.rightLines.length,
+        ].join('|'),
+      final KeeperHutScene k => [
+          'keeperHut',
+          k.outside,
+          _rect(k.doorArea),
+          k.inside,
+          _rect(k.ledgerArea),
+          _px(k.pixels),
+          k.ledger,
+          _px(k.ledgerPixels),
+          for (final p in k.pages)
+            [
+              p.title,
+              _rect(p.crop),
+              _rect(p.writeOn),
+              for (final e in p.entries) '${e.date}:${e.parts.map((x) => '${x.box}=${x.text}').join('+')}:${e.initials}:${e.hands}',
+            ].join(','),
+          k.hands,
+          k.findBox,
+        ].join('|'),
+      final BoxesScene b => [
+          'quayBoxes',
+          b.picture,
+          _px(b.pixels),
+          _rect(b.view),
+          for (final x in b.boxes) '${x.id}:${x.number}:${_rect(x.area)}:${_rect(x.plateAt)}:${x.note != null}',
+          b.open,
+          _px(b.openPixels),
+          b.decoy,
+          _px(b.decoyPixels),
+          _rect(b.decoyAt),
+          b.decoyLines.join(','),
+          _label(b.label),
+          b.slots.join(','),
+        ].join('|'),
+      final StreetBookScene s => [
+          'streetBook',
+          s.book,
+          _px(s.bookPixels),
+          s.pages.map(_rect).join(';'),
+          for (final e in s.entries) '${e.id}:${e.name}:${e.lines.join(';')}:${e.page}',
+          for (final e in s.evidence) '${e.id}:${e.evidenceId}',
+          s.maxEvidence,
+          s.hut,
+          _px(s.hutPixels),
+          s.gate,
+          _px(s.gatePixels),
+          _rect(s.gateView),
+          _rect(s.signAt),
+          s.signLines.join(','),
+          _rect(s.scrapAt),
+          _label(s.label),
+          s.hands,
+        ].join('|'),
+      final MarkCompareScene m => [
+          'markCompare',
+          m.bench,
+          _px(m.pixels),
+          for (final x in m.seals) [x.id, x.name, x.thing, _rect(x.area), _rect(x.seal), x.copy.name].join(','),
+          _maker(m.mark),
+          m.sheet,
+          _px(m.sheetPixels),
+          _rect(m.sheetMarkAt),
+          m.note,
+          _written(m.card),
+        ].join('|'),
+      final ClockWallScene c => [
+          'clockWall',
+          c.wall,
+          _px(c.pixels),
+          _rect(c.view),
+          for (final x in c.clocks)
+            [x.id, x.numeral, _at(x.centre), x.radius, _rect(x.area), _rect(x.plateAt), x.shows, x.change, x.back].join(','),
+          _px(c.backPixels),
+          c.watch.inMilliseconds,
+        ].join('|'),
+      final PostTrailScene p => [
+          'postTrail',
+          p.slip,
+          _px(p.slipPixels),
+          _rect(p.slipWriteOn),
+          for (final x in p.slips) '${x.id}:${x.letter}:${x.date}:${x.time}:${x.record}:${x.where}',
+          p.slots.join(','),
+          p.slotLabels.join(','),
+          _written(p.receipt),
+          p.stage,
+          _px(p.stagePixels),
+          _rect(p.stageView),
+        ].join('|'),
+      final HoldRackScene h => [
+          'holdRack',
+          '${h.rack.clue.kind.name}:${h.rack.clue.number}:${h.rack.clue.date}:${h.rack.clue.time}',
+          for (final t in h.rack.tags) '${t.id}:${t.kind.name}:${t.number}:${t.date}:${t.time}:${t.record}:${t.reason.join(';')}',
+          h.file,
+          _px(h.pixels),
+          _rect(h.view),
+          for (final t in h.tags) '${t.id}:${_rect(t.spot)}:${_rect(t.paper)}',
+          h.tagFile,
+          _px(h.tagPixels),
+          _rect(h.writeOn),
+          h.ink,
+          _written(h.trail),
+        ].join('|'),
+      final PlanScene p => [
+          'plan',
+          for (final d in p.route.doors) '${d.id}:${d.side.name}:${d.pastStatue}:${d.nth}',
+          '${p.route.directions.pastStatue}:${p.route.directions.side.name}:${p.route.directions.nth}',
+          p.route.archive,
+          p.file,
+          _px(p.pixels),
+          _rect(p.view),
+          _at(p.start),
+          for (final e in p.steps.entries) '${e.key.name}:${_at(e.value.at)}:${_rect(e.value.area)}',
+          for (final d in p.doors) '${d.id}:${_at(d.at)}:${_rect(d.area)}:${_at(d.badge)}',
+        ].join('|'),
+      final ArchiveScene a => [
+          'archive',
+          for (final d in a.drawers.drawers) '${d.id}:${d.kind.name}:${d.from}:${d.to}',
+          '${a.drawers.kind.name}:${a.drawers.number}',
+          for (final e in a.drawers.envelopes) '${e.id}:${e.tear}',
+          a.drawers.cornerTear,
+          a.drawers.cornerLabel,
+          a.cabinet,
+          _px(a.cabinetPixels),
+          _rect(a.cabinetView),
+          for (final d in a.cabinetDrawers) '${d.id}:${_rect(d.area)}:${_rect(d.label)}',
+          a.drawer,
+          _px(a.drawerPixels),
+          _rect(a.drawerView),
+          _rect(a.felt),
+          for (final e in a.envelopes) '${e.id}:${e.file}:${_rect(e.inDrawer)}',
+          _px(a.envelopePixels),
+          a.corner,
+          _rect(a.cornerPiece),
+          _rect(a.cornerTagAt),
+          _rect(a.numberTag),
+          a.seal,
+          _px(a.sealPixels),
+          _rect(a.sealAt),
+          // The drawer's own label is put into these lines on the page.
+          a.notHere.contains('{label}'),
+          a.notLetters.contains('{label}'),
+        ].join('|'),
+      final LetterMapScene l => [
+          'letterMap',
+          (l.map.drawing.map((f) => f.name).toList()..sort()).join(','),
+          for (final b in l.map.buildings) '${b.id}:${(b.features.map((f) => f.name).toList()..sort()).join(',')}:${b.shows}',
+          l.map.back.join(','),
+          _letter(l.letter),
+          _px(l.sketchPixels),
+          l.mapFile,
+          _px(l.mapPixels),
+          for (final s in l.spots) '${s.id}:${s.name}:${_at(s.at)}',
+          l.closer,
+        ].join('|'),
+      // Played one small step at a time: the steps, what each shows and
+      // asks, its answer, how many free hints lead to it and where the
+      // answer is lit. What each step says (its line, hints, wrong-answer
+      // lines, its done line) is its words.
+      final EasyStepsScene e => [
+          'easySteps',
+          e.title,
+          e.answer,
+          e.seen.join(','),
+          for (final s in e.steps)
+            [
+              s.id,
+              s.does.name,
+              _mark(s.target),
+              s.lit.map(_mark).join(';'),
+              s.question != null,
+              for (final o in s.options) '${o.id}=${o.label}=${_panel(o.panel)}=${o.area == null ? null : _rect(o.area!)}',
+              s.answer,
+              s.hints.length,
+              s.lookHere.map(_mark).join(';'),
+              s.tell != null,
+              s.done != null,
+              s.panels.map(_panel).join(';'),
+              s.after?.map(_panel).join(';'),
+            ].join('~'),
+        ].join('|'),
       _ => null,
     };
 
@@ -170,3 +373,81 @@ String _doc(RecordDoc d) => [
       for (final l in d.lines) '${l.id}:${l.label}:${l.value}',
       d.note,
     ].join(',');
+
+String _plaque(PlaqueBack p) => [p.file, _px(p.pixels), _rect(p.writeOn), p.lines.join(';')].join(',');
+
+String _maker(MakerMark m) => [m.file, _px(m.pixels), m.split.map(_at).join(';'), _at(m.shift), m.tipFile, _at(m.tipShift)].join(',');
+
+String _written(WrittenPaper w) => [
+      w.file,
+      _px(w.pixels),
+      _rect(w.writeOn),
+      w.lines.join(';'),
+      w.markAt == null ? null : _rect(w.markAt!),
+      w.signedWith == null ? null : _maker(w.signedWith!),
+      w.size,
+      w.tag,
+      w.tagAt == null ? null : _rect(w.tagAt!),
+    ].join(',');
+
+String _label(DeliveryLabel l) => [
+      l.file,
+      l.back,
+      _px(l.pixels),
+      for (final x in l.lines) '${x.piece}:${x.text}:${x.left}:${x.top}:${x.size}:${x.centred}:${x.stamp}:${x.faint}',
+      l.tear1,
+      l.tear2,
+      l.tear3,
+      l.paperLeft,
+      l.paperRight,
+      l.paperBottom,
+      l.numberLabel,
+      _rect(l.numberAt),
+      l.addressLeft,
+      l.addressTop,
+      l.addressSize,
+      l.addressStart,
+      l.addressRest,
+      _rect(l.stampAt),
+      l.hands,
+      l.backLines.join(';'),
+      _rect(l.backAt),
+    ].join(',');
+
+String _letter(LetterPaper l) =>
+    [l.file, _px(l.pixels), l.lines.join(';'), _rect(l.writeOn), l.sketch, _rect(l.sketchAt), l.back.join(';'), _rect(l.backOn), l.showBack].join(',');
+
+String _mark(EasyMark? m) => m == null ? '-' : '${m.panel}@${m.area == null ? '' : _rect(m.area!)}';
+
+String _picture(EasyPicture p) => [p.file, _px(p.pixels), p.crop == null ? null : _rect(p.crop!)].join(',');
+
+String _writing(EasyWriting w) => [w.text, _rect(w.at), w.size, w.ink.name, w.strong, w.mirrored].join(',');
+
+String _layer(EasyLayer l) => [l.file, _rect(l.at), l.opacity, l.graphite, l.turns].join(',');
+
+/// A step's panel beyond its caption: what it shows, and the words drawn
+/// on it (a paper's, a picture's) as the case wrote them.
+String? _panel(EasyPanel? p) => switch (p) {
+      null => null,
+      final PicturePanel x => 'picture:${x.id}:${_picture(x.picture)}:${x.writing.map(_writing).join('/')}:${x.layers.map(_layer).join('/')}',
+      final PaperPanel x =>
+        'paper:${x.id}:${x.title}:${x.lines.map((l) => '${l.text}=${l.strong}').join('/')}:${x.old}:${x.foot}:${x.aspect}',
+      final EvidencePanel x => 'evidence:${x.id}:${x.evidenceId}',
+      final DrawnPanel x => 'drawn:${x.id}:${_drawn(x.drawn)}:${x.crop == null ? null : _rect(x.crop!)}:${x.pixels == null ? null : _px(x.pixels!)}',
+      final QuotePanel x => 'quote:${x.id}:${x.name}:${x.quote}:${x.portrait}',
+      final GearMarkPanel x => 'gear:${x.id}:${x.label}:${x.stamped}',
+      final RubPanel x =>
+        'rub:${x.id}:${_picture(x.book)}:${_rect(x.area)}:${x.lines.map(_writing).join('/')}:${x.signature == null ? null : _layer(x.signature!)}',
+      final MachinePanel x => 'machine:${x.id}:${_picture(x.scene.machine)}:${x.scene.wheel}:${x.scene.wrong}:${x.scene.right}:${x.state.name}',
+    };
+
+/// A paper drawn as evidence. Kinds not written out here are told by the
+/// object itself: a level's step must then show the very same paper.
+String _drawn(DrawnEvidence d) => switch (d) {
+      final WrittenPaper w => 'written:${_written(w)}',
+      final PictureEvidence p => 'picture:${p.file}:${_px(p.pixels)}:${p.crop == null ? null : _rect(p.crop!)}',
+      final FittedEnvelope f => 'fitted:${f.envelope}:${f.corner}:${_px(f.pixels)}:${f.tag}:${_rect(f.tagAt)}:${f.seal}:${_rect(f.sealAt)}',
+      final LetterPaper l => 'letter:${_letter(l)}',
+      final EasyEvidence e => 'easy:${_panel(e.panel)}',
+      _ => '${d.runtimeType}#${identityHashCode(d)}',
+    };

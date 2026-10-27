@@ -7,7 +7,11 @@ import '../../models/scene_exhibit.dart';
 import '../../models/station_clocks.dart';
 import '../season_catalog.dart';
 import 'season2_case03_scenes.dart';
+import 'season2_case04_scenes.dart';
+import 'season2_case05_scenes.dart';
+import 'season2_case06_scenes.dart';
 import 'season2_learning.dart';
+import 'season2_levels_04_06.dart';
 import 'season2_scenes.dart';
 
 /// Season 2's words at each level (the game's own words are Rookie's).
@@ -19,6 +23,9 @@ import 'season2_scenes.dart';
 /// design. Rookie: the game's own words, reviewed, with the words a child
 /// may not know added to the glossary (`docs/difficulty_reviews/
 /// PARIS_CASE_01_03.md`).
+///
+/// Written (PART 7B): Cases 04–06, the same way, in
+/// `season2_levels_04_06.dart` (`docs/difficulty_reviews/PARIS_CASE_04_06.md`).
 ///
 /// At every level the same: the times, the answers, every id and order, the
 /// papers the puzzles are read from (the station notice, the clerk's three
@@ -37,16 +44,27 @@ final Map<Difficulty, Map<String, Map<String, Object?>>> season2CasePatches = {
     's2_ep01': {'glossary': _words01},
     's2_ep02': {'glossary': {..._words02, ..._rookieOnly02}},
     's2_ep03': {'glossary': {..._words03, ..._rookieOnly03}},
+    // PART 7B (season2_levels_04_06.dart): two lines of Case 05 made
+    // plainer.
+    's2_ep04': {'glossary': rookieWords04},
+    's2_ep05': rookie05,
+    's2_ep06': {'glossary': rookieWords06},
   },
   Difficulty.junior: {
     's2_ep01': _junior01,
     's2_ep02': _junior02,
     's2_ep03': _junior03,
+    's2_ep04': junior04,
+    's2_ep05': junior05,
+    's2_ep06': junior06,
   },
   Difficulty.master: {
     's2_ep01': _master01,
     's2_ep02': _master02,
     's2_ep03': _master03,
+    's2_ep04': master04,
+    's2_ep05': master05,
+    's2_ep06': master06,
   },
 };
 
@@ -57,6 +75,10 @@ const Map<String, Set<Difficulty>> season2WrittenLevels = {
   's2_ep01': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   's2_ep02': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   's2_ep03': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  // PART 7B.
+  's2_ep04': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  's2_ep05': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
+  's2_ep06': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
 };
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -1421,6 +1443,8 @@ const Set<String> season2SameAtEveryLevel = {
   'lifts/s2_ep03_m2',
   'dialLocks/s2_ep03_m3',
   'evidenceBoards/s2_ep03_final',
+  // PART 7B: Cases 04–06.
+  ...sameAtEveryLevel0406,
 };
 
 /// Season 2's puzzle tables at Junior and Master: only what differs (and
@@ -1508,6 +1532,19 @@ final Map<Difficulty, SeasonContent> season2Variants = {
     lifts: {'s2_ep03_m2': season2Lifts['s2_ep03_m2']!},
     dialLocks: {'s2_ep03_m3': season2DialLocks['s2_ep03_m3']!},
     evidenceBoards: {'s2_ep03_final': season2EvidenceBoards['s2_ep03_final']!},
+    // PART 7B: Cases 04–06 (season2_levels_04_06.dart).
+    riverMarks: juniorScenes0406.riverMarks,
+    keeperHuts: juniorScenes0406.keeperHuts,
+    quayBoxes: juniorScenes0406.quayBoxes,
+    streetBooks: {'s2_ep04_final': season2StreetBooks['s2_ep04_final']!},
+    markCompares: {'s2_ep05_m1': season2MarkCompares['s2_ep05_m1']!},
+    clockWalls: juniorScenes0406.clockWalls,
+    postTrails: {'s2_ep05_final': season2PostTrails['s2_ep05_final']!},
+    holdRacks: {'s2_ep06_m1': season2HoldRackScenes['s2_ep06_m1']!},
+    planRoutes: {'s2_ep06_m2': season2PlanScenes['s2_ep06_m2']!},
+    archives: juniorScenes0406.archives,
+    letterMaps: {'s2_ep06_final': season2LetterMapScenes['s2_ep06_final']!},
+    easySteps: juniorScenes0406.easySteps,
     learning: {
       // Case 01 (M1: the PART 5 sample, kept).
       's2_ep01_m1': _learn('s2_ep01_m1', expressions: ['running one hour behind', 'report it to the LOST PROPERTY DESK']),
@@ -1533,7 +1570,8 @@ final Map<Difficulty, SeasonContent> season2Variants = {
       's2_ep03_final': _learn(
         's2_ep03_final',
         expressions: ['What was wrong with the inspection records?', 'What can we conclude?', 'the evidence that answers it'],
-      ),
+      ),      // PART 7B: Cases 04–06.
+      ...juniorLearning0406,
     },
   ),
   Difficulty.master: SeasonContent(
@@ -1624,6 +1662,19 @@ final Map<Difficulty, SeasonContent> season2Variants = {
     lifts: {'s2_ep03_m2': season2Lifts['s2_ep03_m2']!},
     dialLocks: {'s2_ep03_m3': season2DialLocks['s2_ep03_m3']!},
     evidenceBoards: {'s2_ep03_final': season2EvidenceBoards['s2_ep03_final']!},
+    // PART 7B: Cases 04–06 (season2_levels_04_06.dart).
+    riverMarks: masterScenes0406.riverMarks,
+    keeperHuts: masterScenes0406.keeperHuts,
+    quayBoxes: masterScenes0406.quayBoxes,
+    streetBooks: {'s2_ep04_final': season2StreetBooks['s2_ep04_final']!},
+    markCompares: {'s2_ep05_m1': season2MarkCompares['s2_ep05_m1']!},
+    clockWalls: masterScenes0406.clockWalls,
+    postTrails: {'s2_ep05_final': season2PostTrails['s2_ep05_final']!},
+    holdRacks: {'s2_ep06_m1': season2HoldRackScenes['s2_ep06_m1']!},
+    planRoutes: {'s2_ep06_m2': season2PlanScenes['s2_ep06_m2']!},
+    archives: masterScenes0406.archives,
+    letterMaps: {'s2_ep06_final': season2LetterMapScenes['s2_ep06_final']!},
+    easySteps: masterScenes0406.easySteps,
     learning: {
       's2_ep01_m1': _learn('s2_ep01_m1', expressions: ['fallen one hour behind the others', 'report it to the LOST PROPERTY DESK']),
       's2_ep01_m2': _learn('s2_ep01_m2', expressions: ['FIRST', 'NEXT', 'AFTER THAT', 'Arrange the events in the order they happened']),
@@ -1653,7 +1704,8 @@ final Map<Difficulty, SeasonContent> season2Variants = {
       's2_ep03_final': _learn(
         's2_ep03_final',
         expressions: ['What was wrong with the inspection records?', 'What can we conclude?', 'what it proves, and what it does not'],
-      ),
+      ),      // PART 7B: Cases 04–06.
+      ...masterLearning0406,
     },
   ),
 };

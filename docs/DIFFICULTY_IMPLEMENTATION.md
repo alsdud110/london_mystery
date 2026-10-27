@@ -318,7 +318,7 @@ enum Difficulty {
 | PART 4 | 개발자 모드 개선 | **COMPLETED** (2026-10-27) |
 | PART 5 | 난이도별 영어 콘텐츠 시스템 | **COMPLETED** (2026-10-27) |
 | PART 6 | London Season 1 콘텐츠 적용 (Case 단위 세분 가능) | **IN PROGRESS** — 6A(Case 01~03) **COMPLETE** (`7bfa4a7`, main 병합 `908c7eb`) · 6B(04~06)·6C(07~09)·6D(10~12) **PENDING** |
-| PART 7 | Paris Season 2 콘텐츠 적용 및 최종 검증 (Case 단위 세분 가능) | **IN PROGRESS** — 7A(Case 01~03) **COMPLETE** (`f048688`, main 병합 `6fd8dbb`) · 7B 이후 **PENDING** |
+| PART 7 | Paris Season 2 콘텐츠 적용 및 최종 검증 (Case 단위 세분 가능) | **IN PROGRESS** — 7A(Case 01~03) **COMPLETE** (`f048688`, main 병합 `6fd8dbb`) · 7B(Case 04~06) **COMPLETE** (main, 커밋 `feat: complete Paris cases 04-06 difficulty content`) · 7C 이후 **PENDING** |
 
 상태 값: NOT STARTED / IN PROGRESS / COMPLETED / BLOCKED. 테스트 실패나 미해결 문제가 있으면 COMPLETED로 바꾸지 않는다.
 
@@ -529,6 +529,16 @@ enum Difficulty {
 - **충돌**: 이 문서 F 섹션 한 곳(두 세션이 같은 위치에 PART 6A·7A 항목을 추가) → 두 항목 모두 유지(6A, 7A 순). 코드는 자동 병합: `difficulty_content.dart` = London 장면 구조 검사 5종 + Paris `season2StructureOf` 우선 조회(타입 겹침 없음 확인), `season_catalog.dart` = `season1WrittenLevels` + `season2WrittenLevels`, `PROJECT_CONTEXT.md` 자동 병합.
 - **검증**: `flutter analyze` No issues · 전체 `flutter test` **2416 passed, 0 failed**(4분 7초) = PART 5 2360 + London 30 + Paris 26. 테스트 삭제·skip 없음. push 없음.
 
+
+### PART 7B — Paris Cases 04~06 영어 콘텐츠 (main)
+- **작업 날짜**: 2026-10-27 · 로컬 `main` 직접(병렬 개발 중단 — 사용자 지시). 시작 시 로컬 main이 `b6fb71e`라 `origin/main` `611c5ea`로 fast-forward(사용자 승인). 상세 검토 보고서: **`docs/difficulty_reviews/PARIS_CASE_04_06.md`**(사건별 조사, A/B/C 분류, 실제 영어 원문 전체 표, 스토리 보호, 구조 검사, 학습 표현, 남은 위험).
+- **결과**: `s2_ep04`~`s2_ep06`를 Rookie·Junior·Master로 `season2WrittenLevels`에 등록. `missingAt` 모두 빈 목록, `problems()` 빈 목록. Rookie = 기준본 + glossary + Rookie 패치 2줄(Case 05 M1 story[0], M3 증거 설명 — 기준 JSON 불변). Junior·Master = 사건 파일·모든 미션 텍스트·오답 줄·단서/증거 설명, 장면 문장 5종(`riverMarks`·`keeperHuts`·`quayBoxes`·`clockWalls`·`archives`), EasySteps 3개(Case 04 Final, Case 05 M3·Final — say·무료 힌트·오답 줄·tell·done), 학습 표현 12개, glossary.
+- **파일**: 콘텐츠 `lib/data/mock/season2/season2_levels_04_06.dart`(신규), 연결 `season2_difficulty.dart`(패치·writtenLevels·`season2SameAtEveryLevel`·variants), 구조 검사 `season2_structures.dart`(장면 11종 + `EasyStepsScene`·패널 7종). 엔진(`difficulty_content.dart`)·모델·화면 코드는 수정하지 않음.
+- **의도적으로 모든 난이도 동일**: 퍼즐 문서(명판 뒷면·장부·라벨·거리 책자·쪽지·수리 카드·영수증·슬립·꼬리표·짐꾼 쪽지·편지), 바이블 v1.4 확정 대사(`Wait! It wasn't stolen.`, `Someone kept it safe.`, `We found our next clue!`, `The mystery continues at the opera house!`), Case 05·06 끝 질문, 선택지 라벨, 조작 안내. 장면 6종(`streetBooks`·`markCompares`·`postTrails`·`holdRacks`·`planRoutes`·`letterMaps`)은 기준 객체 그대로. very easy 전환으로 **화면에 나올 수 없는 옛 오답 줄 36개**(`s2_ep04_final`·`s2_ep05_final` feedback, `s2_ep05_m3` 선택지 오답)는 기준본 유지 — 테스트 `unreachable()`에 명시.
+- **테스트**: 신규 `test/difficulty_paris_7b_test.dart` 30개(완료·누락, 고유 문장, Rookie, glossary, 구조·정답·코인·힌트 가격, 장면 14개 구조·조작 안내, EasySteps 불변, 사건별 비밀 × 3난이도, 힌트 정답 비노출·구매 기록, Discovery, 학습 표현·보고서(프로필 변경 후에도 시즌 난이도), 옛 저장, 화면 5개 — 390×844 × 3난이도, 360×640 + 글자 1.3배, 834×1194 태블릿). 기존 테스트 수정 1곳(의도적): `difficulty_paris_7a_test.dart`의 "written = 정확히 01~03" → "01~06". 삭제·skip 없음.
+- **검증**: 관련 회귀 202개 통과, `flutter analyze` No issues, 전체 `flutter test` **2446 passed, 0 failed, 0 skipped**(5분 9초).
+- **PART 7C 시작점**: Case 07~09. `season2_levels_07_09.dart` 추가, 새 장면(`flyRails`·`lightTables`·`cornerChoices`·`morningSketches`·`tornSlips`·`tornHours`·`trialMaps`·`gearBoards`·`makerMarks`·`towerTests`)마다 `season2StructureOf` 먼저. EasySteps 구조 검사는 이번에 추가됨(`DrawnPanel`의 새 문서 종류는 `_drawn`에 추가하거나 같은 객체 공유). 보고서 K절.
+
 ---
 
 ## G. 다음 세션 인수인계
@@ -536,11 +546,13 @@ enum Difficulty {
 ### 현재 완료된 PART
 **PART 0**(`042afac`), **PART 1**(`8c9b4c8`), **PART 2**(`0da1dac`), **PART 3**(`19c1801`), **PART 4**(`1f144ed`), 정책 승인 문서(`6c99c63`), **PART 5**(난이도별 콘텐츠 엔진, 커밋 `feat: add difficulty-aware content architecture` — 해시는 `git log --oneline --grep "difficulty-aware content"`).
 PART 5 = `b6fb71e`. **PART 6A**(London Case 01~03, `7bfa4a7`) · **PART 7A**(Paris Case 01~03, `f048688`) — 둘 다 main 통합(`6fd8dbb`, F의 *PART 6A / 7A 통합*).
-지금 상태: London `ep01`~`ep03`, Paris `s2_ep01`~`s2_ep03`는 세 난이도 작성 완료(`writtenLevels`). 나머지 사건은 기준본(Rookie)으로 대체된다.
+**PART 7B**(Paris Case 04~06, main 직접 커밋 — F의 *PART 7B*).
+지금 상태: London `ep01`~`ep03`, Paris `s2_ep01`~`s2_ep06`는 세 난이도 작성 완료(`writtenLevels`). 나머지 사건은 기준본(Rookie)으로 대체된다.
 
 ### 다음 PART
 - **London PART 6B — Cases 04~06** (PENDING): `lib/data/mock/season1/difficulty/ep04_levels.dart`~`ep06_levels.dart` 추가 → `season1_difficulty.dart`에서 조립, `season1WrittenLevels`에 표시. **Case 06 `DialogueScene`(m1 증인 대화)은 `DifficultyContent.structureOf`에 구조 검사를 먼저 추가**(진술·질문 id·순서·정답 짝). 장면 객체는 기준본의 텍스트 전용 `copyWith` 패턴(`level_words.dart`의 `relined`). 보호: Case 04 Black Wax Seal·"Black birds live there"(RAVEN)·"where trains never sleep"(→11), Case 05 745·순서 질문 `orderFeedback`, Case 06 Final grey/hat/card 금지·"the colour of my hat". 테스트는 `difficulty_london_6a_test.dart` 형식으로 `difficulty_london_6b_test.dart`.
-- **Paris PART 7B — Cases 04~06** (PENDING): `season2_difficulty.dart`에 추가, **새 장면 종류마다 `season2StructureOf`(`season2_structures.dart`)에 구조 추출 먼저** — Case 04 `RiverMarksScene`·`KeeperHutScene`·`BoxesScene`·`StreetBookScene`, Case 05 `MarkCompareScene`·`ClockWallScene`·`BlotterScene`·`PostTrailScene`, Case 06 `HoldRackScene`·`PlanScene`·`ArchiveScene`·`LetterMapScene`, **EasySteps(Case 04 Final, Case 05 M3·Final)** 등 신규 객체 확인. `docs/SEASON2_PARIS_STORY_BIBLE.md` 먼저. 보고서 `PARIS_CASE_01_03.md` §16.
+- **Paris PART 7B — Cases 04~06**: **COMPLETE**(F의 *PART 7B*, 보고서 `PARIS_CASE_04_06.md`).
+- **Paris PART 7C — Cases 07~09** (PENDING): 새 파일 `season2_levels_07_09.dart` → `season2_difficulty.dart`에서 연결. 먼저 `season2StructureOf`에 Case 07 `FlyRailScene`·`LightTableScene`, Case 08 `CornerChoiceScene`·`MorningSketchesScene`·`TornSlipScene`·`TornHourScene`, Case 09 `TrialMapScene`·`GearBoardScene`·`MakerMarksScene`·`TowerTestScene` 구조 추출(EasySteps는 7B에서 추가됨). 바이블 §6 Case 07 v1.5·08 v1.6·09 v1.7 먼저. 테스트는 `difficulty_paris_7b_test.dart` 형식(`keptAtEveryLevel`·`unreachable()`). London PART 6B는 아직 시작 전(다른 계정 예정).
 
 **PART 6 — London Cases 01~12 영어 콘텐츠** (6A: 01~03 / 6B: 04~06 / 6C: 07~09 / 6D: 10~12, 묶음마다 테스트·문서·개별 커밋)
 
@@ -658,9 +670,9 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 | Case 01 | `s2_ep01` | ✓ (base + glossary) | ✓ | ✓ | PART 7A | 프롤로그 연결·TIME 비노출·"The Clockmaker steals an hour" 유지 |
 | Case 02 | `s2_ep02` | ✓ (base + glossary) | ✓ | ✓ | PART 7A | 화가 인용·TOUJOURS PLUS HAUT 유지, Case 03 장소 비노출 |
 | Case 03 | `s2_ep03` | ✓ (base + glossary) | ✓ | ✓ | PART 7A | 시간 소멸 단정 금지, 장면 4종 모든 난이도 동일 |
-| Case 04 | `s2_ep04` | base | — | — | | Final EasySteps |
-| Case 05 | `s2_ep05` | base | — | — | | M3·Final EasySteps |
-| Case 06 | `s2_ep06` | base | — | — | | |
+| Case 04 | `s2_ep04` | ✓ (base + glossary) | ✓ | ✓ | PART 7B | Final EasySteps 난이도별, `ES HORLOGERS` 정답 전 비노출, 두 바늘 주인 미공개 |
+| Case 05 | `s2_ep05` | ✓ (base + glossary + 패치 2줄) | ✓ | ✓ | PART 7B | M3·Final EasySteps 난이도별, 편지가 Clock III에 있었다고 단정 금지 |
+| Case 06 | `s2_ep06` | ✓ (base + glossary) | ✓ | ✓ | PART 7B | 바이블 v1.4 확정 대사 유지, 오페라·RECORD WAS REMOVED 조기 노출 금지 |
 | Case 07 | `s2_ep07` | base | — | — | | M1·M2·Final EasySteps |
 | Case 08 | `s2_ep08` | base | — | — | | |
 | Case 09 | `s2_ep09` | base | — | — | | |
