@@ -31,6 +31,10 @@ class DeductionClue {
 
   /// The note it gives, word for word one line of the mission's letter.
   final String line;
+
+  /// The same trace with a level's note (its letter's line).
+  DeductionClue copyWith({String? line}) =>
+      DeductionClue(id: id, label: label, areas: areas, mark: mark, line: line ?? this.line);
 }
 
 /// A place the box could be hidden, standing for the puzzle's option
@@ -111,6 +115,34 @@ class DeductionScene {
 
   /// The button that searches the chosen place.
   final String action;
+
+  /// The same place in other words (a level's): its picture, traces and
+  /// places never change.
+  DeductionScene copyWith({
+    String? task,
+    String? chooseTask,
+    String? missLine,
+    String? notPlaceLine,
+    List<DeductionClue>? clues,
+    List<InvestigationSpot>? others,
+  }) =>
+      DeductionScene(
+        picture: picture,
+        pixels: pixels,
+        place: place,
+        task: task ?? this.task,
+        chooseTask: chooseTask ?? this.chooseTask,
+        missLine: missLine ?? this.missLine,
+        notPlaceLine: notPlaceLine ?? this.notPlaceLine,
+        clues: clues ?? this.clues,
+        others: others ?? this.others,
+        places: places,
+        guideAt: guideAt,
+        inside: inside,
+        opening: opening,
+        tapGuide: tapGuide,
+        action: action,
+      );
 
   DeductionClue clue(String id) => clues.firstWhere((c) => c.id == id);
   DeductionPlace placeOf(String optionId) => places.firstWhere((p) => p.optionId == optionId);

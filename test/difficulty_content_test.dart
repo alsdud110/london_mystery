@@ -107,9 +107,15 @@ void main() {
     });
     test('6. Master without its own: Junior\'s', () {
       expect(pick(Difficulty.master, synthetic).question, 'JUNIOR QUESTION');
-      // And in the game's real words: Master has no transition of its own.
-      expect(at('ep02_m1', Difficulty.master).transition, at('ep02_m1', Difficulty.junior).transition);
-      expect(at('ep02_m1', Difficulty.junior).transition, isNot(baseMission('ep02_m1').transition));
+      // And in the game's real words (PART 6A: Case 01's words are all
+      // written, so the chain shows in its glossary): a word only Junior
+      // adds is Master's too.
+      final words = {for (final l in Difficulty.values) l: DifficultyContent.episodeAt(baseCase('ep01'), l).glossary};
+      expect(baseCase('ep01').glossary.containsKey('alone'), isFalse);
+      expect(season1CasePatches[Difficulty.master]!['ep01']!['glossary'] as Map, isNot(contains('alone')));
+      expect(words[Difficulty.junior]!['alone'], '혼자, 홀로');
+      expect(words[Difficulty.master]!['alone'], '혼자, 홀로', reason: "Master falls back on Junior's");
+      expect(words[Difficulty.rookie]!.containsKey('alone'), isFalse, reason: "Rookie never takes Junior's");
     });
     test('7. Master with neither: the base', () {
       expect(pick(Difficulty.master, synthetic).letterIntro, baseMission('ep02_m1').letterIntro);
@@ -424,13 +430,15 @@ void main() {
           }
         });
       }
-      final junior = DifficultyContent.missingAt('ep02', Difficulty.junior);
-      expect(junior, containsAll(['ep02.intro', 'ep02_m1.letterIntro', 'ep02_m2.story', 'discoveries/ep02_m1']));
-      expect(junior, isNot(contains('ep02_m1.story')));
-      expect(junior, isNot(contains('clocks/ep02_m1')));
-      expect(DifficultyContent.missingAt('ep02', Difficulty.master), contains('ep02_m1.transition'),
-          reason: 'Master falling back on Junior\'s words still counts as missing');
-      expect(DifficultyContent.missingAt('ep02', Difficulty.rookie), isEmpty);
+      // PART 6A wrote Cases 01–03 whole (the PART 5 sample of Case 02 is
+      // finished); a case not written yet still shows what it lacks.
+      for (final caseId in ['ep01', 'ep02', 'ep03']) {
+        expect(season1Content.writtenLevels[caseId], Difficulty.values.toSet(), reason: caseId);
+      }
+      final junior = DifficultyContent.missingAt('ep04', Difficulty.junior);
+      expect(junior, containsAll(['ep04.intro', 'ep04.synopsis', 'ep04_m1.story', 'ep04_final.hints']));
+      expect(DifficultyContent.missingAt('ep04', Difficulty.master), containsAll(junior));
+      expect(DifficultyContent.missingAt('ep04', Difficulty.rookie), isEmpty);
     });
   });
 

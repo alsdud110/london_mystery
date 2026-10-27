@@ -503,6 +503,17 @@ enum Difficulty {
 
 <!-- PART 6 이후 작업자는 아래에 같은 형식으로 추가한다 -->
 
+### PART 6A — London Cases 01~03 영어 콘텐츠 (London 담당)
+- **작업 날짜**: 2026-10-27 · 브랜치 `feat/difficulty-london-01-03`(별도 git worktree `london_mystery_l0103`, Paris 세션과 병렬) · 기준 PART 5 `b6fb71e`
+- **상세 검토 보고서**: `docs/difficulty_reviews/LONDON_CASE_01_03.md`(문장 비교 원문, 힌트·학습 표현 표, 정답 노출 점검, 의도적 동일 목록, 남은 문제)
+- **콘텐츠**: `lib/data/mock/season1/difficulty/ep01_levels.dart`·`ep02_levels.dart`·`ep03_levels.dart`(사건별), `season1_difficulty.dart`는 조립만(`season1Variants`는 `const` → `final` — 장면 객체를 기준본 `copyWith`로 만듦), `season1WrittenLevels` → `season_catalog.dart`의 `writtenLevels`. ep01~03 = {rookie, junior, master}, `missingAt` 빈 목록.
+- **Rookie**: 기준본 유지 원칙, 4곳만 Rookie 패치(ep01 intro 5행·final story, ep02 final 편지 끝 2행, ep03 M3 Tip 2). 기준 JSON 불변 → 해시 테스트 갱신 없음. `ep02_m1`은 PART 5 테스트(TESTER Rookie = 기준본) 때문에 Rookie 패치 없음.
+- **엔진 확장(최소)**: `DifficultyContent.structureOf`에 `ExploreScene`·`InspectScene`·`DeductionScene`·`DecodeScene`·`InvestigationScene` 추가(그림·좌표·spot id/종류/requires/checks·선택지 id·정답). 각 모델(+ `ExploreSpot`·`InspectSpot`·`DeductionClue`·`InvestigationFind`·`InvestigationSpot`)에 **텍스트 필드만 받는** `copyWith` 추가 — 구조 필드는 바꿀 방법이 없음. Paris 쪽 코드·데이터는 수정하지 않음.
+- **기존 테스트 수정 2곳**(`test/difficulty_content_test.dart`, 의도적): PART 5 샘플이 *미완성*인 상태를 고정하던 단언 — ①"6. Master without its own: Junior's"의 실데이터 부분(Master `ep02_m1` transition이 없다는 전제) → Case 01 glossary 체인(Junior만 추가한 단어가 Master에도, Rookie에는 없음)으로 같은 규칙 검증 ②Coverage의 "ep02가 아직 intro 등을 빠뜨림" → ep01~03 written 확인 + 아직 미작성인 ep04로 누락 목록 검증. 약화·삭제·skip 없음.
+- **신규 테스트** `test/difficulty_london_6a_test.dart`(30): 세 사건 × 세 난이도 구조·정답·옵션 id/순서/이름·힌트 수·오답 키·단서 값·증거 글귀·코인·판정 동일, 힌트 가격·구매 상태, 힌트 정답 미포함, Junior/Master가 기준본·서로와 다름(의도적 동일 5곳 명시), story/transition/intro 줄 수 동일, Rookie는 패치 필드 외 기준본, 장면 구조 동일, Case 01·02·03 추리 보호 규칙(STONE·behind·9:17·Gallery 8·station/train/King's Cross 금지, 단서 카드 = 편지 줄, 보고서 줄 ⊂ 편지 등)을 세 난이도로, 학습 표현 일치·설계 구조 동일, 옛 저장/난이도 저장 호환, TESTER 난이도 전환, 화면 표시(Case 01 M1·Case 03 M2).
+- **테스트 결과**(실제 실행): 신규 30 + PART 5 29 통과 · `flutter analyze` No issues · 전체 `flutter test` **2390 passed, 0 failed**(4분 47초).
+- **남은 위험**: 사람(원어민) 검토·실기기·360×640/글자 1.3배 화면 확인 없음. Case 04+는 아직 기준본이라 Junior/Master 시즌에서 문체 차이(사실은 일치). 새 어휘 glossary 자동 검사 없음. 자세한 것은 보고서 10절.
+
 ---
 
 ## G. 다음 세션 인수인계
@@ -512,6 +523,8 @@ enum Difficulty {
 지금 상태: 엔진·검증 도구가 있고, 실제 난이도 문장은 샘플 2개(London `ep02_m1`, Paris `s2_ep01_m1`)의 일부 필드뿐. 나머지는 모두 기준본(Rookie)으로 대체된다.
 
 ### 다음 PART
+- London 진행(2026-10-27): **PART 6A(Cases 01~03) 완료** — 브랜치 `feat/difficulty-london-01-03`(main 미병합), F의 PART 6A 참고. London 다음은 **6B(Cases 04~06)**: 같은 방식(`season1/difficulty/ep0N_levels.dart` + `season1_difficulty.dart` 조립 + `season1WrittenLevels`). Case 06 `DialogueScene`은 구조 검사 추가가 먼저.
+
 **PART 6 — London Cases 01~12 영어 콘텐츠** (6A: 01~03 / 6B: 04~06 / 6C: 07~09 / 6D: 10~12, 묶음마다 테스트·문서·개별 커밋)
 
 ### 각 묶음에서 할 일
@@ -608,9 +621,9 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 | 범위 | ID | Rookie | Junior | Master | 커밋 | 비고 |
 |---|---|---|---|---|---|---|
 | 시즌 프롤로그·outro·finale | `s1_london` | base | — | — | | `season1InfoJson` |
-| Case 01 | `ep01` | base | — | — | | 미션 5 + Final, 개인화 줄 있음 |
-| Case 02 | `ep02` | base | WIP (M1 샘플: 일부 필드) | WIP (M1 샘플: 일부 필드) | PART 5 | 8:17 → 9:17 보호. M1의 story·letter·question·hints·오답 줄·success·ClockPuzzle·학습 표현(Junior만 transition) |
-| Case 03 | `ep03` | base | — | — | | trains and smoke / Red Button(→08) |
+| Case 01 | `ep01` | ✓ (일부 Rookie 패치) | ✓ | ✓ | PART 6A | 미션 5 + Final, 개인화 줄 있음. 장면 4종 변형 |
+| Case 02 | `ep02` | ✓ (일부 Rookie 패치) | ✓ | ✓ | PART 6A | 8:17 → 9:17 보호. PART 5 샘플 M1 완성 |
+| Case 03 | `ep03` | ✓ (일부 Rookie 패치) | ✓ | ✓ | PART 6A | trains and smoke / Red Button(→08). 수색 장면 변형 |
 | Case 04 | `ep04` | base | — | — | | Platform 4(→12), RAVEN |
 | Case 05 | `ep05` | base | — | — | | 745 순서 질문 |
 | Case 06 | `ep06` | base | — | — | | grey/hat/card 금지어 |

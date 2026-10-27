@@ -404,6 +404,7 @@ final season1Content = SeasonContent(
   languageTopics: season1LanguageTopics,
   casePatches: season1CasePatches,
   variants: season1Variants,
+  writtenLevels: season1WrittenLevels,
 );
 
 /// Season 2 — Paris Stands Still: in the making, not released (its cases

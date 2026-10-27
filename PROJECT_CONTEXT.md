@@ -372,6 +372,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-27 — **난이도 시스템 PART 6A(London Cases 01~03 영어 콘텐츠, 브랜치 `feat/difficulty-london-01-03`)**: Case 01~03 Junior·Master 전 문장(사건·미션·오답·Notebook·증거 설명·장면 5종·Discovery·학습 표현) + Rookie 패치 4곳, 장면 구조 검사 5종·텍스트 전용 `copyWith`. 세 난이도 추리 보호 테스트 30개, 전체 2390 통과, analyze 0. 검토 보고서 `docs/difficulty_reviews/LONDON_CASE_01_03.md`. 다음(London): PART 6B
 - 2026-10-27 — **난이도 시스템 PART 5(난이도별 영어 콘텐츠 엔진)**: 사건 JSON 텍스트 필드 패치 + 퍼즐 객체 난이도별 표(공통 `_pick`), 대체 규칙·완료 검사·구조 불변 검증, 세션별 `playedEpisodesProvider`, Paris Discovery 즉석 생성, 학습 표현 난이도별 + 일치성 검사. 샘플 ep02_m1·s2_ep01_m1. 새 테스트 29개, 기존 테스트 무수정, 전체 2360 통과, analyze 0. 다음: PART 6A
 - 2026-10-27 — **난이도 시스템 PART 4(개발자 테스트 세션 격리)**: 개발자 모드 = 진입마다 새 독립 컨테이너(부모 없음) + 메모리 저장소 + TESTER/BOY/Rookie, 테스트 도구는 그 안에서만, TEST LEVEL 변경 시 현재 Case Mission 1부터, EXIT·시스템 Back으로 종료, 플레이어 게임은 같은 컨테이너로 복귀(기기 저장 바이트 동일). 새 테스트 9개, 기존 테스트 무수정, 전체 2331 통과, analyze 0. 다음: PART 5
 - 2026-10-27 — **난이도 시스템 PART 3(시즌 난이도 정책, 사용자 승인 정책 4개)**: Case 01 인트로 진입 시 시즌 난이도 고정, `/detective` 난이도 변경(진행 중이면 확인 후 그 시즌만 재시작 — 코인·구매 힌트·다른 시즌 보존, 재플레이 중복 지급 없음, 저널로 중간 종료 복구, safe mode 레거시 부활 방지), London 완료 후 Paris 난이도 1회 안내(Paris 완료 후 없음), 기존 진행 시즌은 Rookie·진행 보존. 새 테스트 30개, 전체 2322 통과, analyze 0. 다음: PART 4

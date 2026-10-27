@@ -62,6 +62,24 @@ class InvestigationFind {
   /// floor, seen in perspective) and its turn in radians.
   final double squash;
   final double turn;
+
+  /// The same thing with a level's words (its report line, its card):
+  /// where it is and how it is drawn never change.
+  InvestigationFind copyWith({String? reportLine, String? foundLine}) => InvestigationFind(
+        id: id,
+        name: name,
+        title: title,
+        reportLine: reportLine ?? this.reportLine,
+        spot: spot,
+        areas: areas,
+        foundLine: foundLine ?? this.foundLine,
+        picture: picture,
+        at: at,
+        width: width,
+        pictureAspect: pictureAspect,
+        squash: squash,
+        turn: turn,
+      );
 }
 
 /// A place in the picture that holds nothing to find. Tapping it says why
@@ -75,6 +93,9 @@ class InvestigationSpot {
   final String label;
   final List<Rect> areas;
   final String line;
+
+  /// The same place with a level's line.
+  InvestigationSpot copyWith({String? line}) => InvestigationSpot(label: label, areas: areas, line: line ?? this.line);
 }
 
 /// A mission played by searching its place (the presentation of the
@@ -151,6 +172,35 @@ class InvestigationScene {
 
   /// The quiet link that opens the whole document again.
   final String documentLabel;
+
+  /// The same search in other words (a level's): its picture, things,
+  /// places and answer never change.
+  InvestigationScene copyWith({
+    String? task,
+    String? missLine,
+    String? doneLine,
+    List<String>? arrival,
+    List<InvestigationFind>? finds,
+    List<InvestigationSpot>? spots,
+  }) =>
+      InvestigationScene(
+        artwork: artwork,
+        task: task ?? this.task,
+        documentTitle: documentTitle,
+        finds: finds ?? this.finds,
+        spots: spots ?? this.spots,
+        answer: answer,
+        missLine: missLine ?? this.missLine,
+        doneLine: doneLine ?? this.doneLine,
+        arrival: arrival ?? this.arrival,
+        guideAt: guideAt,
+        opening: opening,
+        inside: inside,
+        tapGuide: tapGuide,
+        zoomGuide: zoomGuide,
+        startLabel: startLabel,
+        documentLabel: documentLabel,
+      );
 
   /// What a tap at [point] (fractions of the picture) lands on: a thing
   /// (found or not) or a listed place; null for nothing. Things come first:
