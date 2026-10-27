@@ -321,9 +321,9 @@ void main() {
         expect(find.text('Sign in'), findsNothing, reason: 'no accounts');
         expect(find.text('My account'), findsNothing);
         await tapText(t, 'START ADVENTURE');
-        expect(find.text('CREATE YOUR DETECTIVE'), findsOneWidget);
-        expect(find.text('BOY'), findsOneWidget);
-        expect(find.text('GIRL'), findsOneWidget);
+        expect(find.text('Create Your Detective'), findsOneWidget);
+        expect(find.text('Boy'), findsOneWidget);
+        expect(find.text('Girl'), findsOneWidget);
         expect(t.takeException(), isNull, reason: 'nothing overflows');
 
         // No picture yet: asked for one; nothing is made.
@@ -365,7 +365,7 @@ void main() {
       final coins = ref.read(walletProvider).balance;
       ref.read(routerProvider).push(Routes.detective);
       await wait(t, const Duration(milliseconds: 600));
-      expect(find.text('YOUR DETECTIVE'), findsOneWidget);
+      expect(find.text('Your Detective'), findsOneWidget);
       expect(find.text('KIM'), findsOneWidget, reason: 'the name as it is');
       await t.tap(find.byKey(const ValueKey('avatar-boy')));
       await t.enterText(find.byType(TextField), 'watson');

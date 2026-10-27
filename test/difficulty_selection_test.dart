@@ -123,14 +123,14 @@ void main() {
   testWidgets('CHOOSE YOUR LEVEL: three cards with their lines, Rookie chosen on arrival', (t) async {
     final semantics = t.ensureSemantics();
     await openRegister(t);
-    expect(find.text('CREATE YOUR DETECTIVE'), findsOneWidget);
-    expect(find.text('CHOOSE YOUR LEVEL'), findsOneWidget);
+    expect(find.text('Create Your Detective'), findsOneWidget);
+    expect(find.text('Choose Your Level'), findsOneWidget);
     // Side by side on a phone this wide: each card's line in a few words
     // (the whole line is what a screen reader says, below).
     for (final (label, line) in [
-      ('ROOKIE', 'Short, easy English.'),
-      ('JUNIOR', 'Everyday English.'),
-      ('MASTER', 'Advanced English.'),
+      ('Rookie', 'Short, easy English.'),
+      ('Junior', 'Everyday English.'),
+      ('Master', 'Advanced English.'),
     ]) {
       expect(find.text(label), findsOneWidget);
       expect(find.text(line), findsOneWidget);
@@ -218,7 +218,7 @@ void main() {
     ref.read(routerProvider).go(Routes.detective);
     await wait(t, const Duration(milliseconds: 600));
     expect(ref.read(routerProvider).routerDelegate.currentConfiguration.uri.path, Routes.detective);
-    expect(find.text('CHOOSE YOUR LEVEL'), findsOneWidget);
+    expect(find.text('Choose Your Level'), findsOneWidget);
     expectChosen(t, Difficulty.master);
     await pick(t, Difficulty.junior);
     expect(find.byKey(const ValueKey('restart-season-dialog')), findsNothing, reason: 'nothing begun: nothing to ask');
@@ -283,7 +283,7 @@ void main() {
     addTearDown(t.view.resetViewInsets);
     await wait(t, const Duration(milliseconds: 600));
     expect(t.takeException(), isNull, reason: 'no overflow above the keyboard');
-    expect(find.text('CHOOSE YOUR LEVEL'), findsNothing);
+    expect(find.text('Choose Your Level'), findsNothing);
     for (final f in [find.byType(TextField), find.text('START INVESTIGATION')]) {
       final r = t.getRect(f);
       expect(r.top, greaterThanOrEqualTo(0), reason: '$f is not pushed off the top');
@@ -295,7 +295,7 @@ void main() {
     // Keyboard down: the level is back, still Junior.
     t.view.resetViewInsets();
     await wait(t, const Duration(milliseconds: 600));
-    expect(find.text('CHOOSE YOUR LEVEL'), findsOneWidget);
+    expect(find.text('Choose Your Level'), findsOneWidget);
     expectChosen(t, Difficulty.junior);
     await tapText(t, 'START INVESTIGATION', after: const Duration(milliseconds: 900));
     expect(ProfileStore(prefs).profile!.difficulty, Difficulty.junior);
@@ -315,7 +315,7 @@ void main() {
       AppConstants.profileKey(id, AppConstants.progressStorageKey):
           jsonEncode(const GameProgress(detectiveName: 'KIM').toJson()),
     });
-    expect(find.text('CHOOSE YOUR LEVEL'), findsNothing, reason: 'no new detective to create');
+    expect(find.text('Choose Your Level'), findsNothing, reason: 'no new detective to create');
     expect(ref.read(detectiveProfileProvider).difficulty, Difficulty.rookie);
     expect(ref.read(detectiveProfileProvider).detectiveName, 'KIM');
     expect(prefs.getString(AppConstants.detectiveStorageKey), record);

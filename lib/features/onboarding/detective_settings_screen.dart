@@ -103,7 +103,7 @@ class _DetectiveSettingsScreenState extends ConsumerState<DetectiveSettingsScree
   Widget build(BuildContext context) {
     return DetectiveDesk(
       formKey: _formKey,
-      heading: 'YOUR DETECTIVE',
+      heading: 'Your Detective',
       question: 'Change your\nname or picture',
       onBack: _close,
       avatar: _avatar,

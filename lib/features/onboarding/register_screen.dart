@@ -69,7 +69,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     return DetectiveDesk(
       formKey: _formKey,
-      heading: 'CREATE YOUR DETECTIVE',
+      heading: 'Create Your Detective',
       question: 'Who will take\nthe case?',
       onBack: () => context.go(Routes.start),
       avatar: _avatar,
@@ -168,7 +168,7 @@ class DetectiveDesk extends StatelessWidget {
               ),
               Text(
                 heading,
-                style: AppText.mark(color: AppColors.burgundy),
+                style: AppText.aside(size: 16, color: AppColors.burgundy),
                 textAlign: TextAlign.center,
               ),
               AnimatedSize(
@@ -204,13 +204,13 @@ class DetectiveDesk extends StatelessWidget {
           // 1. The picture: the player picks how their detective looks (the
           // cases are the same for both).
           if (!typing) ...[
-            const FormStep(number: 1, label: 'CHOOSE YOUR DETECTIVE'),
+            const FormStep(number: 1, label: 'Choose Your Detective'),
             SizedBox(height: short ? AppSpace.sm : AppSpace.md),
           ],
           AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
           SizedBox(height: typing ? AppSpace.md : gap),
           // 2. The name.
-          const FormStep(number: 2, label: 'YOUR DETECTIVE NAME'),
+          const FormStep(number: 2, label: 'Your Detective Name'),
           SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
           DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),
           // 3. The level, folded away while the name is written (the choice
@@ -225,7 +225,7 @@ class DetectiveDesk extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: gap),
-                        const FormStep(number: 3, label: 'CHOOSE YOUR LEVEL'),
+                        const FormStep(number: 3, label: 'Choose Your Level'),
                         SizedBox(height: short ? AppSpace.sm : AppSpace.md),
                         DifficultyChoice(selected: difficulty, onChanged: onLevel, row: true),
                       ],

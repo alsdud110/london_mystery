@@ -46,6 +46,10 @@ class DetectivePortrait extends StatelessWidget {
   );
 }
 
+/// [word] as a name on the form ("ROOKIE" → "Rookie"): the form's words
+/// are read, not stamped.
+String titled(String word) => word.isEmpty ? word : word[0].toUpperCase() + word.substring(1).toLowerCase();
+
 /// One numbered step of the detective's form: its number pressed in a wax
 /// seal, then what the step asks.
 class FormStep extends StatelessWidget {
@@ -78,7 +82,7 @@ class FormStep extends StatelessWidget {
         ),
         const SizedBox(width: AppSpace.md),
         Expanded(
-          child: Text(label, style: AppText.mark(color: AppColors.ink, size: 15).copyWith(letterSpacing: 1)),
+          child: Text(label, style: AppText.title(size: 16, color: AppColors.ink)),
         ),
       ],
     );
@@ -236,7 +240,7 @@ class _AvatarCard extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: AppSpace.xs + 2),
-                  child: Text(avatar.label, style: AppText.mark(color: ink, size: 14).copyWith(letterSpacing: 2)),
+                  child: Text(titled(avatar.label), style: AppText.title(size: 15, color: ink)),
                 ),
               ],
             ),
@@ -361,12 +365,9 @@ class _DifficultyTile extends StatelessWidget {
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      difficulty.label,
+                      titled(difficulty.label),
                       maxLines: 1,
-                      style: AppText.mark(
-                        color: selected ? AppColors.navy : AppColors.ink,
-                        size: 15,
-                      ).copyWith(letterSpacing: 1.5),
+                      style: AppText.title(size: 16, color: selected ? AppColors.navy : AppColors.ink),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -422,11 +423,8 @@ class _DifficultyCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    difficulty.label,
-                    style: AppText.mark(
-                      color: selected ? AppColors.navy : AppColors.muted,
-                      size: 15,
-                    ).copyWith(letterSpacing: 2),
+                    titled(difficulty.label),
+                    style: AppText.title(size: 16, color: selected ? AppColors.navy : AppColors.muted),
                   ),
                   const SizedBox(height: 2),
                   Text(difficulty.blurb, style: AppText.caption(color: selected ? AppColors.ink : AppColors.muted)),

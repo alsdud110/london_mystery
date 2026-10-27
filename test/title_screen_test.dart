@@ -278,7 +278,7 @@ void main() {
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // decode the office
       await wait(t);
       expect(t.takeException(), isNull, reason: 'no overflow');
-      for (final s in ['LONDON DETECTIVE AGENCY', 'CREATE YOUR DETECTIVE', 'Who will take\nthe case?', 'YOUR DETECTIVE NAME']) {
+      for (final s in ['LONDON DETECTIVE AGENCY', 'Create Your Detective', 'Who will take\nthe case?', 'Your Detective Name']) {
         expect(find.text(s), findsOneWidget, reason: s);
       }
       // London at night is behind the form, not a plain page.
@@ -289,7 +289,7 @@ void main() {
             ((w.image as ResizeImage).imageProvider as AssetImage).assetName == ArtAssets.season1LondonNight),
         findsOneWidget,
       );
-      final paper = t.getRect(find.ancestor(of: find.text('CREATE YOUR DETECTIVE'), matching: find.byType(Container)).last);
+      final paper = t.getRect(find.ancestor(of: find.text('Create Your Detective'), matching: find.byType(Container)).last);
       expect(paper.left, greaterThan(20), reason: 'the city shows around the form');
       final cta = t.getRect(find.text('START INVESTIGATION'));
       expect(cta.bottom, lessThan(size.height), reason: 'the button is on screen');
@@ -387,8 +387,8 @@ void main() {
       expect(t.testTextInput.isVisible, isFalse, reason: 'no keyboard on arrival');
 
       // The name box spans the form, under its numbered step; the hint is whole.
-      expect(find.text('YOUR DETECTIVE NAME'), findsOneWidget);
-      final paper = t.getRect(find.ancestor(of: find.text('CREATE YOUR DETECTIVE'), matching: find.byType(Container)).last);
+      expect(find.text('Your Detective Name'), findsOneWidget);
+      final paper = t.getRect(find.ancestor(of: find.text('Create Your Detective'), matching: find.byType(Container)).last);
       var box = t.getRect(find.byType(TextField));
       expect(box.center.dx, closeTo(paper.center.dx, 1.5), reason: 'the box in the middle of the form');
       expect(t.renderObject<RenderParagraph>(find.text('Sherlock')).didExceedMaxLines, isFalse, reason: 'the hint is whole');
@@ -424,7 +424,7 @@ void main() {
 
       // 4. A blank part of the form: pen down, name kept.
       // (Beside the name's own step, in view with the box.)
-      final blank = t.getRect(find.text('YOUR DETECTIVE NAME'));
+      final blank = t.getRect(find.text('Your Detective Name'));
       await t.tapAt(Offset(paper.right - 12, blank.center.dy));
       await t.pump();
       expect(focused(), isFalse, reason: 'tap on the form closes the keyboard');
