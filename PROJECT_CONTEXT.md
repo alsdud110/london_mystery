@@ -62,7 +62,8 @@
 ## Difficulty System (난이도 시스템, 2026-10-27 도입 결정)
 
 - **인수인계 문서: `docs/DIFFICULTY_IMPLEMENTATION.md`** — 조사 결과(실제 파일 경로), 확정 정책, 기술 설계, PART별 상태·작업 이력, 다음 세션 인수인계, Case별 콘텐츠 적용 진행표. 난이도 관련 세부 사항은 그 문서가 기준이다(이 섹션은 요약).
-- **현재 진행 PART: PART 0(조사·설계 문서) COMPLETED → 다음은 PART 1(난이도 모델 및 저장 구조), 미착수.** 코드에는 아직 난이도 개념이 없다.
+- **현재 진행 PART: PART 0(조사·설계) · PART 1(난이도 모델·저장 구조) COMPLETED → 다음은 PART 2(프로필 생성 난이도 선택 UI), 미착수.**
+- PART 1로 생긴 것(화면 변화 없음): `lib/data/models/difficulty.dart`(`Difficulty` rookie/junior/master — 저장 식별자 `storageId`와 표시 이름 `label` 분리, 모르는 값 → rookie), 프로필 기본 난이도 `DetectiveProfile.difficulty`(`lm.detective.v1`에 `"difficulty"`, 없으면 rookie, `setDifficulty`), 시즌 고정 난이도 `SeasonProgress.difficulty`(London·Paris 각자 기록, 고정될 때만 JSON에 기록, `SeasonNotifier.fixDifficulty` — 호출하는 화면은 아직 없음), 실효 난이도 `seasonDifficultyProvider(seasonId)`·`currentDifficultyProvider` = 시즌 고정값 ?? 프로필 난이도(조회는 저장하지 않음). 키·스키마 변경 없음. 테스트 `test/difficulty_persistence_test.dart`. 2026-10-27 전체 `flutter test` 2277 통과, analyze 0 issues
 - 계획: PART 0 조사·설계 / 1 모델·저장 / 2 프로필 생성 UI / 3 시즌 난이도 변경·초기화 / 4 개발자 모드 개선 / 5 난이도별 영어 콘텐츠 시스템 / 6 London 콘텐츠 / 7 Paris 콘텐츠·최종 검증(6·7은 Case 단위로 세분 가능, 세부 작업마다 테스트·문서·커밋)
 - 확정 정책 요약:
   - 난이도 **Rookie(기본) / Junior / Master** — 바뀌는 것은 영어(스토리·대사·편지·단서 설명·퍼즐 문장·선택지 표현·힌트 문구와 제공 방식·안내 문구·어휘)뿐. **사실관계·결말·퍼즐 구조·단계 수·선택지 수와 순서·정답·증거 ID·보상·시즌 순서는 모든 난이도에서 동일.** Master도 조작 안내는 명확하게
@@ -366,6 +367,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-27 — **난이도 시스템 PART 1(모델·저장 구조)**: `Difficulty` enum, 프로필 기본 난이도(`lm.detective.v1`의 `difficulty`, 없으면 rookie), 시즌별 고정 난이도(`SeasonProgress.difficulty`, 고정 시에만 기록), 실효 난이도 provider, `createDetective`의 선택 인자(UI 미연결). 화면·콘텐츠 변화 없음. 새 테스트 21개, 전체 2277 통과, analyze 0. 다음: PART 2
 - 2026-10-27 — **난이도 시스템 PART 0(조사·설계 문서)**: 코드 변경 없음. `docs/DIFFICULTY_IMPLEMENTATION.md` 신규(프로필·저장·마이그레이션·시즌 해금·개발자 도구·콘텐츠·힌트·글로서리 구조 조사, Difficulty enum·프로필/시즌별 저장·콘텐츠 패치와 fallback·힌트 정책·개발자 세션 격리·마이그레이션 설계, PART 계획, Case별 진행표). 이 파일에 *Difficulty System* 섹션 추가. 다음: PART 1
 - 2026-10-19 — **Case 01 Case Closed 파일: 기울어진 사건 사진 → 왕관 하나**(사용자 요청). 탐정 이름 옆 작은 열린 상자 사진(흰 폴라로이드·회전·그림자, 그 위로 SOLVED 도장이 찍혀 갈색 선처럼 보임)을 Case 01에서만 빼고, 사건 제목 아래 가운데에 `assets/art/objects/crown_cutout.png`(원본 `crown.png`는 불투명 양피지 바탕이라 보존, `tool/crown_cutout/cutout_test.dart`로 오려냄: 밝고 노란기 적은 양피지를 테두리에서·아치 사이 큰 구멍(2500px+)까지 제거, 띠의 하이라이트 유지, 모서리 반짝이 표식 제거, 512² 정사각) 프레임·그림자 없이 카드 폭 42%(96–150dp). SOLVED 도장은 사진 자리(빈 칸)에 그대로 찍힘, 이름 칸 침범 없음. `ArtAssets.caseClosedEmblems`(ep01만), 다른 사건은 기존 사진. 테스트 `case01_case_closed_test`
 - 2026-10-19 — **Case 01 Final Royal Box 새 그림**(사용자 제공 `royal_box_closed.png`·`royal_box_open.png`, 1659×948 RGBA 투명 배경, 같은 캔버스·같은 위치). 닫힌 그림에 그려진 다이얼 0000은 실제 휠과 맞지 않으므로(사용자 결정) `tool/royal_box_blank/blank_test.dart`로 원본은 보존하고 드럼 4개의 숫자 영역(521–552·709–740·909–940·1104–1135 × 644–688)만 같은 줄의 드럼 색으로 보간해 지운 `royal_box_closed_blank.png`를 사용. 상자 드럼 창에 아래 휠의 현재 값을 그 자리에 굴러 들어오게 표시(`_DrumDigit`, 스크린리더 제외 — 휠이 읽힘), 조작은 기존 휠 그대로. `RoyalBoxArt`에 `dials/shut/opened` 추가, 열릴 때 보는 영역이 상자 전체 → 뚜껑부터 받침까지로 약간 다가가 왕관이 크게(360dp에서 무대 폭 가득). 열린 그림(7924)은 OPEN THE BOX 정답 판정 후에만, 닫힌 그림이 먼저 빠지는 크로스페이드. 사진 모드의 코드 빛줄기 제거(과한 효과), 그림 없을 때만 코드로 그린 상자. 무대 높이는 그림 비율 기준(150–320). 두 그림 미리 캐시. `sceneAspects[royalBox]` 885/868 → 1659/948(사건 사진도 새 열린 그림). 기존 `royal_box.png`(극장)는 미사용 그대로

@@ -4,6 +4,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/utils/answer_checker.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/detective_name.dart';
+import '../../data/models/difficulty.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/mission.dart';
@@ -137,11 +138,11 @@ class GameController extends Notifier<GameProgress> {
   /// The app is in the foreground again: the clock continues from here.
   void resumePlayClock() => _activeSince ??= now();
 
-  /// Creates the device's detective: [rawName] and [avatar]. Returns an
-  /// error message (kid-friendly) or null on success. There is only ever
-  /// one detective: refused while one exists (NEW ADVENTURE empties the
-  /// slot first).
-  String? createDetective(String rawName, DetectiveAvatar? avatar) {
+  /// Creates the device's detective: [rawName], [avatar] and the level its
+  /// seasons start at ([difficulty]). Returns an error message (kid-friendly)
+  /// or null on success. There is only ever one detective: refused while one
+  /// exists (NEW ADVENTURE empties the slot first).
+  String? createDetective(String rawName, DetectiveAvatar? avatar, {Difficulty difficulty = Difficulty.standard}) {
     if (state.hasDetective || sessionProfile(ref).isCreated) return 'You already have a detective.';
     if (avatar == null) return 'Choose your detective first.';
     final error = validateName(rawName);
@@ -150,7 +151,7 @@ class GameController extends Notifier<GameProgress> {
     _update(state.copyWith(detectiveName: name));
     ref
         .read(detectiveProfileProvider.notifier)
-        .change((p) => p.copyWith(detectiveName: name, avatar: avatar, createdAt: now()));
+        .change((p) => p.copyWith(detectiveName: name, avatar: avatar, createdAt: now(), difficulty: difficulty));
     return null;
   }
 

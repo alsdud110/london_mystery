@@ -8,6 +8,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/utils/audio_service.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/case_talk.dart';
+import '../../data/models/difficulty.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/mission.dart';
 import '../../data/models/profile.dart';
@@ -58,6 +59,10 @@ class DetectiveProfileNotifier extends Notifier<DetectiveProfile> {
 
   /// A new picture for the detective (nothing else changes).
   Future<void> setAvatar(DetectiveAvatar avatar) => change((p) => p.copyWith(avatar: avatar));
+
+  /// The level the detective's next season starts at (nothing else changes;
+  /// a season already fixed keeps its own, see [SeasonNotifier.fixDifficulty]).
+  Future<void> setDifficulty(Difficulty difficulty) => change((p) => p.copyWith(difficulty: difficulty));
 }
 
 final detectiveProfileProvider =
@@ -357,6 +362,14 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
     if (!state.prologueSeen) _set(state.copyWith(prologueSeen: true));
   }
 
+  /// Fixes the level this season is played at to [difficulty] (saved; the
+  /// detective's own level changing later leaves it as it is). Nothing calls
+  /// it on its own yet: when a season fixes its level is decided by the
+  /// pages that start a season.
+  void fixDifficulty(Difficulty difficulty) {
+    if (state.difficulty != difficulty) _set(state.copyWith(difficulty: difficulty));
+  }
+
   /// Forgets the season in memory (storage is cleared by the repository).
   void reset() => state = SeasonProgress.empty;
 
@@ -378,6 +391,22 @@ class SeasonNotifier extends Notifier<SeasonProgress> {
 }
 
 final seasonProvider = NotifierProvider<SeasonNotifier, SeasonProgress>(SeasonNotifier.new);
+
+/// The level season [seasonId] is played at: the level fixed in its own
+/// record, or the detective's while it has none. Only reads: asking never
+/// saves anything. The season being played follows its record live; another
+/// season is read as saved.
+final seasonDifficultyProvider = Provider.family<Difficulty, String>((ref, seasonId) {
+  final profileLevel = ref.watch(detectiveProfileProvider.select((p) => p.difficulty));
+  final fixed = seasonId == ref.watch(selectedSeasonIdProvider)
+      ? ref.watch(seasonProvider.select((s) => s.difficulty))
+      : ref.watch(progressRepositoryProvider).loadSeason(seasonId).difficulty;
+  return fixed ?? profileLevel;
+});
+
+/// The level of the season being played.
+final currentDifficultyProvider =
+    Provider<Difficulty>((ref) => ref.watch(seasonDifficultyProvider(ref.watch(selectedSeasonIdProvider))));
 
 /// The episode being played: the open case file.
 final currentEpisodeProvider = Provider<Episode>((ref) {

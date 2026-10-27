@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'difficulty.dart';
+
 /// The detective's picture, chosen when the detective is created. Stored by
 /// [name]: never rename one.
 enum DetectiveAvatar {
@@ -72,6 +74,7 @@ class DetectiveProfile {
     this.detectiveName,
     this.avatar,
     this.createdAt,
+    this.difficulty = Difficulty.standard,
   });
 
   /// Random, never changes (hex only, so it is safe inside a storage key).
@@ -90,6 +93,11 @@ class DetectiveProfile {
   /// When the detective was created (or, for older data, first found).
   final DateTime? createdAt;
 
+  /// The level the detective's next season starts at. A season already
+  /// started keeps its own (`SeasonProgress.difficulty`); a detective saved
+  /// before difficulty existed reads as [Difficulty.standard].
+  final Difficulty difficulty;
+
   bool get isCreated => detectiveName != null;
 
   /// A profile id: lowercase hex, 8 to 64 digits (new ones are 32).
@@ -104,6 +112,7 @@ class DetectiveProfile {
     String? detectiveName,
     DetectiveAvatar? avatar,
     DateTime? createdAt,
+    Difficulty? difficulty,
   }) =>
       DetectiveProfile(
         id: id,
@@ -112,10 +121,12 @@ class DetectiveProfile {
         detectiveName: detectiveName ?? this.detectiveName,
         avatar: avatar ?? this.avatar,
         createdAt: createdAt ?? this.createdAt,
+        difficulty: difficulty ?? this.difficulty,
       );
 
   /// The same slot after everything it played was wiped (NEW ADVENTURE): no
-  /// name, no avatar, nothing left to pay back. The id stays.
+  /// name, no avatar, nothing left to pay back, the standard level. The id
+  /// stays.
   DetectiveProfile startedOver() => DetectiveProfile(id: id);
 
   Map<String, dynamic> toJson() => {
@@ -125,6 +136,7 @@ class DetectiveProfile {
         if (detectiveName != null) 'detectiveName': detectiveName,
         if (avatar != null) 'avatar': avatar!.name,
         if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
+        'difficulty': difficulty.storageId,
       };
 
   /// Null for an entry that cannot be read. Unknown values fall back to the
@@ -142,6 +154,7 @@ class DetectiveProfile {
       detectiveName: name is String && name.isNotEmpty ? name : null,
       avatar: DetectiveAvatar.byName(json['avatar']),
       createdAt: created is String ? DateTime.tryParse(created) : null,
+      difficulty: Difficulty.parse(json['difficulty']),
     );
   }
 }

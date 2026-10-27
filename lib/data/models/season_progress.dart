@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../core/constants/app_constants.dart';
+import 'difficulty.dart';
 
 /// Season-level record kept next to the per-case [GameProgress] saves:
 /// which case file is open, and which cases were ever solved.
@@ -13,6 +14,7 @@ class SeasonProgress {
     this.activeEpisodeId = AppConstants.currentEpisodeId,
     this.solvedEpisodeIds = const [],
     this.prologueSeen = false,
+    this.difficulty,
   });
 
   final String activeEpisodeId;
@@ -24,15 +26,30 @@ class SeasonProgress {
   /// 2's: its board shows from then on, never the opening again).
   final bool prologueSeen;
 
+  /// The level this season is played at, fixed for the season; null: not
+  /// fixed yet (a season not started, or saved before difficulty existed),
+  /// so the detective's own level applies (see [difficultyOr]).
+  final Difficulty? difficulty;
+
   static const empty = SeasonProgress();
 
   bool isSolved(String episodeId) => solvedEpisodeIds.contains(episodeId);
 
-  SeasonProgress copyWith({String? activeEpisodeId, List<String>? solvedEpisodeIds, bool? prologueSeen}) =>
+  /// The level the season is played at: its own, or [profileLevel] (the
+  /// detective's) while it has none.
+  Difficulty difficultyOr(Difficulty profileLevel) => difficulty ?? profileLevel;
+
+  SeasonProgress copyWith({
+    String? activeEpisodeId,
+    List<String>? solvedEpisodeIds,
+    bool? prologueSeen,
+    Difficulty? difficulty,
+  }) =>
       SeasonProgress(
         activeEpisodeId: activeEpisodeId ?? this.activeEpisodeId,
         solvedEpisodeIds: solvedEpisodeIds ?? this.solvedEpisodeIds,
         prologueSeen: prologueSeen ?? this.prologueSeen,
+        difficulty: difficulty ?? this.difficulty,
       );
 
   /// [episodeId] solved (solving it again changes nothing).
@@ -47,12 +64,16 @@ class SeasonProgress {
       activeEpisodeId: active is String && active.isNotEmpty ? active : AppConstants.currentEpisodeId,
       solvedEpisodeIds: solved is List ? solved.whereType<String>().toSet().toList() : const <String>[],
       prologueSeen: json['prologueSeen'] == true,
+      // Missing (saved before difficulty) or unreadable: not fixed.
+      difficulty: Difficulty.tryParse(json['difficulty']),
     );
   }
 
+  /// Written only once fixed, so a record without one keeps its old shape.
   Map<String, dynamic> toJson() => {
         'activeEpisodeId': activeEpisodeId,
         'solvedEpisodeIds': solvedEpisodeIds,
         if (prologueSeen) 'prologueSeen': true,
+        if (difficulty != null) 'difficulty': difficulty!.storageId,
       };
 }

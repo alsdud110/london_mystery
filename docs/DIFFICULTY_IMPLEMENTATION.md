@@ -201,36 +201,44 @@
 
 ## D. 기술 설계
 
-### D-1. Difficulty enum [제안]
+### D-1. Difficulty enum — **PART 1 구현 완료**
+실제 코드: `lib/data/models/difficulty.dart`
 ```dart
-// lib/data/models/difficulty.dart (신규)
 enum Difficulty {
-  rookie, junior, master;
+  rookie('rookie', 'ROOKIE'),
+  junior('junior', 'JUNIOR'),
+  master('master', 'MASTER');
+
+  final String storageId; // 저장 식별자 — 배포 후 절대 변경 금지
+  final String label;     // 화면 표시 이름 — 바꿔도 저장에 영향 없음
 
   static const standard = Difficulty.rookie;
-
-  /// 저장된 이름 → 값. 모르는 값·null은 [standard] (관대한 읽기, 다른 enum과 같은 방식).
-  static Difficulty fromName(Object? name) => values.firstWhere((d) => d.name == name, orElse: () => standard);
-
-  String get label => switch (this) { rookie => 'ROOKIE', junior => 'JUNIOR', master => 'MASTER' };
-  /// 프로필 생성 카드의 짧은 영어 설명 (섹션 A 표) — UI 문구는 PART 2에서 최종 확정.
-  List<String> get blurb => …;
-
-  /// 콘텐츠 fallback 순서: 자기 자신 → 아래 단계 → base. (D-5)
-  List<Difficulty> get fallbackChain => …;
+  static Difficulty? tryParse(Object? id); // 모르는 값·null·형식 오류 → null ("고정 안 됨" 표현용)
+  static Difficulty parse(Object? id);     // 모르는 값·null·형식 오류 → rookie
 }
 ```
-- 저장은 `.name`(`'rookie'` 등). **이름 변경 금지**(저장된 값).
+- 저장은 enum `.name`이 아니라 **`storageId`**(PART 0 초안의 `.name` 저장에서 변경 — 화면 이름·enum 이름과 저장 식별자를 분리하라는 PART 1 요구). 대소문자 구분(`'Rookie'`은 모르는 값 → rookie).
+- PART 0 초안의 `blurb`(카드 영어 설명)는 **PART 2**, `fallbackChain`은 **PART 5**에서 필요할 때 추가한다(이번 PART 범위 밖).
 
-### D-2. 프로필 저장 구조 [제안]
-- `DetectiveProfile`에 `Difficulty difficulty`(기본 `rookie`) 추가 — **"다음에 시작하는 시즌에 쓸 난이도"(선호값)**.
-- `toJson`: 항상 `'difficulty': name` 기록(기본값도 기록해 의도를 명확히). `fromJson`: `Difficulty.fromName(json['difficulty'])`.
-- `copyWith(difficulty:)` 추가. `startedOver()`(Game Master 초기화)는 id만 남기므로 난이도도 기본값으로 — 다음 아이가 새로 고름(기존 동작과 일관).
-- NEW ADVENTURE: 프로필 난이도 유지(이름·아바타처럼). [미결정 Q4]
-- `createDetective(name, avatar, difficulty)` 시그니처 확장(PART 2에서 UI 연결). PART 1에서는 기본값 rookie로 호출 유지.
+### D-2. 프로필 저장 구조 — **PART 1 구현 완료**
+- `DetectiveProfile.difficulty`(`lib/data/models/profile.dart`, 기본 `Difficulty.standard` = rookie) — **"다음에 시작하는 시즌에 쓸 난이도"(기본값)**.
+- 저장 키는 그대로 `lm.detective.v1`, 레코드 `schema`도 1 그대로. 프로필 JSON 예:
+  `{"id":"…","origin":"legacy","walletBackfill":"done","detectiveName":"KIM","avatar":"girl","createdAt":"…","difficulty":"junior"}`
+- `toJson`: **항상** `'difficulty': storageId` 기록(rookie도 기록 — 없음/rookie를 구분할 필요가 생겨도 안전). `fromJson`: `Difficulty.parse(json['difficulty'])`(없음·null·모르는 값 → rookie, 프로필 자체는 계속 읽힘).
+- `copyWith(difficulty:)` 추가. `startedOver()`(Game Master 다음 플레이어 초기화)는 id만 남김 → rookie(코드 변경 없이 기본값).
+- NEW ADVENTURE(`newAdventure`)는 `copyWith`로 프로필을 고치므로 **난이도 유지**(Q4 제안 기본값과 일치, 테스트로 고정). 단 NEW ADVENTURE는 시즌 기록을 모두 지우므로 시즌 고정값은 사라지고 프로필 난이도를 따른다.
+- `LegacyMigrator`가 만드는 프로필(레거시 복사·계정 빌드 변환·보류 해결)은 난이도 인자가 없어 rookie.
+- API: `DetectiveProfileNotifier.setDifficulty(Difficulty)`(`game_providers.dart`) — 다른 필드·`held` 목록 보존. `GameController.createDetective(name, avatar, {Difficulty difficulty = Difficulty.standard})` — **현재 UI는 인자를 넘기지 않음(PART 2에서 연결)**.
 
-### D-3. 시즌별 난이도 적용 구조 [제안]
-- `SeasonProgress`에 `Difficulty? difficulty`(그 시즌에 **고정된** 난이도)와 `bool nextDifficultyAsked`(완료 후 안내를 이미 했는지) 추가. `toJson`은 값이 있을 때만 기록(기존 JSON 모양 유지 → 기존 테스트 영향 최소).
+### D-3. 시즌별 난이도 적용 구조 — **저장·조회·고정 API는 PART 1 구현 완료, 고정 시점은 PART 3**
+- 구현: `SeasonProgress.difficulty`(`Difficulty?`, `lib/data/models/season_progress.dart`) — 그 시즌에 **고정된** 난이도, null = 아직 고정 안 됨. `fromJson`은 `Difficulty.tryParse`(없음·모르는 값 → null), `toJson`은 **값이 있을 때만** `'difficulty'` 기록 → 고정 전 기록은 예전 JSON 모양 그대로. `difficultyOr(profileLevel)`, `copyWith(difficulty:)`.
+- 키는 그대로: London `lm.p.<id>.season.v1`, Paris `lm.p.<id>.season.v1.s2_paris` → **두 시즌 독립**.
+- API(`lib/features/game/game_providers.dart`):
+  - `SeasonNotifier.fixDifficulty(Difficulty)` — **선택된 시즌**의 기록에 고정값 저장(같은 값이면 아무것도 쓰지 않음). 진행·해결·해금 불변. **아직 아무 화면도 호출하지 않는다.** 선택되지 않은 시즌을 고정해야 하면 PART 3에서 `repo.saveSeason(repo.loadSeason(id).copyWith(difficulty: d), id)` 또는 API 추가.
+  - `seasonDifficultyProvider(seasonId)` — 고정값 ?? 프로필 난이도. 선택 시즌은 `seasonProvider`를 watch(즉시 반영), 다른 시즌은 저장소에서 읽기(그 시즌 기록이 바뀌어도 자동 갱신되지 않음 — 현재 다른 시즌 기록을 바꾸는 경로가 없어 문제없음, PART 3에서 다른 시즌을 고치면 `ref.invalidate` 필요).
+  - `currentDifficultyProvider` — 선택 시즌의 실효 난이도. **콘텐츠 선택(PART 5)은 이것을 쓴다.**
+  - 조회는 아무것도 저장하지 않는다(테스트로 고정: 조회 전후 SharedPreferences 스냅샷 동일, 조회만 한 시즌의 기록 키가 생기지 않음).
+- `nextDifficultyAsked`(완료 후 안내 1회)는 PART 0 초안과 달리 **PART 1에서 추가하지 않았다** — 안내 기능(PART 3)과 함께 추가한다(지금 넣으면 쓰는 곳 없는 필드).
 - **시즌의 실효 난이도** = `seasonProgress.difficulty ?? profile.difficulty`.
   - 시즌이 "시작"되는 순간(그 시즌의 첫 사건 인트로 진입 또는 프롤로그 완료 — PART 3에서 한 곳으로 정함) `seasonProgress.difficulty`가 비어 있으면 그때의 `profile.difficulty`로 고정.
   - 시작 전 시즌은 고정값이 없으므로 프로필 변경이 바로 반영된다(= "시즌 시작 전 자유 변경").
@@ -293,7 +301,7 @@ enum Difficulty {
   - `nextDifficultyAsked` 없음 → false. **이미 완료된 시즌**(예: London 완료 후 Paris 진행 중)에 안내가 갑자기 뜨지 않도록, 마이그레이션 규칙: 다음 시즌이 이미 시작된 완료 시즌은 "이미 물은 것"으로 간주(저장하지 않고 계산) [제안].
 - `DetectiveRecord.schema`는 1 유지(읽지 않으므로 올려도 효과 없음).
 - 다운그레이드(이전 빌드가 다시 저장)하면 새 필드가 사라진다 — 앱스토어 배포에서는 드묾. 사라져도 기본값 rookie로 안전하게 읽힘 → 허용.
-- 테스트: `profile_migration_test`/`single_detective_test`에 "difficulty 없는 프로필·시즌 JSON → rookie, 기존 필드 불변, 다시 저장 시 difficulty 기록" 추가(PART 1).
+- **PART 1 결과**: 위 규칙대로 구현. 키·스키마 변경 없음, 마이그레이션 코드 없음(읽을 때 기본값). 옛 프로필은 다음 저장 때 `"difficulty":"rookie"`가 붙고 다른 필드는 그대로, 옛 시즌 기록은 고정될 때까지 JSON이 바이트 단위로 같다. 테스트는 새 파일 `test/difficulty_persistence_test.dart`에 모았다(기존 `profile_migration_test`/`single_detective_test`는 수정 불필요 — 전체 회귀 통과).
 
 ---
 
@@ -302,7 +310,7 @@ enum Difficulty {
 | PART | 내용 | 상태 |
 |---|---|---|
 | PART 0 | 조사 및 설계 문서 | **COMPLETED** (2026-10-27) |
-| PART 1 | 난이도 모델 및 저장 구조 | NOT STARTED |
+| PART 1 | 난이도 모델 및 저장 구조 | **COMPLETED** (2026-10-27) |
 | PART 2 | 프로필 생성 난이도 UI | NOT STARTED |
 | PART 3 | 시즌 난이도 변경 및 초기화 정책 | NOT STARTED |
 | PART 4 | 개발자 모드 개선 | NOT STARTED |
@@ -330,55 +338,81 @@ enum Difficulty {
 - **구현 내용**: 코드 수정 없음. 프로필·저장·마이그레이션·시즌 해금·개발자 도구·콘텐츠·힌트·글로서리 구조 조사(섹션 B), 설계(섹션 C·D), PART 계획(E), 인수인계(G), 콘텐츠 진행표(H) 작성. `PROJECT_CONTEXT.md`에 난이도 시스템 섹션 추가.
 - **변경 파일**: `docs/DIFFICULTY_IMPLEMENTATION.md`(신규), `PROJECT_CONTEXT.md`(섹션 추가·Next Goal 한 줄·Change Log 한 줄)
 - **테스트 결과**: 실행하지 않음(문서만 변경, Dart 소스·테스트 무변경). `flutter analyze`도 실행하지 않음.
-- **커밋 해시**: PART 0 문서 커밋 — 이 문서가 포함된 커밋이므로 여기에 자기 해시를 넣지 않는다. 실제 해시는 `git log --oneline -- docs/DIFFICULTY_IMPLEMENTATION.md`의 첫 커밋으로 확인하고, **PART 1 작업자가 PART 1 커밋에서 이 칸을 채운다.**
+- **커밋 해시**: `042afac9e5142bd0bc9c4c880012255cafcf851b` ("난이도 시스템 PART 0: 조사 및 설계 인수인계 문서") — PART 1 커밋에서 기록.
 - **남은 위험**: 섹션 I(미결정 사항)와 D의 [추정] 항목. 특히 base = Rookie 결정(Q1)이 PART 5 이전에 필요.
 
-<!-- PART 1 이후 작업자는 아래에 같은 형식으로 추가한다 -->
+### PART 1 — 난이도 모델 및 저장 구조
+- **작업 날짜**: 2026-10-27
+- **시작 상태**: 브랜치 `main`, HEAD `042afac`(PART 0), 미커밋 `.claude/settings.json`만(커밋하지 않음). 문서 B의 경로·줄 번호와 코드가 일치함을 확인(차이 없음).
+- **구현 내용**:
+  - `Difficulty` enum(D-1): 저장 식별자(`storageId`)와 표시 이름(`label`) 분리, `parse`(→ rookie)/`tryParse`(→ null).
+  - 프로필 기본 난이도(D-2): `DetectiveProfile.difficulty`, JSON `difficulty`, `copyWith`, `setDifficulty`, `createDetective`의 선택 인자(UI 미연결).
+  - 시즌 고정 난이도(D-3): `SeasonProgress.difficulty`(고정 시에만 기록), `difficultyOr`, `SeasonNotifier.fixDifficulty`(호출하는 화면 없음), `seasonDifficultyProvider(seasonId)`, `currentDifficultyProvider`.
+  - PART 0 설계와 다른 점: 저장을 `.name` 대신 `storageId`로, `nextDifficultyAsked`·`blurb`·`fallbackChain`은 쓰는 PART(3·2·5)로 미룸.
+- **변경 파일**:
+  - 신규 `lib/data/models/difficulty.dart`, `test/difficulty_persistence_test.dart`
+  - 수정 `lib/data/models/profile.dart`, `lib/data/models/season_progress.dart`, `lib/features/game/game_providers.dart`, `lib/features/game/game_controller.dart`(createDetective 인자만)
+  - 문서 `docs/DIFFICULTY_IMPLEMENTATION.md`, `PROJECT_CONTEXT.md`
+- **테스트 결과**(실제 실행):
+  - `flutter test test/difficulty_persistence_test.dart` → **21 passed**. 검증: enum 직렬화·모르는 값, 난이도 없는 옛 프로필 → rookie·다른 필드 불변, rookie/junior/master 프로필, 모르는 문자열, 옛 시즌 기록(고정 전 JSON 모양 유지), 시즌 난이도 없음 → 프로필 따름, London junior/Paris master 독립, 프로필 변경 후 시즌 고정값 유지, 저장·복원 5회 반복 동일, 앱 재시작 후 동일, 고정해도 진행·해결·해금 불변, 조회는 저장하지 않음, 같은 값 고정은 쓰기 없음, NEW ADVENTURE 난이도 유지, createDetective 기본 rookie/지정값.
+  - `flutter analyze` → **No issues found**.
+  - 전체 `flutter test` → **2277 passed, 0 failed, 0 skipped**(약 4분 6초). 기존 테스트 수정·삭제·skip 없음.
+- **커밋 해시**: PART 1 커밋(메시지 `feat: add difficulty model and persistence`). 자기 해시는 이 커밋에 넣지 않는다 — **PART 2 작업자가 `git log --oneline --grep "add difficulty model"`으로 확인해 이 칸을 채운다.**
+- **남은 위험**:
+  - 다른(선택되지 않은) 시즌의 `seasonDifficultyProvider`는 저장소 값을 읽어 자동 갱신되지 않음(D-3) — PART 3에서 다른 시즌 기록을 바꾸면 invalidate 필요.
+  - 이전 빌드로 다운그레이드 후 프로필을 다시 저장하면 `difficulty`가 사라짐 → rookie로 읽힘(허용, D-8).
+  - 아직 아무 화면도 난이도를 쓰지 않음 — 사용자 화면 변화 없음(의도).
+
+<!-- PART 2 이후 작업자는 아래에 같은 형식으로 추가한다 -->
 
 ---
 
 ## G. 다음 세션 인수인계
 
 ### 현재 완료된 PART
-**PART 0** (조사·설계 문서). 코드는 HEAD `0cdbe8a`에서 바뀌지 않았다.
+**PART 0**(조사·설계, `042afac`), **PART 1**(난이도 모델·저장 구조, 커밋 `feat: add difficulty model and persistence` — 해시는 `git log --oneline --grep "add difficulty model"`).
+코드에는 이제 난이도 저장·조회 API가 있지만, **아직 어떤 화면도 난이도를 보여주거나 바꾸지 않는다.**
 
 ### 다음 PART
-**PART 1 — 난이도 모델 및 저장 구조**
+**PART 2 — 프로필 생성 난이도 선택 UI**
 
-### PART 1 작업 범위
-1. `lib/data/models/difficulty.dart` 신규 — `Difficulty { rookie, junior, master }`, `standard`, `fromName`(관대), `label`, `blurb`(섹션 A 영어 설명), `fallbackChain`(D-5).
-2. `DetectiveProfile`(`lib/data/models/profile.dart`)에 `difficulty` 필드(기본 rookie) + `toJson`/`fromJson`/`copyWith`. `startedOver()`는 기본값으로.
-3. `SeasonProgress`(`lib/data/models/season_progress.dart`)에 `Difficulty? difficulty`, `bool nextDifficultyAsked` + 직렬화(값이 있을 때만 기록).
-4. Provider(`lib/features/game/game_providers.dart`): 시즌 실효 난이도 = `seasonProgress.difficulty ?? profile.difficulty`. `DetectiveProfileNotifier`에 `setDifficulty`.
-5. `GameController.createDetective`에 선택 인자 `difficulty`(기본 rookie) — UI 연결은 PART 2.
-6. 테스트: enum 왕복·모르는 값, 옛 프로필/시즌 JSON → rookie, 기존 필드 불변, 다시 저장 시 기록, 실효 난이도 규칙.
+### PART 2 작업 범위
+1. CREATE YOUR DETECTIVE(`/register`) 화면에 난이도 선택을 **같은 화면 안의 심플한 카드형 UI**로 통합(별도 BottomSheet·새 화면 금지). 순서: ① 아바타 BOY/GIRL ② 탐정 이름 ③ 난이도 ROOKIE/JUNIOR/MASTER.
+2. 기본 선택 = Rookie(아무것도 고르지 않아도 START INVESTIGATION 가능 — 기존 흐름·테스트 유지).
+3. 각 카드에 짧은 영어 설명(섹션 A 표 — Rookie: "Short English sentences. Easy words. Clear clues and simple explanations." / Junior: "Everyday English. More detailed sentences. Connect clues to understand the mystery." / Master: "Advanced English. Richer vocabulary. More indirect clues and challenging reading."). 문구는 `Difficulty`에 두는 것을 권장(예: `Difficulty.blurb`) — 위젯에 하드코딩하지 않음.
+4. START INVESTIGATION → `createDetective(name, avatar, difficulty: 선택값)`(인자는 PART 1에서 이미 준비됨).
+5. 선택 상태가 분명하게 보이고(선택/비선택 대비, 눌림 피드백), 접근성 라벨(예: "Difficulty: Rookie, selected")과 충분한 터치 영역.
 
-**PART 1에서 하지 않는 것**: 화면 UI(PART 2), 시즌 초기화·고정 시점(PART 3), 개발자 모드(PART 4), 콘텐츠 변형(PART 5~7).
+**PART 2에서 하지 않는 것**: 기존 탐정의 난이도 변경(`/detective` 설정 화면) — 진행 중 시즌 초기화 확인이 필요하므로 **PART 3**. 시즌 고정 시점(`fixDifficulty` 호출) — PART 3. 개발자 모드 — PART 4. 콘텐츠 — PART 5~7.
 
 ### 수정 예상 파일
-- 신규: `lib/data/models/difficulty.dart`, `test/difficulty_model_test.dart`(이름은 자유)
-- 수정: `lib/data/models/profile.dart`, `lib/data/models/season_progress.dart`, `lib/features/game/game_providers.dart`, `lib/features/game/game_controller.dart`(createDetective 인자만)
-- 필요 시 수정: `test/profile_migration_test.dart`, `test/single_detective_test.dart`
-- 문서: 이 파일(E·F·G), `PROJECT_CONTEXT.md`(진행 상태)
+- `lib/features/onboarding/register_screen.dart` — `_RegisterScreenState`(`_avatar` 옆에 `_difficulty` 상태, `:37`, `:53`의 createDetective 호출), `DetectiveDesk`(`:84`, 아바타·이름 줄 `:227-229`)
+- `lib/features/onboarding/detective_form.dart` — 아바타 카드(`AvatarChoice` `:42`, `_AvatarCard` `:81`)와 같은 계열의 난이도 선택 위젯(예: `DifficultyChoice`)을 여기에 추가 권장
+- `lib/data/models/difficulty.dart` — 카드 영어 설명(`blurb`) 추가
+- 테스트: 새 위젯 테스트 + 필요 시 `test/onboarding_personal_test.dart`, `test/small_screen_test.dart`
+- 문서: 이 파일(E·F·G·D-1), `PROJECT_CONTEXT.md`
 
 ### 주의 사항
-- 시작 시 `PROJECT_CONTEXT.md` → 이 문서 → `git status`/`git log -3` 확인. PART 0 이후 다른 커밋이 있으면 B의 줄 번호를 다시 확인.
-- 저장 enum 이름(`rookie/junior/master`)은 한 번 배포되면 바꿀 수 없다.
-- 기존 JSON 모양을 바꾸지 말 것: `SeasonProgress`의 새 필드는 값이 있을 때만 기록 → 기존 저장·테스트 영향 최소. 프로필 `difficulty`는 항상 기록(제안) — 프로필 JSON을 정확히 비교하는 테스트가 있으면 갱신.
-- `copyWith`가 `??` 방식이라 난이도 변경은 정상 동작하지만, nullable 필드 초기화가 필요하면 별도 메서드.
+- **`DetectiveDesk`는 생성 화면과 `/detective` 설정 화면(`detective_settings_screen.dart:62-63`)이 함께 쓴다.** 난이도 카드는 생성 화면에만 나오게 선택적 매개변수로 넣는다(설정 화면 변경은 PART 3).
+- 생성 화면을 지나가는 기존 테스트가 약 40개(`createDetective`/register 흐름 — `grep -l "register\|createDetective" test`). 기본값 Rookie가 선택되어 있으면 흐름은 바뀌지 않아야 한다. **360×640에서 START INVESTIGATION이 계속 보이거나 스크롤로 닿아야 한다**(키보드가 올라온 `compact`/`short` 상태 포함 — `AvatarChoice`가 이미 이 두 상태를 처리하는 방식을 따른다).
+- 디자인: `CLAUDE.md` 2~19절(게임 정체성 우선, 일반 Material 카드 느낌 금지, 토큰 `AppColors`/`AppSpace`/`AppText` 사용, 과한 장식 금지). 디자인 스킬 `design-taste-frontend` 우선, 마무리 `impeccable`. 종이(casebook) 위 UI이므로 기존 아바타 카드와 같은 시각 언어.
+- 저장 식별자(`storageId`)와 화면 이름(`label`)을 섞지 않는다.
+- 이전 PART의 커밋 해시 칸(F의 PART 1)을 실제 해시로 채운다.
 - 기존 미커밋 파일(`.claude/settings.json`)은 커밋하지 않는다. 원격 푸시 금지.
-- 이전 PART의 커밋 해시 칸(F의 PART 0)을 실제 해시로 채운다.
 
 ### 검증 방법
 - `flutter analyze` → 0 issues
-- 관련 테스트: 새 난이도 테스트 + `test/profile_migration_test.dart`, `test/single_detective_test.dart`, `test/profile_reset_test.dart`, `test/season_flow_test.dart`, `test/playtest_tools_test.dart`
-- 공통 규칙(아래)에 따라 전체 `flutter test` 회귀 실행 후 통과 수·시간 기록(PART 1은 저장 모델 변경이라 전체 회귀 대상)
+- 새 위젯 테스트: 기본 Rookie 선택, 다른 카드 선택 → 생성된 프로필의 `difficulty`가 그 값(`ProfileStore(prefs).profile!.difficulty`), 아무것도 안 고르면 rookie, 세 카드의 영어 설명 표시, 접근성 라벨, 360×640·390×844·글자 1.3배에서 overflow 없음·CTA 접근 가능
+- 관련 기존 테스트: `onboarding_personal_test`, `single_detective_test`, `small_screen_test`, `title_screen_test`, `how_to_play_test`
+- UI 변경이라 전체 `flutter test` 회귀 후 통과 수·시간 기록
+- 가능하면 스크린샷(`LM_SCREENSHOTS=<폴더> flutter test <파일>`)으로 시각 확인
 
 ### 완료 조건
-- 위 범위 구현, analyze 0 issues, 관련 테스트 + 전체 회귀 통과(실제 결과 기록)
-- 옛 저장(difficulty 없음)이 rookie로 읽히고 다른 필드가 바뀌지 않음을 테스트로 증명
-- 이 문서 E(PART 1 = COMPLETED)·F(이력)·G(PART 2 인수인계) 갱신, `PROJECT_CONTEXT.md` 진행 상태 갱신
-- PART 1 변경 파일만 커밋(푸시 없음), 커밋 후 실제 해시 확인
+- 프로필 생성 화면에서 난이도를 고를 수 있고, 고른 값이 `lm.detective.v1`에 저장됨(테스트로 증명)
+- 기본 Rookie, 기존 생성 흐름·설정 화면 불변
+- analyze 0 issues, 관련 테스트 + 전체 회귀 통과(실제 결과 기록)
+- 이 문서 E(PART 2 = COMPLETED)·F(이력, PART 1 해시)·G(PART 3 인수인계) 갱신, `PROJECT_CONTEXT.md` 진행 상태 갱신
+- PART 2 변경 파일만 커밋(푸시 없음), 커밋 후 실제 해시 확인
 
 ### 모든 PART 공통 작업 규칙 (PART 1~7)
 1. 시작 시 `PROJECT_CONTEXT.md`와 이 문서를 읽는다.
@@ -447,7 +481,7 @@ Rookie 열은 base를 그대로 쓰면 `base`, 별도 Rookie 패치를 두면 `�
 | Q1 | 현재 텍스트를 Rookie(base)로 볼 것인가? | **예** — 기존 사용자 화면·테스트 불변 | PART 5 전 |
 | Q2 | "힌트 제공 방식"을 UI로도 다르게(Rookie는 GET A TIP 강조) 할 것인가, 문구만 다르게 할 것인가? | 개수·가격 동일, UI 강조만 차이 | PART 5 |
 | Q3 | 시즌 초기화 시 지갑(코인·산 Tip)을 어떻게? | 건드리지 않음(다시 푼 미션 코인 0) | PART 3 |
-| Q4 | NEW ADVENTURE 후 프로필 난이도 유지? | 유지(이름·아바타처럼) | PART 1~3 |
+| Q4 | NEW ADVENTURE 후 프로필 난이도 유지? | 유지(이름·아바타처럼) — **PART 1 현재 동작이 이것(테스트로 고정)**. 바꾸려면 사용자 결정 필요 | PART 1~3 |
 | Q5 | 개발자 모드에서 난이도 변경 시 dev 진행 초기화? | 초기화 없이 즉시 텍스트만 전환 | PART 4 |
 | Q6 | 마지막 시즌(Paris) 완료 후 "다음 시즌 난이도" 안내? | 다음 시즌이 없으면 묻지 않음 | PART 3 |
 | Q7 | 시즌 "시작" 시점(난이도 고정 시점): 프롤로그 완료 vs 첫 사건 인트로 | 첫 사건 인트로 진입(프롤로그는 다시 보지 않으므로) | PART 3 |
