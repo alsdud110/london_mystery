@@ -1,3 +1,4 @@
+import '../mock/season2/season2_structures.dart';
 import '../mock/season_catalog.dart';
 import '../models/clock_puzzle.dart';
 import '../models/difficulty.dart';
@@ -310,8 +311,8 @@ abstract final class DifficultyContent {
   /// answer, its steps and choices in order), for the kinds whose levels
   /// have words written; null for a kind not known here yet — a level's
   /// entry of that kind is then reported, never trusted (PART 6–7 add each
-  /// kind they write words for).
-  static String? structureOf(Object? entry) => switch (entry) {
+  /// kind they write words for). Season 2's scenes: [season2StructureOf].
+  static String? structureOf(Object? entry) => season2StructureOf(entry) ?? switch (entry) {
         final ClockPuzzle c => '${c.face.name}:${c.start.hour}:${c.start.minute}',
         final Discovery d => '${d.type.name}:${d.timing.name}:${d.showEvidence}:${d.seasonClue}',
         final LearningObjective l => '${l.dependency.name}:${l.level.name}:${l.skill?.name}:${l.recallFrom}',

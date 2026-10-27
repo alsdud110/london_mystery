@@ -518,6 +518,7 @@ final season2Content = SeasonContent(
   languageTopics: season2LanguageTopics,
   casePatches: season2CasePatches,
   variants: season2Variants,
+  writtenLevels: season2WrittenLevels,
 );
 
 /// Whether season [seasonId] is out for players (an unknown season is not).
