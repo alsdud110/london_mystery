@@ -29,7 +29,8 @@ class ParisPrologueScreen extends ConsumerStatefulWidget {
   ConsumerState<ParisPrologueScreen> createState() => _ParisPrologueScreenState();
 }
 
-/// The words of Season 2's opening ([season2PrologueJson]).
+/// The words of Season 2's opening ([season2PrologueJson], at a level:
+/// [season2PrologueAt]).
 class _ParisWords {
   _ParisWords(Map<String, dynamic> json) : _json = json;
 
@@ -51,7 +52,9 @@ class _ParisPrologueScreenState extends ConsumerState<ParisPrologueScreen> with 
   /// How long each scene takes to come in (a tap finishes it at once).
   static const _durations = [1400, 1600, 1500, 1900, 1200, 1100];
 
-  static final _words = _ParisWords(season2PrologueJson);
+  /// Its words at Paris's own level (fixed once its Case 01 intro is
+  /// entered; until then the level it will be fixed at), never London's.
+  _ParisWords get _words => _ParisWords(season2PrologueAt(ref.watch(seasonDifficultyProvider(SeasonIds.paris))));
 
   late final AnimationController _c = AnimationController(vsync: this);
   int _step = _clue;

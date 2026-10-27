@@ -1,3 +1,4 @@
+import '../../models/difficulty.dart';
 import 'episode01_mock.dart';
 import 'episode02_mock.dart';
 import 'episode03_mock.dart';
@@ -107,4 +108,57 @@ const Map<String, dynamic> season2PrologueJson = {
     'picture': 'pocketWatch',
     'line': 'Your first clue is waiting\nat the station.',
   },
+};
+
+/// [season2PrologueJson]'s spoken lines at Junior and Master (Rookie is the
+/// base itself). Only the lines change: every title, PARIS, the ticket, the
+/// clocks' times, the promise's numbers and the first case stay the base's,
+/// and each line tells the same thing at the same moment.
+const Map<Difficulty, Map<String, dynamic>> season2PrologueLevelsJson = {
+  Difficulty.junior: {
+    'lastClue': {
+      'lines': ['The Clockmaker has disappeared.', 'But his pocket watch is still ticking.'],
+    },
+    'journey': {
+      'lines': ['He came to London\non the 11:40 train from Paris.', 'Now it is your turn to follow him back.'],
+    },
+    'arrival': {
+      'lines': ['Your train slowly pulls into Paris.', 'Look up at the clocks in the station...'],
+    },
+    'missingHour': {
+      'lines': ['An hour has gone missing in Paris.', 'Who took it, and why?'],
+    },
+    'promise': {
+      'lines': ['Follow the clues and find out who took the hour.', 'Bring it back before Paris stands still.'],
+    },
+    'firstCase': {'line': 'Your first clue is waiting\nfor you at the station.'},
+  },
+  Difficulty.master: {
+    'lastClue': {
+      'lines': ['The Clockmaker has vanished.', 'Yet his pocket watch ticks on.'],
+    },
+    'journey': {
+      'lines': ['He travelled to London\non the 11:40 from Paris.', 'Now you must follow his trail back.'],
+    },
+    'arrival': {
+      'lines': ['The train glides into Paris at last.', 'Raise your eyes to the station clocks...'],
+    },
+    'missingHour': {
+      'lines': ['An hour has quietly vanished from Paris.', 'Who took it — and for what reason?'],
+    },
+    'promise': {
+      'lines': ['Follow every clue. Uncover who took the hour.', 'Restore it before Paris stands still.'],
+    },
+    'firstCase': {'line': 'Your first clue awaits you\nat the station.'},
+  },
+};
+
+/// [season2PrologueJson] at [level]: each scene's words looked for along
+/// the level's [Difficulty.fallbackChain], then the base's.
+Map<String, dynamic> season2PrologueAt(Difficulty level) => {
+  for (final MapEntry(:key, :value) in season2PrologueJson.entries)
+    key: {
+      ...(value as Map<String, dynamic>),
+      for (final d in level.fallbackChain.reversed) ...?(season2PrologueLevelsJson[d]?[key] as Map<String, dynamic>?),
+    },
 };

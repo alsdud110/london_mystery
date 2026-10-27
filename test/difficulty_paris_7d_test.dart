@@ -624,8 +624,7 @@ void main() {
             final l = SeasonCatalog.learning(played)!;
             expect(LearningCheck.unmatched(l, played), isEmpty, reason: '${m.id} at ${level.name}');
             final b = season2Learning[m.id]!;
-            // The design's own honesty is the base's (s2_ep10_m2 is not, as
-            // the game has it: reported, not changed here).
+            // The design's own honesty is the base's.
             expect((l.dependency, l.level, l.skill, l.recallFrom, l.isHonest), (b.dependency, b.level, b.skill, b.recallFrom, b.isHonest));
             named.add(l.expressions.join('|'));
           }

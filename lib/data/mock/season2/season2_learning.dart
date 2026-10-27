@@ -387,7 +387,7 @@ const Map<String, LearningObjective> season2Learning = {
   // Sorted by where each clock comes from, not by the time it shows.
   's2_ep10_m2': LearningObjective(
     dependency: LanguageDependency.exposure,
-    level: LearningLevel.comprehension,
+    level: LearningLevel.exposure,
     skill: LanguageSkill.vocabulary,
     objective: '"Is it a trial clock?"에 답하며 사진 속 시계를 Trial Map의 표식으로 나누고, 시험 시계가 아닌 시계들이 서로 같은 시각임을 확인한다.',
     expressions: ['Is it a trial clock?', 'The other clocks are not trial clocks.'],
