@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
@@ -20,7 +20,7 @@ flutter:
   assets:
     # A comment, then the list.
     - assets/seasons/season_02_paris/cases/case_02/
-    - assets/sounds/final.wav   # a file, with a note
+    - assets/sounds/processed/ui_tap_01.wav   # a file, with a note
 
     - "assets/quoted/"
   fonts:
@@ -30,7 +30,7 @@ flutter:
 flutter_launcher_icons:
   - assets/not/an/asset/either/
 ''';
-  const listed = ['assets/seasons/season_02_paris/cases/case_02/', 'assets/sounds/final.wav', 'assets/quoted/'];
+  const listed = ['assets/seasons/season_02_paris/cases/case_02/', 'assets/sounds/processed/ui_tap_01.wav', 'assets/quoted/'];
 
   test('the list is read by its structure: only flutter: assets:, comments and other keys left out', () {
     expect(pubspecAssetsOf(lf), listed);
@@ -51,10 +51,10 @@ flutter_launcher_icons:
   });
 
   test('an entry that names nothing on disk is found', () {
-    expect(missingAssets(['assets/seasons/season_02_paris/cases/case_02/', 'assets/sounds/final.wav']), isEmpty);
+    expect(missingAssets(['assets/seasons/season_02_paris/cases/case_02/', 'assets/sounds/processed/ui_tap_01.wav']), isEmpty);
     expect(missingAssets(['assets/seasons/season_02_paris/cases/case_99/', 'assets/sounds/nothing.wav']),
         ['assets/seasons/season_02_paris/cases/case_99/', 'assets/sounds/nothing.wav']);
-    expect(missingAssets(['assets/sounds/final.wav/']), ['assets/sounds/final.wav/'], reason: 'a file is not a folder');
+    expect(missingAssets(['assets/sounds/processed/ui_tap_01.wav/']), ['assets/sounds/processed/ui_tap_01.wav/'], reason: 'a file is not a folder');
   });
 
   test("the game's pubspec: its list is read whatever its line endings, and every entry is on disk", () {

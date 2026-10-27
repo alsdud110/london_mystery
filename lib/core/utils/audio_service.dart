@@ -38,60 +38,37 @@ class SoundFile {
 ///
 /// Volumes level the takes against each other (measured on their loudest
 /// 100 ms, about -24 dBFS for a puzzle sound).
+///
+/// A sound with no take is still played where its moment comes (and its
+/// haptic still felt), it is simply not heard: adding its file here is all
+/// it takes to hear it. For now only the typing and the casebook tap sound.
 enum GameSound {
   /// An old envelope opened by hand: the seal, the flap, the letter out
-  /// (TAP TO OPEN). Second recording (Foley); silence before it trimmed so
-  /// it starts with the tap.
-  envelopeOpen([
-    SoundFile('processed/envelope_open_v2_01.wav', 0.97),
-    SoundFile('processed/envelope_open_v2_02.wav'),
-    SoundFile('processed/envelope_open_v2_03.wav', 0.81),
-  ]),
+  /// (TAP TO OPEN).
+  envelopeOpen([]),
 
   /// A regular puzzle solved: a small clue falling into place, dark and
-  /// quiet, not a reward (second recording).
-  puzzleCorrect([
-    SoundFile('generated/puzzle_correct_v2_01.wav', 0.36),
-    SoundFile('generated/puzzle_correct_v2_02.wav', 0.81),
-    SoundFile('generated/puzzle_correct_v2_03.wav', 0.62),
-  ]),
+  /// quiet, not a reward.
+  puzzleCorrect([]),
 
-  /// Not quite. (`puzzle_wrong_02.wav` is about 18 dB quieter than this take
-  /// and cannot be raised in code; it is left out until it is made again.)
-  puzzleWrong([SoundFile('generated/puzzle_wrong_01.wav', 0.79)]),
+  /// Not quite.
+  puzzleWrong([]),
 
   /// One notch of a lock's number wheel (keypad digits, the final's dials).
-  /// Trimmed to the click and its decay (about 0.13 s), so quick turns
-  /// answer at once.
-  lockDialClick([
-    SoundFile('processed/lock_dial_click_01.wav', 0.67),
-    SoundFile('processed/lock_dial_click_02.wav', 0.79),
-    SoundFile('processed/lock_dial_click_03.wav', 0.77),
-    SoundFile('processed/lock_dial_click_04.wav', 0.72),
-  ]),
+  lockDialClick([]),
 
   /// A real lock opening (a box, a suitcase; a new place on the map).
-  padlockOpen([
-    SoundFile('generated/padlock_open_01.wav', 0.65),
-    SoundFile('generated/padlock_open_02.wav'),
-  ]),
+  padlockOpen([]),
 
-  /// A card or a piece of paper laid down on the desk. Only the take liked
-  /// best for now (`paper_place_01` / `_03` are kept for later).
-  paperPlace([SoundFile('generated/paper_place_02.wav', 0.8)]),
+  /// A card or a piece of paper laid down on the desk.
+  paperPlace([]),
 
   /// The rubber stamp coming down on a case file (CASE CLOSED, ASSIGNED).
-  /// Made firmer (+9 dB into a limiter, no clipping) and trimmed to start
-  /// on the impact.
-  caseStamp([
-    SoundFile('processed/case_stamp_01.wav'),
-    SoundFile('processed/case_stamp_02.wav'),
-  ]),
+  caseStamp([]),
 
   /// One key of a heavy old typewriter, under the story as it is typed:
   /// its strike and short body, cut before the key comes back up. Below the
-  /// puzzle sounds (about -33 dBFS), so a long story does not tire. (The
-  /// first, thinner keys `typewriter_key_0N` are kept in processed/.)
+  /// puzzle sounds (about -33 dBFS), so a long story does not tire.
   typewriterKey([
     SoundFile('processed/typewriter_key_v4_01.wav', 0.21),
     SoundFile('processed/typewriter_key_v4_02.wav', 0.29),
@@ -111,39 +88,38 @@ enum GameSound {
     SoundFile('processed/ui_tap_03.wav', 0.4),
   ]),
 
-  /// A final case solved (still the synthesised placeholder), where the
-  /// case has no sound of its own (see the signatures below).
-  finale([SoundFile('final.wav', 0.8)]),
+  /// A final case solved, where the case has no sound of its own (see the
+  /// signatures below).
+  finale([]),
 
-  // Signatures of the world (Wave 2, provisional: listening pending). Each
-  // is the one physical event of its moment: no casebook tap, no cue with
-  // it. Levelled on their loudest 100 ms, a little over the puzzle sounds.
+  // Signatures of the world. Each is the one physical event of its moment:
+  // no casebook tap, no cue with it.
 
   /// Case 01: the Royal Box opens, its brass latch then its lid (as the lid
   /// lifts on screen). Instead of the final cue.
-  royalBoxOpen([SoundFile('processed/royal_box_open_02.wav', 0.74)]),
+  royalBoxOpen([]),
 
   /// Case 02: the Great Clock catches and runs again (no bell in it).
-  clockRestart([SoundFile('processed/clock_restart_02.wav', 0.63)]),
+  clockRestart([]),
 
   /// Case 02: Big Ben rings again, one deep strike and its long decay.
-  bigBenBell([SoundFile('processed/big_ben_bell_01.wav', 0.42)]),
+  bigBenBell([]),
 
   /// A heavy iron lock and its bolt (the White Tower's dial door, the iron
   /// chest, the Clockmaker's door). Small locks keep [padlockOpen].
-  lockOpenHeavy([SoundFile('processed/lock_open_heavy_02.wav', 0.61)]),
+  lockOpenHeavy([]),
 
   /// The detective's leather notebook opened (once per opening).
-  notebookOpen([SoundFile('processed/notebook_open_01.wav')]),
+  notebookOpen([]),
 
   /// A tip written into the notebook, asked for by the player.
-  pencilNote([SoundFile('processed/pencil_note_01.wav', 0.25)]),
+  pencilNote([]),
 
   /// A paper handled to be read again (the letter re-read).
-  paperRustle([SoundFile('processed/paper_rustle_01.wav', 0.34)]),
+  paperRustle([]),
 
   /// A case photo pinned to the investigation board as it is solved.
-  pinPush([SoundFile('processed/pin_push_02.wav', 0.39)]);
+  pinPush([]);
 
   const GameSound(this.takes);
 
@@ -173,69 +149,10 @@ enum TapRole {
 /// all it takes to hear it.
 const musicLoops = <MusicTheme, SoundFile>{};
 
-const ambienceLoops = <AmbienceBase, SoundFile>{
-  /// The detective's office at night: light, sparse rain on the window.
-  /// Levelled to the loudness approved on a phone (rumble under ~150 Hz
-  /// taken out). The other candidate, `office_night_rain_v2_02.wav`, and the
-  /// first, denser rain `office_night_rain.wav` are kept in processed/ for
-  /// comparison: change the file name here to hear them.
-  AmbienceBase.officeRain: SoundFile('processed/office_night_rain_v2_01.wav'),
+const ambienceLoops = <AmbienceBase, SoundFile>{};
 
-  /// London at night, outside: a distant city hush, a faint cool wind, a
-  /// carriage far off now and then. Rumble under ~150 Hz taken out as for
-  /// the rain, levelled 3 dB under it. Provisional (listening pending): the
-  /// other candidate is `amb_london_night_02.wav` in processed/.
-  AmbienceBase.londonNight: SoundFile('processed/amb_london_night_01.wav'),
-
-  // Wave 2 places (provisional, listening pending). Each 30 s loop has had
-  // its rumble under ~150 Hz taken out as for the rain, and is levelled in
-  // the phone band 3 dB under the rain (6 dB for the quietest rooms). The
-  // other candidates are kept in generated/.
-
-  /// A great old railway hall, busy far away, calm nearby.
-  AmbienceBase.station: SoundFile('processed/amb_station_02.wav'),
-
-  /// A great quiet room (museum, palace, theatre). Made very quietly, so
-  /// raised a lot (+38 dB): listen for hiss.
-  AmbienceBase.grandInterior: SoundFile('processed/amb_grand_interior_01.wav'),
-
-  /// The Thames at a calm distance.
-  AmbienceBase.river: SoundFile('processed/amb_river_01.wav'),
-
-  /// Hyde Park: leaves, a light breeze, few birds.
-  AmbienceBase.park: SoundFile('processed/amb_park_01.wav'),
-
-  /// The Tower's stone courtyard (its ravens are a detail of their own).
-  AmbienceBase.towerGrounds: SoundFile('processed/amb_tower_grounds_01.wav'),
-
-  /// Inside the clock tower, its clock stopped: no ticking (the clockwork is
-  /// [AmbienceAccent.clockMechanism], heard only once it runs).
-  AmbienceBase.towerInterior: SoundFile('processed/amb_tower_interior_01.wav'),
-
-  /// The last train, a wooden carriage on the move.
-  AmbienceBase.trainCarriage: SoundFile('processed/amb_train_carriage_02.wav'),
-
-  // AmbienceBase.stoneRoom: none yet. Both takes were only a low rumble at
-  // the very bottom of the file (a drone); its replacement could not be made
-  // (quota). Silent until it is made again.
-};
-
-/// Details over a place's bed (Wave 2, provisional, listening pending):
-/// high-passed at 80 Hz only, and set under the bed.
-const accentLoops = <AmbienceAccent, SoundFile>{
-  /// Big Ben's great clockwork running: slow, deep, under the tower.
-  AmbienceAccent.clockMechanism: SoundFile('processed/acc_clock_mechanism_01.wav'),
-
-  /// Covent Garden's small stone fountain.
-  AmbienceAccent.fountain: SoundFile('processed/acc_fountain_01.wav'),
-
-  /// A raven now and then at the Tower, long quiet between (levelled on
-  /// its loudest call).
-  AmbienceAccent.ravenCalls: SoundFile('processed/acc_raven_calls_01.wav'),
-
-  /// The guard changing far across the palace courtyard.
-  AmbienceAccent.guardMarch: SoundFile('processed/acc_guard_march_02.wav'),
-};
+/// Details over a place's bed.
+const accentLoops = <AmbienceAccent, SoundFile>{};
 
 /// The loop of [layer]'s [state] (a [MusicTheme], [AmbienceBase] or
 /// [AmbienceAccent]), or null when there is none (yet).
@@ -320,7 +237,7 @@ abstract class GatedAudioService implements AudioService {
 
   @override
   Future<void> play(GameSound sound, {double volume = 1}) async {
-    if (!isEnabled() || !_foreground) return;
+    if (!isEnabled() || !_foreground || sound.takes.isEmpty) return;
     final take = sound.takes[_pickTake(sound)];
     await playFile(sound, take, (take.volume * volume).clamp(0.0, 1.0));
   }
@@ -699,9 +616,10 @@ class AssetAudioService extends GatedAudioService {
 class MockAudioService extends GatedAudioService {
   MockAudioService({super.isEnabled, super.random});
 
+  /// Every sound played at its moment, heard or not (one with no take yet).
   final List<GameSound> played = [];
 
-  /// The take and volume of each entry of [played].
+  /// The take and volume of each sound of [played] that was heard.
   final List<(SoundFile, double)> takes = [];
 
   /// Every sound cut off, in order.
@@ -733,6 +651,12 @@ class MockAudioService extends GatedAudioService {
     for (final c in changes)
       if (c.layer == layer) c.to,
   ];
+
+  @override
+  Future<void> play(GameSound sound, {double volume = 1}) async {
+    if (sound.takes.isEmpty && isEnabled() && _foreground) played.add(sound);
+    return super.play(sound, volume: volume);
+  }
 
   @override
   Future<void> playFile(GameSound sound, SoundFile take, double volume) async {

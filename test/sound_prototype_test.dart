@@ -50,7 +50,7 @@ void main() {
 
     test('a take plays at its own level, times the volume asked for', () {
       final audio = MockAudioService();
-      audio.play(GameSound.puzzleWrong, volume: 0.5);
+      audio.play(GameSound.uiTap, volume: 0.5);
       final (take, volume) = audio.takes.single;
       expect(volume, closeTo(take.volume * 0.5, 1e-9));
     });
@@ -107,46 +107,10 @@ void main() {
   });
 
   group('the takes after listening', () {
-    List<String> files(GameSound s) => [for (final t in s.takes) t.file];
-
-    test('the envelope and the discovery cue are the second recordings', () {
-      expect(files(GameSound.envelopeOpen), everyElement(contains('envelope_open_v2_')));
-      expect(files(GameSound.envelopeOpen), hasLength(3));
-      expect(files(GameSound.puzzleCorrect), everyElement(contains('puzzle_correct_v2_')));
-      expect(files(GameSound.puzzleCorrect), hasLength(3));
-    });
-
-    test('paper: only take 02 for now; the other takes are kept on disk', () {
-      expect(files(GameSound.paperPlace), ['generated/paper_place_02.wav']);
-      final audio = MockAudioService();
-      for (var i = 0; i < 5; i++) {
-        audio.play(GameSound.paperPlace);
-      }
-      expect({for (final (take, _) in audio.takes) take.file}, {'generated/paper_place_02.wav'});
-      for (final n in ['01', '03']) {
-        expect(File('assets/sounds/generated/paper_place_$n.wav').existsSync(), isTrue);
-      }
-    });
-
-    test('the dial clicks are trimmed copies: short, valid, four takes', () {
-      expect(files(GameSound.lockDialClick), hasLength(4));
-      for (final f in files(GameSound.lockDialClick)) {
-        expect(f, startsWith('processed/'));
-        final wav = _Wav(File('assets/sounds/$f'));
-        expect(wav.seconds, inInclusiveRange(0.08, 0.2), reason: f);
-        expect(wav.peak, greaterThan(0.3), reason: '$f: the click itself is kept');
-        expect(File('assets/sounds/${f.replaceFirst('processed/', 'generated/')}').existsSync(), isTrue,
-            reason: 'the original is kept');
-      }
-    });
-
-    test('processed copies never clip; the rain is heard; typing keys are short', () {
+    test('processed copies never clip; typing keys are short', () {
       for (final f in Directory('assets/sounds/processed').listSync().whereType<File>()) {
         expect(_Wav(f).peak, lessThan(0.99), reason: f.path);
       }
-      final rain = _Wav(File('assets/sounds/${ambienceLoops[AmbienceBase.officeRain]!.file}'));
-      expect(rain.seconds, closeTo(30, 0.01), reason: 'the loop keeps its length');
-      expect(rain.peak, greaterThan(0.25), reason: 'raised from -26 dBFS');
       for (final t in GameSound.typewriterKey.takes) {
         // One whole keystroke (mechanism, strike, body, decay): never a
         // second keystroke.
@@ -154,19 +118,9 @@ void main() {
       }
     });
 
-    test('the heavier typewriter keys and the sparse rain are the ones played', () {
+    test('the heavier typewriter keys are the ones played', () {
       expect([for (final t in GameSound.typewriterKey.takes) t.file], everyElement(contains('typewriter_key_v4_')));
       expect(GameSound.typewriterKey.takes, hasLength(4));
-      expect(ambienceLoops[AmbienceBase.officeRain]!.file, 'processed/office_night_rain_v2_01.wav');
-      for (final kept in [
-        'processed/office_night_rain_v2_02.wav',
-        'processed/office_night_rain.wav',
-        for (var i = 1; i <= 4; i++) 'processed/typewriter_key_0$i.wav',
-        for (var i = 1; i <= 4; i++) 'processed/typewriter_key_v2_0$i.wav',
-        for (var i = 1; i <= 4; i++) 'processed/typewriter_key_v3_0$i.wav',
-      ]) {
-        expect(File('assets/sounds/$kept').existsSync(), isTrue, reason: kept);
-      }
     });
 
     test('the typewriter sits under the puzzle sounds', () {

@@ -25,26 +25,6 @@ void main() {
   Episode episode(String id) => season.firstWhere((e) => e.id == id);
 
   group('the files', () {
-    test('London at night: a 30 s loop, its other candidate and both originals kept', () {
-      final night = ambienceLoops[AmbienceBase.londonNight]!;
-      expect(night.file, 'processed/amb_london_night_01.wav');
-      final wav = _Wav(File('assets/sounds/${night.file}'));
-      expect(wav.seconds, closeTo(30, 0.01), reason: 'the loop keeps its length');
-      expect(wav.peak, inExclusiveRange(0.02, 0.99));
-      for (final kept in [
-        'processed/amb_london_night_02.wav',
-        'generated/amb_london_night_01.wav',
-        'generated/amb_london_night_02.wav',
-      ]) {
-        expect(File('assets/sounds/$kept').existsSync(), isTrue, reason: kept);
-      }
-    });
-
-    test('the office keeps its rain; the street is another file', () {
-      expect(ambienceLoops[AmbienceBase.officeRain]!.file, 'processed/office_night_rain_v2_01.wav');
-      expect(ambienceLoops[AmbienceBase.londonNight]!.file, isNot(ambienceLoops[AmbienceBase.officeRain]!.file));
-    });
-
     test('no music yet, and never a placeholder in the final or the closed case', () {
       expect(musicLoops, isEmpty, reason: 'MUSIC GENERATION BLOCKED: silence, not sound effects as music');
       expect(musicLoops[MusicTheme.finalMission], isNull);
@@ -62,8 +42,6 @@ void main() {
         expect(wav.seconds, inInclusiveRange(0.06, 0.161), reason: '${t.file}: the tap and its body');
         expect(wav.peak, inExclusiveRange(0.3, 0.99), reason: t.file);
         expect(t.volume, lessThan(0.5), reason: '${t.file}: quieter than a puzzle sound');
-        expect(File('assets/sounds/${t.file.replaceFirst('processed/', 'generated/')}').existsSync(), isTrue,
-            reason: 'the original is kept');
       }
     });
 
@@ -89,7 +67,6 @@ void main() {
         ..setScene(sceneAt(Routes.season, e: e, begun: false))
         ..setScene(sceneAt(Routes.prologue, e: e));
       expect(audio.ambienceStarts, [AmbienceBase.londonNight]);
-      expect(loopOf(AudioLayer.ambience, audio.ambience), isNotNull, reason: 'now heard');
     });
 
     // The market hall (M1) is inside since mapping 2.0: the street carries

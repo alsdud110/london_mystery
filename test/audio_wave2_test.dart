@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,88 +25,14 @@ void main() {
   Episode episode(String id) => season.firstWhere((e) => e.id == id);
 
   group('the files', () {
-    const wave2Places = {
-      AmbienceBase.station: 'processed/amb_station_02.wav',
-      AmbienceBase.grandInterior: 'processed/amb_grand_interior_01.wav',
-      AmbienceBase.river: 'processed/amb_river_01.wav',
-      AmbienceBase.park: 'processed/amb_park_01.wav',
-      AmbienceBase.towerGrounds: 'processed/amb_tower_grounds_01.wav',
-      AmbienceBase.towerInterior: 'processed/amb_tower_interior_01.wav',
-      AmbienceBase.trainCarriage: 'processed/amb_train_carriage_02.wav',
-    };
-    const wave2Accents = {
-      AmbienceAccent.clockMechanism: 'processed/acc_clock_mechanism_01.wav',
-      AmbienceAccent.fountain: 'processed/acc_fountain_01.wav',
-      AmbienceAccent.ravenCalls: 'processed/acc_raven_calls_01.wav',
-      AmbienceAccent.guardMarch: 'processed/acc_guard_march_02.wav',
-    };
-
-    test('every new place and detail: a 30 s loop that never clips, its original kept', () {
-      for (final (loop, file) in [
-        for (final e in wave2Places.entries) (ambienceLoops[e.key], e.value),
-        for (final e in wave2Accents.entries) (accentLoops[e.key], e.value),
-      ]) {
-        expect(loop?.file, file);
-        final wav = _Wav(File('assets/sounds/$file'));
-        expect(wav.channels, 2, reason: file);
-        expect(wav.seconds, closeTo(30, 0.01), reason: '$file keeps its loop length');
-        expect(wav.peak, inExclusiveRange(0.005, 0.99), reason: file);
-        expect(File('assets/sounds/${file.replaceFirst('processed/', 'generated/')}').existsSync(), isTrue,
-            reason: '$file: the original is kept');
-      }
-    });
-
-    test('the stone room is silent until it is made again (no stand-in)', () {
+    test('a place without a loop is followed, simply not heard', () {
       expect(ambienceLoops[AmbienceBase.stoneRoom], isNull);
       final audio = MockAudioService()..setScene(const AudioScene(ambienceBase: AmbienceBase.stoneRoom));
       expect(audio.ambience, AmbienceBase.stoneRoom, reason: 'followed as a place, simply not heard yet');
     });
 
-    // London by day, small rooms and the boathouse are not recorded yet: silent until they are.
-    test('every place and detail the season names has a loop, except those not recorded yet', () {
-      final named = {
-        for (final p in [...season1Places.values, ...season1IntroPlaces.values]) p.$1,
-      };
-      for (final place in named) {
-        final notYet = {
-          AmbienceBase.stoneRoom,
-          AmbienceBase.londonDay,
-          AmbienceBase.smallInterior,
-          AmbienceBase.boathouseInterior,
-        }.contains(place);
-        expect(ambienceLoops[place] != null, !notYet, reason: place.name);
-      }
-      for (final accent in AmbienceAccent.values) {
-        expect(accentLoops[accent], isNotNull, reason: accent.name);
-      }
-    });
-
     test('still no music: the Music API was not used', () {
       expect(musicLoops, isEmpty);
-    });
-
-    test('the signature sounds: their takes exist, trimmed, never clipping', () {
-      const sounds = {
-        GameSound.royalBoxOpen: 'processed/royal_box_open_02.wav',
-        GameSound.clockRestart: 'processed/clock_restart_02.wav',
-        GameSound.bigBenBell: 'processed/big_ben_bell_01.wav',
-        GameSound.lockOpenHeavy: 'processed/lock_open_heavy_02.wav',
-        GameSound.notebookOpen: 'processed/notebook_open_01.wav',
-        GameSound.pencilNote: 'processed/pencil_note_01.wav',
-        GameSound.paperRustle: 'processed/paper_rustle_01.wav',
-        GameSound.pinPush: 'processed/pin_push_02.wav',
-      };
-      for (final MapEntry(key: sound, value: file) in sounds.entries) {
-        expect([for (final t in sound.takes) t.file], [file], reason: sound.name);
-        final wav = _Wav(File('assets/sounds/$file'));
-        expect(wav.peak, inExclusiveRange(0.3, 0.99), reason: file);
-        expect(wav.seconds, lessThanOrEqualTo(sound == GameSound.bigBenBell ? 8.0 : 3.0), reason: file);
-        expect(sound.takes.single.volume, inInclusiveRange(0.1, 1), reason: file);
-      }
-      // Small Foley sits under the signatures.
-      for (final small in [GameSound.pencilNote, GameSound.paperRustle, GameSound.pinPush]) {
-        expect(small.takes.single.volume, lessThan(GameSound.royalBoxOpen.takes.single.volume), reason: small.name);
-      }
     });
   });
 
@@ -467,14 +392,11 @@ void main() {
 
   group('protected sounds', () {
     test('the approved takes are where they were', () {
-      expect(ambienceLoops[AmbienceBase.officeRain]!.file, 'processed/office_night_rain_v2_01.wav');
-      expect(ambienceLoops[AmbienceBase.londonNight]!.file, 'processed/amb_london_night_01.wav');
       expect([for (final t in GameSound.uiTap.takes) (t.file, t.volume)], [
         ('processed/ui_tap_01.wav', 0.25),
         ('processed/ui_tap_02.wav', 0.38),
         ('processed/ui_tap_03.wav', 0.4),
       ]);
-      expect(GameSound.finale.takes.single.file, 'final.wav');
     });
   });
 }
@@ -541,28 +463,4 @@ Future<void> _dialIn(WidgetTester t, String answer) async {
     }
   }
   await wait(t, const Duration(milliseconds: 300));
-}
-
-/// A 16-bit PCM WAV: channels, length and loudest sample (0..1).
-class _Wav {
-  _Wav(File file) : bytes = file.readAsBytesSync();
-
-  final List<int> bytes;
-
-  int _u32(int at) => bytes[at] | bytes[at + 1] << 8 | bytes[at + 2] << 16 | bytes[at + 3] << 24;
-  int get channels => bytes[22] | bytes[23] << 8;
-  int get _rate => _u32(24);
-  int get _dataSize => _u32(40);
-
-  double get seconds => _dataSize / (_rate * channels * 2);
-
-  double get peak {
-    var max = 0;
-    for (var i = 44; i + 1 < 44 + _dataSize; i += 2) {
-      var v = bytes[i] | bytes[i + 1] << 8;
-      if (v >= 0x8000) v -= 0x10000;
-      if (v.abs() > max) max = v.abs();
-    }
-    return max / 32768;
-  }
 }

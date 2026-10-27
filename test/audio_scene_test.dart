@@ -366,13 +366,13 @@ void main() {
 
     testWidgets('the service over real channels: rapid scenes leave one player per layer heard', (t) async {
       final audio = _ChannelAudio();
-      final places = AmbienceBase.values.where((p) => ambienceLoops[p] != null).toList();
+      const places = AmbienceBase.values;
       for (var i = 0; i < 6; i++) {
         audio.setScene(AudioScene(ambienceBase: places[i % places.length], ambienceLevel: i.isEven ? 0 : -6));
         await t.pump(const Duration(milliseconds: 200));
       }
       await t.pump(const Duration(seconds: 3));
-      expect(audio.channels[AudioLayer.ambience]!.players, places.isEmpty ? 0 : 1);
+      expect(audio.channels[AudioLayer.ambience]!.players, ambienceLoops[audio.ambience] == null ? 0 : 1);
       audio.setForeground(false);
       await t.pump();
       for (final ch in audio.channels.values) {
@@ -635,29 +635,6 @@ void main() {
     List<(String, double)> takes(GameSound s) => [for (final t in s.takes) (t.file, t.volume)];
 
     test('files and levels', () {
-      expect(takes(GameSound.envelopeOpen), [
-        ('processed/envelope_open_v2_01.wav', 0.97),
-        ('processed/envelope_open_v2_02.wav', 1.0),
-        ('processed/envelope_open_v2_03.wav', 0.81),
-      ]);
-      expect(takes(GameSound.puzzleCorrect), [
-        ('generated/puzzle_correct_v2_01.wav', 0.36),
-        ('generated/puzzle_correct_v2_02.wav', 0.81),
-        ('generated/puzzle_correct_v2_03.wav', 0.62),
-      ]);
-      expect(takes(GameSound.puzzleWrong), [('generated/puzzle_wrong_01.wav', 0.79)]);
-      expect(takes(GameSound.lockDialClick), [
-        ('processed/lock_dial_click_01.wav', 0.67),
-        ('processed/lock_dial_click_02.wav', 0.79),
-        ('processed/lock_dial_click_03.wav', 0.77),
-        ('processed/lock_dial_click_04.wav', 0.72),
-      ]);
-      expect(takes(GameSound.padlockOpen), [
-        ('generated/padlock_open_01.wav', 0.65),
-        ('generated/padlock_open_02.wav', 1.0),
-      ]);
-      expect(takes(GameSound.paperPlace), [('generated/paper_place_02.wav', 0.8)]);
-      expect(takes(GameSound.caseStamp), [('processed/case_stamp_01.wav', 1.0), ('processed/case_stamp_02.wav', 1.0)]);
       expect(takes(GameSound.typewriterKey), [
         ('processed/typewriter_key_v4_01.wav', 0.21),
         ('processed/typewriter_key_v4_02.wav', 0.29),
