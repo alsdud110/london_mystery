@@ -59,6 +59,20 @@
 
 ---
 
+## Difficulty System (난이도 시스템, 2026-10-27 도입 결정)
+
+- **인수인계 문서: `docs/DIFFICULTY_IMPLEMENTATION.md`** — 조사 결과(실제 파일 경로), 확정 정책, 기술 설계, PART별 상태·작업 이력, 다음 세션 인수인계, Case별 콘텐츠 적용 진행표. 난이도 관련 세부 사항은 그 문서가 기준이다(이 섹션은 요약).
+- **현재 진행 PART: PART 0(조사·설계 문서) COMPLETED → 다음은 PART 1(난이도 모델 및 저장 구조), 미착수.** 코드에는 아직 난이도 개념이 없다.
+- 계획: PART 0 조사·설계 / 1 모델·저장 / 2 프로필 생성 UI / 3 시즌 난이도 변경·초기화 / 4 개발자 모드 개선 / 5 난이도별 영어 콘텐츠 시스템 / 6 London 콘텐츠 / 7 Paris 콘텐츠·최종 검증(6·7은 Case 단위로 세분 가능, 세부 작업마다 테스트·문서·커밋)
+- 확정 정책 요약:
+  - 난이도 **Rookie(기본) / Junior / Master** — 바뀌는 것은 영어(스토리·대사·편지·단서 설명·퍼즐 문장·선택지 표현·힌트 문구와 제공 방식·안내 문구·어휘)뿐. **사실관계·결말·퍼즐 구조·단계 수·선택지 수와 순서·정답·증거 ID·보상·시즌 순서는 모든 난이도에서 동일.** Master도 조작 안내는 명확하게
+  - 프로필 생성(CREATE YOUR DETECTIVE)에서 아바타·이름과 함께 난이도 선택 — 같은 화면의 심플한 카드형 UI(별도 BottomSheet 아님), 각 카드에 짧은 영어 설명
+  - 난이도는 시즌 단위로 고정: 시즌 시작 전 자유 변경 / 진행 중 변경 = 확인 후 **그 시즌만 초기화**(취소 시 그대로, 다른 완료 시즌 보존) / 완료 후 다음 시즌 난이도를 한 번만 물음(완료 시즌은 초기화하지 않음)
+  - 개발자 모드는 일반 데이터와 분리: TESTER·BOY·난이도 자유 선택, **진입할 때마다 테스트 진행 초기화**, 같은 세션 안에서는 유지, 일반 프로필·XP·증거·힌트·퍼즐 상태에 영향 없음. Game Master의 다음 플레이어 초기화는 변경하지 않음
+- 다음 세션 시작 방법: 이 파일 → `docs/DIFFICULTY_IMPLEMENTATION.md`(특히 *G. 다음 세션 인수인계*, *I. 미결정 사항*) → `git status`·`git log -3` 확인 → 해당 PART 범위만 작업 → 관련 테스트 + 전체 회귀 → 두 문서 갱신 → 그 PART 파일만 커밋(푸시 없음)
+
+---
+
 ## Play Flow (현재)
 
 ### 시즌 진입
@@ -329,7 +343,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 1. **실제 아이 플레이테스트** (`docs/playtest/SEASON1_PLAYTEST_CHECKLIST.md`) — 관찰: Case 02 시계 읽기, Case 09 whose/who, Case 08/11 Archive 4탭, Discovery 라벨 이해, 미션당 탭/대기 피로, 사건당 플레이 시간(예상 Case 01 20~25분, 다른 사건 10~15분, 시즌 약 3시간)
 2. (선택) 공통 배지 알림 반복 완화(P2) — 플레이테스트 결과를 보고 결정. (Audit MINIMAL NEXT PASS의 ① Board 경유는 완료)
 3. 출시 polish: 아이콘·스플래시, 효과음, 실기기 QA
-- `Proposed`(미승인): Season 2(Paris), 탐정 등급/칭호, TTS/난이도
+- `Proposed`(미승인): 탐정 등급/칭호, TTS. (Season 2(Paris)는 구현됨. **난이도는 2026-10-27 승인 — *Difficulty System* 섹션, `docs/DIFFICULTY_IMPLEMENTATION.md`**)
 
 ---
 
@@ -347,10 +361,12 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ## Session Continuity Protocol
 시작: 이 파일 읽기 → 구조·git status 확인 → 문서와 코드 비교 → 현재 단계·미완료·Known Issues 확인 → 작업 시작.
 큰 작업 후: 이 파일 갱신(완료 기능, 미완료, 새 이슈, Next Goal, Change Log 한 줄).
+난이도 시스템 작업(PART 1~7)은 추가로 `docs/DIFFICULTY_IMPLEMENTATION.md`를 읽고, 끝나면 그 문서의 E(상태)·F(이력)·G(인수인계)·H(진행표)를 갱신한다.
 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-27 — **난이도 시스템 PART 0(조사·설계 문서)**: 코드 변경 없음. `docs/DIFFICULTY_IMPLEMENTATION.md` 신규(프로필·저장·마이그레이션·시즌 해금·개발자 도구·콘텐츠·힌트·글로서리 구조 조사, Difficulty enum·프로필/시즌별 저장·콘텐츠 패치와 fallback·힌트 정책·개발자 세션 격리·마이그레이션 설계, PART 계획, Case별 진행표). 이 파일에 *Difficulty System* 섹션 추가. 다음: PART 1
 - 2026-10-19 — **Case 01 Case Closed 파일: 기울어진 사건 사진 → 왕관 하나**(사용자 요청). 탐정 이름 옆 작은 열린 상자 사진(흰 폴라로이드·회전·그림자, 그 위로 SOLVED 도장이 찍혀 갈색 선처럼 보임)을 Case 01에서만 빼고, 사건 제목 아래 가운데에 `assets/art/objects/crown_cutout.png`(원본 `crown.png`는 불투명 양피지 바탕이라 보존, `tool/crown_cutout/cutout_test.dart`로 오려냄: 밝고 노란기 적은 양피지를 테두리에서·아치 사이 큰 구멍(2500px+)까지 제거, 띠의 하이라이트 유지, 모서리 반짝이 표식 제거, 512² 정사각) 프레임·그림자 없이 카드 폭 42%(96–150dp). SOLVED 도장은 사진 자리(빈 칸)에 그대로 찍힘, 이름 칸 침범 없음. `ArtAssets.caseClosedEmblems`(ep01만), 다른 사건은 기존 사진. 테스트 `case01_case_closed_test`
 - 2026-10-19 — **Case 01 Final Royal Box 새 그림**(사용자 제공 `royal_box_closed.png`·`royal_box_open.png`, 1659×948 RGBA 투명 배경, 같은 캔버스·같은 위치). 닫힌 그림에 그려진 다이얼 0000은 실제 휠과 맞지 않으므로(사용자 결정) `tool/royal_box_blank/blank_test.dart`로 원본은 보존하고 드럼 4개의 숫자 영역(521–552·709–740·909–940·1104–1135 × 644–688)만 같은 줄의 드럼 색으로 보간해 지운 `royal_box_closed_blank.png`를 사용. 상자 드럼 창에 아래 휠의 현재 값을 그 자리에 굴러 들어오게 표시(`_DrumDigit`, 스크린리더 제외 — 휠이 읽힘), 조작은 기존 휠 그대로. `RoyalBoxArt`에 `dials/shut/opened` 추가, 열릴 때 보는 영역이 상자 전체 → 뚜껑부터 받침까지로 약간 다가가 왕관이 크게(360dp에서 무대 폭 가득). 열린 그림(7924)은 OPEN THE BOX 정답 판정 후에만, 닫힌 그림이 먼저 빠지는 크로스페이드. 사진 모드의 코드 빛줄기 제거(과한 효과), 그림 없을 때만 코드로 그린 상자. 무대 높이는 그림 비율 기준(150–320). 두 그림 미리 캐시. `sceneAspects[royalBox]` 885/868 → 1659/948(사건 사진도 새 열린 그림). 기존 `royal_box.png`(극장)는 미사용 그대로
 - 2026-10-19 — **Case 01 Discovery 증거 카드 그림**(사용자 요청·결정): 실제 증거 e01 Old Letter(편지)·e02 Golden Key(열쇠)·e03 Pocket Watch·e04 London Map(지도)·e05 Crown Symbol 중 Discovery에 증거 카드가 나오는 것은 M3(e03)·M5(e05)뿐. e05만 `assets/art/objects/crown.png`로(`ArtAssets.evidencePictures` — Discovery·노트북 타일·확대 공통), 원 안에서 1.5배(`evidencePictureZoom`, 양피지 여백만 잘림, 왕관 전체 보임). e03은 Royal Box 회중시계 삽화가 10:10이라 "7시" 증거와 맞지 않아 기존 잉크 표시 유지(사용자 결정). e01·e02는 기존 실물 그림, e04는 지도라 그대로. 해독 장면에서 증거 그림 미리 캐시. 다른 사건·`GameSymbol` 불변
