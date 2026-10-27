@@ -317,6 +317,9 @@ class PicturePuzzleProgress {
   /// The note picked to be joined next (tap-tap).
   String? pickedNote;
 
+  /// The matching page has shown how a note is dragged onto a painting.
+  bool matchDemoShown = false;
+
   bool has(String id) => found.contains(id);
 
   bool allFound(Iterable<String> ids) => ids.every(found.contains);

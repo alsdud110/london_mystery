@@ -774,7 +774,14 @@ void main() {
         await t.tap(find.byKey(const ValueKey('studio-match')));
         await wait(t, const Duration(milliseconds: 600));
         expect(find.byKey(const ValueKey('studio-match-page')), findsOneWidget);
+        // As it opens, a hand drags note A up onto the first painting.
+        await wait(t, const Duration(milliseconds: 1400));
+        expect(find.byKey(const ValueKey('match-demo')), findsOneWidget, reason: 'how to match, shown');
         await shot('m2_match');
+        // It goes by itself, joining nothing.
+        await wait(t, const Duration(seconds: 5));
+        expect(find.byKey(const ValueKey('match-demo')), findsNothing, reason: 'the demo is over');
+        expect(find.text('NOTE ?'), findsNWidgets(3), reason: 'every painting still empty');
         Future<void> join(String note, String painting) async {
           await reveal(t, find.byKey(ValueKey('note-$note')));
           await t.tap(find.byKey(ValueKey('note-$note')));

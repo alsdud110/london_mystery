@@ -457,9 +457,53 @@ class _MatchPage extends StatefulWidget {
 class _MatchPageState extends State<_MatchPage> {
   bool _checking = false;
 
+  /// The first note and the first painting: where the opening demo drags
+  /// from and to.
+  final _demoPage = GlobalKey();
+  final _demoNote = GlobalKey();
+  final _demoSlot = GlobalKey();
+  Timer? _demoWait;
+  (Offset, Offset)? _demo;
+
   PicturePuzzleProgress get _p => widget.progress;
 
   List<(String, String)> get _notes => notesOf(widget.mission);
+
+  @override
+  void initState() {
+    super.initState();
+    // The page opened for the first time, nothing joined yet: a hand shows
+    // a note dragged onto a painting, once the page has come in.
+    if (!_p.matchDemoShown && _p.pairs.isEmpty && _p.pickedNote == null) {
+      _demoWait = Timer(const Duration(milliseconds: 600), _startDemo);
+    }
+  }
+
+  @override
+  void dispose() {
+    _demoWait?.cancel();
+    super.dispose();
+  }
+
+  void _startDemo() {
+    if (!mounted || (MediaQuery.maybeDisableAnimationsOf(context) ?? false)) return;
+    final page = _demoPage.currentContext?.findRenderObject();
+    final note = _demoNote.currentContext?.findRenderObject();
+    final slot = _demoSlot.currentContext?.findRenderObject();
+    if (page is! RenderBox || note is! RenderBox || slot is! RenderBox) return;
+    // From the note's letter badge to the painting's note box.
+    final from = page.globalToLocal(note.localToGlobal(const Offset(AppSpace.md + 13, AppSpace.sm + 13)));
+    final to = page.globalToLocal(slot.localToGlobal(Offset(slot.size.width / 2, slot.size.height - AppSpace.xs - 18)));
+    // The note out of sight (a short screen): no demo to point at it.
+    if (from.dy > page.size.height - 60) return;
+    _p.matchDemoShown = true;
+    setState(() => _demo = (from, to));
+  }
+
+  void _endDemo() {
+    _demoWait?.cancel();
+    if (_demo != null) setState(() => _demo = null);
+  }
 
   void _pickNote(String id) {
     HapticFeedback.selectionClick();
@@ -514,7 +558,6 @@ class _MatchPageState extends State<_MatchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final m = widget.mission;
     final scene = widget.scene;
     final notes = _notes;
     final allPaired = notes.every((n) => _p.pairs.containsKey(n.$1));
@@ -526,6 +569,27 @@ class _MatchPageState extends State<_MatchPage> {
         : allPaired
         ? ('✓', scene.matchDone)
         : ('1', scene.matchHow);
+    final demo = _demo;
+    // Any touch ends the demo: the detective has taken over.
+    return Listener(
+      onPointerDown: (_) => _endDemo(),
+      child: Stack(
+        key: _demoPage,
+        children: [
+          _page(context, step, stepLine, allPaired, picked),
+          if (demo != null)
+            Positioned.fill(
+              child: _DragDemo(key: const ValueKey('match-demo'), from: demo.$1, to: demo.$2, note: notes.first.$1, onDone: _endDemo),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _page(BuildContext context, String step, String stepLine, bool allPaired, String? picked) {
+    final m = widget.mission;
+    final scene = widget.scene;
+    final notes = _notes;
     return ColoredBox(
       color: AppColors.paperLight,
       child: InkSurface(
@@ -577,6 +641,7 @@ class _MatchPageState extends State<_MatchPage> {
                               for (final (i, id) in scene.order.indexed) ...[
                                 if (i > 0) const SizedBox(width: gap),
                                 SizedBox(
+                                  key: i == 0 ? _demoSlot : null,
                                   width: tile,
                                   child: _PaintingSlot(
                                     key: ValueKey('slot-$id'),
@@ -606,8 +671,9 @@ class _MatchPageState extends State<_MatchPage> {
                     children: [
                       Text('THE NOTES', textAlign: TextAlign.center, style: AppText.eyebrow()),
                       const SizedBox(height: AppSpace.xs),
-                      for (final (id, text) in notes)
+                      for (final (i, (id, text)) in notes.indexed)
                         Padding(
+                          key: i == 0 ? _demoNote : null,
                           padding: const EdgeInsets.only(bottom: AppSpace.sm),
                           child: _NoteChip(
                             key: ValueKey('note-$id'),
@@ -652,6 +718,141 @@ class _MatchPageState extends State<_MatchPage> {
       ),
     );
   }
+}
+
+/// How the matching page is played, shown once as it opens: a hand presses
+/// on a note's letter, drags it up onto a painting and lets go, twice; then
+/// it is gone (at once on any touch, through [onDone]). It never takes a
+/// touch and joins nothing.
+class _DragDemo extends StatefulWidget {
+  const _DragDemo({super.key, required this.from, required this.to, required this.note, required this.onDone});
+
+  /// Where the fingertip presses and lets go, on the page.
+  final Offset from;
+  final Offset to;
+
+  /// The letter carried.
+  final String note;
+  final VoidCallback onDone;
+
+  static const loop = Duration(milliseconds: 2400);
+  static const loops = 2;
+
+  @override
+  State<_DragDemo> createState() => _DragDemoState();
+}
+
+class _DragDemoState extends State<_DragDemo> with SingleTickerProviderStateMixin {
+  late final AnimationController _motion = AnimationController(vsync: this, duration: _DragDemo.loop * _DragDemo.loops)
+    ..forward().whenComplete(() {
+      if (mounted) widget.onDone();
+    });
+
+  @override
+  void dispose() {
+    _motion.dispose();
+    super.dispose();
+  }
+
+  /// [t]'s part between [a] and [b], 0 to 1.
+  static double _part(double t, double a, double b) => ((t - a) / (b - a)).clamp(0.0, 1.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: AnimatedBuilder(
+        animation: _motion,
+        builder: (context, _) {
+          // One loop: come in on the note, press, carry it up, let go, fade.
+          final t = (_motion.value * _DragDemo.loops) % 1.0;
+          final come = _part(t, 0, 0.12);
+          final press = _part(t, 0.12, 0.22);
+          final carry = Curves.easeInOutCubic.transform(_part(t, 0.22, 0.72));
+          final letGo = _part(t, 0.72, 0.80);
+          final fade = _part(t, 0.80, 1.0);
+          final at = Offset.lerp(widget.from, widget.to, carry)!;
+          final hand = come * (1 - fade);
+          final carried = press * (1 - letGo);
+          final scale = 1 - 0.12 * (press - letGo);
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // The note's letter, lifted and carried under the fingertip.
+              Positioned(
+                left: at.dx - 15,
+                top: at.dy - 15,
+                child: Opacity(
+                  opacity: carried,
+                  child: Transform.scale(scale: 1 + 0.15 * carried, child: _NoteBadge(id: widget.note, size: 30)),
+                ),
+              ),
+              Positioned(
+                left: at.dx - _InkHand.tip.dx,
+                top: at.dy - _InkHand.tip.dy,
+                child: Opacity(
+                  opacity: hand,
+                  child: Transform.scale(
+                    scale: scale,
+                    alignment: Alignment(_InkHand.tip.dx / _InkHand.size.width * 2 - 1, _InkHand.tip.dy / _InkHand.size.height * 2 - 1),
+                    child: CustomPaint(size: _InkHand.size, painter: const _InkHand()),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// A pointing hand in the game's ink: the forefinger up, the paper-white
+/// glove outlined in navy, its tip at [tip].
+class _InkHand extends CustomPainter {
+  const _InkHand();
+
+  /// Drawn on a 24 × 28 grid, shown at [size].
+  static const size = Size(34, 40);
+  static const _k = 34 / 24;
+
+  /// Where the fingertip is, in [size].
+  static const tip = Offset(9 * _k, 2 * _k);
+
+  @override
+  void paint(Canvas canvas, Size _) {
+    canvas.scale(_k);
+    final glove = Path()
+      ..moveTo(7, 14.5)
+      ..lineTo(7, 3.5)
+      ..arcToPoint(const Offset(11, 3.5), radius: const Radius.circular(2))
+      ..lineTo(11, 11.5)
+      ..arcToPoint(const Offset(14.5, 11.8), radius: const Radius.circular(1.8))
+      ..arcToPoint(const Offset(18, 12.6), radius: const Radius.circular(1.8))
+      ..quadraticBezierTo(21, 12.8, 21, 15.5)
+      ..lineTo(21, 20)
+      ..quadraticBezierTo(21, 26, 15.5, 26.5)
+      ..lineTo(11.5, 26.5)
+      ..quadraticBezierTo(8.5, 26.5, 6.5, 23.5)
+      ..lineTo(3.2, 18.3)
+      ..quadraticBezierTo(2.5, 16, 4.6, 15.6)
+      ..quadraticBezierTo(6, 15.5, 7, 17)
+      ..close();
+    canvas.drawShadow(glove, AppColors.navyDeep, 2, false);
+    canvas.drawPath(glove, Paint()..color = AppColors.paperLight);
+    final ink = Paint()
+      ..color = AppColors.navy
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.3
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(glove, ink);
+    // The knuckles between the curled fingers.
+    canvas.drawLine(const Offset(14.5, 12.5), const Offset(14.5, 15.5), ink..strokeWidth = 1);
+    canvas.drawLine(const Offset(18, 13.2), const Offset(18, 15.8), ink);
+  }
+
+  @override
+  bool shouldRepaint(_InkHand old) => false;
 }
 
 /// What to do now on the matching page: the step's number (1: a note, 2:
