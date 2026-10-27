@@ -1,8 +1,11 @@
 import 'dart:ui' show Offset, Rect, Size;
 
+import '../../models/abbesses_puzzles.dart';
 import '../../models/easy_steps.dart';
+import '../../models/garden_puzzles.dart';
 import '../../models/investigation.dart' show InvestigationSpot;
 import '../../models/letter_puzzles.dart';
+import '../../models/opera_puzzles.dart';
 import '../../models/painter_puzzles.dart';
 import '../../models/river_puzzles.dart';
 import '../../models/scene_exhibit.dart';
@@ -12,7 +15,7 @@ import '../../models/tower_puzzles.dart';
 import '../../models/workshop_puzzles.dart';
 
 /// What a Season 2 scene is beyond its words (`DifficultyContent.structureOf`
-/// for the scenes of Cases 01–06, and the very easy steps): its pictures and where things are on them,
+/// for the scenes of Cases 01–09, and the very easy steps): its pictures and where things are on them,
 /// its ids and their order, the times, answers and documents its puzzle is
 /// read from. A level may give a scene its own words, never another one of
 /// these. Null: not a kind known here.
@@ -313,6 +316,170 @@ String? season2StructureOf(Object? entry) => switch (entry) {
           for (final s in l.spots) '${s.id}:${s.name}:${_at(s.at)}',
           l.closer,
         ].join('|'),
+      // ── Cases 07–09 (PART 7C) ──────────────────────────────────────────
+      // Lines a level may say its own way are counted (and, for lines said
+      // to an answer, keyed), never read: every other word is the scene's.
+      final FlyRailScene f => [
+          'flyRail',
+          f.rail.door.name,
+          f.rail.above.name,
+          for (final b in f.rail.ropes) '${b.id}:${b.door.name}:${b.above.name}:${b.tower}',
+          f.stage,
+          _px(f.stagePixels),
+          _rect(f.stageView),
+          _rect(f.opening),
+          f.railFile,
+          _px(f.railPixels),
+          _rect(f.railView),
+          f.ropeX.join(','),
+          f.plates.map(_rect).join(';'),
+          f.lockTop,
+          f.rope,
+          _px(f.ropePixels),
+          '${f.ropeStrand.$1},${f.ropeStrand.$2}',
+          for (final b in f.backdrops) '${b.id}:${b.file}',
+          _px(f.backdropPixels),
+          _rect(f.canvas),
+          _rect(f.closer),
+          f.clueFile,
+          _px(f.cluePixels),
+          _rect(f.clueCrop),
+          f.clueLine,
+          f.back,
+          _px(f.backPixels),
+          _rect(f.pocket),
+          _drawn(f.slip),
+        ].join('|'),
+      final LightTableScene l => [
+          'lightTable',
+          '${l.record.files.join(',')}:${l.record.changed}:${l.record.oldTime}:${l.record.newTime}',
+          l.archive,
+          _px(l.archivePixels),
+          _rect(l.archiveView),
+          l.label,
+          _rect(l.labelAt),
+          _drawn(l.file3),
+          _drawn(l.programme),
+          _drawn(l.cue),
+          l.table,
+          l.tableOn,
+          _px(l.tablePixels),
+          _rect(l.glass),
+          _rect(l.switchAt),
+          _rect(l.closeUp),
+          for (final p in l.pins) '${p.spot.name}:${_rect(p.area)}:${_at(p.at)}:${p.via.map(_at).join(';')}',
+          _drawn(l.slip),
+        ].join('|'),
+      final CornerChoiceScene c => [
+          'cornerChoice',
+          c.square,
+          _px(c.squarePixels),
+          _px(c.cornerPixels),
+          for (final x in c.corners) '${x.id}:${x.name}:${_rect(x.area)}:${x.file}',
+        ].join('|'),
+      final MorningSketchesScene m => [
+          'morningSketches',
+          for (final x in m.sketches) _sketch(x),
+          m.shown.join(','),
+          m.lampOff,
+          m.slots.join(','),
+        ].join('|'),
+      final TornSlipScene t => [
+          'tornSlip',
+          t.folded,
+          _px(t.foldedPixels),
+          _form(t.form),
+          for (final p in t.parts) '${p.id}:${_rect(p.area)}:${p.mark?.name}:${p.name}:${p.line != null}',
+          t.sealId,
+          for (final c in t.sealChecks) '${c.question}:${c.choices.join(',')}:${c.answer}',
+          t.folds,
+          t.sealTitle,
+          t.noteLines.join(';'),
+        ].join('|'),
+      final TornHourScene h => [
+          'tornHour',
+          _sketch(h.sketch),
+          _form(h.form),
+          h.startTurns,
+          for (final q in h.board.questions) '${q.id}:${q.text}',
+          for (final e in h.board.evidence) '${e.id}:${e.evidenceId}',
+          h.board.conclusionId,
+          h.board.conclusionQuestion,
+          for (final c in h.board.conclusions) '${c.id}:${c.text}',
+          h.lead.file,
+          _px(h.lead.pixels),
+          for (final p in [...h.lead.bagParts, h.lead.decoy]) '${p.id}:${_rect(p.area)}',
+          h.lead.bagDone.length,
+          h.lead.features.join(';'),
+          h.lead.mapFile,
+          _px(h.lead.mapPixels),
+          for (final s in h.lead.spots) '${s.id}:${s.name}:${_at(s.at)}',
+          h.lead.answer,
+          h.lead.feedback.keys.join(','),
+          h.lead.doneLines.length,
+          h.placedLines.length,
+        ].join('|'),
+      final TrialMapScene t => [
+          'trialMap',
+          t.mapFile,
+          _px(t.mapPixels),
+          for (final s in t.spots) '${s.id}:${s.name}:${_at(s.at)}',
+          for (final m in t.models) _model(m),
+          _px(t.modelPixels),
+          t.dropRadius,
+          t.specialLines.keys.join(','),
+        ].join('|'),
+      final GearBoardScene g => [
+          'gearBoard',
+          g.file,
+          _px(g.pixels),
+          _rect(g.view),
+          g.gearFile,
+          _px(g.gearPixels),
+          g.dialFile,
+          _px(g.dialPixels),
+          _at(g.dialPivot),
+          for (final e in g.radii.entries) '${e.key.name}=${e.value}',
+          for (final x in g.slots) '${x.id}:${x.size.name}:${_at(x.at)}:${x.branch}',
+          for (final x in g.fixed) '${_at(x.at)}:${x.radius}:${x.clockwise}:${x.branch}',
+          for (final x in g.clocks) '${x.id}:${x.name}:${_at(x.at)}:${x.radius}:${x.branch}:${x.clockwise}',
+          for (final e in g.tray.entries) '${e.key.name}=${_at(e.value)}',
+        ].join('|'),
+      final MakerMarksScene m => [
+          'makerMarks',
+          m.file,
+          _px(m.pixels),
+          m.handsFile,
+          _px(m.handsPixels),
+          for (final x in m.marks) '${x.id}:${x.kind.name}:${x.name}:${x.source}:${x.evidenceId}',
+          for (final x in m.paper) '${x.id}:${x.kind.name}:${x.name}:${x.words}:${_rect(x.markAt)}:${_rect(x.wordsAt)}:${_rect(x.crop)}:${x.light}:${x.angle}',
+          m.lines.keys.join(','),
+        ].join('|'),
+      final TowerTestScene t => [
+          'towerTest',
+          t.garden,
+          _px(t.gardenPixels),
+          '${_rect(t.gardenClock.face)}:${t.gardenClock.dial}:${_px(t.gardenClock.dialPixels)}:${_at(t.gardenClock.pivot)}:${t.gardenClock.faceRadius}:${t.gardenClock.hour}',
+          t.dialFile,
+          _px(t.dialPixels),
+          _at(t.dialPivot),
+          t.dialRadius,
+          t.startHour,
+          t.targetHour,
+          for (final c in t.clocks) '${c.id}:${c.name}:${c.joined}',
+          (t.hourLines.keys.toList()..sort()).join(','),
+          t.testedLines.length,
+          t.afterLines.length,
+          t.lead.title,
+          t.lead.tag,
+          for (final m in t.lead.models) _model(m),
+          _px(t.lead.modelPixels),
+          t.lead.answer,
+          t.lead.mapFile,
+          _px(t.lead.mapPixels),
+          '${t.lead.spot.id}:${t.lead.spot.name}:${_at(t.lead.spot.at)}',
+          t.lead.doneLines.length,
+        ].join('|'),
       // Played one small step at a time: the steps, what each shows and
       // asks, its answer, how many free hints lead to it and where the
       // answer is lit. What each step says (its line, hints, wrong-answer
@@ -451,3 +618,18 @@ String _drawn(DrawnEvidence d) => switch (d) {
       final EasyEvidence e => 'easy:${_panel(e.panel)}',
       _ => '${d.runtimeType}#${identityHashCode(d)}',
     };
+
+String _sketch(MorningSketch m) => [
+      m.id,
+      m.file,
+      _px(m.pixels),
+      for (final c in m.changes) '${c.id}=${_rect(c.area)}=${c.label}',
+      m.study == null ? null : '${m.study!.file}=${_px(m.study!.pixels)}=${_rect(m.study!.at)}',
+    ].join(',');
+
+String _form(TornForm f) =>
+    [f.file, _px(f.pixels), _rect(f.paper), f.fileWord, _rect(f.fileAt), f.minutes, _rect(f.minutesAt), _rect(f.arrowAt), f.stamp, _rect(f.stampAt)].join(',');
+
+/// A trial clock's model: its picture, place and sign (its line for a
+/// wrong place is its words).
+String _model(TrialModel m) => [m.id, m.name, m.file, m.spot, m.sign].join(',');

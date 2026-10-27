@@ -188,7 +188,7 @@ Map<String, Object> parisAt(Difficulty level, {required String active, Difficult
 
 void main() {
   group('Written: nothing falls back unseen', () {
-    test('Cases 01–06 are marked written at every level, and nothing of theirs falls back', () {
+    test('Cases 04–06 are marked written at every level, and nothing of theirs falls back', () {
       expect(DifficultyContent.problems(), isEmpty);
       for (final id in cases) {
         expect(season2Content.writtenLevels[id], {...levels}, reason: id);
@@ -196,9 +196,9 @@ void main() {
           expect(DifficultyContent.missingAt(id, level), isEmpty, reason: '$id at ${level.name}');
         }
       }
-      // Case 07 on is PART 7C's.
-      expect(season2Content.writtenLevels.keys.toSet(), {'s2_ep01', 's2_ep02', 's2_ep03', ...cases});
-      expect(DifficultyContent.missingAt('s2_ep07', Difficulty.junior), isNotEmpty);
+      // Later cases are later PARTs'; the newest PART's test holds the
+      // whole set written so far (difficulty_paris_7c_test.dart).
+      expect(season2Content.writtenLevels.keys, containsAll(cases));
     });
 
     test('Junior and Master each have their own line everywhere but the lines kept on purpose', () {

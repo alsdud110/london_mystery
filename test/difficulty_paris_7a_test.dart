@@ -159,9 +159,9 @@ void main() {
           expect(DifficultyContent.missingAt(id, level), isEmpty, reason: '$id at ${level.name}');
         }
       }
-      // Cases 04–06 are PART 7B's (difficulty_paris_7b_test.dart holds the
-      // whole set written so far); Case 07 on is still to come.
-      expect(season2Content.writtenLevels.keys.toSet(), {...cases, 's2_ep04', 's2_ep05', 's2_ep06'});
+      // Later cases are later PARTs'; the newest PART's test holds the
+      // whole set written so far (difficulty_paris_7c_test.dart).
+      expect(season2Content.writtenLevels.keys, containsAll(cases));
     });
 
     test('Junior and Master each have their own line everywhere but the lines kept on purpose', () {

@@ -988,10 +988,10 @@ ArchiveScene _archive(ArchiveScene base, {required String notHere, required Stri
 /// paper's words read out).
 typedef StepWords = ({String? say, List<String> hints, Map<String, String> feedback, String? tell, String? done});
 
-/// [base]'s steps told in a level's words ([words], by step id). What each
+/// [base]'s steps told in a level's words (also Cases 07–12's) ([words], by step id). What each
 /// step shows, its choices, its answer and how many free hints lead to it
 /// are the base's.
-EasyStepsScene _steps(EasyStepsScene base, Map<String, StepWords> words) => EasyStepsScene(
+EasyStepsScene retold(EasyStepsScene base, Map<String, StepWords> words) => EasyStepsScene(
       title: base.title,
       answer: base.answer,
       finishLabel: base.finishLabel,
@@ -1062,7 +1062,7 @@ final juniorScenes0406 = (
     ),
   },
   easySteps: {
-    's2_ep04_final': _steps(season2Case04Steps['s2_ep04_final']!, const {
+    's2_ep04_final': retold(season2Case04Steps['s2_ep04_final']!, const {
       'address': (
         say: 'Which address is it?',
         hints: ['Both streets start with PASSAGE, so CLUE 1 fits both. Now check CLUE 2.', 'CLUE 2 says No. 7. Find the address with that number.'],
@@ -1071,7 +1071,7 @@ final juniorScenes0406 = (
         done: 'It is No. 7, PASSAGE DES HORLOGERS!',
       ),
     }),
-    's2_ep05_m3': _steps(season2Case05Steps['s2_ep05_m3']!, const {
+    's2_ep05_m3': retold(season2Case05Steps['s2_ep05_m3']!, const {
       'mirror': (
         say: null,
         hints: ['The note is written backwards. A mirror can turn it round.', 'Tap the hand mirror.'],
@@ -1087,7 +1087,7 @@ final juniorScenes0406 = (
         done: 'Clock III! There is no letter inside, only a receipt.',
       ),
     }),
-    's2_ep05_final': _steps(season2Case05Steps['s2_ep05_final']!, const {
+    's2_ep05_final': retold(season2Case05Steps['s2_ep05_final']!, const {
       'letter': (
         say: 'Which slip is for letter 4417?',
         hints: ['Read the numbers one by one: 4, 4, 1, 7.', 'Be careful: 4417 and 4471 look alike.'],
@@ -1136,7 +1136,7 @@ final masterScenes0406 = (
     ),
   },
   easySteps: {
-    's2_ep04_final': _steps(season2Case04Steps['s2_ep04_final']!, const {
+    's2_ep04_final': retold(season2Case04Steps['s2_ep04_final']!, const {
       'address': (
         say: 'Which address fits both clues?',
         hints: ['CLUE 1 cannot decide between them. Let CLUE 2 settle it.', 'Compare each house number with CLUE 2.'],
@@ -1145,7 +1145,7 @@ final masterScenes0406 = (
         done: "No. 7, PASSAGE DES HORLOGERS: the watchmakers' address!",
       ),
     }),
-    's2_ep05_m3': _steps(season2Case05Steps['s2_ep05_m3']!, const {
+    's2_ep05_m3': retold(season2Case05Steps['s2_ep05_m3']!, const {
       'mirror': (
         say: null,
         hints: ['Backwards writing becomes clear in a mirror.', 'Tap the hand mirror.'],
@@ -1161,7 +1161,7 @@ final masterScenes0406 = (
         done: 'Clock III! But no letter waits inside, only a receipt.',
       ),
     }),
-    's2_ep05_final': _steps(season2Case05Steps['s2_ep05_final']!, const {
+    's2_ep05_final': retold(season2Case05Steps['s2_ep05_final']!, const {
       'letter': (
         say: 'Pick out the slip for letter 4417.',
         hints: ['Read every digit in order. One wrong digit makes another letter.', 'Two numbers use the same digits. Only one has them in the right order.'],

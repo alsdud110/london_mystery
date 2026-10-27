@@ -57,7 +57,8 @@ abstract final class DifficultyContent {
   /// Parts of a mission given by key, each with its text fields: options by
   /// option id; the wrong-answer lines by the wrong answer they are for (the
   /// keys are answers and never change); the clue, evidence and recall's
-  /// words (their ids, values, inscriptions and pictures never).
+  /// words (their ids, values, inscriptions and pictures never); a recall's
+  /// lines for wrong evidence by evidence id (`recall.feedback`, PART 7C).
   static const missionParts = {
     'options': {'label', 'feedback', 'altText'},
     'feedback': <String>{},
@@ -144,6 +145,14 @@ abstract final class DifficultyContent {
         }
       } else if (missionParts.containsKey(key) && value is Map && mission[key] is Map) {
         _applyFields(mission[key] as Map<String, dynamic>, value, missionParts[key]!);
+        // A recall's lines for the wrong pieces of evidence, by evidence id
+        // (the ids are the base's and never change).
+        if (key == 'recall' && value['feedback'] is Map && mission[key]['feedback'] is Map) {
+          final lines = mission[key]['feedback'] as Map<String, dynamic>;
+          for (final e in (value['feedback'] as Map).entries) {
+            if (lines.containsKey('${e.key}') && e.value is String) lines['${e.key}'] = e.value;
+          }
+        }
       }
     }
   }
@@ -256,6 +265,13 @@ abstract final class DifficultyContent {
         for (final answer in value.keys) {
           if (!keys.contains(answer)) out.add('$at.feedback: "$answer" is not a wrong answer the base has a line for');
         }
+      } else if (key == 'recall' && value is Map && value['feedback'] is Map) {
+        // Its wrong-evidence lines: only for the evidence the base has a line for.
+        final keys = ((base[key] as Map?)?['feedback'] as Map? ?? const {}).keys.toSet();
+        for (final id in (value['feedback'] as Map).keys) {
+          if (!keys.contains(id)) out.add('$at.recall.feedback: "$id" is not evidence the base has a line for');
+        }
+        out.addAll(_fieldProblems('$at.$key', {...value}..remove('feedback'), missionParts[key]!));
       } else if (missionParts.containsKey(key) && value is Map) {
         if (base[key] is! Map) out.add('$at.$key: the base has none');
         out.addAll(_fieldProblems('$at.$key', value, missionParts[key]!));
