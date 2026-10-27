@@ -58,6 +58,20 @@ class InspectSpot {
   /// shows.
   final String? requires;
   final String lockedLine;
+
+  /// The same spot in other words (a level's): where it is, what it
+  /// confirms and what it needs never change.
+  InspectSpot copyWith({String? line, String? lockedLine}) => InspectSpot(
+        id: id,
+        kind: kind,
+        title: title,
+        label: label,
+        areas: areas,
+        line: line ?? this.line,
+        checks: checks,
+        requires: requires,
+        lockedLine: lockedLine ?? this.lockedLine,
+      );
 }
 
 /// A mission played by examining its exhibits under a magnifying glass
@@ -131,6 +145,35 @@ class InspectScene {
   /// label again.
   final String matchAction;
   final String labelLink;
+
+  /// The same room in other words (a level's): its picture, spots, label
+  /// room and note line to answer never change.
+  InspectScene copyWith({
+    String? task,
+    String? nextTask,
+    String? missLine,
+    String? labelWorn,
+    List<InspectSpot>? spots,
+  }) =>
+      InspectScene(
+        picture: picture,
+        pixels: pixels,
+        place: place,
+        task: task ?? this.task,
+        nextTask: nextTask ?? this.nextTask,
+        dragGuide: dragGuide,
+        tapGuide: tapGuide,
+        missLine: missLine ?? this.missLine,
+        spots: spots ?? this.spots,
+        labelTitle: labelTitle,
+        labelRoom: labelRoom,
+        labelWorn: labelWorn ?? this.labelWorn,
+        taskLine: taskLine,
+        inside: inside,
+        lensAt: lensAt,
+        matchAction: matchAction,
+        labelLink: labelLink,
+      );
 
   InspectSpot spot(String id) => spots.firstWhere((s) => s.id == id);
 

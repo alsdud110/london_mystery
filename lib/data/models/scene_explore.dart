@@ -78,6 +78,21 @@ class ExploreSpot {
   final String? requires;
   final String lockedLine;
   final String unreadLine;
+
+  /// The same spot in other words (a level's): where it is, what it is and
+  /// what it needs never change.
+  ExploreSpot copyWith({String? line, String? lockedLine, String? unreadLine}) => ExploreSpot(
+        id: id,
+        kind: kind,
+        title: title,
+        label: label,
+        areas: areas,
+        mark: mark,
+        line: line ?? this.line,
+        requires: requires,
+        lockedLine: lockedLine ?? this.lockedLine,
+        unreadLine: unreadLine ?? this.unreadLine,
+      );
 }
 
 /// One picture of an [ExploreScene]'s choice, standing for the puzzle's
@@ -166,6 +181,37 @@ class ExploreScene {
 
   /// The quiet link that opens the document again, once it is read.
   final String documentLabel;
+
+  /// The same scene in other words (a level's): its picture, places, spots
+  /// and choices never change (`DifficultyContent.structureOf` checks).
+  ExploreScene copyWith({
+    String? task,
+    String? nextTask,
+    String? missLine,
+    String? choiceHow,
+    List<ExploreSpot>? spots,
+    List<InvestigationSpot>? others,
+  }) =>
+      ExploreScene(
+        picture: picture,
+        pixels: pixels,
+        place: place,
+        task: task ?? this.task,
+        nextTask: nextTask ?? this.nextTask,
+        spots: spots ?? this.spots,
+        others: others ?? this.others,
+        missLine: missLine ?? this.missLine,
+        choiceTitle: choiceTitle,
+        choiceHow: choiceHow ?? this.choiceHow,
+        choices: choices,
+        pictureAspect: pictureAspect,
+        guideAt: guideAt,
+        inside: inside,
+        opening: opening,
+        tapGuide: tapGuide,
+        zoomGuide: zoomGuide,
+        documentLabel: documentLabel,
+      );
 
   ExploreSpot spot(String id) => spots.firstWhere((s) => s.id == id);
 

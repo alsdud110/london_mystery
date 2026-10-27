@@ -110,6 +110,31 @@ class DecodeScene {
   final String examine;
   final String take;
 
+  /// The same thing in other words (a level's): its picture, code and
+  /// buttons never change.
+  DecodeScene copyWith({String? found, String? closerTask, String? missLine}) => DecodeScene(
+        picture: picture,
+        pixels: pixels,
+        place: place,
+        thing: thing,
+        areas: areas,
+        mark: mark,
+        closer: closer,
+        code: code,
+        cleared: cleared,
+        clearedArea: clearedArea,
+        revealed: revealed,
+        ink: ink,
+        found: found ?? this.found,
+        tapTask: tapTask,
+        closerTask: closerTask ?? this.closerTask,
+        missLine: missLine ?? this.missLine,
+        messageTilt: messageTilt,
+        inside: inside,
+        examine: examine,
+        take: take,
+      );
+
   /// Whether a tap at [point] (fractions) reaches the thing.
   bool hits(Offset point, {Size slack = Size.zero}) =>
       hitArea<bool>(point, [(true, areas)], slack: slack) ?? false;

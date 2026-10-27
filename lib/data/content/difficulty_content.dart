@@ -3,8 +3,13 @@ import '../models/clock_puzzle.dart';
 import '../models/difficulty.dart';
 import '../models/discovery.dart';
 import '../models/episode.dart';
+import '../models/investigation.dart';
 import '../models/learning.dart';
 import '../models/mission.dart';
+import '../models/scene_decode.dart';
+import '../models/scene_deduction.dart';
+import '../models/scene_explore.dart';
+import '../models/scene_inspect.dart';
 
 /// The words of the game at each level (Rookie, Junior, Master).
 ///
@@ -315,6 +320,34 @@ abstract final class DifficultyContent {
         final ClockPuzzle c => '${c.face.name}:${c.start.hour}:${c.start.minute}',
         final Discovery d => '${d.type.name}:${d.timing.name}:${d.showEvidence}:${d.seasonClue}',
         final LearningObjective l => '${l.dependency.name}:${l.level.name}:${l.skill?.name}:${l.recallFrom}',
+        // London Case 01 and 03's scenes (PART 6A): pictures, places, ids
+        // and what each needs or confirms — every word may differ.
+        final ExploreScene s => [
+            s.picture, s.pixels.width, s.pixels.height, s.guideAt, s.inside, s.opening, s.pictureAspect,
+            for (final p in s.spots) '${p.id}:${p.kind.name}:${p.areas}:${p.mark}:${p.requires}',
+            for (final o in s.others) '${o.areas}',
+            for (final c in s.choices) '${c.optionId}:${c.picture}',
+          ].join('|'),
+        final InspectScene s => [
+            s.picture, s.pixels.width, s.pixels.height, s.inside, s.lensAt, s.labelRoom, s.taskLine,
+            for (final p in s.spots) '${p.id}:${p.kind.name}:${p.areas}:${p.checks.toList()..sort()}:${p.requires}',
+          ].join('|'),
+        final DeductionScene s => [
+            s.picture, s.pixels.width, s.pixels.height, s.guideAt, s.inside, s.opening,
+            for (final c in s.clues) '${c.id}:${c.areas}:${c.mark}',
+            for (final o in s.others) '${o.areas}',
+            for (final p in s.places) '${p.optionId}:${p.areas}:${p.mark}',
+          ].join('|'),
+        final DecodeScene s => [
+            s.picture, s.pixels.width, s.pixels.height, s.areas, s.mark, s.closer, s.code, s.cleared,
+            s.clearedArea, s.revealed, s.ink, s.messageTilt, s.inside,
+          ].join('|'),
+        final InvestigationScene s => [
+            s.artwork.name, s.answer, s.guideAt, s.opening, s.inside,
+            for (final f in s.finds)
+              '${f.id}:${f.areas}:${f.picture}:${f.at}:${f.width}:${f.pictureAspect}:${f.squash}:${f.turn}',
+            for (final o in s.spots) '${o.areas}',
+          ].join('|'),
         _ => null,
       };
 
