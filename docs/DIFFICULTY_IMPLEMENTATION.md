@@ -317,8 +317,8 @@ enum Difficulty {
 | PART 3 | 시즌 난이도 변경 및 초기화 정책 | **COMPLETED** (2026-10-27) |
 | PART 4 | 개발자 모드 개선 | **COMPLETED** (2026-10-27) |
 | PART 5 | 난이도별 영어 콘텐츠 시스템 | **COMPLETED** (2026-10-27) |
-| PART 6 | London Season 1 콘텐츠 적용 (Case 단위 세분 가능) | NOT STARTED |
-| PART 7 | Paris Season 2 콘텐츠 적용 및 최종 검증 (Case 단위 세분 가능) | NOT STARTED |
+| PART 6 | London Season 1 콘텐츠 적용 (Case 단위 세분 가능) | **IN PROGRESS** — 6A(Case 01~03) **COMPLETE** (`7bfa4a7`, main 병합 `908c7eb`) · 6B(04~06)·6C(07~09)·6D(10~12) **PENDING** |
+| PART 7 | Paris Season 2 콘텐츠 적용 및 최종 검증 (Case 단위 세분 가능) | **IN PROGRESS** — 7A(Case 01~03) **COMPLETE** (`f048688`, main 병합 `6fd8dbb`) · 7B 이후 **PENDING** |
 
 상태 값: NOT STARTED / IN PROGRESS / COMPLETED / BLOCKED. 테스트 실패나 미해결 문제가 있으면 COMPLETED로 바꾸지 않는다.
 
@@ -494,7 +494,7 @@ enum Difficulty {
   - `test/difficulty_content_test.dart` **29 passed** — 요청 A~G 1~39 대응 + 완료 검증 + 실제 화면(Case 02 M1 시계 퍼즐이 세 난이도 각각의 문장으로 표시).
   - `flutter analyze` → **No issues found**
   - 전체 `flutter test` → **2360 passed, 0 failed, 0 skipped**(약 4분 23초). **기존 테스트 수정·삭제·skip 없음**(기존 FNV 해시·개인화 줄·학습 표현·Discovery·Paris UX 테스트 모두 그대로 통과).
-- **커밋 해시**: PART 5 커밋(메시지 `feat: add difficulty-aware content architecture`) — **PART 6 작업자가 `git log --oneline --grep "difficulty-aware content"`로 확인해 이 칸을 채운다.**
+- **커밋 해시**: `b6fb71ea63ccdd1f1bcf9b909741a26de1ee1556` (`feat: add difficulty-aware content architecture`) — PART 6A/7A 통합 때 기록.
 - **남은 위험·미해결**:
   - 구조 검사(`structureOf`)가 있는 객체 종류는 3개뿐 — 다른 종류(대화·EasySteps·Paris 장면 등)에 난이도 객체를 넣으면 `problems()`가 오류를 내므로 PART 6~7에서 종류별로 구조 추출(정답·단계 수·선택지 수/순서)을 먼저 추가해야 한다. 특히 `StationClocksScene` 같은 Paris 장면은 텍스트와 정답 데이터(시계 시각 등)가 한 객체에 섞여 있고 `copyWith`가 없어, 변형을 만들 때 구조 필드를 그대로 옮겨 써야 한다.
   - 사건/증거 ID 기준 표·시즌 프롤로그·위젯 하드코딩 문구는 난이도 비대상(위 조사 결과).
@@ -523,16 +523,24 @@ enum Difficulty {
 - **문서 표 E·G는 London 세션과 충돌을 피하려고 수정하지 않음** — 병합 후 E의 PART 7 행을 "IN PROGRESS (7A 완료)"로 갱신.
 - **PART 7B 시작점**: Case 04~06. 같은 파일에 추가, 새 장면 종류마다 `season2StructureOf`에 구조 추출 먼저(EasySteps 포함). 보고서 §16 참고.
 
+### PART 6A / 7A 통합 (main)
+- **작업 날짜**: 2026-10-27 · 통합 전 main `b6fb71e`(PART 5) → 백업 브랜치 `backup/main-before-6a-7a`.
+- **순서**: London `7bfa4a7` → main(merge `908c7eb`, 충돌 없음) → Paris `f048688`(로컬 `origin/feat/difficulty-paris-01-03`) → main(merge `6fd8dbb`).
+- **충돌**: 이 문서 F 섹션 한 곳(두 세션이 같은 위치에 PART 6A·7A 항목을 추가) → 두 항목 모두 유지(6A, 7A 순). 코드는 자동 병합: `difficulty_content.dart` = London 장면 구조 검사 5종 + Paris `season2StructureOf` 우선 조회(타입 겹침 없음 확인), `season_catalog.dart` = `season1WrittenLevels` + `season2WrittenLevels`, `PROJECT_CONTEXT.md` 자동 병합.
+- **검증**: `flutter analyze` No issues · 전체 `flutter test` **2416 passed, 0 failed**(4분 7초) = PART 5 2360 + London 30 + Paris 26. 테스트 삭제·skip 없음. push 없음.
+
 ---
 
 ## G. 다음 세션 인수인계
 
 ### 현재 완료된 PART
 **PART 0**(`042afac`), **PART 1**(`8c9b4c8`), **PART 2**(`0da1dac`), **PART 3**(`19c1801`), **PART 4**(`1f144ed`), 정책 승인 문서(`6c99c63`), **PART 5**(난이도별 콘텐츠 엔진, 커밋 `feat: add difficulty-aware content architecture` — 해시는 `git log --oneline --grep "difficulty-aware content"`).
-지금 상태: 엔진·검증 도구가 있고, 실제 난이도 문장은 샘플 2개(London `ep02_m1`, Paris `s2_ep01_m1`)의 일부 필드뿐. 나머지는 모두 기준본(Rookie)으로 대체된다.
+PART 5 = `b6fb71e`. **PART 6A**(London Case 01~03, `7bfa4a7`) · **PART 7A**(Paris Case 01~03, `f048688`) — 둘 다 main 통합(`6fd8dbb`, F의 *PART 6A / 7A 통합*).
+지금 상태: London `ep01`~`ep03`, Paris `s2_ep01`~`s2_ep03`는 세 난이도 작성 완료(`writtenLevels`). 나머지 사건은 기준본(Rookie)으로 대체된다.
 
 ### 다음 PART
-- London 진행(2026-10-27): **PART 6A(Cases 01~03) 완료** — 브랜치 `feat/difficulty-london-01-03`(main 미병합), F의 PART 6A 참고. London 다음은 **6B(Cases 04~06)**: 같은 방식(`season1/difficulty/ep0N_levels.dart` + `season1_difficulty.dart` 조립 + `season1WrittenLevels`). Case 06 `DialogueScene`은 구조 검사 추가가 먼저.
+- **London PART 6B — Cases 04~06** (PENDING): `lib/data/mock/season1/difficulty/ep04_levels.dart`~`ep06_levels.dart` 추가 → `season1_difficulty.dart`에서 조립, `season1WrittenLevels`에 표시. **Case 06 `DialogueScene`(m1 증인 대화)은 `DifficultyContent.structureOf`에 구조 검사를 먼저 추가**(진술·질문 id·순서·정답 짝). 장면 객체는 기준본의 텍스트 전용 `copyWith` 패턴(`level_words.dart`의 `relined`). 보호: Case 04 Black Wax Seal·"Black birds live there"(RAVEN)·"where trains never sleep"(→11), Case 05 745·순서 질문 `orderFeedback`, Case 06 Final grey/hat/card 금지·"the colour of my hat". 테스트는 `difficulty_london_6a_test.dart` 형식으로 `difficulty_london_6b_test.dart`.
+- **Paris PART 7B — Cases 04~06** (PENDING): `season2_difficulty.dart`에 추가, **새 장면 종류마다 `season2StructureOf`(`season2_structures.dart`)에 구조 추출 먼저** — Case 04 `RiverMarksScene`·`KeeperHutScene`·`BoxesScene`·`StreetBookScene`, Case 05 `MarkCompareScene`·`ClockWallScene`·`BlotterScene`·`PostTrailScene`, Case 06 `HoldRackScene`·`PlanScene`·`ArchiveScene`·`LetterMapScene`, **EasySteps(Case 04 Final, Case 05 M3·Final)** 등 신규 객체 확인. `docs/SEASON2_PARIS_STORY_BIBLE.md` 먼저. 보고서 `PARIS_CASE_01_03.md` §16.
 
 **PART 6 — London Cases 01~12 영어 콘텐츠** (6A: 01~03 / 6B: 04~06 / 6C: 07~09 / 6D: 10~12, 묶음마다 테스트·문서·개별 커밋)
 
