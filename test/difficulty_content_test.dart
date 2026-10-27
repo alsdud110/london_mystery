@@ -431,14 +431,17 @@ void main() {
         });
       }
       // PART 6A wrote Cases 01–03 whole (the PART 5 sample of Case 02 is
-      // finished); a case not written yet still shows what it lacks.
+      // finished); a case not written yet still shows what it lacks — Case
+      // 06 since PART 6B: all but M1's witness talk, which has no level
+      // structure check.
       for (final caseId in ['ep01', 'ep02', 'ep03']) {
         expect(season1Content.writtenLevels[caseId], Difficulty.values.toSet(), reason: caseId);
       }
-      final junior = DifficultyContent.missingAt('ep04', Difficulty.junior);
-      expect(junior, containsAll(['ep04.intro', 'ep04.synopsis', 'ep04_m1.story', 'ep04_final.hints']));
-      expect(DifficultyContent.missingAt('ep04', Difficulty.master), containsAll(junior));
-      expect(DifficultyContent.missingAt('ep04', Difficulty.rookie), isEmpty);
+      final junior = DifficultyContent.missingAt('ep06', Difficulty.junior);
+      expect(junior, ['dialogues/ep06_m1']);
+      expect(DifficultyContent.missingAt('ep06', Difficulty.master), containsAll(junior));
+      expect(DifficultyContent.missingAt('ep06', Difficulty.rookie), isEmpty);
+      expect(season1Content.writtenLevels['ep06'], isNot(contains(Difficulty.junior)));
     });
   });
 
