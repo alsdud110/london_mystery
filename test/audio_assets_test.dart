@@ -36,10 +36,13 @@ void main() {
   test('only the typing and the casebook tap are heard, and only their takes are on disk', () {
     expect({for (final s in GameSound.values) if (s.takes.isNotEmpty) s}, {GameSound.typewriterKey, GameSound.uiTap});
     expect([...musicLoops.values, ...ambienceLoops.values, ...accentLoops.values], isEmpty);
-    // Paths as the pubspec writes them ('/'), also on Windows ('\').
+    // Paths as the pubspec writes them ('/'), also on Windows ('\'); the
+    // folder files an operating system leaves (macOS's .DS_Store, Windows'
+    // Thumbs.db) are not the game's.
+    const osFiles = {'.DS_Store', 'Thumbs.db', 'desktop.ini'};
     final onDisk = {
       for (final f in Directory('assets/sounds').listSync(recursive: true).whereType<File>())
-        f.path.replaceAll(r'\', '/'),
+        if (!osFiles.contains(f.uri.pathSegments.last)) f.path.replaceAll(r'\', '/'),
     };
     expect(onDisk, playedPaths);
   });

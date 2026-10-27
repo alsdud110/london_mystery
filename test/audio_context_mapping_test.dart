@@ -128,16 +128,16 @@ void main() {
       }
     });
 
-    test('a scene on one of them is followed but not heard; the next real place plays', () {
+    // No place has a recording now (only the typing and the casebook tap are
+    // heard, audio_assets_test): every scene is still followed, so adding a
+    // place's loop is all it takes to hear it again.
+    test('a scene on one of them is followed but not heard; so is every place now', () {
       final audio = MockAudioService();
-      for (final p in unrecorded) {
+      for (final p in [...unrecorded, AmbienceBase.station]) {
         audio.setScene(AudioScene(ambienceBase: p));
         expect(audio.ambience, p);
-        expect(loopOf(AudioLayer.ambience, audio.ambience), isNull);
+        expect(loopOf(AudioLayer.ambience, audio.ambience), isNull, reason: p.name);
       }
-      audio.setScene(const AudioScene(ambienceBase: AmbienceBase.station));
-      expect(audio.ambience, AmbienceBase.station);
-      expect(loopOf(AudioLayer.ambience, audio.ambience), isNotNull);
     });
 
     test('London by day stays London by day (Case 03 final, Case 09 intro, M3, final)', () {
