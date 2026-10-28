@@ -18,6 +18,11 @@ Flutter, so it runs with plain `dart run`.
 | `palette_facts.dart` | `PaletteFacts`: the game's `PuzzlePalette` and dial symbols, copied for plain `dart run` (written and checked by `test/season_gen/palette_facts_test.dart`) |
 | `clue_graph_check.dart` | `ClueGraphCheck`: whether every clue a mission is given is found before it (STEP 3-4) |
 | `validate_plan.dart` | Command line: schema, then model, then structure, then puzzle selection and clue graph |
+| `content_approval.dart` | `SeasonApprovals`: approvals of season plans, case plans and assets, their status, a case's readiness (STEP 3-5) |
+| `content_hash.dart` | `ContentHash`: a plan's canonical JSON and its SHA-256, a file's SHA-256 |
+| `sha256.dart` | `Sha256`: SHA-256 in plain Dart (no package beyond the game's) |
+| `change_impact.dart` | `ChangeImpact`: what a change of an approved plan or picture touches |
+| `approve.dart` | Command line: `status`, `approve`, `impact` |
 
 ```sh
 dart run tool/season_gen/validate_plan.dart \
@@ -87,7 +92,7 @@ checked here: they are written with the Dart content.
 
 Not checked here: the clue graph (below); the Dart content and its
 engine collisions (`PuzzleEngineCollisionCheck`, on the made
-`SeasonContent`); whether pictures exist or are approved (STEP 3-8).
+`SeasonContent`); whether pictures are approved (Approvals, below) or fit their puzzles (STEP 3-8).
 
 
 ## Clue graph (STEP 3-4)
@@ -132,3 +137,99 @@ through a clue asked for before it is found: it is reported once, as
 The command line runs `casePlan` on each case file (cross-case clues left
 open, counted in its summary), then, with `--season`, `season` on the case
 files given and prints the findings between cases.
+
+
+## Approvals (STEP 3-5)
+
+A plan is checked by the tools above; it is approved by a person. The two
+never mix: a plan not approved is not a wrong plan, and `validate_plan.dart`
+neither reads nor writes approvals. Saving a plan (`PlanFiles`) never
+approves it.
+
+```
+content_pipeline/seasons/<seasonId>/
+  approvals.json          every approval, oldest first; one is only ever added
+  approved/<hex>.json     each plan as it was approved, named by its hash
+```
+
+```json
+{
+  "schemaVersion": 1,
+  "seasonId": "s3_tokyo",
+  "approvals": [
+    {"kind": "seasonPlan", "id": "s3_tokyo", "hash": "sha256:…", "approvedAt": "2026-10-28T09:00:00.000Z", "approvedBy": "name <email>"},
+    {"kind": "casePlan", "id": "s3_ep01", "hash": "sha256:…", "approvedAt": "…", "approvedBy": "…", "note": "read through"},
+    {"kind": "asset", "id": "s3_tokyo.asset.hall", "path": "assets/seasons/season_03_tokyo/hall.png", "hash": "sha256:…", "approvedAt": "…", "approvedBy": "…"}
+  ]
+}
+```
+
+- **Targets.** A season plan (`season.plan.json`) and a case plan
+  (`cases/<caseId>/case.plan.json`) are found by their id; an asset by the
+  `path` (from the repository's root) it was approved with.
+- **Status** is never written down. It is judged each time from the
+  target's file now against its last approval: `draft` (never approved),
+  `approved` (the same hash), `stale` (another hash, or a plan that is not
+  JSON any more), `missing` (no file: an approval of it holds no more). A
+  record with any other field (a `status`) does not read.
+- **Approving** a target adds a record and, for a plan, keeps its content
+  under `approved/`. Approving it as it already is adds nothing. A stale
+  target is approved again with a new record; the old ones stay.
+- **A case can be made** (`readiness`, for STEP 3-6) when its season plan,
+  its case plan and every asset its puzzles ask for (`assetNeeds`) are
+  `approved`.
+
+### The hash
+
+`sha256:` and 64 lower-case hex digits. An asset's: its file's bytes. A
+plan's: its JSON in a canonical form (`ContentHash.canonicalJson`), so the
+same data written another way hashes the same and any value changed does not:
+
+1. The file is read as JSON; what is not JSON has no hash.
+2. Object keys sorted by UTF-16 code units; arrays keep their order.
+3. No space or newline between tokens.
+4. Strings as `jsonEncode` writes them (`"` and `\` escaped, control
+   characters below U+0020 as `\b \f \n \r \t` or `\u00xx`, others as they
+   are; no Unicode normalisation).
+5. A number with no fraction (`3`, `3.0`) as an integer; others as Dart's
+   shortest `double.toString()`.
+6. `true`, `false`, `null` as they are.
+7. Hashed as UTF-8.
+
+### What a change touches
+
+`ChangeImpact` compares a plan as approved (`approved/`) with the plan now,
+and lists what to review again. It follows only what the plans name, and
+changes nothing:
+
+| Change | Review |
+|---|---|
+| A case added to, taken out of or moved in the acts | that case plan; every case plan given one of its clues (`clues_of_moved_case`) |
+| A character or location changed or removed | the case plans that list it; a character's `firstCase`, `revealCase`, `secretUntil` |
+| `mainMystery`, `figures` changed | the cases they name |
+| A mission added or changed | that mission (its puzzle, its clue links) |
+| A clue no longer left (an id changed), or left by another mission | every mission given it, of the case or another (`ClueGraphCheck`'s consumers) |
+| A picture asked for now | that asset, with its approval status |
+| A picture changed | every mission whose puzzle asks for it |
+
+Any other field changed is listed for the record, with nothing to review.
+
+### The command line
+
+```sh
+dart run tool/season_gen/approve.dart status  content_pipeline/seasons/s3_tokyo
+dart run tool/season_gen/approve.dart status  content_pipeline/seasons/s3_tokyo case s3_ep01
+dart run tool/season_gen/approve.dart approve content_pipeline/seasons/s3_tokyo case s3_ep01 --note "read through"
+dart run tool/season_gen/approve.dart approve content_pipeline/seasons/s3_tokyo asset s3_tokyo.asset.hall --path assets/seasons/season_03_tokyo/hall.png
+dart run tool/season_gen/approve.dart impact  content_pipeline/seasons/s3_tokyo
+```
+
+`approve` runs a plan's checks as `validate_plan.dart` does (a case plan
+with the season plan beside it) and refuses one with errors. It then asks,
+only when its input and output are a terminal, for the target's id to be
+typed: input piped in is refused. Who approves is `--by`, or Git's
+`user.name <user.email>`. `status` exits 0 when every target it shows is
+approved; `impact` with no target looks at every stale target.
+
+Not here: whether a picture is the right size, has transparency, or fits
+its hot spots (STEP 3-8).

@@ -16,8 +16,9 @@
 ///   cannot say.
 ///
 /// Not here: the palette fit (STEP 3-3, `PuzzleSelectionCheck`), the clue
-/// graph (STEP 3-4, `ClueGraphCheck`); not yet: the levels' words, asset
-/// requests and approvals. A plan names what they will use (clue ids,
+/// graph (STEP 3-4, `ClueGraphCheck`), the approvals (STEP 3-5,
+/// `SeasonApprovals`, kept beside the plans); not yet: the levels' words and
+/// asset requests. A plan names what they will use (clue ids,
 /// palette ids, asset ids) and nothing more.
 library;
 
