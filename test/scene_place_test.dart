@@ -16,8 +16,17 @@ import 'helpers.dart';
 /// scenes missions name (`MissionScene`): data only, no screen shows a
 /// season place yet. Seasons 1 and 2 keep their [Artwork] scenes as they are.
 void main() {
-  /// Why each of [places]' pictures cannot be bundled: missing on disk, or
-  /// in no folder (nor as a file) of pubspec.yaml's asset list.
+  /// A PNG file's size in pixels, read from its header (null: not a PNG).
+  (double, double)? pngSize(String file) {
+    final png = File(file).readAsBytesSync();
+    if (png.length < 24 || png[1] != 0x50 || png[2] != 0x4E || png[3] != 0x47) return null;
+    int u32(int at) => (png[at] << 24) | (png[at + 1] << 16) | (png[at + 2] << 8) | png[at + 3];
+    return (u32(16).toDouble(), u32(20).toDouble());
+  }
+
+  /// Why each of [places]' pictures cannot be bundled: missing on disk, in
+  /// no folder (nor as a file) of pubspec.yaml's asset list, or of another
+  /// pixel size than the place says.
   List<String> assetProblems(Map<String, ScenePlace> places) {
     final listed = pubspecAssets();
     return [
@@ -25,7 +34,9 @@ void main() {
         if (!File(p.file).existsSync())
           '$id: ${p.file} is not on disk'
         else if (!listed.any((a) => a == p.file || (a.endsWith('/') && p.file.startsWith(a) && !p.file.substring(a.length).contains('/'))))
-          '$id: ${p.file} is not listed in pubspec.yaml',
+          '$id: ${p.file} is not listed in pubspec.yaml'
+        else if (pngSize(p.file) case final size when size != (p.pixels.width, p.pixels.height))
+          '$id: ${p.file} is $size pixels, not (${p.pixels.width}, ${p.pixels.height})',
     ];
   }
 
@@ -185,6 +196,13 @@ void main() {
       expect(File('assets/branding/app_icon.png').existsSync(), isTrue);
       expect(assetProblems({'s3_test.icon': const ScenePlace(file: 'assets/branding/app_icon.png', pixels: ScenePixels(1, 1))}), [
         contains('is not listed in pubspec.yaml'),
+      ]);
+    });
+
+    test("a place's pixel size must be its picture's own", () {
+      expect(pngSize(station.file), (941.0, 1671.0));
+      expect(assetProblems({'s3_test.wrong': const ScenePlace(file: ArtAssets.season2GareDuNord, pixels: ScenePixels(1536, 1024))}), [
+        contains('is (941.0, 1671.0) pixels, not (1536.0, 1024.0)'),
       ]);
     });
   });
