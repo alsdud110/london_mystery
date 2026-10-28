@@ -75,7 +75,8 @@ class MapPrint extends StatelessWidget {
 class PhotoPrint extends StatelessWidget {
   const PhotoPrint(this.scene, {super.key, this.solved = 1, this.border = 3, this.bottom});
 
-  final Artwork scene;
+  /// A mission's place: an [Artwork] scene, or a season place.
+  final MissionScene scene;
   final double solved;
   final double border;
 
@@ -87,7 +88,15 @@ class PhotoPrint extends StatelessWidget {
     return PrintFrame(
       border: border,
       bottom: bottom,
-      child: LandmarkArt(scene, borderRadius: 1, solved: solved, showName: !ArtAssets.landmarkScenes.containsKey(scene)),
+      child: LandmarkArt.ofScene(
+        scene,
+        borderRadius: 1,
+        solved: solved,
+        showName: switch (scene) {
+          ArtworkScene(:final artwork) => !ArtAssets.landmarkScenes.containsKey(artwork),
+          SeasonScene() => true,
+        },
+      ),
     );
   }
 }

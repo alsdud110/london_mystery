@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
+import '../data/mock/season_catalog.dart';
 import '../data/models/backdrop.dart';
 import '../data/models/mission.dart';
 import '../data/models/scene_explore.dart' show ScenePixels;
@@ -106,6 +107,57 @@ class LandmarkArt extends StatelessWidget {
   static double aspectOf(Artwork artwork, {double solved = 0}) =>
       hasPicture(artwork, solved: solved) ? ArtAssets.sceneAspect(artwork) : 4 / 3;
 
+  // ── A mission's scene: an Artwork, or a season place ─────────────────
+  // An [ArtworkScene] is shown exactly as [LandmarkArt] shows its artwork; a
+  // [SeasonScene] shows its registered picture ([SeasonCatalog.placeFor]) the
+  // way a scene picture is shown. A season place has no drawing: an
+  // unregistered one is a [StateError], a missing file an error (never
+  // another place's picture, nor blank paper, in its stead).
+
+  /// Whether [scene] shows a picture file (a season place always does).
+  static bool hasPictureOf(MissionScene scene, {double solved = 0}) => switch (scene) {
+    ArtworkScene(:final artwork) => hasPicture(artwork, solved: solved),
+    SeasonScene(:final id) => SeasonCatalog.placeFor(id).file.isNotEmpty,
+  };
+
+  /// Width / height of a frame that fits [scene] (see [aspectOf]).
+  static double aspectOfScene(MissionScene scene, {double solved = 0}) => switch (scene) {
+    ArtworkScene(:final artwork) => aspectOf(artwork, solved: solved),
+    SeasonScene(:final id) => SeasonCatalog.placeFor(id).pixels.aspect,
+  };
+
+  /// [scene] as [LandmarkArt] shows a place (its picture, its name plate).
+  static Widget ofScene(MissionScene scene, {double borderRadius = 24, double solved = 0, bool showName = true}) =>
+      switch (scene) {
+        ArtworkScene(:final artwork) =>
+          LandmarkArt(artwork, borderRadius: borderRadius, solved: solved, showName: showName),
+        SeasonScene(:final id) => ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius),
+          child: _placePicture(id, showName: showName),
+        ),
+      };
+
+  /// [scene] filling the screen behind the story (see [LandmarkArt.backdrop]).
+  static Widget backdropOf(MissionScene scene) => switch (scene) {
+    ArtworkScene(:final artwork) => LandmarkArt.backdrop(artwork),
+    SeasonScene(:final id) => _placeBackdrop(id),
+  };
+
+  static Widget _placePicture(String id, {required bool showName}) {
+    final place = SeasonCatalog.placeFor(id);
+    return _ScenePicture(place.file, pixels: place.pixels, showName: showName, fallback: _MissingPlace(id, place.file));
+  }
+
+  static Widget _placeBackdrop(String id) {
+    final place = SeasonCatalog.placeFor(id);
+    return SceneBackdrop(
+      file: place.file,
+      pixels: place.pixels,
+      look: BackdropArt.of(place.file)?.look ?? const BackdropLook(),
+      fallback: _MissingPlace(id, place.file),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final drawn = CustomPaint(
@@ -186,6 +238,22 @@ class _ScenePicture extends StatelessWidget {
       look: BackdropLook(fit: BackdropFit.cover, bounds: bounds, focus: bounds),
       fallback: fallback,
     );
+  }
+}
+
+/// A season place whose picture did not load: said as an error (reported,
+/// and shown as one), never covered by another picture or by blank paper.
+class _MissingPlace extends StatelessWidget {
+  const _MissingPlace(this.id, this.file);
+
+  final String id;
+  final String file;
+
+  @override
+  Widget build(BuildContext context) {
+    final error = FlutterError('Season place $id: its picture $file did not load');
+    FlutterError.reportError(FlutterErrorDetails(exception: error, library: 'world mystery', context: ErrorDescription('showing a season place')));
+    return ErrorWidget(error);
   }
 }
 

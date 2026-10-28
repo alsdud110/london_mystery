@@ -201,7 +201,7 @@ class _DiscoveryMomentState extends State<_DiscoveryMoment> with SingleTickerPro
           children: [
             // Still at the scene: the place of the puzzle, in the dark.
             Positioned.fill(
-              child: IgnorePointer(child: PlaceScenery(PlaceArt.sceneryOf(m), map: SeasonMap.ofMission(m.id))),
+              child: IgnorePointer(child: PlaceScenery.scene(PlaceArt.sceneryPlaceOf(m), map: SeasonMap.ofMission(m.id))),
             ),
             SafeArea(
               child: Center(

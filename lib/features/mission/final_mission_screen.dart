@@ -1097,10 +1097,10 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                               ? LetterLockReveal(
                                   animation: _open,
                                   word: m.answer,
-                                  place: _SceneReveal(scene: PlaceArt.sceneOf(m), animation: _open),
+                                  place: _SceneReveal(scene: PlaceArt.pictureOf(m), animation: _open),
                                 )
                               : _SceneReveal(
-                                  scene: PlaceArt.sceneOf(m),
+                                  scene: PlaceArt.pictureOf(m),
                                   animation: _open,
                                 ),
                         ),
@@ -1939,7 +1939,7 @@ class _CaseSolvedBanner extends StatelessWidget {
 class _SceneReveal extends StatelessWidget {
   const _SceneReveal({required this.scene, required this.animation});
 
-  final Artwork scene;
+  final MissionScene scene;
   final Animation<double> animation;
 
   @override
@@ -1952,13 +1952,13 @@ class _SceneReveal extends StatelessWidget {
           scale: 1 + 0.04 * t,
           child: Center(
             child: AspectRatio(
-              aspectRatio: LandmarkArt.aspectOf(scene),
+              aspectRatio: LandmarkArt.aspectOfScene(scene),
               child: PaperSheet(
                 padding: const EdgeInsets.all(AppSpace.sm),
                 tilt: -0.01,
                 // The picture changes with the solve (the Case 02 clock starts
                 // again): it times its own change over the reveal's progress.
-                child: LandmarkArt(
+                child: LandmarkArt.ofScene(
                   scene,
                   borderRadius: 2,
                   solved: animation.value,

@@ -82,11 +82,13 @@ void main() {
       expect(missions, isNotEmpty);
       for (final m in missions) {
         final json = m.toJson();
-        expect(json['scene'], m.scene.name, reason: m.id);
+        final art = m.scene;
+        expect(art, isNotNull, reason: m.id);
+        expect(m.place, ArtworkScene(art!), reason: m.id);
+        expect(json['scene'], art.name, reason: m.id);
         expect(json.containsKey('sceneKey'), isFalse, reason: m.id);
-        expect(MissionScene.fromJson(json), ArtworkScene(m.scene), reason: m.id);
-        expect(MissionScene.of(m), ArtworkScene(m.scene), reason: m.id);
-        expect(Mission.fromJson(json, finale: m.finale).scene, m.scene, reason: m.id);
+        expect(MissionScene.fromJson(json), ArtworkScene(art), reason: m.id);
+        expect(Mission.fromJson(json, finale: m.finale).scene, art, reason: m.id);
       }
       for (final s in SeasonCatalog.all) {
         for (final MapEntry(key: id, value: json) in ScenePlaceCheck.scenesOf(s).entries) {
@@ -95,10 +97,18 @@ void main() {
       }
     });
 
-    test('a mission at a season place is not played yet: no Mission is made of it', () {
+    test('a mission at a season place: parsed as one, written back with its sceneKey, never with a scene', () {
       final base = MockEpisodeRepository.bundled().first.missions.first.toJson();
-      expect(() => Mission.fromJson({...base}..remove('scene')..['sceneKey'] = 's3_tokyo.station'), throwsFormatException);
-      expect(() => Mission.fromJson({...base, 'sceneKey': 's3_tokyo.station'}), throwsFormatException);
+      final json = {...base}..remove('scene')..['sceneKey'] = 's3_tokyo.station';
+      final m = Mission.fromJson(json);
+      expect(m.place, const SeasonScene('s3_tokyo.station'));
+      expect(m.scene, isNull, reason: 'no Artwork: no page reads one for it');
+      final back = m.toJson();
+      expect(back['sceneKey'], 's3_tokyo.station');
+      expect(back.containsKey('scene'), isFalse);
+      expect(Mission.fromJson(back).place, m.place);
+      expect(() => Mission.fromJson({...base, 'sceneKey': 's3_tokyo.station'}), throwsFormatException, reason: 'both');
+      expect(() => Mission.fromJson({...base}..remove('scene')), throwsFormatException, reason: 'neither');
     });
   });
 

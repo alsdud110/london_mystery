@@ -249,12 +249,12 @@ void main() {
     expect(PlaceArt.sceneOf(m['ep04_m1']!), Artwork.oldSuitcase, reason: 'an old brown suitcase');
     expect(PlaceArt.sceneOf(m['ep08_m1']!), Artwork.blackSuitcase, reason: "Case 08's suitcase is black");
     for (final id in ['ep05_m3', 'ep10_m1', 'ep10_m2', 'ep10_final', 'ep12_m3']) {
-      expect(LandmarkArt.hasPicture(PlaceArt.sceneOf(m[id]!)), isTrue, reason: '$id shows the Tower raven');
+      expect(LandmarkArt.hasPicture(PlaceArt.sceneOf(m[id]!)!), isTrue, reason: '$id shows the Tower raven');
     }
     expect(PlaceArt.placeOf(m['ep10_final']!), Artwork.towerBridge);
     // Every mission arrives at a place with a picture.
     for (final mission in m.values) {
-      expect(LandmarkArt.hasPicture(PlaceArt.placeOf(mission)), isTrue, reason: mission.id);
+      expect(LandmarkArt.hasPicture(PlaceArt.placeOf(mission)!), isTrue, reason: mission.id);
     }
   });
 

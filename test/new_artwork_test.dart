@@ -29,7 +29,7 @@ void main() {
   final catalog = MockEpisodeRepository.bundled();
   Episode byId(String id) => catalog.firstWhere((e) => e.id == id);
   Mission mission(String id) => catalog.expand((e) => e.allMissions).firstWhere((m) => m.id == id);
-  String? fileOf(String id) => ArtAssets.scene(PlaceArt.sceneOf(mission(id)));
+  String? fileOf(String id) => ArtAssets.scene(PlaceArt.sceneOf(mission(id))!);
 
   const gallery = 'assets/seasons/season_01_london/locations/british_museum/british_museum_gallery_8.png';
   const theatre = 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_theatre.png';

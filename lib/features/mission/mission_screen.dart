@@ -1920,7 +1920,7 @@ class _StoryStage extends StatelessWidget {
               constraints: BoxConstraints(
                 maxWidth:
                     own == null &&
-                        LandmarkArt.aspectOf(PlaceArt.sceneOf(m)) < 1.2
+                        LandmarkArt.aspectOfScene(PlaceArt.pictureOf(m)) < 1.2
                     ? 240
                     : double.infinity,
               ),
@@ -1929,9 +1929,9 @@ class _StoryStage extends StatelessWidget {
                 tilt: -0.01,
                 child: own == null
                     ? AspectRatio(
-                        aspectRatio: LandmarkArt.aspectOf(PlaceArt.sceneOf(m)),
-                        child: LandmarkArt(
-                          PlaceArt.sceneOf(m),
+                        aspectRatio: LandmarkArt.aspectOfScene(PlaceArt.pictureOf(m)),
+                        child: LandmarkArt.ofScene(
+                          PlaceArt.pictureOf(m),
                           borderRadius: 2,
                         ),
                       )

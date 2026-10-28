@@ -134,12 +134,12 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
           if (story?.after case final after?)
             PlaceScenery.story(after, imageKey: const ValueKey('scene-backdrop'))
           else
-            PlaceScenery(
+            PlaceScenery.scene(
               afterCase
-                  ? PlaceArt.sceneryOf(m)
+                  ? PlaceArt.sceneryPlaceOf(m)
                   : next == null
                   ? null
-                  : PlaceArt.sceneryOf(next),
+                  : PlaceArt.sceneryPlaceOf(next),
               map: SeasonMap.ofMission(m.id),
             ),
           InkSurface(
@@ -241,7 +241,7 @@ class _StorySceneScreenState extends ConsumerState<StorySceneScreen> {
                                         _UnlockedCard(
                                           nextLocation: next.location,
                                           isFinal: next.isFinal,
-                                          art: PlaceArt.placeOf(next),
+                                          art: PlaceArt.arrivalOf(next),
                                           picture: story?.next,
                                         ),
                                       const SizedBox(height: AppSpace.lg),
@@ -298,7 +298,7 @@ class _UnlockedCard extends StatelessWidget {
 
   final String nextLocation;
   final bool isFinal;
-  final Artwork art;
+  final MissionScene art;
 
   /// The next place as the story will find it (Paris), in place of [art].
   final StoryPicture? picture;
@@ -325,9 +325,9 @@ class _UnlockedCard extends StatelessWidget {
               )
             else
               SizedBox(
-                width: LandmarkArt.hasPicture(art) ? 72 * LandmarkArt.aspectOf(art) : 72,
+                width: LandmarkArt.hasPictureOf(art) ? 72 * LandmarkArt.aspectOfScene(art) : 72,
                 height: 72,
-                child: LandmarkArt(art, borderRadius: LandmarkArt.hasPicture(art) ? 2 : 6),
+                child: LandmarkArt.ofScene(art, borderRadius: LandmarkArt.hasPictureOf(art) ? 2 : 6),
               ),
             const SizedBox(width: AppSpace.md),
             Expanded(

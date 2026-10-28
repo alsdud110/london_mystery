@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../models/abbesses_puzzles.dart';
 import '../models/case_talk.dart';
 import '../models/clock_puzzle.dart';
@@ -152,8 +154,8 @@ class SeasonContent {
   /// The places the season registers as data, by season place id
   /// (`s3_tokyo.station`, see [ScenePlaceIds]): a new season's places, with
   /// no [Artwork] value. Seasons 1 and 2 have none (their places are
-  /// [Artwork] scenes). Checked by `ScenePlaceCheck`; no screen shows them
-  /// yet.
+  /// [Artwork] scenes). A mission names one by `sceneKey`; the pages show
+  /// its picture ([placeFor]). Checked by `ScenePlaceCheck`.
   final Map<String, ScenePlace> places;
 
   /// Whether the season is out for players. An unreleased season stays
@@ -573,7 +575,17 @@ abstract final class SeasonCatalog {
   /// The place season place id [id] names, registered by the season the id
   /// names (see [SeasonContent.places]), or null.
   static ScenePlace? place(String id) =>
-      byId(ScenePlaceIds.seasonOf(id) ?? '')?.places[id];
+      byId(ScenePlaceIds.seasonOf(id) ?? '')?.places[id] ?? testPlaces[id];
+
+  /// The place [id] names, for a page to show: a [StateError] when no season
+  /// registers it (never another place's picture in its stead).
+  static ScenePlace placeFor(String id) =>
+      place(id) ?? (throw StateError('Season place $id is not registered (SeasonContent.places)'));
+
+  /// Places of a season that is not in the game, registered by a test only
+  /// (cleared by it): the game's own are its seasons'.
+  @visibleForTesting
+  static final Map<String, ScenePlace> testPlaces = {};
 
   /// Mission id → its season and case, from the cases' own missions (the
   /// cases awaiting their pictures too: their content is checked by id).

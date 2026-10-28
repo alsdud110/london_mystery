@@ -546,7 +546,7 @@ class _CaseFile extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       if (emblem == null)
-                        _Photo(scene: PlaceArt.sceneOf(report.episode.finalMission))
+                        _Photo(scene: PlaceArt.pictureOf(report.episode.finalMission))
                       else
                         const SizedBox(key: ValueKey('case-closed-stamp-spot'), width: 112, height: 64),
                       if (stamp > 0)
@@ -728,7 +728,7 @@ class _Stamp extends StatelessWidget {
 class _Photo extends StatelessWidget {
   const _Photo({required this.scene});
 
-  final Artwork scene;
+  final MissionScene scene;
 
   @override
   Widget build(BuildContext context) {
@@ -736,7 +736,7 @@ class _Photo extends StatelessWidget {
       angle: 0.05,
       child: Container(
         // A picture shows whole at its own ratio; a drawing stays square.
-        width: LandmarkArt.hasPicture(scene, solved: 1) ? 86 * LandmarkArt.aspectOf(scene, solved: 1) + 10 : 96,
+        width: LandmarkArt.hasPictureOf(scene, solved: 1) ? 86 * LandmarkArt.aspectOfScene(scene, solved: 1) + 10 : 96,
         height: 96,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
@@ -744,7 +744,7 @@ class _Photo extends StatelessWidget {
           boxShadow: AppShadow.paperLift,
           borderRadius: BorderRadius.circular(AppRadius.paper),
         ),
-        child: LandmarkArt(scene, borderRadius: AppRadius.paper, solved: 1),
+        child: LandmarkArt.ofScene(scene, borderRadius: AppRadius.paper, solved: 1),
       ),
     );
   }

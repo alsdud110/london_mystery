@@ -20,18 +20,38 @@ import 'scene_backdrop.dart';
 /// with no picture of its own shows its season's [map] instead (London by
 /// default), or only the night when that season has no map.
 class PlaceScenery extends StatelessWidget {
-  const PlaceScenery(this.place, {super.key, this.map = SeasonMap.london}) : file = null, story = null, imageKey = null;
+  const PlaceScenery(this.place, {super.key, this.map = SeasonMap.london})
+    : scene = null,
+      file = null,
+      story = null,
+      imageKey = null;
+
+  /// A mission's place ([MissionScene]): an [Artwork] exactly as
+  /// [PlaceScenery.new] shows it, or a season place's own picture (it has
+  /// no map stand-in: an unregistered one is an error).
+  const PlaceScenery.scene(this.scene, {super.key, this.map = SeasonMap.london})
+    : place = null,
+      file = null,
+      story = null,
+      imageKey = null;
 
   /// A place's own picture file that is no scene of the map (a room the
   /// people of a mission stand in), with the same treatment.
-  const PlaceScenery.file(String this.file, {super.key}) : place = null, map = null, story = null, imageKey = null;
+  const PlaceScenery.file(String this.file, {super.key}) : place = null, scene = null, map = null, story = null, imageKey = null;
 
   /// A picture of the story at this moment (Paris: the scene after a
   /// mission), with the same treatment: a part of a scene shown whole and
   /// close, or an object cut out, whole in the middle of the night.
-  const PlaceScenery.story(StoryPicture this.story, {super.key, this.imageKey}) : place = null, map = null, file = null;
+  const PlaceScenery.story(StoryPicture this.story, {super.key, this.imageKey})
+    : place = null,
+      scene = null,
+      map = null,
+      file = null;
 
   final Artwork? place;
+
+  /// A mission's place, an [Artwork] or a season place (see [PlaceScenery.scene]).
+  final MissionScene? scene;
   final String? file;
   final StoryPicture? story;
 
@@ -43,7 +63,10 @@ class PlaceScenery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scene = place;
+    final scene = this.scene ?? switch (place) {
+      final art? => ArtworkScene(art),
+      null => null,
+    };
     final own = file;
     final map = this.map;
     final story = this.story;
@@ -73,8 +96,8 @@ class PlaceScenery extends StatelessWidget {
           errorBuilder: (context, error, stack) => const SizedBox.expand(),
         ),
       );
-    } else if (scene != null && LandmarkArt.hasPicture(scene)) {
-      picture = LandmarkArt.backdrop(scene);
+    } else if (scene != null && LandmarkArt.hasPictureOf(scene)) {
+      picture = LandmarkArt.backdropOf(scene);
     } else if (map == null) {
       picture = const SizedBox.expand();
     } else {

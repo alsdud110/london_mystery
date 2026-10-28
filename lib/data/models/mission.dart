@@ -218,6 +218,81 @@ enum Artwork {
       Artwork.values.firstWhere((a) => a.name == value, orElse: () => throw FormatException('Unknown artwork: $value'));
 }
 
+/// Where a mission happens, as its data names it: one of the shared
+/// [Artwork] scenes (`'scene'`, every case of Seasons 1 and 2), or a place
+/// its season registers (`'sceneKey'`, a season place id such as
+/// `s3_tokyo.station`; see `ScenePlace`). A mission names exactly one.
+@immutable
+sealed class MissionScene {
+  const MissionScene();
+
+  /// The scene a mission's JSON names. Throws a [FormatException] when it
+  /// names both, or neither, or an [Artwork] that does not exist. Whether a
+  /// season place is registered is checked where it is looked up
+  /// (`SeasonCatalog.placeFor`, `ScenePlaceCheck`).
+  factory MissionScene.fromJson(Map<String, dynamic> json) {
+    final scene = json['scene'];
+    final key = json['sceneKey'];
+    final id = json['id'];
+    return switch ((scene, key)) {
+      (final String name, null) => ArtworkScene(Artwork.fromJson(name)),
+      (null, final String key) => SeasonScene(key),
+      (null, null) => throw FormatException('Mission $id names no scene (scene or sceneKey)'),
+      _ => throw FormatException('Mission $id must name either scene or sceneKey, of text, not both'),
+    };
+  }
+
+  /// Its own name: the [Artwork]'s, or the season place id.
+  String get key;
+
+  /// As a mission's JSON names it (`scene` or `sceneKey`).
+  Map<String, String> toJson();
+}
+
+/// A shared [Artwork] scene.
+final class ArtworkScene extends MissionScene {
+  const ArtworkScene(this.artwork);
+
+  final Artwork artwork;
+
+  @override
+  String get key => artwork.name;
+
+  @override
+  Map<String, String> toJson() => {'scene': artwork.name};
+
+  @override
+  bool operator ==(Object other) => other is ArtworkScene && other.artwork == artwork;
+
+  @override
+  int get hashCode => artwork.hashCode;
+
+  @override
+  String toString() => 'ArtworkScene(${artwork.name})';
+}
+
+/// A place its season registers (`ScenePlace`), by its season place id.
+final class SeasonScene extends MissionScene {
+  const SeasonScene(this.id);
+
+  final String id;
+
+  @override
+  String get key => id;
+
+  @override
+  Map<String, String> toJson() => {'sceneKey': id};
+
+  @override
+  bool operator ==(Object other) => other is SeasonScene && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() => 'SeasonScene($id)';
+}
+
 @immutable
 class ChoiceOption {
   const ChoiceOption({required this.id, required this.label, this.artwork, this.feedback, this.altText});
@@ -385,7 +460,7 @@ class Mission {
     required this.title,
     required this.location,
     required this.story,
-    required this.scene,
+    required this.place,
     required this.letterIntro,
     required this.letter,
     required this.type,
@@ -425,7 +500,18 @@ class Mission {
   final String title;
   final String location;
   final List<String> story;
-  final Artwork scene;
+
+  /// Where the mission happens, as its data names it: a shared [Artwork]
+  /// scene, or a place its season registers ([SeasonScene]).
+  final MissionScene place;
+
+  /// The mission's [Artwork] scene, or null when it happens at a season
+  /// place ([place] is a [SeasonScene]): every mission of Seasons 1 and 2
+  /// has one.
+  Artwork? get scene => switch (place) {
+    ArtworkScene(:final artwork) => artwork,
+    SeasonScene() => null,
+  };
   final String letterIntro;
   final String letter;
   final MissionType type;
@@ -517,16 +603,6 @@ class Mission {
     _ => answer,
   };
 
-  /// The [Artwork] a mission's JSON names. A mission at a place its season
-  /// registers (`sceneKey`, see `MissionScene`) is not played until the
-  /// screens can show it: refused here, so none reaches a page.
-  static String _sceneName(Map<String, dynamic> json) {
-    if (json.containsKey('sceneKey')) {
-      throw FormatException('Mission ${json['id']}: a season place (sceneKey) is not shown by the screens yet');
-    }
-    return json['scene'] as String;
-  }
-
   factory Mission.fromJson(Map<String, dynamic> json, {bool finale = false, Difficulty difficulty = Difficulty.standard}) =>
       Mission(
     finale: finale,
@@ -536,7 +612,7 @@ class Mission {
     title: json['title'] as String,
     location: json['location'] as String,
     story: (json['story'] as List).cast<String>(),
-    scene: Artwork.fromJson(_sceneName(json)),
+    place: MissionScene.fromJson(json),
     letterIntro: json['letterIntro'] as String,
     letter: json['letter'] as String,
     type: MissionType.fromJson(json['type'] as String),
@@ -571,7 +647,7 @@ class Mission {
     'title': title,
     'location': location,
     'story': story,
-    'scene': scene.name,
+    ...place.toJson(),
     'letterIntro': letterIntro,
     'letter': letter,
     'type': type.name,

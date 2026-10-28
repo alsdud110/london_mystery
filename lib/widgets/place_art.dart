@@ -62,8 +62,16 @@ abstract final class PlaceArt {
 
   /// The scene of [m] on its mission page, final case, case photo and board
   /// print: its own scene (a puzzle scene such as the suitcase stays), or
-  /// the room it happens in.
-  static Artwork sceneOf(Mission m) => missionScenes[m.id] ?? m.scene;
+  /// the room it happens in. Null for a mission at a season place: see
+  /// [pictureOf].
+  static Artwork? sceneOf(Mission m) => missionScenes[m.id] ?? m.scene;
+
+  /// What [sceneOf] shows, for every mission: its [Artwork] scene, or the
+  /// season place it happens at ([SeasonScene], its own picture).
+  static MissionScene pictureOf(Mission m) => switch (missionScenes[m.id]) {
+    final room? => ArtworkScene(room),
+    null => m.place,
+  };
 
   /// Places that stand on the map at a landmark whose picture is not them,
   /// as the story arrives there: the Royal Archive (Case 01's final) is
@@ -75,14 +83,27 @@ abstract final class PlaceArt {
   /// The picture to fill a screen with for [m]'s place.
   static Artwork? sceneryOf(Mission m) => placeOf(m);
 
+  /// What [sceneryOf] fills a screen with, for every mission (see
+  /// [arrivalOf]).
+  static MissionScene sceneryPlaceOf(Mission m) => arrivalOf(m);
+
   /// The place [m] happens at, as the detective arrives there: the room
   /// inside a landmark if it has one, else the landmark itself (King's
-  /// Cross, not the suitcase found there), else its scene.
-  static Artwork placeOf(Mission m) {
+  /// Cross, not the suitcase found there), else its scene. Null for a
+  /// mission at a season place: see [arrivalOf].
+  static Artwork? placeOf(Mission m) {
     final own = _missionPlaces[m.id];
     if (own != null) return own;
     final scene = sceneOf(m);
+    if (scene == null) return null;
     if (inside.contains(scene)) return scene;
     return SeasonMap.landmarkOf(m.id)?.artwork ?? scene;
   }
+
+  /// What [placeOf] arrives at, for every mission: a mission at a season
+  /// place arrives at that place itself (its picture is the place's own).
+  static MissionScene arrivalOf(Mission m) => switch (placeOf(m)) {
+    final art? => ArtworkScene(art),
+    null => m.place,
+  };
 }

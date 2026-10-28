@@ -342,7 +342,7 @@ class _CasePhoto extends StatelessWidget {
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
       children: [
-        SizedBox.fromSize(size: size, child: PhotoPrint(PlaceArt.sceneOf(episode.finalMission), border: math.max(2.5, size.height * 0.05))),
+        SizedBox.fromSize(size: size, child: PhotoPrint(PlaceArt.pictureOf(episode.finalMission), border: math.max(2.5, size.height * 0.05))),
         if (tag > 0)
           Positioned(
             left: -size.width * 0.08,

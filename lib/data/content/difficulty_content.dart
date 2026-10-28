@@ -305,7 +305,7 @@ abstract final class DifficultyContent {
         m.id,
         m.number,
         m.type.name,
-        m.scene.name,
+        m.place.key,
         m.answer,
         m.acceptedAnswers.join(','),
         m.codeLength,
