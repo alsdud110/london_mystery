@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../data/models/mission.dart';
-import '../../../data/models/season.dart' show SeasonIds;
 import '../../../widgets/art_assets.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/landmark_art.dart';
+import '../../mission_map/map_world.dart';
 
 /// Things lying on the detective's desk and board in the season pages: the
 /// old London map, photo prints, push-pins and paper tags. Built from the
@@ -31,10 +31,12 @@ class MapPrint extends StatelessWidget {
   final String file;
   final Size pixels;
 
-  /// The print of season [seasonId]'s map: London's, or Paris's.
-  factory MapPrint.ofSeason(String seasonId, {double strength = 0.6}) => seasonId == SeasonIds.paris
-      ? MapPrint(strength: strength, file: ArtAssets.parisMap, pixels: ArtAssets.parisMapPixels)
-      : MapPrint(strength: strength);
+  /// The print of season [seasonId]'s map ([SeasonMap.forSeason]); London's
+  /// for a season without one.
+  factory MapPrint.ofSeason(String seasonId, {double strength = 0.6}) => switch (SeasonMap.forSeason(seasonId)) {
+    final map? => MapPrint(strength: strength, file: map.artwork, pixels: map.pixels),
+    null => MapPrint(strength: strength),
+  };
 
   @override
   Widget build(BuildContext context) {

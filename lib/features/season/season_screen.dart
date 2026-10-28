@@ -344,23 +344,13 @@ class _CoverPanorama extends StatelessWidget {
   /// The season whose cover this is (see [ArtAssets.seasonCovers]).
   final String seasonId;
 
-  /// Each cover's crop when the phone is narrower than the painting (9:16),
-  /// and where the camera pushes in. London leans right: Big Ben stands
-  /// near the right edge; the gas lamp on the left gives up a little of its
-  /// edge instead. Paris keeps the Eiffel Tower on the left and Notre-Dame
-  /// on the right, the push towards the river between them.
-  static const _looks = {
-    SeasonIds.london: (Alignment(0.6, 0), Alignment(0.7, -0.15)),
-    SeasonIds.paris: (Alignment(0.3, 0), Alignment(0.2, -0.2)),
-  };
-
   @override
   Widget build(BuildContext context) {
     final cover = ArtAssets.seasonCovers[seasonId];
     // A season without a cover: the night only (never another season's).
     if (cover == null) return const PaperBackground(night: true, child: SizedBox.expand());
-    final (file, pixels, _) = cover;
-    final (focus, push) = _looks[seasonId] ?? (Alignment.center, Alignment.center);
+    // Its crop on a narrow phone, and where the camera pushes in.
+    final SeasonCover(:file, :pixels, crop: focus, :push) = cover;
     return ClipRect(
       child: LayoutBuilder(
         builder: (context, box) => Transform.scale(

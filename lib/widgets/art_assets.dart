@@ -1,8 +1,10 @@
 import 'dart:ui' show Offset, Rect, Size;
 
-import '../core/constants/app_constants.dart';
+import 'package:flutter/painting.dart' show Alignment;
+
 import '../data/models/mission.dart';
 import '../data/models/profile.dart';
+import '../data/models/season.dart' show SeasonIds;
 import '../features/game/scoring.dart';
 
 /// The two pictures of the Royal Box: shut, and open with the Crown inside,
@@ -133,15 +135,31 @@ abstract final class ArtAssets {
   /// Pixel size of [season2GareDuNord] (never decoded larger).
   static const season2GareDuNordPixels = Size(941, 1671);
 
-  /// Each season's cover by season id: its picture, its pixel size, and
-  /// where its file's strip in the Detective Archives looks (an alignment,
-  /// -1..1 each way). A season without one shows its file without a
-  /// picture (never another season's).
-  static const seasonCovers = <String, (String, Size, Offset)>{
-    // The city under the evening sky, not the balcony.
-    AppConstants.firstSeasonId: (season1CoverLondonPanorama, season1CoverLondonPanoramaPixels, Offset(0, 0.1)),
-    // The Eiffel Tower and Notre-Dame over the Seine, not the café table.
-    's2_paris': (season2CoverParisPanorama, season2CoverParisPanoramaPixels, Offset(0.1, -0.25)),
+  /// Each season's cover by season id (see [SeasonCover]): the one place a
+  /// season's cover is registered. A season without one shows its file
+  /// without a picture, and its board the night only (never another
+  /// season's).
+  static const seasonCovers = <String, SeasonCover>{
+    SeasonIds.london: SeasonCover(
+      file: season1CoverLondonPanorama,
+      pixels: season1CoverLondonPanoramaPixels,
+      // The city under the evening sky, not the balcony.
+      archiveLook: Alignment(0, 0.1),
+      // Big Ben stands near the right edge; the gas lamp on the left gives
+      // up a little of its edge instead.
+      crop: Alignment(0.6, 0),
+      push: Alignment(0.7, -0.15),
+    ),
+    SeasonIds.paris: SeasonCover(
+      file: season2CoverParisPanorama,
+      pixels: season2CoverParisPanoramaPixels,
+      // The Eiffel Tower and Notre-Dame over the Seine, not the café table.
+      archiveLook: Alignment(0.1, -0.25),
+      // The Eiffel Tower on the left, Notre-Dame on the right, the push
+      // towards the river between them.
+      crop: Alignment(0.3, 0),
+      push: Alignment(0.2, -0.2),
+    ),
   };
 
   /// The first scene of the Season 1 opening: a warm London night on the
@@ -733,4 +751,31 @@ abstract final class ArtAssets {
   /// Scenes that show differently once their case is solved (the clock's
   /// drawn hands; drawn in code, its hands turn too).
   static const changesWhenSolved = {Artwork.clockFace};
+}
+
+/// A season's cover painting (portrait, no text) and how it is framed.
+class SeasonCover {
+  const SeasonCover({
+    required this.file,
+    required this.pixels,
+    this.archiveLook = Alignment.center,
+    this.crop = Alignment.center,
+    this.push = Alignment.center,
+  });
+
+  /// The picture's asset.
+  final String file;
+
+  /// Its pixel size (never decoded larger).
+  final Size pixels;
+
+  /// Where the season's file strip in the Detective Archives looks.
+  final Alignment archiveLook;
+
+  /// The season board's crop when the phone is narrower than the painting
+  /// (9:16).
+  final Alignment crop;
+
+  /// Where the season board's camera pushes in.
+  final Alignment push;
 }

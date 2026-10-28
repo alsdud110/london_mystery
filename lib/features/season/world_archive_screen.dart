@@ -276,11 +276,11 @@ class _CoverStrip extends StatelessWidget {
   const _CoverStrip(this.cover);
 
   /// The season's cover (see [ArtAssets.seasonCovers]).
-  final (String, Size, Offset) cover;
+  final SeasonCover cover;
 
   @override
   Widget build(BuildContext context) {
-    final (file, pixels, look) = cover;
+    final SeasonCover(:file, :pixels, archiveLook: look) = cover;
     final dpr = MediaQuery.devicePixelRatioOf(context);
     return AspectRatio(
       aspectRatio: 2,
@@ -288,7 +288,7 @@ class _CoverStrip extends StatelessWidget {
         builder: (context, box) => Image.asset(
           file,
           fit: BoxFit.cover,
-          alignment: Alignment(look.dx, look.dy),
+          alignment: look,
           cacheWidth: math.min((box.maxWidth * dpr).ceil(), pixels.width.toInt()),
           excludeFromSemantics: true,
           errorBuilder: (context, error, stack) => const SizedBox.expand(),

@@ -95,7 +95,9 @@ class SeasonMap {
     namesClearOfCurrent: true,
   );
 
-  /// Every season's map by season id. A season without one is not ready:
+  /// Every season's map by season id: the one place a season's map is
+  /// registered (its Mission Map, and its print on the season board,
+  /// `MapPrint.ofSeason`). A season without one is not ready:
   /// it cannot be entered (see `SeasonAvailability`), and no other season's
   /// map ever stands in for it. A map alone opens no season: it needs its
   /// cases too.

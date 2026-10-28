@@ -73,8 +73,8 @@ void main() {
     expect((u32(16), u32(20)), (941, 1671));
     expect(ArtAssets.season2CoverParisPanoramaPixels.width, 941);
     expect(ArtAssets.season2CoverParisPanoramaPixels.height, 1671);
-    expect(ArtAssets.seasonCovers[SeasonIds.paris]!.$1, paris);
-    expect(ArtAssets.seasonCovers[SeasonIds.london]!.$1, london, reason: 'London\'s cover unchanged');
+    expect(ArtAssets.seasonCovers[SeasonIds.paris]!.file, paris);
+    expect(ArtAssets.seasonCovers[SeasonIds.london]!.file, london, reason: 'London\'s cover unchanged');
     expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/seasons/season_02_paris/cover/'));
   });
 
