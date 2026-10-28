@@ -16,7 +16,8 @@ Flutter, so it runs with plain `dart run`.
 | `schema/*.schema.json` | The plans' JSON Schemas (`common`, `season_plan`, `case_plan`, `mission_plan`, `puzzle_plan`) |
 | `puzzle_selection_check.dart` | `PuzzleSelectionCheck`: whether a plan's puzzles can be played by the palette's engines (STEP 3-3) |
 | `palette_facts.dart` | `PaletteFacts`: the game's `PuzzlePalette` and dial symbols, copied for plain `dart run` (written and checked by `test/season_gen/palette_facts_test.dart`) |
-| `validate_plan.dart` | Command line: schema, then model, then structure, then puzzle selection |
+| `clue_graph_check.dart` | `ClueGraphCheck`: whether every clue a mission is given is found before it (STEP 3-4) |
+| `validate_plan.dart` | Command line: schema, then model, then structure, then puzzle selection and clue graph |
 
 ```sh
 dart run tool/season_gen/validate_plan.dart \
@@ -84,6 +85,50 @@ holds, which are a level's words (letter, question, hints…) and which are
 its engine's own data (scene models, pixels). Neither of the last two is
 checked here: they are written with the Dart content.
 
-Not checked here: the clue graph (STEP 3-4); the Dart content and its
+Not checked here: the clue graph (below); the Dart content and its
 engine collisions (`PuzzleEngineCollisionCheck`, on the made
 `SeasonContent`); whether pictures exist or are approved (STEP 3-8).
+
+
+## Clue graph (STEP 3-4)
+
+`ClueGraphCheck` runs on case plans whose format and structure hold, as the
+puzzle selection does. A clue is anything a mission leaves (`clueOutputs`:
+its `clue`, `evidence` and `facts`); a use is a `clueInputs` entry of any
+kind (`textMention` too). Story words are never read.
+
+- **Play order** is the plans' own: a case's `missions` as listed, then its
+  `final`; the cases as the season plan's acts list them, never by their
+  numbers. Plans have no optional mission and no branch, so every player
+  finds every clue, in that one order.
+- **Clue ids name their case** (`s3_ep03_c1`, and `PlanCheck` keeps every
+  output of its own case), so one id is one clue in the whole season.
+- **`ClueGraphCheck.casePlan(plan, {available})`** judges the case's own
+  clues. A clue of another case is checked against `available` (the clues
+  of the cases before), or, with none given, left `unresolved` for the
+  season. It never reports a clue as unused: a later case may use it.
+- **`ClueGraphCheck.season(season, cases)`** is the verdict: each case's
+  own findings, then those between cases. An input of a case whose plan is
+  not given stays `unresolved`; `complete` says every case was given.
+
+The report holds every clue's producers and consumers (`producersOf`,
+`consumersOf`); each finding its code, case, path, clue, the input that
+asks for it (`requiredAt`) and the outputs that leave it (`producedAt`),
+and `toJson()` for a generator to read back.
+
+| Code | Weight | When |
+|---|---|---|
+| `clue_not_found` | error | no mission leaves the clue (its case's plan given), or its case is not of the season, or (a case alone with `available`) it is not given |
+| `clue_used_before_discovery` | error | the clue is left only by a later mission or a later case (that case given or not) |
+| `clue_duplicate_output` | error | two missions leave the same id: a clue is found once |
+| `clue_dependency_cycle` | error | a mission is given the clue it leaves itself |
+| `case_not_in_season` / `case_given_twice` | error | a case plan the season cannot place (`season` only) |
+| `clue_never_used` | warning | no mission is given the clue; only once every case after its own is given, and never for the season's last final |
+
+In one play order, every dependency cycle of more than one mission runs
+through a clue asked for before it is found: it is reported once, as
+`clue_used_before_discovery`, with the cycle's missions named on it.
+
+The command line runs `casePlan` on each case file (cross-case clues left
+open, counted in its summary), then, with `--season`, `season` on the case
+files given and prints the findings between cases.

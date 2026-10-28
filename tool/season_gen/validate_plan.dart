@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'clue_graph_check.dart';
 import 'json_schema_lite.dart';
 import 'plan_check.dart';
 import 'plan_files.dart';
@@ -8,9 +9,10 @@ import 'puzzle_selection_check.dart';
 
 /// Checks plan files: each against its JSON Schema, read as its model, its
 /// structure (`PlanCheck`), then a case plan's puzzle selection
-/// (`PuzzleSelectionCheck`). A case plan is checked against the season
-/// plan given with `--season`; the case plans given together, for their
-/// puzzles' variety across cases.
+/// (`PuzzleSelectionCheck`) and clue graph (`ClueGraphCheck`). A case plan
+/// is checked against the season plan given with `--season`; the case
+/// plans given together, for their puzzles' variety across cases and, with
+/// `--season`, for the clues one case leaves another.
 ///
 ///     dart run tool/season_gen/validate_plan.dart [--season season.plan.json] <plan.json>...
 ///
@@ -42,7 +44,8 @@ void main(List<String> args) {
     errors += r.errors.length;
     warnings += r.warnings.length;
     if (r.casePlan case final c?) (cases[c.seasonId] ??= []).add(c);
-    stdout.writeln('${r.errors.isEmpty ? 'ok     ' : 'FAILED '} $path${r.summary == null ? '' : '  (${r.summary})'}');
+    final summary = [?r.summary, ?r.clueSummary].join('; ');
+    stdout.writeln('${r.errors.isEmpty ? 'ok     ' : 'FAILED '} $path${summary.isEmpty ? '' : '  ($summary)'}');
     _print(r.errors, r.warnings);
   }
   for (final MapEntry(key: seasonId, value: plans) in cases.entries) {
@@ -51,6 +54,21 @@ void main(List<String> args) {
     warnings += found.length;
     stdout.writeln('season  $seasonId, ${plans.length} case plans');
     _print(const [], [for (final i in found) 'puzzles $i']);
+  }
+  // The clues between cases: in the season's order, so with its plan only
+  // (and one whose structure holds).
+  if (season != null && PlanCheck.season(season).isEmpty) {
+    final plans = cases[season.seasonId] ?? const [];
+    if (plans.isNotEmpty) {
+      final r = ClueGraphCheck.season(season, plans);
+      final found = [for (final i in r.issues) if (i.acrossCases) i];
+      errors += found.where((i) => i.isError).length;
+      warnings += found.where((i) => !i.isError).length;
+      final whole = r.complete ? 'all ${season.caseIds.length} cases' : '${plans.length} of ${season.caseIds.length} cases';
+      final open = r.unresolved.isEmpty ? '' : ', ${r.unresolved.length} clue inputs of cases not given unchecked';
+      stdout.writeln('clues   ${season.seasonId}, $whole$open');
+      _print([for (final i in found) if (i.isError) 'clues $i'], [for (final i in found) if (!i.isError) 'clues $i']);
+    }
   }
   stdout.writeln('$errors ${errors == 1 ? 'error' : 'errors'}, $warnings ${warnings == 1 ? 'warning' : 'warnings'}');
   exit(errors > 0 ? 1 : 0);
@@ -75,7 +93,7 @@ T? _tryLoad<T>(T Function() load) {
 
 /// What was found in one plan file.
 class PlanFileResult {
-  const PlanFileResult(this.errors, {this.warnings = const [], this.casePlan, this.selection});
+  const PlanFileResult(this.errors, {this.warnings = const [], this.casePlan, this.selection, this.clues});
 
   final List<String> errors;
   final List<String> warnings;
@@ -87,6 +105,10 @@ class PlanFileResult {
   /// structure hold; the selection is not looked at before they do).
   final SelectionReport? selection;
 
+  /// Its clue graph, the case alone (looked at once its structure holds):
+  /// the clues of other cases are left to the season's (`--season`).
+  final ClueGraphReport? clues;
+
   /// Its puzzles by what can be made of them.
   String? get summary {
     final s = selection;
@@ -97,11 +119,19 @@ class PlanFileResult {
     final wrong = s.fits.length - made.length - dev;
     return 'puzzles: $ready ready, ${made.length - ready} awaitingAssets, $dev devRequest${wrong > 0 ? ', $wrong with errors' : ''}';
   }
+
+  /// Its clues left and asked for, and those asked of other cases.
+  String? get clueSummary {
+    final c = clues;
+    if (c == null) return null;
+    final left = c.producers.values.fold(0, (n, l) => n + l.length);
+    return 'clues: $left left, ${c.inputs} asked for, ${c.unresolved.length} of other cases';
+  }
 }
 
 /// What is wrong with plan file [path]: its schema's findings, then its
 /// model's (format), then its structure's, then (a case plan whose
-/// structure holds) its puzzle selection's.
+/// structure holds) its puzzle selection's and its clue graph's.
 PlanFileResult check(String path, SchemaSet schemas, {SeasonPlan? season}) {
   final isSeason = path.endsWith('season.plan.json');
   if (!isSeason && !path.endsWith('case.plan.json')) return const PlanFileResult(['not a plan file name (*season.plan.json, *case.plan.json)']);
@@ -121,11 +151,13 @@ PlanFileResult check(String path, SchemaSet schemas, {SeasonPlan? season}) {
     out.addAll(PlanCheck.casePlan(plan, season: season).map((p) => 'structure $p'));
     if (out.isNotEmpty) return PlanFileResult(out);
     final selection = PuzzleSelectionCheck.casePlan(plan);
+    final clues = ClueGraphCheck.casePlan(plan);
     return PlanFileResult(
-      [for (final i in selection.errors) 'puzzles $i'],
-      warnings: [for (final i in selection.warnings) 'puzzles $i'],
+      [for (final i in selection.errors) 'puzzles $i', for (final i in clues.errors) 'clues $i'],
+      warnings: [for (final i in selection.warnings) 'puzzles $i', for (final i in clues.warnings) 'clues $i'],
       casePlan: plan,
       selection: selection,
+      clues: clues,
     );
   } on PlanFormatException catch (e) {
     out.add('model ${e.path}: ${e.message}');
