@@ -15,9 +15,10 @@
 ///   number, its missions' order, its season's acts). What a JSON Schema
 ///   cannot say.
 ///
-/// Not here yet: the clue graph (STEP 3-4), the palette fit (STEP 3-3),
-/// the levels' words, asset requests and approvals. A plan names what they
-/// will use (clue ids, palette ids, asset ids) and nothing more.
+/// Not here: the palette fit (STEP 3-3, `PuzzleSelectionCheck`), the clue
+/// graph (STEP 3-4, `ClueGraphCheck`); not yet: the levels' words, asset
+/// requests and approvals. A plan names what they will use (clue ids,
+/// palette ids, asset ids) and nothing more.
 library;
 
 import 'plan_ids.dart';
@@ -94,7 +95,7 @@ enum PuzzleStatus {
 }
 
 /// How a mission uses a clue it is given (STEP 3-1 §5.2). Only ways the game
-/// can play today; checked by the clue graph (STEP 3-4), not here.
+/// can play today. Every use asks for a clue found before (`ClueGraphCheck`).
 enum ClueUse {
   /// The answer is worked out from the clue's value.
   answerDerivation,

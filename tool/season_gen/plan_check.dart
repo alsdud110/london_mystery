@@ -16,9 +16,10 @@ class PlanIssue {
 /// their season and case, the acts' cases, the missions' order. What a JSON
 /// Schema cannot say; the format itself is the models' and the schemas'.
 ///
-/// Not checked here: the palette fit and engines (STEP 3-3), the clue graph
-/// — whether a clue exists, is found before it is used, and means one thing
-/// (STEP 3-4) —, the levels' words, the assets, the Dart content.
+/// Not checked here: the palette fit and engines (STEP 3-3,
+/// `PuzzleSelectionCheck`), the clue graph — whether a clue exists, is found
+/// before it is used, and is left once (STEP 3-4, `ClueGraphCheck`) —, the
+/// levels' words, the assets, the Dart content.
 abstract final class PlanCheck {
   /// What is wrong in [plan]'s structure, or nothing.
   static List<PlanIssue> season(SeasonPlan plan) {
