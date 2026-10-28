@@ -75,17 +75,18 @@ class GameButton extends StatefulWidget {
 class _GameButtonState extends State<GameButton> with TickerProviderStateMixin {
   bool _pressed = false;
 
-  /// The ready navy button catches the eye: a soft brass glint crosses it
-  /// ([_glint]); then it floats, lifting a little off the page and settling,
-  /// slowly, [_bobs] times, its shadow left on the page below (fainter and
-  /// wider as it rises); then it rests on the page a moment. While it rests
-  /// it waits on a timer, not on frames.
+  /// The ready navy button catches the eye: it floats, lifting a little off
+  /// the page and settling, slowly, [_bobs] times, its shadow left on the
+  /// page below (fainter and wider as it rises), a soft brass glint
+  /// ([_glint]) crossing it on every lift; then it rests on the page a
+  /// moment. While it rests it waits on a timer, not on frames.
   late final AnimationController _float = AnimationController(vsync: this, duration: _bob * _bobs);
-  late final AnimationController _glint = AnimationController(vsync: this, duration: _glintSweep);
+  late final Animation<double> _glint =
+      _float.drive(CurveTween(curve: const _GlintOnLift(bobs: _bobs, bob: _bob, sweep: _glintSweep)));
   Timer? _floatWait;
   static const _bob = Duration(milliseconds: 2400);
   static const _bobs = 3;
-  static const _glintSweep = Duration(milliseconds: 1100);
+  static const _glintSweep = Duration(milliseconds: 700);
   static const _floatRest = Duration(milliseconds: 1200);
   static const _floatFirst = Duration(milliseconds: 600);
 
@@ -113,7 +114,6 @@ class _GameButtonState extends State<GameButton> with TickerProviderStateMixin {
   void dispose() {
     _floatWait?.cancel();
     _float.dispose();
-    _glint.dispose();
     super.dispose();
   }
 
@@ -122,8 +122,7 @@ class _GameButtonState extends State<GameButton> with TickerProviderStateMixin {
       _floatWait?.cancel();
       _floatWait = null;
       _float.reset();
-      _glint.reset();
-    } else if (_floatWait == null && !_float.isAnimating && !_glint.isAnimating) {
+    } else if (_floatWait == null && !_float.isAnimating) {
       _floatWait = Timer(_floatFirst, _rise);
     }
   }
@@ -133,14 +132,10 @@ class _GameButtonState extends State<GameButton> with TickerProviderStateMixin {
       _floatWait = null;
       return;
     }
-    _glint.forward(from: 0).whenCompleteOrCancel(() {
-      if (!mounted || !_floats) return;
-      _glint.reset();
-      _float.forward(from: 0).whenCompleteOrCancel(() {
-        if (!mounted) return;
-        _float.reset();
-        _floatWait = _floats ? Timer(_floatRest, _rise) : null;
-      });
+    _float.forward(from: 0).whenCompleteOrCancel(() {
+      if (!mounted) return;
+      _float.reset();
+      _floatWait = _floats ? Timer(_floatRest, _rise) : null;
     });
   }
 
@@ -483,6 +478,24 @@ class _Glint extends CustomPainter {
 
   @override
   bool shouldRepaint(_Glint old) => old.progress != progress;
+}
+
+/// Where a floating [GameButton]'s glint is in its sweep, from how far the
+/// float has run: it crosses the face once on each of the [bobs] lifts,
+/// [sweep] long and centred on the rise (the first half of each [bob]).
+class _GlintOnLift extends Curve {
+  const _GlintOnLift({required this.bobs, required this.bob, required this.sweep});
+
+  final int bobs;
+  final Duration bob;
+  final Duration sweep;
+
+  @override
+  double transformInternal(double t) {
+    final intoBob = (t * bobs % 1) * bob.inMicroseconds;
+    final start = (bob.inMicroseconds / 2 - sweep.inMicroseconds) / 2;
+    return ((intoBob - start) / sweep.inMicroseconds).clamp(0.0, 1.0);
+  }
 }
 
 /// The hairline printed just inside a [GameButton]'s edge.
