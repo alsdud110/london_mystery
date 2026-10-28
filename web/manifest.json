@@ -1,6 +1,6 @@
 {
-    "name": "london_mystery",
-    "short_name": "london_mystery",
+    "name": "world_mystery",
+    "short_name": "world_mystery",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

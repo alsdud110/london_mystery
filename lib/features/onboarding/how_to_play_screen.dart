@@ -1095,7 +1095,7 @@ class _WelcomeSpread extends StatelessWidget {
                   const OrnamentRule(color: AppColors.goldLight, width: 110),
                   const SizedBox(height: AppSpace.xs),
                 ],
-                for (final word in const ['LONDON', 'MYSTERY'])
+                for (final word in const ['WORLD', 'MYSTERY'])
                   Text(
                     word,
                     textAlign: TextAlign.center,

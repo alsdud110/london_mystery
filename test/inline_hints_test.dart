@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/widgets/detective_tips.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/widgets/detective_tips.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';

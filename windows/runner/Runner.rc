@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "kr.co.jness" "\0"
-            VALUE "FileDescription", "london_mystery" "\0"
+            VALUE "FileDescription", "world_mystery" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "london_mystery" "\0"
+            VALUE "InternalName", "world_mystery" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 kr.co.jness. All rights reserved." "\0"
-            VALUE "OriginalFilename", "london_mystery.exe" "\0"
-            VALUE "ProductName", "london_mystery" "\0"
+            VALUE "OriginalFilename", "world_mystery.exe" "\0"
+            VALUE "ProductName", "world_mystery" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

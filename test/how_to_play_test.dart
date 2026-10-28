@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/widgets/letter_card.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/profile.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/onboarding/how_to_play_screen.dart';
-import 'package:london_mystery/features/mission/widgets/tip_shop.dart';
-import 'package:london_mystery/features/onboarding/how_to_play_state.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/game_button.dart';
+import 'package:world_mystery/widgets/letter_card.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/profile.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/features/onboarding/how_to_play_screen.dart';
+import 'package:world_mystery/features/mission/widgets/tip_shop.dart';
+import 'package:world_mystery/features/onboarding/how_to_play_state.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/game_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -55,7 +55,7 @@ void main() {
     'Your First Case Awaits!',
   ];
 
-  ProviderContainer app(WidgetTester t) => ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first);
+  ProviderContainer app(WidgetTester t) => ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first);
   String path(WidgetTester t) => app(t).read(routerProvider).routerDelegate.currentConfiguration.uri.toString();
 
   Future<void> pump(WidgetTester t, {Size size = const Size(390, 844), double scale = 1, Map<String, Object> prefs = const {}}) async {
@@ -66,7 +66,7 @@ void main() {
     addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
     await t.pumpWidget(ProviderScope(
       overrides: await testOverrides(prefs: prefs),
-      child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+      child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
     ));
     await wait(t, const Duration(milliseconds: 300));
   }
@@ -97,7 +97,7 @@ void main() {
     expect(find.bySemanticsLabel('Page 1 of 8'), findsOneWidget);
     // The opening spread: the game's name over London at night, the detective,
     // the welcome on its card.
-    expect(find.text('LONDON'), findsOneWidget);
+    expect(find.text('WORLD'), findsOneWidget);
     expect(find.text('MYSTERY'), findsOneWidget);
     expect(
         find.text("Your first mystery awaits. Let's find clues and solve mysteries in London!"),
@@ -120,7 +120,7 @@ void main() {
     // A restart: the same storage, a new app. START goes to the casebook.
     final prefs = await SharedPreferences.getInstance();
     await t.pumpWidget(const SizedBox());
-    await t.pumpWidget(ProviderScope(overrides: await testOverridesFor(prefs), child: const LondonMysteryApp()));
+    await t.pumpWidget(ProviderScope(overrides: await testOverridesFor(prefs), child: const WorldMysteryApp()));
     await wait(t, const Duration(milliseconds: 400));
     expect(app(t).read(howToPlaySeenProvider), isTrue, reason: 'saved');
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1500));

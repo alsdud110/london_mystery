@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/features/mission/final_mission_screen.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/desk_background.dart';
-import 'package:london_mystery/widgets/game_button.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/features/mission/final_mission_screen.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/desk_background.dart';
+import 'package:world_mystery/widgets/game_button.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
@@ -50,10 +50,10 @@ void main() {
             playMillis: 0,
           ).toJson()),
         }),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await wait(t, const Duration(milliseconds: 300));
-      final router = ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider);
+      final router = ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first).read(routerProvider);
       router.go(Routes.finalMission);
       await wait(t, const Duration(milliseconds: 1200));
 

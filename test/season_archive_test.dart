@@ -3,17 +3,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/models/profile.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/features/notebook/season_archive.dart';
+import 'package:world_mystery/data/models/profile.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/features/notebook/season_archive.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
@@ -179,7 +179,7 @@ void main() {
       overrides: await testOverrides(prefs: prefs),
       child: Consumer(builder: (context, ref, _) {
         appRef = ref;
-        return const LondonMysteryApp();
+        return const WorldMysteryApp();
       }),
     ));
     await wait(t);

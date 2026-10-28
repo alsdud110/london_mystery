@@ -54,7 +54,7 @@ class _DeviceDetectiveGateState extends State<DeviceDetectiveGate> {
             child: widget.child,
           ),
         final ProfileHold hold => MaterialApp(
-            title: 'London Mystery',
+            title: 'World Mystery',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(),
             home: DetectiveHoldScreen(hold: hold, onChoose: (id) => _choose(hold, id)),

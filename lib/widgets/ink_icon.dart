@@ -6,7 +6,7 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_text.dart';
 import '../core/theme/app_tokens.dart';
 
-/// London Mystery Ink Icon System — the game's one icon language: simple
+/// World Mystery Ink Icon System — the game's one icon language: simple
 /// monochrome ink line drawings (24 × 24 grid, 1.9 stroke, round ends, flat).
 ///
 /// Every icon in the game is `InkIcon(InkGlyph.x)`, sized with [AppIconSize]

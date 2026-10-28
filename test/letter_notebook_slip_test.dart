@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/widgets/letter_card.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/widgets/letter_card.dart';
 
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
@@ -46,10 +46,10 @@ void main() {
     addTearDown(t.view.reset);
     await t.pumpWidget(ProviderScope(
       overrides: await testOverrides(prefs: {AppConstants.progressStorageKey: jsonEncode(progress.toJson())}),
-      child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+      child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
     ));
     await wait(t, const Duration(milliseconds: 300));
-    return GoRouterLike(ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider).go);
+    return GoRouterLike(ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first).read(routerProvider).go);
   }
 
   /// The three ways a sheet closes, each after [open] brings it up again.
@@ -78,10 +78,10 @@ void main() {
       addTearDown(t.view.reset);
       await t.pumpWidget(ProviderScope(
         overrides: await testOverrides(prefs: prefsAt(MockEpisodeRepository.bundled(), 'ep04_m3')),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await wait(t, const Duration(milliseconds: 300));
-      final go = GoRouterLike(ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider).go);
+      final go = GoRouterLike(ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first).read(routerProvider).go);
       go.go(Routes.mission('ep04_m3'));
       await wait(t, const Duration(milliseconds: 1200));
       // On a small phone the tip link may sit below the answer, a scroll away.

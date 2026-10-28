@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/case_talk.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/case_talk.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show tapText, wait;
@@ -87,7 +87,7 @@ void main() {
       ],
       child: Consumer(builder: (context, r, _) {
         ref = r;
-        return const LondonMysteryApp();
+        return const WorldMysteryApp();
       }),
     ));
     await wait(t, const Duration(milliseconds: 300));

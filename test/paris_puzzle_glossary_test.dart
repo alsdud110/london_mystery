@@ -2,11 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/mission/widgets/post_trail.dart';
-import 'package:london_mystery/features/mission/widgets/river_papers.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/mission/widgets/post_trail.dart';
+import 'package:world_mystery/features/mission/widgets/river_papers.dart';
 
 import 'helpers.dart';
 

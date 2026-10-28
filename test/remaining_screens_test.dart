@@ -6,15 +6,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/theme/app_colors.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/widgets/game_button.dart';
-import 'package:london_mystery/widgets/ink_icon.dart';
-import 'package:london_mystery/widgets/paper_background.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/theme/app_colors.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/widgets/game_button.dart';
+import 'package:world_mystery/widgets/ink_icon.dart';
+import 'package:world_mystery/widgets/paper_background.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
@@ -59,7 +59,7 @@ void main() {
         key: const ValueKey('shot'),
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ),
     ));

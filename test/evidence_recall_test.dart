@@ -7,30 +7,30 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/mock/season2/season2_mock.dart';
-import 'package:london_mystery/data/mock/season2/season2_scenes.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/river_puzzles.dart';
-import 'package:london_mystery/data/models/scene_explore.dart' show ScenePixels;
-import 'package:london_mystery/data/models/season.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/models/workshop_puzzles.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/mission/widgets/evidence_recall.dart';
-import 'package:london_mystery/features/mission/widgets/workshop_papers.dart' show CroppedPicture;
-import 'package:london_mystery/features/notebook/notebook_screen.dart';
-import 'package:london_mystery/features/notebook/season_archive.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/mock/season2/season2_mock.dart';
+import 'package:world_mystery/data/mock/season2/season2_scenes.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/river_puzzles.dart';
+import 'package:world_mystery/data/models/scene_explore.dart' show ScenePixels;
+import 'package:world_mystery/data/models/season.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/models/workshop_puzzles.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/features/mission/widgets/evidence_recall.dart';
+import 'package:world_mystery/features/mission/widgets/workshop_papers.dart' show CroppedPicture;
+import 'package:world_mystery/features/notebook/notebook_screen.dart';
+import 'package:world_mystery/features/notebook/season_archive.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
 
 import 'full_playthrough_test.dart' show tapText, wait;
 import 'helpers.dart';
@@ -172,7 +172,7 @@ void main() {
           key: const ValueKey('shot'),
           child: Consumer(builder: (context, r, _) {
             ref = r;
-            return const LondonMysteryApp();
+            return const WorldMysteryApp();
           }),
         ),
       ));
@@ -350,7 +350,7 @@ void main() {
         overrides: [...await testOverridesFor(prefs), allEpisodesProvider.overrideWithValue(game)],
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ));
       await wait(t, const Duration(milliseconds: 300));

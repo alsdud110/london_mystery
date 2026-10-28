@@ -69,7 +69,7 @@ class DevSessionHost extends StatefulWidget {
   /// The player's own game's overrides (device storage, content, session).
   final List<Override> overrides;
 
-  /// The game ([LondonMysteryApp]), built in whichever session is on.
+  /// The game ([WorldMysteryApp]), built in whichever session is on.
   final Widget child;
 
   @override

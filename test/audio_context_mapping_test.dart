@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/utils/audio_service.dart';
-import 'package:london_mystery/data/mock/season1/season1_sounds.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/audio_scenes.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/utils/audio_service.dart';
+import 'package:world_mystery/data/mock/season1/season1_sounds.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/audio_scenes.dart';
 
 /// Audio context mapping 2.0: a place sounds like what the player stands in
 /// and looks at on the screen, not like the landmark nearby.

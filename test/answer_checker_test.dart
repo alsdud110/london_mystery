@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
 
 import 'helpers.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/mission.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/mission.dart';
 import 'helpers.dart';
-import 'package:london_mystery/widgets/symbol_icon.dart';
+import 'package:world_mystery/widgets/symbol_icon.dart';
 
 /// Checks every case of the season with the same rules, so a new case is
 /// validated as soon as it is added to the catalog.

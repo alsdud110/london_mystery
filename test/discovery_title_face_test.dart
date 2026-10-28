@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/theme/app_text.dart';
-import 'package:london_mystery/data/mock/season2/episode01_mock.dart';
-import 'package:london_mystery/data/models/discovery.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/features/mission/widgets/answer_feedback.dart';
+import 'package:world_mystery/core/theme/app_text.dart';
+import 'package:world_mystery/data/mock/season2/episode01_mock.dart';
+import 'package:world_mystery/data/models/discovery.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/features/mission/widgets/answer_feedback.dart';
 
 /// The Discovery Moment's title: a name (Season 1's "THE ROSETTA STONE")
 /// keeps the display face; a sentence (Paris's success lines) is set in the

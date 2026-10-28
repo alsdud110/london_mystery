@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// London Mystery palette — "Vintage London Detective Storybook":
+/// World Mystery palette — "Vintage London Detective Storybook":
 /// ink on aged paper, deep navy, with antique gold and muted royal blue as
 /// the only accents.
 ///

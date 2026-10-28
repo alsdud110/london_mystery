@@ -7,17 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/theme/app_theme.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/badge_medal.dart';
-import 'package:london_mystery/widgets/ink_icon.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/theme/app_theme.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/badge_medal.dart';
+import 'package:world_mystery/widgets/ink_icon.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
@@ -219,9 +219,9 @@ void main() {
       t.platformDispatcher.textScaleFactorTestValue = scale;
       addTearDown(t.view.reset);
       addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
-      await t.pumpWidget(ProviderScope(overrides: await testOverrides(prefs: prefs()), child: const LondonMysteryApp()));
+      await t.pumpWidget(ProviderScope(overrides: await testOverrides(prefs: prefs()), child: const WorldMysteryApp()));
       await wait(t, const Duration(milliseconds: 300));
-      ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider).go(Routes.notebook);
+      ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first).read(routerProvider).go(Routes.notebook);
       await wait(t, const Duration(milliseconds: 900));
       await t.tap(find.text('BADGES'));
       await wait(t, const Duration(milliseconds: 900));
@@ -466,10 +466,10 @@ void main() {
           ).toJson()),
           AppConstants.seasonStorageKey: jsonEncode(const SeasonProgress(activeEpisodeId: 'ep01', solvedEpisodeIds: ['ep01']).toJson()),
         }),
-        child: const LondonMysteryApp(),
+        child: const WorldMysteryApp(),
       ));
       await wait(t, const Duration(milliseconds: 300));
-      ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider).go(Routes.solved);
+      ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first).read(routerProvider).go(Routes.solved);
       await wait(t, const Duration(milliseconds: 3200));
       final sizes = [for (final e in find.byType(BadgeMedal).evaluate()) (e.widget as BadgeMedal).size];
       expect(sizes.toSet(), {70, 30});

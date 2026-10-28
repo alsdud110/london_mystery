@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/mission.dart';
 
 import 'helpers.dart';
 

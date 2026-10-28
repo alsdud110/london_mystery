@@ -405,7 +405,7 @@ class _CoverTitle extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'LONDON MYSTERY',
+            'WORLD MYSTERY',
             style: AppText.eyebrow(color: AppColors.goldLight).copyWith(letterSpacing: 4, shadows: lift),
           ),
           const SizedBox(height: AppSpace.md),

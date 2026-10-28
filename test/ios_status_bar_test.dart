@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/router/app_router.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/router/app_router.dart';
 
 import 'helpers.dart';
 
@@ -23,7 +23,7 @@ void main() {
         addTearDown(container.dispose);
         await tester.pumpWidget(UncontrolledProviderScope(
           container: container,
-          child: const LondonMysteryApp(),
+          child: const WorldMysteryApp(),
         ));
 
         void expectWhite() {

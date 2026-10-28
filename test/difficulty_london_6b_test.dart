@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/content/difficulty_content.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/difficulty.dart';
+import 'package:world_mystery/data/content/difficulty_content.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
 
 import 'difficulty_london_levels.dart';
 

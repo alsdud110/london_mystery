@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/features/mission_map/map_world.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/evidence_card.dart';
-import 'package:london_mystery/widgets/ink_icon.dart';
-import 'package:london_mystery/widgets/landmark_art.dart';
-import 'package:london_mystery/widgets/place_art.dart';
-import 'package:london_mystery/widgets/symbol_icon.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/features/mission_map/map_world.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/evidence_card.dart';
+import 'package:world_mystery/widgets/ink_icon.dart';
+import 'package:world_mystery/widgets/landmark_art.dart';
+import 'package:world_mystery/widgets/place_art.dart';
+import 'package:world_mystery/widgets/symbol_icon.dart';
 
 /// The artwork replacement points: until a file is added, every picture
 /// looks exactly as it did; a file that is listed must exist; a missing

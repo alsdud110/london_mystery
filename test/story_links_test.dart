@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/features/mission/widgets/lens_inspect.dart' show noteLines;
+import 'package:world_mystery/data/mock/season1/season1_inspections.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/features/mission/widgets/lens_inspect.dart' show noteLines;
 
 import 'helpers.dart';
 

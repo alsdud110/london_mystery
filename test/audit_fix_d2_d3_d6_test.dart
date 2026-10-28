@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
-import 'package:london_mystery/data/mock/season1/season1_discoveries.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/mock/season1/season1_discoveries.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
 
 /// Season 1 audit fixes D2, D3, D6: what a scene says it remembers, reads or
 /// times is what the detective really saw before.

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/features/mission/widgets/answer_feedback.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/features/mission/widgets/answer_feedback.dart';
 
 import 'helpers.dart';
 

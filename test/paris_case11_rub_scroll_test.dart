@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/difficulty.dart';
-import 'package:london_mystery/data/models/easy_steps.dart';
-import 'package:london_mystery/data/models/season.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
+import 'package:world_mystery/data/models/easy_steps.dart';
+import 'package:world_mystery/data/models/season.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
 
 import 'difficulty_paris_7d_test.dart' show parisAt;
 import 'easy_play.dart';
@@ -37,7 +37,7 @@ void main() {
         ],
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ));
       await wait(t, const Duration(milliseconds: 300));

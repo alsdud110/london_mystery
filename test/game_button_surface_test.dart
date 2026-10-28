@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/theme/app_colors.dart';
-import 'package:london_mystery/widgets/game_button.dart';
-import 'package:london_mystery/widgets/ink_icon.dart';
-import 'package:london_mystery/widgets/paper.dart';
-import 'package:london_mystery/widgets/paper_background.dart';
+import 'package:world_mystery/core/theme/app_colors.dart';
+import 'package:world_mystery/widgets/game_button.dart';
+import 'package:world_mystery/widgets/ink_icon.dart';
+import 'package:world_mystery/widgets/paper.dart';
+import 'package:world_mystery/widgets/paper_background.dart';
 
 import 'helpers.dart';
 

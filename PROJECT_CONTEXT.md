@@ -14,8 +14,8 @@
 
 | 항목 | 내용 |
 |---|---|
-| 프로젝트 | London Mystery (`london_mystery`, v0.1.0+1) |
-| 위치 | `/Users/myhwang/flutter-workspace/london_mystery` (git 저장소, 브랜치 `main`) |
+| 프로젝트 | World Mystery (`world_mystery`, v0.1.0+1) — 2026-10-28 London Mystery에서 리브랜딩. 단일 앱 `com.worldmystery.app` "World Mystery" |
+| 위치 | `/Users/myhwang/flutter-workspace/world_mystery` (git 저장소 `alsdud110/world_mystery`, 브랜치 `main`) |
 | 목적 | 8~12세 어린이용 **오프라인 탐정 미스터리 게임**. 체험관/행사장에서 진행자가 운영할 수 있는 형태(Game Master 도구 포함) |
 | 핵심 컨셉 | 런던 곳곳에서 영어로 된 편지·증거를 읽고, 조사한 정보를 연결해 사건을 해결한다 |
 | 사용자 | 8~12세 어린이(플레이어) / 보호자(결과 리포트, Parent Gate 뒤) / 현장 운영자(Game Master) |
@@ -376,6 +376,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-28 — **World Mystery 리브랜딩**: 패키지 `world_mystery`, 앱 ID `com.worldmystery.app`(Android applicationId·namespace, iOS Bundle ID), 표시 이름·타이틀 로고 `WORLD / MYSTERY`·브랜드 문구 변경, `LondonMysteryApp` → `WorldMysteryApp`. 저장 키(`lm.*`)·시즌/Case ID·스토리·에셋 불변. 앱 ID가 바뀌어 기존 `com.londonmystery.app` 설치본과는 별도 앱(진행 기록 이전 없음)
 - 2026-10-27 — **Paris 난이도 파일 Case별 분리(main, `77e65d2`)**: London과 같은 `lib/data/mock/season2/difficulty/ep01~12_levels.dart` + 공통 빌더 `difficulty/level_words.dart`, `season2_difficulty.dart`는 등록만, 묶음 파일 3개 삭제. 영어 문장·데이터 불변(변경 전후 덤프·문자열 리터럴 비교 동일). analyze 0, 전체 2581 통과
 - 2026-10-27 — **난이도 시스템 PART 6B·6C·6D(London Cases 04~12 영어 콘텐츠, main)**: 6B `7038d4b`·6C `e89a342`·6D. `difficulty/ep04~12_levels.dart`, Rookie = 기준본, Junior·Master 전 문장 + Discovery·학습 표현. 엔진·UI 무수정, Case 06 M1 대화 미지원(ep06 writtenLevels = rookie). 테스트 6b/6c/6d, 전체 2573 통과, analyze 0
 - 2026-10-27 — **난이도 시스템 PART 7C·7D(Paris Cases 07~12 영어 콘텐츠 + 시즌 전체 검증, main)**: 7C `98bae78`(Case 07~09, 회상 오답 줄 패치, 장면 구조 검사 10종, 전체 2476 통과), 7D `85d0461`(Case 10~12, 대화·결말 구조 검사, 시즌 12 Case × 3난이도 누락·구조·Discovery·학습 표현·공개 시점 검증, 전체 2512 통과). analyze 0. 검토 보고서 `PARIS_CASE_07_09.md`·`PARIS_CASE_10_12.md`. 다음: London PART 6B

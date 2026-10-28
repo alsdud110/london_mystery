@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/case_talk.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/season.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/mission/widgets/case_talk.dart';
-import 'package:london_mystery/features/mission/widgets/evidence_recall.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/case_talk.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/season.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/mission/widgets/case_talk.dart';
+import 'package:world_mystery/features/mission/widgets/evidence_recall.dart';
 
 import 'helpers.dart';
 

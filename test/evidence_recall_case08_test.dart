@@ -7,29 +7,29 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/mock/season2/season2_mock.dart';
-import 'package:london_mystery/data/mock/season2/season2_scenes.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/abbesses_puzzles.dart' show TornHourScene;
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/garden_puzzles.dart' show TowerTestScene;
-import 'package:london_mystery/data/models/star_puzzles.dart' show HourRecordScene;
-import 'package:london_mystery/data/models/mission.dart' show EvidenceRecall;
-import 'package:london_mystery/data/models/season.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/mission/widgets/evidence_recall.dart';
-import 'package:london_mystery/features/mission/widgets/opera_papers.dart' show AmendmentSlipView;
-import 'package:london_mystery/features/mission/widgets/workshop_papers.dart' show CroppedPicture;
-import 'package:london_mystery/features/notebook/notebook_screen.dart';
-import 'package:london_mystery/widgets/game_button.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/mock/season2/season2_mock.dart';
+import 'package:world_mystery/data/mock/season2/season2_scenes.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/abbesses_puzzles.dart' show TornHourScene;
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/garden_puzzles.dart' show TowerTestScene;
+import 'package:world_mystery/data/models/star_puzzles.dart' show HourRecordScene;
+import 'package:world_mystery/data/models/mission.dart' show EvidenceRecall;
+import 'package:world_mystery/data/models/season.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/features/mission/widgets/evidence_recall.dart';
+import 'package:world_mystery/features/mission/widgets/opera_papers.dart' show AmendmentSlipView;
+import 'package:world_mystery/features/mission/widgets/workshop_papers.dart' show CroppedPicture;
+import 'package:world_mystery/features/notebook/notebook_screen.dart';
+import 'package:world_mystery/widgets/game_button.dart';
 
 import 'full_playthrough_test.dart' show tapText, wait;
 import 'helpers.dart';
@@ -152,7 +152,7 @@ void main() {
         key: const ValueKey('shot'),
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ),
     ));

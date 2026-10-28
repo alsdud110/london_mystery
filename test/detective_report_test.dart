@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/features/result/detective_report.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/features/result/detective_report.dart';
 
 import 'helpers.dart';
 

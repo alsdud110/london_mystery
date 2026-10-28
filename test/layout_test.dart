@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/theme/app_theme.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/features/mission/widgets/answer_feedback.dart';
-import 'package:london_mystery/widgets/badge_medal.dart';
+import 'package:world_mystery/core/theme/app_theme.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/features/mission/widgets/answer_feedback.dart';
+import 'package:world_mystery/widgets/badge_medal.dart';
 
 import 'helpers.dart';
 

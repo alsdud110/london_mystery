@@ -685,7 +685,7 @@ class _CaseFile extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text('— London Mystery Detective Agency', style: AppText.caption(color: AppColors.inkBrown)),
+                    child: Text('— World Mystery Detective Agency', style: AppText.caption(color: AppColors.inkBrown)),
                   ),
                   const WaxSeal(size: 50),
                 ],

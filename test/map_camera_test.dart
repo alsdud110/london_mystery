@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/models/profile.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/mission_map/map_camera.dart';
-import 'package:london_mystery/features/mission_map/map_world.dart';
-import 'package:london_mystery/features/mission_map/widgets/london_map_painter.dart';
-import 'package:london_mystery/features/mission_map/widgets/map_pin.dart';
-import 'package:london_mystery/widgets/game_button.dart';
+import 'package:world_mystery/data/models/profile.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/mission_map/map_camera.dart';
+import 'package:world_mystery/features/mission_map/map_world.dart';
+import 'package:world_mystery/features/mission_map/widgets/london_map_painter.dart';
+import 'package:world_mystery/features/mission_map/widgets/map_pin.dart';
+import 'package:world_mystery/widgets/game_button.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
@@ -113,7 +113,7 @@ void main() {
         overrides: await testOverrides(),
         child: Consumer(builder: (context, ref, _) {
           appRef = ref;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ));
       await wait(t, const Duration(milliseconds: 300));

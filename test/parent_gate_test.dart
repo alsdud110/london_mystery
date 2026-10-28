@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/features/game_master/parent_gate.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/features/game_master/parent_gate.dart';
 
 import 'helpers.dart';
 
@@ -49,7 +49,7 @@ void main() {
     t.view.physicalSize = const Size(1080, 1920);
     t.view.devicePixelRatio = 3;
     addTearDown(t.view.reset);
-    await t.pumpWidget(ProviderScope(overrides: await testOverrides(), child: const LondonMysteryApp()));
+    await t.pumpWidget(ProviderScope(overrides: await testOverrides(), child: const WorldMysteryApp()));
     await t.pumpAndSettle();
     // The seal on the title page: long-press opens the grown-ups check.
     await t.longPress(find.byWidgetPredicate((w) => w is GestureDetector && w.onLongPress != null));

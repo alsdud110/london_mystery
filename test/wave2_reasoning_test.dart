@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/glossary_text.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/glossary_text.dart';
 
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
@@ -388,12 +388,12 @@ void main() {
           ),
           child: const RepaintBoundary(
             key: ValueKey('shot'),
-            child: LondonMysteryApp(),
+            child: WorldMysteryApp(),
           ),
         ),
       );
       await wait(t, const Duration(milliseconds: 300));
-      ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first)
+      ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first)
           .read(routerProvider)
           .go(location);
       await wait(t, const Duration(milliseconds: 1500));

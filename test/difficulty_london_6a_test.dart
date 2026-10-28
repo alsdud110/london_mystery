@@ -3,25 +3,25 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
-import 'package:london_mystery/data/content/difficulty_content.dart';
-import 'package:london_mystery/data/content/learning_check.dart';
-import 'package:london_mystery/data/mock/season1/season1_difficulty.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/difficulty.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/game_master/dev_session.dart';
-import 'package:london_mystery/features/mission/widgets/lens_inspect.dart' show noteLines;
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/content/difficulty_content.dart';
+import 'package:world_mystery/data/content/learning_check.dart';
+import 'package:world_mystery/data/mock/season1/season1_difficulty.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/features/game_master/dev_session.dart';
+import 'package:world_mystery/features/mission/widgets/lens_inspect.dart' show noteLines;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -474,9 +474,9 @@ void main() {
         }),
       });
       final prefs = await SharedPreferences.getInstance();
-      await t.pumpWidget(DevSessionHost(overrides: await testOverridesFor(prefs), child: const LondonMysteryApp()));
+      await t.pumpWidget(DevSessionHost(overrides: await testOverridesFor(prefs), child: const WorldMysteryApp()));
       await wait(t, const Duration(milliseconds: 300));
-      ProviderContainer session() => ProviderScope.containerOf(t.element(find.byType(LondonMysteryApp)));
+      ProviderContainer session() => ProviderScope.containerOf(t.element(find.byType(WorldMysteryApp)));
       Mission played(ProviderContainer c, String id) =>
           c.read(playedEpisodesProvider).expand((e) => e.allMissions).firstWhere((m) => m.id == id);
       final own = session();
@@ -520,7 +520,7 @@ void main() {
         overrides: await testOverrides(prefs: prefs),
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ));
       await wait(t, const Duration(milliseconds: 300));

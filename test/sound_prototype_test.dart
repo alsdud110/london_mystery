@@ -6,18 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/utils/audio_service.dart';
-import 'package:london_mystery/data/mock/season1/season1_explores.dart';
-import 'package:london_mystery/data/mock/season1/season1_sounds.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/widgets/typewriter_text.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/utils/audio_service.dart';
+import 'package:world_mystery/data/mock/season1/season1_explores.dart';
+import 'package:world_mystery/data/mock/season1/season1_sounds.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/widgets/typewriter_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -529,7 +529,7 @@ void main() {
         ],
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ));
       await wait(t, const Duration(milliseconds: 600));
@@ -631,7 +631,7 @@ Future<void> _pumpApp(WidgetTester t, MockAudioService audio, Map<String, Object
     overrides: await testOverrides(prefs: prefs, audio: audio),
     child: Consumer(builder: (context, r, _) {
       _ref = r;
-      return const LondonMysteryApp();
+      return const WorldMysteryApp();
     }),
   ));
   await wait(t, const Duration(milliseconds: 600));

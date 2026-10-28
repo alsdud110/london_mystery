@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
+import 'package:world_mystery/app.dart';
 
 import 'full_playthrough_test.dart' show tapText, wait;
 import 'helpers.dart';
@@ -12,7 +12,7 @@ void main() {
     t.view.physicalSize = const Size(1080, 1920);
     t.view.devicePixelRatio = 3;
     addTearDown(t.view.reset);
-    await t.pumpWidget(ProviderScope(overrides: await testOverrides(), child: const LondonMysteryApp()));
+    await t.pumpWidget(ProviderScope(overrides: await testOverrides(), child: const WorldMysteryApp()));
     await wait(t, const Duration(milliseconds: 300));
     await tapText(t, 'START ADVENTURE');
     // The keyboard takes about 300 dp of the 640.

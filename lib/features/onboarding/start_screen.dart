@@ -519,7 +519,7 @@ List<Shadow> _lift([double strength = 1]) => [
       Shadow(color: AppColors.navyDeep.withValues(alpha: 0.45 * strength), blurRadius: 2, offset: const Offset(0, 1)),
     ];
 
-/// The detective's cap / LONDON / MYSTERY / ◆, centred in the window's sky.
+/// The detective's cap / WORLD / MYSTERY / ◆, centred in the window's sky.
 class _TitleBlock extends StatelessWidget {
   const _TitleBlock({required this.intro, required this.width});
 
@@ -556,7 +556,7 @@ class _TitleBlock extends StatelessWidget {
                 constraints: BoxConstraints(maxWidth: width * 0.58),
                 child: Column(
                   children: [
-                    for (final word in const ['LONDON', 'MYSTERY'])
+                    for (final word in const ['WORLD', 'MYSTERY'])
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(

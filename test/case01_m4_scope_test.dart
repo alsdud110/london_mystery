@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
 import 'personalized_lines.dart';
 
 /// Case 01 M4 was made to match the palace artwork (commit 3ea9964): the

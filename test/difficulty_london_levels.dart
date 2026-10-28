@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
-import 'package:london_mystery/data/content/difficulty_content.dart';
-import 'package:london_mystery/data/content/learning_check.dart';
-import 'package:london_mystery/data/mock/season1/season1_difficulty.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/difficulty.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/content/difficulty_content.dart';
+import 'package:world_mystery/data/content/learning_check.dart';
+import 'package:world_mystery/data/mock/season1/season1_difficulty.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
 
 /// The checks every London PART 6 batch (6B–6D) runs on its cases, as
 /// PART 6A's test runs them on Cases 01–03: the same case at every level,

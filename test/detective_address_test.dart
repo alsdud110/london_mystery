@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/mock/season1/season1_explores.dart';
-import 'package:london_mystery/data/models/detective_name.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/widgets/detective_character.dart';
-import 'package:london_mystery/widgets/letter_card.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/mock/season1/season1_explores.dart';
+import 'package:world_mystery/data/models/detective_name.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/widgets/detective_character.dart';
+import 'package:world_mystery/widgets/letter_card.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
@@ -212,10 +212,10 @@ void main() {
             solvedEpisodeIds: [for (final c in season.take(closed ? upTo + 1 : upTo)) c.id],
           ).toJson()),
         }),
-        child: const LondonMysteryApp(),
+        child: const WorldMysteryApp(),
       ));
       await wait(t, const Duration(milliseconds: 300));
-      return ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first);
+      return ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first);
     }
 
     /// Case 01's first letter, opened: found in the old suitcase on the

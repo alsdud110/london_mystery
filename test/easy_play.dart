@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/models/easy_steps.dart';
+import 'package:world_mystery/data/models/easy_steps.dart';
 
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart' show findReadable;

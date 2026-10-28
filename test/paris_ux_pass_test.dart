@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/mock/season1/season1_discoveries.dart';
-import 'package:london_mystery/data/mock/season2/season2_discoveries.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/discovery.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/mission_map/map_world.dart';
-import 'package:london_mystery/features/mission_map/mission_map_screen.dart';
-import 'package:london_mystery/features/mission_map/widgets/map_pin.dart';
+import 'package:world_mystery/data/mock/season1/season1_discoveries.dart';
+import 'package:world_mystery/data/mock/season2/season2_discoveries.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/discovery.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/mission_map/map_world.dart';
+import 'package:world_mystery/features/mission_map/mission_map_screen.dart';
+import 'package:world_mystery/features/mission_map/widgets/map_pin.dart';
 
 /// Paris Cases 01–05, the second UI pass: each Discovery Moment names its
 /// kind (never the plain PUZZLE COMPLETE next to MISSION COMPLETE), the

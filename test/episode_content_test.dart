@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
 
 import 'helpers.dart';
 

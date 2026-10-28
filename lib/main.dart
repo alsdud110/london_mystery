@@ -42,7 +42,7 @@ Future<void> main() async {
         episodeRepositoryProvider.overrideWithValue(episodes),
         allEpisodesProvider.overrideWithValue(catalog),
       ],
-      child: const LondonMysteryApp(),
+      child: const WorldMysteryApp(),
     ),
   );
 }

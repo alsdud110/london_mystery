@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/mock/season1/season1_learning.dart';
-import 'package:london_mystery/data/models/learning.dart';
-import 'package:london_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/mock/season1/season1_learning.dart';
+import 'package:world_mystery/data/models/learning.dart';
+import 'package:world_mystery/data/models/mission.dart';
 import 'helpers.dart';
 
 /// The learning design of Season 1 (TYPE B P0-C) is tied to the real

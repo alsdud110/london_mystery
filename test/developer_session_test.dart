@@ -4,26 +4,26 @@ import 'dart:ui' show Tristate;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/difficulty.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/profile.dart';
-import 'package:london_mystery/data/models/season.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/models/wallet.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/data/repositories/memory_preferences.dart';
-import 'package:london_mystery/data/repositories/profile_store.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/game_master/dev_session.dart';
-import 'package:london_mystery/features/game_master/playtest_tools.dart';
-import 'package:london_mystery/features/onboarding/how_to_play_state.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/profile.dart';
+import 'package:world_mystery/data/models/season.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/models/wallet.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/data/repositories/memory_preferences.dart';
+import 'package:world_mystery/data/repositories/profile_store.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/features/game_master/dev_session.dart';
+import 'package:world_mystery/features/game_master/playtest_tools.dart';
+import 'package:world_mystery/features/onboarding/how_to_play_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -97,14 +97,14 @@ Future<SharedPreferences> pumpGame(WidgetTester t, Map<String, Object> prefs) as
     overrides: await testOverridesFor(storage),
     child: Consumer(builder: (context, r, _) {
       ref = r;
-      return const LondonMysteryApp();
+      return const WorldMysteryApp();
     }),
   ));
   await wait(t, const Duration(milliseconds: 300));
   return storage;
 }
 
-ProviderContainer session(WidgetTester t) => ProviderScope.containerOf(t.element(find.byType(LondonMysteryApp)));
+ProviderContainer session(WidgetTester t) => ProviderScope.containerOf(t.element(find.byType(WorldMysteryApp)));
 
 String path(WidgetTester t) => session(t).read(routerProvider).routerDelegate.currentConfiguration.uri.toString();
 
@@ -260,7 +260,7 @@ void main() {
       overrides: await testOverridesFor(prefs),
       child: Consumer(builder: (context, r, _) {
         ref = r;
-        return const LondonMysteryApp();
+        return const WorldMysteryApp();
       }),
     ));
     await wait(t, const Duration(milliseconds: 600));

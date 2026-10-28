@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/widgets/game_button.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/widgets/game_button.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
@@ -50,10 +50,10 @@ void main() {
           ).toJson()),
           AppConstants.seasonStorageKey: jsonEncode(const SeasonProgress(solvedEpisodeIds: ['ep01']).toJson()),
         }),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await wait(t, const Duration(milliseconds: 300));
-      final router = ProviderScope.containerOf(find.byType(LondonMysteryApp).evaluate().first).read(routerProvider);
+      final router = ProviderScope.containerOf(find.byType(WorldMysteryApp).evaluate().first).read(routerProvider);
       router.go(Routes.caseFile('ep02')); // Case 02 open and chosen
       await wait(t, const Duration(milliseconds: 1200));
       expect(t.takeException(), isNull);

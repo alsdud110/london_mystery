@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/utils/answer_checker.dart';
-import 'package:london_mystery/core/utils/audio_service.dart';
-import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
-import 'package:london_mystery/data/models/scene_inspect.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/mission/widgets/lens_inspect.dart' show noteLines;
-import 'package:london_mystery/widgets/ink_icon.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/core/utils/audio_service.dart';
+import 'package:world_mystery/data/mock/season1/season1_inspections.dart';
+import 'package:world_mystery/data/models/scene_inspect.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/features/mission/widgets/lens_inspect.dart' show noteLines;
+import 'package:world_mystery/widgets/ink_icon.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';

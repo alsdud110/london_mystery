@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/utils/audio_service.dart';
+import 'package:world_mystery/core/utils/audio_service.dart';
 
 /// The sound files: the app carries exactly the takes the game plays, listed
 /// one by one in pubspec.yaml, and nothing else is kept on disk.

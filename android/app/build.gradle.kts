@@ -19,7 +19,7 @@ val hasUploadKey = listOf("storeFile", "storePassword", "keyAlias", "keyPassword
     .all { !uploadKeyProperties.getProperty(it).isNullOrBlank() }
 
 android {
-    namespace = "com.londonmystery.app"
+    namespace = "com.worldmystery.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -29,7 +29,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.londonmystery.app"
+        applicationId = "com.worldmystery.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -40,7 +40,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["appLabel"] = "London Mystery"
+        manifestPlaceholders["appLabel"] = "World Mystery"
     }
 
     signingConfigs {

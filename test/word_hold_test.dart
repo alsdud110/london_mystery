@@ -2,8 +2,8 @@ import 'package:flutter/rendering.dart' show SemanticsAction, SemanticsNode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/widgets/glossary_text.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/widgets/glossary_text.dart';
 
 import 'helpers.dart';
 

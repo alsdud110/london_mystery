@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/theme/app_theme.dart';
-import 'package:london_mystery/features/mission/widgets/answer_feedback.dart';
+import 'package:world_mystery/core/theme/app_theme.dart';
+import 'package:world_mystery/features/mission/widgets/answer_feedback.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';

@@ -5,21 +5,21 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
-import 'package:london_mystery/data/mock/season1/season1_decodes.dart';
-import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
-import 'package:london_mystery/data/mock/season1/season1_explores.dart';
-import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
-import 'package:london_mystery/data/mock/season1/season1_investigations.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/widgets/centered_scroll.dart';
-import 'package:london_mystery/widgets/game_button.dart';
-import 'package:london_mystery/widgets/letter_card.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/mock/season1/season1_deductions.dart';
+import 'package:world_mystery/data/mock/season1/season1_decodes.dart';
+import 'package:world_mystery/data/mock/season1/season1_dialogues.dart';
+import 'package:world_mystery/data/mock/season1/season1_explores.dart';
+import 'package:world_mystery/data/mock/season1/season1_inspections.dart';
+import 'package:world_mystery/data/mock/season1/season1_investigations.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/widgets/centered_scroll.dart';
+import 'package:world_mystery/widgets/game_button.dart';
+import 'package:world_mystery/widgets/letter_card.dart';
 
 import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
@@ -126,7 +126,7 @@ void main() {
           child: Consumer(
             builder: (context, r, _) {
               ref = r;
-              return const LondonMysteryApp();
+              return const WorldMysteryApp();
             },
           ),
         ),

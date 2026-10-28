@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/landmark_art.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/landmark_art.dart';
 
 import 'full_playthrough_test.dart' show tapText, wait;
 import 'helpers.dart';
@@ -71,10 +71,10 @@ void main() {
       overrides: await testOverrides(prefs: {
         AppConstants.progressStorageKey: jsonEncode(const GameProgress(detectiveName: 'KIM').toJson()),
       }),
-      child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+      child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
     ));
     await wait(t, const Duration(milliseconds: 300));
-    final router = find.byType(LondonMysteryApp).evaluate().first;
+    final router = find.byType(WorldMysteryApp).evaluate().first;
     ProviderScope.containerOf(router).read(routerProvider).go(Routes.prologue);
     await wait(t, const Duration(milliseconds: 600));
     await tapText(t, 'SKIP ›', after: const Duration(milliseconds: 1600));
@@ -107,10 +107,10 @@ void main() {
               AppConstants.progressKeyFor(e.id): jsonEncode(const GameProgress(detectiveName: 'KIM').toJson()),
             AppConstants.seasonStorageKey: jsonEncode(SeasonProgress(activeEpisodeId: e.id, solvedEpisodeIds: solved).toJson()),
           }),
-          child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+          child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
         ));
         await wait(t, const Duration(milliseconds: 300));
-        final app = find.byType(LondonMysteryApp).evaluate().first;
+        final app = find.byType(WorldMysteryApp).evaluate().first;
         ProviderScope.containerOf(app).read(routerProvider).go(Routes.intro);
         await wait(t, const Duration(milliseconds: 600)); // the intro is built: its picture is asked for
         await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // and decoded

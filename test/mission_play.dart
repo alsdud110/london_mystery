@@ -3,28 +3,28 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/utils/audio_service.dart';
-import 'package:london_mystery/data/mock/season1/season1_deductions.dart';
-import 'package:london_mystery/data/mock/season1/season1_decodes.dart';
-import 'package:london_mystery/data/models/scene_deduction.dart';
-import 'package:london_mystery/data/models/scene_decode.dart';
-import 'package:london_mystery/data/mock/season1/season1_clocks.dart';
-import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
-import 'package:london_mystery/data/mock/season1/season1_explores.dart';
-import 'package:london_mystery/data/mock/season1/season1_inspections.dart';
-import 'package:london_mystery/data/models/scene_explore.dart';
-import 'package:london_mystery/data/models/scene_inspect.dart';
-import 'package:london_mystery/data/mock/season1/season1_investigations.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_providers.dart' show sharedPreferencesProvider;
-import 'package:london_mystery/widgets/letter_card.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/utils/audio_service.dart';
+import 'package:world_mystery/data/mock/season1/season1_deductions.dart';
+import 'package:world_mystery/data/mock/season1/season1_decodes.dart';
+import 'package:world_mystery/data/models/scene_deduction.dart';
+import 'package:world_mystery/data/models/scene_decode.dart';
+import 'package:world_mystery/data/mock/season1/season1_clocks.dart';
+import 'package:world_mystery/data/mock/season1/season1_dialogues.dart';
+import 'package:world_mystery/data/mock/season1/season1_explores.dart';
+import 'package:world_mystery/data/mock/season1/season1_inspections.dart';
+import 'package:world_mystery/data/models/scene_explore.dart';
+import 'package:world_mystery/data/models/scene_inspect.dart';
+import 'package:world_mystery/data/mock/season1/season1_investigations.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_providers.dart' show sharedPreferencesProvider;
+import 'package:world_mystery/widgets/letter_card.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
 import 'helpers.dart';
@@ -102,7 +102,7 @@ class MissionPlay {
         key: const ValueKey('shot'),
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ),
     ));
@@ -445,7 +445,7 @@ class MissionPlay {
         key: const ValueKey('shot'),
         child: Consumer(builder: (context, r, _) {
           ref = r;
-          return const LondonMysteryApp();
+          return const WorldMysteryApp();
         }),
       ),
     ));

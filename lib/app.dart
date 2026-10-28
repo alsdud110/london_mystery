@@ -12,14 +12,14 @@ import 'features/game/game_controller.dart';
 import 'features/game/game_providers.dart';
 import 'features/season/season_overview.dart';
 
-class LondonMysteryApp extends ConsumerStatefulWidget {
-  const LondonMysteryApp({super.key});
+class WorldMysteryApp extends ConsumerStatefulWidget {
+  const WorldMysteryApp({super.key});
 
   @override
-  ConsumerState<LondonMysteryApp> createState() => _LondonMysteryAppState();
+  ConsumerState<WorldMysteryApp> createState() => _WorldMysteryAppState();
 }
 
-class _LondonMysteryAppState extends ConsumerState<LondonMysteryApp> {
+class _WorldMysteryAppState extends ConsumerState<WorldMysteryApp> {
   late final AppLifecycleListener _lifecycle;
 
   @override
@@ -96,7 +96,7 @@ class _LondonMysteryAppState extends ConsumerState<LondonMysteryApp> {
     // Sound switched on or off: the music and places start or stop with it.
     ref.listen(soundEnabledProvider, (_, _) => ref.read(audioServiceProvider).refresh());
     return MaterialApp.router(
-      title: 'London Mystery',
+      title: 'World Mystery',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       routerConfig: ref.watch(routerProvider),

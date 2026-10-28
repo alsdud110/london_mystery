@@ -8,13 +8,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/theme/app_tokens.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/game_button.dart';
-import 'package:london_mystery/widgets/ink_icon.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/theme/app_tokens.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/game_button.dart';
+import 'package:world_mystery/widgets/ink_icon.dart';
 
 import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
@@ -58,7 +58,7 @@ void main() {
       addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
       await t.pumpWidget(ProviderScope(
         overrides: await testOverrides(prefs: save ? saved : const {}),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600))); // decode the painting
       await wait(t);
@@ -75,7 +75,7 @@ void main() {
       final subtitle = save ? 'Welcome back, Detective MINYOUNG!' : 'Become a Detective.';
       expect(find.text(save ? 'Become a Detective.' : 'Welcome back, Detective MINYOUNG!'), findsNothing);
       final (moon, bigBen) = _skyMarks(size);
-      for (final s in ['LONDON', 'MYSTERY', subtitle]) {
+      for (final s in ['WORLD', 'MYSTERY', subtitle]) {
         expect(find.text(s), findsOneWidget);
         final ink = _inkRect(t.renderObject<RenderParagraph>(find.text(s)));
         // Centred on the page, like the cover's title (within the letter
@@ -87,7 +87,7 @@ void main() {
       }
       expect(find.text('THE CASEBOOK OF'), findsNothing, reason: 'the name alone, under the cap');
       // The two title words never break mid-word, whatever the text size.
-      for (final word in ['LONDON', 'MYSTERY']) {
+      for (final word in ['WORLD', 'MYSTERY']) {
         final para = t.renderObject<RenderParagraph>(find.text(word));
         expect(para.didExceedMaxLines, isFalse, reason: word);
         expect(para.getBoxesForSelection(TextSelection(baseOffset: 0, extentOffset: word.length)).map((b) => b.top).toSet().length, 1,
@@ -143,7 +143,7 @@ void main() {
         overrides: await testOverrides(prefs: {
           AppConstants.progressStorageKey: jsonEncode(const GameProgress(detectiveName: name).toJson()),
         }),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
       await wait(t);
@@ -174,7 +174,7 @@ void main() {
       overrides: await testOverrides(),
       child: MediaQuery(
         data: MediaQueryData.fromView(t.view).copyWith(disableAnimations: still),
-        child: const LondonMysteryApp(),
+        child: const WorldMysteryApp(),
       ),
     ));
   }
@@ -223,11 +223,11 @@ void main() {
       addTearDown(t.view.reset);
       await t.pumpWidget(ProviderScope(
         overrides: await testOverrides(prefs: saved),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
 
-      final ui = ['LONDON', 'MYSTERY', 'Welcome back, Detective MINYOUNG!', 'CONTINUE ADVENTURE', 'NEW ADVENTURE'];
+      final ui = ['WORLD', 'MYSTERY', 'Welcome back, Detective MINYOUNG!', 'CONTINUE ADVENTURE', 'NEW ADVENTURE'];
       final painting = find.byWidgetPredicate((w) => w is Image);
       var elapsed = Duration.zero;
       for (final (at, name) in const [
@@ -271,7 +271,7 @@ void main() {
       addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
       await t.pumpWidget(ProviderScope(
         overrides: await testOverrides(),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await wait(t, const Duration(milliseconds: 300));
       await t.tap(find.text('START ADVENTURE'));
@@ -331,7 +331,7 @@ void main() {
       addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
       await t.pumpWidget(ProviderScope(
         overrides: await testOverrides(prefs: saved),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));
       await wait(t, const Duration(milliseconds: 1200));
@@ -374,7 +374,7 @@ void main() {
       addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
       await t.pumpWidget(ProviderScope(
         overrides: await testOverrides(),
-        child: const RepaintBoundary(key: ValueKey('shot'), child: LondonMysteryApp()),
+        child: const RepaintBoundary(key: ValueKey('shot'), child: WorldMysteryApp()),
       ));
       await wait(t, const Duration(milliseconds: 300));
       await t.tap(find.text('START ADVENTURE'));

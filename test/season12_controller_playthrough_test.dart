@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/data/models/profile.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/data/models/profile.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
 
 import 'helpers.dart';
 

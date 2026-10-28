@@ -162,7 +162,7 @@ class ParentReportScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'London Mystery는 영어를 "공부"가 아닌 "모험의 도구"로 경험하는 에듀테인먼트 미션 게임입니다.\n'
+                    'World Mystery는 영어를 "공부"가 아닌 "모험의 도구"로 경험하는 에듀테인먼트 미션 게임입니다.\n'
                     '이 보고서는 플레이 기록과 사건의 학습 설계를 보여 줄 뿐, 영어 실력을 평가하지 않습니다.\n'
                     'XP와 배지는 사건 해결과 탐정 행동에 대한 게임 보상이며, 영어 점수가 아닙니다.',
                     textAlign: TextAlign.center,
@@ -289,7 +289,7 @@ class _ReportHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('LONDON MYSTERY', style: AppText.eyebrow(color: AppColors.goldLight)),
+          Text('WORLD MYSTERY', style: AppText.eyebrow(color: AppColors.goldLight)),
           Text(
             'Episode ${report.episode.numberLabel} Result',
             style: AppText.title(size: 24, color: AppColors.paperLight),

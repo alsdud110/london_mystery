@@ -4,26 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/mock/season1/season1_explores.dart';
-import 'package:london_mystery/app.dart';
-import 'package:london_mystery/core/constants/app_constants.dart';
-import 'package:london_mystery/core/router/app_router.dart';
-import 'package:london_mystery/core/theme/app_colors.dart';
-import 'package:london_mystery/core/theme/app_tokens.dart';
-import 'package:london_mystery/data/models/game_progress.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/season_progress.dart';
-import 'package:london_mystery/data/models/wallet.dart';
-import 'package:london_mystery/data/repositories/episode_repository.dart';
-import 'package:london_mystery/features/game/game_controller.dart';
-import 'package:london_mystery/features/game/game_providers.dart';
-import 'package:london_mystery/features/game/scoring.dart';
-import 'package:london_mystery/features/game/wallet_controller.dart';
-import 'package:london_mystery/features/mission/widgets/tip_shop.dart';
-import 'package:london_mystery/features/notebook/notebook_screen.dart';
-import 'package:london_mystery/features/result/detective_report.dart';
-import 'package:london_mystery/widgets/game_button.dart';
-import 'package:london_mystery/widgets/paper.dart';
+import 'package:world_mystery/data/mock/season1/season1_explores.dart';
+import 'package:world_mystery/app.dart';
+import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/core/router/app_router.dart';
+import 'package:world_mystery/core/theme/app_colors.dart';
+import 'package:world_mystery/core/theme/app_tokens.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/models/wallet.dart';
+import 'package:world_mystery/data/repositories/episode_repository.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
+import 'package:world_mystery/features/game/game_providers.dart';
+import 'package:world_mystery/features/game/scoring.dart';
+import 'package:world_mystery/features/game/wallet_controller.dart';
+import 'package:world_mystery/features/mission/widgets/tip_shop.dart';
+import 'package:world_mystery/features/notebook/notebook_screen.dart';
+import 'package:world_mystery/features/result/detective_report.dart';
+import 'package:world_mystery/widgets/game_button.dart';
+import 'package:world_mystery/widgets/paper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'full_playthrough_test.dart' show reveal, tapText, wait;
@@ -884,13 +884,13 @@ void main() {
           ),
           child: const RepaintBoundary(
             key: ValueKey('shot'),
-            child: LondonMysteryApp(),
+            child: WorldMysteryApp(),
           ),
         ),
       );
       await wait(t, const Duration(milliseconds: 300));
       final c = ProviderScope.containerOf(
-        find.byType(LondonMysteryApp).evaluate().first,
+        find.byType(WorldMysteryApp).evaluate().first,
       );
       c.read(routerProvider).go(Routes.finalMission);
       await wait(t, const Duration(milliseconds: 1200));

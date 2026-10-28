@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/data/mock/season1/season1_dialogues.dart';
-import 'package:london_mystery/data/mock/season_catalog.dart';
-import 'package:london_mystery/data/models/backdrop.dart';
-import 'package:london_mystery/data/models/episode.dart';
-import 'package:london_mystery/data/models/mission.dart';
-import 'package:london_mystery/data/models/scene_explore.dart' show ScenePixels;
-import 'package:london_mystery/widgets/art_assets.dart';
-import 'package:london_mystery/widgets/backdrop_art.dart';
-import 'package:london_mystery/widgets/landmark_art.dart';
-import 'package:london_mystery/widgets/place_art.dart';
-import 'package:london_mystery/widgets/place_scenery.dart';
+import 'package:world_mystery/data/mock/season1/season1_dialogues.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/backdrop.dart';
+import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/mission.dart';
+import 'package:world_mystery/data/models/scene_explore.dart' show ScenePixels;
+import 'package:world_mystery/widgets/art_assets.dart';
+import 'package:world_mystery/widgets/backdrop_art.dart';
+import 'package:world_mystery/widgets/landmark_art.dart';
+import 'package:world_mystery/widgets/place_art.dart';
+import 'package:world_mystery/widgets/place_scenery.dart';
 
 /// The screens a backdrop must look right on (portrait phones and a tablet).
 const sizes = [Size(375, 667), Size(393, 852), Size(430, 932), Size(412, 915), Size(820, 1180)];

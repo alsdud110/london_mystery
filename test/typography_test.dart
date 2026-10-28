@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:london_mystery/core/theme/app_text.dart';
-import 'package:london_mystery/core/theme/app_theme.dart';
-import 'package:london_mystery/widgets/game_button.dart';
-import 'package:london_mystery/widgets/paper.dart';
+import 'package:world_mystery/core/theme/app_text.dart';
+import 'package:world_mystery/core/theme/app_theme.dart';
+import 'package:world_mystery/widgets/game_button.dart';
+import 'package:world_mystery/widgets/paper.dart';
 
 /// Two faces, two jobs: IM Fell English SC names the world (the season, a
 /// case, a place, a document); Sentient is everything read or pressed.
