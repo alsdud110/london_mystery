@@ -23,7 +23,7 @@ import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
 import 'how_to_play_state.dart';
 
-/// Title page of the storybook: the name of the game, London, and one way in.
+/// Title page of the storybook: the name of the game, the harbour at night, and one way in.
 class StartScreen extends ConsumerStatefulWidget {
   const StartScreen({super.key});
 
@@ -208,8 +208,8 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                             children: [
                               SizedBox(height: (screen.height * 0.04).clamp(AppSpace.md, AppSpace.xxl)),
                               // The title, centred in the evening sky of the
-                              // window, above the city: the moon and Big Ben
-                              // on the right stay clear.
+                              // window, above the harbour: the moon and the
+                              // ship on the right stay clear.
                               // Long-press: the grown-ups' game master tools.
                               Center(
                                 child: GestureDetector(
@@ -217,7 +217,7 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                   child: _TitleBlock(intro: _intro, width: screen.width),
                                 ),
                               ),
-                              // The middle is the window: London, left to itself.
+                              // The middle is the window: the harbour, left to itself.
                               const Spacer(),
                               // The greeting stands with the way in, on the
                               // desk: an invitation for a new player, a welcome
@@ -298,7 +298,8 @@ class _Office extends StatelessWidget {
   final Animation<double> ambientIn;
 
   /// When the phone is narrower than the painting (9:16), the crop leans a
-  /// little right to keep Big Ben (near the right edge of the window) whole;
+  /// little right to keep the moon and the ship (near the right edge of the
+  /// window) whole;
   /// the lamp on the left keeps its glowing bulb.
   static const _focus = Alignment(0.55, 0);
 
@@ -319,7 +320,7 @@ class _Office extends StatelessWidget {
               animation: push,
               builder: (context, child) => Transform.scale(
                 scale: 1 + _pushBy * Curves.easeInOut.transform(push.value),
-                // Into the room towards the window, Big Ben nearly still.
+                // Into the room towards the window, the harbour nearly still.
                 alignment: const Alignment(0.6, -0.3),
                 child: child,
               ),

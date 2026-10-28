@@ -20,8 +20,8 @@ import 'full_playthrough_test.dart' show reveal, wait;
 import 'helpers.dart';
 
 /// The title screen: the detective's study, the title centred in the
-/// window's evening sky (clear of the moon and Big Ben), London left clear
-/// in the middle, and on the desk the greeting over the parchment button,
+/// window's evening sky (clear of the moon and the ship), the harbour left
+/// clear in the middle, and on the desk the greeting over the parchment button,
 /// raised off the bottom edge, with its quiet links under it.
 /// Set LM_SCREENSHOTS to a folder to save a picture of each state.
 void main() {
@@ -74,16 +74,16 @@ void main() {
       // One subtitle: the invitation for a new player, the greeting for one coming back.
       final subtitle = save ? 'Welcome back, Detective MINYOUNG!' : 'Become a Detective.';
       expect(find.text(save ? 'Become a Detective.' : 'Welcome back, Detective MINYOUNG!'), findsNothing);
-      final (moon, bigBen) = _skyMarks(size);
+      final (moon, ship) = _skyMarks(size);
       for (final s in ['WORLD', 'MYSTERY', subtitle]) {
         expect(find.text(s), findsOneWidget);
         final ink = _inkRect(t.renderObject<RenderParagraph>(find.text(s)));
         // Centred on the page, like the cover's title (within the letter
         // spacing after the last letter, or the space where a line wraps).
         expect(ink.center.dx, closeTo(size.width / 2, 3), reason: '$s centred');
-        // In the sky of the window, never over the moon or the clock tower.
+        // In the sky of the window, never over the moon or the ship.
         expect(ink.overlaps(moon), isFalse, reason: '$s clear of the moon');
-        expect(ink.overlaps(bigBen), isFalse, reason: '$s clear of Big Ben');
+        expect(ink.overlaps(ship), isFalse, reason: '$s clear of the ship');
       }
       expect(find.text('THE CASEBOOK OF'), findsNothing, reason: 'the name alone, under the cap');
       // The two title words never break mid-word, whatever the text size.
@@ -105,7 +105,7 @@ void main() {
       expect(greeting.bottom, lessThanOrEqualTo(button.top - AppSpace.sm), reason: 'above the button, not on it');
       expect(button.top - greeting.bottom, lessThan(AppSpace.xxl), reason: 'it belongs to the button');
       final title = _inkRect(t.renderObject<RenderParagraph>(find.text('MYSTERY')));
-      expect(greeting.top - title.bottom, greaterThan(size.height * 0.3), reason: 'London in between, nothing on it');
+      expect(greeting.top - title.bottom, greaterThan(size.height * 0.3), reason: 'the harbour in between, nothing on it');
       expect(t.renderObject<RenderParagraph>(find.text(subtitle)).didExceedMaxLines, isFalse, reason: 'whole, in two lines at most');
       if (save) {
         // Starts the whole adventure over (behind its question), not a case.
@@ -485,7 +485,7 @@ Future<void> capture(WidgetTester t, String name) async {
   });
 }
 
-/// Where the painting's moon and Big Ben land on a [size] screen (the title
+/// Where the painting's moon and ship land on a [size] screen (the title
 /// page's crop: `BoxFit.cover`, leaning right at `Alignment(0.55, 0)`).
 /// Measured on `title_detective_office.png` (942 × 1670), as fractions.
 (Rect, Rect) _skyMarks(Size size) {
@@ -498,7 +498,7 @@ Future<void> capture(WidgetTester t, String name) async {
         picture.left + f.right * picture.width,
         picture.top + f.bottom * picture.height,
       );
-  return (at(const Rect.fromLTRB(0.800, 0.122, 0.884, 0.172)), at(const Rect.fromLTRB(0.835, 0.290, 0.925, 0.500)));
+  return (at(const Rect.fromLTRB(0.800, 0.124, 0.888, 0.176)), at(const Rect.fromLTRB(0.795, 0.404, 0.905, 0.478)));
 }
 
 /// Where the letters of [p] are on screen (its box can be wider than them).
