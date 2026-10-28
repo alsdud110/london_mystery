@@ -106,6 +106,8 @@ flutter:
     - assets/seasons/season_02_paris/characters/
     # The title screen (the detective's office).
     - assets/shared/title/
+    # The World Map (the cities on it are placed by the app).
+    - assets/shared/world_map/
     # Season hero pictures (the opening of Season 1).
     - assets/seasons/season_01_london/cover/
     # Case 01 Mission 01: King's Cross at night, searched, and its four museum

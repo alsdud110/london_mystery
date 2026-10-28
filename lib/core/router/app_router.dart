@@ -22,6 +22,7 @@ import '../../features/result/parent_report_screen.dart';
 import '../../features/season/season_prologue_screen.dart';
 import '../../features/season/season_screen.dart';
 import '../../features/season/world_archive_screen.dart';
+import '../../features/world_map/world_map_screen.dart';
 import '../../widgets/back_to.dart';
 
 abstract final class Routes {
@@ -50,6 +51,10 @@ abstract final class Routes {
 
   /// The Detective Archives: every season's file, to choose the next one.
   static const seasons = '/seasons';
+
+  /// The World Map (MAP-2): reached by its address only for now; the title
+  /// and onboarding do not lead to it yet.
+  static const worldMap = '/world-map';
   static const prologue = '/season/prologue';
 
   /// Season 2's opening sequence: for the season being played, or as a
@@ -198,6 +203,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       // The Detective Archives: the seasons' files (back: the title).
       GoRoute(path: Routes.seasons, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const WorldArchiveScreen()))),
+      // The World Map (back: the title).
+      GoRoute(path: Routes.worldMap, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const WorldMapScreen()))),
       // The season's opening, before Case 01: from the casebook, or straight
       // from How to Play's START FIRST CASE. It handles back itself: the
       // scene before, or the casebook.

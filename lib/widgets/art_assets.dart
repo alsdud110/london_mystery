@@ -95,6 +95,15 @@ abstract final class ArtAssets {
   /// Pixel size of [parisMap].
   static const parisMapPixels = Size(1536, 1024);
 
+  /// The World Map: the whole world, 2:1 (longitude -180..180 across,
+  /// latitude 90..-90 down), navy sea and golden land. No names, pins or
+  /// landmarks: the cities are placed by the app (`WorldCities`). A missing
+  /// or broken file shows plain navy sea, never another map.
+  static const worldMap = 'assets/shared/world_map/world_map_v1.png';
+
+  /// Width / height of [worldMap].
+  static const worldMapAspect = 2.0;
+
   /// The title screen: the detective's study on a London evening, in warm
   /// watercolour — bookshelves and the lamp on the left, the desk with a
   /// sealed letter, map and magnifying glass below, and a wide window over
