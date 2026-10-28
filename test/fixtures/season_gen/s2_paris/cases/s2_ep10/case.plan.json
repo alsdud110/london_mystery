@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s2_ep10",
+  "seasonId": "s2_paris",
+  "number": 10,
+  "actId": "act3",
+  "title": "The Hour of Shadows",
+  "synopsis": [
+    "A star under T1 pointed to the Arc de Triomphe.",
+    "The trial records may be kept there.",
+    "Was the hour lost — or was the clock wrong?"
+  ],
+  "goal": "Prove whether the hour was lost, or T1 was wrong.",
+  "characters": [],
+  "locations": [
+    "arc_de_triomphe"
+  ],
+  "missions": [
+    {
+      "missionId": "s2_ep10_m1",
+      "slot": "m1",
+      "placeId": "s2_paris.star_room",
+      "puzzle": {
+        "paletteId": null,
+        "surface": "mission",
+        "engineTable": "drumTapes",
+        "missionType": "matchPairs",
+        "answerSpec": {
+          "answer": "jump:t5,jump:t9",
+          "options": [
+            {
+              "id": "jump",
+              "label": "A jump in the time"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s2_paris.asset.record_drum"
+        ],
+        "status": "devRequest",
+        "devNote": "DrumTapePuzzle (drumTapes): Paris Case 10's own engine, not in PuzzlePalette."
+      },
+      "clueInputs": [
+        {
+          "ref": "s2_ep09_e2",
+          "use": "evidenceLink",
+          "note": "evidenceLinks: s2_ep10_e1 to s2_ep09_e2"
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s2_ep10_c1",
+        "evidence": "s2_ep10_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "\"Each one should be fifteen minutes after the last.\"를 읽고 테이프의 시각을 하나씩 따라가, 시간이 건너뛰는 두 곳(2:45 → 2:00, 2:45 → 4:00)을 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Each one should be fifteen minutes after the last.",
+          "Where does the time jump?"
+        ]
+      }
+    },
+    {
+      "missionId": "s2_ep10_m2",
+      "slot": "m2",
+      "placeId": "s2_paris.star_room",
+      "puzzle": {
+        "paletteId": null,
+        "surface": "mission",
+        "engineTable": "cityClocks",
+        "missionType": "matchPairs",
+        "answerSpec": {
+          "answer": "t1:trial,cafe:not,church:not,post:not",
+          "options": [
+            {
+              "id": "t1",
+              "label": "T1"
+            },
+            {
+              "id": "cafe",
+              "label": "The café clock"
+            },
+            {
+              "id": "church",
+              "label": "The church clock"
+            },
+            {
+              "id": "post",
+              "label": "The post office clock"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s2_paris.asset.roof_photo"
+        ],
+        "status": "devRequest",
+        "devNote": "CityClocksPuzzle (cityClocks): Paris Case 10's own engine, not in PuzzlePalette."
+      },
+      "clueInputs": [
+        {
+          "ref": "s2_ep09_e1",
+          "use": "evidenceLink",
+          "note": "evidenceLinks: s2_ep10_e2 to s2_ep09_e1"
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s2_ep10_c2",
+        "evidence": "s2_ep10_e2"
+      },
+      "learning": {
+        "dependency": "exposure",
+        "level": "exposure",
+        "objective": "\"Is it a trial clock?\"에 답하며 사진 속 시계를 Trial Map의 표식으로 나누고, 시험 시계가 아닌 시계들이 서로 같은 시각임을 확인한다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Is it a trial clock?",
+          "The other clocks are not trial clocks."
+        ]
+      }
+    },
+    {
+      "missionId": "s2_ep10_m3",
+      "slot": "m3",
+      "placeId": "s2_paris.arc_star_view",
+      "puzzle": {
+        "paletteId": null,
+        "surface": "mission",
+        "engineTable": "shadowChecks",
+        "missionType": "matchPairs",
+        "answerSpec": {
+          "answer": "photo1:t200,photo2:t330",
+          "options": [
+            {
+              "id": "photo1",
+              "label": "Photo 1"
+            },
+            {
+              "id": "photo2",
+              "label": "Photo 2"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s2_paris.asset.roof_photo",
+          "s2_paris.asset.sundial_top"
+        ],
+        "status": "devRequest",
+        "devNote": "ShadowCheckPuzzle (shadowChecks): Paris Case 10's own engine, not in PuzzlePalette."
+      },
+      "clueInputs": [
+        {
+          "ref": "s2_ep10_e2",
+          "use": "evidenceLink",
+          "note": "evidenceLinks: s2_ep10_e3 to s2_ep10_e2"
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s2_ep10_c3",
+        "evidence": "s2_ep10_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "\"Make the same shadow as in the photo.\"를 읽고 해를 움직여 그림자의 방향과 길이를 사진과 맞추고, 해의 시각을 읽는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Make the same shadow as in the photo."
+        ]
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s2_ep10_final",
+    "slot": "final",
+    "placeId": "s2_paris.star_room",
+    "puzzle": {
+      "paletteId": null,
+      "surface": "finalMission",
+      "engineTable": "hourRecords",
+      "missionType": "multipleChoice",
+      "answerSpec": {
+        "answer": "wrong",
+        "options": [
+          {
+            "id": "lost",
+            "label": "The hour was lost. Time jumped from 2:45 to 4:00.",
+            "feedback": "Look at the sun's line. Did the sun jump?"
+          },
+          {
+            "id": "wrong",
+            "label": "The hour was there. T1 was one hour behind, and the page about it is missing."
+          },
+          {
+            "id": "all",
+            "label": "Every clock in Paris was one hour behind.",
+            "feedback": "What did the café and church clocks say?"
+          }
+        ]
+      },
+      "assetNeeds": [
+        "s2_paris.asset.record_drum",
+        "s2_paris.asset.trial_log_open"
+      ],
+      "status": "devRequest",
+      "devNote": "HourRecordPuzzle (hourRecords): Paris Case 10's own final engine, not in PuzzlePalette."
+    },
+    "clueInputs": [
+      {
+        "ref": "s2_ep09_e4",
+        "use": "evidenceLink",
+        "note": "evidenceLinks: s2_ep10_e4 to s2_ep09_e4"
+      },
+      {
+        "ref": "s2_ep10_c2",
+        "use": "textMention",
+        "note": "The final's letter quotes T1 2:30 from Photo 2."
+      },
+      {
+        "ref": "s2_ep10_c3",
+        "use": "textMention",
+        "note": "The final's letter quotes SUN 3:30 from Photo 2."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s2_ep10_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "두 사진의 시각으로 테이프에서 Photo 2의 순간을 찾고 빠진 쪽을 확인한 뒤, 기록이 보여 주는 만큼만 결론(\"T1 was one hour behind, and the page about it is missing.\")을 고른다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "Was the hour lost — or was the clock wrong?",
+        "T1 was one hour behind, and the page about it is missing."
+      ]
+    }
+  },
+  "hook": "Who sent page 3 away — and why?",
+  "learningGoal": {
+    "title": "Time words: after, behind, missing",
+    "titleKo": "시간 표현: after, behind, missing"
+  },
+  "notes": [
+    "Test fixture (STEP 3-2): Paris Case 10 written as a plan, for the pipeline's tests only. The game never reads it.",
+    "From the game's content (season2Episode10Json, season2Learning, season2LanguageTopics, the drumTapes / cityClocks / shadowChecks / hourRecords tables, season2Case10EvidenceLinks): the ids and their order, the mission types, answers, options and wrong-answer lines, the clue and evidence ids, learning, learningGoal, synopsis, title and hook.",
+    "Test supplements (not in the game's data): goal; the locations id; every placeId (the game plays these missions at Artwork scenes starRoom and arcStarView: Seasons 1–2 register no ScenePlace); every assetNeeds id (named after docs/SEASON2_CASE10_ASSET_SPEC.md's files); clueInputs, read from evidenceLinks and from the final's letter.",
+    "Every puzzle is a devRequest with no paletteId: Case 10's four engines are Paris's own and outside PuzzlePalette, so a new season could not plan them as they are."
+  ]
+}

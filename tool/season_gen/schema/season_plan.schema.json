@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://world-mystery.invalid/season_gen/schema/season_plan.schema.json",
+  "title": "SeasonPlan",
+  "description": "A whole season, planned (tool/season_gen/plan_models.dart). Unknown fields are rejected. How its parts relate (its number and id, the acts' cases in order) is PlanCheck's, not this schema's.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "seasonId", "number", "city", "title", "tagline", "plannedCases", "mainMystery", "characters", "locations", "acts"],
+  "properties": {
+    "schemaVersion": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "seasonId": { "$ref": "common.schema.json#/$defs/seasonId" },
+    "number": { "type": "integer", "minimum": 1 },
+    "city": { "$ref": "common.schema.json#/$defs/text" },
+    "title": { "$ref": "common.schema.json#/$defs/text" },
+    "tagline": { "$ref": "common.schema.json#/$defs/text" },
+    "plannedCases": { "type": "integer", "const": 12 },
+    "mainMystery": { "$ref": "#/$defs/mainMystery" },
+    "characters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/character" } },
+    "locations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/location" } },
+    "acts": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/act" } },
+    "prologue": { "$ref": "#/$defs/prologue" },
+    "outro": { "$ref": "common.schema.json#/$defs/lines" },
+    "finale": { "$ref": "common.schema.json#/$defs/lines" },
+    "figures": { "type": "array", "items": { "$ref": "#/$defs/figure" } },
+    "languageArc": { "$ref": "common.schema.json#/$defs/lines" },
+    "notes": { "$ref": "common.schema.json#/$defs/lines" }
+  },
+  "$defs": {
+    "mainMystery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["truth", "culprit", "motive", "revealCase"],
+      "properties": {
+        "truth": { "$ref": "common.schema.json#/$defs/text" },
+        "culprit": { "$ref": "common.schema.json#/$defs/text" },
+        "motive": { "$ref": "common.schema.json#/$defs/text" },
+        "revealCase": { "$ref": "common.schema.json#/$defs/caseId" }
+      }
+    },
+    "character": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["charId", "name", "role", "firstCase"],
+      "properties": {
+        "charId": { "$ref": "common.schema.json#/$defs/localId" },
+        "name": { "$ref": "common.schema.json#/$defs/text" },
+        "role": { "$ref": "common.schema.json#/$defs/text" },
+        "firstCase": { "$ref": "common.schema.json#/$defs/caseId" },
+        "revealCase": { "$ref": "common.schema.json#/$defs/caseId" },
+        "secretUntil": { "$ref": "common.schema.json#/$defs/caseId" }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locId", "name", "landmarkKey"],
+      "properties": {
+        "locId": { "$ref": "common.schema.json#/$defs/localId" },
+        "name": { "$ref": "common.schema.json#/$defs/text" },
+        "landmarkKey": { "$ref": "common.schema.json#/$defs/landmarkKey" }
+      }
+    },
+    "act": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actId", "theme", "caseIds"],
+      "properties": {
+        "actId": { "$ref": "common.schema.json#/$defs/actId" },
+        "theme": { "$ref": "common.schema.json#/$defs/text" },
+        "caseIds": { "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/caseId" } }
+      }
+    },
+    "figure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["after", "figure", "label"],
+      "properties": {
+        "after": { "$ref": "common.schema.json#/$defs/caseId" },
+        "figure": { "$ref": "common.schema.json#/$defs/text" },
+        "label": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "prologue": {
+      "description": "The keys of the game's SeasonPrologue JSON.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "city": { "$ref": "common.schema.json#/$defs/text" },
+        "cases": { "$ref": "common.schema.json#/$defs/lines" },
+        "separate": { "$ref": "common.schema.json#/$defs/lines" },
+        "question": { "$ref": "common.schema.json#/$defs/text" },
+        "bigger": { "$ref": "common.schema.json#/$defs/text" },
+        "promise": { "$ref": "common.schema.json#/$defs/lines" },
+        "firstCase": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["picture", "line"],
+          "properties": {
+            "picture": { "$ref": "common.schema.json#/$defs/text" },
+            "line": { "$ref": "common.schema.json#/$defs/text" }
+          }
+        }
+      }
+    }
+  }
+}

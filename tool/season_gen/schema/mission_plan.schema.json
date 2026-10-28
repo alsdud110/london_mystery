@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://world-mystery.invalid/season_gen/schema/mission_plan.schema.json",
+  "title": "MissionPlan",
+  "description": "One mission or final, planned (inside a CasePlan, whose schemaVersion it shares). Unknown fields are rejected. Whether its clue inputs exist and are found before it is the clue graph's (STEP 3-4).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["missionId", "slot", "placeId", "puzzle", "clueInputs", "clueOutputs", "learning"],
+  "properties": {
+    "missionId": { "$ref": "common.schema.json#/$defs/missionId" },
+    "slot": { "$ref": "common.schema.json#/$defs/slot" },
+    "placeId": { "$ref": "common.schema.json#/$defs/placeId" },
+    "puzzle": { "$ref": "puzzle_plan.schema.json" },
+    "clueInputs": { "type": "array", "items": { "$ref": "#/$defs/clueInput" } },
+    "clueOutputs": { "$ref": "#/$defs/clueOutputs" },
+    "learning": { "$ref": "#/$defs/learning" },
+    "notes": { "$ref": "common.schema.json#/$defs/lines" }
+  },
+  "$defs": {
+    "clueInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "use"],
+      "properties": {
+        "ref": { "$ref": "common.schema.json#/$defs/clueRef" },
+        "use": { "type": "string", "enum": ["answerDerivation", "talkPresent", "evidenceLink", "recall", "learningRecall", "textMention"] },
+        "note": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "clueOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence"],
+      "properties": {
+        "clue": { "$ref": "common.schema.json#/$defs/clueId" },
+        "evidence": { "$ref": "common.schema.json#/$defs/evidenceId" },
+        "facts": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/factId" } }
+      }
+    },
+    "learning": {
+      "description": "The game's LearningObjective, its enums by name.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependency", "level", "objective"],
+      "properties": {
+        "dependency": { "type": "string", "enum": ["essential", "helpful", "exposure", "low"] },
+        "level": { "type": "string", "enum": ["exposure", "comprehension", "application", "recall"] },
+        "objective": { "$ref": "common.schema.json#/$defs/text" },
+        "skill": { "type": "string", "enum": ["vocabulary", "sentenceMeaning", "grammarInContext"] },
+        "expressions": { "$ref": "common.schema.json#/$defs/lines" },
+        "recallFrom": { "$ref": "common.schema.json#/$defs/missionId" }
+      }
+    }
+  }
+}

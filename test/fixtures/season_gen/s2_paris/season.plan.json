@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s2_paris",
+  "number": 2,
+  "city": "Paris",
+  "title": "Paris Stands Still",
+  "tagline": "ONE STOLEN HOUR",
+  "plannedCases": 12,
+  "mainMystery": {
+    "truth": "In the Chronos Synchronisation Trial, a wrong reference time ran on the trial clocks from 3:00 to 4:00. The record of that hour and Émile's warning were taken out of the official archive.",
+    "culprit": "Victor Delacroix had the records removed. Émile Moreau, the Clockmaker, planned the London case and tampered with clocks in Paris to lead the detective to them.",
+    "motive": "Victor hid a failure that threatened his name and the trial. Émile wanted the hidden records found by evidence, not by his word.",
+    "revealCase": "s2_ep12"
+  },
+  "characters": [
+    {
+      "charId": "emile",
+      "name": "Émile Moreau",
+      "role": "The Clockmaker: the trial's technician",
+      "firstCase": "s2_ep01",
+      "revealCase": "s2_ep12",
+      "secretUntil": "s2_ep12"
+    },
+    {
+      "charId": "victor",
+      "name": "Victor Delacroix",
+      "role": "Head of the old clock trial",
+      "firstCase": "s2_ep11",
+      "revealCase": "s2_ep11",
+      "secretUntil": "s2_ep11"
+    },
+    {
+      "charId": "painter",
+      "name": "P.",
+      "role": "The painter who saw the records moved",
+      "firstCase": "s2_ep02",
+      "revealCase": "s2_ep08"
+    },
+    {
+      "charId": "river_keeper",
+      "name": "The River Keeper",
+      "role": "Kept the ledger of Box 23's route",
+      "firstCase": "s2_ep04"
+    },
+    {
+      "charId": "louvre_clerk",
+      "name": "The Louvre archive clerk",
+      "role": "Held letter 4417 under a Preservation Order",
+      "firstCase": "s2_ep06"
+    }
+  ],
+  "locations": [
+    {
+      "locId": "gare_du_nord",
+      "name": "Gare du Nord",
+      "landmarkKey": "gareDuNord"
+    },
+    {
+      "locId": "montmartre",
+      "name": "Montmartre",
+      "landmarkKey": "montmartre"
+    },
+    {
+      "locId": "seine_quays",
+      "name": "Seine Quays",
+      "landmarkKey": "seineQuays"
+    },
+    {
+      "locId": "louvre",
+      "name": "Louvre",
+      "landmarkKey": "louvre"
+    },
+    {
+      "locId": "notre_dame",
+      "name": "Notre-Dame",
+      "landmarkKey": "notreDame"
+    },
+    {
+      "locId": "eiffel_tower",
+      "name": "Eiffel Tower",
+      "landmarkKey": "eiffelTower"
+    },
+    {
+      "locId": "palais_garnier",
+      "name": "Palais Garnier",
+      "landmarkKey": "palaisGarnier"
+    },
+    {
+      "locId": "luxembourg_gardens",
+      "name": "Luxembourg Gardens",
+      "landmarkKey": "luxembourgGardens"
+    },
+    {
+      "locId": "arc_de_triomphe",
+      "name": "Arc de Triomphe",
+      "landmarkKey": "arcDeTriomphe"
+    },
+    {
+      "locId": "arts_et_metiers",
+      "name": "Arts et Métiers",
+      "landmarkKey": "artsEtMetiers"
+    }
+  ],
+  "acts": [
+    {
+      "actId": "act1",
+      "theme": "THE MISSING HOUR",
+      "caseIds": [
+        "s2_ep01",
+        "s2_ep02",
+        "s2_ep03",
+        "s2_ep04"
+      ]
+    },
+    {
+      "actId": "act2",
+      "theme": "THE HIDDEN RECORDS",
+      "caseIds": [
+        "s2_ep05",
+        "s2_ep06",
+        "s2_ep07",
+        "s2_ep08"
+      ]
+    },
+    {
+      "actId": "act3",
+      "theme": "THE TRUTH BEHIND TIME",
+      "caseIds": [
+        "s2_ep09",
+        "s2_ep10",
+        "s2_ep11",
+        "s2_ep12"
+      ]
+    }
+  ],
+  "outro": [
+    "The hour was never gone.",
+    "The truth was waiting to be found."
+  ],
+  "finale": [
+    "Paris did not lose an hour.",
+    "The truth is safe now."
+  ],
+  "figures": [
+    {
+      "after": "s2_ep12",
+      "figure": "emile",
+      "label": "The Clockmaker"
+    }
+  ],
+  "notes": [
+    "Test fixture (STEP 3-2): Paris Season 2 written as a plan, for the pipeline's tests only. The game never reads it.",
+    "From the game's content (season2InfoJson, season2Json, ParisLandmark): seasonId, number, city, title, tagline, plannedCases, the case ids, outro, finale, figures, the landmark keys and names.",
+    "Summarised from docs/SEASON2_PARIS_STORY_BIBLE.md §2–5: mainMystery, the characters, the act themes.",
+    "Test supplements (not in the game's data): every charId and locId, the characters' roles as worded here, and firstCase/revealCase/secretUntil as read from the bible's reveal timing. No prologue: Paris has its own opening page (paris_prologue.dart)."
+  ]
+}

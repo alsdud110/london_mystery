@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://world-mystery.invalid/season_gen/schema/case_plan.schema.json",
+  "title": "CasePlan",
+  "description": "One case, planned: its missions before the final (1 to 5: London Case 01 has five, every other case three) and its final (tool/season_gen/plan_models.dart). Unknown fields are rejected. Its id against its number and season, and its missions' order and ids, are PlanCheck's.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "seasonId", "number", "actId", "title", "synopsis", "goal", "characters", "locations", "missions", "final", "hook", "learningGoal"],
+  "properties": {
+    "schemaVersion": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "caseId": { "$ref": "common.schema.json#/$defs/caseId" },
+    "seasonId": { "$ref": "common.schema.json#/$defs/seasonId" },
+    "number": { "type": "integer", "minimum": 1, "maximum": 12 },
+    "actId": { "$ref": "common.schema.json#/$defs/actId" },
+    "title": { "$ref": "common.schema.json#/$defs/text" },
+    "synopsis": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/text" } },
+    "goal": { "$ref": "common.schema.json#/$defs/text" },
+    "characters": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/localId" } },
+    "locations": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/localId" } },
+    "missions": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "$ref": "mission_plan.schema.json" } },
+    "final": { "$ref": "mission_plan.schema.json" },
+    "hook": { "$ref": "common.schema.json#/$defs/text" },
+    "learningGoal": {
+      "description": "The game's CaseLanguageTopic.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "titleKo"],
+      "properties": {
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "titleKo": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "notes": { "$ref": "common.schema.json#/$defs/lines" }
+  }
+}

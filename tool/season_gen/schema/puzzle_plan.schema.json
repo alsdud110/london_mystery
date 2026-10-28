@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://world-mystery.invalid/season_gen/schema/puzzle_plan.schema.json",
+  "title": "PuzzlePlan",
+  "description": "The puzzle a mission is played with (inside a MissionPlan). paletteId and engineTable are always given, null when there is none. Whether the palette's puzzle can be played this way is STEP 3-3's.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["paletteId", "surface", "engineTable", "missionType", "answerSpec", "assetNeeds", "status"],
+  "properties": {
+    "paletteId": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$" },
+    "surface": { "type": "string", "enum": ["mission", "finalMission"] },
+    "engineTable": { "type": ["string", "null"], "pattern": "^[a-z][A-Za-z0-9]*$" },
+    "missionType": {
+      "description": "The game's MissionType, by name.",
+      "type": "string",
+      "enum": ["multipleChoice", "wordInput", "numberCode", "imageChoice", "examine", "finalCode", "sequence", "letterLock", "spotDifferences", "matchPairs", "revealLayer", "canvasChoice"]
+    },
+    "answerSpec": { "$ref": "#/$defs/answerSpec" },
+    "assetNeeds": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/assetId" } },
+    "status": { "type": "string", "enum": ["ready", "awaitingAssets", "devRequest"] },
+    "devNote": { "$ref": "common.schema.json#/$defs/text" },
+    "notes": { "$ref": "common.schema.json#/$defs/lines" }
+  },
+  "$defs": {
+    "answerSpec": {
+      "description": "The Mission fields a puzzle's answer is written with; only answer is common to all.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["answer"],
+      "properties": {
+        "answer": { "$ref": "common.schema.json#/$defs/text" },
+        "acceptedAnswers": { "$ref": "common.schema.json#/$defs/lines" },
+        "options": { "type": "array", "items": { "$ref": "#/$defs/option" } },
+        "codeLength": { "type": "integer", "minimum": 1 },
+        "codeFormat": { "type": "string", "enum": ["time"] },
+        "dialSymbols": { "$ref": "common.schema.json#/$defs/lines" }
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/text" },
+        "label": { "$ref": "common.schema.json#/$defs/text" },
+        "feedback": { "$ref": "common.schema.json#/$defs/text" },
+        "altText": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    }
+  }
+}
