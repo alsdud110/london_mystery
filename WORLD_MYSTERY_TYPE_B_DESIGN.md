@@ -1,13 +1,13 @@
-# London Mystery — TYPE B Design
+# World Mystery — TYPE B Design
 
-> 상태: **설계 확정(Phase 1)**. 이 문서의 내용 중 무엇이 실제로 구현되었는지는 `LONDON_MYSTERY_TYPE_B_IMPLEMENTATION.md`가 기준이다.
-> 근거 자료: `LONDON_MYSTERY_PRODUCT_AUDIT.md`(2026-10-12), `PROJECT_CONTEXT.md`, Case 01~12 데이터(`lib/data/mock/season1/`), HEAD `52f24c0` (감사 이후 소스 변경 없음 확인).
+> 상태: **설계 확정(Phase 1)**. 이 문서의 내용 중 무엇이 실제로 구현되었는지는 `WORLD_MYSTERY_TYPE_B_IMPLEMENTATION.md`가 기준이다.
+> 근거 자료: 제품 감사(2026-10-12, 문서는 2026-10-28 정리 시 삭제 — git 이력 참조), `PROJECT_CONTEXT.md`, Case 01~12 데이터(`lib/data/mock/season1/`), HEAD `52f24c0` (감사 이후 소스 변경 없음 확인).
 
 ---
 
 ## 1. 제품 정의
 
-**London Mystery는 TYPE B — Educational Detective Adventure다.**
+**World Mystery는 TYPE B — Educational Detective Adventure다.**
 아이는 런던의 탐정이 되어 사건을 해결하고, 그 과정에서 영어를 *읽고 → 증거로 삼고 → 추리하고 → 행동한다.*
 
 > **English → Evidence → Deduction → Action**

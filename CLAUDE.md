@@ -1,8 +1,8 @@
-# London Mystery — Claude Code Project Instructions
+# World Mystery — Claude Code Project Instructions
 
 ## 1. Project Overview
 
-London Mystery is a mobile mystery/adventure game built with Flutter.
+World Mystery is a mobile mystery/adventure game built with Flutter.
 
 The goal is to create a polished, immersive, premium-feeling mobile game rather than a generic Flutter application.
 
@@ -65,7 +65,7 @@ They should influence:
 
 Do NOT automatically redesign the entire visual appearance according to iOS or Android conventions.
 
-London Mystery is a game, so game identity takes priority over generic platform UI.
+World Mystery is a game, so game identity takes priority over generic platform UI.
 
 ### Final Polish
 
@@ -104,7 +104,7 @@ Never sacrifice the game's atmosphere merely to imitate a standard mobile applic
 
 ---
 
-# 4. London Mystery Visual Direction
+# 4. World Mystery Visual Direction
 
 The UI should evoke the feeling of investigating a mysterious story in London.
 
@@ -438,7 +438,7 @@ Before considering a UI task complete, verify:
 ### Visual
 
 * Is the hierarchy obvious?
-* Does the screen feel like London Mystery?
+* Does the screen feel like World Mystery?
 * Is the design cohesive with the rest of the game?
 * Are spacing and alignment consistent?
 * Are typography choices consistent?

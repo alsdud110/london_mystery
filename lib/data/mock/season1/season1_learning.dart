@@ -8,7 +8,7 @@ LearningObjective? learningOf(Mission m) => season1Learning[m.id];
 CaseLanguageTopic? languageTopicOf(String episodeId) => season1LanguageTopics[episodeId];
 
 /// The language topic of each case of Season 1 (see
-/// LONDON_MYSTERY_TYPE_B_DESIGN.md §3).
+/// WORLD_MYSTERY_TYPE_B_DESIGN.md §3).
 const Map<String, CaseLanguageTopic> season1LanguageTopics = {
   'ep01': CaseLanguageTopic(title: 'Places, objects and number words', titleKo: '런던의 장소·사물 이름과 숫자 단어'),
   'ep02': CaseLanguageTopic(title: 'Telling the time: "one hour after"', titleKo: '시각 표현과 "~한 시간 뒤"'),

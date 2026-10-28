@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 /// The learning experience a mission is *designed* to give (see
-/// LONDON_MYSTERY_TYPE_B_DESIGN.md §2). A design level, never a measure of
+/// WORLD_MYSTERY_TYPE_B_DESIGN.md §2). A design level, never a measure of
 /// what a child understood.
 enum LearningLevel {
   /// The English is on screen, but a key word, a picture, a symbol or a

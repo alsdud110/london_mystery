@@ -1,11 +1,11 @@
-# London Mystery — PROJECT_CONTEXT
+# World Mystery — PROJECT_CONTEXT
 
 > 이 파일은 Claude Code 세션이 바뀌어도 개발 흐름을 이어가기 위한 **영속적인 작업 기억 파일**이다.
 > README.md(사용자/운영자용 안내)와 달리, 이 파일은 **다음 개발 세션이 현재 상태를 정확히 파악하기 위한 문서**다.
 > 새 세션은 반드시 이 파일을 먼저 읽고, 아래 *Session Continuity Protocol*을 따른다.
 > 코드와 이 문서가 다르면 **코드가 source of truth**다.
 >
-> 최종 검증일: 2026-10-18 — `flutter analyze` 0 issues, `flutter test` **1548개 전부 통과**, Android debug APK·iOS(`--no-codesign`) 빌드 성공, iPhone 시뮬레이터 실행. 단일 앱 `com.londonmystery.app` "London Mystery"(flavor 없음).
+> 최종 검증일: 2026-10-18 — `flutter analyze` 0 issues, `flutter test` **1548개 전부 통과**, Android debug APK·iOS(`--no-codesign`) 빌드 성공, iPhone 시뮬레이터 실행. 단일 앱 `com.londonmystery.app` "London Mystery"(flavor 없음). (2026-10-28 리브랜딩 후: `com.worldmystery.app` "World Mystery")
 > 마지막 작업: **Wave 2.5.2 — Case 06-M1 추리 피드백 다듬기**(GOOD MATCH / 다름 구분, 판정을 카드 바로 아래로, 착지 후 말풍선, DESCRIPTION RECORDED + CONTINUE). 그 전: **Wave 2.5.1 — Case 06-M1 상호작용 다듬기**(TALK 은은한 빛, 초상화 비행 전환, 두 진술 선택 즉시 판정). 그 전: **Wave 2.5 — Case 06-M1 직관적 수사·진짜 추리**(화살표 제거, 진술 2개 선택 비교, 옷차림 확인 단계, Notebook 진술 기록, WORDS). 그 전: **Wave 2.4.1 — Case 06-M1 미조사 증인 안내 보정**(남은 증인마다 같은 작은 정적 화살표). 그 전: **Wave 2.4 — Case 06-M1 다음 행동 화살표**(GuidedActionIndicator·ASK ANOTHER WITNESS·CHOOSE ANOTHER PAIR). 그 전: Wave 2.3 — Case 06-M1 단계별 수사(한 번에 다음 행동 하나·YES/NO 비교). 그 전: Wave 2.2 — Case 06-M1 목표 중심 수사(YOUR MISSION·carry 진술 2명 조건·BACK TO WITNESSES). 그 전: Wave 2.1 — Case 06-M1 대화 화면 다듬기. 그 전: Wave 2 — Case 06-M1 증인 대화 수사. 그 전: Wave 1.2 — Case 03-M1 화면 마감. 그 전: Wave 1.1 — Case 03-M1 탐색 UX. 그 전: Wave 1 — Case 03-M1 현장 탐색. 그 전: **Phase 4 P1-3·P1-4 — 사건 간 영어 재사용**(12-M2 after, 12-F whose, 11-M3 never sleeps). 그 전: Phase 4 P1-1·P1-2(Notebook 단어 뜻, Operator Archive 참고 공개), TYPE B Phase 3B — Season 1 전 사건 TYPE B 적용.
 
 ---
@@ -27,7 +27,7 @@
 - 오답 무벌점("Not quite! Good detectives look again."). 힌트는 "Detective Tip" — 실패가 아니라 파트너의 도움.
 - 결과 화면은 성적표가 아니라 **사건 파일(Case Closed)**. 보호자 리포트도 게임 리포트 톤.
 - 완전 오프라인: 백엔드·계정 없음(명시 요청 전 도입 금지).
-- **London Mystery는 "Story 사이에 Puzzle을 푸는 게임"이 아니라 "조사한 정보를 연결해 사건을 해결하는 게임"을 목표로 한다** (*Detective Reasoning Rules* 참고).
+- **World Mystery는 "Story 사이에 Puzzle을 푸는 게임"이 아니라 "조사한 정보를 연결해 사건을 해결하는 게임"을 목표로 한다** (*Detective Reasoning Rules* 참고).
 
 ---
 
@@ -42,7 +42,7 @@
 - **Post-Discovery Small Pass COMPLETE** (Case 07 M3 카드 숨김, Story Evidence Card 2곳, 중복 transition 2줄)
 - **Final Player Experience Audit (2026-10-07): 판정 B — SMALL EXPERIENCE PASS.** 구조 변경 불필요 (*Final UX Audit Result* 참고)
 - **Investigation Board Flow Fix COMPLETE** (Audit P1): Case 01~11 Case Closed → Investigation Board → BEGIN INVESTIGATION. **PLAYTEST READY** — 다음은 실제 아이 플레이테스트 + 출시 polish
-- **제품 방향 결정 (2026-10-12): TYPE B — Educational Detective Adventure** (English → Evidence → Deduction → Action). 설계: `LONDON_MYSTERY_TYPE_B_DESIGN.md`, 근거: `LONDON_MYSTERY_PRODUCT_AUDIT.md`, 구현 기록: `LONDON_MYSTERY_TYPE_B_IMPLEMENTATION.md`
+- **제품 방향 결정 (2026-10-12): TYPE B — Educational Detective Adventure** (English → Evidence → Deduction → Action). 설계: `WORLD_MYSTERY_TYPE_B_DESIGN.md`, 구현 기록: `WORLD_MYSTERY_TYPE_B_IMPLEMENTATION.md`
 - **TYPE B P0 COMPLETE** (2026-10-12): 부모 보고서 정직화, XP 규칙 2(힌트 무료·찍기 불리·소급 불변), 50개 미션 학습 설계 데이터. 정답 변경 없음.
 - **Phase 4 Notebook & Cross-Case — P1-1·P1-2 COMPLETE** (2026-10-12, 사용자 승인): 증거 상세·단서 카드의 영어에 단어 뜻 보기(그 증거·단서가 발견된 **원래 사건의 glossary**, 미션과 같은 WORD CARD, `lookedUpWords`·Word Collector 연동), Operator Mode에서 열려 있는 사건 외 모든 사건 파일을 `REFERENCE`로 전체 열람(해결·XP·Evidence·Badge·행동 기록 없음, 일반 플레이 잠금 불변). P1-3·P1-4도 **구현 완료**(아래). P2 보류
 - **Phase 4 P1-3·P1-4 COMPLETE** (2026-10-12, 사용자 승인): 12-M2 도착판 York 열차를 Platform 4로 + Grey "…small red clock, after the train from Edinburgh"(Case 04 승강장 + Case 02 after가 함께 필요), 12-F 첫 자물쇠 "the number of the platform whose clock is small and red"(Case 09 whose), 11-M3 Tip 1이 경비원의 "the station that never sleeps"를 Case 04 "where trains never sleep"과 연결. **정답(1140·487·King's Cross)·Evidence·결말 불변.** Archive 없이도 Tip으로 진행 가능
@@ -50,7 +50,7 @@
 - **TYPE B Phase 3A (Case 06~08) COMPLETE** (2026-10-12, 사용자 승인): 12개 미션 오답 피드백 + Hint 정리(06-F·07-F·08-F의 보호 Hint는 그대로), 06-M2 카드 뒷면 "It is the colour of my hat"(앞 증언의 grey hat을 다시 읽어야 함). **정답·결말·Case 03 → 08 연결 불변.** 보호 규칙(Case 06 grey/hat/card, 07 gate, 08 button/coat/red/miss rose)을 오답 피드백에도 적용하는 테스트 추가. Essential 39 → 40. Case 09~11 미적용
 - **TYPE B Phase 2 (Case 02~04) COMPLETE** (2026-10-12, 사용자 승인): 12개 미션 오답 피드백 + Hint 1 = 볼 곳 / Hint 2 = 핵심 영어 의미, 04-M2 보기 "Platform 1/4/7/9"(짐꾼 문장·"but no clock"을 읽어야 함), 04-M3 그림 이름 숨김. **정답 불변.** Essential 시즌 37 → 39. 03-F Hint는 Case 03 보호 규칙(Tip에 train/station 금지, 마지막 Tip = Notebook footprint)에 맞춤. 남은 사건(06~11)은 미적용
 - **XP 규칙 3 + 탐정 행동 배지 COMPLETE** (2026-10-12, 사용자 승인): 규칙 2의 첫 시도 보너스가 운 좋은 찍기와 이해를 구분하지 못하고 오독 후 정정을 덜 보상하던 문제를 감사로 확인 → 모든 해결 동일 XP. 행동 배지는 UI 이벤트로만 기록, XP 없음
-- **TYPE B 대표 Case COMPLETE** (2026-10-12, 사용자 승인): Case 01·05·12 — 보기별/입력별/순서 오답 피드백, 01-M1 박물관 보기·01-M2 STONE 노출 제거·01-M4 그림 이름 숨김, 05·12 Final 자물쇠 그림 제거(질문을 읽어야 함). **50개 정답 전부 불변.** 나머지 9개 사건은 미적용. 플레이테스트 미실시(계획: `LONDON_MYSTERY_LEARNING_PLAYTEST.md`)
+- **TYPE B 대표 Case COMPLETE** (2026-10-12, 사용자 승인): Case 01·05·12 — 보기별/입력별/순서 오답 피드백, 01-M1 박물관 보기·01-M2 STONE 노출 제거·01-M4 그림 이름 숨김, 05·12 Final 자물쇠 그림 제거(질문을 읽어야 함). **50개 정답 전부 불변.** 나머지 9개 사건은 미적용. 플레이테스트 미실시(계획: `WORLD_MYSTERY_LEARNING_PLAYTEST.md`)
 
 ### Current Quality Baseline
 - `flutter analyze` → **0 issues**
@@ -345,7 +345,6 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 - [ ] (경미) CONTINUE ADVENTURE로 Case Files에 들어오면 인트로를 안 본 사건은 선택되지 않음
 - [ ] (경미) Final 첫 진입 시 360×640 첫 화면에 자물쇠가 보이지 않음(재진입 시 자물쇠로 스크롤)
 - [ ] (경미) `StorySceneScreen.build()`에서 `lines.isEmpty`면 `_done = true` 대입(실제 발생 없음)
-- [ ] Custom Asset Required: `docs/art/VISUAL_ASSET_INVENTORY.md`
 
 ---
 
@@ -376,6 +375,7 @@ Case 02·03·07·08·09·11의 추리 사슬 / Discovery Moment(현장 배경 + 
 ---
 
 ## Change Log (요약 — 상세는 git 기록)
+- 2026-10-28 — **문서 정리**: 폐기된 V2 PRD·기능명세·유저플로우, 리브랜딩 전 전환 감사, 구식 Visual Asset Inventory, 완료된 제품·Cross-Case 감사 삭제(git 이력에 남음). TYPE B 문서 3개는 `WORLD_MYSTERY_*`로 이름 변경, 문서 제목의 브랜드명 World Mystery로 통일
 - 2026-10-28 — **World Mystery 리브랜딩**: 패키지 `world_mystery`, 앱 ID `com.worldmystery.app`(Android applicationId·namespace, iOS Bundle ID), 표시 이름·타이틀 로고 `WORLD / MYSTERY`·브랜드 문구 변경, `LondonMysteryApp` → `WorldMysteryApp`. 저장 키(`lm.*`)·시즌/Case ID·스토리·에셋 불변. 앱 ID가 바뀌어 기존 `com.londonmystery.app` 설치본과는 별도 앱(진행 기록 이전 없음)
 - 2026-10-27 — **Paris 난이도 파일 Case별 분리(main, `77e65d2`)**: London과 같은 `lib/data/mock/season2/difficulty/ep01~12_levels.dart` + 공통 빌더 `difficulty/level_words.dart`, `season2_difficulty.dart`는 등록만, 묶음 파일 3개 삭제. 영어 문장·데이터 불변(변경 전후 덤프·문자열 리터럴 비교 동일). analyze 0, 전체 2581 통과
 - 2026-10-27 — **난이도 시스템 PART 6B·6C·6D(London Cases 04~12 영어 콘텐츠, main)**: 6B `7038d4b`·6C `e89a342`·6D. `difficulty/ep04~12_levels.dart`, Rookie = 기준본, Junior·Master 전 문장 + Discovery·학습 표현. 엔진·UI 무수정, Case 06 M1 대화 미지원(ep06 writtenLevels = rookie). 테스트 6b/6c/6d, 전체 2573 통과, analyze 0

@@ -1,4 +1,7 @@
-# London Mystery — Episode 01: The Missing Crown
+# World Mystery
+
+Season 1 London (Shadows Over London) and Season 2 Paris, 12 cases each.
+The walkthrough below is Season 1, Episode 01: The Missing Crown.
 
 An offline detective mission game for kids aged 8–12. Players solve English
 clues and puzzles in a real play space:

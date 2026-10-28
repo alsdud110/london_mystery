@@ -1,4 +1,4 @@
-# London Mystery — Learning Playtest Plan (TYPE B)
+# World Mystery — Learning Playtest Plan (TYPE B)
 
 > **상태: 계획서. 실제 플레이테스트는 아직 한 번도 하지 않았다.** 이 문서에는 결과가 없다. 결과는 실제 세션 후에만 기록한다.
 > 기존 체크리스트 `docs/playtest/SEASON1_PLAYTEST_CHECKLIST.md`(게임 흐름·재미 중심)와 **함께** 쓴다. 이 문서는 "영어가 탐정 활동으로 작동하는가"만 본다.

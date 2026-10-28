@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# London Mystery — Complete Case Answer Guide
+# World Mystery — Complete Case Answer Guide
 
 > **Developer / Tester Only** — 일반 사용자에게 배포·노출하지 않습니다.
 >
