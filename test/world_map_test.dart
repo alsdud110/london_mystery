@@ -318,6 +318,108 @@ void main() {
     });
   });
 
+  // MAP-5: the World Map as the hub — a season played from it goes back to
+  // it; what cannot be entered stays on the map, with nothing saved.
+  group('the hub', () {
+    Future<void> back(WidgetTester t, {bool system = false}) async {
+      if (system) {
+        await t.binding.handlePopRoute();
+      } else {
+        await t.tap(find.byTooltip('Back'));
+      }
+      await wait(t, const Duration(milliseconds: 1400));
+    }
+
+    testWidgets('London: its cover; its opening and its case files go back up to the map', (t) async {
+      await pumpApp(t, seasonSaves(0));
+      await openMap(t);
+      await t.tap(find.byKey(const ValueKey('city-card-enter')));
+      await wait(t, const Duration(milliseconds: 1600));
+      expect(path(), Routes.seasonOf(SeasonIds.london));
+      expect(find.text('BEGIN SEASON ONE'), findsOneWidget, reason: 'the cover, not skipped');
+      await back(t);
+      expect(path(), Routes.worldMap);
+
+      // The opening's first scene → the cover → the map (system back).
+      appRef.read(routerProvider).go(Routes.prologue);
+      await wait(t, const Duration(milliseconds: 1400));
+      await back(t, system: true);
+      expect(path(), Routes.season);
+      await back(t, system: true);
+      expect(path(), Routes.worldMap);
+
+      // The case files → the season → the map.
+      appRef.read(routerProvider).go(Routes.episodes);
+      await wait(t, const Duration(milliseconds: 1400));
+      await back(t, system: true);
+      expect(path(), Routes.season);
+      await back(t, system: true);
+      expect(path(), Routes.worldMap);
+      await wait(t, const Duration(seconds: 3));
+    });
+
+    testWidgets('Paris unlocked: its cover, and back to the map (arrow and system back)', (t) async {
+      await pumpApp(t, seasonSaves(12));
+      await beginParis(t);
+      await wait(t, const Duration(milliseconds: 1200));
+      expect(path(), Routes.seasonOf(SeasonIds.paris));
+      expect(find.text('BEGIN INVESTIGATION'), findsOneWidget, reason: "Paris's cover");
+      await back(t);
+      expect(path(), Routes.worldMap);
+      appRef.read(routerProvider).go(Routes.season);
+      await wait(t, const Duration(milliseconds: 1400));
+      await back(t, system: true);
+      expect(path(), Routes.worldMap);
+      await wait(t, const Duration(seconds: 3));
+    });
+
+    testWidgets('a coming-soon city: nothing to enter, nothing saved', (t) async {
+      await pumpApp(t, seasonSaves(3, activeBegun: true));
+      await openMap(t);
+      final before = saves();
+      for (final id in ['tokyo', 'rome', 'seoul']) {
+        await tapCity(t, id);
+        await t.tap(find.byKey(const ValueKey('city-card-enter')), warnIfMissed: false);
+        await wait(t, const Duration(milliseconds: 400));
+        expect(path(), Routes.worldMap, reason: id);
+      }
+      expect(appRef.read(selectedSeasonIdProvider), SeasonIds.london);
+      expect(saves(), before);
+    });
+
+    testWidgets("the case map's menu leaves to the World Map; CONTINUE comes back to the case, nothing changed", (t) async {
+      await pumpApp(t, seasonSaves(3, activeBegun: true));
+      appRef.read(routerProvider).go(Routes.map);
+      await wait(t, const Duration(milliseconds: 1500));
+      final before = saves();
+      final episode = appRef.read(currentEpisodeProvider).id;
+      await t.tap(find.byTooltip('Menu'));
+      await wait(t);
+      await t.tap(find.text('World map'));
+      await wait(t, const Duration(milliseconds: 1200));
+      expect(path(), Routes.worldMap);
+      expect(saves(), before, reason: 'the case stays as it was');
+      expect(inCard('london', 'CONTINUE'), findsOneWidget);
+      await t.tap(find.byKey(const ValueKey('city-card-enter')));
+      await wait(t, const Duration(milliseconds: 1500));
+      expect(path(), Routes.map, reason: 'back on the case under way');
+      expect(appRef.read(currentEpisodeProvider).id, episode);
+      await wait(t, const Duration(seconds: 3));
+    });
+
+    testWidgets('a completed season: REVISIT opens its board, as before', (t) async {
+      await pumpApp(t, seasonSaves(12));
+      await openMap(t);
+      await tapCity(t, 'london');
+      expect(inCard('london', 'REVISIT'), findsOneWidget);
+      await t.tap(find.byKey(const ValueKey('city-card-enter')));
+      await wait(t, const Duration(milliseconds: 2400));
+      expect(path(), Routes.seasonOf(SeasonIds.london));
+      expect(find.text('COMPLETED'), findsOneWidget);
+      await wait(t, const Duration(seconds: 3));
+    });
+  });
+
   group('small screens', () {
     for (final (size, scale) in [(const Size(320, 568), 1.0), (const Size(320, 568), 1.3), (const Size(360, 640), 1.3)]) {
       testWidgets('every card fits at ${size.width.toInt()}x${size.height.toInt()}, text x$scale', (t) async {

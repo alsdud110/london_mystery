@@ -41,7 +41,7 @@ abstract final class Routes {
   static const season = '/season';
 
   /// The season board opened from the Detective Archives: its back goes
-  /// back to the archives (the board opened any other way goes to the title).
+  /// back to the archives (the board opened any other way goes to the map).
   static const seasonFromArchive = '/season?from=archive';
 
   /// The season page of season [seasonId], just chosen (GO TO PARIS on the
@@ -52,8 +52,8 @@ abstract final class Routes {
   /// The Detective Archives: every season's file, to choose the next one.
   static const seasons = '/seasons';
 
-  /// The World Map (MAP-2): reached by its address only for now; the title
-  /// and onboarding do not lead to it yet.
+  /// The World Map: the main hub. CONTINUE on the title and the end of How
+  /// to Play lead to it; a season's back leads back to it.
   static const worldMap = '/world-map';
   static const prologue = '/season/prologue';
 
@@ -191,18 +191,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (c, s) => _fade(s, HowToPlayScreen(again: s.uri.queryParameters['again'] == '1')),
       ),
       // The season above its cases (needs a detective, like every page below).
-      // Back goes where it was opened from: the archives, else the title.
+      // Back goes where it was opened from: the archives, else the World Map.
       GoRoute(
         path: Routes.season,
         pageBuilder: (c, s) {
-          final back = s.uri.queryParameters['from'] == 'archive' ? Routes.seasons : Routes.start;
+          final back = s.uri.queryParameters['from'] == 'archive' ? Routes.seasons : Routes.worldMap;
           // Its own state per season: GO TO PARIS on the completed
           // board opens the next season on this same page, from its cover.
           return _fade(s, _backTo(c, back, SeasonScreen(key: ValueKey(ref.read(selectedSeasonIdProvider)), backTo: back)));
         },
       ),
-      // The Detective Archives: the seasons' files (back: the title).
-      GoRoute(path: Routes.seasons, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const WorldArchiveScreen()))),
+      // The Detective Archives: the seasons' files (back: the World Map).
+      GoRoute(path: Routes.seasons, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.worldMap, const WorldArchiveScreen()))),
       // The World Map (back: the title).
       GoRoute(path: Routes.worldMap, pageBuilder: (c, s) => _fade(s, _backTo(c, Routes.start, const WorldMapScreen()))),
       // The season's opening, before Case 01: from the casebook, or straight

@@ -37,9 +37,9 @@ import 'widgets/investigation_board.dart';
 /// Nothing here decides progress: cases open through
 /// [GameController.openEpisode] and the case's own flow ([SeasonActions]).
 class SeasonScreen extends ConsumerStatefulWidget {
-  const SeasonScreen({super.key, this.backTo = Routes.start});
+  const SeasonScreen({super.key, this.backTo = Routes.worldMap});
 
-  /// Where back goes: the title, or the archives the board was opened from.
+  /// Where back goes: the World Map, or the archives the board was opened from.
   final String backTo;
 
   @override

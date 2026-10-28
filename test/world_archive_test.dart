@@ -219,11 +219,15 @@ void main() {
       await t.binding.handlePopRoute(); // Android back
       await wait(t, const Duration(milliseconds: 1400));
       expect(path(), Routes.seasons);
-      // The archives go back to the title, both ways.
+      // The archives go back to the World Map, both ways (and the map to
+      // the title: no loop between the two).
       await t.tap(find.byTooltip('Back'));
       await wait(t);
-      expect(path(), Routes.start);
+      expect(path(), Routes.worldMap);
       await openArchive(t);
+      await t.binding.handlePopRoute();
+      await wait(t);
+      expect(path(), Routes.worldMap);
       await t.binding.handlePopRoute();
       await wait(t);
       expect(path(), Routes.start);
@@ -240,18 +244,18 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('the board opened directly still goes back to the title (arrow and system back)', (t) async {
-      await pumpApp(t, seasonSaves(4));
+    testWidgets('the board opened directly goes back to the World Map (arrow and system back)', (t) async {
+      await pumpApp(t, seasonSaves(4, activeBegun: true));
       appRef.read(routerProvider).go(Routes.season);
       await wait(t, const Duration(milliseconds: 1400));
       await t.tap(find.byTooltip('Back'));
       await wait(t);
-      expect(path(), Routes.start);
+      expect(path(), Routes.worldMap);
       appRef.read(routerProvider).go(Routes.season);
       await wait(t, const Duration(milliseconds: 1400));
       await t.binding.handlePopRoute();
       await wait(t);
-      expect(path(), Routes.start);
+      expect(path(), Routes.worldMap);
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -343,7 +347,7 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('CONTINUE with no case under way: the board while one season can be played', (t) async {
+    testWidgets('CONTINUE with no case under way: the World Map (one season can be played)', (t) async {
       // Case 05 open, not begun (opening it gave its save the detective's name).
       await pumpApp(t, {
         ...seasonSaves(4),
@@ -351,11 +355,12 @@ void main() {
       });
       await wait(t, const Duration(milliseconds: 1200)); // the title comes in
       await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1200));
-      expect(path(), Routes.season, reason: 'no archives in between with one season');
+      expect(path(), Routes.worldMap, reason: 'the World Map is the hub');
+      expect(find.byKey(const ValueKey('city-card-london')), findsOneWidget);
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('CONTINUE with two seasons that can be played: the archives, to choose', (t) async {
+    testWidgets('CONTINUE with two seasons that can be played: the World Map, Paris in the middle', (t) async {
       await pumpApp(t, seasonSaves(12), extra: [
         allEpisodesProvider.overrideWithValue(withParis),
         seasonMapsProvider.overrideWithValue(withParisMap),
@@ -366,7 +371,8 @@ void main() {
       appRef.read(gameControllerProvider.notifier).playAgain();
       await wait(t, const Duration(milliseconds: 1200)); // the title comes in
       await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1200));
-      expect(path(), Routes.seasons);
+      expect(path(), Routes.worldMap);
+      expect(find.byKey(const ValueKey('city-card-paris')), findsOneWidget, reason: 'London done: Paris is next');
       await wait(t, const Duration(seconds: 3));
     });
   });

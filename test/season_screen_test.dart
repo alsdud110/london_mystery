@@ -277,20 +277,22 @@ void main() {
       await tapText(t, 'START INVESTIGATION', after: const Duration(milliseconds: 600));
       // How to Play comes first for a new detective (how_to_play_test).
       await skipHowToPlay(t);
+      // Then the World Map: London's card opens the season's cover.
+      await wait(t, const Duration(milliseconds: 1500));
+      expect(path(), Routes.worldMap);
+      await t.tap(find.byKey(const ValueKey('city-card-enter')));
     } else {
       appRef.read(routerProvider).go(Routes.season);
     }
     await wait(t, const Duration(milliseconds: 1800));
-    expect(path(), fromRegister ? Routes.prologue : Routes.season);
-    if (!fromRegister) {
-      expect(find.text('SHADOWS\nOVER LONDON'), findsOneWidget);
-      expect(find.text('12 CASES • ONE MYSTERY'), findsOneWidget);
-      expect(find.text('CASE FILES'), findsNothing, reason: 'not straight to the case files');
-      expect(t.takeException(), isNull);
-      expectOnScreen(t, find.text('BEGIN SEASON ONE'), size);
-      await capture(t, 'cover_$tag');
-      await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 600));
-    }
+    expect(path(), fromRegister ? Routes.seasonOf(SeasonIds.london) : Routes.season);
+    expect(find.text('SHADOWS\nOVER LONDON'), findsOneWidget);
+    expect(find.text('12 CASES • ONE MYSTERY'), findsOneWidget);
+    expect(find.text('CASE FILES'), findsNothing, reason: 'not straight to the case files');
+    expect(t.takeException(), isNull);
+    expectOnScreen(t, find.text('BEGIN SEASON ONE'), size);
+    await capture(t, 'cover_$tag');
+    await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 600));
     expect(path(), Routes.prologue);
     expect(appRef.read(gameControllerProvider).introSeen, isFalse, reason: 'the opening starts no case');
 
@@ -431,6 +433,8 @@ void main() {
   testWidgets('the casebook and opening are not shown again once the season has begun', (t) async {
     await pumpApp(t, seasonSaves(0, activeBegun: true));
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1500));
+    expect(path(), Routes.worldMap);
+    await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 1500));
     expect(path(), Routes.map, reason: 'Case 01 under way: straight back to it');
     appRef.read(routerProvider).go(Routes.season);
     await wait(t, const Duration(milliseconds: 2000));
@@ -441,7 +445,7 @@ void main() {
     await wait(t, const Duration(seconds: 3));
   });
 
-  testWidgets('the casebook: a tap brings it in at once; back goes to the title', (t) async {
+  testWidgets('the casebook: a tap brings it in at once; back goes to the World Map', (t) async {
     await pumpApp(t, {AppConstants.progressStorageKey: jsonEncode(const GameProgress(detectiveName: 'KIM').toJson())});
     appRef.read(routerProvider).go(Routes.season);
     await wait(t, const Duration(milliseconds: 450));
@@ -450,25 +454,29 @@ void main() {
     expect(find.text('BEGIN SEASON ONE').hitTestable(), findsOneWidget);
     await t.tap(find.byTooltip('Back'));
     await wait(t);
-    expect(path(), Routes.start);
+    expect(path(), Routes.worldMap);
     await wait(t, const Duration(seconds: 3));
   });
 
-  testWidgets('an existing save resumes as before: CONTINUE ADVENTURE → the map of the case under way', (t) async {
+  testWidgets('an existing save resumes: CONTINUE ADVENTURE → World Map → CONTINUE → the map of the case under way', (t) async {
     await pumpApp(t, seasonSaves(4, active: 'ep05', activeBegun: true));
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1500));
+    expect(path(), Routes.worldMap);
+    await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 1500));
     expect(path(), Routes.map, reason: 'no season page in between');
     await wait(t, const Duration(seconds: 3));
   });
 
-  testWidgets('CONTINUE ADVENTURE with no case under way opens the season board', (t) async {
+  testWidgets('CONTINUE with no case under way opens the season board (via the World Map)', (t) async {
     await pumpApp(t, {
       ...seasonSaves(4),
       // Case 04 played again from the start (Play again): nothing under way.
       AppConstants.progressKeyFor('ep04'): jsonEncode(const GameProgress(detectiveName: 'MINYOUNG').toJson()),
     });
-    await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 2400));
-    expect(path(), Routes.season);
+    await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1500));
+    expect(path(), Routes.worldMap);
+    await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 2400));
+    expect(path(), Routes.seasonOf(SeasonIds.london));
     expect(find.text('4 / 12'), findsOneWidget, reason: 'Play again keeps the season record');
     expect(find.text('The Locked Room'), findsOneWidget, reason: 'the season goes on with Case 05');
     await wait(t, const Duration(seconds: 3));
@@ -681,7 +689,7 @@ void main() {
     await wait(t, const Duration(seconds: 3));
   });
 
-  testWidgets('NEW ADVENTURE: the same detective, the season starts again with its casebook', (t) async {
+  testWidgets('NEW ADVENTURE: the same detective, the season starts again; How to Play, then the World Map', (t) async {
     await pumpApp(t, seasonSaves(6));
     final name = appRef.read(gameControllerProvider).detectiveName;
     await tapText(t, 'NEW ADVENTURE');
@@ -691,8 +699,7 @@ void main() {
     // This detective played before How to Play existed: shown once, now.
     await skipHowToPlay(t);
     await wait(t, const Duration(milliseconds: 2200));
-    expect(path(), Routes.prologue);
-    expect(find.text('BEGIN SEASON ONE'), findsNothing);
+    expect(path(), Routes.worldMap);
     final o = appRef.read(seasonOverviewProvider);
     expect(o.solvedCount, 0);
     expect(o.begun, isFalse);

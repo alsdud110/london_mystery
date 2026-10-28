@@ -64,10 +64,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       showGameToast(context, error, glyph: InkGlyph.pen);
       return;
     }
-    // A new detective learns how to play first (once), then the season's
-    // casebook and its opening.
+    // A new detective learns how to play first (once), then the World Map,
+    // where London's card opens the season's cover and its opening.
     context.go(
-      ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season,
+      ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.worldMap,
     );
   }
 

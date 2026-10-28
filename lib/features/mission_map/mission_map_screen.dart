@@ -264,9 +264,11 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                     Navigator.of(sheetContext).pop();
                     context.push(Routes.howToPlayAgain);
                   }),
-                  item(InkGlyph.home, 'Title screen', () {
+                  // Out to the World Map: the case stays saved, and the
+                  // city's CONTINUE comes back to it.
+                  item(InkGlyph.home, 'World map', () {
                     Navigator.of(sheetContext).pop();
-                    context.go(Routes.start);
+                    context.go(Routes.worldMap);
                   }),
                   const SizedBox(height: AppSpace.sm),
                 ],

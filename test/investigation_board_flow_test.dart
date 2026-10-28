@@ -150,7 +150,7 @@ void main() {
     await t.binding.handlePopRoute();
     await wait(t, const Duration(milliseconds: 1500));
     expect(path(), isNot(Routes.solved));
-    expect(path(), Routes.start, reason: 'the board goes back to the title, as before');
+    expect(path(), Routes.worldMap, reason: 'the board goes back to the World Map');
     expect(find.text('CASE CLOSED'), findsNothing);
     await wait(t, const Duration(seconds: 3));
   });

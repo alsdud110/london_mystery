@@ -122,26 +122,11 @@ class _StartScreenState extends ConsumerState<StartScreen>
 
   void _continue() {
     final progress = ref.read(gameControllerProvider);
-    if (progress.isCaseSolved) {
-      // The case's report as it was left (Season 1's last case: on to Paris,
-      // or Paris coming soon): the stamp and the XP were shown when it was
-      // solved, and are not played again on every return.
-      context.go(Routes.solvedSettled);
-    } else if (progress.introSeen) {
-      context.go(Routes.map);
-    } else if (progress.hasDetective) {
-      // No case under way: the season (its casebook the very first time,
-      // then the board with the case to work on) — after How to Play, for a
-      // detective who left it unfinished before the season began. Once more
-      // than one season can be played, the archives first, to choose.
-      final archives = ref.read(playableSeasonCountProvider) > 1;
-      context.go(
-        ref.read(needsHowToPlayProvider)
-            ? Routes.howToPlay
-            : archives
-            ? Routes.seasons
-            : Routes.season,
-      );
+    if (progress.hasDetective) {
+      // The World Map, the city of the season being played in the middle:
+      // its card's CONTINUE goes on from where the case was left. After How
+      // to Play, for a detective who left it unfinished (it ends on the map).
+      context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.worldMap);
     } else {
       context.go(Routes.register);
     }
@@ -164,12 +149,13 @@ class _StartScreenState extends ConsumerState<StartScreen>
     );
     if (ok && mounted) {
       await ref.read(gameControllerProvider.notifier).newAdventure();
-      // The season from its beginning (How to Play first if never seen, as
-      // after creating the detective): the casebook, then Case 01.
-      if (mounted)
+      // The World Map (How to Play first if never seen, as after creating
+      // the detective).
+      if (mounted) {
         context.go(
-          ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season,
+          ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.worldMap,
         );
+      }
     } else {
       _setAmbient(true);
     }

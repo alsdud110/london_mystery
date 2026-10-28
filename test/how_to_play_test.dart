@@ -11,6 +11,7 @@ import 'package:world_mystery/core/constants/app_constants.dart';
 import 'package:world_mystery/core/router/app_router.dart';
 import 'package:world_mystery/data/models/game_progress.dart';
 import 'package:world_mystery/data/models/profile.dart';
+import 'package:world_mystery/data/models/season.dart';
 import 'package:world_mystery/features/game/game_controller.dart';
 import 'package:world_mystery/features/game/game_providers.dart';
 import 'package:world_mystery/features/game/wallet_controller.dart';
@@ -87,7 +88,7 @@ void main() {
 
   String saved(ProviderContainer c, String legacyKey) => savedString(c.read(sharedPreferencesProvider), legacyKey) ?? '';
 
-  testWidgets('1, 4, 5. a new detective: registration → How to Play → START FIRST CASE → the opening; kept after a restart',
+  testWidgets('1, 4, 5. a new detective: registration → How to Play → EXPLORE THE WORLD → the World Map; kept after a restart',
       (t) async {
     final semantics = t.ensureSemantics(); // the page dots, by what they say
     await pump(t);
@@ -111,10 +112,9 @@ void main() {
       expect(find.bySemanticsLabel('Page ${i + 1} of 8'), findsOneWidget);
     }
     expect(find.text('SKIP'), findsNothing, reason: 'nothing to skip on the last page');
-    await tapText(t, 'START FIRST CASE', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.prologue, reason: 'the last page already introduced the season: no second start');
-    expect(find.text('BEGIN SEASON ONE'), findsNothing);
-    expect(find.text('Something strange is happening\nacross the city.'), findsOneWidget, reason: "the opening's first scene");
+    await tapText(t, 'EXPLORE THE WORLD', after: const Duration(milliseconds: 1500));
+    expect(path(t), Routes.worldMap, reason: 'the season is chosen on the World Map');
+    expect(find.byKey(const ValueKey('city-card-london')), findsOneWidget, reason: 'London chosen, in the middle');
     expect(app(t).read(howToPlaySeenProvider), isTrue);
 
     // A restart: the same storage, a new app. START goes to the casebook.
@@ -124,7 +124,7 @@ void main() {
     await wait(t, const Duration(milliseconds: 400));
     expect(app(t).read(howToPlaySeenProvider), isTrue, reason: 'saved');
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.season, reason: 'not How to Play again');
+    expect(path(t), Routes.worldMap, reason: 'not How to Play again');
     await wait(t, const Duration(seconds: 3));
     semantics.dispose();
   });
@@ -136,7 +136,7 @@ void main() {
     expect(app(t).read(howToPlaySeenProvider), isFalse, reason: 'from before How to Play');
     expect(app(t).read(needsHowToPlayProvider), isFalse, reason: 'the season is begun');
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.map);
+    expect(path(t), Routes.worldMap);
     await wait(t, const Duration(seconds: 3));
   });
 
@@ -147,15 +147,14 @@ void main() {
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 900));
     expect(path(t), Routes.howToPlay, reason: 'left before it was seen');
     await tapText(t, 'SKIP', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.prologue);
-    expect(find.text('BEGIN SEASON ONE'), findsNothing);
+    expect(path(t), Routes.worldMap);
     expect(app(t).read(howToPlaySeenProvider), isTrue, reason: 'SKIP counts as seen');
 
     app(t).read(routerProvider).go(Routes.start);
     await wait(t, const Duration(milliseconds: 1200));
     await tapText(t, 'NEW ADVENTURE');
     await tapText(t, 'START NEW ADVENTURE', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.season, reason: 'learnt once: not again after a new adventure');
+    expect(path(t), Routes.worldMap, reason: 'learnt once: not again after a new adventure');
     expect(app(t).read(gameControllerProvider).detectiveName, 'MINYOUNG', reason: 'the detective stays');
     await wait(t, const Duration(seconds: 3));
   });
@@ -190,8 +189,7 @@ void main() {
     await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 900));
     expect(path(t), Routes.howToPlay);
     await tapText(t, 'SKIP', after: const Duration(milliseconds: 1500));
-    expect(path(t), Routes.prologue);
-    expect(find.text('BEGIN SEASON ONE'), findsNothing);
+    expect(path(t), Routes.worldMap);
     expect(app(t).read(howToPlaySeenProvider), isTrue);
     await wait(t, const Duration(seconds: 3));
   });
@@ -330,7 +328,7 @@ void main() {
     for (var i = 1; i < titles.length; i++) {
       await next(t);
     }
-    expect(find.text('BACK TO MY CASE'), findsOneWidget, reason: 'not START FIRST CASE');
+    expect(find.text('BACK TO MY CASE'), findsOneWidget, reason: 'not EXPLORE THE WORLD');
     await tapText(t, 'BACK TO MY CASE', after: const Duration(milliseconds: 1200));
     expect(path(t), Routes.map);
     await wait(t, const Duration(seconds: 3));
@@ -379,7 +377,7 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets('never past the first page, nor out of the last one: only START FIRST CASE ends it', (t) async {
+    testWidgets('never past the first page, nor out of the last one: only EXPLORE THE WORLD ends it', (t) async {
       await pump(t);
       await register(t);
       await swipe(t, left: false);
@@ -395,24 +393,32 @@ void main() {
       expect(openPage(t), titles.last, reason: 'nothing after the last page');
       expect(path(t), Routes.howToPlay, reason: 'not finished by a swipe');
       expect(app(t).read(howToPlaySeenProvider), isFalse);
-      await tapText(t, 'START FIRST CASE', after: const Duration(milliseconds: 1500));
-      expect(path(t), Routes.prologue);
+      await tapText(t, 'EXPLORE THE WORLD', after: const Duration(milliseconds: 1500));
+      expect(path(t), Routes.worldMap);
       expect(app(t).read(howToPlaySeenProvider), isTrue);
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('START FIRST CASE, tapped twice: one opening; its back goes to the casebook, never the guide; on to Case 01',
+    testWidgets('EXPLORE THE WORLD, tapped twice: one World Map; London → its cover → the opening → Case 01',
         (t) async {
       await pump(t);
       await register(t);
       for (var i = 1; i < titles.length; i++) {
         await next(t);
       }
-      final start = find.text('START FIRST CASE');
+      final start = find.text('EXPLORE THE WORLD');
       await t.tap(start);
       await t.pump(const Duration(milliseconds: 40));
       if (start.hitTestable().evaluate().isNotEmpty) await t.tap(start.hitTestable(), warnIfMissed: false);
       await wait(t, const Duration(milliseconds: 1500));
+      expect(path(t), Routes.worldMap);
+      expect(app(t).read(howToPlaySeenProvider), isTrue);
+
+      // London's card: the season's cover, not skipped, then its opening.
+      await t.tap(find.byKey(const ValueKey('city-card-enter')));
+      await wait(t, const Duration(milliseconds: 1500));
+      expect(path(t), Routes.seasonOf(SeasonIds.london));
+      await tapText(t, 'BEGIN SEASON ONE', after: const Duration(milliseconds: 1500));
       expect(path(t), Routes.prologue);
       expect(find.text('LONDON'), findsOneWidget, reason: 'one opening, on its first scene');
       expect(app(t).read(gameControllerProvider).introSeen, isFalse, reason: 'the opening starts no case by itself');
@@ -436,14 +442,16 @@ void main() {
       await wait(t, const Duration(seconds: 3));
     });
 
-    testWidgets('SKIP bypasses the season cover and enters the prologue', (t) async {
+    testWidgets('SKIP goes to the World Map; London opens on its cover', (t) async {
       await pump(t);
       await register(t);
       await skipHowToPlay(t);
       await wait(t, const Duration(milliseconds: 1500));
-      expect(path(t), Routes.prologue);
-      expect(find.text('BEGIN SEASON ONE'), findsNothing);
+      expect(path(t), Routes.worldMap);
       expect(app(t).read(howToPlaySeenProvider), isTrue);
+      await t.tap(find.byKey(const ValueKey('city-card-enter')));
+      await wait(t, const Duration(milliseconds: 1500));
+      expect(find.text('BEGIN SEASON ONE'), findsOneWidget, reason: 'the cover is not skipped');
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -698,7 +706,7 @@ void main() {
         await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300))); // the pictures
         await t.pump();
         expect(t.takeException(), isNull, reason: 'page ${i + 1}');
-        final button = find.text(i == titles.length - 1 ? 'START FIRST CASE' : 'NEXT');
+        final button = find.text(i == titles.length - 1 ? 'EXPLORE THE WORLD' : 'NEXT');
         expect(t.getRect(button).bottom, lessThanOrEqualTo(size.height), reason: 'page ${i + 1}: the way on');
         expect(t.getRect(find.byTooltip('Back')).height, greaterThanOrEqualTo(44));
         await capture(t, 'how_to_play_${i + 1}_$tag');

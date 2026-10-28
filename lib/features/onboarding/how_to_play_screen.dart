@@ -151,8 +151,8 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
   void _next() => _move(_page + 1);
 
   /// Out of the guide, forwards (finished or skipped): learnt, and on.
-  /// Finishing the guide or pressing SKIP both start the season prologue.
-  /// The guide has already introduced the season, so do not show its cover.
+  /// Finishing the guide or pressing SKIP both go to the World Map, where
+  /// the season is chosen (its cover, then its opening).
   void _done({bool started = false}) {
     if (_leaving) return;
     _leaving = true;
@@ -160,9 +160,8 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
     if (widget.again) {
       context.canPop() ? context.pop() : context.go(Routes.map);
     } else {
-      // The onboarding guide already introduces Season One. Both its final
-      // action and SKIP enter the prologue, bypassing BEGIN SEASON ONE.
-      context.go(Routes.prologue);
+      // Both its final action and SKIP lead to the World Map.
+      context.go(Routes.worldMap);
     }
   }
 
@@ -238,7 +237,7 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
               itemCount: HowToPlayScreen.pageCount,
               onPageChanged: _turned,
               // No give past the first or last page: the guide is never left
-              // by a swipe (the last page is left by START FIRST CASE only).
+              // by a swipe (the last page is left by EXPLORE THE WORLD only).
               physics: _leaving
                   ? const NeverScrollableScrollPhysics()
                   : const _BookPhysics(),
@@ -368,7 +367,7 @@ class _HowToPlayScreenState extends ConsumerState<HowToPlayScreen> {
       _ => _ReadySpread(
         onStart: () => _done(started: true),
         onBack: _back,
-        startLabel: widget.again ? 'BACK TO MY CASE' : 'START FIRST CASE',
+        startLabel: widget.again ? 'BACK TO MY CASE' : 'EXPLORE THE WORLD',
       ),
     };
   }
@@ -2824,7 +2823,7 @@ class _PracticeEvidence extends StatelessWidget {
 /// The book's last page, the cover's twin: the same London night, further
 /// along the embankment towards Big Ben, the player's detective setting off with the
 /// letter and the magnifying glass, the season's name, and the gold
-/// START FIRST CASE.
+/// EXPLORE THE WORLD.
 class _ReadySpread extends ConsumerWidget {
   const _ReadySpread({
     required this.onStart,

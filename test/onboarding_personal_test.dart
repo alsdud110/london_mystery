@@ -305,7 +305,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 1200));
       await tapText(t, 'NEW ADVENTURE');
       await tapText(t, 'START NEW ADVENTURE', after: const Duration(milliseconds: 1500));
-      expect(ref.read(routerProvider).routerDelegate.currentConfiguration.uri.path, Routes.season);
+      expect(ref.read(routerProvider).routerDelegate.currentConfiguration.uri.path, Routes.worldMap);
 
       // The game master's reset: the next child starts at the very beginning.
       final complete = await t.runAsync(() => resetForNextPlayer(ref));

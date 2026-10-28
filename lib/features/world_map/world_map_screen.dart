@@ -46,7 +46,19 @@ class _WorldMapScreenState extends ConsumerState<WorldMapScreen> {
       return;
     }
     _opening = true;
-    context.go(Routes.seasonOf(seasonId));
+    // CONTINUE: on from where the season's case was left, as the title's
+    // CONTINUE did (its report, or its map); else the season's own page
+    // (its cover when not begun, its board).
+    final progress = ref.read(gameControllerProvider);
+    context.go(
+      city.status != WorldCityStatus.inProgress
+          ? Routes.seasonOf(seasonId)
+          : progress.isCaseSolved
+          ? Routes.solvedSettled
+          : progress.introSeen
+          ? Routes.map
+          : Routes.seasonOf(seasonId),
+    );
   }
 
   @override

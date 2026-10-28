@@ -68,7 +68,7 @@ void main() {
       expect((sheet.shape! as RoundedRectangleBorder).borderRadius, const BorderRadius.vertical(top: Radius.circular(4)));
       expect(sheet.showDragHandle, isFalse);
       // Same content, same order.
-      final labels = ['The Missing Crown', 'Detective MINYOUNG', 'Sound effects', 'Detective Notebook', 'Season board', 'Case files', 'Title screen'];
+      final labels = ['The Missing Crown', 'Detective MINYOUNG', 'Sound effects', 'Detective Notebook', 'Season board', 'Case files', 'World map'];
       final tops = [for (final l in labels) t.getRect(find.descendant(of: find.byType(BottomSheet), matching: find.text(l))).top];
       expect(tops, [...tops]..sort(), reason: 'in the same order');
       // The sound switch still switches.
@@ -102,7 +102,7 @@ void main() {
 
         ('Season board', Routes.season),
         ('Case files', Routes.episodes),
-        ('Title screen', Routes.start),
+        ('World map', Routes.worldMap),
       ]) {
         router.go(Routes.map);
         await wait(t, const Duration(milliseconds: 1200));

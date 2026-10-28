@@ -215,7 +215,12 @@ void main() {
 
     testWidgets('the report as it was left: stamped, nothing comes down or counts up again', (t) async {
       await pumpApp(t, extra: [seasonPreviewProvider.overrideWithValue(true)]);
-      await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 100));
+      // CONTINUE now opens the World Map (MAP-5); the report as it was left
+      // is still its own page.
+      await tapText(t, 'CONTINUE ADVENTURE', after: const Duration(milliseconds: 600));
+      expect(path(), Routes.worldMap);
+      appRef.read(routerProvider).go(Routes.solvedSettled);
+      await t.pump();
       expect(path(), Routes.solvedSettled);
       await t.pump(const Duration(milliseconds: 400)); // the page's fade only
       expect(find.text('CASE CLOSED'), findsOneWidget);

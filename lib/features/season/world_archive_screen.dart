@@ -164,7 +164,7 @@ class _WorldArchiveScreenState extends ConsumerState<WorldArchiveScreen> with Si
         leading: IconButton(
           tooltip: 'Back',
           icon: const InkIcon(InkGlyph.back),
-          onPressed: () => context.go(Routes.start),
+          onPressed: () => context.go(Routes.worldMap),
         ),
       ),
       body: DeskBackground(

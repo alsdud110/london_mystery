@@ -57,12 +57,13 @@ void main() {
       );
       await wait(t);
 
-      // Title → Case 01's case file → the next case file.
+      // Title → the World Map → Case 01's case file → the next case file.
       await tapText(
         t,
         'CONTINUE ADVENTURE',
-        after: const Duration(milliseconds: 3200),
+        after: const Duration(milliseconds: 1200),
       );
+      await tapText(t, 'CONTINUE', after: const Duration(milliseconds: 3200));
       expect(find.text('CASE CLOSED'), findsOneWidget);
       await tapText(
         t,
