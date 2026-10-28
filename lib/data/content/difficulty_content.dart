@@ -377,9 +377,10 @@ abstract final class DifficultyContent {
   /// every text of the case with no words of [level]'s own (falling back to
   /// another level's or the base's does not count), each as `mission.field`
   /// or `table/mission`. Rookie: nothing (the base is Rookie's words).
-  static List<String> missingAt(String caseId, Difficulty level) {
+  /// [season]: the case's own (found in `SeasonCatalog` when not given).
+  static List<String> missingAt(String caseId, Difficulty level, {SeasonContent? season}) {
     if (level == Difficulty.rookie) return const [];
-    final season = SeasonCatalog.ofEpisode(caseId);
+    season ??= SeasonCatalog.ofEpisode(caseId);
     final json = season?.episodes[caseId];
     if (season == null || json == null) return ['$caseId: no such case'];
     final patch = season.casePatches[level]?[caseId] ?? const {};

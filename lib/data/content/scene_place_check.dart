@@ -9,9 +9,14 @@ abstract final class ScenePlaceCheck {
   /// What is wrong in [seasons] (all of the game's by default), or nothing.
   static List<String> problems({Iterable<SeasonContent>? seasons}) {
     final all = (seasons ?? SeasonCatalog.all).toList();
-    final out = [for (final s in all) ...problemsOf(s)];
+    return [for (final s in all) ...problemsOf(s), ...sharedPlaces(all)];
+  }
+
+  /// The place ids registered by more than one of [seasons].
+  static List<String> sharedPlaces(Iterable<SeasonContent> seasons) {
+    final out = <String>[];
     final owner = <String, String>{};
-    for (final s in all) {
+    for (final s in seasons) {
       for (final id in s.places.keys) {
         final first = owner.putIfAbsent(id, () => s.id);
         if (first != s.id) out.add('$id: registered by both $first and ${s.id}');

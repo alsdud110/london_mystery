@@ -11,6 +11,7 @@ import 'package:world_mystery/core/utils/audio_service.dart';
 import 'package:world_mystery/data/repositories/profile_store.dart';
 import 'package:world_mystery/data/mock/season1/episode01_mock.dart';
 import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/scene_place.dart' show ScenePlace;
 import 'package:world_mystery/data/models/season.dart' show SeasonIds;
 import 'package:world_mystery/data/repositories/episode_repository.dart';
 import 'package:world_mystery/features/game/game_providers.dart';
@@ -137,6 +138,31 @@ List<String> missingAssets(Iterable<String> assets) => [
         : FileSystemEntity.typeSync(a) != FileSystemEntityType.file)
       a,
 ];
+
+/// A PNG file's size in pixels, read from its header (null: not a PNG).
+(double, double)? pngSize(String file) {
+  final png = File(file).readAsBytesSync();
+  if (png.length < 24 || png[1] != 0x50 || png[2] != 0x4E || png[3] != 0x47) return null;
+  int u32(int at) => (png[at] << 24) | (png[at + 1] << 16) | (png[at + 2] << 8) | png[at + 3];
+  return (u32(16).toDouble(), u32(20).toDouble());
+}
+
+/// Why each of [places]' pictures cannot be bundled: missing on disk, in
+/// no folder (nor as a file) of pubspec.yaml's asset list, or of another
+/// pixel size than the place says (`SeasonContentValidator` leaves the
+/// files to the tests).
+List<String> placeAssetProblems(Map<String, ScenePlace> places) {
+  final listed = pubspecAssets();
+  return [
+    for (final MapEntry(key: id, value: p) in places.entries)
+      if (!File(p.file).existsSync())
+        '$id: ${p.file} is not on disk'
+      else if (!listed.any((a) => a == p.file || (a.endsWith('/') && p.file.startsWith(a) && !p.file.substring(a.length).contains('/'))))
+        '$id: ${p.file} is not listed in pubspec.yaml'
+      else if (pngSize(p.file) case final size when size != (p.pixels.width, p.pixels.height))
+        '$id: ${p.file} is $size pixels, not (${p.pixels.width}, ${p.pixels.height})',
+  ];
+}
 
 /// Text as a reader sees it, in a plain or a rich [Text]. Notebook and
 /// evidence English is rich text (harder words open their meaning), and
