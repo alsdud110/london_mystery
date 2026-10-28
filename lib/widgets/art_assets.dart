@@ -106,6 +106,11 @@ abstract final class ArtAssets {
   /// Pixel size of [titleDetectiveOffice] (never decoded larger).
   static const titleDetectiveOfficePixels = Size(942, 1670);
 
+  /// [titleDetectiveOffice] with the desk lamp off: the room lit by the
+  /// moon alone, everything else in place to the pixel (same size). Faded
+  /// over it when the lamp falters on the title screen.
+  static const titleDetectiveOfficeLampOff = 'assets/shared/title/title_detective_office_lamp_off.png';
+
   /// The Season 1 cover: London from above at dusk — the Thames and its
   /// bridges, Westminster and Big Ben on the right, St Paul's far off, a
   /// stone balcony and a gas lamp in front (portrait, no text). The cover

@@ -322,8 +322,11 @@ void main() {
         expect(find.text('My account'), findsNothing);
         await tapText(t, 'START ADVENTURE');
         expect(find.text('Create Your Detective'), findsOneWidget);
-        expect(find.text('Boy'), findsOneWidget);
-        expect(find.text('Girl'), findsOneWidget);
+        // Two portraits, unworded.
+        expect(find.byKey(const ValueKey('avatar-boy')), findsOneWidget);
+        expect(find.byKey(const ValueKey('avatar-girl')), findsOneWidget);
+        expect(find.text('Boy'), findsNothing);
+        expect(find.text('Girl'), findsNothing);
         expect(t.takeException(), isNull, reason: 'nothing overflows');
 
         // No picture yet: asked for one; nothing is made.

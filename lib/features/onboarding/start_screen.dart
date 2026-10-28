@@ -31,20 +31,37 @@ class StartScreen extends ConsumerStatefulWidget {
   ConsumerState<StartScreen> createState() => _StartScreenState();
 }
 
-class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderStateMixin {
+class _StartScreenState extends ConsumerState<StartScreen>
+    with TickerProviderStateMixin {
   /// The title comes in only the first time the app shows it.
   static bool _introduced = false;
 
   /// The words and the button coming in (about a second).
-  late final AnimationController _intro = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+  late final AnimationController _intro = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1000),
+  );
 
   /// The office, barely alive — only noticed by someone who stays a while:
   /// a camera drifting towards the window and back, rain on the glass, the
-  /// lamp's light breathing. [_ambientIn] fades them in.
-  late final AnimationController _push = AnimationController(vsync: this, duration: const Duration(seconds: 14));
-  late final AnimationController _rain = AnimationController(vsync: this, duration: const Duration(milliseconds: 7200));
-  late final AnimationController _lamp = AnimationController(vsync: this, duration: const Duration(milliseconds: 4200));
-  late final AnimationController _ambientIn = AnimationController(vsync: this, duration: const Duration(seconds: 2));
+  /// lamp's light breathing, and now and then faltering. [_ambientIn] fades
+  /// them in.
+  late final AnimationController _push = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 14),
+  );
+  late final AnimationController _rain = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 7200),
+  );
+  late final AnimationController _lamp = AnimationController(
+    vsync: this,
+    duration: _LampLightPainter.cycle,
+  );
+  late final AnimationController _ambientIn = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  );
 
   /// The ambience starts a beat after the title is up, not with it.
   Timer? _ambientStart;
@@ -60,7 +77,10 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
       _introduced = true;
       _intro.forward();
     }
-    _ambientStart = Timer(const Duration(milliseconds: 2400), () => _setAmbient(true));
+    _ambientStart = Timer(
+      const Duration(milliseconds: 2400),
+      () => _setAmbient(true),
+    );
   }
 
   @override
@@ -82,7 +102,7 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     if (on && !_still) {
       _push.repeat(reverse: true);
       _rain.repeat();
-      _lamp.repeat(reverse: true);
+      _lamp.repeat();
       _ambientIn.forward();
     } else {
       for (final c in [_push, _rain, _lamp, _ambientIn]) {
@@ -115,7 +135,13 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
       // detective who left it unfinished before the season began. Once more
       // than one season can be played, the archives first, to choose.
       final archives = ref.read(playableSeasonCountProvider) > 1;
-      context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : archives ? Routes.seasons : Routes.season);
+      context.go(
+        ref.read(needsHowToPlayProvider)
+            ? Routes.howToPlay
+            : archives
+            ? Routes.seasons
+            : Routes.season,
+      );
     } else {
       context.go(Routes.register);
     }
@@ -129,7 +155,8 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
       title: 'Start a New Adventure?',
       // What newAdventure() clears: every case, the season, XP, badges and
       // coins. The detective stays.
-      message: 'Your cases, clues, XP, badges and coins will start again. '
+      message:
+          'Your cases, clues, XP, badges and coins will start again. '
           'Detective $name stays with you.',
       confirmLabel: 'START NEW ADVENTURE',
       cancelLabel: 'Keep playing',
@@ -139,7 +166,10 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
       await ref.read(gameControllerProvider.notifier).newAdventure();
       // The season from its beginning (How to Play first if never seen, as
       // after creating the detective): the casebook, then Case 01.
-      if (mounted) context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season);
+      if (mounted)
+        context.go(
+          ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season,
+        );
     } else {
       _setAmbient(true);
     }
@@ -176,7 +206,12 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
         child: Stack(
           fit: StackFit.expand,
           children: [
-            _Office(push: _push, rain: _rain, lamp: _lamp, ambientIn: _ambientIn),
+            _Office(
+              push: _push,
+              rain: _rain,
+              lamp: _lamp,
+              ambientIn: _ambientIn,
+            ),
             DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -185,7 +220,8 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                   colors: [
                     // From the top of the desk down: soft enough that the
                     // letter and map still read as paper, never a panel.
-                    for (final a in const [0.4, 0.16, 0.0, 0.0, 0.4, 0.64]) shade.withValues(alpha: a),
+                    for (final a in const [0.4, 0.16, 0.0, 0.0, 0.4, 0.64])
+                      shade.withValues(alpha: a),
                   ],
                   stops: const [0, 0.2, 0.36, 0.56, 0.78, 1],
                 ),
@@ -199,14 +235,21 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                   // large text) it scrolls instead of squeezing.
                   child: LayoutBuilder(
                     builder: (context, box) => SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.screen),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpace.screen,
+                      ),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(minHeight: box.maxHeight),
                         child: IntrinsicHeight(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              SizedBox(height: (screen.height * 0.04).clamp(AppSpace.md, AppSpace.xxl)),
+                              SizedBox(
+                                height: (screen.height * 0.04).clamp(
+                                  AppSpace.md,
+                                  AppSpace.xxl,
+                                ),
+                              ),
                               // The title, centred in the evening sky of the
                               // window, above the harbour: the moon and the
                               // ship on the right stay clear.
@@ -214,7 +257,10 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                               Center(
                                 child: GestureDetector(
                                   onLongPress: _openGameMaster,
-                                  child: _TitleBlock(intro: _intro, width: screen.width),
+                                  child: _TitleBlock(
+                                    intro: _intro,
+                                    width: screen.width,
+                                  ),
                                 ),
                               ),
                               // The middle is the window: the harbour, left to itself.
@@ -225,7 +271,11 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                               _RiseIn(
                                 intro: _intro,
                                 from: 0.42,
-                                child: _Greeting(detectiveName: hasSave ? progress.detectiveName : null),
+                                child: _Greeting(
+                                  detectiveName: hasSave
+                                      ? progress.detectiveName
+                                      : null,
+                                ),
                               ),
                               const SizedBox(height: AppSpace.md),
                               // Last to come in, but answers a tap from the first frame.
@@ -233,9 +283,12 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                 intro: _intro,
                                 from: 0.6,
                                 child: GameButton(
-                                  label: hasSave ? 'CONTINUE ADVENTURE' : 'START ADVENTURE',
+                                  label: hasSave
+                                      ? 'CONTINUE ADVENTURE'
+                                      : 'START ADVENTURE',
                                   arrow: true,
-                                  singleLine: true, // one line on a 360-wide phone
+                                  singleLine:
+                                      true, // one line on a 360-wide phone
                                   style: GameButtonStyle.parchment,
                                   tap: TapRole.primary,
                                   onPressed: _continue,
@@ -249,7 +302,11 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                     height: 52,
                                     child: Center(
                                       // Starts the whole adventure over (asks first).
-                                      child: _PageLink(label: 'NEW ADVENTURE', emphasis: true, onPressed: _confirmNewGame),
+                                      child: _PageLink(
+                                        label: 'NEW ADVENTURE',
+                                        emphasis: true,
+                                        onPressed: _confirmNewGame,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -259,8 +316,16 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
                                 // With two actions, the group sits a little higher
                                 // (about 12 on a small phone, a touch more when tall).
                                 height: hasSave
-                                    ? AppSpace.sm + (screen.height * 0.019).clamp(10.0, 14.0)
-                                    : AppSpace.lg + (screen.height * 0.038).clamp(20.0, 28.0),
+                                    ? AppSpace.sm +
+                                          (screen.height * 0.019).clamp(
+                                            10.0,
+                                            14.0,
+                                          )
+                                    : AppSpace.lg +
+                                          (screen.height * 0.038).clamp(
+                                            20.0,
+                                            28.0,
+                                          ),
                               ),
                             ],
                           ),
@@ -278,7 +343,9 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
     // Match the native launch screen; scope this to the title, not the theme.
     return !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
         ? AnnotatedRegion<SystemUiOverlayStyle>(
-            value: const SystemUiOverlayStyle(statusBarBrightness: Brightness.dark),
+            value: const SystemUiOverlayStyle(
+              statusBarBrightness: Brightness.dark,
+            ),
             child: page,
           )
         : page;
@@ -290,7 +357,12 @@ class _StartScreenState extends ConsumerState<StartScreen> with TickerProviderSt
 /// the lamp's light breathes. The painting, the rain and the light move
 /// together; the words and buttons above never do.
 class _Office extends StatelessWidget {
-  const _Office({required this.push, required this.rain, required this.lamp, required this.ambientIn});
+  const _Office({
+    required this.push,
+    required this.rain,
+    required this.lamp,
+    required this.ambientIn,
+  });
 
   final Animation<double> push;
   final Animation<double> rain;
@@ -317,47 +389,89 @@ class _Office extends StatelessWidget {
         // they stay on the window and the lamp); the words and buttons are
         // above all of them, in the page, and never move with it.
         Widget pushed(Widget child) => AnimatedBuilder(
-              animation: push,
-              builder: (context, child) => Transform.scale(
-                scale: 1 + _pushBy * Curves.easeInOut.transform(push.value),
-                // Into the room towards the window, the harbour nearly still.
-                alignment: const Alignment(0.6, -0.3),
-                child: child,
+          animation: push,
+          builder: (context, child) => Transform.scale(
+            scale: 1 + _pushBy * Curves.easeInOut.transform(push.value),
+            // Into the room towards the window, the harbour nearly still.
+            alignment: const Alignment(0.6, -0.3),
+            child: child,
+          ),
+          child: child,
+        );
+        Widget painting(String asset, ImageErrorWidgetBuilder ifMissing) =>
+            Image.asset(
+              asset,
+              fit: BoxFit.cover,
+              alignment: _focus,
+              width: double.infinity,
+              height: double.infinity,
+              // Decoded at the width it covers, never above the file.
+              cacheWidth: math.min(
+                (math.max(box.maxWidth, box.maxHeight * pixels.aspectRatio) *
+                        MediaQuery.devicePixelRatioOf(context))
+                    .ceil(),
+                pixels.width.toInt(),
               ),
-              child: child,
+              excludeFromSemantics: true,
+              errorBuilder: ifMissing,
             );
         return ClipRect(
           child: Stack(
             fit: StackFit.expand,
             children: [
               pushed(
-                Image.asset(
-                  ArtAssets.titleDetectiveOffice,
-                  fit: BoxFit.cover,
-                  alignment: _focus,
-                  width: double.infinity,
-                  height: double.infinity,
-                  // Decoded at the width it covers, never above the file.
-                  cacheWidth: math.min(
-                    (math.max(box.maxWidth, box.maxHeight * pixels.aspectRatio) * MediaQuery.devicePixelRatioOf(context)).ceil(),
-                    pixels.width.toInt(),
-                  ),
-                  excludeFromSemantics: true,
-                  // Without the picture: the night page it replaced.
-                  errorBuilder: (context, error, stack) => const PaperBackground(night: true, child: SizedBox.expand()),
+                Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Without the picture: the night page it replaced.
+                    painting(
+                      ArtAssets.titleDetectiveOffice,
+                      (context, error, stack) => const PaperBackground(
+                        night: true,
+                        child: SizedBox.expand(),
+                      ),
+                    ),
+                    // The same room with the lamp off, faded in as the lamp
+                    // falters (loaded with the page, so it never pops in).
+                    AnimatedBuilder(
+                      animation: Listenable.merge([lamp, ambientIn]),
+                      builder: (context, child) => Opacity(
+                        opacity:
+                            _LampLightPainter.outAt(lamp.value) *
+                            ambientIn.value,
+                        child: child,
+                      ),
+                      child: painting(
+                        ArtAssets.titleDetectiveOfficeLampOff,
+                        (context, error, stack) => const SizedBox.shrink(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               IgnorePointer(
                 child: pushed(
                   RepaintBoundary(
-                    child: CustomPaint(painter: _RainPainter(picture: picture, rain: rain, shown: ambientIn)),
+                    child: CustomPaint(
+                      painter: _RainPainter(
+                        picture: picture,
+                        rain: rain,
+                        shown: ambientIn,
+                      ),
+                    ),
                   ),
                 ),
               ),
               IgnorePointer(
                 child: pushed(
                   RepaintBoundary(
-                    child: CustomPaint(painter: _LampLightPainter(picture: picture, lamp: lamp, shown: ambientIn)),
+                    child: CustomPaint(
+                      painter: _LampLightPainter(
+                        picture: picture,
+                        lamp: lamp,
+                        shown: ambientIn,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -381,7 +495,8 @@ Rect _coverRect(Size box, Size pixels, Alignment alignment) {
 /// the panes — and nowhere else (not the frame, not the room). Panes are
 /// fractions of the painting.
 class _RainPainter extends CustomPainter {
-  _RainPainter({required this.picture, required this.rain, required this.shown}) : super(repaint: Listenable.merge([rain, shown]));
+  _RainPainter({required this.picture, required this.rain, required this.shown})
+    : super(repaint: Listenable.merge([rain, shown]));
 
   final Rect picture;
   final Animation<double> rain;
@@ -415,11 +530,11 @@ class _RainPainter extends CustomPainter {
     final fade = shown.value;
     if (fade <= 0) return;
     Rect onScreen(Rect f) => Rect.fromLTRB(
-          picture.left + f.left * picture.width,
-          picture.top + f.top * picture.height,
-          picture.left + f.right * picture.width,
-          picture.top + f.bottom * picture.height,
-        );
+      picture.left + f.left * picture.width,
+      picture.top + f.top * picture.height,
+      picture.left + f.right * picture.width,
+      picture.top + f.bottom * picture.height,
+    );
     final panes = [for (final p in _panes) onScreen(p)];
     final glass = Path();
     for (final p in panes) {
@@ -433,7 +548,10 @@ class _RainPainter extends CustomPainter {
     for (final s in _streaks) {
       final pane = panes[s.pane];
       final len = s.length * picture.height;
-      final y = pane.top - len + ((s.phase + rain.value * s.speed) % 1) * (pane.height + len);
+      final y =
+          pane.top -
+          len +
+          ((s.phase + rain.value * s.speed) % 1) * (pane.height + len);
       final x = pane.left + s.x * pane.width;
       line.color = AppColors.paperLight.withValues(alpha: s.alpha * fade);
       // A little slant, as rain runs on glass.
@@ -447,24 +565,71 @@ class _RainPainter extends CustomPainter {
 }
 
 /// The lamp's warm light on the wall and desk around it, breathing very
-/// slightly as a flame would (the lamp itself does not move).
+/// slightly as a flame would (the lamp itself does not move) — and once a
+/// [cycle] faltering: the light going slowly and coming back slowly, then
+/// steady again (the painting of the room with the lamp off is faded in
+/// meanwhile, by [_Office], as [outAt]).
 class _LampLightPainter extends CustomPainter {
-  _LampLightPainter({required this.picture, required this.lamp, required this.shown}) : super(repaint: Listenable.merge([lamp, shown]));
+  _LampLightPainter({
+    required this.picture,
+    required this.lamp,
+    required this.shown,
+  }) : assert(
+         _blinks.every(
+           (b) =>
+               b.$1 >= _blinkEdge &&
+               b.$1 + b.$2 + _blinkEdge <= cycle.inMilliseconds,
+         ),
+         'every blink, with its fades, falls inside one cycle',
+       ),
+       super(repaint: Listenable.merge([lamp, shown]));
 
   final Rect picture;
   final Animation<double> lamp;
   final Animation<double> shown;
 
+  /// One breath, and one falter in it.
+  static const cycle = Duration(milliseconds: 5500);
+
+  /// When the bulb is fully dark, ms into a [cycle] (start, how long); it
+  /// dims for [_blinkEdge] before and comes back for [_blinkEdge] after.
+  static const _blinks = [(2050, 250)];
+
+  /// How long the bulb takes to go dark or come back, ms: slow, a lamp
+  /// fading rather than a switch.
+  static const _blinkEdge = 250.0;
+
   /// The bulb under the shade, as fractions of the painting.
   static const _bulb = Offset(0.100, 0.506);
+
+  /// How far the lamp is out at [t] (0..1) of a [cycle]: 0 lit, 1 off.
+  static double outAt(double t) {
+    final ms = t * cycle.inMilliseconds;
+    var out = 0.0;
+    for (final (start, length) in _blinks) {
+      final into =
+          math.min(
+            ms - (start - _blinkEdge),
+            (start + length + _blinkEdge) - ms,
+          ) /
+          _blinkEdge;
+      out = math.max(out, Curves.easeInOut.transform(into.clamp(0.0, 1.0)));
+    }
+    return out;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
     final fade = shown.value;
     if (fade <= 0) return;
-    // 0.88 ↔ 1.0 of a faint warm light, eased like a slow breath.
-    final strength = (0.88 + 0.12 * Curves.easeInOut.transform(lamp.value)) * fade;
-    final center = Offset(picture.left + _bulb.dx * picture.width, picture.top + _bulb.dy * picture.height);
+    // 0.88 ↔ 1.0 of a faint warm light, eased like a slow breath; none
+    // while the lamp is out.
+    final breath = (1 - math.cos(2 * math.pi * lamp.value)) / 2;
+    final strength = (0.88 + 0.12 * breath) * fade * (1 - outAt(lamp.value));
+    final center = Offset(
+      picture.left + _bulb.dx * picture.width,
+      picture.top + _bulb.dy * picture.height,
+    );
     final radius = picture.width * 0.26;
     final glow = Rect.fromCircle(center: center, radius: radius);
     canvas.drawRect(
@@ -504,8 +669,16 @@ class _RiseIn extends StatelessWidget {
       builder: (context, child) {
         // Each part takes up to 0.4 of the entrance and is always complete by
         // its end (a later part gets a shorter rise, never a partial one).
-        final t = Curves.easeOutCubic.transform(((intro.value - from) / math.min(0.4, 1 - from)).clamp(0.0, 1.0));
-        return Opacity(opacity: t, child: Transform.translate(offset: Offset(0, 6 * (1 - t)), child: child));
+        final t = Curves.easeOutCubic.transform(
+          ((intro.value - from) / math.min(0.4, 1 - from)).clamp(0.0, 1.0),
+        );
+        return Opacity(
+          opacity: t,
+          child: Transform.translate(
+            offset: Offset(0, 6 * (1 - t)),
+            child: child,
+          ),
+        );
       },
       child: child,
     );
@@ -515,10 +688,21 @@ class _RiseIn extends StatelessWidget {
 /// Lifts light words off the painted desk (its letter and map are pale):
 /// a wide faint halo, a soft one and a close edge, all dark — no glow.
 List<Shadow> _lift([double strength = 1]) => [
-      Shadow(color: AppColors.navyDeep.withValues(alpha: 0.35 * strength), blurRadius: 18),
-      Shadow(color: AppColors.navyDeep.withValues(alpha: 0.55 * strength), blurRadius: 8, offset: const Offset(0, 1)),
-      Shadow(color: AppColors.navyDeep.withValues(alpha: 0.45 * strength), blurRadius: 2, offset: const Offset(0, 1)),
-    ];
+  Shadow(
+    color: AppColors.navyDeep.withValues(alpha: 0.35 * strength),
+    blurRadius: 18,
+  ),
+  Shadow(
+    color: AppColors.navyDeep.withValues(alpha: 0.55 * strength),
+    blurRadius: 8,
+    offset: const Offset(0, 1),
+  ),
+  Shadow(
+    color: AppColors.navyDeep.withValues(alpha: 0.45 * strength),
+    blurRadius: 2,
+    offset: const Offset(0, 1),
+  ),
+];
 
 /// The detective's cap / WORLD / MYSTERY / ◆, centred in the window's sky.
 class _TitleBlock extends StatelessWidget {
@@ -530,7 +714,13 @@ class _TitleBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Only enough to lift the letters off the painted clouds: no glow.
-    final lift = [Shadow(color: AppColors.navyDeep.withValues(alpha: 0.55), blurRadius: 8, offset: const Offset(0, 1))];
+    final lift = [
+      Shadow(
+        color: AppColors.navyDeep.withValues(alpha: 0.55),
+        blurRadius: 8,
+        offset: const Offset(0, 1),
+      ),
+    ];
     // Sized to leave the sky and the city the larger part of the window.
     final size = (width * 0.1).clamp(32.0, 42.0);
     // Large text grows the title a little, not over the moon or into the
@@ -544,7 +734,11 @@ class _TitleBlock extends StatelessWidget {
             _RiseIn(
               intro: intro,
               from: 0,
-              child: const InkIcon(InkGlyph.deerstalker, size: AppIconSize.medium, color: AppColors.goldLight),
+              child: const InkIcon(
+                InkGlyph.deerstalker,
+                size: AppIconSize.medium,
+                color: AppColors.goldLight,
+              ),
             ),
             const SizedBox(height: AppSpace.sm),
             // One word to a line, always: fitted to a narrower column than the
@@ -564,8 +758,15 @@ class _TitleBlock extends StatelessWidget {
                           word,
                           maxLines: 1,
                           softWrap: false,
-                          style: AppText.logo(size: size, color: AppColors.creamGold)
-                              .copyWith(letterSpacing: size * 0.08, height: 1.08, shadows: lift),
+                          style:
+                              AppText.logo(
+                                size: size,
+                                color: AppColors.creamGold,
+                              ).copyWith(
+                                letterSpacing: size * 0.08,
+                                height: 1.08,
+                                shadows: lift,
+                              ),
                         ),
                       ),
                   ],
@@ -573,7 +774,11 @@ class _TitleBlock extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpace.md),
-            _RiseIn(intro: intro, from: 0.3, child: const OrnamentRule(color: AppColors.goldLight, width: 120)),
+            _RiseIn(
+              intro: intro,
+              from: 0.3,
+              child: const OrnamentRule(color: AppColors.goldLight, width: 120),
+            ),
           ],
         ),
       ),
@@ -596,11 +801,16 @@ class _Greeting extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
         child: Text(
-          detectiveName == null ? 'Become a Detective.' : 'Welcome back, Detective $detectiveName!',
+          detectiveName == null
+              ? 'Become a Detective.'
+              : 'Welcome back, Detective $detectiveName!',
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: AppText.aside(size: 17, color: AppColors.paperLight).copyWith(shadows: _lift(1.4)),
+          style: AppText.aside(
+            size: 17,
+            color: AppColors.paperLight,
+          ).copyWith(shadows: _lift(1.4)),
         ),
       ),
     );
@@ -611,7 +821,11 @@ class _Greeting extends StatelessWidget {
 /// off the desk. [emphasis] (NEW ADVENTURE): cream caps with a faint rule
 /// under them; otherwise smaller and plainer, the least of the page.
 class _PageLink extends StatelessWidget {
-  const _PageLink({required this.label, required this.onPressed, this.emphasis = false});
+  const _PageLink({
+    required this.label,
+    required this.onPressed,
+    this.emphasis = false,
+  });
 
   final String label;
   final VoidCallback onPressed;
@@ -619,7 +833,9 @@ class _PageLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = emphasis ? AppColors.creamGold : AppColors.paperLight.withValues(alpha: 0.9);
+    final color = emphasis
+        ? AppColors.creamGold
+        : AppColors.paperLight.withValues(alpha: 0.9);
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
@@ -628,7 +844,9 @@ class _PageLink extends StatelessWidget {
         foregroundColor: color,
         // A soft light under the finger: it answers, it does not flash.
         overlayColor: AppColors.paperLight,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.button),
+        ),
       ),
       child: Text(
         label,
