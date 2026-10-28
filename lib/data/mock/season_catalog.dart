@@ -20,6 +20,7 @@ import '../models/scene_deduction.dart';
 import '../models/scene_exhibit.dart';
 import '../models/scene_explore.dart';
 import '../models/scene_inspect.dart';
+import '../models/scene_place.dart';
 import '../models/season.dart';
 import '../models/station_clocks.dart';
 import '../models/story_picture.dart';
@@ -65,6 +66,7 @@ class SeasonContent {
     required this.info,
     required this.episodes,
     this.awaitingArt = const {},
+    this.places = const {},
     this.released = true,
     this.storyGreeting = true,
     this.investigations = const {},
@@ -146,6 +148,13 @@ class SeasonContent {
   /// pictures its puzzles are played on. Their missions' content (learning,
   /// links) is still found by mission id, so it can be checked.
   final Map<String, Map<String, dynamic>> awaitingArt;
+
+  /// The places the season registers as data, by season place id
+  /// (`s3_tokyo.station`, see [ScenePlaceIds]): a new season's places, with
+  /// no [Artwork] value. Seasons 1 and 2 have none (their places are
+  /// [Artwork] scenes). Checked by `ScenePlaceCheck`; no screen shows them
+  /// yet.
+  final Map<String, ScenePlace> places;
 
   /// Whether the season is out for players. An unreleased season stays
   /// COMING SOON for everyone, whatever is solved and whatever is in the
@@ -560,6 +569,11 @@ abstract final class SeasonCatalog {
   /// [SeasonContent.awaitingArt]): never in the game until they are.
   static bool isAwaitingArt(String episodeId) =>
       all.any((s) => s.awaitingArt.containsKey(episodeId));
+
+  /// The place season place id [id] names, registered by the season the id
+  /// names (see [SeasonContent.places]), or null.
+  static ScenePlace? place(String id) =>
+      byId(ScenePlaceIds.seasonOf(id) ?? '')?.places[id];
 
   /// Mission id → its season and case, from the cases' own missions (the
   /// cases awaiting their pictures too: their content is checked by id).

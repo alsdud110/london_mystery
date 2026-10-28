@@ -517,6 +517,16 @@ class Mission {
     _ => answer,
   };
 
+  /// The [Artwork] a mission's JSON names. A mission at a place its season
+  /// registers (`sceneKey`, see `MissionScene`) is not played until the
+  /// screens can show it: refused here, so none reaches a page.
+  static String _sceneName(Map<String, dynamic> json) {
+    if (json.containsKey('sceneKey')) {
+      throw FormatException('Mission ${json['id']}: a season place (sceneKey) is not shown by the screens yet');
+    }
+    return json['scene'] as String;
+  }
+
   factory Mission.fromJson(Map<String, dynamic> json, {bool finale = false, Difficulty difficulty = Difficulty.standard}) =>
       Mission(
     finale: finale,
@@ -526,7 +536,7 @@ class Mission {
     title: json['title'] as String,
     location: json['location'] as String,
     story: (json['story'] as List).cast<String>(),
-    scene: Artwork.fromJson(json['scene'] as String),
+    scene: Artwork.fromJson(_sceneName(json)),
     letterIntro: json['letterIntro'] as String,
     letter: json['letter'] as String,
     type: MissionType.fromJson(json['type'] as String),
