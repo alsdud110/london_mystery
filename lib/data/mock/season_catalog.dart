@@ -135,6 +135,7 @@ class SeasonContent {
     this.variants = const {},
     this.discoveryOf,
     this.writtenLevels = const {},
+    this.retiredEngines = const {},
   });
 
   /// The season as JSON (see [Season.fromJson]).
@@ -334,6 +335,13 @@ class SeasonContent {
   /// stays wherever they were kept).
   final Map<String, Set<Difficulty>> writtenLevels;
 
+  /// Puzzle tables (by their name in [missionTables]) kept but never
+  /// played: each of their entries is under an engine the page plays before
+  /// it, on purpose. Their entries stay (their words are checked at every
+  /// level); `PuzzleEngineCollisionCheck` accepts them under another engine
+  /// and reports one that is played. Read by checks only, never the game.
+  final Set<String> retiredEngines;
+
   /// Every table looked up by mission id (the ones [SeasonCatalog] reads at
   /// a mission's level), by name: what a level's [variants] may hold, and
   /// what `DifficultyContent` checks.
@@ -531,6 +539,10 @@ final season2Content = SeasonContent(
   casePatches: season2CasePatches,
   variants: season2Variants,
   writtenLevels: season2WrittenLevels,
+  // The finals of Cases 04, 05 and 07 are played very easy since 2026-10-27
+  // (`easySteps`, played first on a final page): their first engines stay
+  // registered at every level, never played.
+  retiredEngines: const {'streetBooks', 'postTrails', 'lightTables'},
 );
 
 /// Whether season [seasonId] is out for players (an unknown season is not).

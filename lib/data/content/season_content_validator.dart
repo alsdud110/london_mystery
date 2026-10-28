@@ -6,6 +6,7 @@ import '../models/episode.dart';
 import '../models/mission.dart';
 import '../models/scene_place.dart';
 import 'difficulty_content.dart';
+import 'puzzle_engine_collisions.dart';
 import 'scene_place_check.dart';
 
 /// One thing wrong in a season's content: where (season, case, mission),
@@ -18,7 +19,7 @@ class ContentIssue {
   final String? missionId;
 
   /// `season`, `case`, `mission`, `answer`, `hint`, `reference`,
-  /// `difficulty`, `place` or `progress`.
+  /// `difficulty`, `place`, `progress` or `engine`.
   final String rule;
   final String message;
 
@@ -43,14 +44,16 @@ class ContentIssue {
 abstract final class SeasonContentValidator {
   /// Everything wrong in [seasons] (the game's by default), each season on
   /// its own and between them (their order, ids two seasons share).
-  static List<ContentIssue> validateAll([Iterable<SeasonContent>? seasons]) {
+  /// [engines]: how the puzzle engines' findings count
+  /// (`PuzzleEngineCollisionCheck`; strict unless asked otherwise).
+  static List<ContentIssue> validateAll([Iterable<SeasonContent>? seasons, EngineCheckPolicy engines = EngineCheckPolicy.strict]) {
     final all = (seasons ?? SeasonCatalog.all).toList();
-    return [..._between(all), for (final s in all) ...validate(s)];
+    return [..._between(all), for (final s in all) ...validate(s, engines: engines)];
   }
 
   /// Everything wrong in [season] on its own.
-  static List<ContentIssue> validate(SeasonContent season) {
-    final v = _SeasonCheck(season)..run();
+  static List<ContentIssue> validate(SeasonContent season, {EngineCheckPolicy engines = EngineCheckPolicy.strict}) {
+    final v = _SeasonCheck(season, engines)..run();
     return v.out;
   }
 
@@ -122,9 +125,10 @@ abstract final class SeasonContentValidator {
 }
 
 class _SeasonCheck {
-  _SeasonCheck(this.s);
+  _SeasonCheck(this.s, this.engines);
 
   final SeasonContent s;
+  final EngineCheckPolicy engines;
   final out = <ContentIssue>[];
 
   /// The cases that parse, by the id they are registered under, in case
@@ -164,6 +168,12 @@ class _SeasonCheck {
     _levels();
     for (final p in _guard('place', () => ScenePlaceCheck.problemsOf(s))) {
       add('place', p);
+    }
+    // Each mission's engines, as its page chooses them.
+    try {
+      out.addAll(PuzzleEngineCollisionCheck.problemsOf(s, policy: engines));
+    } catch (e) {
+      add('engine', 'the engine check could not finish: $e');
     }
   }
 
