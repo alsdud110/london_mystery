@@ -133,7 +133,8 @@ BoxDecoration _choiceFrame(bool selected) => BoxDecoration(
 );
 
 /// BOY / GIRL, side by side: two portraits on the form, the chosen one
-/// ringed in navy with a tick. [compact] (keyboard up): the words only.
+/// ringed in navy with a tick; the pictures speak for themselves, unworded.
+/// [compact] (keyboard up): the words only.
 class AvatarChoice extends StatelessWidget {
   const AvatarChoice({
     super.key,
@@ -238,10 +239,12 @@ class _AvatarCard extends StatelessWidget {
                           ],
                         ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpace.xs + 2),
-                  child: Text(titled(avatar.label), style: AppText.title(size: 15, color: ink)),
-                ),
+                // The word only where the picture is folded away.
+                if (height == 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: AppSpace.xs + 2),
+                    child: Text(titled(avatar.label), style: AppText.title(size: 15, color: ink)),
+                  ),
               ],
             ),
           ),

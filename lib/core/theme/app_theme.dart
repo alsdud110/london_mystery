@@ -63,7 +63,7 @@ abstract final class AppTheme {
         scrolledUnderElevation: 0,
         foregroundColor: AppColors.ink,
         centerTitle: true,
-        titleTextStyle: AppText.mark(color: AppColors.ink, size: 17),
+        titleTextStyle: AppText.barTitle(),
       ),
       dividerTheme: DividerThemeData(color: AppLine.faint(), thickness: AppLine.hairline, space: AppSpace.xl),
       snackBarTheme: SnackBarThemeData(

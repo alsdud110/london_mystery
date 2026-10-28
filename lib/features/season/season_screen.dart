@@ -173,7 +173,7 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
       appBar: AppBar(
         foregroundColor: AppColors.goldLight,
         iconTheme: const IconThemeData(color: AppColors.goldLight),
-        toolbarHeight: _casebook ? kToolbarHeight : 60,
+        toolbarHeight: _casebook ? kToolbarHeight : AppBarSize.tall,
         leading: IconButton(
           tooltip: 'Back',
           icon: const InkIcon(InkGlyph.back),

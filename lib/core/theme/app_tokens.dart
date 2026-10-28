@@ -33,6 +33,17 @@ abstract final class AppShadow {
   static const pinned = [BoxShadow(color: Color(0x66000000), blurRadius: 8, offset: Offset(2, 4))];
 }
 
+/// Top bar heights. A full bar is Flutter's [kToolbarHeight].
+abstract final class AppBarSize {
+  /// A tall bar over a painted cover (the season's cover): a little more
+  /// sky above the title.
+  static const tall = 60.0;
+
+  /// A slim bar over a page that is all form (the detective's form): just
+  /// the back button's 48 touch target.
+  static const slim = 48.0;
+}
+
 /// Icon sizes for [InkIcon] (logical px). Picture-sized art such as the
 /// register screen's detective emblem is sized on its own.
 abstract final class AppIconSize {

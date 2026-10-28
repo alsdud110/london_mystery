@@ -79,6 +79,11 @@ abstract final class AppText {
   static TextStyle mark({Color color = AppColors.goldDeep, double size = 15.5}) =>
       style(display, size: size, color: color, letterSpacing: 1);
 
+  /// A top bar's title ("CASE FILES", "FINAL MISSION"), set as a [mark];
+  /// smaller in a [slim] bar (see [AppBarSize.slim]).
+  static TextStyle barTitle({Color color = AppColors.ink, bool slim = false}) =>
+      mark(color: color, size: slim ? 14 : 17);
+
   /// A cinematic prompt: the one short line between the story and the way
   /// on, that readies the player for the next scene ("Are you ready?").
   /// Not a question to answer, not a story line, not a button.

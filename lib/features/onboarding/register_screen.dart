@@ -49,7 +49,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     // Both are checked at once: the name line shows its own error.
     final named = _formKey.currentState?.validate() ?? false;
     if (_avatar == null) {
-      showGameToast(context, 'Choose your detective first.', glyph: InkGlyph.pen);
+      showGameToast(
+        context,
+        'Choose your detective first.',
+        glyph: InkGlyph.pen,
+      );
       return;
     }
     if (!named) return;
@@ -62,7 +66,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
     // A new detective learns how to play first (once), then the season's
     // casebook and its opening.
-    context.go(ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season);
+    context.go(
+      ref.read(needsHowToPlayProvider) ? Routes.howToPlay : Routes.season,
+    );
   }
 
   @override
@@ -141,10 +147,18 @@ class DetectiveDesk extends StatelessWidget {
     final slip = Transform.rotate(
       angle: -0.012,
       child: DecoratedBox(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.paper), boxShadow: AppShadow.paperLift),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.paper),
+          boxShadow: AppShadow.paperLift,
+        ),
         child: PaperSheet(
           lifted: false,
-          padding: EdgeInsets.fromLTRB(AppSpace.lg, typing ? AppSpace.sm : AppSpace.md, AppSpace.lg, AppSpace.md),
+          padding: EdgeInsets.fromLTRB(
+            AppSpace.lg,
+            typing ? AppSpace.sm : AppSpace.md,
+            AppSpace.lg,
+            AppSpace.md,
+          ),
           child: Column(
             children: [
               AnimatedSize(
@@ -207,12 +221,21 @@ class DetectiveDesk extends StatelessWidget {
             const FormStep(number: 1, label: 'Choose Your Detective'),
             SizedBox(height: short ? AppSpace.sm : AppSpace.md),
           ],
-          AvatarChoice(selected: avatar, onChanged: onAvatar, compact: typing, short: short),
+          AvatarChoice(
+            selected: avatar,
+            onChanged: onAvatar,
+            compact: typing,
+            short: short,
+          ),
           SizedBox(height: typing ? AppSpace.md : gap),
           // 2. The name.
           const FormStep(number: 2, label: 'Your Detective Name'),
           SizedBox(height: typing ? AppSpace.sm : AppSpace.md),
-          DetectiveNameLine(controller: name, onSubmitted: onAction, compact: typing),
+          DetectiveNameLine(
+            controller: name,
+            onSubmitted: onAction,
+            compact: typing,
+          ),
           // 3. The level, folded away while the name is written (the choice
           // is kept).
           if (onDifficulty case final onLevel?)
@@ -227,7 +250,11 @@ class DetectiveDesk extends StatelessWidget {
                         SizedBox(height: gap),
                         const FormStep(number: 3, label: 'Choose Your Level'),
                         SizedBox(height: short ? AppSpace.sm : AppSpace.md),
-                        DifficultyChoice(selected: difficulty, onChanged: onLevel, row: true),
+                        DifficultyChoice(
+                          selected: difficulty,
+                          onChanged: onLevel,
+                          row: true,
+                        ),
                       ],
                     ),
             ),
@@ -243,10 +270,16 @@ class DetectiveDesk extends StatelessWidget {
           appBar: AppBar(
             foregroundColor: AppColors.goldLight,
             iconTheme: const IconThemeData(color: AppColors.goldLight),
+            // A slim bar: the form, not the bar, is the page.
+            toolbarHeight: AppBarSize.slim,
+            titleTextStyle: AppText.barTitle(color: AppColors.goldLight, slim: true),
+            title: const Text('WORLD MYSTERY'),
             leading: IconButton(
               tooltip: 'Back',
               icon: const InkIcon(InkGlyph.back),
-              style: IconButton.styleFrom(backgroundColor: AppColors.navyDeep.withValues(alpha: 0.45)),
+              style: IconButton.styleFrom(
+                backgroundColor: AppColors.navyDeep.withValues(alpha: 0.45),
+              ),
               onPressed: onBack,
             ),
           ),
@@ -258,11 +291,16 @@ class DetectiveDesk extends StatelessWidget {
               // settle; none with reduced motion).
               child: TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
-                duration: still ? Duration.zero : const Duration(milliseconds: 300),
+                duration: still
+                    ? Duration.zero
+                    : const Duration(milliseconds: 300),
                 curve: Curves.easeOutCubic,
                 builder: (context, t, child) => Opacity(
                   opacity: t,
-                  child: Transform.translate(offset: Offset(0, 10 * (1 - t)), child: child),
+                  child: Transform.translate(
+                    offset: Offset(0, 10 * (1 - t)),
+                    child: child,
+                  ),
                 ),
                 child: Form(
                   key: formKey,
@@ -296,7 +334,9 @@ class DetectiveDesk extends StatelessWidget {
                                   Transform.translate(
                                     offset: const Offset(0, _overlap),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: AppSpace.sm,
+                                      ),
                                       child: slip,
                                     ),
                                   ),
@@ -307,7 +347,12 @@ class DetectiveDesk extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, typing ? AppSpace.sm : AppSpace.lg),
+                        padding: EdgeInsets.fromLTRB(
+                          AppSpace.xl,
+                          0,
+                          AppSpace.xl,
+                          typing ? AppSpace.sm : AppSpace.lg,
+                        ),
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 440),
                           child: Column(
@@ -316,7 +361,8 @@ class DetectiveDesk extends StatelessWidget {
                               GameButton(
                                 label: action,
                                 arrow: true,
-                                singleLine: true, // one line on a 360-wide phone
+                                singleLine:
+                                    true, // one line on a 360-wide phone
                                 style: GameButtonStyle.navy,
                                 tap: TapRole.primary,
                                 onPressed: onAction,
@@ -326,7 +372,11 @@ class DetectiveDesk extends StatelessWidget {
                                 Text(
                                   note!,
                                   textAlign: TextAlign.center,
-                                  style: AppText.caption(color: AppColors.paperLight.withValues(alpha: 0.85)),
+                                  style: AppText.caption(
+                                    color: AppColors.paperLight.withValues(
+                                      alpha: 0.85,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ],
@@ -371,11 +421,17 @@ class LondonNightBehind extends StatelessWidget {
                   height: double.infinity,
                   // Softened anyway: a small decode is enough.
                   cacheWidth: math.min(
-                    (math.max(box.maxWidth, box.maxHeight * pixels.aspectRatio) * 1.5).ceil(),
+                    (math.max(
+                              box.maxWidth,
+                              box.maxHeight * pixels.aspectRatio,
+                            ) *
+                            1.5)
+                        .ceil(),
                     pixels.width.toInt(),
                   ),
                   excludeFromSemantics: true,
-                  errorBuilder: (context, error, stack) => const SizedBox.expand(),
+                  errorBuilder: (context, error, stack) =>
+                      const SizedBox.expand(),
                 ),
               ),
             ),
@@ -384,7 +440,10 @@ class LondonNightBehind extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   radius: 0.95,
-                  colors: [AppColors.navyDeep.withValues(alpha: 0.35), AppColors.navyDeep.withValues(alpha: 0.75)],
+                  colors: [
+                    AppColors.navyDeep.withValues(alpha: 0.35),
+                    AppColors.navyDeep.withValues(alpha: 0.75),
+                  ],
                 ),
               ),
             ),

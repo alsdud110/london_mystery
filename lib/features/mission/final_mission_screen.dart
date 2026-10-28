@@ -892,7 +892,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
             backgroundColor: AppColors.navyDeep,
             foregroundColor: AppColors.goldLight,
             iconTheme: const IconThemeData(color: AppColors.goldLight),
-            titleTextStyle: AppText.mark(color: AppColors.goldLight, size: 17),
+            titleTextStyle: AppText.barTitle(color: AppColors.goldLight),
             title: const Text('FINAL MISSION'),
             leading: IconButton(
               tooltip: 'Back to map',
@@ -936,7 +936,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       appBar: AppBar(
         foregroundColor: AppColors.goldLight,
         iconTheme: const IconThemeData(color: AppColors.goldLight),
-        titleTextStyle: AppText.mark(color: AppColors.goldLight, size: 17),
+        titleTextStyle: AppText.barTitle(color: AppColors.goldLight),
         title: const Text('FINAL MISSION'),
         leading: IconButton(
           tooltip: 'Back to map',
