@@ -1,0 +1,840 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s3_rome",
+  "tool": "tool/asset_pipeline/asset_pipeline.dart --wiring --write",
+  "checkedAgainst": "lib/ as of 2026-10-29 (SeasonContent.places, ArtAssets.seasonCovers, SeasonMap.bySeason, ArtAssets.evidencePictures, SeasonContent.storyScenes)",
+  "counts": {
+    "wired": 18,
+    "ready_to_wire": 17,
+    "blocked": 0,
+    "not_supported": 12
+  },
+  "assets": [
+    {
+      "assetId": "s3_rome.asset.cover",
+      "type": "cover",
+      "subject": "s3_rome.cover",
+      "caseIds": [],
+      "outputPath": "assets/seasons/season_03_rome/cover/season3_cover_rome.png",
+      "status": "ready_to_wire",
+      "screen": "World Map season board and the Detective Archives file strip",
+      "field": "ArtAssets.seasonCovers['s3_rome'] (SeasonCover: file, pixels, crop, push, archiveLook) in lib/widgets/art_assets.dart",
+      "via": "libEdit",
+      "note": "Not shown yet: one SeasonCover line in lib/ (file, pixels 1024×1536, crop, push, archiveLook chosen on the drawn picture). Shown by BoxFit.cover: full screen on the season board, a 2:1 band in the archive, a 56×72 thumbnail."
+    },
+    {
+      "assetId": "s3_rome.asset.city_map",
+      "type": "map",
+      "subject": "s3_rome.map",
+      "caseIds": [],
+      "outputPath": "assets/seasons/season_03_rome/locations/map/rome_map.png",
+      "status": "ready_to_wire",
+      "screen": "Mission Map",
+      "field": "SeasonMap.bySeason['s3_rome'] (artwork, pixels, aspect, landmarks, caseLandmarks) in lib/features/mission_map/map_world.dart",
+      "via": "libEdit",
+      "note": "Its landmarks are measured on the drawn map and written in lib/. Without a SeasonMap the season's Mission Map shows \"not ready\", so a released season needs this one."
+    },
+    {
+      "assetId": "s3_rome.asset.prologue",
+      "type": "prologue",
+      "subject": "s3_rome.prologue",
+      "caseIds": [],
+      "outputPath": "assets/seasons/season_03_rome/cover/prologue_map_hall_dawn.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "The season openings' pictures are written per season in lib/ (ArtAssets.season1LondonNight, season2GareDuNord); SeasonPrologue (season.plan.json prologue) is words only."
+    },
+    {
+      "assetId": "s3_rome.asset.guard_room",
+      "type": "place",
+      "subject": "s3_rome.guard_room",
+      "caseIds": [
+        "s3_ep01"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_01/guard_room.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.guard_room].file → SeasonContent.places['s3_rome.guard_room'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep01_m1",
+        "s3_ep01_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.map_hall",
+      "type": "place",
+      "subject": "s3_rome.map_hall",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/map_hall.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.map_hall].file → SeasonContent.places['s3_rome.map_hall'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep01_m2",
+        "s3_ep01_m3",
+        "s3_ep12_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.trevi_fountain",
+      "type": "place",
+      "subject": "s3_rome.trevi_fountain",
+      "caseIds": [
+        "s3_ep02"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/trevi_fountain.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.trevi_fountain].file → SeasonContent.places['s3_rome.trevi_fountain'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep02_m1",
+        "s3_ep02_m2",
+        "s3_ep02_m3",
+        "s3_ep02_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.flower_market",
+      "type": "place",
+      "subject": "s3_rome.flower_market",
+      "caseIds": [
+        "s3_ep03",
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/flower_market.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.flower_market].file → SeasonContent.places['s3_rome.flower_market'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep03_m1",
+        "s3_ep03_m2",
+        "s3_ep03_m3",
+        "s3_ep03_final",
+        "s3_ep11_m2"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.pantheon_hall",
+      "type": "place",
+      "subject": "s3_rome.pantheon_hall",
+      "caseIds": [
+        "s3_ep04"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/pantheon_hall.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.pantheon_hall].file → SeasonContent.places['s3_rome.pantheon_hall'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep04_m1"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.rotonda_bookshop",
+      "type": "place",
+      "subject": "s3_rome.rotonda_bookshop",
+      "caseIds": [
+        "s3_ep04"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_04/rotonda_bookshop.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.rotonda_bookshop].file → SeasonContent.places['s3_rome.rotonda_bookshop'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep04_m2",
+        "s3_ep04_m3",
+        "s3_ep04_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.cat_ruins",
+      "type": "place",
+      "subject": "s3_rome.cat_ruins",
+      "caseIds": [
+        "s3_ep05"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/cat_ruins.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.cat_ruins].file → SeasonContent.places['s3_rome.cat_ruins'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep05_m1",
+        "s3_ep05_m2"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.cast_workshop",
+      "type": "place",
+      "subject": "s3_rome.cast_workshop",
+      "caseIds": [
+        "s3_ep05"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/cast_workshop.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.cast_workshop].file → SeasonContent.places['s3_rome.cast_workshop'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep05_m3",
+        "s3_ep05_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.navona_square",
+      "type": "place",
+      "subject": "s3_rome.navona_square",
+      "caseIds": [
+        "s3_ep06"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/navona_square.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.navona_square].file → SeasonContent.places['s3_rome.navona_square'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep06_m1",
+        "s3_ep06_m3"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.lecture_hall",
+      "type": "place",
+      "subject": "s3_rome.lecture_hall",
+      "caseIds": [
+        "s3_ep06"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_06/lecture_hall.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.lecture_hall].file → SeasonContent.places['s3_rome.lecture_hall'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep06_m2",
+        "s3_ep06_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.spanish_steps",
+      "type": "place",
+      "subject": "s3_rome.spanish_steps",
+      "caseIds": [
+        "s3_ep07"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/spanish_steps.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.spanish_steps].file → SeasonContent.places['s3_rome.spanish_steps'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep07_m1",
+        "s3_ep07_m2",
+        "s3_ep07_m3",
+        "s3_ep07_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.tiber_bridge",
+      "type": "place",
+      "subject": "s3_rome.tiber_bridge",
+      "caseIds": [
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/tiber_bridge.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.tiber_bridge].file → SeasonContent.places['s3_rome.tiber_bridge'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep08_m1",
+        "s3_ep08_m2"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.restoration_lab",
+      "type": "place",
+      "subject": "s3_rome.restoration_lab",
+      "caseIds": [
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/restoration_lab.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.restoration_lab].file → SeasonContent.places['s3_rome.restoration_lab'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep08_m3",
+        "s3_ep08_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.forum_view",
+      "type": "place",
+      "subject": "s3_rome.forum_view",
+      "caseIds": [
+        "s3_ep09"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/forum_view.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.forum_view].file → SeasonContent.places['s3_rome.forum_view'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep09_m1",
+        "s3_ep09_m2",
+        "s3_ep09_m3"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.map_archive",
+      "type": "place",
+      "subject": "s3_rome.map_archive",
+      "caseIds": [
+        "s3_ep09"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_09/map_archive.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.map_archive].file → SeasonContent.places['s3_rome.map_archive'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep09_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.civetta_square",
+      "type": "place",
+      "subject": "s3_rome.civetta_square",
+      "caseIds": [
+        "s3_ep10",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/civetta_square.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.civetta_square].file → SeasonContent.places['s3_rome.civetta_square'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep10_m1",
+        "s3_ep10_m2",
+        "s3_ep10_m3",
+        "s3_ep10_final",
+        "s3_ep12_m1"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.site_office",
+      "type": "place",
+      "subject": "s3_rome.site_office",
+      "caseIds": [
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/site_office.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.site_office].file → SeasonContent.places['s3_rome.site_office'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep11_m1",
+        "s3_ep11_m3",
+        "s3_ep11_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.roman_library",
+      "type": "place",
+      "subject": "s3_rome.roman_library",
+      "caseIds": [
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/locations/roman_library.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s3_rome.roman_library].file → SeasonContent.places['s3_rome.roman_library'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s3_ep12_m2",
+        "s3_ep12_m3"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s3_rome.asset.char_giulia_base",
+      "type": "character",
+      "subject": "giulia_marino",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep02",
+        "s3_ep03",
+        "s3_ep04",
+        "s3_ep05",
+        "s3_ep06",
+        "s3_ep07",
+        "s3_ep08",
+        "s3_ep09",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/giulia_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_sofia_base",
+      "type": "character",
+      "subject": "sofia_ferri",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/sofia_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_enzo_base",
+      "type": "character",
+      "subject": "enzo_greco",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/enzo_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_livia_base",
+      "type": "character",
+      "subject": "livia_conti",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep09",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/livia_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_livia_hood",
+      "type": "character",
+      "subject": "livia_conti",
+      "caseIds": [
+        "s3_ep07",
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/livia_hood.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_bruno_base",
+      "type": "character",
+      "subject": "bruno_valli",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep07"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/bruno_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_bruno_site",
+      "type": "character",
+      "subject": "bruno_valli",
+      "caseIds": [
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/bruno_site.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_aldo_base",
+      "type": "character",
+      "subject": "aldo_rinaldi",
+      "caseIds": [
+        "s3_ep02",
+        "s3_ep06",
+        "s3_ep09",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/aldo_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_pia_base",
+      "type": "character",
+      "subject": "pia_ricci",
+      "caseIds": [
+        "s3_ep03",
+        "s3_ep11",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/pia_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.char_carla_base",
+      "type": "character",
+      "subject": "carla_bassi",
+      "caseIds": [
+        "s3_ep05",
+        "s3_ep06",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/characters/carla_base.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2's hand-written talk scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_night_log",
+      "type": "document",
+      "subject": "s3_ep01_e1",
+      "caseIds": [
+        "s3_ep01"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/night_log.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep01_e1'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep01_m1"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_owl_card",
+      "type": "document",
+      "subject": "s3_ep01_e3",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep02",
+        "s3_ep04",
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/owl_card.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep01_e3'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep01_m3"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep01, s3_ep02, s3_ep04, s3_ep08: only s3_ep01_e3 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_brass_key",
+      "type": "object",
+      "subject": "s3_ep02_e3",
+      "caseIds": [
+        "s3_ep02",
+        "s3_ep03"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/brass_key.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep02_e3'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep02_m3"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep02, s3_ep03: only s3_ep02_e3 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_dropped_pass",
+      "type": "document",
+      "subject": "s3_ep03_e4",
+      "caseIds": [
+        "s3_ep03",
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/dropped_pass.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep03_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep03_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep03, s3_ep11: only s3_ep03_e4 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_real_piece",
+      "type": "object",
+      "subject": "s3_ep11_e1",
+      "caseIds": [
+        "s3_ep11",
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/real_map_piece.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep11_e1'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep11_m1"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep11, s3_ep12: only s3_ep11_e1 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_plaster_copy",
+      "type": "object",
+      "subject": "s3_ep04_e4",
+      "caseIds": [
+        "s3_ep04",
+        "s3_ep05",
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/plaster_copy.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep04_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep04_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep04, s3_ep05, s3_ep08: only s3_ep04_e4 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_order_card",
+      "type": "document",
+      "subject": "s3_ep05_e4",
+      "caseIds": [
+        "s3_ep05",
+        "s3_ep06"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/order_card_318.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep05_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep05_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep05, s3_ep06: only s3_ep05_e4 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_aldo_photo",
+      "type": "document",
+      "subject": "s3_ep06_e4",
+      "caseIds": [
+        "s3_ep06",
+        "s3_ep08",
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/aldo_photo.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep06_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep06_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep06, s3_ep08, s3_ep11: only s3_ep06_e4 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_business_card",
+      "type": "document",
+      "subject": "s3_ep07_e3",
+      "caseIds": [
+        "s3_ep07",
+        "s3_ep10"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/business_card.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep07_e3'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep07_m3"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep07, s3_ep10: only s3_ep07_e3 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_loan_page",
+      "type": "document",
+      "subject": "s3_ep07_e4",
+      "caseIds": [
+        "s3_ep07",
+        "s3_ep08",
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/loan_book_page.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep07_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep07_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep07, s3_ep08, s3_ep11: only s3_ep07_e4 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_livia_drawing",
+      "type": "document",
+      "subject": "s3_ep08_e4",
+      "caseIds": [
+        "s3_ep08",
+        "s3_ep09"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/livia_drawing.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep08_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep08_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep08, s3_ep09: only s3_ep08_e4 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_city_plan",
+      "type": "document",
+      "subject": "s3_ep09_e4",
+      "caseIds": [
+        "s3_ep09",
+        "s3_ep10",
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/city_plan.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep09_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep09_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write. Planned for cases s3_ep09, s3_ep10, s3_ep11: only s3_ep09_e4 is named; other evidence ids it stands for are not mapped."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_yellow_helmet",
+      "type": "object",
+      "subject": "s3_ep10_e2",
+      "caseIds": [
+        "s3_ep10"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/yellow_helmet.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep10_e2'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep10_m2"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_owl_mosaic",
+      "type": "object",
+      "subject": "s3_ep12_e3",
+      "caseIds": [
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/owl_mosaic.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s3_ep12_e3'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s3_ep12_m3"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s3_rome.asset.ev_gold_tiles",
+      "type": "object",
+      "subject": "s3_rome.gold_tiles",
+      "caseIds": [
+        "s3_ep12"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/objects/gold_tiles.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.gold_tiles is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.scene_owl_reveal",
+      "type": "scene",
+      "subject": "s3_rome.owl_reveal",
+      "caseIds": [
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_08/owl_reveal.png",
+      "status": "ready_to_wire",
+      "screen": "Story scene before or after a mission (StorySceneScreen)",
+      "field": "SeasonContent.storyScenes[<missionId>] (StoryScenes.place / after / next: StoryPicture)",
+      "via": "generatorExtension",
+      "note": "The table is a SeasonContent one, but the generator writes no storyScenes yet and the manifest names no mission for it (cases s3_ep08)."
+    }
+  ]
+}

@@ -4,15 +4,7 @@
   "assetRoot": "assets/seasons/season_03_rome",
   "model": "gpt-image-2",
   "quality": "medium",
-  "seasonStyles": [
-    {
-      "id": "rome_scene",
-      "kind": "scene",
-      "size": "1536x1024",
-      "background": "opaque",
-      "text": "Storybook illustration for a children's detective mystery game (ages 8-12): warm, inviting and gently mysterious, never scary. No text, letters, numbers, signatures, watermarks or logos anywhere in the image. Style: soft gouache painting with a dry-brush texture, like a sunlit Roman fresco; terracotta, ochre, warm travertine cream, umbrella-pine green and deep shadow blue; strong clear sunlight with crisp shadows; clear architectural perspective; full-bleed composition with no border."
-    }
-  ],
+  "seasonStyles": [],
   "assets": [
     {
       "assetId": "s3_rome.asset.cover",
@@ -20,15 +12,20 @@
       "use": "notWired",
       "subject": "s3_rome.cover",
       "caseIds": [],
-      "description": "Season cover: Rome at golden hour from the Capitoline Hill, a broken marble map piece glowing in the foreground, an owl's silhouette on a column.",
-      "prompt": "A wide view over the rooftops and domes of Rome at golden hour, seen from the Capitoline Hill. In the foreground, on a stone ledge, lies a broken grey marble slab carved with the lines of old streets, one corner missing. A small owl sits on a broken column beside it, looking out over the city. Calm, mysterious, inviting.",
+      "description": "Season cover (portrait, as London's and Paris's): Rome at golden hour from the Capitoline Hill, a broken marble map piece on the ledge in front, a small owl on a column.",
+      "prompt": "A tall portrait view over Rome at golden hour, seen from a stone terrace on the Capitoline Hill: warm stone buildings, red-tiled roofs, church domes and the ruins of the ancient Forum glowing in low sunlight, filling the middle of the picture. In front, on the stone ledge of the terrace, lies a broken grey marble slab carved with the lines of old streets, one corner missing, a little left of centre; a small owl sits on a broken column on the right of the ledge, looking out over the city. Calm, mysterious, inviting. Composition for a phone screen: the upper third is open evening sky with no important detail; the city and its domes fill the middle; the slab and the owl sit in the lower middle, above a plain strip of stone along the bottom edge; keep everything important within the central two-thirds of the width, with only sky, stone and soft rooftops near the left and right edges.",
       "stylePreset": "rome_scene",
-      "width": 1536,
-      "height": 1024,
+      "width": 1024,
+      "height": 1536,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cover/season3_cover_rome.png",
       "references": [],
-      "status": "planned"
+      "status": "planned",
+      "notes": [
+        "Portrait: the game's covers are portrait paintings (London 941x1672, Paris 941x1671) shown by BoxFit.cover. 1024x1536 is the API's portrait size; the game shows it as it is (no resize).",
+        "Safe area on the 1024x1536 picture: the season board fills the phone (9:16 shows x 80-944; a 9:20 phone x 170-854) and pushes in up to 1.165x; the title stands over the top 30% (y 0-460) and the button over the bottom ~15% (y 1300-1536). Key subjects: x 170-854, y 460-1300. The archive strip shows one 2:1 band (1024x512, archiveLook), the World Map thumbnail nearly the whole width.",
+        "Wiring: one SeasonCover line in lib/widgets/art_assets.dart, its crop, push and archiveLook chosen on the drawn picture (STEP 3-12C)."
+      ]
     },
     {
       "assetId": "s3_rome.asset.city_map",
@@ -784,6 +781,6 @@
   "notes": [
     "STEP 3-11: every picture planned, none made. No OpenAI call was made; the estimate is list prices only.",
     "Places (type place) are the pictures the generated content shows (season.plan.json places, same files). The rest are planned for pages the generator does not wire yet (covers, portraits, evidence art).",
-    "References are recorded for a later step: tool/ai_agents does not send reference pictures yet."
+    "STEP 3-12A: rome_scene is tool/ai_agents/image_styles.dart's (pen and watercolour, the season's own gouache line retired). References are sent to the image edits endpoint by tool/asset_pipeline, each made before the pictures drawn from it."
   ]
 }

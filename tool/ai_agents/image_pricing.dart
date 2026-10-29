@@ -52,12 +52,22 @@ abstract final class ImagePricing {
   /// A prompt's text tokens, roughly: four characters a token.
   static int estimatedTextTokens(String prompt) => (prompt.length / 4).ceil();
 
+  /// The input tokens one reference picture (the image edits endpoint) is
+  /// estimated at. OpenAI gives no count for gpt-image-2, which reads every
+  /// input picture at high fidelity: this is an upper bound taken on
+  /// purpose, the earlier models' high-fidelity extra for a 1536×1024
+  /// picture (6,240) plus its base vision tokens (~1,105), rounded up.
+  static const referenceImageTokens = 8000;
+
   /// The estimated cost in US dollars of one image, or null for a model
-  /// with no rates here.
-  static double? estimate({required String model, required String size, required String quality, required String prompt, int n = 1}) {
+  /// with no rates here. [references]: the pictures sent with it to draw
+  /// from, each priced as [referenceImageTokens] of image input.
+  static double? estimate({required String model, required String size, required String quality, required String prompt, int n = 1, int references = 0}) {
     final r = ratesOf(model);
     if (r == null) return null;
-    return n * estimatedOutputTokens(size, quality) * r.imageOut / 1e6 + estimatedTextTokens(prompt) * r.textIn / 1e6;
+    return n * estimatedOutputTokens(size, quality) * r.imageOut / 1e6 +
+        estimatedTextTokens(prompt) * r.textIn / 1e6 +
+        references * referenceImageTokens * r.imageIn / 1e6;
   }
 
   /// What a response's `usage` costs at list prices, or null without rates or usage.

@@ -21,6 +21,8 @@ import 'png_check.dart';
 ///
 /// * Without `--generate` nothing is sent and nothing written (a dry run):
 ///   the request and its estimated cost are printed.
+/// * With `--reference` (STEP 3-12A), the request goes to the image edits
+///   endpoint, the pictures sent as PNG data URLs; each is checked whole first.
 /// * One picture a run; a failed call is never sent again by itself (run the
 ///   command again). A request already made (the same model, prompt, size,
 ///   quality, background), its file still as it was written, is not sent again.
@@ -56,8 +58,10 @@ Future<void> main(List<String> args) async {
     subjectId: a.subject,
     references: a.references,
   );
+  final openAi = OpenAiImageApi();
   final code = await ImageStudio(
-    api: OpenAiImageApi(),
+    api: openAi,
+    editApi: openAi,
     findKey: () => ApiKey.find(envPath: a.envPath),
   ).run(request, generate: a.generate, overwrite: a.overwrite, budgetUsd: a.budgetUsd, manifestPath: a.manifest);
   exit(code);
@@ -147,18 +151,35 @@ abstract interface class ImageApi {
   Future<ApiImage> generate(Map<String, Object?> body, ApiKey key);
 }
 
-/// OpenAI's `POST /v1/images/generations`, once: no retry.
-class OpenAiImageApi implements ImageApi {
-  OpenAiImageApi({this.endpoint = 'https://api.openai.com/v1/images/generations', this.timeout = const Duration(minutes: 5)});
+/// Sends one request drawn from reference pictures (the image edits
+/// endpoint; [body] is `ImageRequest.editBody`).
+abstract interface class ImageEditApi {
+  Future<ApiImage> edit(Map<String, Object?> body, ApiKey key);
+}
+
+/// OpenAI's `POST /v1/images/generations` and `POST /v1/images/edits` (its
+/// JSON form: the pictures as data URLs), once: no retry.
+class OpenAiImageApi implements ImageApi, ImageEditApi {
+  OpenAiImageApi({
+    this.endpoint = 'https://api.openai.com/v1/images/generations',
+    this.editsEndpoint = 'https://api.openai.com/v1/images/edits',
+    this.timeout = const Duration(minutes: 5),
+  });
 
   final String endpoint;
+  final String editsEndpoint;
   final Duration timeout;
 
   @override
-  Future<ApiImage> generate(Map<String, Object?> body, ApiKey key) async {
+  Future<ApiImage> generate(Map<String, Object?> body, ApiKey key) => _post(endpoint, body, key);
+
+  @override
+  Future<ApiImage> edit(Map<String, Object?> body, ApiKey key) => _post(editsEndpoint, body, key);
+
+  Future<ApiImage> _post(String url, Map<String, Object?> body, ApiKey key) async {
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 30);
     try {
-      final req = await client.postUrl(Uri.parse(endpoint));
+      final req = await client.postUrl(Uri.parse(url));
       req.headers.set(HttpHeaders.authorizationHeader, 'Bearer ${key.bearer}');
       req.headers.contentType = ContentType.json;
       req.add(utf8.encode(jsonEncode(body)));
@@ -203,11 +224,14 @@ class OpenAiImageApi implements ImageApi {
 
 /// One picture asked for, checked, sent and recorded.
 class ImageStudio {
-  ImageStudio({required this.api, required this.findKey, this.root = '.', void Function(String)? log, DateTime Function()? now})
+  ImageStudio({required this.api, this.editApi, required this.findKey, this.root = '.', void Function(String)? log, DateTime Function()? now})
       : log = log ?? stdout.writeln,
         now = now ?? DateTime.now;
 
   final ImageApi api;
+
+  /// Where a request with references goes; none: such a request is refused.
+  final ImageEditApi? editApi;
 
   /// The API key, looked for only when it is needed.
   final ApiKey? Function() findKey;
@@ -216,6 +240,12 @@ class ImageStudio {
   final DateTime Function() now;
 
   static const maxPromptLength = 32000;
+
+  /// The edits endpoint's limits (API reference, 2026-10-29): at most 16
+  /// pictures, each data URL at most 20,971,520 characters (base64: 3 bytes
+  /// in 4 characters, less the `data:image/png;base64,` before it).
+  static const maxReferences = 16;
+  static const maxReferenceBytes = (20971520 - 22) ~/ 4 * 3;
   static const qualities = {'low', 'medium', 'high', 'auto', 'xhigh', 'max'};
   static const backgrounds = {'auto', 'opaque', 'transparent'};
 
@@ -241,10 +271,28 @@ class ImageStudio {
         if (w > 3 * h || h > 3 * w) out.add('size: ${r.size}: at most 3:1');
       }
     }
+    if (r.references.length > maxReferences) out.add('reference: ${r.references.length} pictures (at most $maxReferences)');
+    if (r.references.toSet().length != r.references.length) out.add('reference: a picture given twice');
     for (final ref in r.references) {
-      if (!File('$root/$ref').existsSync()) out.add('reference: $ref is not on disk');
+      final f = File('$root/$ref');
+      if (!ref.toLowerCase().endsWith('.png')) {
+        out.add('reference: $ref is not a .png');
+      } else if (!f.existsSync()) {
+        out.add('reference: $ref is not on disk');
+      } else if (f.lengthSync() > maxReferenceBytes) {
+        out.add('reference: $ref is ${f.lengthSync()} bytes (at most $maxReferenceBytes)');
+      } else {
+        try {
+          PngCheck.file(f.path);
+        } on PngProblem catch (e) {
+          out.add('reference: $ref: $e');
+        }
+      }
+      if (ref.replaceAll(r'\', '/') == r.output.replaceAll(r'\', '/')) out.add('reference: $ref is the picture to write');
     }
-    if (r.references.isNotEmpty) out.add('reference: drawing from reference pictures (the image edits endpoint) is not made yet');
+    if (r.references.isNotEmpty && editApi == null) {
+      out.add('reference: no image edits API given: drawing from reference pictures is not made yet here');
+    }
     return out;
   }
 
@@ -287,7 +335,8 @@ class ImageStudio {
       log('error    ${e.message}');
       return 2;
     }
-    final key = r.key;
+    final key = r.keyIn(root);
+    final edits = r.references.isNotEmpty;
 
     // The same picture made before, its file as it was written: not again.
     final made = manifest.generated(key);
@@ -301,8 +350,10 @@ class ImageStudio {
       return 2;
     }
 
-    final estimate = ImagePricing.round(ImagePricing.estimate(model: r.model, size: r.size, quality: r.quality, prompt: r.prompt));
-    log('request  ${r.model}, ${r.size}, quality ${r.quality}, background ${r.background}, 1 image${r.styleId == null ? '' : ', style ${r.styleId}'}');
+    final estimate = ImagePricing.round(
+        ImagePricing.estimate(model: r.model, size: r.size, quality: r.quality, prompt: r.prompt, references: r.references.length));
+    log('request  ${r.model}, ${r.size}, quality ${r.quality}, background ${r.background}, 1 image${r.styleId == null ? '' : ', style ${r.styleId}'}'
+        '${edits ? ', drawn from ${r.references.length} reference picture(s) (images/edits)' : ''}');
     log('output   $rel  (manifest $manifestRel)');
     log('cost     ${estimate == null ? 'unknown (no list prices for ${r.model})' : '${ImagePricing.usd(estimate)} estimated'}'
         ' — an estimate from the list prices of ${ImagePricing.checkedOn}; the bill is OpenAI\'s');
@@ -312,7 +363,7 @@ class ImageStudio {
     }
     final apiKey = findKey();
     if (!generate) {
-      log('dry run  ${const JsonEncoder.withIndent('  ').convert({...r.body, 'prompt': '(${r.prompt.length} characters)'})}');
+      log('dry run  ${const JsonEncoder.withIndent('  ').convert({...(edits ? r.editBodyShown : r.body), 'prompt': '(${r.prompt.length} characters)'})}');
       log('dry run  API key ${apiKey == null ? 'NOT found (OPENAI_API_KEY in the environment or .env)' : 'found'}; '
           'nothing sent, nothing written (--generate to make it)');
       return 0;
@@ -335,6 +386,7 @@ class ImageStudio {
       'style': ?r.styleId,
       'subject': ?r.subjectId,
       'references': r.references,
+      'endpoint': edits ? 'images/edits' : 'images/generations',
       'prompt': r.prompt,
       'requestedAt': started.toIso8601String(),
       'apiCalled': true,
@@ -352,7 +404,7 @@ class ImageStudio {
     log('sending  one request (no retry)…');
     final ApiImage image;
     try {
-      image = await api.generate(r.body, apiKey);
+      image = edits ? await editApi!.edit(r.editBody(root), apiKey) : await api.generate(r.body, apiKey);
     } on ApiFailure catch (e) {
       entry['error'] = e.toJson(apiKey.redact);
       entry['cost'] = {'estimatedUsd': estimate, 'fromUsageUsd': null, 'note': 'failed: billed only if OpenAI made the image'};

@@ -81,3 +81,9 @@ skills-lock.json
 
 # Local QA screenshots and capture tools (large, not tracked)
 /qa/
+
+# Pictures made by tool/asset_pipeline (OpenAI): the API's originals, the
+# game-size copies, the run state and the cost ledger. Paid for: back them
+# up elsewhere (tool/asset_pipeline/README.md). The season's plans
+# (assets.manifest.json, planning/asset_wiring.json) stay tracked.
+/content_pipeline/asset_work/

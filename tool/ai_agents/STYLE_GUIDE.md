@@ -29,6 +29,14 @@ ink and add deep blue skies and warm lamp light (King's Cross platform).
 mosaic-like impasto strokes; golden late-afternoon light and long shadows;
 honey, amber, umber and soft sky blue; full bleed, no border.
 
+**Rome (`rome_scene`, STEP 3-12A)** — London's hand: pen lines and soft
+watercolour washes, on warm cream paper, lightly stylised like a travel
+sketchbook; Rome's colours (terracotta, ochre, travertine cream,
+umbrella-pine green, soft sky blue) and warm Mediterranean sun with gentle
+shadows; full bleed, no border, so it never reads as London's postcards.
+A later season adds its own scene style the same way (here, or in its
+manifest's `seasonStyles`), never changing another season's.
+
 ## Every picture
 
 - For children of 8 to 12: warm and gently mysterious, never frightening.
@@ -43,8 +51,8 @@ honey, amber, umber and soft sky blue; full bleed, no border.
 A request names what it shows (`--subject`, as `s9_sandbox.front_desk` or
 `s3_rome.char.guide`) and the manifest keeps it with the picture's hash.
 A later picture of the same subject is to be drawn from that one
-(`--reference`, the image edits endpoint): the tool takes and records
-references now, but does not send them yet (a later step).
+(`--reference`, the image edits endpoint): sent since STEP 3-12A, and
+`tool/asset_pipeline` makes every reference before the pictures drawn from it.
 
 ## The STEP 3-10 test picture
 

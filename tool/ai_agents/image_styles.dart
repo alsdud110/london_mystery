@@ -39,6 +39,18 @@ abstract final class ImageStyles {
           'golden late-afternoon sunlight with long shadows; honey, amber, umber and soft sky-blue palette; '
           'full-bleed composition with no border.',
     ),
+    // STEP 3-12A: London's ink and watercolour, in Rome's light and colours;
+    // full bleed, so it never reads as London's postcards.
+    'rome_scene': ImageStyle(
+      id: 'rome_scene',
+      kind: 'scene',
+      size: '1536x1024',
+      background: 'opaque',
+      text: '$_common Style: hand-drawn pen line drawing with soft watercolour washes on warm cream paper, lightly stylised rather than '
+          'photographic, like a well-loved travel sketchbook; warm vintage Roman colours of terracotta, ochre, travertine cream, '
+          'umbrella-pine green and soft sky blue; warm Mediterranean sunlight with gentle shadows; clear architectural perspective; '
+          'full-bleed composition with no border.',
+    ),
     'character': ImageStyle(
       id: 'character',
       kind: 'character',

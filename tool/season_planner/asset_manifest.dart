@@ -47,6 +47,11 @@ abstract final class AssetManifest {
   /// game's own (`tool/ai_agents/STYLE_GUIDE.md`).
   static const sizes = {'1536x1024', '1024x1536', '1024x1024'};
 
+  /// A season cover's size: the game's covers are portrait paintings
+  /// (`SeasonCover`, London 941×1672) filling the phone; this is the API's
+  /// portrait size, shown as it is (STEP 3-12A).
+  static const coverSize = '1024x1536';
+
   /// The style kind each type is drawn in.
   static const kindOf = {
     'cover': 'scene',
@@ -213,9 +218,16 @@ abstract final class AssetManifest {
         } else {
           final want = kindOf[type];
           if (want != null && s.kind != want) error('asset_style_mismatch', '$at.stylePreset', '$style draws ${s.kind}s, a $type is drawn as a $want');
-          if (sizes.contains(size) && size != s.size) warning('asset_size_unusual', '$at.width', '$size, $style is made at ${s.size}');
+          if (type == 'cover') {
+            if (sizes.contains(size) && size != coverSize) {
+              warning('asset_cover_shape', '$at.width', '$size: a season cover is a portrait painting ($coverSize; SeasonCover fills the phone)');
+            }
+          } else if (sizes.contains(size) && size != s.size) {
+            warning('asset_size_unusual', '$at.width', '$size, $style is made at ${s.size}');
+          }
           if (prompt != null && sizes.contains(size)) {
-            final usd = ImagePricing.estimate(model: model, size: size, quality: quality, prompt: '$prompt\n\n${s.text}');
+            final refCount = a['references'] is List ? (a['references'] as List).length : 0;
+            final usd = ImagePricing.estimate(model: model, size: size, quality: quality, prompt: '$prompt\n\n${s.text}', references: refCount);
             if (usd == null) {
               priced = false;
             } else {
@@ -353,7 +365,8 @@ abstract final class AssetManifest {
       'model': model,
       'quality': quality,
       'estimatedUsd': priced ? ImagePricing.round(cost) : null,
-      'estimateNote': 'List prices of ${ImagePricing.checkedOn} (image_pricing.dart), an estimate before any call; nothing was sent.',
+      'estimateNote': 'List prices of ${ImagePricing.checkedOn} (image_pricing.dart), an estimate before any call, each reference picture '
+          'priced as ${ImagePricing.referenceImageTokens} image input tokens; nothing was sent.',
     };
   }
 }

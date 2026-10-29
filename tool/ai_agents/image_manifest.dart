@@ -37,21 +37,29 @@ class ImageRequest {
   /// be drawn from it (`s3_rome.char.tour_guide`). For the record only now.
   final String? subjectId;
 
-  /// Pictures to draw from (the image edits endpoint): not sent in STEP 3-10.
+  /// Pictures to draw from, PNGs from the repository's root: sent to the
+  /// image edits endpoint (STEP 3-12A), in this order.
   final List<String> references;
 
-  Map<String, Object?> get _shaping => {
+  Map<String, Object?> _shaping(String root) => {
     'model': model,
     'prompt': prompt,
     'size': size,
     'quality': quality,
     'background': background,
     'outputFormat': 'png',
-    'references': [for (final r in references) File(r).existsSync() ? 'sha256:${Sha256.hex(File(r).readAsBytesSync())}' : r],
+    'references': [
+      for (final r in references) File('$root/$r').existsSync() ? 'sha256:${Sha256.hex(File('$root/$r').readAsBytesSync())}' : r,
+    ],
   };
 
-  /// `sha256:` of what shapes the picture (not where it is written).
-  String get key => 'sha256:${Sha256.hex(utf8.encode(jsonEncode(_shaping)))}';
+  /// `sha256:` of what shapes the picture (not where it is written), its
+  /// references read from the working directory.
+  String get key => keyIn('.');
+
+  /// [key], its references read from [root]: the same picture drawn from a
+  /// changed reference is another request.
+  String keyIn(String root) => 'sha256:${Sha256.hex(utf8.encode(jsonEncode(_shaping(root))))}';
 
   /// The API's request body (`/v1/images/generations`).
   Map<String, Object?> get body => {
@@ -62,6 +70,24 @@ class ImageRequest {
     'quality': quality,
     'output_format': 'png',
     if (background != 'auto') 'background': background,
+  };
+
+  /// The image edits endpoint's JSON body (`/v1/images/edits`): [body] with
+  /// each reference as a PNG data URL in `images`, read from [root]. Only
+  /// what the API reference lists for the GPT image models is sent: no
+  /// `input_fidelity` (gpt-image-2 refuses it; it reads every input at high
+  /// fidelity) and no `mask`.
+  Map<String, Object?> editBody(String root) => {
+    ...body,
+    'images': [
+      for (final r in references) {'image_url': 'data:image/png;base64,${base64Encode(File('$root/$r').readAsBytesSync())}'},
+    ],
+  };
+
+  /// [editBody] as it may be shown: each picture's data replaced by its path.
+  Map<String, Object?> get editBodyShown => {
+    ...body,
+    'images': [for (final r in references) {'image_url': 'data:image/png;base64,… ($r)'}],
   };
 }
 

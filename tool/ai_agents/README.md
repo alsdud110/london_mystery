@@ -29,13 +29,13 @@ dart run tool/ai_agents/openai_image.dart ... --generate
 |---|---|---|
 | `--prompt` | (required) | what to draw; `--style`'s line is added after it |
 | `--output` | (required) | a `.png` in the repository, never in `lib/` or `assets/` |
-| `--style` | none | `london_scene`, `paris_scene`, `character`, `object`: sets the size and background too |
+| `--style` | none | `london_scene`, `paris_scene`, `rome_scene`, `character`, `object`: sets the size and background too |
 | `--model` | `gpt-image-2` | any GPT image model (`gpt-image-2.5-flare`, `gpt-image-1.5`, `gpt-image-1-mini`…) |
 | `--size` | the style's, else `1536x1024` | `WxH` (multiples of 16, ≤ 3840, ≤ 3:1) or `auto` |
 | `--quality` | `medium` | `low`, `medium`, `high`, `auto` (2.5 models: `xhigh`, `max`) |
 | `--background` | the style's, else `auto` | `auto`, `opaque`, `transparent` |
 | `--subject` | none | what it shows, for later pictures of it |
-| `--reference` | none | a picture to draw from: recorded, refused for now (not sent yet) |
+| `--reference` | none | a PNG to draw from (repeatable, ≤ 16): the request goes to `/v1/images/edits` (STEP 3-12A) |
 | `--manifest` | `<output's folder>/image_manifest.json` | |
 | `--budget-usd` | `0.25` | an estimate above it is not sent |
 | `--env` | `.env` | where the key is when the environment has none |
@@ -83,11 +83,22 @@ failed (recorded); `2` refused before sending (nothing recorded); `64` usage.
 
 A failed entry has `"status": "failed"` and `"error": {status, type, code, message}`.
 
+## Reference pictures (STEP 3-12A)
+
+With references, `ImageStudio` (given an `editApi`) sends the image edits
+endpoint's JSON form: the generation's fields plus `images` as PNG data URLs
+(`ImageRequest.editBody`); no `input_fidelity` (gpt-image-2 takes none), no
+mask. Each reference is checked whole first; its bytes are in the request's
+key. The estimate prices each as `ImagePricing.referenceImageTokens` (8,000)
+image input tokens, an upper bound. The entry records `"endpoint"`.
+
+## Many pictures
+
+A season's manifest is made by `tool/asset_pipeline` (order, budget, calls,
+resume, fitting to the game's size, wiring), one `ImageStudio.run` a picture.
+
 ## Not yet
 
-- Many pictures in one run: `ImageStudio.run` takes one `ImageRequest`; a
-  season's asset list will be a list of them, run in turn (each its own
-  entry, the budget for the whole).
-- Reference pictures (`/v1/images/edits`), transparent cut-outs (whether
-  gpt-image-2 takes `background: transparent` is not checked yet), resizing
-  to the game's other sizes, writing into `assets/` and `pubspec.yaml`.
+- Transparent cut-outs: gpt-image-2's `background: transparent` is a preview
+  (the pipeline refuses it); the 2.5 models take it.
+- Writing into `assets/` and `pubspec.yaml` (STEP 3-12C).

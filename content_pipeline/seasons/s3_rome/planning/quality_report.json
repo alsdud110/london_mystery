@@ -37,8 +37,8 @@
       "shownBySeasonPlaces": 18,
       "model": "gpt-image-2",
       "quality": "medium",
-      "estimatedUsd": 2.02419,
-      "estimateNote": "List prices of 2026-10-29 (image_pricing.dart), an estimate before any call; nothing was sent."
+      "estimatedUsd": 2.54044,
+      "estimateNote": "List prices of 2026-10-29 (image_pricing.dart), an estimate before any call, each reference picture priced as 8000 image input tokens; nothing was sent."
     },
     "generator": {
       "run": true,
