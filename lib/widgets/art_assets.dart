@@ -96,28 +96,25 @@ abstract final class ArtAssets {
   static const parisMapPixels = Size(1536, 1024);
 
   /// The World Map: the whole world (1983 × 793), navy sea and golden land
-  /// with landmarks, no Antarctica. Round markers are painted by some
-  /// landmarks; a game city sits on its painted marker (`WorldCity.mapAt`),
-  /// the rest are decoration. A missing or broken file shows plain navy
-  /// sea, never another map.
-  static const worldMap = 'assets/shared/world_map/world_map_v3.png';
+  /// with landmarks, no Antarctica, no markers: the cities' pins are the app's, by their
+  /// landmarks (`WorldCity.mapAt`). A missing or broken file shows plain
+  /// navy sea, never another map.
+  static const worldMap = 'assets/shared/world_map/world_map_v4.png';
 
   /// Width / height of [worldMap].
   static const worldMapAspect = 1983 / 793;
 
-  /// A round marker painted on [worldMap], in fractions of its width: the
-  /// circle's radius, and from its middle down to its tip.
-  static const worldMapMarkerRadius = 15 / 1983;
-  static const worldMapMarkerTip = 28 / 1983;
-
-  /// The middles of markers painted on [worldMap] close to the game's
-  /// cities that are no city in the game (fractions of its width / height):
-  /// by Beijing, and the one under Seoul's. Names keep off them.
-  static const worldMapOtherMarkers = [Offset(1538 / 1983, 315 / 793), Offset(1632 / 1983, 335 / 793)];
+  /// The cities' pins on [worldMap] (96 × 120, the tip at the bottom
+  /// middle, transparent): the season under way, a season complete, a city
+  /// locked; and the gold ring round a chosen pin's head (144 × 144).
+  static const worldMapPinInProgress = 'assets/shared/world_map/pin_in_progress.png';
+  static const worldMapPinCompleted = 'assets/shared/world_map/pin_completed.png';
+  static const worldMapPinLocked = 'assets/shared/world_map/pin_locked.png';
+  static const worldMapPinRing = 'assets/shared/world_map/pin_selected_ring.png';
 
   /// The longitudes at [worldMap]'s west and east edges and the latitudes
   /// at its north and south edges (for a city with no painted marker, and
-  /// the opening zoom), read off world_map_v2's coastlines (a painting, so
+  /// the opening zoom), read off an earlier map's coastlines (a painting, so
   /// near enough: within about 2° around the game's cities). It reaches a
   /// little past one turn of the world, so the Bering Strait shows at both
   /// ends.

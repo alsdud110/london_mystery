@@ -160,15 +160,16 @@ void main() {
       expect(marked.at, const Offset(0.25, 0.75));
     });
 
-    test('each city sits on its marker painted on world_map_v3; its latitude and longitude kept', () {
-      // The middles of the round markers by Big Ben, the Eiffel Tower, the
-      // Colosseum, Korea (the upper one) and the castle (1983 × 793).
+    test("each city's pin stands by its landmark on world_map_v4; its latitude and longitude kept", () {
+      // Where the pins' tips go: beside Big Ben, the Eiffel Tower, the
+      // Colosseum, by Korea and the castle (1983 × 793), where the earlier
+      // map painted its markers' tips.
       for (final (city, x, y) in const [
-        (WorldCities.london, 898.0, 182.0),
-        (WorldCities.paris, 964.0, 250.0),
-        (WorldCities.rome, 1042.0, 302.0),
-        (WorldCities.seoul, 1632.0, 297.0),
-        (WorldCities.tokyo, 1735.0, 322.0),
+        (WorldCities.london, 897.5, 209.5),
+        (WorldCities.paris, 965.5, 279.5),
+        (WorldCities.rome, 1038.5, 330.0),
+        (WorldCities.seoul, 1633.0, 325.0),
+        (WorldCities.tokyo, 1734.0, 350.5),
       ]) {
         final at = Offset(city.at.dx * 1983, city.at.dy * 793);
         expect((at - Offset(x, y)).distance, lessThan(1), reason: city.name);
@@ -285,7 +286,9 @@ void main() {
   group('the camera', () {
     void expectFramed(WidgetTester t, String cityId) {
       final area = inView(t);
-      final at = t.getCenter(pin(cityId));
+      // The place: the pin's tip, under the middle of its head (the middle
+      // of its touch) by 50 × 76 / 120.
+      final at = t.getCenter(pin(cityId)) + const Offset(0, 50 * 76 / 120);
       expect(at.dx, closeTo(area.center.dx, 1), reason: '$cityId across the middle');
       expect(at.dy, closeTo(area.top + area.height * WorldMapView.focusHeight, 1), reason: '$cityId at 45% of the view');
     }
@@ -306,7 +309,7 @@ void main() {
         // At 45% of the view, or a little above it when Rome needs the
         // room (the world's north edge then holds London up).
         expect(london.dy, inInclusiveRange(area.top + area.height * 0.3, area.top + area.height * WorldMapView.focusHeight + 1));
-        expect(find.byKey(const ValueKey('mark-london-selected')), findsOneWidget);
+        expect(find.byKey(const ValueKey('mark-london-home')), findsOneWidget);
         for (final id in ['london', 'paris', 'rome']) {
           // The whole touch square and the name, inside the part in view.
           expect(area.contains(t.getRect(pin(id)).topLeft) && area.contains(t.getRect(pin(id)).bottomRight), isTrue, reason: '$id touch in view');
@@ -339,51 +342,67 @@ void main() {
       expect(saves(), before, reason: 'choosing saves nothing');
     });
 
-    testWidgets('a locked city chosen keeps its lock in a gold ring, no drop; once open, the drop', (t) async {
-      await pumpApp(t, seasonSaves(3, activeBegun: true));
+    testWidgets('the season under way has the floating drop; every city not under way or done, a lock', (t) async {
+      await pumpApp(t, seasonSaves(3, activeBegun: true), size: const Size(390, 844));
       await openMap(t);
       final before = saves();
+      expect(find.byKey(const ValueKey('mark-london-home')), findsOneWidget);
+      expect(find.byKey(const ValueKey('mark-paris-locked')), findsOneWidget, reason: 'Paris: London not complete');
+      expect(find.byKey(const ValueKey('mark-rome-locked')), findsOneWidget, reason: 'Rome: coming soon, locked too');
+      // Every name on a tag, chosen or not.
+      for (final id in ['london', 'paris', 'rome']) {
+        final label = find.byKey(ValueKey('city-label-$id'));
+        expect(find.descendant(of: label, matching: find.byType(DecoratedBox)), findsOneWidget, reason: id);
+      }
+      // Each pin's tip on its city's place, its head in the middle of its touch.
+      final viewer = find.byKey(const ValueKey('world-map-viewer'));
+      final box = t.getRect(viewer);
+      final h = math.max(box.height, box.width / ArtAssets.worldMapAspect);
+      for (final c in [WorldCities.london, WorldCities.paris, WorldCities.rome]) {
+        final place = MatrixUtils.transformPoint(view(t), Offset(c.at.dx * h * ArtAssets.worldMapAspect, c.at.dy * h)) + box.topLeft;
+        final art = t.getRect(find.descendant(of: pin(c.id), matching: find.byKey(const ValueKey('pin-art'))));
+        expect((art.bottomCenter - place).distance, lessThan(4.5), reason: '${c.name}: the tip on the place (home floats up to 4)');
+        expect((Offset(art.center.dx, art.top + art.height * 44 / 120) - t.getCenter(pin(c.id))).dx.abs(), lessThan(0.5));
+      }
+
+      // The drop floats: up to 4 above its place and back.
+      final float = find.descendant(of: find.byKey(const ValueKey('mark-london-home')), matching: find.byType(Transform));
+      final heights = <double>[];
+      for (var k = 0; k < 8; k++) {
+        await t.pump(const Duration(milliseconds: 200));
+        heights.add(t.widget<Transform>(float).transform.getTranslation().y);
+      }
+      expect(heights.reduce(math.min), lessThan(-2), reason: 'floats up');
+      expect(heights.reduce(math.max), greaterThan(-2), reason: 'and down');
+      expect(heights.every((h) => h >= -4.001 && h <= 0.001), isTrue);
+
+      // A locked city chosen: its lock in a gold ring; the drop stays home.
       await t.tap(pin('paris'));
       await wait(t, const Duration(milliseconds: 600));
       expect(card('paris'), findsOneWidget);
-      expect(find.byKey(const ValueKey('mark-paris-selectedLocked')), findsOneWidget);
-      expect(find.byKey(const ValueKey('mark-paris-selected')), findsNothing);
+      expect(find.byKey(const ValueKey('mark-paris-lockedChosen')), findsOneWidget);
+      expect(find.byKey(const ValueKey('mark-london-home')), findsOneWidget);
       expect(find.byKey(const ValueKey('city-card-enter')), findsNothing, reason: 'a locked season cannot be entered');
       await tapCity(t, 'tokyo');
-      expect(find.byKey(const ValueKey('mark-tokyo-selectedComingSoon')), findsOneWidget, reason: 'coming soon: its ring, not the lock');
+      expect(find.byKey(const ValueKey('mark-tokyo-lockedChosen')), findsOneWidget);
       await bringIntoView(t, 'paris');
       expect(find.byKey(const ValueKey('mark-paris-locked')), findsOneWidget, reason: 'not chosen: the plain lock again');
       expect(saves(), before, reason: 'choosing saves nothing');
     });
 
-    testWidgets('Paris open and chosen: the gold drop', (t) async {
+    testWidgets('Paris under way: the drop on Paris; London complete, a dot, chosen in a ring', (t) async {
       await pumpApp(t, seasonSaves(12));
       await openMap(t);
       expect(card('paris'), findsOneWidget);
-      expect(find.byKey(const ValueKey('mark-paris-selected')), findsOneWidget);
+      expect(find.byKey(const ValueKey('mark-paris-home')), findsOneWidget);
       expect(find.byKey(const ValueKey('city-card-enter')), findsOneWidget);
-    });
-
-    testWidgets("Seoul's name keeps off the marker painted under Seoul's", (t) async {
-      await pumpApp(t, seasonSaves(0), size: const Size(390, 844));
-      await openMap(t);
-      await tapCity(t, 'tokyo');
-      await bringIntoView(t, 'seoul');
-      final label = find.byKey(const ValueKey('city-label-seoul'));
-      expect(label, findsOneWidget);
-      // Where the painted marker below Seoul's is on screen: its circle and tip.
-      final viewer = find.byKey(const ValueKey('world-map-viewer'));
-      final box = t.getRect(viewer);
-      final h = math.max(box.height, box.width / ArtAssets.worldMapAspect);
-      final w = h * ArtAssets.worldMapAspect;
-      final m = view(t);
-      final other = ArtAssets.worldMapOtherMarkers[1];
-      final at = MatrixUtils.transformPoint(m, Offset(other.dx * w, other.dy * h)) + box.topLeft;
-      final r = w * m.getMaxScaleOnAxis() * ArtAssets.worldMapMarkerRadius;
-      final tip = w * m.getMaxScaleOnAxis() * ArtAssets.worldMapMarkerTip;
-      final painted = Rect.fromLTRB(at.dx - r, at.dy - r, at.dx + r, at.dy + tip);
-      expect(t.getRect(label).overlaps(painted), isFalse);
-      expect(t.getCenter(pin('seoul')).dy, lessThan(at.dy), reason: "Seoul's pin is the upper marker");
+      await bringIntoView(t, 'london');
+      expect(find.byKey(const ValueKey('mark-london-open')), findsOneWidget);
+      await tapCity(t, 'london');
+      expect(card('london'), findsOneWidget);
+      expect(find.byKey(const ValueKey('mark-london-openChosen')), findsOneWidget);
+      expect(find.byKey(const ValueKey('city-card-enter')), findsOneWidget, reason: 'a completed season opens again');
+      expect(find.byKey(const ValueKey('mark-paris-home')), findsOneWidget);
     });
 
     testWidgets('back to my city: the opening view again, my city chosen', (t) async {
@@ -621,16 +640,23 @@ void main() {
     }
   });
 
-  test('the world map artwork is world_map_v3 (1983 × 793), listed in the app; v1 and v2 kept', () {
+  test('the world map artwork is world_map_v4 (1983 × 793) with its pins, listed in the app', () {
     final file = File(ArtAssets.worldMap);
     expect(file.existsSync(), isTrue);
-    expect(ArtAssets.worldMap, endsWith('world_map_v3.png'));
+    expect(ArtAssets.worldMap, endsWith('world_map_v4.png'));
     // The PNG header: width and height, big-endian, at bytes 16..23.
     final head = ByteData.sublistView(file.readAsBytesSync().sublist(16, 24));
     expect((head.getUint32(0), head.getUint32(4)), (1983, 793));
     expect(head.getUint32(0) / head.getUint32(4), ArtAssets.worldMapAspect);
-    expect(File('assets/shared/world_map/world_map_v1.png').existsSync(), isTrue);
-    expect(File('assets/shared/world_map/world_map_v2.png').existsSync(), isTrue);
+    for (final (pin, w, h) in const [
+      (ArtAssets.worldMapPinInProgress, 96, 120),
+      (ArtAssets.worldMapPinCompleted, 96, 120),
+      (ArtAssets.worldMapPinLocked, 96, 120),
+      (ArtAssets.worldMapPinRing, 144, 144),
+    ]) {
+      final head = ByteData.sublistView(File(pin).readAsBytesSync().sublist(16, 24));
+      expect((head.getUint32(0), head.getUint32(4)), (w, h), reason: pin);
+    }
     expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/shared/world_map/'));
   });
 }
