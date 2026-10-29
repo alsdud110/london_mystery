@@ -5,6 +5,7 @@ import 'json_schema_lite.dart';
 import 'plan_check.dart';
 import 'plan_files.dart';
 import 'plan_models.dart';
+import 'play_check.dart';
 import 'puzzle_selection_check.dart';
 
 /// Checks plan files: each against its JSON Schema, read as its model, its
@@ -14,20 +15,28 @@ import 'puzzle_selection_check.dart';
 /// plans given together, for their puzzles' variety across cases and, with
 /// `--season`, for the clues one case leaves another.
 ///
-///     dart run tool/season_gen/validate_plan.dart [--season season.plan.json] <plan.json>...
+///     dart run tool/season_gen/validate_plan.dart [--season season.plan.json] [--playable] <plan.json>...
 ///
 /// A file named `*season.plan.json` is a season plan; `*case.plan.json` a
 /// case plan. Exit code 1 when there is an error; warnings alone pass.
+///
+/// With `--season`, a case plan's summary also says whether it can be made
+/// into the game's content (`PlayCheck`: "playable: yes", or how much it
+/// lacks). Only with `--playable` is what it lacks an error: a plan still
+/// being written is checked as before.
 void main(List<String> args) {
   final schemaDir = '${File.fromUri(Platform.script).parent.path}/schema';
   final schemas = SchemaSet.load(schemaDir);
   SeasonPlan? season;
+  var playable = false;
   final files = <String>[];
   for (var i = 0; i < args.length; i++) {
     if (args[i] == '--season' && i + 1 < args.length) {
       final path = args[++i];
       files.add(path);
       season = _tryLoad(() => PlanFiles.loadSeasonPlan(path));
+    } else if (args[i] == '--playable') {
+      playable = true;
     } else {
       files.add(args[i]);
     }
@@ -44,9 +53,16 @@ void main(List<String> args) {
     errors += r.errors.length;
     warnings += r.warnings.length;
     if (r.casePlan case final c?) (cases[c.seasonId] ??= []).add(c);
-    final summary = [?r.summary, ?r.clueSummary].join('; ');
-    stdout.writeln('${r.errors.isEmpty ? 'ok     ' : 'FAILED '} $path${summary.isEmpty ? '' : '  ($summary)'}');
-    _print(r.errors, r.warnings);
+    final play = switch ((r.casePlan, season)) {
+      (final c?, final s?) => PlayCheck.casePlan(c, s),
+      _ => null,
+    };
+    final playSummary = play == null ? null : 'playable: ${play.isEmpty ? 'yes' : 'no (${play.length} to write)'}';
+    final found = [...r.errors, if (playable) ...[for (final i in play ?? const <PlayIssue>[]) 'play $i']];
+    errors += found.length - r.errors.length;
+    final summary = [?r.summary, ?r.clueSummary, ?playSummary].join('; ');
+    stdout.writeln('${found.isEmpty ? 'ok     ' : 'FAILED '} $path${summary.isEmpty ? '' : '  ($summary)'}');
+    _print(found, r.warnings);
   }
   for (final MapEntry(key: seasonId, value: plans) in cases.entries) {
     final found = PuzzleSelectionCheck.season(plans);

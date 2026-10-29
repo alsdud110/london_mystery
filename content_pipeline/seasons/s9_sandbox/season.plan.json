@@ -66,7 +66,34 @@
       ]
     }
   ],
+  "places": [
+    {
+      "placeId": "s9_sandbox.front_desk",
+      "file": "assets/seasons/season_02_paris/cases/case_11/annex_reading_room.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s9_sandbox.window_shelf",
+      "file": "assets/seasons/season_02_paris/cases/case_11/annex_shelves.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s9_sandbox.reading_room",
+      "file": "assets/seasons/season_02_paris/cases/case_11/annex_reading_room.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    }
+  ],
   "notes": [
-    "STEP 3-6 sandbox: a trial season for the pipeline only. Not London, not Paris, never in SeasonCatalog. Cases 02-12 are placeholders and are not planned."
+    "STEP 3-6 sandbox: a trial season for the pipeline only. Not London, not Paris, never in SeasonCatalog. Cases 02-12 are placeholders and are not planned.",
+    "STEP 3-8: the places borrow Paris Case 11's bundled pictures, for the sandbox only (never a season's own pictures)."
   ]
 }

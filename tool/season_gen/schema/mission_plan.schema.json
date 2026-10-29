@@ -14,9 +14,72 @@
     "clueInputs": { "type": "array", "items": { "$ref": "#/$defs/clueInput" } },
     "clueOutputs": { "$ref": "#/$defs/clueOutputs" },
     "learning": { "$ref": "#/$defs/learning" },
+    "play": { "$ref": "#/$defs/play" },
     "notes": { "$ref": "common.schema.json#/$defs/lines" }
   },
   "$defs": {
+    "play": {
+      "description": "The mission's words as the game's Mission JSON has them (its keys). Every field is optional while planned; PlayCheck asks for what the game needs.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "location": { "$ref": "common.schema.json#/$defs/text" },
+        "story": { "$ref": "common.schema.json#/$defs/lines" },
+        "letterIntro": { "$ref": "common.schema.json#/$defs/text" },
+        "letter": { "$ref": "common.schema.json#/$defs/text" },
+        "question": { "$ref": "common.schema.json#/$defs/text" },
+        "prompt": { "$ref": "common.schema.json#/$defs/text" },
+        "hints": { "$ref": "common.schema.json#/$defs/lines" },
+        "successMessage": { "$ref": "common.schema.json#/$defs/text" },
+        "transition": { "$ref": "common.schema.json#/$defs/lines" },
+        "feedback": { "$ref": "common.schema.json#/$defs/textMap" },
+        "orderFeedback": { "$ref": "common.schema.json#/$defs/text" },
+        "mapX": { "$ref": "common.schema.json#/$defs/fraction" },
+        "mapY": { "$ref": "common.schema.json#/$defs/fraction" },
+        "clue": { "$ref": "#/$defs/clueText" },
+        "evidence": { "$ref": "#/$defs/evidenceText" },
+        "recall": { "$ref": "#/$defs/recallText" },
+        "evidenceLinkLine": { "$ref": "common.schema.json#/$defs/text" },
+        "lockTitle": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "clueText": {
+      "description": "The game's Clue, its id the mission's clueOutputs.clue.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "value", "note"],
+      "properties": {
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "value": { "$ref": "common.schema.json#/$defs/text" },
+        "note": { "$ref": "common.schema.json#/$defs/text" },
+        "symbol": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "evidenceText": {
+      "description": "The game's Evidence, its id the mission's clueOutputs.evidence.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "icon", "description"],
+      "properties": {
+        "name": { "$ref": "common.schema.json#/$defs/text" },
+        "icon": { "$ref": "common.schema.json#/$defs/text" },
+        "description": { "$ref": "common.schema.json#/$defs/text" },
+        "inscription": { "$ref": "common.schema.json#/$defs/text" },
+        "symbols": { "$ref": "common.schema.json#/$defs/lines" }
+      }
+    },
+    "recallText": {
+      "description": "The game's EvidenceRecall words, its evidence the mission's recall clue input.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "prompt": { "$ref": "common.schema.json#/$defs/text" },
+        "feedback": { "$ref": "common.schema.json#/$defs/textMap" },
+        "miss": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
     "clueInput": {
       "type": "object",
       "additionalProperties": false,

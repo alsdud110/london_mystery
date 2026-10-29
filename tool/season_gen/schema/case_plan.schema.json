@@ -30,6 +30,22 @@
         "titleKo": { "$ref": "common.schema.json#/$defs/text" }
       }
     },
+    "play": { "$ref": "#/$defs/play" },
     "notes": { "$ref": "common.schema.json#/$defs/lines" }
+  },
+  "$defs": {
+    "play": {
+      "description": "The case's words as the game's Episode JSON has them (its keys). Every field is optional while planned; PlayCheck asks for what the game needs.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "objectives": { "$ref": "common.schema.json#/$defs/lines" },
+        "intro": { "$ref": "common.schema.json#/$defs/lines" },
+        "caseSummary": { "$ref": "common.schema.json#/$defs/text" },
+        "place": { "$ref": "common.schema.json#/$defs/text" },
+        "keyWords": { "$ref": "common.schema.json#/$defs/lines" },
+        "glossary": { "$ref": "common.schema.json#/$defs/textMap" }
+      }
+    }
   }
 }

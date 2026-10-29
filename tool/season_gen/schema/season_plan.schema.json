@@ -23,9 +23,30 @@
     "finale": { "$ref": "common.schema.json#/$defs/lines" },
     "figures": { "type": "array", "items": { "$ref": "#/$defs/figure" } },
     "languageArc": { "$ref": "common.schema.json#/$defs/lines" },
+    "places": { "type": "array", "items": { "$ref": "#/$defs/place" } },
+    "storyGreeting": { "type": "boolean" },
     "notes": { "$ref": "common.schema.json#/$defs/lines" }
   },
   "$defs": {
+    "place": {
+      "description": "The game's ScenePlace: a season place's bundled picture and its pixel size.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["placeId", "file", "pixels"],
+      "properties": {
+        "placeId": { "$ref": "common.schema.json#/$defs/placeId" },
+        "file": { "$ref": "common.schema.json#/$defs/assetFile" },
+        "pixels": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height"],
+          "properties": {
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
     "mainMystery": {
       "type": "object",
       "additionalProperties": false,

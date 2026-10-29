@@ -117,6 +117,54 @@ Map<String, Object?> sampleFinalJson() => {
   'learning': {'dependency': 'low', 'level': 'exposure', 'objective': '모은 글자로 단어를 만든다.'},
 };
 
+/// [sampleSeasonJson] with its places' pictures (STEP 3-8).
+Map<String, Object?> samplePlaySeasonJson() => {
+  ...sampleSeasonJson(),
+  'places': [
+    {'placeId': 's3_sample.station', 'file': 'assets/sample/station.png', 'pixels': {'width': 1536, 'height': 1024}},
+  ],
+  'storyGreeting': false,
+};
+
+/// [sampleCaseJson] with the words the game shows (STEP 3-8), every field
+/// of them given (Mission 2's: a recall and an evidence link besides).
+Map<String, Object?> samplePlayCaseJson() {
+  final json = sampleCaseJson();
+  final missions = json['missions'] as List;
+  final m2 = missions[1] as Map<String, Object?>;
+  (m2['clueInputs'] as List).add({'ref': 's3_ep01_e1', 'use': 'evidenceLink'});
+  m2['play'] = {
+    'title': 'The Board',
+    'location': 'CENTRAL STATION',
+    'story': ['The board lists three platforms.'],
+    'letterIntro': 'Your notebook says:',
+    'letter': 'The 9:10 train leaves from Platform 2.',
+    'question': 'Which platform?',
+    'prompt': 'PLATFORM _',
+    'hints': ['Read the note again.', 'Find the number.'],
+    'successMessage': 'You found the platform!',
+    'transition': ['A train comes in.'],
+    'feedback': {'1': 'That train left at 9:00.'},
+    'orderFeedback': 'Right numbers, wrong order.',
+    'mapX': 0.4,
+    'mapY': 0.6,
+    'clue': {'title': 'The Platform', 'value': 'PLATFORM 2', 'note': 'The 9:10 train left from Platform 2.', 'symbol': 'train'},
+    'evidence': {'name': 'The Board', 'icon': 'map', 'description': 'The station board.', 'inscription': 'PLATFORM 2', 'symbols': ['train']},
+    'recall': {'title': 'Find an old clue', 'prompt': 'Look in your Notebook.', 'feedback': {'s3_ep01_e3': 'Not that one.'}, 'miss': 'Look again.'},
+    'evidenceLinkLine': 'Both name Platform 2.',
+    'lockTitle': 'THE PLATFORM LOCK',
+  };
+  json['play'] = {
+    'objectives': ['Find the platform.'],
+    'intro': ['The station is quiet.'],
+    'caseSummary': 'A platform and a clock closed the case.',
+    'place': 'CENTRAL STATION · SAMPLE CITY',
+    'keyWords': ['platform'],
+    'glossary': {'platform': '승강장'},
+  };
+  return json;
+}
+
 Map<String, Object?> sampleCaseJson() => {
   'schemaVersion': 1,
   'caseId': 's3_ep01',

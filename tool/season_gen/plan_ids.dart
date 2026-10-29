@@ -35,6 +35,10 @@ abstract final class PlanIds {
   /// `<seasonId>.asset.<name>`: a picture a puzzle needs (plans only).
   static final asset = RegExp(r'^s[1-9][0-9]*_[a-z][a-z0-9]*\.asset\.[a-z][a-z0-9_]*$');
 
+  /// A place's picture, from the repository's root: a bundled image under
+  /// `assets/` (no `..`, no other folder).
+  static final assetFile = RegExp(r'^assets/([A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.(png|jpg|jpeg|webp)$');
+
   /// A character's or location's own id in its season plan: `emile`.
   static final local = RegExp(r'^[a-z][a-z0-9_]*$');
 

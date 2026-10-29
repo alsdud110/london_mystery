@@ -18,6 +18,10 @@ void main() {
   const dir = 'tool/season_gen/schema';
   final schemas = SchemaSet.load(dir);
 
+  const seasonSamples = {sampleSeasonJson, samplePlaySeasonJson};
+  String topOf(Map<String, Object?> Function() sample) =>
+      seasonSamples.contains(sample) ? 'season_plan.schema.json' : 'case_plan.schema.json';
+
   bool dartAccepts(Object? json, String schema) {
     try {
       schema == 'season_plan.schema.json' ? SeasonPlan.fromJson(json) : CasePlan.fromJson(json);
@@ -69,6 +73,14 @@ void main() {
     test('the samples', () {
       agree(sampleSeasonJson(), 'season_plan.schema.json', valid: true);
       agree(sampleCaseJson(), 'case_plan.schema.json', valid: true);
+      agree(samplePlaySeasonJson(), 'season_plan.schema.json', valid: true);
+      agree(samplePlayCaseJson(), 'case_plan.schema.json', valid: true);
+    });
+
+    test('the sandbox plans (STEP 3-8, their words written)', () {
+      const root = 'content_pipeline/seasons/s9_sandbox';
+      agree(jsonDecode(File('$root/season.plan.json').readAsStringSync()), 'season_plan.schema.json', valid: true);
+      agree(jsonDecode(File('$root/cases/s9_ep01/case.plan.json').readAsStringSync()), 'case_plan.schema.json', valid: true);
     });
 
     test('the Paris fixtures', () {
@@ -100,6 +112,17 @@ void main() {
     ('puzzle', sampleCaseJson, ['final', 'puzzle'], 'puzzle_plan.schema.json', '#'),
     ('answerSpec', sampleCaseJson, ['final', 'puzzle', 'answerSpec'], 'puzzle_plan.schema.json', '#/\$defs/answerSpec'),
     ('option', sampleCaseJson, ['missions', 0, 'puzzle', 'answerSpec', 'options', 0], 'puzzle_plan.schema.json', '#/\$defs/option'),
+    // The words the game shows, and the places' pictures (STEP 3-8).
+    ('season with places', samplePlaySeasonJson, [], 'season_plan.schema.json', '#'),
+    ('place', samplePlaySeasonJson, ['places', 0], 'season_plan.schema.json', '#/\$defs/place'),
+    ('pixels', samplePlaySeasonJson, ['places', 0, 'pixels'], 'season_plan.schema.json', '#/\$defs/place/properties/pixels'),
+    ('case with play', samplePlayCaseJson, [], 'case_plan.schema.json', '#'),
+    ('casePlay', samplePlayCaseJson, ['play'], 'case_plan.schema.json', '#/\$defs/play'),
+    ('mission with play', samplePlayCaseJson, ['missions', 1], 'mission_plan.schema.json', '#'),
+    ('missionPlay', samplePlayCaseJson, ['missions', 1, 'play'], 'mission_plan.schema.json', '#/\$defs/play'),
+    ('clueText', samplePlayCaseJson, ['missions', 1, 'play', 'clue'], 'mission_plan.schema.json', '#/\$defs/clueText'),
+    ('evidenceText', samplePlayCaseJson, ['missions', 1, 'play', 'evidence'], 'mission_plan.schema.json', '#/\$defs/evidenceText'),
+    ('recallText', samplePlayCaseJson, ['missions', 1, 'play', 'recall'], 'mission_plan.schema.json', '#/\$defs/recallText'),
   ];
 
   Map<String, Object?> at(Map<String, Object?> json, List<Object> path) {
@@ -124,7 +147,7 @@ void main() {
         final schema = schemaAt(file, pointer);
         final required = (schema['required'] as List? ?? const []).cast<String>().toSet();
         final properties = (schema['properties'] as Map).keys.cast<String>();
-        final top = sample == sampleSeasonJson ? 'season_plan.schema.json' : 'case_plan.schema.json';
+        final top = topOf(sample);
         final present = at(sample(), path).keys.toSet();
         for (final key in properties) {
           if (!present.contains(key)) continue;
@@ -143,7 +166,7 @@ void main() {
       test(name, () {
         final json = copy(sample());
         at(json, path)['unknownField'] = 'x';
-        agree(json, sample == sampleSeasonJson ? 'season_plan.schema.json' : 'case_plan.schema.json', valid: false, reason: name);
+        agree(json, topOf(sample), valid: false, reason: name);
       });
     }
   });
@@ -215,6 +238,36 @@ void main() {
     for (final MapEntry(key: name, value: change) in cases.entries) {
       test('case: $name', () => agree(copy(sampleCaseJson())..let(change), 'case_plan.schema.json', valid: false, reason: name));
     }
+
+    Map<String, Object?> place(Map<String, Object?> j) => (j['places'] as List).first as Map<String, Object?>;
+    final placed = <String, void Function(Map<String, Object?>)>{
+      'a place of no season': (j) => place(j)['placeId'] = 'station',
+      'a picture outside assets': (j) => place(j)['file'] = '../secret.png',
+      'a picture path going up': (j) => place(j)['file'] = 'assets/../lib/main.png',
+      'a picture not an image': (j) => place(j)['file'] = 'assets/sample/station.dart',
+      'a picture 0 wide': (j) => (place(j)['pixels'] as Map)['width'] = 0,
+      'storyGreeting as text': (j) => j['storyGreeting'] = 'yes',
+    };
+    for (final MapEntry(key: name, value: change) in placed.entries) {
+      test('season: $name', () => agree(copy(samplePlaySeasonJson())..let(change), 'season_plan.schema.json', valid: false, reason: name));
+    }
+
+    Map<String, Object?> words(Map<String, Object?> j) => mission(j)['play'] as Map<String, Object?>;
+    final played = <String, void Function(Map<String, Object?>)>{
+      'mapX over 1': (j) => words(j)['mapX'] = 1.5,
+      'mapY under 0': (j) => words(j)['mapY'] = -0.1,
+      'mapX as text': (j) => words(j)['mapX'] = '0.4',
+      'hints not lines': (j) => words(j)['hints'] = 'Read it.',
+      'an empty story line': (j) => words(j)['story'] = [''],
+      'a feedback line not text': (j) => words(j)['feedback'] = {'1': 2},
+      'a clue with no note': (j) => (words(j)['clue'] as Map).remove('note'),
+      'evidence with no icon': (j) => (words(j)['evidence'] as Map).remove('icon'),
+      'a glossary meaning empty': (j) => (j['play'] as Map)['glossary'] = {'platform': ''},
+      'the case play as lines': (j) => j['play'] = ['The station is quiet.'],
+    };
+    for (final MapEntry(key: name, value: change) in played.entries) {
+      test('case: $name', () => agree(copy(samplePlayCaseJson())..let(change), 'case_plan.schema.json', valid: false, reason: name));
+    }
   });
 
   group("what a schema cannot say is PlanCheck's: both formats accept it", () {
@@ -263,6 +316,7 @@ void main() {
         'landmarkKey': PlanIds.landmark,
         'paletteId': PlanIds.palette,
         'engineTable': PlanIds.table,
+        'assetFile': PlanIds.assetFile,
       };
       final defs = def('common.schema.json', '#/\$defs') as Map;
       for (final MapEntry(key: name, value: regex) in ids.entries) {

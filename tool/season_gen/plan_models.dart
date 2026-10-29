@@ -19,7 +19,9 @@
 /// graph (STEP 3-4, `ClueGraphCheck`), the approvals (STEP 3-5,
 /// `SeasonApprovals`, kept beside the plans); not yet: the levels' words and
 /// asset requests. A plan names what they will use (clue ids,
-/// palette ids, asset ids) and nothing more.
+/// palette ids, asset ids) and, once written (STEP 3-8, optional), the
+/// words the game shows (`play`) and its places' pictures (`places`):
+/// whether they are all there is `PlayCheck`'s.
 library;
 
 import 'plan_ids.dart';
@@ -170,6 +172,29 @@ class _Reader {
 
   int? optInt(String key, {int? min}) => _has(key) ? _int(_map[key], _at(key), min: min) : null;
 
+  double? optNum(String key, {double? min, double? max}) {
+    if (!_has(key)) return null;
+    final v = _map[key];
+    if (v is! num) _fail(key, 'not a number');
+    if (min != null && v < min) _fail(key, '$v is under $min');
+    if (max != null && v > max) _fail(key, '$v is over $max');
+    return v.toDouble();
+  }
+
+  bool? optBool(String key) {
+    if (!_has(key)) return null;
+    final v = _map[key];
+    if (v is! bool) _fail(key, 'not true or false');
+    return v;
+  }
+
+  /// An optional object of text by text: empty when not given.
+  Map<String, String> optTextMap(String key) {
+    if (!_has(key)) return const {};
+    final at = _at(key);
+    return {for (final e in _object(_map[key], at).entries) e.key: _text(e.value, '$at.${e.key}', null, null)};
+  }
+
   static int _int(Object? json, String at, {int? min, int? max, int? only}) {
     // As JSON Schema reads it: 2.0 is the whole number 2.
     final v = json is double && json == json.truncateToDouble() && json.isFinite ? json.toInt() : json;
@@ -238,6 +263,10 @@ void _putList(Map<String, Object?> json, String key, List<Object?> list) {
 
 void _putText(Map<String, Object?> json, String key, String? value) {
   if (value != null) json[key] = value;
+}
+
+void _putMap(Map<String, Object?> json, String key, Map<String, Object?> map) {
+  if (map.isNotEmpty) json[key] = map;
 }
 
 void _version(_Reader r) {
@@ -444,6 +473,43 @@ class ProloguePlan {
   }
 }
 
+/// A season place's picture (the game's `ScenePlace`): a mission names it
+/// by its [placeId] (`Mission.sceneKey`). Its pixel size is the file's.
+class PlacePlan {
+  const PlacePlan({required this.placeId, required this.file, required this.width, required this.height});
+
+  final String placeId;
+
+  /// The bundled asset, from the repository's root (`assets/…`).
+  final String file;
+  final int width;
+  final int height;
+
+  factory PlacePlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = r.obj('pixels', (json, path) {
+      final p = _Reader(json, path);
+      final size = (p.integer('width', min: 1), p.integer('height', min: 1));
+      p.done();
+      return size;
+    });
+    final place = PlacePlan(
+      placeId: r.str('placeId', pattern: PlanIds.place),
+      file: r.str('file', pattern: PlanIds.assetFile),
+      width: out.$1,
+      height: out.$2,
+    );
+    r.done();
+    return place;
+  }
+
+  Map<String, Object?> toJson() => {
+    'placeId': placeId,
+    'file': file,
+    'pixels': {'width': width, 'height': height},
+  };
+}
+
 /// A whole season, planned: its mystery, people, places and acts.
 ///
 /// The game's `Season` reads every field but its number and title
@@ -470,6 +536,8 @@ class SeasonPlan {
     this.finale = const [],
     this.figures = const [],
     this.languageArc = const [],
+    this.places = const [],
+    this.storyGreeting,
     this.notes = const [],
   });
 
@@ -490,6 +558,14 @@ class SeasonPlan {
 
   /// The season's English, act by act (a line each, for the writers).
   final List<String> languageArc;
+
+  /// The pictures of the places its missions happen at (`SeasonContent.places`):
+  /// needed once a case is made into the game's content (`PlayCheck`).
+  final List<PlacePlan> places;
+
+  /// `SeasonContent.storyGreeting` as written (null: not given, the game's
+  /// own true).
+  final bool? storyGreeting;
 
   /// Anything the writers or a reviewer should know (never content).
   final List<String> notes;
@@ -516,6 +592,8 @@ class SeasonPlan {
       finale: r.optStrings('finale'),
       figures: r.optObjs('figures', FigurePlan.fromJson),
       languageArc: r.optStrings('languageArc'),
+      places: r.optObjs('places', PlacePlan.fromJson),
+      storyGreeting: r.optBool('storyGreeting'),
       notes: r.optStrings('notes'),
     );
     r.done();
@@ -541,12 +619,67 @@ class SeasonPlan {
     _putList(json, 'finale', finale);
     _putList(json, 'figures', [for (final f in figures) f.toJson()]);
     _putList(json, 'languageArc', languageArc);
+    _putList(json, 'places', [for (final p in places) p.toJson()]);
+    if (storyGreeting != null) json['storyGreeting'] = storyGreeting;
     _putList(json, 'notes', notes);
     return json;
   }
 }
 
 // ── CasePlan ─────────────────────────────────────────────────────────────
+
+/// A case's words as the game shows them (`Episode`, its keys): written
+/// into the plan, never made up by the generator. Every field is optional
+/// while the case is planned; `PlayCheck` asks for what the game needs.
+class CasePlayPlan {
+  const CasePlayPlan({
+    this.objectives = const [],
+    this.intro = const [],
+    this.caseSummary,
+    this.place,
+    this.keyWords = const [],
+    this.glossary = const {},
+  });
+
+  /// The case file's briefing; the plan's `goal` when empty.
+  final List<String> objectives;
+
+  /// The Story Intro's lines.
+  final List<String> intro;
+
+  /// The Case Solved report's line (the game's London line when missing).
+  final String? caseSummary;
+  final String? place;
+  final List<String> keyWords;
+
+  /// A word (lower case) → its meaning.
+  final Map<String, String> glossary;
+
+  factory CasePlayPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = CasePlayPlan(
+      objectives: r.optStrings('objectives'),
+      intro: r.optStrings('intro'),
+      caseSummary: r.optStr('caseSummary'),
+      place: r.optStr('place'),
+      keyWords: r.optStrings('keyWords'),
+      glossary: r.optTextMap('glossary'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{};
+    _putList(json, 'objectives', objectives);
+    _putList(json, 'intro', intro);
+    _putText(json, 'caseSummary', caseSummary);
+    _putText(json, 'place', place);
+    _putList(json, 'keyWords', keyWords);
+    _putMap(json, 'glossary', glossary);
+    return json;
+  }
+}
 
 /// A case's language topic (the game's `CaseLanguageTopic`).
 class LearningGoal {
@@ -581,6 +714,7 @@ class CasePlan {
     required this.finalMission,
     required this.hook,
     required this.learningGoal,
+    this.play,
     this.notes = const [],
   });
 
@@ -609,6 +743,9 @@ class CasePlan {
   /// What it leaves unanswered (`Episode.hook`).
   final String hook;
   final LearningGoal learningGoal;
+
+  /// Its words as the game shows them; null while only its structure is planned.
+  final CasePlayPlan? play;
   final List<String> notes;
 
   /// Its missions and its final, in play order.
@@ -631,6 +768,7 @@ class CasePlan {
       finalMission: r.obj('final', MissionPlan.fromJson),
       hook: r.str('hook'),
       learningGoal: r.obj('learningGoal', LearningGoal.fromJson),
+      play: r.optObj('play', CasePlayPlan.fromJson),
       notes: r.optStrings('notes'),
     );
     r.done();
@@ -654,6 +792,7 @@ class CasePlan {
       'hook': hook,
       'learningGoal': learningGoal.toJson(),
     };
+    if (play case final p?) json['play'] = p.toJson();
     _putList(json, 'notes', notes);
     return json;
   }
@@ -763,6 +902,206 @@ class LearningPlan {
   }
 }
 
+/// The notebook clue's words (`Clue`, its id the mission's `clueOutputs.clue`).
+class ClueText {
+  const ClueText({required this.title, required this.value, required this.note, this.symbol});
+
+  final String title;
+  final String value;
+  final String note;
+
+  /// A `GameSymbol` key.
+  final String? symbol;
+
+  factory ClueText.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = ClueText(title: r.str('title'), value: r.str('value'), note: r.str('note'), symbol: r.optStr('symbol'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'title': title, 'value': value, 'note': note};
+    _putText(json, 'symbol', symbol);
+    return json;
+  }
+}
+
+/// The evidence's words (`Evidence`, its id the mission's `clueOutputs.evidence`).
+class EvidenceText {
+  const EvidenceText({required this.name, required this.icon, required this.description, this.inscription, this.symbols = const []});
+
+  final String name;
+
+  /// A `GameSymbol` key.
+  final String icon;
+  final String description;
+  final String? inscription;
+
+  /// `GameSymbol` keys.
+  final List<String> symbols;
+
+  factory EvidenceText.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = EvidenceText(
+      name: r.str('name'),
+      icon: r.str('icon'),
+      description: r.str('description'),
+      inscription: r.optStr('inscription'),
+      symbols: r.optStrings('symbols'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'name': name, 'icon': icon, 'description': description};
+    _putText(json, 'inscription', inscription);
+    _putList(json, 'symbols', symbols);
+    return json;
+  }
+}
+
+/// The words of a recall card (`EvidenceRecall`, its evidence the mission's
+/// one `recall` clue input).
+class RecallText {
+  const RecallText({this.title, this.prompt, this.feedback = const {}, this.miss});
+
+  final String? title;
+  final String? prompt;
+
+  /// Evidence id → a line for it picked instead.
+  final Map<String, String> feedback;
+  final String? miss;
+
+  factory RecallText.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = RecallText(title: r.optStr('title'), prompt: r.optStr('prompt'), feedback: r.optTextMap('feedback'), miss: r.optStr('miss'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{};
+    _putText(json, 'title', title);
+    _putText(json, 'prompt', prompt);
+    _putMap(json, 'feedback', feedback);
+    _putText(json, 'miss', miss);
+    return json;
+  }
+}
+
+/// A mission's words as the game shows them (`Mission`, its keys). What the
+/// plan already holds (its id, order, place, type, answer, options) is not
+/// repeated here. Every field is optional while the mission is planned;
+/// `PlayCheck` asks for what the game needs.
+class MissionPlayPlan {
+  const MissionPlayPlan({
+    this.title,
+    this.location,
+    this.story = const [],
+    this.letterIntro,
+    this.letter,
+    this.question,
+    this.prompt,
+    this.hints = const [],
+    this.successMessage,
+    this.transition = const [],
+    this.feedback = const {},
+    this.orderFeedback,
+    this.mapX,
+    this.mapY,
+    this.clue,
+    this.evidence,
+    this.recall,
+    this.evidenceLinkLine,
+    this.lockTitle,
+  });
+
+  final String? title;
+  final String? location;
+  final List<String> story;
+  final String? letterIntro;
+  final String? letter;
+  final String? question;
+  final String? prompt;
+  final List<String> hints;
+  final String? successMessage;
+
+  /// The scene after the answer (a final's: the scene after the case).
+  final List<String> transition;
+
+  /// A wrong typed answer → its line (typed and ordered puzzles; a choice's
+  /// lines are its options').
+  final Map<String, String> feedback;
+  final String? orderFeedback;
+
+  /// The map pin, as fractions of the map (0..1).
+  final double? mapX;
+  final double? mapY;
+  final ClueText? clue;
+  final EvidenceText? evidence;
+  final RecallText? recall;
+
+  /// How this mission's evidence matches the one its `evidenceLink` input names.
+  final String? evidenceLinkLine;
+
+  /// A letter lock's name on its plate (`Mission.lockTitle`); the game's
+  /// plain "THE LOCK" when not given.
+  final String? lockTitle;
+
+  factory MissionPlayPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = MissionPlayPlan(
+      title: r.optStr('title'),
+      location: r.optStr('location'),
+      story: r.optStrings('story'),
+      letterIntro: r.optStr('letterIntro'),
+      letter: r.optStr('letter'),
+      question: r.optStr('question'),
+      prompt: r.optStr('prompt'),
+      hints: r.optStrings('hints'),
+      successMessage: r.optStr('successMessage'),
+      transition: r.optStrings('transition'),
+      feedback: r.optTextMap('feedback'),
+      orderFeedback: r.optStr('orderFeedback'),
+      mapX: r.optNum('mapX', min: 0, max: 1),
+      mapY: r.optNum('mapY', min: 0, max: 1),
+      clue: r.optObj('clue', ClueText.fromJson),
+      evidence: r.optObj('evidence', EvidenceText.fromJson),
+      recall: r.optObj('recall', RecallText.fromJson),
+      evidenceLinkLine: r.optStr('evidenceLinkLine'),
+      lockTitle: r.optStr('lockTitle'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{};
+    _putText(json, 'title', title);
+    _putText(json, 'location', location);
+    _putList(json, 'story', story);
+    _putText(json, 'letterIntro', letterIntro);
+    _putText(json, 'letter', letter);
+    _putText(json, 'question', question);
+    _putText(json, 'prompt', prompt);
+    _putList(json, 'hints', hints);
+    _putText(json, 'successMessage', successMessage);
+    _putList(json, 'transition', transition);
+    _putMap(json, 'feedback', feedback);
+    _putText(json, 'orderFeedback', orderFeedback);
+    if (mapX != null) json['mapX'] = mapX;
+    if (mapY != null) json['mapY'] = mapY;
+    if (clue case final c?) json['clue'] = c.toJson();
+    if (evidence case final e?) json['evidence'] = e.toJson();
+    if (recall case final r?) json['recall'] = r.toJson();
+    _putText(json, 'evidenceLinkLine', evidenceLinkLine);
+    _putText(json, 'lockTitle', lockTitle);
+    return json;
+  }
+}
+
 /// One mission or final, planned.
 class MissionPlan {
   const MissionPlan({
@@ -773,6 +1112,7 @@ class MissionPlan {
     required this.clueInputs,
     required this.clueOutputs,
     required this.learning,
+    this.play,
     this.notes = const [],
   });
 
@@ -788,6 +1128,9 @@ class MissionPlan {
   final List<ClueInput> clueInputs;
   final ClueOutputs clueOutputs;
   final LearningPlan learning;
+
+  /// Its words as the game shows them; null while only its structure is planned.
+  final MissionPlayPlan? play;
   final List<String> notes;
 
   bool get isFinal => slot == 'final';
@@ -802,6 +1145,7 @@ class MissionPlan {
       clueInputs: r.objs('clueInputs', ClueInput.fromJson),
       clueOutputs: r.obj('clueOutputs', ClueOutputs.fromJson),
       learning: r.obj('learning', LearningPlan.fromJson),
+      play: r.optObj('play', MissionPlayPlan.fromJson),
       notes: r.optStrings('notes'),
     );
     r.done();
@@ -818,6 +1162,7 @@ class MissionPlan {
       'clueOutputs': clueOutputs.toJson(),
       'learning': learning.toJson(),
     };
+    if (play case final p?) json['play'] = p.toJson();
     _putList(json, 'notes', notes);
     return json;
   }
