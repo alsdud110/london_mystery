@@ -272,6 +272,8 @@ const Map<String, dynamic> season2Episode01Json = {
       {'id': 'i', 'label': 'I'},
     ],
     'answer': 'TIME',
+    // The lock's plate names it (the plain "THE LOCK" when not given).
+    'lockTitle': "THE CLOCKMAKER'S LOCK",
     'orderFeedback': 'Right letters. Try another order. What does a clock show?',
     'feedback': {
       'ITEM': 'ITEM is a real word, but not this one. What does a clock show?',

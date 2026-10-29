@@ -486,6 +486,7 @@ class Mission {
     this.orderFeedback,
     this.hideOptionNames = false,
     this.recall,
+    this.lockTitle,
     this.difficulty = Difficulty.standard,
   });
 
@@ -570,6 +571,10 @@ class Mission {
   /// missions: nothing is shown).
   final EvidenceRecall? recall;
 
+  /// A letter lock's name on its brass plate ("THE CLOCKMAKER'S LOCK"), its
+  /// story's own; null: a plain "THE LOCK" (see `LetterLockQuestion.titleOf`).
+  final String? lockTitle;
+
   /// The episode's final case. Set by `Episode` for its `finalMission`, so a
   /// final case can use any puzzle type (Episode 01 uses the picture locks).
   final bool finale;
@@ -639,6 +644,7 @@ class Mission {
     orderFeedback: json['orderFeedback'] as String?,
     hideOptionNames: json['hideOptionNames'] == true,
     recall: json['recall'] == null ? null : EvidenceRecall.fromJson(json['recall'] as Map<String, dynamic>),
+    lockTitle: json['lockTitle'] as String?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -672,5 +678,6 @@ class Mission {
     if (orderFeedback != null) 'orderFeedback': orderFeedback,
     if (hideOptionNames) 'hideOptionNames': true,
     if (recall != null) 'recall': recall!.toJson(),
+    'lockTitle': ?lockTitle,
   };
 }

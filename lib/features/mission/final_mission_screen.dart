@@ -1097,6 +1097,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                               ? LetterLockReveal(
                                   animation: _open,
                                   word: m.answer,
+                                  title: LetterLockQuestion.titleOf(m),
                                   place: _SceneReveal(scene: PlaceArt.pictureOf(m), animation: _open),
                                 )
                               : _SceneReveal(

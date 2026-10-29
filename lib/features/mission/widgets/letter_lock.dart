@@ -29,6 +29,12 @@ class LetterLockQuestion extends StatefulWidget {
   /// lock is on shows them in its own slots.
   final ValueChanged<List<String?>>? onChanged;
 
+  /// A lock that names no story of its own: never another season's name.
+  static const plainTitle = 'THE LOCK';
+
+  /// The name on [m]'s brass plate: its own ([Mission.lockTitle]), or [plainTitle].
+  static String titleOf(Mission m) => m.lockTitle ?? plainTitle;
+
   @override
   State<LetterLockQuestion> createState() => _LetterLockQuestionState();
 }
@@ -108,7 +114,7 @@ class _LetterLockQuestionState extends State<LetterLockQuestion> {
                     // Wraps under large text rather than running off the plate.
                     Flexible(
                       child: Text(
-                        'THE CLOCKMAKER\'S LOCK',
+                        LetterLockQuestion.titleOf(widget.mission),
                         style: AppText.eyebrow(color: AppColors.goldLight),
                         textAlign: TextAlign.center,
                       ),
@@ -274,9 +280,16 @@ class _Tile extends StatelessWidget {
 /// then it drops away and the place settles into view. 1 (solved, or a
 /// revisit) shows the place alone.
 class LetterLockReveal extends StatelessWidget {
-  const LetterLockReveal({super.key, required this.animation, required this.word, required this.place});
+  const LetterLockReveal({super.key, required this.animation, required this.word, required this.title, required this.place});
 
   final Animation<double> animation;
+
+  /// The lock's name, as its plate shows it (`LetterLockQuestion.titleOf`).
+  final String title;
+
+  /// [title] as a screen reader says it: "THE CLOCKMAKER'S LOCK" → "The clockmaker's lock".
+  static String spoken(String title) =>
+      title.isEmpty ? title : '${title[0].toUpperCase()}${title.substring(1).toLowerCase()}';
 
   /// The word that opens the lock, one letter a slot.
   final String word;
@@ -309,7 +322,7 @@ class LetterLockReveal extends StatelessWidget {
                   child: Opacity(
                     opacity: 1 - drop,
                     child: Semantics(
-                      label: t >= 0.35 ? 'The lock opens' : 'The Clockmaker\'s lock',
+                      label: t >= 0.35 ? 'The lock opens' : spoken(title),
                       child: _LockPlate(letters: letters, shown: shown, glowing: t >= 0.35),
                     ),
                   ),
