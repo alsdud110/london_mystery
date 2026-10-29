@@ -458,7 +458,14 @@ void main() {
 
       final api = _FakeApi();
       final log = <String>[];
-      final p = AssetPipeline(plan: plan, studio: ImageStudio(api: api, editApi: api, findKey: () => null, log: log.add), log: log.add);
+      // A work folder with no state (a dry run creates nothing): the verdict of a
+      // first run, whatever the repository's own asset_work holds.
+      final p = AssetPipeline(
+        plan: plan,
+        studio: ImageStudio(api: api, editApi: api, findKey: () => null, log: log.add),
+        work: 'build/asset_pipeline_test_no_state',
+        log: log.add,
+      );
       expect(await p.run(only: picks, maxBudget: 0.30, maxCalls: 3), 0);
       expect(log.join('\n'), contains('verdict  REFUSED: over --max-budget \$0.3000'));
       log.clear();
