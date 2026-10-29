@@ -368,7 +368,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                                 map: seasonMap,
                                 heading: heading,
                                 size: size,
-                                route: [for (final m in all) places[m.id]!],
+                                route: [for (final m in all) (id: m.id, at: places[m.id]!)],
                                 completedLegs: progress.completedMissionIds.length,
                                 // The current place's own name is on its pin.
                                 hideName: current == null ? null : seasonMap.landmarkFor(current.id, episode.id),
@@ -380,6 +380,7 @@ class _MissionMapScreenState extends ConsumerState<MissionMapScreen> with Single
                                     // of the case before it.
                                     if (_stateOf(progress, episode, m) != PinState.locked)
                                       (
+                                        id: m.id,
                                         at: places[m.id]!,
                                         pin: MapPin(
                                           key: ValueKey('pin-${m.id}'),
@@ -727,17 +728,18 @@ class _MapWorldView extends StatelessWidget {
 
   final Size size;
 
-  /// Every place of the case in play order (fractions of the map), and how
-  /// many are solved: the route inked between them.
-  final List<Offset> route;
+  /// Every place of the case in play order (each mission's, in fractions of
+  /// the map), and how many are solved: the route inked between them.
+  final List<({String id, Offset at})> route;
   final int completedLegs;
 
   /// How much of the red dashed way to the current place is drawn: it
   /// follows the camera as it travels there.
   final Animation<double> heading;
 
-  /// Each pin with its place on the map (fractions of the map).
-  final List<({Offset at, MapPin pin})> pins;
+  /// Each pin with its mission and place on the map (fractions of the map).
+  /// Two missions may share a place (one room, two puzzles): each has a pin.
+  final List<({String id, Offset at, MapPin pin})> pins;
 
   /// A landmark whose name is not lettered (the current pin names it).
   final MapLandmark? hideName;
@@ -793,14 +795,16 @@ class _MapWorldView extends StatelessWidget {
     final h = size.height;
     final dpr = MediaQuery.devicePixelRatioOf(context);
     Offset px(Offset p) => Offset(p.dx * w, p.dy * h);
-    // Solved marks step aside from the current pin's note, pin and name.
+    // Solved marks step aside from the current pin's note, pin and name
+    // (one at the current place itself too). By mission: two at one place
+    // are two marks.
     final current = pins.where((p) => p.pin.state == PinState.current).map((p) => px(p.at)).firstOrNull;
     final drawnAt = {
       for (final p in pins)
-        p.at: current == null || p.pin.state != PinState.completed ? px(p.at) : clearOf(px(p.at), current, size),
+        p.id: current == null || p.pin.state != PinState.completed ? px(p.at) : clearOf(px(p.at), current, size),
     };
     final ink = LondonMapPainter(
-      route: [for (final r in route) drawnAt[r] == null ? r : Offset(drawnAt[r]!.dx / w, drawnAt[r]!.dy / h)],
+      route: [for (final r in route) drawnAt[r.id] == null ? r.at : Offset(drawnAt[r.id]!.dx / w, drawnAt[r.id]!.dy / h)],
       completedLegs: completedLegs,
       drawMap: false,
       heading: heading,
@@ -831,7 +835,7 @@ class _MapWorldView extends StatelessWidget {
                   size,
                   _nameSize(context, l.name),
                   current: current,
-                  solved: [for (final p in pins) if (p.pin.state == PinState.completed) drawnAt[p.at]!],
+                  solved: [for (final p in pins) if (p.pin.state == PinState.completed) drawnAt[p.id]!],
                   clearOfCurrent: map.namesClearOfCurrent,
                 )
                 case final at?)
@@ -851,7 +855,7 @@ class _MapWorldView extends StatelessWidget {
           ),
         ),
         for (final p in pins)
-          Positioned(left: drawnAt[p.at]!.dx - MapPin.width / 2, top: drawnAt[p.at]!.dy - MapPin.anchorY, child: p.pin),
+          Positioned(left: drawnAt[p.id]!.dx - MapPin.width / 2, top: drawnAt[p.id]!.dy - MapPin.anchorY, child: p.pin),
       ],
     );
   }

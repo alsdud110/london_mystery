@@ -193,7 +193,10 @@ class LondonMapPainter extends CustomPainter {
   /// small red dot at the pen while it is still drawing.
   void _heading(Canvas c, Path leg, double shown) {
     if (shown <= 0) return;
-    final metric = leg.computeMetrics().first;
+    // Two places at one point (two missions in one room) have no way between
+    // them: an empty path, nothing to draw.
+    final metric = leg.computeMetrics().firstOrNull;
+    if (metric == null) return;
     final end = metric.length * shown;
     final outline = _stroke(AppColors.paperLight, 4.6, alpha: 0.85);
     final ink = _stroke(AppColors.burgundy, 2.6);
