@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s3_rome",
+  "number": 3,
+  "city": "Rome",
+  "cases": 12,
+  "acts": 3,
+  "assetRoot": "assets/seasons/season_03_rome",
+  "playbook": "tool/season_planner/PLAYBOOK.md"
+}

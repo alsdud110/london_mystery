@@ -1,0 +1,452 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep02",
+  "seasonId": "s3_rome",
+  "number": 2,
+  "actId": "act1",
+  "title": "Under the Second Shell",
+  "synopsis": [
+    "The Owl's card sends you to the Trevi Fountain.",
+    "A riddle waits under a stone shell.",
+    "And a grumpy professor wants the missing piece very much."
+  ],
+  "goal": "Follow the Owl's trail at the Trevi Fountain and find where it leads next.",
+  "characters": [
+    "giulia_marino",
+    "aldo_rinaldi"
+  ],
+  "locations": [
+    "trevi_fountain"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep02_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.trevi_fountain",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "MAP",
+          "acceptedAnswers": [
+            "A MAP",
+            "STONE MAP",
+            "MARBLE MAP",
+            "A STONE MAP"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the Owl's riddle (streets but no cars, rooms but no doors, stone in pieces)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep01_c3",
+          "use": "textMention",
+          "note": "The Owl's first card: look under the second shell."
+        },
+        {
+          "ref": "s3_ep01_e3",
+          "use": "evidenceLink",
+          "note": "The same owl stamp."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep02_c1",
+        "evidence": "s3_ep02_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "수수께끼의 but 문장(streets, but no cars)을 하나씩 읽고 무엇인지 단어로 쓴다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "I have streets, but no cars.",
+          "I have rooms, but no doors."
+        ]
+      },
+      "play": {
+        "title": "The Owl's Riddle",
+        "location": "THE TREVI FOUNTAIN",
+        "story": [
+          "The Trevi Fountain is loud and bright.",
+          "Stone shells line the edge of the water.",
+          "Under the second shell, you find a dry paper roll."
+        ],
+        "letterIntro": "The paper roll says:",
+        "letter": "Well done, Detective. Here is my riddle.\nI have streets, but no cars.\nI have rooms, but no doors.\nI am made of stone, and now I am in pieces.\nWhat am I?\nMy tin waits under the third step.\n— The Owl",
+        "question": "What is the Owl's riddle about?",
+        "prompt": "It is a ____.",
+        "hints": [
+          "Each line is one clue. What has streets and rooms, but they are only drawn?",
+          "Think about what is missing from the museum."
+        ],
+        "successMessage": "You solved the Owl's riddle!",
+        "transition": [
+          "A stone map! The riddle is about the missing piece.",
+          "The Owl's tin is under the third step.",
+          "But a man in a green hat is sitting on the steps."
+        ],
+        "feedback": {
+          "HOUSE": "A house has doors. This thing has rooms, but no doors.",
+          "CITY": "A city has cars. This thing has streets, but no cars."
+        },
+        "orderFeedback": "Check your spelling. It is a short word.",
+        "mapX": 0.55,
+        "mapY": 0.3,
+        "clue": {
+          "title": "The Owl's Riddle",
+          "value": "A STONE MAP · THE THIRD STEP",
+          "note": "The riddle is about the missing map piece. The Owl's tin is under the third step.",
+          "symbol": "map"
+        },
+        "evidence": {
+          "name": "The Owl's Second Card",
+          "icon": "seal",
+          "description": "A paper roll with an owl stamp, from under the second shell.",
+          "inscription": "I have streets, but no cars. I have rooms, but no doors."
+        },
+        "evidenceLinkLine": "The same owl stamp as the card at the museum's back door."
+      }
+    },
+    {
+      "missionId": "s3_ep02_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.trevi_fountain",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "wanted",
+          "options": [
+            {
+              "id": "dust",
+              "label": "He has white dust on his hands.",
+              "feedback": "Look at his hands again. They are green with ink."
+            },
+            {
+              "id": "wanted",
+              "label": "He wanted the piece, and Sofia said no."
+            },
+            {
+              "id": "museum",
+              "label": "He was in the museum at midnight.",
+              "feedback": "Read his page. Where does he say he was on Friday night?"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: a page of Aldo's notebook. His wish makes him a suspect; his Friday line is his alibi, checked in Case 06."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep01_c1",
+          "use": "textMention",
+          "note": "The piece went missing at midnight on Friday."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep02_c2",
+        "evidence": "s3_ep02_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "교수의 수첩을 읽고 그가 용의자로 보이는 이유(원했지만 거절당함)와 아닌 이유를 구별한다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "I must see the piece before the show!",
+          "She said no two times."
+        ]
+      },
+      "play": {
+        "title": "The Professor's Notebook",
+        "location": "THE TREVI STEPS",
+        "story": [
+          "The man in the green hat is drawing the fountain. His fingers are green with ink.",
+          "\"That piece should be in MY book!\" he mutters.",
+          "\"That is Professor Aldo Rinaldi,\" Giulia whispers. \"He writes about old maps.\"",
+          "He stands up, and a page falls out of his notebook."
+        ],
+        "letterIntro": "The notebook page says:",
+        "letter": "MY BOOK — CHAPTER 12: THE NEW PIECE\nI MUST see the piece before the show!\nI asked Sofia two times. She said no two times.\nFriday night: my talk at the university, 9:00 PM to 1:00 AM.\nSaturday: the show. Too late for my book!",
+        "question": "Why could Professor Aldo be a suspect?",
+        "hints": [
+          "A suspect is a person who may have done it. Why?",
+          "What did the professor ask for, and what did Sofia say?"
+        ],
+        "successMessage": "You see why the professor is a suspect.",
+        "transition": [
+          "Aldo wanted the piece, and Sofia said no.",
+          "But his page says he was at the university on Friday night.",
+          "\"We must check that later,\" says Giulia. Aldo walks away, grumbling."
+        ],
+        "mapX": 0.55,
+        "mapY": 0.3,
+        "clue": {
+          "title": "The Professor's Wish",
+          "value": "HE WANTED THE PIECE",
+          "note": "Aldo Rinaldi wanted to see the piece for his book. Sofia said no.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "A Page from Aldo's Notebook",
+          "icon": "letter",
+          "description": "A page that fell out of Professor Aldo's green notebook.",
+          "inscription": "Friday night: my talk at the university, 9:00 PM to 1:00 AM."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep02_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.trevi_fountain",
+      "puzzle": {
+        "paletteId": "letter_tile_lock",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "letterLock",
+        "answerSpec": {
+          "answer": "MARBLE",
+          "options": [
+            {
+              "id": "b",
+              "label": "B"
+            },
+            {
+              "id": "e",
+              "label": "E"
+            },
+            {
+              "id": "m",
+              "label": "M"
+            },
+            {
+              "id": "l",
+              "label": "L"
+            },
+            {
+              "id": "a",
+              "label": "A"
+            },
+            {
+              "id": "r",
+              "label": "R"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the tin's lid and the museum label on it. The lock is the stone the real piece is made of, not the soft white dust."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep02_c1",
+          "use": "textMention",
+          "note": "The tin is under the third step."
+        },
+        {
+          "ref": "s3_ep01_e2",
+          "use": "textMention",
+          "note": "The soft white dust is not what the real piece is made of."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep02_c3",
+        "evidence": "s3_ep02_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "라벨의 made of 문장을 읽고 진짜 조각의 재료 marble을 글자 타일로 맞춘다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "The real piece is made of stone.",
+          "It is carved in marble."
+        ]
+      },
+      "play": {
+        "title": "The Owl's Tin",
+        "location": "THE THIRD STEP",
+        "story": [
+          "Under the third step, there is a small tin box.",
+          "It has a letter lock with six tiles.",
+          "A museum label is glued to the lid."
+        ],
+        "letterIntro": "The tin's lid says:",
+        "letter": "Spell the stone the REAL piece is made of.\nNot the soft white dust!\n— The Owl\n\nMUSEUM LABEL:\nTHE OLD MAP OF ROME\nCarved in marble about 1,800 years ago.\nOnly some pieces are left.",
+        "question": "What is the real piece made of? Spell it to open the tin.",
+        "hints": [
+          "Read the museum label. What was the map carved in?",
+          "It is a kind of hard, white stone."
+        ],
+        "successMessage": "The tin opens!",
+        "transition": [
+          "Inside, there is a little brass key.",
+          "Its tag says: FIORI · 7.",
+          "Under the key is one more card."
+        ],
+        "orderFeedback": "Those are the right letters. Read the museum label again.",
+        "mapX": 0.56,
+        "mapY": 0.32,
+        "clue": {
+          "title": "The Owl's Tin",
+          "value": "MARBLE · KEY FIORI 7",
+          "note": "The real piece is carved in marble. The tin held a brass key: FIORI 7.",
+          "symbol": "key"
+        },
+        "evidence": {
+          "name": "The Little Brass Key",
+          "icon": "key",
+          "description": "A small brass key from the Owl's tin.",
+          "inscription": "Tag: FIORI · 7"
+        },
+        "lockTitle": "THE OWL'S TIN"
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep02_final",
+    "slot": "final",
+    "placeId": "s3_rome.trevi_fountain",
+    "puzzle": {
+      "paletteId": "order_sequence",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "sequence",
+      "answerSpec": {
+        "answer": "gelato,pantheon,square,stall",
+        "options": [
+          {
+            "id": "stall",
+            "label": "The flower stall with the red roof"
+          },
+          {
+            "id": "gelato",
+            "label": "The street with the gelato shop"
+          },
+          {
+            "id": "square",
+            "label": "The big market square"
+          },
+          {
+            "id": "pantheon",
+            "label": "The big round Pantheon"
+          }
+        ],
+        "codeLength": 4
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: the Owl's route card, its four lines out of order (First, After, Before, Finally)."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep02_c3",
+        "use": "answerDerivation",
+        "note": "The key's tag FIORI 7 names Box 7 at the flower stall."
+      },
+      {
+        "ref": "s3_ep02_c1",
+        "use": "textMention",
+        "note": "The riddle's map, now a route."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep02_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "comprehension",
+      "objective": "First, After, Before, Finally를 읽고 부엉이의 길 안내를 순서대로 놓는다.",
+      "skill": "grammarInContext",
+      "expressions": [
+        "First, walk down the street with the gelato shop.",
+        "Before the flower stall, walk across the market square.",
+        "Finally, find Box 7."
+      ]
+    },
+    "play": {
+      "title": "The Owl's Route",
+      "location": "THE TREVI FOUNTAIN",
+      "story": [
+        "The last card in the tin is a route.",
+        "But the Owl wrote it in pieces, like the broken map.",
+        "Giulia laughs. \"This Owl loves puzzles!\""
+      ],
+      "letterIntro": "The route card says:",
+      "letter": "Finally, find Box 7 at the flower stall with the red roof.\nFirst, walk down the street with the gelato shop.\nAfter the gelato shop, go past the big round Pantheon.\nBefore the flower stall, walk across the big market square.\n— The Owl",
+      "question": "Put the Owl's route in order, from the fountain to Box 7.",
+      "hints": [
+        "Find the line that says First, and the line that says Finally.",
+        "Before the flower stall means just before the last step."
+      ],
+      "successMessage": "You put the Owl's route together!",
+      "transition": [
+        "Gelato shop, Pantheon, market square, flower stall.",
+        "\"Fiori means flowers in Italian,\" says Giulia.",
+        "\"Box 7 must be at the flower market. Campo de' Fiori!\""
+      ],
+      "orderFeedback": "Start with First and end with Finally. Then read After and Before.",
+      "mapX": 0.55,
+      "mapY": 0.3,
+      "evidence": {
+        "name": "The Owl's Route Card",
+        "icon": "map",
+        "description": "The Owl's route from the fountain to Box 7.",
+        "inscription": "Finally, find Box 7 at the flower stall with the red roof."
+      }
+    }
+  },
+  "hook": "What is waiting in Box 7?",
+  "learningGoal": {
+    "title": "Riddles and routes: but, first, after, before, finally",
+    "titleKo": "수수께끼와 길 안내: but, first, after, before, finally"
+  },
+  "play": {
+    "objectives": [
+      "Solve the Owl's riddle.",
+      "Find out why the professor is a suspect.",
+      "Open the Owl's tin and follow its route."
+    ],
+    "intro": [
+      "The Trevi Fountain shines in the sun.",
+      "People throw coins over their shoulders and make a wish.",
+      "\"The Owl said the second shell,\" says Giulia. \"Let's count!\""
+    ],
+    "caseSummary": "Under the second shell, the Owl's riddle pointed to the stone map. Professor Aldo wanted the piece and became a suspect. The Owl's marble tin held a key, FIORI 7, and a route to the flower market.",
+    "place": "TREVI FOUNTAIN",
+    "keyWords": [
+      "riddle",
+      "suspect",
+      "marble",
+      "first",
+      "finally"
+    ],
+    "glossary": {
+      "riddle": "수수께끼",
+      "suspect": "용의자",
+      "marble": "대리석",
+      "carved": "새겨진",
+      "tin": "작은 깡통 상자",
+      "stall": "가판대"
+    }
+  },
+  "notes": [
+    "Aldo's page (s3_ep02_e2) holds his alibi; Case 06 checks it against the university's door log.",
+    "The brass key (s3_ep02_e3) opens Box 7 in Case 03."
+  ]
+}

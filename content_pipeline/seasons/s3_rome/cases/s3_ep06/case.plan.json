@@ -1,0 +1,461 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep06",
+  "seasonId": "s3_rome",
+  "number": 6,
+  "actId": "act2",
+  "title": "The Professor's Alibi",
+  "synopsis": [
+    "Carla says Professor Aldo came to her workshop on Tuesday too.",
+    "He wanted the piece. Did he take it?",
+    "It is time to check his story."
+  ],
+  "goal": "Check Professor Aldo's story, and find out what he saw on Tuesday.",
+  "characters": [
+    "giulia_marino",
+    "aldo_rinaldi",
+    "carla_bassi"
+  ],
+  "locations": [
+    "piazza_navona",
+    "rome_university"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep06_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.navona_square",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "not_him",
+          "options": [
+            {
+              "id": "helmet",
+              "label": "Yes. Aldo wears a yellow helmet.",
+              "feedback": "Look at Aldo again. He wears a green hat."
+            },
+            {
+              "id": "not_him",
+              "label": "Probably not. Aldo is small and thin, and Pia saw a big man."
+            },
+            {
+              "id": "strong",
+              "label": "Yes. Aldo carries heavy boxes every day.",
+              "feedback": "Read Giulia's notes. Aldo's back hurts, and he cannot lift heavy things."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: Pia's story of the big man (Case 03). Letter: Giulia's notes on how Aldo looks."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep03_e3",
+          "use": "recall",
+          "note": "Pia saw a big man in a yellow helmet."
+        },
+        {
+          "ref": "s3_ep02_c2",
+          "use": "textMention",
+          "note": "Aldo wanted the piece: why he is a suspect."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep06_c1",
+        "evidence": "s3_ep06_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "Pia의 목격 진술과 교수의 생김새(small, thin, green hat)를 비교한다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "He is small and thin.",
+          "He cannot lift heavy things."
+        ]
+      },
+      "play": {
+        "title": "Big Man, Small Man",
+        "location": "PIAZZA NAVONA",
+        "story": [
+          "Professor Aldo sits by a big fountain with four stone giants.",
+          "He is drawing in his green notebook again.",
+          "\"He was at the workshop on Tuesday,\" whispers Giulia. \"Is he the helmet man?\""
+        ],
+        "letterIntro": "Giulia's notes say:",
+        "letter": "PROFESSOR ALDO RINALDI\nHe is small and thin.\nHe always wears a green hat.\nHis fingers are green with ink.\nHe says his back hurts. He cannot lift heavy things.",
+        "question": "Could Aldo be the man Pia saw on Thursday night?",
+        "hints": [
+          "Read Pia's story again. What did the man look like?",
+          "Compare: big or small? Helmet or hat?"
+        ],
+        "successMessage": "You compared the two men!",
+        "transition": [
+          "Pia saw a big man in a yellow helmet. Aldo is small, with a green hat.",
+          "But Aldo still wanted the piece. Was he at the museum on Friday at midnight?",
+          "\"Come to my hall,\" Aldo snaps. \"I can prove where I was!\""
+        ],
+        "mapX": 0.3,
+        "mapY": 0.42,
+        "clue": {
+          "title": "Not the Helmet Man",
+          "value": "SMALL · THIN · GREEN HAT",
+          "note": "Aldo does not look like the big man in the yellow helmet.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Giulia's Notes on Aldo",
+          "icon": "letter",
+          "description": "What Professor Aldo looks like, written by Giulia.",
+          "inscription": "He is small and thin. He cannot lift heavy things."
+        },
+        "recall": {
+          "title": "What did Pia see?",
+          "prompt": "Which thing in your Notebook tells you about the man Pia saw?",
+          "miss": "Find what Pia told you about Thursday night."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep06_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.lecture_hall",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "start,photos,questions,end",
+          "options": [
+            {
+              "id": "questions",
+              "label": "Students asked questions"
+            },
+            {
+              "id": "end",
+              "label": "The talk ended and Hall B was locked"
+            },
+            {
+              "id": "start",
+              "label": "The professor started his talk"
+            },
+            {
+              "id": "photos",
+              "label": "The professor showed photos of old maps"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Hall B's door log for Friday night. PM before midnight, AM after: 9:00 PM, 11:15 PM, 12:00 AM, 1:00 AM."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep02_e2",
+          "use": "evidenceLink",
+          "note": "Aldo's own page gave the same hours."
+        },
+        {
+          "ref": "s3_ep01_c1",
+          "use": "textMention",
+          "note": "The hall went dark at midnight on Friday."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep06_c2",
+        "evidence": "s3_ep06_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "PM과 AM, 자정(12:00 AM)의 순서를 이해해 금요일 밤 기록을 시간순으로 놓는다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "The talk started at 9:00 PM.",
+          "12:00 AM is midnight.",
+          "The talk ended at 1:00 AM."
+        ]
+      },
+      "play": {
+        "title": "The Door Log of Hall B",
+        "location": "UNIVERSITY HALL B",
+        "story": [
+          "Hall B is a big room with rows of wooden seats.",
+          "A guard keeps a log by the door every night.",
+          "Aldo points at Friday's page. \"Read it!\""
+        ],
+        "letterIntro": "The door log says:",
+        "letter": "HALL B — FRIDAY NIGHT\n11:15 PM — Prof. Rinaldi showed photos of old maps.\n9:00 PM — Prof. Rinaldi started his talk.\n1:00 AM — The talk ended. Prof. Rinaldi locked Hall B.\n12:00 AM — Students asked questions. The professor answered for an hour.",
+        "question": "Put Aldo's Friday night in order.",
+        "hints": [
+          "PM times come before midnight. AM times come after it.",
+          "12:00 AM is midnight. 1:00 AM is one hour later."
+        ],
+        "successMessage": "You put Aldo's night in order!",
+        "transition": [
+          "At midnight, when the map hall went dark, Aldo was answering questions in Hall B.",
+          "Forty students saw him there.",
+          "\"So it was not me,\" says Aldo. Then, more quietly: \"But I saw something on Tuesday.\""
+        ],
+        "orderFeedback": "Read the times again. Which ones are PM, and which are AM?",
+        "mapX": 0.8,
+        "mapY": 0.4,
+        "clue": {
+          "title": "Aldo's Friday Night",
+          "value": "9 PM – 1 AM · HALL B",
+          "note": "At midnight on Friday, Aldo was answering questions in Hall B.",
+          "symbol": "clock"
+        },
+        "evidence": {
+          "name": "The Hall B Door Log",
+          "icon": "clock",
+          "description": "The university's door log for Friday night.",
+          "inscription": "12:00 AM — Students asked questions. The professor answered for an hour."
+        },
+        "evidenceLinkLine": "Aldo's notebook page said the same: Friday, 9:00 PM to 1:00 AM."
+      }
+    },
+    {
+      "missionId": "s3_ep06_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.navona_square",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "BUILDING"
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Aldo's story and his sketch of the word on the box as he saw it in a mirror, GNIDLIUB."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep06_c2",
+          "use": "textMention",
+          "note": "Aldo is cleared, and tells what he saw."
+        },
+        {
+          "ref": "s3_ep05_e4",
+          "use": "textMention",
+          "note": "On Tuesday the real piece was at the Bassi workshop."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep06_c3",
+        "evidence": "s3_ep06_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "거울에 비친 글자를 오른쪽 끝부터 거꾸로 읽어 building을 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "A mirror turns words back to front.",
+          "Read it from the right end."
+        ]
+      },
+      "play": {
+        "title": "The Word in the Mirror",
+        "location": "PIAZZA NAVONA",
+        "story": [
+          "Back at the fountain, Aldo opens his notebook.",
+          "\"On Tuesday, I went to Carla's workshop to buy a plaster lion for my class.\"",
+          "\"A big man carried a box out. I saw it in her big mirror.\""
+        ],
+        "letterIntro": "Aldo's sketch says:",
+        "letter": "TUESDAY, BASSI WORKSHOP\nA big man carried out a heavy box.\nThere was a word on the side of the box.\nI saw it in the mirror, so it looked like this:\nGNIDLIUB\nA mirror turns words back to front.",
+        "question": "What word was really on the box?",
+        "prompt": "The word on the box was ____.",
+        "hints": [
+          "Start at the last letter, B, and read to the left.",
+          "The word has to do with houses and walls."
+        ],
+        "successMessage": "You read the mirror word!",
+        "transition": [
+          "Read from the right end, GNIDLIUB is BUILDING.",
+          "A yellow helmet with a crane. A box that says BUILDING.",
+          "Aldo taps his pencil. \"I think I know what kind of man he is.\""
+        ],
+        "feedback": {
+          "GNIDLIUB": "That is the word in the mirror. Read it from the right end."
+        },
+        "orderFeedback": "Those letters are right, but read them from the right end.",
+        "mapX": 0.3,
+        "mapY": 0.42,
+        "clue": {
+          "title": "The Mirror Word",
+          "value": "A BOX THAT SAYS BUILDING",
+          "note": "On Tuesday, the big man carried a box out of the Bassi workshop. It said BUILDING.",
+          "symbol": "bag"
+        },
+        "evidence": {
+          "name": "Aldo's Mirror Sketch",
+          "icon": "letter",
+          "description": "Aldo's sketch of the word he saw in the workshop mirror.",
+          "inscription": "GNIDLIUB"
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep06_final",
+    "slot": "final",
+    "placeId": "s3_rome.lecture_hall",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "BUILDER",
+        "options": [
+          {
+            "id": "d",
+            "label": "D"
+          },
+          {
+            "id": "r",
+            "label": "R"
+          },
+          {
+            "id": "u",
+            "label": "U"
+          },
+          {
+            "id": "e",
+            "label": "E"
+          },
+          {
+            "id": "b",
+            "label": "B"
+          },
+          {
+            "id": "l",
+            "label": "L"
+          },
+          {
+            "id": "i",
+            "label": "I"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: Aldo's question card putting the helmet, the crane and the box together. The man's job is a builder."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep03_c3",
+        "use": "answerDerivation",
+        "note": "A yellow helmet with a crane on it."
+      },
+      {
+        "ref": "s3_ep06_c3",
+        "use": "answerDerivation",
+        "note": "A box that says BUILDING."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep06_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "단서(안전모, 기중기, BUILDING 상자)를 종합해 직업 이름 builder를 만든다.",
+      "skill": "vocabulary",
+      "expressions": [
+        "What is this man's job?",
+        "A builder builds houses."
+      ]
+    },
+    "play": {
+      "title": "What Is His Job?",
+      "location": "UNIVERSITY HALL B",
+      "story": [
+        "Aldo writes three lines on the big blackboard.",
+        "Under them, he draws seven empty boxes.",
+        "\"A detective must put clues together,\" he says. \"Go on.\""
+      ],
+      "letterIntro": "The blackboard says:",
+      "letter": "THE MAN WE ARE LOOKING FOR:\n1. A yellow helmet with a crane on it.\n2. A heavy box with BUILDING on it.\n3. Big, strong hands.\n\nWhat is his job? A ________ builds houses, walls and roads.",
+      "question": "Put the clues together. What is the man's job? Spell it.",
+      "hints": [
+        "Who wears a helmet and works with cranes?",
+        "The job is made from the word build."
+      ],
+      "successMessage": "You found the man's job!",
+      "transition": [
+        "He is a builder!",
+        "Aldo opens a drawer. \"I took this photo of the real piece on the day it was found.\"",
+        "\"Look at the crack. It is shaped like a Y. A copy would not have it.\"",
+        "\"I was rude to you,\" he says. \"But I love that map. Let me help.\""
+      ],
+      "orderFeedback": "Those are the right letters. A ____ builds houses.",
+      "mapX": 0.8,
+      "mapY": 0.4,
+      "evidence": {
+        "name": "Aldo's Old Photo",
+        "icon": "frame",
+        "description": "Aldo's photo of the real piece, on the day it was found. It shows a street, an owl and a crack.",
+        "inscription": "The real piece has a crack shaped like a Y."
+      },
+      "lockTitle": "THE BLACKBOARD"
+    }
+  },
+  "hook": "A builder had the real piece. But why would a builder want an old map?",
+  "learningGoal": {
+    "title": "Compare and check: big and small, PM and AM",
+    "titleKo": "비교와 확인: big/small, PM/AM"
+  },
+  "play": {
+    "objectives": [
+      "Compare Aldo with the man Pia saw.",
+      "Check Aldo's Friday night.",
+      "Read the word in the mirror."
+    ],
+    "intro": [
+      "\"The professor came on Tuesday too,\" Carla told you.",
+      "Aldo wanted the piece, and Sofia said no.",
+      "Today you must check his story."
+    ],
+    "caseSummary": "Aldo is small and thin, and he was in Hall B all Friday night. He did not take the piece. On Tuesday, he saw a big man carry a BUILDING box out of the workshop. The man is a builder. Aldo's old photo shows the real piece's Y-shaped crack.",
+    "place": "PIAZZA NAVONA",
+    "keyWords": [
+      "compare",
+      "alibi",
+      "midnight",
+      "mirror",
+      "builder"
+    ],
+    "glossary": {
+      "alibi": "알리바이",
+      "compare": "비교하다",
+      "midnight": "자정",
+      "mirror": "거울",
+      "builder": "건설업자",
+      "crack": "금, 갈라진 자국"
+    }
+  },
+  "notes": [
+    "Aldo is cleared here (his revealCase). From Case 09 he is the season's map expert.",
+    "Aldo's old photo (s3_ep06_e4) is how the real piece is told from a copy in Case 08 and Case 11."
+  ]
+}

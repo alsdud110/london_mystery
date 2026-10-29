@@ -14,5 +14,13 @@ content_pipeline/seasons/<seasonId>/
 The formats, the checks and the approvals are described in
 `tool/season_gen/README.md`. Approvals are a person's, made with
 `tool/season_gen/approve.dart`; nothing approves a plan on its own.
-No season is planned here yet. The Paris plans the tests use are fixtures
-under `test/fixtures/season_gen/`.
+A season planned with `tool/season_planner` (STEP 3-11) also has
+`assets.manifest.json` (its pictures, planned) and `planning/` (its brief,
+story bible and quality report): see `tool/season_planner/README.md`.
+
+- `s9_sandbox`: the pipeline's trial cases (STEP 3-6 to 3-9).
+- `s3_rome`: "The Broken Map of Rome", a trial of the season planner, all
+  twelve cases planned by Claude Code. Not the decided Season 3; its pictures
+  are not made.
+
+The Paris plans the tests use are fixtures under `test/fixtures/season_gen/`.

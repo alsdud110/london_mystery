@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep07",
+  "seasonId": "s3_rome",
+  "number": 7,
+  "actId": "act2",
+  "title": "A Code on the Spanish Steps",
+  "synopsis": [
+    "A new owl card sends you to the Spanish Steps.",
+    "The Owl leaves a secret code in chalk.",
+    "And the show's smiling sponsor has a story to tell."
+  ],
+  "goal": "Read the Owl's code, check the sponsor's story, and open the Owl's box.",
+  "characters": [
+    "giulia_marino",
+    "bruno_valli",
+    "livia_conti"
+  ],
+  "locations": [
+    "spanish_steps"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep07_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.spanish_steps",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "boat,flowers,sign,church",
+          "options": [
+            {
+              "id": "church",
+              "label": "The church"
+            },
+            {
+              "id": "sign",
+              "label": "The Owl's sign"
+            },
+            {
+              "id": "boat",
+              "label": "The boat fountain"
+            },
+            {
+              "id": "flowers",
+              "label": "The flower pots"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the Owl's card about the steps (top, bottom, middle, just above)."
+        ]
+      },
+      "clueInputs": [],
+      "clueOutputs": {
+        "clue": "s3_ep07_c1",
+        "evidence": "s3_ep07_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "at the top, at the bottom, in the middle, just above를 읽고 계단 아래에서 위로 장소를 놓는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "The church is at the very top.",
+          "My sign is just above the flowers."
+        ]
+      },
+      "play": {
+        "title": "Up the Steps",
+        "location": "THE SPANISH STEPS",
+        "story": [
+          "This morning, an owl card was under Giulia's door.",
+          "It sent you to the Spanish Steps, 135 wide stone steps.",
+          "People sit on them and eat gelato in the sun."
+        ],
+        "letterIntro": "The owl card says:",
+        "letter": "The church is at the very top of the steps.\nThe boat fountain is at the very bottom.\nThe flower pots are in the middle.\nMy sign is just above the flowers.\n— The Owl",
+        "question": "Put the places in order, from the bottom of the steps to the top.",
+        "hints": [
+          "Start at the very bottom.",
+          "Just above the flowers means right after them, going up."
+        ],
+        "successMessage": "You climbed the steps the right way!",
+        "transition": [
+          "Boat, flowers, the Owl's sign, church.",
+          "Just above the flower pots, you find a little owl drawn in chalk.",
+          "Under it are seven strange letters."
+        ],
+        "orderFeedback": "Start at the bottom. Read middle and just above again.",
+        "mapX": 0.62,
+        "mapY": 0.18,
+        "clue": {
+          "title": "Up the Steps",
+          "value": "BOAT · FLOWERS · OWL SIGN · CHURCH",
+          "note": "The Owl's sign is just above the flower pots on the Spanish Steps.",
+          "symbol": "footprint"
+        },
+        "evidence": {
+          "name": "The Owl's Steps Card",
+          "icon": "seal",
+          "description": "The owl card that was under Giulia's door.",
+          "inscription": "My sign is just above the flowers."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep07_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.spanish_steps",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "TUESDAY"
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the Owl's chalk code UVFTEBZ, each letter moved forward by one. Back by one: TUESDAY."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep07_c1",
+          "use": "textMention",
+          "note": "The sign just above the flowers."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep07_c2",
+        "evidence": "s3_ep07_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "한 글자씩 뒤로 옮기는 암호를 풀어 요일 Tuesday를 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Move each letter back by one.",
+          "Watch the man who borrowed the piece."
+        ]
+      },
+      "play": {
+        "title": "The Chalk Code",
+        "location": "THE SPANISH STEPS",
+        "story": [
+          "The chalk owl has big round eyes.",
+          "Under it, the Owl wrote a code, and how to read it."
+        ],
+        "letterIntro": "The chalk says:",
+        "letter": "UVFTEBZ\n\nHow to read it: B means A. C means B. D means C.\nMove each letter back by one.\nWatch the man who borrowed the piece on this day.\n— The Owl",
+        "question": "What does the Owl's code say?",
+        "prompt": "The code says ____.",
+        "hints": [
+          "U moves back to T. V moves back to U.",
+          "The word is a day of the week."
+        ],
+        "successMessage": "You broke the Owl's code!",
+        "transition": [
+          "UVFTEBZ means TUESDAY.",
+          "\"Someone borrowed the piece on Tuesday?\" says Giulia.",
+          "Then a big, smiling man in a fine suit walks down the steps to you."
+        ],
+        "feedback": {
+          "UVFTEBZ": "That is the code itself. Move each letter back by one.",
+          "THURSDAY": "Check the letters one by one. U moves back to T. V moves back to U."
+        },
+        "orderFeedback": "Those letters are right. Check their order in the code.",
+        "mapX": 0.62,
+        "mapY": 0.18,
+        "clue": {
+          "title": "The Owl's Code",
+          "value": "UVFTEBZ = A DAY",
+          "note": "The Owl says: watch the man who borrowed the piece on Tuesday.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "The Chalk Code",
+          "icon": "letter",
+          "description": "The Owl's code in chalk, above the flower pots.",
+          "inscription": "UVFTEBZ — move each letter back by one."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep07_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.spanish_steps",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "no_hall",
+          "options": [
+            {
+              "id": "yes_wanted",
+              "label": "Yes. Aldo wanted the piece, so he took it.",
+              "feedback": "Wanting a thing is not taking it. Where was Aldo at midnight?"
+            },
+            {
+              "id": "yes_box",
+              "label": "Yes. Aldo can carry heavy boxes.",
+              "feedback": "Aldo's back hurts. And where was he at midnight?"
+            },
+            {
+              "id": "no_hall",
+              "label": "No. At midnight on Friday, Aldo was in Hall B."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: the Hall B door log (Case 06). Letter: Bruno's story about Aldo, which cannot be true."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep06_e2",
+          "use": "recall",
+          "note": "Hall B's door log: Aldo was there at midnight."
+        },
+        {
+          "ref": "s3_ep06_c1",
+          "use": "textMention",
+          "note": "Aldo cannot lift heavy things."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep07_c3",
+        "evidence": "s3_ep07_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "후원자의 진술을 이전 증거(출입 기록)와 비교해 거짓임을 판단한다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "I saw Professor Aldo carry a heavy box.",
+          "Is he telling the truth?"
+        ]
+      },
+      "play": {
+        "title": "The Smiling Sponsor",
+        "location": "THE SPANISH STEPS",
+        "story": [
+          "\"Bruno Valli,\" the man says, and shakes your hand hard.",
+          "\"I pay for the museum's show. I want to help you!\"",
+          "He leans in close and tells you a story."
+        ],
+        "letterIntro": "Signor Valli says:",
+        "letter": "\"On Friday at midnight, I walked past the museum.\nI saw Professor Aldo at the back door.\nHe carried a heavy box out of the museum!\nHe wanted that piece so much. It was him, I am sure.\"",
+        "question": "Is Signor Valli telling the truth?",
+        "hints": [
+          "Check your Notebook. Where was Aldo at midnight on Friday?",
+          "Could Aldo be in two places at the same time?"
+        ],
+        "successMessage": "You caught a story that is not true!",
+        "transition": [
+          "At midnight, Aldo was answering questions in Hall B.",
+          "Signor Valli's smile goes stiff. \"Maybe I saw wrong. It was dark.\"",
+          "He gives you his card and walks away fast."
+        ],
+        "mapX": 0.62,
+        "mapY": 0.18,
+        "clue": {
+          "title": "A Story That Is Not True",
+          "value": "VALLI BLAMED ALDO",
+          "note": "Bruno Valli said Aldo carried a box out at midnight. Aldo was in Hall B. Why did he say it?",
+          "symbol": "mask"
+        },
+        "evidence": {
+          "name": "Bruno's Business Card",
+          "icon": "ticket",
+          "description": "Signor Valli's card. There is a little crane on it.",
+          "inscription": "VALLI BUILDING · We build Rome's future!"
+        },
+        "recall": {
+          "title": "Check his story",
+          "prompt": "Which thing in your Notebook shows where Aldo was at midnight?",
+          "miss": "Look for the log of Friday night at the university."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep07_final",
+    "slot": "final",
+    "placeId": "s3_rome.spanish_steps",
+    "puzzle": {
+      "paletteId": "combo_dial_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "finalCode",
+      "answerSpec": {
+        "answer": "427",
+        "codeLength": 3,
+        "dialSymbols": [
+          "footprint",
+          "clock",
+          "letter"
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "The Owl's box at the top: 4 places on the steps, Tuesday is day 2, 7 letters in the code word."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep07_c1",
+        "use": "answerDerivation",
+        "note": "Four places on the way up."
+      },
+      {
+        "ref": "s3_ep07_c2",
+        "use": "answerDerivation",
+        "note": "Tuesday is day 2; the code word has 7 letters."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep07_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "오늘 찾은 단서(장소 수, 요일 번호, 글자 수)로 427을 맞춘다.",
+      "skill": "vocabulary",
+      "expressions": [
+        "Which day of the week is in my code?",
+        "How many letters are in my code word?"
+      ]
+    },
+    "play": {
+      "title": "The Box by the Church",
+      "location": "THE TOP OF THE STEPS",
+      "story": [
+        "At the very top, by the church, there is a small box with three dials.",
+        "It has an owl stamp on the lid.",
+        "Far down the side steps, a young woman with an owl ring is watching you."
+      ],
+      "letterIntro": "The lid says:",
+      "letter": "Three numbers from today:\nFirst: How many places did you put in order on the steps?\nSecond: Which day is in my code? Monday is day 1.\nThird: How many letters are in my code word?\n— The Owl",
+      "question": "Turn the dials to the Owl's three numbers. Then open the box.",
+      "hints": [
+        "Count the places from the boat fountain to the church.",
+        "Count the days from Monday. Then count the letters of the day."
+      ],
+      "successMessage": "The Owl's box opens!",
+      "transition": [
+        "Inside is a page copied from the museum lab's loan book.",
+        "\"TUESDAY, 2 PM to 5 PM. The new piece left the lab for poster photos. Signed: B.V.\"",
+        "\"B.V.,\" says Giulia slowly. \"Bruno Valli.\"",
+        "You look up. The young woman with the owl ring is gone."
+      ],
+      "feedback": {
+        "437": "Tuesday is day 2. Count from Monday.",
+        "327": "Count the places on the steps again. The Owl's sign is one of them.",
+        "426": "Count the letters of the code word again."
+      },
+      "orderFeedback": "Right numbers, wrong order. Places first, then the day, then the letters.",
+      "mapX": 0.63,
+      "mapY": 0.15,
+      "evidence": {
+        "name": "The Loan Book Page",
+        "icon": "letter",
+        "description": "A copy of the museum lab's loan book, from the Owl's box.",
+        "inscription": "TUESDAY · 2 PM to 5 PM · For poster photos · Signed: B.V."
+      }
+    }
+  },
+  "hook": "B.V. took the piece out on Tuesday, and the Owl knew. Who is the Owl?",
+  "learningGoal": {
+    "title": "Up and down, codes and days: just above, back by one",
+    "titleKo": "위치와 암호: just above, back by one"
+  },
+  "play": {
+    "objectives": [
+      "Climb to the Owl's sign.",
+      "Break the chalk code.",
+      "Check the sponsor's story."
+    ],
+    "intro": [
+      "This morning, an owl card was under Giulia's door.",
+      "\"The Spanish Steps hold my next sign,\" it said.",
+      "\"The Owl is watching us,\" says Giulia. \"But who is it?\""
+    ],
+    "caseSummary": "The Owl's chalk code said TUESDAY. Bruno Valli, the show's sponsor, said he saw Aldo with a box at midnight. But Aldo was in Hall B. The Owl's box held a page of the loan book. On Tuesday, B.V. took the piece out of the lab for three hours.",
+    "place": "THE SPANISH STEPS",
+    "keyWords": [
+      "above",
+      "code",
+      "tuesday",
+      "truth",
+      "borrowed"
+    ],
+    "glossary": {
+      "church": "교회",
+      "chalk": "분필",
+      "borrowed": "빌려 갔다",
+      "sponsor": "후원자",
+      "truth": "진실",
+      "loan": "대여"
+    }
+  },
+  "notes": [
+    "Bruno is suspicious from here, but nothing yet proves the swap: the season reveals him in Case 11.",
+    "The loan book page (s3_ep07_e4) is the first link of Bruno's plan, put in order in Case 11."
+  ]
+}

@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep05",
+  "seasonId": "s3_rome",
+  "number": 5,
+  "actId": "act2",
+  "title": "The Cat Who Walked on the Copy",
+  "synopsis": [
+    "The plaster copy has a paw print on its back.",
+    "Rome's ruins are home to many cats.",
+    "One of them may know who made the copy."
+  ],
+  "goal": "Find the workshop that made the plaster copy, and who ordered it.",
+  "characters": [
+    "giulia_marino",
+    "carla_bassi"
+  ],
+  "locations": [
+    "torre_argentina"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep05_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.cat_ruins",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "tito",
+          "options": [
+            {
+              "id": "luna",
+              "label": "Luna",
+              "feedback": "Luna is black. The hair in the paw print is orange."
+            },
+            {
+              "id": "tito",
+              "label": "Tito"
+            },
+            {
+              "id": "neve",
+              "label": "Neve",
+              "feedback": "Neve is white and fluffy. The hair in the paw print is orange."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: the plaster copy of Case 04 (its paw print holds an orange hair). Letter: the cat sanctuary's board."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep04_e4",
+          "use": "recall",
+          "note": "The plaster copy, with the paw print on its back."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep05_c1",
+        "evidence": "s3_ep05_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "고양이 게시판의 색깔·사는 곳 설명을 읽고 주황색 털의 주인을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Tito is orange, with a short tail.",
+          "He lives at a plaster workshop."
+        ]
+      },
+      "play": {
+        "title": "The Cat Board",
+        "location": "LARGO DI TORRE ARGENTINA",
+        "story": [
+          "Old Roman temples stand in a square below the street.",
+          "Cats sleep on the warm stones. A volunteer feeds them.",
+          "In the copy's paw print, Giulia finds one short orange hair."
+        ],
+        "letterIntro": "The volunteer's board says:",
+        "letter": "CATS WHO VISIT US\nLUNA — black, with a long tail. She lives at the bakery.\nTITO — orange, with a short tail. He lives at a plaster workshop.\nNEVE — white and fluffy. She lives at the bookshop.",
+        "question": "Which cat walked on the wet plaster copy?",
+        "hints": [
+          "What colour is the hair in the paw print?",
+          "Which cat lives at a place that uses plaster?"
+        ],
+        "successMessage": "You found the cat!",
+        "transition": [
+          "Orange hair and a plaster workshop. It must be Tito!",
+          "\"Tito comes every day at noon,\" says the volunteer.",
+          "And there he is, jumping down from a column."
+        ],
+        "mapX": 0.38,
+        "mapY": 0.58,
+        "clue": {
+          "title": "Tito the Cat",
+          "value": "ORANGE · A PLASTER WORKSHOP",
+          "note": "The orange hair in the copy's paw print is Tito's. He lives at a plaster workshop.",
+          "symbol": "footprint"
+        },
+        "evidence": {
+          "name": "An Orange Cat Hair",
+          "icon": "footprint",
+          "description": "A short orange hair from the paw print on the plaster copy.",
+          "inscription": "Tito: orange, with a short tail."
+        },
+        "recall": {
+          "title": "Find the paw print",
+          "prompt": "Which thing in your Notebook has a paw print on it?",
+          "miss": "Look for the thing with a paw print on its back."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep05_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.cat_ruins",
+      "puzzle": {
+        "paletteId": "letter_tile_lock",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "letterLock",
+        "answerSpec": {
+          "answer": "BASSI",
+          "options": [
+            {
+              "id": "s1",
+              "label": "S"
+            },
+            {
+              "id": "i",
+              "label": "I"
+            },
+            {
+              "id": "b",
+              "label": "B"
+            },
+            {
+              "id": "a",
+              "label": "A"
+            },
+            {
+              "id": "s2",
+              "label": "S"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Tito's round collar tag, S I B A S in a circle. From the big B, round to the right: B A S S I."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep05_c1",
+          "use": "textMention",
+          "note": "Tito lives at a plaster workshop."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep05_c2",
+        "evidence": "s3_ep05_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "Start at…, go round to the right 지시를 따라 둥근 이름표의 글자를 순서대로 읽는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "Start at the big letter.",
+          "Go round to the right."
+        ]
+      },
+      "play": {
+        "title": "Tito's Round Tag",
+        "location": "LARGO DI TORRE ARGENTINA",
+        "story": [
+          "Tito rubs his head on your shoes.",
+          "He has a round metal tag on his collar.",
+          "The letters go all the way round the circle."
+        ],
+        "letterIntro": "Tito's tag says:",
+        "letter": "The letters go round in a circle:\nS · I · B · A · S\n(The B is big. After the last S, the circle goes back to the first S.)\n\nA note on the back: Start at the big letter. Go round to the right.",
+        "question": "Read Tito's tag from the big letter. Spell his family's name.",
+        "hints": [
+          "Start with B. The next letters are A, then S.",
+          "At the end, the circle goes back to the start."
+        ],
+        "successMessage": "You read Tito's tag!",
+        "transition": [
+          "B, A, S, S, I. Tito belongs to the Bassi family.",
+          "\"The Bassi workshop is around the corner,\" says the volunteer.",
+          "Tito walks in front of you, tail up, as if he knows the way."
+        ],
+        "orderFeedback": "Those are the right letters. Start at the big B and go round.",
+        "mapX": 0.38,
+        "mapY": 0.58,
+        "clue": {
+          "title": "Tito's Tag",
+          "value": "THE BASSI WORKSHOP",
+          "note": "Tito lives at the Bassi plaster workshop, near the ruins.",
+          "symbol": "button"
+        },
+        "evidence": {
+          "name": "Tito's Collar Tag",
+          "icon": "button",
+          "description": "A round metal tag on Tito's collar.",
+          "inscription": "S · I · B · A · S (start at the big B)"
+        },
+        "lockTitle": "TITO'S TAG"
+      }
+    },
+    {
+      "missionId": "s3_ep05_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.cast_workshop",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "mould,pour,dry,paint",
+          "options": [
+            {
+              "id": "pour",
+              "label": "Pour wet plaster into the mould"
+            },
+            {
+              "id": "paint",
+              "label": "Paint it to look like old stone"
+            },
+            {
+              "id": "mould",
+              "label": "Make a mould around the real piece"
+            },
+            {
+              "id": "dry",
+              "label": "Let the plaster dry, then take it out"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the workshop's sign on how a copy is made. The order shows the maker had the real piece in the workshop."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep05_c2",
+          "use": "textMention",
+          "note": "Tito leads you to the Bassi workshop."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep05_c3",
+        "evidence": "s3_ep05_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "First, Then, After, Last를 읽고 복제품 만드는 과정을 순서대로 놓는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "First, we make a mould.",
+          "After the plaster is dry, we take the copy out."
+        ]
+      },
+      "play": {
+        "title": "How a Copy Is Made",
+        "location": "THE BASSI WORKSHOP",
+        "story": [
+          "The workshop is full of white statues and white dust.",
+          "Carla Bassi wipes her hands. \"Tito! Who did you bring home?\"",
+          "On the wall is a sign for her visitors."
+        ],
+        "letterIntro": "The workshop sign says:",
+        "letter": "HOW WE MAKE A COPY\nThen, we pour wet plaster into the mould.\nFirst, we press soft rubber around the real thing. This makes a mould.\nLast, we paint the copy to look like old stone.\nAfter the plaster is dry, we take the copy out.",
+        "question": "Put the steps in order. How is a copy made?",
+        "hints": [
+          "Find First. What do you need before you can pour plaster?",
+          "Painting comes Last."
+        ],
+        "successMessage": "You know how a copy is made!",
+        "transition": [
+          "Mould, pour, dry, paint.",
+          "\"Wait,\" you say. \"To make a mould, you need the REAL piece!\"",
+          "Carla's face goes white. \"Yes. Someone brought it here.\""
+        ],
+        "orderFeedback": "Read First, Then, After and Last again.",
+        "mapX": 0.36,
+        "mapY": 0.62,
+        "clue": {
+          "title": "How a Copy Is Made",
+          "value": "MOULD · POUR · DRY · PAINT",
+          "note": "To make the mould, the maker needs the real piece in the workshop.",
+          "symbol": "frame"
+        },
+        "evidence": {
+          "name": "Carla's Copy Steps",
+          "icon": "frame",
+          "description": "The sign on the wall of the Bassi workshop.",
+          "inscription": "First, we press soft rubber around the real thing."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep05_final",
+    "slot": "final",
+    "placeId": "s3_rome.cast_workshop",
+    "puzzle": {
+      "paletteId": "combo_dial_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "finalCode",
+      "answerSpec": {
+        "answer": "318",
+        "codeLength": 3,
+        "dialSymbols": [
+          "letter",
+          "map",
+          "key"
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: Carla's order book. The copy's number is No. 3?8 (Case 04) and it is an old map piece: order 318."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep04_e4",
+        "use": "answerDerivation",
+        "note": "The copy's back: No. 3?8."
+      },
+      {
+        "ref": "s3_ep05_c3",
+        "use": "textMention",
+        "note": "The maker had the real piece for the mould."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep05_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "주문 장부의 설명과 번진 번호 3?8을 맞춰 지도 복제품의 주문 번호를 찾는다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "An old map piece, for a museum friend.",
+        "Paid in cash."
+      ]
+    },
+    "play": {
+      "title": "Order Number 3?8",
+      "location": "THE BASSI WORKSHOP",
+      "story": [
+        "Carla opens her order book.",
+        "\"Every order card is in a locked drawer,\" she says.",
+        "\"Each drawer opens with its order number.\""
+      ],
+      "letterIntro": "The order book says:",
+      "letter": "ORDERS — THIS WEEK\n317 — A stone shell, for a garden. Done on Monday.\n318 — An old map piece, for \"a museum friend\". Paid in cash. Done on Thursday.\n319 — A lion's head, for a hotel. Not done yet.",
+      "question": "Which order is the map copy? Turn the dials to its number.",
+      "hints": [
+        "Look at the back of the plaster copy in your Notebook: No. 3?8.",
+        "Which order is an old map piece?"
+      ],
+      "successMessage": "The drawer opens!",
+      "transition": [
+        "Order card 318: \"Picked up Thursday, 7 PM, by a big man in a yellow helmet.\"",
+        "Carla frowns. \"On Tuesday, he brought the real piece here for three hours. He said the museum sent him.\"",
+        "\"A yellow helmet,\" says Giulia. \"Like the man Pia saw on Thursday night!\""
+      ],
+      "feedback": {
+        "317": "Order 317 is a stone shell for a garden.",
+        "319": "Order 319 is a lion's head, and it is not done yet.",
+        "338": "Find the order of an old map piece in the book."
+      },
+      "orderFeedback": "Right numbers, wrong order. Read the order number from left to right.",
+      "mapX": 0.36,
+      "mapY": 0.62,
+      "evidence": {
+        "name": "Order Card 318",
+        "icon": "ticket",
+        "description": "The Bassi workshop's card for the plaster map copy.",
+        "inscription": "Picked up Thursday, 7 PM, by a big man in a yellow helmet."
+      }
+    }
+  },
+  "hook": "On Tuesday, a big man in a yellow helmet had the real piece. Who is he?",
+  "learningGoal": {
+    "title": "Colours, circles and steps: start at, go round, then",
+    "titleKo": "색깔, 원, 단계: start at, go round, then"
+  },
+  "play": {
+    "objectives": [
+      "Find the cat that walked on the copy.",
+      "Read Tito's round tag.",
+      "Find the copy's order."
+    ],
+    "intro": [
+      "The plaster copy has a tiny paw print on its back.",
+      "\"Rome has lots of cats,\" says Giulia. \"And they love the old ruins.\"",
+      "\"Let's ask the cats of Torre Argentina!\""
+    ],
+    "caseSummary": "An orange hair led to Tito the cat and his home, the Bassi workshop. A copy is made from a mould of the real thing. So someone brought the real piece there on Tuesday. On Thursday, a big man in a yellow helmet picked up order 318.",
+    "place": "TORRE ARGENTINA",
+    "keyWords": [
+      "orange",
+      "round",
+      "mould",
+      "order",
+      "cash"
+    ],
+    "glossary": {
+      "ruins": "유적",
+      "volunteer": "자원봉사자",
+      "collar": "목걸이",
+      "mould": "틀",
+      "pour": "붓다",
+      "cash": "현금"
+    }
+  },
+  "notes": [
+    "Act 2 opens: who made the copy, and who had the real piece. Order card 318 (s3_ep05_e4) is used again in Case 10 and Case 11.",
+    "Carla Bassi made the copy in good faith: she was told the museum sent him."
+  ]
+}

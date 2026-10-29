@@ -1,0 +1,436 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep09",
+  "seasonId": "s3_rome",
+  "number": 9,
+  "actId": "act3",
+  "title": "The Street Under the Streets",
+  "synopsis": [
+    "Livia's drawing shows a room with shelves and half a word.",
+    "Professor Aldo can read old maps like a book.",
+    "Where is that room in Rome today?"
+  ],
+  "goal": "Read the real piece's map and find the room's place in Rome today.",
+  "characters": [
+    "giulia_marino",
+    "aldo_rinaldi",
+    "livia_conti"
+  ],
+  "locations": [
+    "roman_forum",
+    "rome_university"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep09_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.forum_view",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "library",
+          "options": [
+            {
+              "id": "bath",
+              "label": "A bath, a room for washing",
+              "feedback": "BALNEUM starts with BAL. The half word on the drawing starts with BIBLIO."
+            },
+            {
+              "id": "library",
+              "label": "A library, a room for books"
+            },
+            {
+              "id": "theatre",
+              "label": "A theatre, a place for shows",
+              "feedback": "THEATRUM starts with THEA. Look at the half word again."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: Livia's drawing (Case 08), BIBLIO... and shelves. Letter: Aldo's card of Latin room words."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep08_e4",
+          "use": "recall",
+          "note": "Livia's drawing: a room with shelves, BIBLIO..."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep09_c1",
+        "evidence": "s3_ep09_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "라틴어 단어의 앞부분(BIBLIO…)과 뜻풀이를 맞춰 방의 종류를 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "A library is a room for books.",
+          "A bath is a room for washing."
+        ]
+      },
+      "play": {
+        "title": "Half a Word",
+        "location": "THE ROMAN FORUM",
+        "story": [
+          "The Roman Forum was the heart of the old city.",
+          "Broken columns stand in the grass. Aldo sits on a stone and opens his bag.",
+          "\"Show me Livia's drawing,\" he says. \"Old maps used Latin words.\""
+        ],
+        "letterIntro": "Aldo's card says:",
+        "letter": "LATIN WORDS FOR ROOMS ON OLD MAPS\nBIBLIOTHECA — a library, a room for books\nBALNEUM — a bath, a room for washing\nTHEATRUM — a theatre, a place for shows",
+        "question": "What kind of room is on the real piece?",
+        "hints": [
+          "Look at the half word on Livia's drawing. How does it start?",
+          "The room also has lines like shelves. What do shelves hold?"
+        ],
+        "successMessage": "You read the old Latin word!",
+        "transition": [
+          "BIBLIO... is BIBLIOTHECA: a library!",
+          "\"A Roman library, never found,\" Aldo whispers. \"That would be amazing.\"",
+          "\"But where was it? Let's follow the street on the map.\""
+        ],
+        "mapX": 0.58,
+        "mapY": 0.66,
+        "clue": {
+          "title": "A Roman Library",
+          "value": "BIBLIOTHECA · A ROOM FOR BOOKS",
+          "note": "The room on the real piece is an old Roman library.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "Aldo's Latin Card",
+          "icon": "letter",
+          "description": "Aldo's card of Latin words for rooms on old maps.",
+          "inscription": "BIBLIOTHECA — a library, a room for books."
+        },
+        "recall": {
+          "title": "The half word",
+          "prompt": "Which thing in your Notebook shows the half word?",
+          "miss": "Find Livia's drawing of the real piece."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep09_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.forum_view",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "forum,temple,market,square",
+          "options": [
+            {
+              "id": "market",
+              "label": "A long market"
+            },
+            {
+              "id": "square",
+              "label": "A small square with an owl"
+            },
+            {
+              "id": "forum",
+              "label": "The Forum"
+            },
+            {
+              "id": "temple",
+              "label": "A round temple"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Aldo reads the street on Livia's drawing (starts, at the end, just before, between)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep09_c1",
+          "use": "textMention",
+          "note": "The library is on the map's street."
+        },
+        {
+          "ref": "s3_ep08_e4",
+          "use": "textMention",
+          "note": "The long street on Livia's drawing."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep09_c2",
+        "evidence": "s3_ep09_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "starts at, at the end, just before, between을 읽고 옛 거리의 장소를 순서대로 놓는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "Between the Forum and the market, there is a round temple.",
+          "Just before the owl square, it passes a long market."
+        ]
+      },
+      "play": {
+        "title": "Walk the Old Street",
+        "location": "THE ROMAN FORUM",
+        "story": [
+          "On Livia's drawing, a long street runs to the library.",
+          "Aldo moves his finger along it, slowly.",
+          "\"Listen carefully,\" he says. \"I will read it like a story.\""
+        ],
+        "letterIntro": "Aldo reads the map:",
+        "letter": "The old street starts at the Forum.\nThe library is at the end of the street. It is in a small square with an owl.\nJust before the owl square, the street passes a long market.\nBetween the Forum and the market, there is a round temple.",
+        "question": "Put the places on the old street in order, from the Forum.",
+        "hints": [
+          "Find the start and the end first.",
+          "Between means in the middle of two places."
+        ],
+        "successMessage": "You walked the old street!",
+        "transition": [
+          "Forum, round temple, long market, owl square.",
+          "\"The temple and the market are still there today,\" says Aldo.",
+          "\"So the owl square must be just after the market. What is it called now?\""
+        ],
+        "orderFeedback": "Start at the Forum and end at the owl square. Then read Between and Just before.",
+        "mapX": 0.58,
+        "mapY": 0.66,
+        "clue": {
+          "title": "The Old Street",
+          "value": "FORUM · TEMPLE · MARKET · OWL SQUARE",
+          "note": "The library is in a small owl square, at the end of the old street.",
+          "symbol": "map"
+        },
+        "evidence": {
+          "name": "The Old Street on the Map",
+          "icon": "map",
+          "description": "The street on the real piece, as Aldo read it from Livia's drawing.",
+          "inscription": "The library is at the end of the street, in a small owl square."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep09_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.forum_view",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "CIVETTA",
+          "acceptedAnswers": [
+            "PIAZZA DELLA CIVETTA"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Giulia's Italian word list and three street signs after the market. The owl square is Piazza della Civetta."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep09_c2",
+          "use": "textMention",
+          "note": "The owl square is just after the market."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep09_c3",
+        "evidence": "s3_ep09_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "이탈리아어-영어 단어 목록을 이용해 '부엉이 광장'의 오늘 이름을 찾아 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Civetta means owl.",
+          "The square is still here today."
+        ]
+      },
+      "play": {
+        "title": "The Owl Square Today",
+        "location": "THE ROMAN FORUM",
+        "story": [
+          "Giulia looks at her phone map. \"After the market, there are three squares.\"",
+          "\"Their names are in Italian,\" she says. \"I have a little word list.\""
+        ],
+        "letterIntro": "Giulia's list and the street signs say:",
+        "letter": "GIULIA'S WORD LIST:\nCIVETTA = OWL\nLEONE = LION\nPOPOLO = PEOPLE\n\nTHE THREE SQUARES AFTER THE MARKET:\nPIAZZA DEI LEONI\nPIAZZA DELLA CIVETTA\nPIAZZA DEL POPOLO",
+        "question": "Which square was the old owl square? Write the Italian word for owl in its name.",
+        "prompt": "It is Piazza della ____.",
+        "hints": [
+          "Find owl on Giulia's word list.",
+          "Now find the square with that Italian word in its name."
+        ],
+        "successMessage": "You found the owl square!",
+        "transition": [
+          "Piazza della Civetta: the Square of the Owl.",
+          "Livia goes pale. \"I know that square. There is a building site there now.\"",
+          "\"Whose building site?\" asks Aldo. \"My map cabinet will tell us.\""
+        ],
+        "feedback": {
+          "LEONI": "Leone means lion. Which word means owl?",
+          "POPOLO": "Popolo means people. Which word means owl?"
+        },
+        "orderFeedback": "Check your spelling on Giulia's word list.",
+        "mapX": 0.58,
+        "mapY": 0.66,
+        "clue": {
+          "title": "The Owl Square Today",
+          "value": "PIAZZA DELLA CIVETTA",
+          "note": "The library's old owl square is Piazza della Civetta today. There is a building site there.",
+          "symbol": "park"
+        },
+        "evidence": {
+          "name": "Giulia's Word List",
+          "icon": "letter",
+          "description": "Giulia's list of Italian words, and the three squares after the market.",
+          "inscription": "CIVETTA = OWL"
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep09_final",
+    "slot": "final",
+    "placeId": "s3_rome.map_archive",
+    "puzzle": {
+      "paletteId": "combo_dial_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "finalCode",
+      "answerSpec": {
+        "answer": "469",
+        "codeLength": 3,
+        "dialSymbols": [
+          "museum",
+          "bag",
+          "key"
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: the marker stones on Livia's drawing in Roman numbers, listed out of street order: temple IV, market VI, owl square IX → 469."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep09_c2",
+        "use": "answerDerivation",
+        "note": "The street's order: temple, market, owl square."
+      },
+      {
+        "ref": "s3_ep08_e4",
+        "use": "answerDerivation",
+        "note": "The marker stones on Livia's drawing."
+      },
+      {
+        "ref": "s3_ep09_c3",
+        "use": "textMention",
+        "note": "The owl square is Piazza della Civetta."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep09_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "로마 숫자(IV, VI, IX)를 읽고 거리 순서대로 469를 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "A small number before a big one means take away.",
+        "A small number after a big one means add."
+      ]
+    },
+    "play": {
+      "title": "Aldo's Map Cabinet",
+      "location": "THE MAP ARCHIVE",
+      "story": [
+        "Aldo's map archive is full of long, flat drawers.",
+        "His newest city plans are in a cabinet with three dials.",
+        "\"I use the old street's marker stones as my code,\" he says. \"Can you read them?\""
+      ],
+      "letterIntro": "The cabinet's card says:",
+      "letter": "My code: the old street's three marker stones, in order from the Forum.\n\nTHE MARKER STONES ON LIVIA'S DRAWING:\nat the market — VI\nat the temple — IV\nat the owl square — IX\n\nROMAN NUMBERS: I = 1, V = 5, X = 10.\nA small number before a big one means take away: IV = 5 - 1.\nA small number after a big one means add: VI = 5 + 1.",
+      "question": "Turn the dials to the three marker stones, in order from the Forum.",
+      "hints": [
+        "Walk the street from the Forum: which place comes first?",
+        "IX: the I is before the X. So take one away from ten."
+      ],
+      "successMessage": "Aldo's cabinet opens!",
+      "transition": [
+        "Inside is the city's plan for Piazza della Civetta.",
+        "\"UNDERGROUND CAR PARK. BUILDER: VALLI BUILDING.\"",
+        "\"CONCRETE WILL BE POURED ON 10 MAY, AT 7 AM.\"",
+        "Livia grabs your arm. \"That is in two days! The library will be covered forever!\""
+      ],
+      "feedback": {
+        "649": "Start at the Forum. Which marker stone comes first on the street?",
+        "459": "VI has the small number after the big one: 5 + 1."
+      },
+      "orderFeedback": "Right numbers, wrong order. Walk the street from the Forum.",
+      "mapX": 0.78,
+      "mapY": 0.44,
+      "evidence": {
+        "name": "The City Building Plan",
+        "icon": "map",
+        "description": "The city's plan for Piazza della Civetta, from Aldo's cabinet.",
+        "inscription": "UNDERGROUND CAR PARK · BUILDER: VALLI BUILDING · CONCRETE: 10 MAY, 7 AM"
+      }
+    }
+  },
+  "hook": "Valli Building will pour concrete over the owl square on Monday. Can you stop it?",
+  "learningGoal": {
+    "title": "Old words and Roman numbers: between, IV, VI, IX",
+    "titleKo": "옛 단어와 로마 숫자: between, IV, VI, IX"
+  },
+  "play": {
+    "objectives": [
+      "Read the half word on the map.",
+      "Walk the old street.",
+      "Find the owl square today."
+    ],
+    "intro": [
+      "Livia's drawing shows the real piece, line by line.",
+      "Next to a tiny owl is a room with shelves, and half a word.",
+      "Professor Aldo is waiting for you at the Roman Forum."
+    ],
+    "caseSummary": "The room on the real piece is a Roman library. It is at the end of an old street from the Forum. It stands in a square with an owl. Today, that square is Piazza della Civetta. Valli Building will pour concrete there on 10 May at 7 AM.",
+    "place": "THE ROMAN FORUM",
+    "keyWords": [
+      "library",
+      "between",
+      "civetta",
+      "numbers",
+      "concrete"
+    ],
+    "glossary": {
+      "latin": "라틴어",
+      "library": "도서관",
+      "temple": "신전",
+      "cabinet": "보관장",
+      "concrete": "콘크리트",
+      "underground": "지하의"
+    }
+  },
+  "notes": [
+    "Act 3 opens: the reason for the swap. The plan (s3_ep09_e4) gives Bruno's motive; Case 10 finds the real piece's trail at his site.",
+    "Piazza della Civetta is made up for the story (season.plan.json notes)."
+  ]
+}

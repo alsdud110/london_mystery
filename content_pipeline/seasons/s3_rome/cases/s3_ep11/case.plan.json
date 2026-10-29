@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep11",
+  "seasonId": "s3_rome",
+  "number": 11,
+  "actId": "act3",
+  "title": "The Builder's Box Room",
+  "synopsis": [
+    "Sofia comes with the city inspector.",
+    "Signor Valli smiles and says, \"Search all you like!\"",
+    "Three stones, one story that is not true, and one dropped pass."
+  ],
+  "goal": "Find the real piece in Valli's office and prove what he did.",
+  "characters": [
+    "giulia_marino",
+    "bruno_valli",
+    "sofia_ferri",
+    "livia_conti",
+    "pia_ricci"
+  ],
+  "locations": [
+    "piazza_della_civetta",
+    "campo_de_fiori"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep11_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.site_office",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "stone_c",
+          "options": [
+            {
+              "id": "stone_a",
+              "label": "Stone A",
+              "feedback": "The real piece shows a street and an owl, not a lion."
+            },
+            {
+              "id": "stone_b",
+              "label": "Stone B",
+              "feedback": "Plaster, 4 kg and no crack? That sounds like another copy."
+            },
+            {
+              "id": "stone_c",
+              "label": "Stone C"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: Aldo's old photo (Case 06), the Y-shaped crack. Letter: the inspector's notes on three stones."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep06_e4",
+          "use": "recall",
+          "note": "Aldo's photo: the real piece's crack is shaped like a Y."
+        },
+        {
+          "ref": "s3_ep10_c3",
+          "use": "textMention",
+          "note": "The heavy box nobody may open."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep11_c1",
+        "evidence": "s3_ep11_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "세 돌의 설명(재료, 무게, 무늬, 금)을 사진 증거와 비교해 진짜 조각을 고른다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "A crack shaped like a Y.",
+          "No crack."
+        ]
+      },
+      "play": {
+        "title": "Three Stones",
+        "location": "VALLI'S SITE OFFICE",
+        "story": [
+          "Sofia arrives with the city inspector, a tall woman with a clipboard.",
+          "Signor Valli opens his office with a big smile. \"Search all you like!\"",
+          "In his box room, the inspector finds three stones, and writes notes."
+        ],
+        "letterIntro": "The inspector's notes say:",
+        "letter": "THE BOX ROOM\nSTONE A: marble, 12 kg. A carved lion. No crack.\nSTONE B: plaster, 4 kg. A long street and a tiny owl. No crack.\nSTONE C: marble, 12 kg. A long street and a tiny owl. A crack shaped like a Y.",
+        "question": "Which stone is the real map piece?",
+        "hints": [
+          "The real piece is marble and shows a street and an owl.",
+          "Look at Aldo's old photo. What mark does the real piece have?"
+        ],
+        "successMessage": "You found the real piece!",
+        "transition": [
+          "Stone C: marble, the street, the owl, and the Y-shaped crack.",
+          "Livia touches it gently. \"It is the real one.\"",
+          "Signor Valli laughs. \"That old thing? I bought it at a market!\""
+        ],
+        "mapX": 0.52,
+        "mapY": 0.52,
+        "clue": {
+          "title": "The Real Piece",
+          "value": "STONE C · THE Y CRACK",
+          "note": "The real map piece was in Valli's box room, next to a second plaster copy.",
+          "symbol": "gem"
+        },
+        "evidence": {
+          "name": "The Real Map Piece",
+          "icon": "map",
+          "description": "The real piece of Rome's marble map, found in Valli's box room.",
+          "inscription": "A long street, a tiny owl, and a crack shaped like a Y."
+        },
+        "recall": {
+          "title": "Which one is real?",
+          "prompt": "Which thing in your Notebook shows the real piece's mark?",
+          "miss": "Find the old photo Aldo gave you."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep11_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.flower_market",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "SUNDAY"
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Valli's story (bought on Sunday at Campo de' Fiori) and Pia's answer (open Monday to Saturday)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep11_c1",
+          "use": "textMention",
+          "note": "Valli says he bought the stone at a market."
+        },
+        {
+          "ref": "s3_ep03_e1",
+          "use": "textMention",
+          "note": "Pia keeps the flower stall at Campo de' Fiori."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep11_c2",
+        "evidence": "s3_ep11_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "from Monday to Saturday를 이해해 시장이 쉬는 요일을 찾아 거짓말을 밝힌다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "We are open from Monday to Saturday.",
+          "Nobody sells stones at this market."
+        ]
+      },
+      "play": {
+        "title": "A Market on Sunday?",
+        "location": "CAMPO DE' FIORI",
+        "story": [
+          "\"Campo de' Fiori?\" says Giulia. \"That is two streets away!\"",
+          "You run to the flower stall with the red roof.",
+          "Pia listens, and folds her arms."
+        ],
+        "letterIntro": "Signor Valli and Pia say:",
+        "letter": "SIGNOR VALLI:\n\"That stone is mine! I bought it last Sunday at the Campo de' Fiori market. A man called Leo sold it to me.\"\n\nPIA:\n\"Leo? There is no Leo here. Nobody sells stones at this market.\nAnd we are open every day from Monday to Saturday.\nOn one day of the week, the market is closed.\"",
+        "question": "On which day is the market closed?",
+        "prompt": "The market is closed on ____.",
+        "hints": [
+          "Say the days from Monday to Saturday. Which day is left out?",
+          "It is the day Signor Valli said he bought the stone."
+        ],
+        "successMessage": "You caught Signor Valli's second story!",
+        "transition": [
+          "The market is closed on Sunday. Nobody could buy a stone there that day.",
+          "Pia waves a rose at the office. \"Tell that man he is not a good liar!\"",
+          "Back at the office, the inspector takes out her notebook."
+        ],
+        "feedback": {
+          "SATURDAY": "The market is open on Saturday. Which day is left?",
+          "MONDAY": "The market opens on Monday. Which day is not in Monday to Saturday?"
+        },
+        "orderFeedback": "Check your spelling of the day.",
+        "mapX": 0.3,
+        "mapY": 0.55,
+        "clue": {
+          "title": "The Closed Market",
+          "value": "NO MARKET, NO LEO",
+          "note": "Valli said he bought the stone at Campo de' Fiori on Sunday. The market is closed that day.",
+          "symbol": "umbrella"
+        },
+        "evidence": {
+          "name": "Pia's Answer",
+          "icon": "letter",
+          "description": "What Pia said about Signor Valli's story.",
+          "inscription": "We are open every day from Monday to Saturday."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep11_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.site_office",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "loan,mould,swap,site",
+          "options": [
+            {
+              "id": "swap",
+              "label": "He swapped the copy into the glass case"
+            },
+            {
+              "id": "site",
+              "label": "He carried the real piece to his site"
+            },
+            {
+              "id": "loan",
+              "label": "He took the real piece out for photos"
+            },
+            {
+              "id": "mould",
+              "label": "He had a mould made from it"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the inspector's list of the evidence, out of order: loan book (Tue 2 PM), Carla (Tue 3 PM), Enzo (Thu 11 PM), gate log (Thu 11:50 PM)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep07_e4",
+          "use": "answerDerivation",
+          "note": "The loan book: Tuesday, 2 PM to 5 PM, B.V."
+        },
+        {
+          "ref": "s3_ep05_c3",
+          "use": "answerDerivation",
+          "note": "A mould needs the real piece in the workshop."
+        },
+        {
+          "ref": "s3_ep08_c3",
+          "use": "answerDerivation",
+          "note": "Thursday night: Valli came to 'check the lights'."
+        },
+        {
+          "ref": "s3_ep10_c3",
+          "use": "answerDerivation",
+          "note": "Thursday, 11:50 PM: the heavy box at the site gate."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep11_c3",
+        "evidence": "s3_ep11_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "요일과 시각이 섞인 증거 목록을 시간순으로 놓아 범행 계획 전체를 재구성한다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "On Tuesday at 2 PM, the piece left the lab.",
+          "On Thursday at 11:50 PM, the box came to the site."
+        ]
+      },
+      "play": {
+        "title": "Valli's Plan, Step by Step",
+        "location": "VALLI'S SITE OFFICE",
+        "story": [
+          "The inspector puts every piece of evidence on Valli's desk.",
+          "\"Detective,\" she says, \"tell me what happened, in order.\""
+        ],
+        "letterIntro": "The inspector's list says:",
+        "letter": "THE GATE LOG: Thursday, 11:50 PM — a heavy box comes to the site.\nTHE LOAN BOOK: Tuesday, 2 PM — the real piece leaves the museum lab.\nCARLA BASSI: Tuesday, 3 PM — a mould is made from the real piece.\nENZO: Thursday, 11:00 PM — Signor Valli \"checks the lights\" in the map hall.",
+        "question": "Put Signor Valli's plan in order.",
+        "hints": [
+          "Put the days first: Tuesday comes before Thursday.",
+          "On the same day, look at the times: 2 PM is before 3 PM."
+        ],
+        "successMessage": "You told the whole plan!",
+        "transition": [
+          "Tuesday: he took the piece and had a mould made. Thursday: he swapped in the copy and carried the real piece here.",
+          "The inspector nods. \"It all fits.\"",
+          "Signor Valli is not smiling any more."
+        ],
+        "orderFeedback": "Read the days and times again. Tuesday comes first.",
+        "mapX": 0.52,
+        "mapY": 0.52,
+        "clue": {
+          "title": "Valli's Plan",
+          "value": "LOAN · MOULD · SWAP · SITE",
+          "note": "Tuesday: loan and mould. Thursday: the swap at 11 PM, the site at 11:50 PM.",
+          "symbol": "seal"
+        },
+        "evidence": {
+          "name": "The Inspector's List",
+          "icon": "letter",
+          "description": "The inspector's list of the evidence, put in order.",
+          "inscription": "Tuesday: loan, mould. Thursday: swap, site."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep11_final",
+    "slot": "final",
+    "placeId": "s3_rome.site_office",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "MONEY",
+        "options": [
+          {
+            "id": "n",
+            "label": "N"
+          },
+          {
+            "id": "y",
+            "label": "Y"
+          },
+          {
+            "id": "o",
+            "label": "O"
+          },
+          {
+            "id": "m",
+            "label": "M"
+          },
+          {
+            "id": "e",
+            "label": "E"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Recall: the museum pass Valli dropped on Thursday (Case 03). Letter: his confession, its last word left for the player."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep03_e4",
+        "use": "recall",
+        "note": "The pass Valli dropped on Thursday night."
+      },
+      {
+        "ref": "s3_ep09_e4",
+        "use": "answerDerivation",
+        "note": "The car park on the city plan: what he would lose."
+      },
+      {
+        "ref": "s3_ep11_c3",
+        "use": "textMention",
+        "note": "His whole plan, in order."
+      },
+      {
+        "ref": "s3_ep11_c2",
+        "use": "textMention",
+        "note": "His market story was not true either."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep11_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "자백의 앞 문장들(땅값, 기계값)을 읽고 그가 잃기 싫었던 것을 단어로 완성한다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "If people saw it, the city would stop my car park.",
+        "I did not want to lose my money."
+      ]
+    },
+    "play": {
+      "title": "The Pass He Dropped",
+      "location": "VALLI'S SITE OFFICE",
+      "story": [
+        "\"You have no proof I was at the museum on Thursday,\" says Signor Valli.",
+        "You open your Notebook.",
+        "Then he sits down, very slowly."
+      ],
+      "letterIntro": "Signor Valli says:",
+      "letter": "\"All right. That pass is mine. I dropped it on Thursday night.\nI saw the library on the new piece, before the show.\nIf people saw it, the city would stop my car park.\nI paid for the land. I paid for the machines.\nI did not want to lose my . . . . .\"",
+      "question": "What did Signor Valli not want to lose? Spell it.",
+      "hints": [
+        "He paid for the land and the machines. What do you pay with?",
+        "It is in your purse or your piggy bank."
+      ],
+      "successMessage": "Signor Valli told the truth at last.",
+      "transition": [
+        "He did not want to lose his money.",
+        "The inspector closes her notebook. \"Signor Valli, the work stops. Now. There will be no concrete tomorrow.\"",
+        "Livia holds the real piece like a baby bird.",
+        "Sofia turns to her. \"Livia, you were right. I am sorry I did not listen.\""
+      ],
+      "orderFeedback": "Those are the right letters. What do you pay with?",
+      "mapX": 0.52,
+      "mapY": 0.52,
+      "evidence": {
+        "name": "Valli's Confession",
+        "icon": "mask",
+        "description": "What Bruno Valli said when he saw the pass he dropped.",
+        "inscription": "If people saw it, the city would stop my car park."
+      },
+      "recall": {
+        "title": "Show him the proof",
+        "prompt": "Which thing in your Notebook did Signor Valli drop on Thursday night?",
+        "miss": "Find the museum pass from Pia's cash box."
+      },
+      "lockTitle": "THE LAST WORD"
+    }
+  },
+  "hook": "The work has stopped. Tomorrow, you will see what is under the owl square.",
+  "learningGoal": {
+    "title": "Proof and order: Monday to Saturday, step by step",
+    "titleKo": "증거와 순서: Monday to Saturday, step by step"
+  },
+  "play": {
+    "objectives": [
+      "Find the real piece.",
+      "Check Valli's market story.",
+      "Tell his plan in order."
+    ],
+    "intro": [
+      "It is the morning of 9 May. The concrete comes tomorrow.",
+      "Director Sofia arrives with the city inspector.",
+      "\"Signor Valli,\" says the inspector, \"we would like to see your office.\""
+    ],
+    "caseSummary": "The real piece was in Valli's box room: the marble stone with the Y-shaped crack. His story about a Sunday market was not true. Step by step, the evidence showed his plan. Then the pass he dropped made him tell the truth. He did not want to lose his money.",
+    "place": "PIAZZA DELLA CIVETTA",
+    "keyWords": [
+      "real",
+      "closed",
+      "plan",
+      "proof",
+      "lose"
+    ],
+    "glossary": {
+      "clipboard": "클립보드",
+      "liar": "거짓말쟁이",
+      "evidence": "증거",
+      "land": "땅",
+      "machines": "기계들",
+      "lose": "잃다"
+    }
+  },
+  "notes": [
+    "The culprit's reveal (mainMystery.revealCase). Every link of his plan was found earlier: s3_ep07_e4, s3_ep05_c3, s3_ep08_c3, s3_ep10_c3, s3_ep03_e4.",
+    "Valli is caught by evidence, not by a guess: the season's rule."
+  ]
+}

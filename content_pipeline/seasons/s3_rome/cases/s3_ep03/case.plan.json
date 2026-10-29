@@ -1,0 +1,438 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep03",
+  "seasonId": "s3_rome",
+  "number": 3,
+  "actId": "act1",
+  "title": "Box 7 at the Flower Market",
+  "synopsis": [
+    "The Owl's route ends at the flower market.",
+    "Box 7 holds a bag of strange white dust.",
+    "And the flower seller saw something on Thursday night."
+  ],
+  "goal": "Open Box 7 and find out what Pia saw on Thursday night.",
+  "characters": [
+    "giulia_marino",
+    "pia_ricci"
+  ],
+  "locations": [
+    "campo_de_fiori"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep03_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.flower_market",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "open,owl,baker,you",
+          "options": [
+            {
+              "id": "you",
+              "label": "The detective came"
+            },
+            {
+              "id": "baker",
+              "label": "The baker bought roses"
+            },
+            {
+              "id": "open",
+              "label": "Pia opened her stall"
+            },
+            {
+              "id": "owl",
+              "label": "The woman with the owl ring came"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Pia's order book for this morning, its times out of order."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep02_e4",
+          "use": "textMention",
+          "note": "The Owl's route ends at the flower stall with the red roof."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep03_c1",
+        "evidence": "s3_ep03_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "아침 시각(5:45, 6:10, 6:30, 11:00)을 비교해 일어난 일을 이른 순서대로 놓는다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "I opened my stall at 5:45.",
+          "A young woman came at 6:10."
+        ]
+      },
+      "play": {
+        "title": "Pia's Morning",
+        "location": "CAMPO DE' FIORI",
+        "story": [
+          "The flower stall with the red roof is full of roses.",
+          "Pia Ricci, the flower seller, smiles at you. \"Box 7? Yes, it is here.\"",
+          "\"A young woman left something in it this morning. Look at my order book.\""
+        ],
+        "letterIntro": "Pia's order book says:",
+        "letter": "6:30 — The baker bought red roses.\n5:45 — I opened my stall.\n11:00 — Giulia came with a detective!\n6:10 — A young woman put a bag in Box 7. She had an owl ring.",
+        "question": "Put Pia's morning in order, from the earliest time.",
+        "hints": [
+          "The earliest time is the smallest one.",
+          "The minutes matter: 6:10 is before 6:30."
+        ],
+        "successMessage": "You put Pia's morning in order!",
+        "transition": [
+          "Pia opened at 5:45. The woman with the owl ring came at 6:10.",
+          "\"So the Owl is a young woman,\" says Giulia.",
+          "Pia points to a small wooden box with a 7 on it."
+        ],
+        "orderFeedback": "Look at the times again. Start with the earliest.",
+        "mapX": 0.3,
+        "mapY": 0.55,
+        "clue": {
+          "title": "Pia's Morning",
+          "value": "5:45 OPEN · 6:10 THE OWL RING",
+          "note": "At 6:10, a young woman with an owl ring left a bag in Box 7.",
+          "symbol": "clock"
+        },
+        "evidence": {
+          "name": "Pia's Order Book",
+          "icon": "letter",
+          "description": "The flower seller's book of this morning's visitors.",
+          "inscription": "6:10 — A young woman put a bag in Box 7. She had an owl ring."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep03_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.flower_market",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "copy",
+          "options": [
+            {
+              "id": "real",
+              "label": "The real marble piece",
+              "feedback": "The Owl says old marble smells of nothing. This dust smells new."
+            },
+            {
+              "id": "copy",
+              "label": "Something new, like a copy of the piece"
+            },
+            {
+              "id": "flowers",
+              "label": "Pia's flowers",
+              "feedback": "Flowers do not make white dust like chalk."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: the brass key of Case 02 opens Box 7. Letter: the Owl's card about the dust's smell."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep02_e3",
+          "use": "recall",
+          "note": "The brass key FIORI 7 opens Box 7."
+        },
+        {
+          "ref": "s3_ep01_e2",
+          "use": "evidenceLink",
+          "note": "The same white dust as the map hall's trail."
+        },
+        {
+          "ref": "s3_ep03_c1",
+          "use": "textMention",
+          "note": "The woman with the owl ring left the bag."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep03_c2",
+        "evidence": "s3_ep03_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "부엉이 카드의 비교(old marble vs. new dust)를 읽고 먼지가 복제품에서 나왔다고 추론한다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Old marble does not smell of anything.",
+          "This dust smells new, like a wet wall."
+        ]
+      },
+      "play": {
+        "title": "Inside Box 7",
+        "location": "BOX 7",
+        "story": [
+          "Box 7 is locked.",
+          "Inside, you find a small bag of white dust and an owl card."
+        ],
+        "letterIntro": "The owl card says:",
+        "letter": "Detective, smell this dust.\nOld marble does not smell of anything.\nThis dust smells new, like a wet wall.\nIt is not from the real piece.\nAsk Pia about Thursday night.\nThen go where the roof has a round eye.\n— The Owl",
+        "question": "The dust is not from the real piece. What could it be from?",
+        "hints": [
+          "Old marble smells of nothing. Is this dust old or new?",
+          "Think: what new thing could look like the old piece?"
+        ],
+        "successMessage": "You thought like a detective!",
+        "transition": [
+          "New dust, like a wet wall. Maybe someone made a copy of the piece!",
+          "\"Thursday night?\" says Pia. \"Oh, I remember Thursday night.\""
+        ],
+        "mapX": 0.3,
+        "mapY": 0.55,
+        "clue": {
+          "title": "Not Old Stone",
+          "value": "NEW DUST · A COPY?",
+          "note": "The white dust smells new. It is not from the real marble piece.",
+          "symbol": "bag"
+        },
+        "evidence": {
+          "name": "A Bag of White Dust",
+          "icon": "bag",
+          "description": "A small bag of white dust the Owl left in Box 7.",
+          "inscription": "This dust smells new, like a wet wall."
+        },
+        "recall": {
+          "title": "Open Box 7",
+          "prompt": "Which thing in your Notebook opens Box 7?",
+          "miss": "That does not fit a lock. Look for something with a tag."
+        },
+        "evidenceLinkLine": "The same soft white dust as the trail in the map hall."
+      }
+    },
+    {
+      "missionId": "s3_ep03_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.flower_market",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "CRANE",
+          "acceptedAnswers": [
+            "A CRANE"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Pia's story of Thursday night and her grandson's toy box: the machine that lifts heavy things is a crane."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep03_c2",
+          "use": "textMention",
+          "note": "The Owl says: ask Pia about Thursday night."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep03_c3",
+        "evidence": "s3_ep03_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "기계를 설명하는 문장(It lifts heavy things up high)과 장난감 목록을 맞춰 crane을 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "He wore a yellow helmet.",
+          "It lifts heavy things up high."
+        ]
+      },
+      "play": {
+        "title": "Thursday Night",
+        "location": "CAMPO DE' FIORI",
+        "story": [
+          "Pia sits down on a crate of lemons.",
+          "\"I closed late on Thursday,\" she says.",
+          "\"I saw a man. I can tell you what he wore.\""
+        ],
+        "letterIntro": "Pia tells you:",
+        "letter": "PIA'S STORY:\nOn Thursday night, I closed my stall at 11:30.\nA big man walked past with a heavy box.\nHe came from the road to the museum.\nHe wore a yellow helmet.\nOn the helmet was a picture of a tall machine.\nIt lifts heavy things up high.\n\nMY GRANDSON'S TOY BOX:\nTRAIN — it runs on tracks.\nCRANE — it lifts heavy things up high.\nBOAT — it floats on water.",
+        "question": "What was the picture on the man's helmet?",
+        "prompt": "The helmet had a ____ on it.",
+        "hints": [
+          "Read what the machine on the helmet does.",
+          "Find the toy that does the same thing."
+        ],
+        "successMessage": "You found the helmet's picture!",
+        "transition": [
+          "A big man, a yellow helmet with a crane, a heavy box.",
+          "And he came from the museum road on Thursday night!",
+          "\"Wait,\" says Pia. \"He dropped something. I locked it in my cash box.\""
+        ],
+        "feedback": {
+          "TRAIN": "A train runs on tracks. What lifts heavy things?",
+          "BOAT": "A boat floats on water. What lifts heavy things up high?"
+        },
+        "orderFeedback": "Check your spelling in the toy box list.",
+        "mapX": 0.31,
+        "mapY": 0.56,
+        "clue": {
+          "title": "The Helmet Picture",
+          "value": "YELLOW HELMET · A CRANE",
+          "note": "Thursday, 11:30 PM: a big man with a heavy box. His yellow helmet had a crane on it.",
+          "symbol": "footprint"
+        },
+        "evidence": {
+          "name": "Pia's Story",
+          "icon": "footprint",
+          "description": "What Pia saw on Thursday night.",
+          "inscription": "Thursday, 11:30 PM: a big man with a heavy box. A yellow helmet with a crane."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep03_final",
+    "slot": "final",
+    "placeId": "s3_rome.flower_market",
+    "puzzle": {
+      "paletteId": "combo_dial_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "finalCode",
+      "answerSpec": {
+        "answer": "247",
+        "codeLength": 3,
+        "dialSymbols": [
+          "footprint",
+          "clock",
+          "key"
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Pia's code card: 2 people before you (the opening is not a person), Thursday is day 4, Box 7."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep03_c1",
+        "use": "answerDerivation",
+        "note": "Two people came before you: the woman with the owl ring and the baker."
+      },
+      {
+        "ref": "s3_ep02_c3",
+        "use": "answerDerivation",
+        "note": "The Owl's box is number 7 (the key's tag)."
+      },
+      {
+        "ref": "s3_ep03_c3",
+        "use": "textMention",
+        "note": "The man in the yellow helmet dropped something."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep03_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "요일 순서(Monday=1)와 방문객 수를 계산해 247을 맞춘다.",
+      "skill": "vocabulary",
+      "expressions": [
+        "Which day of the week is Thursday?",
+        "Monday is day 1."
+      ]
+    },
+    "play": {
+      "title": "Pia's Cash Box",
+      "location": "CAMPO DE' FIORI",
+      "story": [
+        "Pia's cash box has three dials.",
+        "\"I always forget my code,\" she laughs. \"So I wrote questions!\""
+      ],
+      "letterIntro": "Pia's code card says:",
+      "letter": "MY CODE:\nFirst: How many people came to my stall before the detective this morning?\nSecond: Which day of the week is Thursday? Monday is day 1.\nThird: The number of the Owl's box.",
+      "question": "Turn the dials to Pia's three numbers. Then open the cash box.",
+      "hints": [
+        "Read Pia's order book again. Count only people.",
+        "Count the days: Monday 1, Tuesday 2, and so on."
+      ],
+      "successMessage": "The cash box opens!",
+      "transition": [
+        "Inside is a museum pass. It says THURSDAY.",
+        "\"The helmet man dropped it right here,\" says Pia.",
+        "Giulia reads the Owl's card again. \"A roof with a round eye... that is the Pantheon!\""
+      ],
+      "feedback": {
+        "347": "Count only people. Opening the stall is not a person.",
+        "257": "Count the days again: Monday, Tuesday, Wednesday, Thursday.",
+        "246": "Look at the key's tag again. What is the box's number?"
+      },
+      "orderFeedback": "Right numbers, wrong order. People first, then the day, then the box.",
+      "mapX": 0.3,
+      "mapY": 0.55,
+      "evidence": {
+        "name": "The Dropped Pass",
+        "icon": "ticket",
+        "description": "A museum pass the man in the yellow helmet dropped on Thursday night.",
+        "inscription": "CAPITOLINE MUSEUMS · VISITOR PASS · THURSDAY"
+      }
+    }
+  },
+  "hook": "Who dropped a museum pass on Thursday night?",
+  "learningGoal": {
+    "title": "Times and days: 6:10, Thursday, before",
+    "titleKo": "시각과 요일: 6:10, Thursday, before"
+  },
+  "play": {
+    "objectives": [
+      "Read Pia's order book.",
+      "Open Box 7.",
+      "Open Pia's cash box."
+    ],
+    "intro": [
+      "Campo de' Fiori is a busy market.",
+      "There are flowers, lemons and loud voices everywhere.",
+      "At the end of the square is a flower stall with a red roof."
+    ],
+    "caseSummary": "The Owl is a young woman with an owl ring. She left a bag of new white dust in Box 7. On Thursday night, Pia saw a big man with a heavy box. He wore a yellow helmet with a crane, and he dropped a museum pass.",
+    "place": "CAMPO DE' FIORI",
+    "keyWords": [
+      "earliest",
+      "helmet",
+      "crane",
+      "thursday",
+      "smell"
+    ],
+    "glossary": {
+      "roses": "장미",
+      "helmet": "안전모",
+      "crane": "기중기",
+      "smell": "냄새를 맡다",
+      "earliest": "가장 이른",
+      "pass": "출입증"
+    }
+  },
+  "notes": [
+    "The dropped pass (s3_ep03_e4) proves Bruno was at the museum on Thursday: Case 11.",
+    "The crane helmet (s3_ep03_c3) is matched in Case 06 (the builder) and Case 10 (the helmet's name)."
+  ]
+}

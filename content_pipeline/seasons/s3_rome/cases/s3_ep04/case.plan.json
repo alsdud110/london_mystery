@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep04",
+  "seasonId": "s3_rome",
+  "number": 4,
+  "actId": "act1",
+  "title": "The Eye of the Pantheon",
+  "synopsis": [
+    "The Owl's next clue is under the round eye of the Pantheon.",
+    "A parcel waits for the detective who knows the password.",
+    "Inside is the missing piece... or is it?"
+  ],
+  "goal": "Find the Owl's parcel and test what is inside.",
+  "characters": [
+    "giulia_marino"
+  ],
+  "locations": [
+    "pantheon"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep04_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.pantheon_hall",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "book",
+          "options": [
+            {
+              "id": "ship",
+              "label": "The stone with a ship",
+              "feedback": "That is the ship itself. The Owl says two hours after it."
+            },
+            {
+              "id": "lion",
+              "label": "The stone with a lion",
+              "feedback": "The lion is one hour after the ship. The Owl says two."
+            },
+            {
+              "id": "book",
+              "label": "The stone with a book"
+            },
+            {
+              "id": "key",
+              "label": "The stone with a key",
+              "feedback": "The key is three hours after the ship."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the Owl's card and the Pantheon's guide sign. The light is on the ship at 10:00; two hours later it is on the book."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep03_c2",
+          "use": "textMention",
+          "note": "The Owl's card in Box 7: go where the roof has a round eye."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep04_c1",
+        "evidence": "s3_ep04_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "two hours after the ship을 시간표에 적용해 햇빛이 닿는 돌을 고른다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "Come when the light is two hours after the ship.",
+          "The sun moves the light across the floor."
+        ]
+      },
+      "play": {
+        "title": "The Round Eye",
+        "location": "INSIDE THE PANTHEON",
+        "story": [
+          "The Pantheon has a big round hole in its roof. People call it the eye.",
+          "A circle of sunlight moves slowly across the floor.",
+          "On a bench by the door, you find an owl card."
+        ],
+        "letterIntro": "The owl card and the guide sign say:",
+        "letter": "THE OWL CARD:\nLook for the stone the light falls on two hours after the ship.\nThat stone tells you where my parcel waits.\n— The Owl\n\nGUIDE SIGN — THE LIGHT FROM THE EYE:\nThe sun moves the light like a clock hand.\n10:00 — on the stone with a SHIP\n11:00 — on the stone with a LION\n12:00 — on the stone with a BOOK\n1:00 — on the stone with a KEY",
+        "question": "Which stone does the Owl mean?",
+        "hints": [
+          "Find the ship's time on the guide sign first.",
+          "Add two hours to it. Where is the light then?"
+        ],
+        "successMessage": "You found the right stone!",
+        "transition": [
+          "Two hours after the ship, the light falls on the book stone.",
+          "\"A book... a bookshop!\" says Giulia.",
+          "Across the square, there is a small old bookshop."
+        ],
+        "mapX": 0.42,
+        "mapY": 0.42,
+        "clue": {
+          "title": "The Book Stone",
+          "value": "12:00 · THE BOOK STONE",
+          "note": "Two hours after the ship, the light is on the book. The parcel is at a bookshop.",
+          "symbol": "clock"
+        },
+        "evidence": {
+          "name": "The Pantheon Owl Card",
+          "icon": "seal",
+          "description": "The Owl's card from the bench inside the Pantheon.",
+          "inscription": "Look for the stone the light falls on two hours after the ship."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep04_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.rotonda_bookshop",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "FOUND"
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the Owl's note to the bookseller. The password is the opposite of lost."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep04_c1",
+          "use": "textMention",
+          "note": "The book stone sends you to the bookshop."
+        },
+        {
+          "ref": "s3_ep01_e3",
+          "use": "textMention",
+          "note": "The Owl's first card: the piece is not lost."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep04_c2",
+        "evidence": "s3_ep04_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "the opposite of lost를 이해해 반대말 found를 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "The password is the opposite of lost.",
+          "Give my parcel only to the detective."
+        ]
+      },
+      "play": {
+        "title": "The Password",
+        "location": "THE ROTONDA BOOKSHOP",
+        "story": [
+          "The bookshop is small and full of old books.",
+          "An old bookseller looks at you over his glasses.",
+          "\"A parcel? I can give it only to the right person. Read this.\""
+        ],
+        "letterIntro": "The note to the bookseller says:",
+        "letter": "Dear bookseller,\nPlease keep my parcel safe.\nGive it only to the detective who says the password.\nThe password is the opposite of LOST.\n— The Owl",
+        "question": "What is the password?",
+        "prompt": "The password is ____.",
+        "hints": [
+          "Opposite means the other end, like big and small or hot and cold.",
+          "You lose a thing. Later you see it again. Now it is not lost. It is…"
+        ],
+        "successMessage": "The bookseller smiles. \"Correct!\"",
+        "transition": [
+          "The opposite of lost is found.",
+          "The bookseller brings out a heavy paper parcel.",
+          "On top is a card: \"Test it before you trust it. — The Owl\""
+        ],
+        "feedback": {
+          "LOST": "Lost is the word on the note. What is its opposite?",
+          "MISSING": "Missing means almost the same as lost. What is the opposite?"
+        },
+        "orderFeedback": "Check your spelling. It is the opposite of lost.",
+        "mapX": 0.44,
+        "mapY": 0.45,
+        "clue": {
+          "title": "The Password",
+          "value": "THE OPPOSITE OF LOST",
+          "note": "The bookseller kept the Owl's parcel for the detective who said the password.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "The Owl's Note to the Bookseller",
+          "icon": "letter",
+          "description": "The Owl's note asking the bookseller to keep the parcel.",
+          "inscription": "The password is the opposite of LOST."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep04_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.rotonda_bookshop",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "weigh,tap,scratch",
+          "options": [
+            {
+              "id": "tap",
+              "label": "Tap it and listen"
+            },
+            {
+              "id": "wash",
+              "label": "Wash it in water"
+            },
+            {
+              "id": "scratch",
+              "label": "Scratch a hidden corner"
+            },
+            {
+              "id": "weigh",
+              "label": "Weigh it on a scale"
+            }
+          ],
+          "codeLength": 3
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the Owl's test card, its steps out of order (First, Next, Last). Washing is not on the card."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep04_c2",
+          "use": "textMention",
+          "note": "The parcel the bookseller kept."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep04_c3",
+        "evidence": "s3_ep04_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "First, Next, Last를 읽고 돌을 시험하는 순서를 놓는다. 카드에 없는 단계(wash)는 고르지 않는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "First, weigh it on a scale.",
+          "Next, tap it and listen.",
+          "Last, scratch a hidden corner."
+        ]
+      },
+      "play": {
+        "title": "Test It First",
+        "location": "THE ROTONDA BOOKSHOP",
+        "story": [
+          "You open the parcel. Inside is a grey piece of stone with lines of old streets.",
+          "\"The map piece!\" Giulia cries.",
+          "But the Owl's card says: test it before you trust it."
+        ],
+        "letterIntro": "The Owl's test card says:",
+        "letter": "HOW TO TEST A STONE\nLast, scratch a hidden corner with a coin.\nFirst, weigh it on a scale.\nNext, tap it and listen.\nDo these three things, and you will know.\n— The Owl",
+        "question": "Put the Owl's three tests in order.",
+        "hints": [
+          "Only three of the four steps are on the card.",
+          "Find First, then Next, then Last."
+        ],
+        "successMessage": "You know how to test the stone!",
+        "transition": [
+          "Weigh it, tap it, scratch it.",
+          "The bookseller has a scale for heavy books.",
+          "You start the tests. Giulia holds her breath."
+        ],
+        "orderFeedback": "Read the card again: First, Next, Last. Is washing on it?",
+        "mapX": 0.44,
+        "mapY": 0.45,
+        "clue": {
+          "title": "Three Tests",
+          "value": "WEIGH · TAP · SCRATCH",
+          "note": "The Owl's three tests for a stone: weigh it, tap it, scratch a hidden corner.",
+          "symbol": "gem"
+        },
+        "evidence": {
+          "name": "The Owl's Test Card",
+          "icon": "letter",
+          "description": "The Owl's card with three tests for a stone.",
+          "inscription": "First, weigh it. Next, tap it. Last, scratch a hidden corner."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep04_final",
+    "slot": "final",
+    "placeId": "s3_rome.rotonda_bookshop",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "PLASTER",
+        "options": [
+          {
+            "id": "t",
+            "label": "T"
+          },
+          {
+            "id": "p",
+            "label": "P"
+          },
+          {
+            "id": "r",
+            "label": "R"
+          },
+          {
+            "id": "a",
+            "label": "A"
+          },
+          {
+            "id": "e",
+            "label": "E"
+          },
+          {
+            "id": "s",
+            "label": "S"
+          },
+          {
+            "id": "l",
+            "label": "L"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: the three test results and the Owl's note (marble is hard; plaster is soft and white). The piece in the parcel is plaster."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep04_c3",
+        "use": "answerDerivation",
+        "note": "The three tests and what they show."
+      },
+      {
+        "ref": "s3_ep03_c2",
+        "use": "answerDerivation",
+        "note": "The dust was new, not old stone."
+      },
+      {
+        "ref": "s3_ep03_e2",
+        "use": "evidenceLink",
+        "note": "The same soft white dust as the bag in Box 7."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep04_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "세 가지 시험 결과(가볍다, thud, 부드러운 흰 가루)를 읽고 재료가 plaster임을 글자 타일로 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "This piece is too light.",
+        "Marble rings like a bell.",
+        "Plaster is soft and white."
+      ]
+    },
+    "play": {
+      "title": "What Is It Made Of?",
+      "location": "THE ROTONDA BOOKSHOP",
+      "story": [
+        "You finish the three tests.",
+        "Giulia writes down every result.",
+        "The parcel has one more lock: a strip of letter tiles on the box."
+      ],
+      "letterIntro": "The test results say:",
+      "letter": "WEIGH: The real piece is 12 kg. This piece is 4 kg. Too light!\nTAP: Marble rings like a bell. This piece goes \"thud\".\nSCRATCH: Soft white dust comes off, like chalk.\n\nTHE OWL'S NOTE:\nMarble is hard stone. Plaster is soft and white.\nWhich one is this piece made of?",
+      "question": "What is this piece really made of? Spell it.",
+      "hints": [
+        "Is this piece hard or soft? Heavy or light?",
+        "The Owl's note names two things. Which one is soft and white?"
+      ],
+      "successMessage": "You found the truth about the piece!",
+      "transition": [
+        "This is not the old map piece. It is a plaster copy!",
+        "Giulia turns it over. On the back: a tiny paw print and a smudged number, No. 3?8.",
+        "\"So the Owl took the COPY out of the glass case,\" you say.",
+        "\"Then where is the real piece?\""
+      ],
+      "orderFeedback": "Those are the right letters. Read the Owl's note again.",
+      "mapX": 0.44,
+      "mapY": 0.45,
+      "evidence": {
+        "name": "The Plaster Copy",
+        "icon": "map",
+        "description": "A copy of the map piece, light and soft. On its back: a paw print and a smudged number, No. 3?8.",
+        "inscription": "Plaster, not marble."
+      },
+      "evidenceLinkLine": "The same soft white dust as the bag in Box 7.",
+      "lockTitle": "THE PARCEL"
+    }
+  },
+  "hook": "Someone made a plaster copy. Who made it, and where is the real piece?",
+  "learningGoal": {
+    "title": "Opposites and tests: found, first, next, last",
+    "titleKo": "반대말과 시험: found, first, next, last"
+  },
+  "play": {
+    "objectives": [
+      "Find the stone under the round eye.",
+      "Say the bookseller's password.",
+      "Test the piece in the parcel."
+    ],
+    "intro": [
+      "The Pantheon is almost 2,000 years old.",
+      "Its round roof has a big hole at the top.",
+      "\"The Owl's card said: the roof with a round eye,\" says Giulia. \"Here we are!\""
+    ],
+    "caseSummary": "Under the Pantheon's round eye, the Owl's card led to a bookshop. With the password FOUND, you got the Owl's parcel. Three tests showed the piece inside is plaster. The Owl took a copy out of the glass case, not the real piece.",
+    "place": "THE PANTHEON",
+    "keyWords": [
+      "opposite",
+      "found",
+      "weigh",
+      "plaster",
+      "copy"
+    ],
+    "glossary": {
+      "opposite": "반대말",
+      "parcel": "소포",
+      "weigh": "무게를 재다",
+      "scratch": "긁다",
+      "plaster": "석고",
+      "copy": "복제품"
+    }
+  },
+  "notes": [
+    "Act 1's turn: the piece the Owl carried out was a plaster copy. The real piece was swapped before Friday.",
+    "The copy's paw print and No. 3?8 lead to the Bassi workshop in Case 05."
+  ]
+}

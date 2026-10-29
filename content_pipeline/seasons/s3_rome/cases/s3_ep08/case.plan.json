@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep08",
+  "seasonId": "s3_rome",
+  "number": 8,
+  "actId": "act2",
+  "title": "The Owl of Tiber Island",
+  "synopsis": [
+    "The Owl wants to meet you at last.",
+    "On an old bridge over the river, a familiar face is waiting.",
+    "Now the Owl can tell you what really happened."
+  ],
+  "goal": "Meet the Owl, hear the whole week, and see what the real piece shows.",
+  "characters": [
+    "giulia_marino",
+    "livia_conti"
+  ],
+  "locations": [
+    "tiber_island",
+    "capitoline_museums"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep08_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.tiber_bridge",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "EIGHT",
+          "acceptedAnswers": [
+            "8"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the Owl's card and Giulia's guidebook: two stone posts, four faces each."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep07_c3",
+          "use": "textMention",
+          "note": "The Owl saw you catch Valli's story, and now wants to meet."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep08_c1",
+        "evidence": "s3_ep08_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "each(각각)를 이해해 기둥 2개 × 얼굴 4개를 계산하고 숫자를 영어 단어로 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "It has two stone posts.",
+          "Each post has four faces."
+        ]
+      },
+      "play": {
+        "title": "The Bridge of Four Heads",
+        "location": "TIBER ISLAND",
+        "story": [
+          "Tiber Island sits in the middle of the river like a little boat.",
+          "An old stone bridge joins it to the city.",
+          "On the bridge, a woman in a hood is waiting."
+        ],
+        "letterIntro": "The Owl's card and Giulia's guidebook say:",
+        "letter": "THE OWL CARD:\nMeet me on the bridge with the stone faces.\nCall out how many faces you see, so I know it is you.\n— The Owl\n\nGUIDEBOOK:\nPONTE FABRICIO is the oldest bridge in Rome that people still use.\nPeople call it the Bridge of Four Heads.\nIt has two stone posts. Each post has four faces.",
+        "question": "How many stone faces are there in all? Write the number as a word.",
+        "prompt": "I can see ____ faces.",
+        "hints": [
+          "Each means every one. Every post has four faces.",
+          "Add the faces on both posts."
+        ],
+        "successMessage": "The woman in the hood turns around.",
+        "transition": [
+          "Two posts, four faces each: eight faces.",
+          "\"Eight,\" you call out.",
+          "The woman takes off her hood. It is Livia Conti, the restorer!"
+        ],
+        "feedback": {
+          "FOUR": "Each post has four faces. How many posts are there?",
+          "TWO": "There are two posts. How many faces does each one have?"
+        },
+        "orderFeedback": "Check your spelling of the number.",
+        "mapX": 0.4,
+        "mapY": 0.75,
+        "clue": {
+          "title": "The Bridge Password",
+          "value": "EIGHT STONE FACES",
+          "note": "The Owl asked you to count the faces on the Bridge of Four Heads.",
+          "symbol": "mask"
+        },
+        "evidence": {
+          "name": "The Bridge Owl Card",
+          "icon": "seal",
+          "description": "The Owl's card asking to meet on the old bridge.",
+          "inscription": "Call out how many faces you see, so I know it is you."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep08_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.tiber_bridge",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "not_real",
+          "options": [
+            {
+              "id": "sell",
+              "label": "She wanted to sell it.",
+              "feedback": "Livia left the copy for you at the bookshop. Would a seller do that?"
+            },
+            {
+              "id": "aldo",
+              "label": "Professor Aldo asked her to.",
+              "feedback": "Read Livia's words again. Who did she tell about the piece?"
+            },
+            {
+              "id": "not_real",
+              "label": "So nobody would show a copy and call it real."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: the first owl card (Case 01), to prove Livia is the Owl. Letter: Livia's story."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep08_c1",
+          "use": "textMention",
+          "note": "You called out the password, and the Owl turned around."
+        },
+        {
+          "ref": "s3_ep01_e3",
+          "use": "recall",
+          "note": "Livia asks which card she left first."
+        },
+        {
+          "ref": "s3_ep04_e4",
+          "use": "textMention",
+          "note": "The plaster copy Livia carried out."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep08_c2",
+        "evidence": "s3_ep08_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "Livia의 이야기에서 행동(복제품을 꺼냄)과 그 이유(so that…)를 연결한다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "I did not want people to call a copy real.",
+          "She said, \"You are tired.\""
+        ]
+      },
+      "play": {
+        "title": "The Owl Takes Off Her Hood",
+        "location": "THE BRIDGE OF FOUR HEADS",
+        "story": [
+          "\"I am the Owl,\" Livia says quietly.",
+          "\"But first, show me you followed my trail from the start.\"",
+          "Then she tells you everything."
+        ],
+        "letterIntro": "Livia says:",
+        "letter": "\"On Friday morning, I cleaned the new piece.\nIt was wrong! It was too light, and the old crack was gone.\nI told Director Sofia. She said, 'You are tired, Livia.'\nSo at midnight, I turned off the lights and took the piece out.\nIt was a copy. I did not want people to call a copy real.\nI left cards so you could find the truth with your own eyes.\"",
+        "question": "Why did Livia take the copy out of the glass case?",
+        "hints": [
+          "Livia knew the piece in the case was a copy. What would happen at the show?",
+          "Find the line that begins: I did not want..."
+        ],
+        "successMessage": "Now you know who the Owl is, and why.",
+        "transition": [
+          "Livia took the copy so nobody would show it as the real piece.",
+          "\"I was scared,\" she says. \"Nobody believed me.\"",
+          "\"Come to my lab. I wrote down the whole week.\""
+        ],
+        "mapX": 0.4,
+        "mapY": 0.75,
+        "clue": {
+          "title": "The Owl Is Livia",
+          "value": "LIVIA CONTI · RESTORER",
+          "note": "Livia saw the piece was a copy. She took it out and left the owl cards.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Livia's Story",
+          "icon": "feather",
+          "description": "What Livia told you on the Bridge of Four Heads.",
+          "inscription": "It was too light, and the old crack was gone."
+        },
+        "recall": {
+          "title": "Prove it",
+          "prompt": "Livia asks: which card did I leave for you first?",
+          "miss": "That is not my first card. Where did your trail begin?"
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep08_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.restoration_lab",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "tuesday,thursday,friday_am,midnight",
+          "options": [
+            {
+              "id": "friday_am",
+              "label": "Livia found the piece was too light"
+            },
+            {
+              "id": "tuesday",
+              "label": "Signor Valli took the piece for photos"
+            },
+            {
+              "id": "midnight",
+              "label": "Livia took the copy out"
+            },
+            {
+              "id": "thursday",
+              "label": "Signor Valli came to check the lights"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Livia's diary pages, the days out of order. Ordering them shows the swap fell between Tuesday and Friday morning."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep08_c2",
+          "use": "textMention",
+          "note": "Livia's story."
+        },
+        {
+          "ref": "s3_ep07_e4",
+          "use": "evidenceLink",
+          "note": "The loan book page: Tuesday, B.V."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep08_c3",
+        "evidence": "s3_ep08_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "요일 순서(Tuesday → Thursday → Friday)와 하루 안의 순서(morning → midnight)로 일기를 정리한다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "On Tuesday, Signor Valli took the piece.",
+          "On Thursday night, he came to check the lights."
+        ]
+      },
+      "play": {
+        "title": "Livia's Week",
+        "location": "THE RESTORATION LAB",
+        "story": [
+          "Livia's lab is quiet and full of old stones.",
+          "She opens her diary on the table.",
+          "\"The pages fell out,\" she says. \"Can you put them back?\""
+        ],
+        "letterIntro": "Livia's diary pages say:",
+        "letter": "FRIDAY MORNING — I cleaned the piece. It is light! The crack is gone!\nTUESDAY — Signor Valli took the piece out of the lab for poster photos.\nFRIDAY, MIDNIGHT — I turned off the lights and took the copy.\nTHURSDAY NIGHT — Enzo says Signor Valli came at 11 PM to \"check the lights\".",
+        "question": "Put Livia's week in order.",
+        "hints": [
+          "Say the days: Monday, Tuesday, Wednesday, Thursday, Friday.",
+          "On Friday, morning comes before midnight."
+        ],
+        "successMessage": "You put the week together!",
+        "transition": [
+          "Tuesday, Thursday night, Friday morning, Friday midnight.",
+          "On Friday morning, the piece in the case was already a copy.",
+          "\"So the swap happened on Thursday night,\" you say. \"When Signor Valli came to check the lights.\""
+        ],
+        "orderFeedback": "Read the days again. Which day comes first in the week?",
+        "mapX": 0.27,
+        "mapY": 0.36,
+        "clue": {
+          "title": "Livia's Week",
+          "value": "TUE · THU NIGHT · FRI · FRI MIDNIGHT",
+          "note": "The swap happened on Thursday night, when Valli came to the museum.",
+          "symbol": "watch"
+        },
+        "evidence": {
+          "name": "Livia's Diary",
+          "icon": "letter",
+          "description": "Livia's diary of the week, put back in order.",
+          "inscription": "THURSDAY NIGHT — Signor Valli came at 11 PM to \"check the lights\"."
+        },
+        "evidenceLinkLine": "The loan book page says the same: on Tuesday, B.V. took the piece out."
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep08_final",
+    "slot": "final",
+    "placeId": "s3_rome.restoration_lab",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "CRACK",
+        "options": [
+          {
+            "id": "k",
+            "label": "K"
+          },
+          {
+            "id": "c1",
+            "label": "C"
+          },
+          {
+            "id": "a",
+            "label": "A"
+          },
+          {
+            "id": "r",
+            "label": "R"
+          },
+          {
+            "id": "c2",
+            "label": "C"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: Livia's table of the real piece and the copy. The one mark you can see on the real piece and not on the copy: its Y-shaped crack (Aldo's photo)."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep06_e4",
+        "use": "answerDerivation",
+        "note": "Aldo's photo: a crack shaped like a Y."
+      },
+      {
+        "ref": "s3_ep08_c3",
+        "use": "textMention",
+        "note": "By Friday morning the piece was a copy."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep08_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "진짜와 복제품의 비교표에서 눈으로 볼 수 있는 차이(crack)를 찾아 글자 타일로 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "The real piece has a crack shaped like a Y.",
+        "The copy has no crack."
+      ]
+    },
+    "play": {
+      "title": "Livia's Locker",
+      "location": "THE RESTORATION LAB",
+      "story": [
+        "Livia's locker has a letter lock.",
+        "\"I hid my best clue in here,\" she says.",
+        "\"The lock word is the mark only the real piece has.\""
+      ],
+      "letterIntro": "Livia's table says:",
+      "letter": "THE REAL PIECE: marble, 12 kg, a street, an owl, a crack shaped like a Y.\nTHE COPY: plaster, 4 kg, a street, an owl, no crack.\n\nThe lock word: a mark you can see on the real piece. The copy does not have it.",
+      "question": "Spell the mark that only the real piece has.",
+      "hints": [
+        "Both pieces have a long street and a tiny owl.",
+        "Look at Aldo's old photo in your Notebook. What shape is the mark?"
+      ],
+      "successMessage": "Livia's locker opens!",
+      "transition": [
+        "Inside is Livia's drawing of the real piece, line by line.",
+        "Next to the tiny owl is a room with lines like shelves. Beside it is half a word: BIBLIO...",
+        "\"I think this room is under Rome today,\" Livia says.",
+        "\"And I think Signor Valli knows it.\""
+      ],
+      "orderFeedback": "Those are the right letters. What can you see on the real piece?",
+      "mapX": 0.27,
+      "mapY": 0.36,
+      "evidence": {
+        "name": "Livia's Drawing of the Real Piece",
+        "icon": "map",
+        "description": "Livia drew the real piece from memory, line by line.",
+        "inscription": "Next to the tiny owl: a room with shelves, and half a word: BIBLIO..."
+      },
+      "lockTitle": "LIVIA'S LOCKER"
+    }
+  },
+  "hook": "What is the room on the map, and where is it now?",
+  "learningGoal": {
+    "title": "Each, why, and the days of the week",
+    "titleKo": "each, 이유 말하기, 요일 순서"
+  },
+  "play": {
+    "objectives": [
+      "Give the Owl the password.",
+      "Find out why the Owl took the copy.",
+      "Put the Owl's week in order."
+    ],
+    "intro": [
+      "A new owl card came to the museum this morning.",
+      "\"You caught Signor Valli's story. Now we can meet.\"",
+      "\"Come to the bridge with the stone faces. — The Owl\""
+    ],
+    "caseSummary": "The Owl is Livia Conti, the young restorer. She saw the piece was a copy, but nobody believed her. So she took it out and led you to the truth. Her week shows the swap was on Thursday night. Her drawing of the real piece shows a room with shelves: BIBLIO...",
+    "place": "TIBER ISLAND",
+    "keyWords": [
+      "each",
+      "eight",
+      "because",
+      "copy",
+      "crack"
+    ],
+    "glossary": {
+      "island": "섬",
+      "hood": "후드, 모자",
+      "restorer": "복원 전문가",
+      "diary": "일기",
+      "locker": "사물함",
+      "swap": "바꿔치기"
+    }
+  },
+  "notes": [
+    "Livia's secret ends here (secretUntil, revealCase s3_ep08). Act 2 closes with the swap's night known and its reason still open.",
+    "Livia's drawing (s3_ep08_e4) opens Act 3: Case 09 reads the room on it."
+  ]
+}

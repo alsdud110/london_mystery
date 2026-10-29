@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep12",
+  "seasonId": "s3_rome",
+  "number": 12,
+  "actId": "act3",
+  "title": "The Library Under the Owl",
+  "synopsis": [
+    "The work has stopped. A ladder goes down under the owl square.",
+    "Livia has one last Owl game: seven gold letter tiles to find.",
+    "What has Rome kept under its streets for so long?"
+  ],
+  "goal": "Go down into the old room, find Livia's seven gold tiles, and spell what the map gave back to Rome.",
+  "characters": [
+    "giulia_marino",
+    "sofia_ferri",
+    "enzo_greco",
+    "livia_conti",
+    "aldo_rinaldi",
+    "pia_ricci",
+    "carla_bassi"
+  ],
+  "locations": [
+    "piazza_della_civetta",
+    "capitoline_museums"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep12_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.civetta_square",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "helmet,rope,ladder,lamp",
+          "options": [
+            {
+              "id": "lamp",
+              "label": "Turn on your lamp"
+            },
+            {
+              "id": "ladder",
+              "label": "Go down the ladder slowly"
+            },
+            {
+              "id": "helmet",
+              "label": "Put on a helmet"
+            },
+            {
+              "id": "rope",
+              "label": "Hold the rope with both hands"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the inspector's safety card (First, Next, Then, Last). Livia's game: the first two gold tiles, H and I, are by the ladder."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep11_c3",
+          "use": "textMention",
+          "note": "Valli's plan is known and the work has stopped."
+        },
+        {
+          "ref": "s3_ep10_c1",
+          "use": "textMention",
+          "note": "There will be no concrete."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep12_c1",
+        "evidence": "s3_ep12_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "First, Next, Then, Last를 읽고 지하로 내려가는 안전 순서를 놓는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "First, put on a helmet.",
+          "Then, go down the ladder slowly."
+        ]
+      },
+      "play": {
+        "title": "Safety First",
+        "location": "PIAZZA DELLA CIVETTA",
+        "story": [
+          "The machines are quiet. In the middle of the square, there is a hole and a ladder.",
+          "Livia smiles. \"One last Owl game. I hid seven gold letter tiles today. Find them all!\"",
+          "The inspector hands you a card. \"Nobody goes down without reading this.\""
+        ],
+        "letterIntro": "The safety card says:",
+        "letter": "GOING DOWN SAFELY\nLast, turn on your lamp at the bottom.\nFirst, put on a helmet.\nNext, hold the rope with both hands.\nThen, go down the ladder slowly.",
+        "question": "Put the safety steps in order.",
+        "hints": [
+          "Find First and Last.",
+          "Next comes before Then on this card."
+        ],
+        "successMessage": "You are ready to go down!",
+        "transition": [
+          "Helmet, rope, ladder, lamp.",
+          "On the top step of the ladder, two gold tiles shine: H and I.",
+          "You go down, slowly. Then you turn on your lamp."
+        ],
+        "orderFeedback": "Read First, Next, Then and Last again.",
+        "mapX": 0.5,
+        "mapY": 0.5,
+        "clue": {
+          "title": "Gold Tiles by the Ladder",
+          "value": "GOLD TILES: H · I",
+          "note": "Livia hid two gold tiles on the ladder: H and I.",
+          "symbol": "gem"
+        },
+        "evidence": {
+          "name": "The Safety Card",
+          "icon": "letter",
+          "description": "The inspector's card for going down under the square.",
+          "inscription": "First, put on a helmet."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep12_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.roman_library",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "scrolls",
+          "options": [
+            {
+              "id": "oil",
+              "label": "Bottles of olive oil",
+              "feedback": "Read Aldo's card. What did the Romans keep in square holes?"
+            },
+            {
+              "id": "scrolls",
+              "label": "Scrolls, long pages rolled up"
+            },
+            {
+              "id": "water",
+              "label": "Pools of water",
+              "feedback": "Pools are for baths, and they are in the floor, not in the walls."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: the real piece (Case 11), to match the room. Letter: Aldo's card on Roman libraries. Two more gold tiles: S and T."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep11_e1",
+          "use": "recall",
+          "note": "The real piece shows this room."
+        },
+        {
+          "ref": "s3_ep09_c1",
+          "use": "textMention",
+          "note": "The room is a library (BIBLIOTHECA)."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep12_c2",
+        "evidence": "s3_ep12_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "옛 도서관 설명(scrolls, square holes)을 읽고 벽의 구멍에 무엇을 보관했는지 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Books were scrolls: long pages, rolled up.",
+          "Scrolls were kept in square holes in the walls."
+        ]
+      },
+      "play": {
+        "title": "Holes in the Walls",
+        "location": "THE ROMAN LIBRARY",
+        "story": [
+          "Your lamp shines on old walls full of small square holes.",
+          "Aldo climbs down after you. His voice shakes. \"It is real. It is all real.\"",
+          "He gives you a card he wrote for his students."
+        ],
+        "letterIntro": "Aldo's card says:",
+        "letter": "IN A ROMAN LIBRARY\nBooks were not like our books.\nThey were scrolls: long pages, rolled up.\nScrolls were kept in square holes in the walls.\nRoman baths had pools of water, not holes in the walls.",
+        "question": "What did the Romans keep in these square holes?",
+        "hints": [
+          "This room is a library. What did Roman books look like?",
+          "Find the line about square holes on Aldo's card."
+        ],
+        "successMessage": "You understand the old library!",
+        "transition": [
+          "Each square hole once held scrolls.",
+          "In one hole, you find two gold tiles: S and T.",
+          "Livia points to the floor. \"Look at the middle of the room.\""
+        ],
+        "mapX": 0.5,
+        "mapY": 0.53,
+        "clue": {
+          "title": "The Scroll Holes",
+          "value": "GOLD TILES: S · T",
+          "note": "The square holes in the walls held scrolls. Two gold tiles were in one: S and T.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "Aldo's Library Card",
+          "icon": "letter",
+          "description": "Aldo's card about Roman libraries.",
+          "inscription": "Scrolls were kept in square holes in the walls."
+        },
+        "recall": {
+          "title": "Is this the room?",
+          "prompt": "Which thing in your Notebook shows this room on the old map?",
+          "miss": "Find the real map piece from Valli's box room."
+        }
+      }
+    },
+    {
+      "missionId": "s3_ep12_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.roman_library",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "WISDOM"
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the owl mosaic's Latin word SAPIENTIA and Aldo's word box (wisdom, wealth, weather). Three more gold tiles: O, R, Y."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep12_c2",
+          "use": "textMention",
+          "note": "The middle of the room."
+        },
+        {
+          "ref": "s3_ep11_e4",
+          "use": "textMention",
+          "note": "Valli wanted money: wealth, not wisdom."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep12_c3",
+        "evidence": "s3_ep12_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "뜻풀이 목록에서 SAPIENTIA의 뜻(knowing a lot and making good choices)에 맞는 단어 wisdom을 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Wisdom is knowing a lot and making good choices.",
+          "The owl was the Roman bird of wisdom."
+        ]
+      },
+      "play": {
+        "title": "The Owl in the Floor",
+        "location": "THE ROMAN LIBRARY",
+        "story": [
+          "In the middle of the floor is an owl made of tiny stone tiles.",
+          "Around it are Latin letters: SAPIENTIA.",
+          "\"The library of the owl,\" Livia whispers. \"Now I know why I chose the owl.\""
+        ],
+        "letterIntro": "Aldo's word box says:",
+        "letter": "SAPIENTIA is a Latin word.\nIt means knowing a lot and making good choices.\nThe Romans said the owl was the bird of SAPIENTIA.\n\nWORD BOX:\nWISDOM — knowing a lot and making good choices.\nWEALTH — having a lot of money.\nWEATHER — rain, sun and wind.",
+        "question": "What does SAPIENTIA mean in English?",
+        "prompt": "SAPIENTIA means ____.",
+        "hints": [
+          "Read what SAPIENTIA means on Aldo's card.",
+          "Find the word in the word box with the same meaning."
+        ],
+        "successMessage": "You read the owl's word!",
+        "transition": [
+          "SAPIENTIA means wisdom.",
+          "Under the owl's eye, three gold tiles are waiting: O, R and Y.",
+          "\"That makes seven,\" says Giulia. \"Let's go back to the museum.\""
+        ],
+        "feedback": {
+          "WEALTH": "Wealth is having a lot of money. That is what Signor Valli wanted. What did the owl mean?",
+          "WEATHER": "Weather is rain, sun and wind. What means making good choices?"
+        },
+        "orderFeedback": "Check your spelling in the word box.",
+        "mapX": 0.5,
+        "mapY": 0.53,
+        "clue": {
+          "title": "The Owl's Word",
+          "value": "GOLD TILES: O · R · Y",
+          "note": "The owl mosaic says SAPIENTIA, wisdom. Three gold tiles: O, R and Y.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "The Owl Mosaic",
+          "icon": "feather",
+          "description": "An owl made of tiny stone tiles, in the floor of the Roman library.",
+          "inscription": "SAPIENTIA"
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep12_final",
+    "slot": "final",
+    "placeId": "s3_rome.map_hall",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "HISTORY",
+        "options": [
+          {
+            "id": "h",
+            "label": "H"
+          },
+          {
+            "id": "i",
+            "label": "I"
+          },
+          {
+            "id": "s",
+            "label": "S"
+          },
+          {
+            "id": "t",
+            "label": "T"
+          },
+          {
+            "id": "o",
+            "label": "O"
+          },
+          {
+            "id": "r",
+            "label": "R"
+          },
+          {
+            "id": "y",
+            "label": "Y"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "The season's letter-collecting final: the seven gold tiles found in this case's three missions spell HISTORY, 'the story of the past'."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep12_c1",
+        "use": "answerDerivation",
+        "note": "Gold tiles H and I."
+      },
+      {
+        "ref": "s3_ep12_c2",
+        "use": "answerDerivation",
+        "note": "Gold tiles S and T."
+      },
+      {
+        "ref": "s3_ep12_c3",
+        "use": "answerDerivation",
+        "note": "Gold tiles O, R and Y."
+      },
+      {
+        "ref": "s3_ep11_e1",
+        "use": "evidenceLink",
+        "note": "The real piece, back in its case."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep12_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "recall",
+      "objective": "모은 금색 글자 일곱 개를 뜻풀이(the story of the past)에 맞게 배열해 history를 만든다.",
+      "skill": "vocabulary",
+      "expressions": [
+        "It is not money.",
+        "It is the story of the past."
+      ],
+      "recallFrom": "s3_ep12_m3"
+    },
+    "play": {
+      "title": "Seven Gold Tiles",
+      "location": "THE MAP HALL",
+      "story": [
+        "The map hall is full of people.",
+        "The real piece is back in its glass case.",
+        "A new label says: \"Found again, with help from Livia Conti.\"",
+        "Enzo, Pia, Carla and Aldo are all here. Livia gives you one last owl card, and a little lock with seven empty slots."
+      ],
+      "letterIntro": "The Owl's last card says:",
+      "letter": "Dear Detective,\nYou found my seven gold tiles: H, I, S, T, O, R, Y.\nPut them in order to spell what the old map gave back to Rome.\nIt is not money.\nIt is the story of the past.\n— The Owl (Livia)",
+      "question": "Spell the word with your seven gold tiles.",
+      "hints": [
+        "The word means the story of the past.",
+        "It starts with the first tile you found, on the ladder."
+      ],
+      "successMessage": "The last lock opens. Everyone claps!",
+      "transition": [
+        "HISTORY: the story of the past.",
+        "The city will make Piazza della Civetta a small museum, with the library below it.",
+        "Bruno Valli must answer to the city for what he did.",
+        "Aldo is already writing a new chapter: The Library Under the Owl.",
+        "Giulia smiles at you. \"Rome is full of stories. You found one more, piece by piece.\""
+      ],
+      "orderFeedback": "Those are the right tiles. What word means the story of the past?",
+      "mapX": 0.25,
+      "mapY": 0.34,
+      "evidence": {
+        "name": "The Owl's Last Card",
+        "icon": "seal",
+        "description": "Livia's last owl card, given to you in the map hall.",
+        "inscription": "It is not money. It is the story of the past."
+      },
+      "evidenceLinkLine": "The real piece from Valli's box room, back in its glass case.",
+      "lockTitle": "THE OWL'S LAST LOCK"
+    }
+  },
+  "hook": "The broken map of Rome is whole again. Where will your next case take you?",
+  "learningGoal": {
+    "title": "The story of the past: scrolls, wisdom, history",
+    "titleKo": "과거의 이야기: scrolls, wisdom, history"
+  },
+  "play": {
+    "objectives": [
+      "Go down safely.",
+      "Find what the old library kept.",
+      "Spell the word of the seven gold tiles."
+    ],
+    "intro": [
+      "The concrete never came.",
+      "This morning, the city opened a small hole in the middle of Piazza della Civetta.",
+      "Everyone wants to see what is under the owl square."
+    ],
+    "caseSummary": "Under Piazza della Civetta, you found the old Roman library from the map. Its walls have square holes for scrolls. Its owl mosaic says SAPIENTIA: wisdom. Livia's seven gold tiles spelled HISTORY. The real piece is back in its glass case. The library will become a museum.",
+    "place": "PIAZZA DELLA CIVETTA",
+    "keyWords": [
+      "safely",
+      "scroll",
+      "wisdom",
+      "history",
+      "past"
+    ],
+    "glossary": {
+      "ladder": "사다리",
+      "rope": "밧줄",
+      "scroll": "두루마리",
+      "mosaic": "모자이크",
+      "wisdom": "지혜",
+      "history": "역사"
+    }
+  },
+  "notes": [
+    "The season's end: the core mystery resolved (story bible coreMystery.resolvedCase). The final is the season's letter-collecting final.",
+    "Its last scene is the map hall of Case 01: the season closes where it opened."
+  ]
+}

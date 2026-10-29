@@ -1,0 +1,464 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep10",
+  "seasonId": "s3_rome",
+  "number": 10,
+  "actId": "act3",
+  "title": "The Fence at Piazza della Civetta",
+  "synopsis": [
+    "A tall fence stands around the owl square.",
+    "Behind it, a building site, a yellow helmet and a locked office.",
+    "In two days, the concrete comes."
+  ],
+  "goal": "Find out whose site this is, what came here on Thursday night, and tell Sofia why the work must stop.",
+  "characters": [
+    "giulia_marino",
+    "livia_conti",
+    "sofia_ferri"
+  ],
+  "locations": [
+    "piazza_della_civetta"
+  ],
+  "missions": [
+    {
+      "missionId": "s3_ep10_m1",
+      "slot": "m1",
+      "placeId": "s3_rome.civetta_square",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "fence,close,dig,pour",
+          "options": [
+            {
+              "id": "pour",
+              "label": "Pour the concrete"
+            },
+            {
+              "id": "dig",
+              "label": "Dig the big hole"
+            },
+            {
+              "id": "fence",
+              "label": "Put up the fence"
+            },
+            {
+              "id": "close",
+              "label": "Close the square to people"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the work plan on the fence, its dates out of order (1, 2, 3 and 10 May)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep09_e4",
+          "use": "evidenceLink",
+          "note": "The city plan: concrete on 10 May, 7 AM."
+        },
+        {
+          "ref": "s3_ep09_c3",
+          "use": "textMention",
+          "note": "The owl square is Piazza della Civetta."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep10_c1",
+        "evidence": "s3_ep10_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "날짜(1 May, 2 May, 3 May, 10 May)를 비교해 공사 계획을 순서대로 놓는다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "On 1 May, they put up the fence.",
+          "On 10 May, they will pour the concrete."
+        ]
+      },
+      "play": {
+        "title": "The Work Plan",
+        "location": "PIAZZA DELLA CIVETTA",
+        "story": [
+          "Today is 8 May. Piazza della Civetta is hidden behind a tall fence.",
+          "Above the gate is a sign with a little crane on it.",
+          "A work plan is pinned to the fence."
+        ],
+        "letterIntro": "The work plan says:",
+        "letter": "VALLI BUILDING — WORK PLAN\n10 May, 7 AM — Pour the concrete.\n1 May — Put up the fence.\n3 May — Dig the big hole.\n2 May — Close the square to people.",
+        "question": "Put the work plan in order, from the first day to the last.",
+        "hints": [
+          "Look only at the dates. Which number is the smallest?",
+          "10 May comes after 3 May."
+        ],
+        "successMessage": "You read the work plan!",
+        "transition": [
+          "Fence, close the square, dig, pour the concrete.",
+          "Today is 8 May. The concrete comes in two days.",
+          "Through a gap in the fence, Livia points. \"Look! A yellow helmet!\""
+        ],
+        "orderFeedback": "Read the dates again. Start with the smallest number.",
+        "mapX": 0.5,
+        "mapY": 0.5,
+        "clue": {
+          "title": "The Work Plan",
+          "value": "CONCRETE: 10 MAY, 7 AM",
+          "note": "Valli Building will pour concrete over the square on 10 May. Today is 8 May.",
+          "symbol": "clock"
+        },
+        "evidence": {
+          "name": "Valli's Work Plan",
+          "icon": "letter",
+          "description": "The work plan pinned to the building site's fence.",
+          "inscription": "10 May, 7 AM — Pour the concrete."
+        },
+        "evidenceLinkLine": "The city plan in Aldo's cabinet said the same: concrete on 10 May at 7 AM."
+      }
+    },
+    {
+      "missionId": "s3_ep10_m2",
+      "slot": "m2",
+      "placeId": "s3_rome.civetta_square",
+      "puzzle": {
+        "paletteId": "letter_tile_lock",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "letterLock",
+        "answerSpec": {
+          "answer": "VALLI",
+          "options": [
+            {
+              "id": "l1",
+              "label": "L"
+            },
+            {
+              "id": "i",
+              "label": "I"
+            },
+            {
+              "id": "v",
+              "label": "V"
+            },
+            {
+              "id": "a",
+              "label": "A"
+            },
+            {
+              "id": "l2",
+              "label": "L"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Recall: Bruno's business card (Case 07), the same little crane. Letter: the helmet's name strip, torn into VAL and LI."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep07_e3",
+          "use": "recall",
+          "note": "Bruno's card has the same crane as the helmet."
+        },
+        {
+          "ref": "s3_ep03_c3",
+          "use": "textMention",
+          "note": "Pia saw a yellow helmet with a crane on Thursday night."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep10_c2",
+        "evidence": "s3_ep10_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "찢어진 이름표 두 조각(VAL, LI)을 맞추고 명함과 비교해 주인의 성을 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "The name strip is torn in two.",
+          "Put the pieces back together."
+        ]
+      },
+      "play": {
+        "title": "The Yellow Helmet",
+        "location": "THE SITE FENCE",
+        "story": [
+          "A yellow helmet hangs on a hook by the fence.",
+          "It has a little crane on the front, just like Pia said.",
+          "Inside the helmet is a name strip, torn in two."
+        ],
+        "letterIntro": "The helmet's name strip says:",
+        "letter": "Left piece: B. VAL\nRight piece: LI\n\nThe helmet's little crane looks like the crane on a card in your Notebook.",
+        "question": "Put the torn name back together. Spell the family name.",
+        "hints": [
+          "The left piece comes first.",
+          "Look at the business card with the same crane on it."
+        ],
+        "successMessage": "You found the helmet's owner!",
+        "transition": [
+          "B. VALLI. Bruno Valli, the show's sponsor.",
+          "The big man Pia saw on Thursday night wore this helmet.",
+          "A young worker sees you at the fence. He looks around, then comes closer."
+        ],
+        "orderFeedback": "Those are the right letters. Put the left piece first.",
+        "mapX": 0.51,
+        "mapY": 0.49,
+        "clue": {
+          "title": "The Helmet's Owner",
+          "value": "B. VALLI · THE CRANE HELMET",
+          "note": "The yellow crane helmet is Bruno Valli's. Pia saw it on Thursday night.",
+          "symbol": "umbrella"
+        },
+        "evidence": {
+          "name": "The Yellow Helmet",
+          "icon": "umbrella",
+          "description": "A yellow helmet with a little crane, on a hook at the site.",
+          "inscription": "Name strip: B. VAL | LI"
+        },
+        "recall": {
+          "title": "The same crane",
+          "prompt": "Which thing in your Notebook has the same little crane?",
+          "miss": "Look for a card with a crane on it."
+        },
+        "lockTitle": "THE NAME STRIP"
+      }
+    },
+    {
+      "missionId": "s3_ep10_m3",
+      "slot": "m3",
+      "placeId": "s3_rome.civetta_square",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "real",
+          "options": [
+            {
+              "id": "bricks",
+              "label": "Bricks for the car park",
+              "feedback": "Bricks came on Wednesday morning, in the open. Why would bricks be a secret?"
+            },
+            {
+              "id": "real",
+              "label": "The real map piece"
+            },
+            {
+              "id": "copy",
+              "label": "The plaster copy",
+              "feedback": "The copy was in the museum until Friday at midnight. You found it at the bookshop."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the worker's words and the site's gate log. Thursday 11:50 PM is twenty minutes after Pia saw the heavy box, the night of the swap."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s3_ep03_c3",
+          "use": "answerDerivation",
+          "note": "Pia: Thursday, 11:30 PM, a heavy box from the museum road."
+        },
+        {
+          "ref": "s3_ep08_c3",
+          "use": "answerDerivation",
+          "note": "The swap was on Thursday night."
+        },
+        {
+          "ref": "s3_ep10_c2",
+          "use": "textMention",
+          "note": "The helmet is Valli's."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s3_ep10_c3",
+        "evidence": "s3_ep10_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "출입 기록의 시각을 이전 단서(목요일 밤 11:30, 바꿔치기)와 이어 상자 속 물건을 추론한다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Nobody may open it.",
+          "Thursday, 11:50 PM: one heavy box."
+        ]
+      },
+      "play": {
+        "title": "The Box Nobody May Open",
+        "location": "THE SITE GATE",
+        "story": [
+          "\"I am new here,\" the worker whispers. \"Something is strange.\"",
+          "He shows you the gate log, and tells you about his boss."
+        ],
+        "letterIntro": "The worker and the gate log say:",
+        "letter": "THE WORKER:\n\"The boss keeps a heavy box in his office. Nobody may open it.\"\n\nTHE SITE GATE LOG:\nWEDNESDAY, 8:00 AM — Bricks, 200.\nTHURSDAY, 11:50 PM — B. Valli. One heavy box.\nFRIDAY, 7:30 AM — Sand, 3 bags.",
+        "question": "What is most likely in Signor Valli's heavy box?",
+        "hints": [
+          "Pia saw the big man with a heavy box on Thursday at 11:30 PM.",
+          "What was taken from the museum on Thursday night?"
+        ],
+        "successMessage": "You put the times together!",
+        "transition": [
+          "At 11:30 PM, Pia saw the heavy box. At 11:50 PM, it came through this gate.",
+          "The real piece came here on the night of the swap!",
+          "Livia's hands shake. \"We must tell Sofia. Now.\""
+        ],
+        "mapX": 0.5,
+        "mapY": 0.5,
+        "clue": {
+          "title": "Thursday, 11:50 PM",
+          "value": "B. VALLI · ONE HEAVY BOX",
+          "note": "On Thursday at 11:50 PM, Valli brought a heavy box to the site. Nobody may open it.",
+          "symbol": "bag"
+        },
+        "evidence": {
+          "name": "The Site Gate Log",
+          "icon": "letter",
+          "description": "The log of everything that came through the site gate.",
+          "inscription": "THURSDAY, 11:50 PM — B. Valli. One heavy box."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s3_ep10_final",
+    "slot": "final",
+    "placeId": "s3_rome.civetta_square",
+    "puzzle": {
+      "paletteId": "word_entry",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "wordInput",
+      "answerSpec": {
+        "answer": "LIBRARY",
+        "acceptedAnswers": [
+          "A LIBRARY",
+          "ROMAN LIBRARY",
+          "BIBLIOTHECA"
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: Sofia's message asking what is under the square, and your notes (BIBLIOTHECA)."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s3_ep09_c1",
+        "use": "answerDerivation",
+        "note": "BIBLIOTHECA is a library."
+      },
+      {
+        "ref": "s3_ep10_c3",
+        "use": "textMention",
+        "note": "The real piece is likely in Valli's office."
+      },
+      {
+        "ref": "s3_ep10_c1",
+        "use": "textMention",
+        "note": "The concrete comes on 10 May."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s3_ep10_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "지금까지의 단서로 Sofia의 질문(무엇이 광장 아래에 있나)에 영어 단어로 답한다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "What is under the square?",
+        "Under the square, there is an old Roman library."
+      ]
+    },
+    "play": {
+      "title": "A Message for Sofia",
+      "location": "PIAZZA DELLA CIVETTA",
+      "story": [
+        "Giulia calls Director Sofia. Then Sofia sends a message.",
+        "She needs one word to make the city listen."
+      ],
+      "letterIntro": "Sofia's message and your notes say:",
+      "letter": "SOFIA:\n\"I can bring the city inspector tomorrow.\nBut I must tell him why the work must stop.\nWhat is under the square?\"\n\nYOUR NOTES:\nThe real piece shows a room under the owl square.\nThe room's Latin name is BIBLIOTHECA.",
+      "question": "Answer Sofia. What is under the square?",
+      "prompt": "Under the square, there is an old Roman ____.",
+      "hints": [
+        "Look at Aldo's Latin card in your Notebook.",
+        "The room is a room for books."
+      ],
+      "successMessage": "Your message is sent!",
+      "transition": [
+        "Sofia writes back at once: \"I am coming with the inspector!\"",
+        "\"But we need proof. Without the real piece, Signor Valli will say there is nothing down there.\"",
+        "In the site office, behind the fence, a light is still on."
+      ],
+      "feedback": {
+        "BATH": "A bath is BALNEUM in Latin. Look at your notes again.",
+        "THEATRE": "A theatre is THEATRUM in Latin. Look at your notes again."
+      },
+      "orderFeedback": "Check your spelling on Aldo's Latin card.",
+      "mapX": 0.5,
+      "mapY": 0.5,
+      "evidence": {
+        "name": "Your Message to Sofia",
+        "icon": "letter",
+        "description": "Your message to Director Sofia about the square.",
+        "inscription": "Under the square, there is an old Roman library."
+      }
+    }
+  },
+  "hook": "Is the real piece in Valli's office? Tomorrow, the inspector will come.",
+  "learningGoal": {
+    "title": "Dates and proof: 1 May to 10 May, nobody may",
+    "titleKo": "날짜와 증거: 1 May–10 May, nobody may"
+  },
+  "play": {
+    "objectives": [
+      "Read the work plan on the fence.",
+      "Find the helmet's owner.",
+      "Find out what came on Thursday night."
+    ],
+    "intro": [
+      "Piazza della Civetta is a small, quiet square.",
+      "Or it was. Now there is a tall fence all around it.",
+      "\"Two more days,\" Livia says. \"Then the concrete comes.\""
+    ],
+    "caseSummary": "The work plan says concrete on 10 May. The yellow crane helmet is B. Valli's. On Thursday at 11:50 PM, Valli brought a heavy box to the site: the real piece. You told Sofia an old Roman library is under the square.",
+    "place": "PIAZZA DELLA CIVETTA",
+    "keyWords": [
+      "date",
+      "fence",
+      "helmet",
+      "nobody",
+      "proof"
+    ],
+    "glossary": {
+      "fence": "울타리",
+      "pour": "붓다",
+      "torn": "찢어진",
+      "worker": "일꾼",
+      "proof": "증거",
+      "inspector": "감독관"
+    }
+  },
+  "notes": [
+    "Bruno is not met here: his helmet, his gate log and his work plan speak for him. He is revealed face to face in Case 11.",
+    "The worker is unnamed on purpose (not a season character)."
+  ]
+}

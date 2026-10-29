@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s3_rome",
+  "tool": "tool/season_planner/plan_season.dart check",
+  "counts": {
+    "ERROR": 0,
+    "WARNING": 29,
+    "INFO": 32
+  },
+  "summary": {
+    "bible": {
+      "characters": 8,
+      "locations": 11,
+      "mysteryQuestions": 10,
+      "clueThreads": 22,
+      "longRangeThreads": 20,
+      "englishReviews": 12
+    },
+    "assets": {
+      "total": 47,
+      "byType": {
+        "cover": 1,
+        "map": 1,
+        "prologue": 1,
+        "place": 18,
+        "scene": 1,
+        "character": 10,
+        "object": 6,
+        "document": 9
+      },
+      "backgrounds": 22,
+      "characters": 10,
+      "objects": 15,
+      "reusedAcrossCases": 23,
+      "planned": 47,
+      "generated": 0,
+      "shownBySeasonPlaces": 18,
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "estimatedUsd": 2.02419,
+      "estimateNote": "List prices of 2026-10-29 (image_pricing.dart), an estimate before any call; nothing was sent."
+    },
+    "generator": {
+      "run": true,
+      "compatible": true,
+      "blockedByPictures": 18,
+      "otherFailures": 0
+    },
+    "cases": 12,
+    "plannedCases": 12,
+    "acts": 3,
+    "missions": 36,
+    "finals": 12,
+    "puzzlesByKind": {
+      "text_choice": 12,
+      "order_sequence": 12,
+      "word_entry": 11,
+      "combo_dial_lock": 5,
+      "letter_tile_lock": 8
+    },
+    "finalsByKind": {
+      "combo_dial_lock": 5,
+      "order_sequence": 1,
+      "letter_tile_lock": 5,
+      "word_entry": 1
+    },
+    "crossCaseClueInputs": 52,
+    "recallSteps": 10,
+    "evidenceLinks": 7,
+    "characters": 8,
+    "locations": 11,
+    "places": 18,
+    "picturesPending": 18,
+    "apiCalls": 0
+  },
+  "findings": [
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep01 $.final.clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep01_e4 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep02 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep02_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep04 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep04_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep04 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep04_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep04 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep04_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep05 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep05_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep05 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep05_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep05 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep05_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep06 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep06_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep06 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep06_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep07 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep07_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep07 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep07_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep08 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep08_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep08 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep08_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep08 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep08_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep09 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep09_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep09 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep09_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep09 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep09_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep10 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep10_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep10 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep10_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep10 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep10_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep10 $.final.clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep10_e4 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep11 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep11_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep11 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep11_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep12 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep12_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep12 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep12_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s3_ep12 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s3_ep12_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[0].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/cases/case_01/guard_room.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[1].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/map_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[2].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/trevi_fountain.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[3].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/flower_market.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[4].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/pantheon_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[5].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/cases/case_04/rotonda_bookshop.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[6].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/cat_ruins.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[7].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/cast_workshop.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[8].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/navona_square.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[9].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/cases/case_06/lecture_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[10].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/spanish_steps.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[11].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/tiber_bridge.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[12].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/restoration_lab.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[13].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/forum_view.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[14].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/cases/case_09/map_archive.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[15].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/civetta_square.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[16].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/site_office.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "INFO",
+      "code": "image_pending",
+      "where": "season.plan.json $.places[17].file",
+      "source": "play",
+      "message": "assets/seasons/season_03_rome/locations/roman_library.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s3_ep01 $.final.play.orderFeedback",
+      "source": "englishHeuristic",
+      "message": "\"right numbers, wrong order.\" 5 times in the season (cases/s3_ep03 $.final.play.orderFeedback; cases/s3_ep05 $.final.play.orderFeedback; cases/s3_ep07 $.final.play.orderFeedback…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s3_ep02 $.missions[2].play.orderFeedback",
+      "source": "englishHeuristic",
+      "message": "\"those are the right letters.\" 7 times in the season (cases/s3_ep04 $.final.play.orderFeedback; cases/s3_ep05 $.missions[1].play.orderFeedback; cases/s3_ep06 $.final.play.orderFeedback…)"
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep01",
+      "source": "claudeReview",
+      "message": "A1-A2 (ages 8-10): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep02",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep03",
+      "source": "claudeReview",
+      "message": "A1-A2 (ages 8-10): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep04",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep05",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits; the round tag is the trickiest reading step."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep06",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-12): Fits; PM/AM across midnight is new and taught by the hints."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep07",
+      "source": "claudeReview",
+      "message": "A2-B1 (ages 10-12): Fits older players; the letter-shift code is Act 2's hardest puzzle."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep08",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep09",
+      "source": "claudeReview",
+      "message": "A2-B1 (ages 10-12): Fits; Roman numbers with take-away (IV, IX) may need the second hint for 8-year-olds."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep10",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep11",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-12): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s3_ep12",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-12): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "asset_pending",
+      "where": "assets.manifest.json $.assets",
+      "source": "assets",
+      "message": "47 of 47 pictures planned, not made yet (no API was called)"
+    },
+    {
+      "level": "INFO",
+      "code": "generator_waits_for_pictures",
+      "where": "generate_season",
+      "source": "generator",
+      "message": "every check of the generator passes but one: 18 place pictures are not on disk yet"
+    }
+  ]
+}

@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s3_rome",
+  "number": 3,
+  "city": "Rome",
+  "title": "The Broken Map of Rome",
+  "tagline": "ONE MISSING PIECE",
+  "plannedCases": 12,
+  "mainMystery": {
+    "truth": "The new piece of Rome's ancient marble map was never lost. On Thursday night the builder Bruno Valli put a plaster copy in its glass case and took the real piece to his building site, because the piece shows an old Roman library under Piazza della Civetta, where his company will pour concrete for a car park. Restorer Livia Conti saw that the piece in the case was a copy. Nobody believed her, so she took the copy out on Friday at midnight and left owl cards to lead the detective to the proof.",
+    "culprit": "Bruno Valli, the smiling sponsor of the museum's show and the owner of Valli Building.",
+    "motive": "If people saw the library on the map, the city would stop his car park and he would lose a lot of money.",
+    "revealCase": "s3_ep11"
+  },
+  "characters": [
+    {
+      "charId": "giulia_marino",
+      "name": "Giulia Marino",
+      "role": "Guide at the Capitoline Museums, the detective's partner in Rome",
+      "firstCase": "s3_ep01"
+    },
+    {
+      "charId": "sofia_ferri",
+      "name": "Sofia Ferri",
+      "role": "Director of the Capitoline Museums",
+      "firstCase": "s3_ep01"
+    },
+    {
+      "charId": "enzo_greco",
+      "name": "Enzo Greco",
+      "role": "Night guard of the map hall",
+      "firstCase": "s3_ep01"
+    },
+    {
+      "charId": "livia_conti",
+      "name": "Livia Conti",
+      "role": "Young stone restorer at the museum, secretly the Owl",
+      "firstCase": "s3_ep01",
+      "revealCase": "s3_ep08",
+      "secretUntil": "s3_ep08"
+    },
+    {
+      "charId": "bruno_valli",
+      "name": "Bruno Valli",
+      "role": "Builder and sponsor of the museum's show, secretly the one who swapped the piece",
+      "firstCase": "s3_ep01",
+      "revealCase": "s3_ep11",
+      "secretUntil": "s3_ep11"
+    },
+    {
+      "charId": "aldo_rinaldi",
+      "name": "Aldo Rinaldi",
+      "role": "Grumpy professor of old maps, first a suspect, then a helper",
+      "firstCase": "s3_ep02",
+      "revealCase": "s3_ep06"
+    },
+    {
+      "charId": "pia_ricci",
+      "name": "Pia Ricci",
+      "role": "Flower seller at Campo de' Fiori who sees everything",
+      "firstCase": "s3_ep03"
+    },
+    {
+      "charId": "carla_bassi",
+      "name": "Carla Bassi",
+      "role": "Plaster cast maker, owner of the Bassi workshop",
+      "firstCase": "s3_ep05"
+    }
+  ],
+  "locations": [
+    {
+      "locId": "capitoline_museums",
+      "name": "Capitoline Museums",
+      "landmarkKey": "capitolineMuseums"
+    },
+    {
+      "locId": "trevi_fountain",
+      "name": "Trevi Fountain",
+      "landmarkKey": "treviFountain"
+    },
+    {
+      "locId": "campo_de_fiori",
+      "name": "Campo de' Fiori",
+      "landmarkKey": "campoDeFiori"
+    },
+    {
+      "locId": "pantheon",
+      "name": "The Pantheon",
+      "landmarkKey": "pantheon"
+    },
+    {
+      "locId": "torre_argentina",
+      "name": "Largo di Torre Argentina",
+      "landmarkKey": "torreArgentina"
+    },
+    {
+      "locId": "piazza_navona",
+      "name": "Piazza Navona",
+      "landmarkKey": "piazzaNavona"
+    },
+    {
+      "locId": "rome_university",
+      "name": "University of Rome",
+      "landmarkKey": "romeUniversity"
+    },
+    {
+      "locId": "spanish_steps",
+      "name": "The Spanish Steps",
+      "landmarkKey": "spanishSteps"
+    },
+    {
+      "locId": "tiber_island",
+      "name": "Tiber Island",
+      "landmarkKey": "tiberIsland"
+    },
+    {
+      "locId": "roman_forum",
+      "name": "The Roman Forum",
+      "landmarkKey": "romanForum"
+    },
+    {
+      "locId": "piazza_della_civetta",
+      "name": "Piazza della Civetta",
+      "landmarkKey": "piazzaDellaCivetta"
+    }
+  ],
+  "acts": [
+    {
+      "actId": "act1",
+      "theme": "THE MISSING PIECE",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep02",
+        "s3_ep03",
+        "s3_ep04"
+      ]
+    },
+    {
+      "actId": "act2",
+      "theme": "THE COPY MAKER",
+      "caseIds": [
+        "s3_ep05",
+        "s3_ep06",
+        "s3_ep07",
+        "s3_ep08"
+      ]
+    },
+    {
+      "actId": "act3",
+      "theme": "UNDER THE OWL SQUARE",
+      "caseIds": [
+        "s3_ep09",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ]
+    }
+  ],
+  "outro": [
+    "The real piece is back in its glass case.",
+    "Under Piazza della Civetta, an old Roman library sees the light again."
+  ],
+  "finale": [
+    "Rome keeps its stories under its streets.",
+    "This time, you found one piece by piece."
+  ],
+  "languageArc": [
+    "Act 1: time words (at midnight, before, after), simple riddles and opposites.",
+    "Act 2: days of the week, AM and PM, reading backwards and a letter-shift code.",
+    "Act 3: Latin-to-English place words, Roman numbers, and putting a whole plan in order."
+  ],
+  "places": [
+    {
+      "placeId": "s3_rome.guard_room",
+      "file": "assets/seasons/season_03_rome/cases/case_01/guard_room.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.map_hall",
+      "file": "assets/seasons/season_03_rome/locations/map_hall.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.trevi_fountain",
+      "file": "assets/seasons/season_03_rome/locations/trevi_fountain.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.flower_market",
+      "file": "assets/seasons/season_03_rome/locations/flower_market.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.pantheon_hall",
+      "file": "assets/seasons/season_03_rome/locations/pantheon_hall.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.rotonda_bookshop",
+      "file": "assets/seasons/season_03_rome/cases/case_04/rotonda_bookshop.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.cat_ruins",
+      "file": "assets/seasons/season_03_rome/locations/cat_ruins.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.cast_workshop",
+      "file": "assets/seasons/season_03_rome/locations/cast_workshop.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.navona_square",
+      "file": "assets/seasons/season_03_rome/locations/navona_square.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.lecture_hall",
+      "file": "assets/seasons/season_03_rome/cases/case_06/lecture_hall.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.spanish_steps",
+      "file": "assets/seasons/season_03_rome/locations/spanish_steps.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.tiber_bridge",
+      "file": "assets/seasons/season_03_rome/locations/tiber_bridge.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.restoration_lab",
+      "file": "assets/seasons/season_03_rome/locations/restoration_lab.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.forum_view",
+      "file": "assets/seasons/season_03_rome/locations/forum_view.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.map_archive",
+      "file": "assets/seasons/season_03_rome/cases/case_09/map_archive.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.civetta_square",
+      "file": "assets/seasons/season_03_rome/locations/civetta_square.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.site_office",
+      "file": "assets/seasons/season_03_rome/locations/site_office.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s3_rome.roman_library",
+      "file": "assets/seasons/season_03_rome/locations/roman_library.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    }
+  ],
+  "notes": [
+    "STEP 3-11 trial season, planned by Claude Code with tool/season_planner (PLAYBOOK.md) from the input 'Season 3, Rome'. Not a released season: never in SeasonCatalog, not the decided Season 3.",
+    "Every place's picture is planned in assets.manifest.json and not made yet: the files above are where they will be written. No London or Paris picture stands in for them.",
+    "Piazza della Civetta and its Roman library are made up for the story; every other place is a real place in Rome."
+  ]
+}
