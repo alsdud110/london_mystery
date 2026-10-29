@@ -4,10 +4,10 @@
   "number": 9,
   "city": "Sandbox",
   "title": "Studio Trial",
-  "tagline": "ONE TRIAL CASE",
+  "tagline": "TRIAL CASES",
   "plannedCases": 12,
   "mainMystery": {
-    "truth": "Trial season for STEP 3-6. Only Case 01 is written; it has no season mystery.",
+    "truth": "Trial season for STEP 3-6 to 3-9. Cases 01 and 02 are written; they have no season mystery.",
     "culprit": "No culprit: the key was borrowed, not stolen.",
     "motive": "Mr. Bell needed the key to fix the lamp before story hour.",
     "revealCase": "s9_ep01"
@@ -93,7 +93,8 @@
     }
   ],
   "notes": [
-    "STEP 3-6 sandbox: a trial season for the pipeline only. Not London, not Paris, never in SeasonCatalog. Cases 02-12 are placeholders and are not planned.",
-    "STEP 3-8: the places borrow Paris Case 11's bundled pictures, for the sandbox only (never a season's own pictures)."
+    "STEP 3-6 sandbox: a trial season for the pipeline only. Not London, not Paris, never in SeasonCatalog.",
+    "STEP 3-8: the places borrow Paris Case 11's bundled pictures, for the sandbox only (never a season's own pictures).",
+    "STEP 3-9: Case 02 (The Story Box Code) is written, in the same library and places as Case 01. Cases 03-12 are placeholders and are not planned."
   ]
 }

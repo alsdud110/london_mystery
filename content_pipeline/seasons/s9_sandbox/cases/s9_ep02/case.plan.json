@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s9_ep02",
+  "seasonId": "s9_sandbox",
+  "number": 2,
+  "actId": "act1",
+  "title": "The Story Box Code",
+  "synopsis": [
+    "Story hour can start.",
+    "But the story box has a new lock!",
+    "Only Mr. Bell knows the code, and he has gone home."
+  ],
+  "goal": "Find Mr. Bell's three numbers and open the story box.",
+  "characters": [
+    "ms_rosa",
+    "mr_bell"
+  ],
+  "locations": [
+    "town_library"
+  ],
+  "missions": [
+    {
+      "missionId": "s9_ep02_m1",
+      "slot": "m1",
+      "placeId": "s9_sandbox.front_desk",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "book,shelf,lamp",
+          "options": [
+            {
+              "id": "lamp",
+              "label": "The lamp"
+            },
+            {
+              "id": "book",
+              "label": "The visitor book"
+            },
+            {
+              "id": "shelf",
+              "label": "The blue shelf"
+            }
+          ],
+          "codeLength": 3
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Mr. Bell's note, its three lines of his morning mixed up (Last, First, Then).",
+          "Question: Put Mr. Bell's morning in order. Where did he go first?"
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s9_ep01_c2",
+          "use": "textMention",
+          "note": "Case 01: Mr. Bell came at 9:20 with his ladder. His morning is the one the player followed."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s9_ep02_c1",
+        "evidence": "s9_ep02_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "쪽지의 First, Then, Last를 읽고 Mr. Bell이 들른 곳을 순서대로 놓는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "First, I wrote my name in the visitor book.",
+          "Then, I took the key from the blue shelf.",
+          "Last, I fixed the lamp."
+        ]
+      },
+      "play": {
+        "title": "Mr. Bell's Note",
+        "location": "THE FRONT DESK",
+        "story": [
+          "Ms. Rosa finds a note on the front desk.",
+          "It is from Mr. Bell.",
+          "\"He wrote it in a hurry,\" she says. \"The lines are all mixed up!\""
+        ],
+        "letterIntro": "Mr. Bell's note says:",
+        "letter": "Ms. Rosa, I locked the story box. My ladder was next to it!\nThe code has three numbers. You love puzzles, so I hid one number at each place I went this morning.\nLast, I fixed the lamp.\nFirst, I wrote my name in the visitor book.\nThen, I took the key from the blue shelf.\nFind the numbers in the same order!\n— Mr. Bell",
+        "question": "Put Mr. Bell's morning in order. Where did he go first?",
+        "hints": [
+          "Look for three words in the note: First, Then and Last.",
+          "The line with First tells you where to start."
+        ],
+        "successMessage": "You put Mr. Bell's morning in order!",
+        "transition": [
+          "First the visitor book, then the blue shelf, last the lamp.",
+          "One number is hiding in each place.",
+          "The visitor book is right here on the desk."
+        ],
+        "orderFeedback": "Read the note again. Find First, Then and Last.",
+        "mapX": 0.3,
+        "mapY": 0.62,
+        "clue": {
+          "title": "Mr. Bell's Morning",
+          "value": "BOOK · SHELF · LAMP",
+          "note": "One number in each place: first the visitor book, then the blue shelf, last the lamp.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "Mr. Bell's Note",
+          "icon": "letter",
+          "description": "A note Mr. Bell left on the front desk.",
+          "inscription": "The code has three numbers. I hid one number at each place I went this morning."
+        }
+      }
+    },
+    {
+      "missionId": "s9_ep02_m2",
+      "slot": "m2",
+      "placeId": "s9_sandbox.front_desk",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "one",
+          "options": [
+            {
+              "id": "none",
+              "label": "No one came before him.",
+              "feedback": "Look at Tom's time. Is 9:10 before 9:20?"
+            },
+            {
+              "id": "one",
+              "label": "One visitor came before him."
+            },
+            {
+              "id": "two",
+              "label": "Two visitors came before him.",
+              "feedback": "Look at Mrs. Lee's time. Is 9:40 before 9:20?"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the visitor book of Case 01, with Mr. Bell's pencil line: the first number is how many visitors came before him.",
+          "Question: How many visitors came before Mr. Bell?"
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s9_ep02_c1",
+          "use": "textMention",
+          "note": "The visitor book is the first of Mr. Bell's three places."
+        },
+        {
+          "ref": "s9_ep01_e2",
+          "use": "evidenceLink",
+          "note": "The same visitor book the player put in order in Case 01."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s9_ep02_c2",
+        "evidence": "s9_ep02_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "방문 기록의 시각을 비교해 before의 뜻대로 Mr. Bell보다 먼저 온 방문객 수를 센다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "How many visitors came before me?",
+          "Tom came before Mr. Bell."
+        ]
+      },
+      "play": {
+        "title": "The Visitor Book",
+        "location": "THE FRONT DESK",
+        "story": [
+          "You open the visitor book again.",
+          "Under Mr. Bell's name, there is a tiny line in pencil."
+        ],
+        "letterIntro": "The visitor book says:",
+        "letter": "TOM — 9:10\nMR. BELL — 9:20\nMRS. LEE — 9:40\n\nIn pencil, under Mr. Bell's name:\nThe first number: How many visitors came before me?",
+        "question": "How many visitors came before Mr. Bell?",
+        "hints": [
+          "Find Mr. Bell's time first.",
+          "Before means earlier. Which times are earlier than his?"
+        ],
+        "successMessage": "You found the first number!",
+        "transition": [
+          "Only Tom came before Mr. Bell. The first number is 1.",
+          "Next, Mr. Bell went to the blue shelf.",
+          "You walk to the window."
+        ],
+        "mapX": 0.3,
+        "mapY": 0.62,
+        "clue": {
+          "title": "The First Number",
+          "value": "1 · THE VISITOR BOOK",
+          "note": "Only one visitor, Tom, came before Mr. Bell.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Mr. Bell's Pencil Line",
+          "icon": "feather",
+          "description": "A tiny line under Mr. Bell's name in the visitor book.",
+          "inscription": "The first number: How many visitors came before me?"
+        },
+        "evidenceLinkLine": "The same visitor book you read in Case 01, now with Mr. Bell's pencil line."
+      }
+    },
+    {
+      "missionId": "s9_ep02_m3",
+      "slot": "m3",
+      "placeId": "s9_sandbox.window_shelf",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "FOUR",
+          "acceptedAnswers": [
+            "4"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Mr. Bell's poem on a card. The first letters of its four lines spell FOUR.",
+          "Question: What is the second number? Write it as a word."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s9_ep02_c1",
+          "use": "textMention",
+          "note": "The blue shelf is the second of Mr. Bell's three places."
+        },
+        {
+          "ref": "s9_ep01_c1",
+          "use": "textMention",
+          "note": "Case 01: the blue shelf by the window is where the key was."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s9_ep02_c3",
+        "evidence": "s9_ep02_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "시의 각 줄 첫 글자를 모아 숫자 단어 four를 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "My number hides where each line begins.",
+          "The second number is four."
+        ]
+      },
+      "play": {
+        "title": "The Shelf Poem",
+        "location": "THE BLUE SHELF",
+        "story": [
+          "The blue shelf is by the window.",
+          "This is where the key was this morning.",
+          "Now there is a card under a book. It is a poem!"
+        ],
+        "letterIntro": "The card says:",
+        "letter": "My number hides where each line begins.\n\nFix the lamp,\nOpen the door,\nUp the ladder,\nRead some more!\n— Mr. Bell",
+        "question": "What is the second number? Write it as a word.",
+        "prompt": "The second number is ____.",
+        "hints": [
+          "Look at the first letter of each line of the poem.",
+          "Put those letters together, from the top line down. They make a number word."
+        ],
+        "successMessage": "You found the second number!",
+        "transition": [
+          "F, O, U, R. The poem spells FOUR. The second number is 4.",
+          "Last, Mr. Bell fixed the lamp.",
+          "The lamp and the story box are in the Reading Room."
+        ],
+        "orderFeedback": "Those are the right letters. Read them from the top line down.",
+        "mapX": 0.62,
+        "mapY": 0.4,
+        "clue": {
+          "title": "The Second Number",
+          "value": "4 · THE BLUE SHELF",
+          "note": "The first letters of Mr. Bell's poem spell FOUR.",
+          "symbol": "key"
+        },
+        "evidence": {
+          "name": "The Shelf Poem",
+          "icon": "letter",
+          "description": "A card with a poem, under a book on the blue shelf.",
+          "inscription": "Fix the lamp, Open the door, Up the ladder, Read some more!"
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s9_ep02_final",
+    "slot": "final",
+    "placeId": "s9_sandbox.reading_room",
+    "puzzle": {
+      "paletteId": "combo_dial_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "finalCode",
+      "answerSpec": {
+        "answer": "145",
+        "codeLength": 3,
+        "dialSymbols": [
+          "feather",
+          "key",
+          "ticket"
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: the tag on the lamp. Six bulbs, two broken, one fixed: five work now.",
+        "Question: Turn the dials to Mr. Bell's three numbers, in his order.",
+        "The dials' pictures are the places' own: the visitor book's feather (Case 01's visitor book), the key of the blue shelf, the card of the lamp (Case 01's job card)."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s9_ep02_c1",
+        "use": "answerDerivation",
+        "note": "The order of the numbers: the visitor book, the blue shelf, the lamp."
+      },
+      {
+        "ref": "s9_ep02_c2",
+        "use": "answerDerivation",
+        "note": "The first number: 1."
+      },
+      {
+        "ref": "s9_ep02_c3",
+        "use": "answerDerivation",
+        "note": "The second number: 4."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s9_ep02_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "램프 쪽지(6개 중 2개 고장, 1개 수리)를 읽어 셋째 숫자 5를 구하고, 세 단서의 순서대로 145를 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "Two bulbs were broken.",
+        "I fixed one of them.",
+        "How many bulbs work now?"
+      ]
+    },
+    "play": {
+      "title": "The Story Box",
+      "location": "THE READING ROOM",
+      "story": [
+        "The children wait on the rug.",
+        "The story box has three brass dials: a feather, a key and a card.",
+        "A tag hangs on the lamp above it."
+      ],
+      "letterIntro": "The lamp tag says:",
+      "letter": "The last number:\nThis lamp has six bulbs.\nThis morning, two bulbs were broken.\nI fixed one of them.\nHow many bulbs work now?\n— Mr. Bell",
+      "question": "Turn the dials to Mr. Bell's three numbers, in his order. Then open the story box.",
+      "hints": [
+        "Your notebook has the first two numbers: the visitor book, then the blue shelf.",
+        "Six bulbs. Two were broken, and one is fixed. Count the bulbs that work now."
+      ],
+      "successMessage": "The story box opens!",
+      "transition": [
+        "Click! The lid opens.",
+        "Inside are the story books, and one new book!",
+        "A card on it says: \"For story hour. Thank you, Ms. Rosa! — Mr. Bell\"",
+        "Ms. Rosa smiles. \"Now, children, who wants a story?\""
+      ],
+      "feedback": {
+        "144": "Two bulbs were broken, but Mr. Bell fixed one. Count the bulbs again.",
+        "146": "Not all six bulbs work. Read the lamp tag again."
+      },
+      "orderFeedback": "Right numbers, wrong order. Where did Mr. Bell go first?",
+      "mapX": 0.7,
+      "mapY": 0.3,
+      "evidence": {
+        "name": "The New Story Book",
+        "icon": "letter",
+        "description": "A gift from Mr. Bell, found in the story box.",
+        "inscription": "For story hour. Thank you, Ms. Rosa! — Mr. Bell"
+      }
+    }
+  },
+  "hook": "The story box is open. Who wants a story?",
+  "learningGoal": {
+    "title": "In order: first, then, last, before",
+    "titleKo": "순서: first, then, last, before"
+  },
+  "play": {
+    "objectives": [
+      "Read Mr. Bell's note.",
+      "Find his three numbers.",
+      "Open the story box."
+    ],
+    "intro": [
+      "Story hour can start.",
+      "But the story box has a new lock!",
+      "Mr. Bell locked it this morning. Now he has gone home."
+    ],
+    "caseSummary": "Mr. Bell locked the story box to keep it safe from his ladder. You followed his morning, the visitor book, the blue shelf and the lamp, and opened the box with 145.",
+    "place": "TOWN LIBRARY",
+    "keyWords": [
+      "first",
+      "then",
+      "last",
+      "before",
+      "bulb"
+    ],
+    "glossary": {
+      "hurry": "서두름",
+      "poem": "시",
+      "bulb": "전구",
+      "broken": "고장 난",
+      "dial": "다이얼"
+    }
+  },
+  "notes": [
+    "STEP 3-9: planned by Claude Code for the sandbox season. It follows Case 01's end (Mr. Bell borrowed the key to fix the lamp).",
+    "Every puzzle is a ready text-only palette puzzle: no new picture or sound. The places are Case 01's (the season plan's places, Paris Case 11's pictures lent for the sandbox only).",
+    "Clues across cases: Mr. Bell's morning is Case 01's (s9_ep01_c1, s9_ep01_c2); Mission 2's evidence is matched to Case 01's visitor book (s9_ep01_e2)."
+  ]
+}

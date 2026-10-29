@@ -259,7 +259,53 @@ dart run tool/season_gen/generate_case.dart --season content_pipeline/seasons/s9
 `lib/`, never `SeasonCatalog`); `test/sandbox/sandbox_season.dart` puts it in
 the real app for the tests (`test/sandbox/s9_ep01_test.dart`,
 `integration_test/sandbox_case_qa_test.dart`). Only the sandbox's text
-puzzles (`text_choice`, `order_sequence`, `word_entry`, `letter_tile_lock`)
-are made. Nothing is written when a check fails; a generated file changed by
-hand, or one without its header, is never written over (`--force`); line
-endings are LF and read back CRLF-blind.
+puzzles (`text_choice`, `order_sequence`, `word_entry`, `letter_tile_lock`,
+and the final's `combo_dial_lock`) are made. Nothing is written when a check
+fails; a generated file changed by hand, or one without its header, is never
+written over (`--force`); line endings are LF and read back CRLF-blind.
+
+## A season of cases (STEP 3-9)
+
+| File | What |
+|---|---|
+| `season_cases.dart` | `SeasonCases.of`: the case plans a season's folder holds, in its play order |
+| `generate_season.dart` | Command line: every case of the season made together |
+
+```sh
+dart run tool/season_gen/generate_season.dart \
+  --season content_pipeline/seasons/s9_sandbox/season.plan.json --target sandbox   # --check, --force, --out
+```
+
+```
+content_pipeline/seasons/<seasonId>/        test/sandbox/generated/<seasonId>/
+  season.plan.json                            <seasonId>_season.g.dart
+  cases/<caseId>/case.plan.json  (each)  →    <caseId>.g.dart            (each)
+                                              <seasonId>_cases.g.dart    every case, for SeasonContent
+                                              generated.manifest.json    cases in order, inputs' and outputs' hashes
+```
+
+- **Order** is the season plan's acts (Case 01–12). The cases written are
+  its first ones: a case is unlocked by the one before it, so one written
+  after a missing case is refused (`case_missing`), as is a folder of no case
+  of the season (`case_not_in_season`), a case folder with no plan
+  (`case_plan_missing`), a case or mission id given twice, a plan away from
+  `cases/<caseId>/`. Their number is not fixed anywhere: one case or twelve.
+- **All or nothing.** Every case's checks (`validate_plan`, the season's
+  clue graph across cases, `PlayCheck`) run before anything is made; one
+  case failing makes none. The files are then all written beside their
+  places (`*.part`) before any is moved over the one it replaces, the
+  manifest last; a file that cannot be written leaves the others as they
+  were. The moves themselves are not one step: one failing midway leaves new
+  files under the old manifest, which the next run reports as changed by
+  hand (`--force` to write over them), never as up to date.
+- `<seasonId>_cases.g.dart` lists every case made: the season's content
+  (`test/sandbox/sandbox_season.dart`) takes it whole, so a new case needs no
+  line written by hand. `generate_case.dart` with only some of a season's
+  written cases is refused (`case_left_out`): it would leave the others out
+  of that list.
+
+The sandbox season holds Case 01 (STEP 3-6) and Case 02, "The Story Box
+Code" (STEP 3-9, planned by Claude Code), played one after the other in
+`test/sandbox/s9_multi_case_test.dart` and on a device by
+`integration_test/sandbox_multi_case_qa_test.dart` (screenshots under
+`qa/screenshots/sandbox/multi_case/`).

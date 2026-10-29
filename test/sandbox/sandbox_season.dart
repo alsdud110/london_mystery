@@ -5,26 +5,26 @@ import 'package:world_mystery/data/repositories/episode_repository.dart';
 import 'package:world_mystery/features/game/game_providers.dart';
 import 'package:world_mystery/features/mission_map/map_world.dart';
 
-import 'generated/s9_sandbox/s9_ep01.g.dart';
+import 'generated/s9_sandbox/s9_sandbox_cases.g.dart';
 import 'generated/s9_sandbox/s9_sandbox_season.g.dart';
 
-/// The sandbox season (STEP 3-8): the content `tool/season_gen/generate_case.dart`
+/// The sandbox season (STEP 3-8, 3-9): the content `tool/season_gen/generate_season.dart`
 /// made of `content_pipeline/seasons/s9_sandbox/`, put in the real app for the
 /// tests only. Never in `SeasonCatalog.all`, never in `lib/`: the app as built
-/// has no way to it. Written by hand once; a new case of the season adds its
-/// generated constants here, a line each.
+/// has no way to it. Every case the season's folder holds comes in through
+/// the generated `s9_sandbox_cases.g.dart`: a new case needs no line here.
 const sandboxSeasonId = 's9_sandbox';
 
 /// The season as the game's validator checks a season (`SeasonContentValidator.validate`).
 const sandboxContent = SeasonContent(
   info: s9SandboxInfoJson,
-  episodes: {'s9_ep01': s9Ep01Json},
+  episodes: s9SandboxEpisodes,
   places: s9SandboxPlaces,
   released: false,
   storyGreeting: s9SandboxStoryGreeting,
-  learning: {...s9Ep01Learning},
-  languageTopics: {'s9_ep01': s9Ep01LanguageTopic},
-  evidenceLinks: {...s9Ep01EvidenceLinks},
+  learning: s9SandboxLearning,
+  languageTopics: s9SandboxLanguageTopics,
+  evidenceLinks: s9SandboxEvidenceLinks,
 );
 
 /// Its cases as the game reads them.

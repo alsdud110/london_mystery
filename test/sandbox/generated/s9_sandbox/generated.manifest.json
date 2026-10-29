@@ -1,15 +1,22 @@
 {
   "generator": "generate_case.dart",
-  "generatorVersion": 1,
+  "generatorVersion": 2,
   "target": "sandbox",
   "seasonId": "s9_sandbox",
+  "cases": [
+    "s9_ep01",
+    "s9_ep02"
+  ],
   "approved": false,
   "inputs": {
-    "season.plan.json": "sha256:0157f380e599e6afcb08451e8314039caea845979ccd2cb0cdadf2e57fd1370e",
-    "cases/s9_ep01/case.plan.json": "sha256:9f652f097f29d3b734e46bb7f41271739c307ea380ea61f2aa3504f5d0736d80"
+    "season.plan.json": "sha256:a29e6e118def9967b41cbd523b83dc7d569c3aa56da16f2b6df581f84e942227",
+    "cases/s9_ep01/case.plan.json": "sha256:9f652f097f29d3b734e46bb7f41271739c307ea380ea61f2aa3504f5d0736d80",
+    "cases/s9_ep02/case.plan.json": "sha256:bf3f5b9c13396575fe9272b7f0d92d1b9b7a2c30a3d26242f513dd0d595baa76"
   },
   "outputs": {
-    "s9_sandbox_season.g.dart": "sha256:94df2e4f37dd9ca7f41bde2ac5b627318bfb0f89bac2eedc6b00410da7f02c0c",
-    "s9_ep01.g.dart": "sha256:2c763c4de23ed9368a0faa4e4940cc0a43ee6f18767f75ca86f7a8093d95ab68"
+    "s9_sandbox_season.g.dart": "sha256:56ba7c638db562e4ffe8338511982ee8f6f1d5261ed0b82b086068284958cc72",
+    "s9_ep01.g.dart": "sha256:2c763c4de23ed9368a0faa4e4940cc0a43ee6f18767f75ca86f7a8093d95ab68",
+    "s9_ep02.g.dart": "sha256:5edce95b370bbcfb4487a9fb51cf632bcbd05c977b18b327071ce9c9829c5a32",
+    "s9_sandbox_cases.g.dart": "sha256:d63104eec106a96d3198f6341c89a50bd91a762a2df7f4d823cd312b3bf5e346"
   }
 }

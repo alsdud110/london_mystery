@@ -42,9 +42,9 @@ abstract final class PlayCheck {
   static const maxHints = 2;
 
   /// The puzzles the generator makes now: the palette's text-only puzzles of
-  /// the sandbox case, played by the mission page's own question widgets
-  /// (no table, no picture).
-  static const generatable = {'text_choice', 'order_sequence', 'word_entry', 'letter_tile_lock'};
+  /// the sandbox cases, played by the mission page's own question widgets
+  /// or the final page's dials (no table, no picture).
+  static const generatable = {'text_choice', 'order_sequence', 'word_entry', 'letter_tile_lock', 'combo_dial_lock'};
 
   static const _choiceTypes = {'multipleChoice', 'imageChoice', 'canvasChoice'};
 

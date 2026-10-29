@@ -21,6 +21,7 @@ import 'package:world_mystery/widgets/scene_backdrop.dart';
 
 import '../../tool/season_gen/generate_case.dart';
 import '../../tool/season_gen/plan_files.dart';
+import '../../tool/season_gen/season_cases.dart';
 import '../full_playthrough_test.dart' show reveal, tapText, wait;
 import '../helpers.dart';
 import 'generated/s9_sandbox/s9_ep01.g.dart';
@@ -38,13 +39,13 @@ void main() {
   final game = Episode.fromJson(s9Ep01Json);
 
   group('the generated content', () {
-    test('is what the plans make now, byte for byte (generate_case --check)', () {
-      final made = CaseGenerator.sandbox(seasonPath: '$seasonDir/season.plan.json', casePaths: [casePath]);
-      expect(made.files.keys, ['s9_sandbox_season.g.dart', 's9_ep01.g.dart', 'generated.manifest.json']);
+    test('is what the plans make now, byte for byte (generate_season --check)', () {
+      Generated make() => CaseGenerator.sandbox(seasonPath: '$seasonDir/season.plan.json', casePaths: SeasonCases.of('$seasonDir/season.plan.json'));
+      final made = make();
+      expect(made.files.keys, contains('s9_ep01.g.dart'));
       expect(GeneratedFiles.stale('test/sandbox/generated/s9_sandbox', made.files), isEmpty,
-          reason: 'run: dart run tool/season_gen/generate_case.dart --season $seasonDir/season.plan.json --target sandbox $casePath');
-      final again = CaseGenerator.sandbox(seasonPath: '$seasonDir/season.plan.json', casePaths: [casePath]);
-      expect(again.files, made.files, reason: 'the same plans, the same bytes');
+          reason: 'run: dart run tool/season_gen/generate_season.dart --season $seasonDir/season.plan.json --target sandbox');
+      expect(make().files, made.files, reason: 'the same plans, the same bytes');
       final manifest = jsonDecode(made.files['generated.manifest.json']!) as Map;
       expect(manifest['approved'], isFalse, reason: 'drafts: sandbox content only');
     });
