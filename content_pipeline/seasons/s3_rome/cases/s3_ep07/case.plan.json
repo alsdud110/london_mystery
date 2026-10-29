@@ -107,6 +107,11 @@
           "icon": "seal",
           "description": "The owl card that was under Giulia's door.",
           "inscription": "My sign is just above the flowers."
+        },
+        "discovery": {
+          "type": "newLead",
+          "title": "THE CHALK OWL",
+          "detail": "Just above the flower pots, the Owl drew a sign. Under it: seven strange letters."
         }
       }
     },
@@ -188,6 +193,11 @@
           "icon": "letter",
           "description": "The Owl's code in chalk, above the flower pots.",
           "inscription": "UVFTEBZ — move each letter back by one."
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "A DAY: TUESDAY",
+          "detail": "Someone borrowed the piece on Tuesday. The Owl says: watch that person."
         }
       }
     },
@@ -255,9 +265,8 @@
         "title": "The Smiling Sponsor",
         "location": "THE SPANISH STEPS",
         "story": [
-          "\"Bruno Valli,\" the man says, and shakes your hand hard.",
-          "\"I pay for the museum's show. I want to help you!\"",
-          "He leans in close and tells you a story."
+          "The man stops in front of you, all smiles.",
+          "He shakes your hand hard."
         ],
         "letterIntro": "Signor Valli says:",
         "letter": "\"On Friday at midnight, I walked past the museum.\nI saw Professor Aldo at the back door.\nHe carried a heavy box out of the museum!\nHe wanted that piece so much. It was him, I am sure.\"",
@@ -268,9 +277,8 @@
         ],
         "successMessage": "You caught a story that is not true!",
         "transition": [
-          "At midnight, Aldo was answering questions in Hall B.",
-          "Signor Valli's smile goes stiff. \"Maybe I saw wrong. It was dark.\"",
-          "He gives you his card and walks away fast."
+          "Why would the sponsor tell a story that is not true?",
+          "On his card, there is a little gold crane."
         ],
         "mapX": 0.62,
         "mapY": 0.18,
@@ -290,6 +298,49 @@
           "title": "Check his story",
           "prompt": "Which thing in your Notebook shows where Aldo was at midnight?",
           "miss": "Look for the log of Friday night at the university."
+        },
+        "talk": {
+          "speaker": "bruno_valli",
+          "portrait": "assets/seasons/season_03_rome/characters/bruno_base.png",
+          "goal": "Listen to the sponsor's story.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Bruno Valli! I pay for the museum's show."
+              },
+              {
+                "by": "speaker",
+                "text": "I want to help you, Detective."
+              },
+              {
+                "by": "speaker",
+                "text": "Listen. I saw something on Friday night."
+              }
+            ],
+            "finishLabel": "LISTEN"
+          },
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Hall B? Well... maybe I saw wrong."
+              },
+              {
+                "by": "speaker",
+                "text": "It was very dark, you know."
+              },
+              {
+                "by": "narrator",
+                "text": "He gives you his card and walks away fast."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "A STORY THAT IS NOT TRUE",
+          "detail": "Aldo was in Hall B at midnight. So why did Signor Valli blame him?"
         }
       }
     }
@@ -360,17 +411,16 @@
       ],
       "successMessage": "The Owl's box opens!",
       "transition": [
-        "Inside is a page copied from the museum lab's loan book.",
-        "\"TUESDAY, 2 PM to 5 PM. The new piece left the lab for poster photos. Signed: B.V.\"",
-        "\"B.V.,\" says Giulia slowly. \"Bruno Valli.\"",
-        "You look up. The young woman with the owl ring is gone."
+        "The young woman with the owl ring is gone.",
+        "Under the page is one more owl card.",
+        "At last, the Owl wants to meet you."
       ],
       "feedback": {
-        "437": "Tuesday is day 2. Count from Monday.",
         "327": "Count the places on the steps again. The Owl's sign is one of them.",
-        "426": "Count the letters of the code word again."
+        "426": "Count the letters of the code word again.",
+        "437": "Tuesday is day 2. Count from Monday."
       },
-      "orderFeedback": "Right numbers, wrong order. Places first, then the day, then the letters.",
+      "orderFeedback": "All three numbers fit. Places first, then the day, then the letters.",
       "mapX": 0.63,
       "mapY": 0.15,
       "evidence": {
@@ -378,7 +428,34 @@
         "icon": "letter",
         "description": "A copy of the museum lab's loan book, from the Owl's box.",
         "inscription": "TUESDAY · 2 PM to 5 PM · For poster photos · Signed: B.V."
-      }
+      },
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Four, two, seven. The box opens!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Inside is a copied page from the lab's loan book."
+        },
+        {
+          "by": "narrator",
+          "text": "TUESDAY, 2 PM to 5 PM. Taken for poster photos. B.V."
+        },
+        {
+          "by": "detective",
+          "text": "B.V. The same name as on this card.",
+          "evidence": "s3_ep07_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "Bruno Valli took the piece out on Tuesday!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        }
+      ]
     }
   },
   "hook": "B.V. took the piece out on Tuesday, and the Owl knew. Who is the Owl?",
@@ -417,6 +494,7 @@
   },
   "notes": [
     "Bruno is suspicious from here, but nothing yet proves the swap: the season reveals him in Case 11.",
-    "The loan book page (s3_ep07_e4) is the first link of Bruno's plan, put in order in Case 11."
+    "The loan book page (s3_ep07_e4) is the first link of Bruno's plan, put in order in Case 11.",
+    "STEP 3-14: puzzles kept (an order on the steps, a code, a story checked against the Hall B log, a dial). Valli's talks, Discovery Moments and an ending added; the owl card in the box is the one read in Case 08 M1."
   ]
 }

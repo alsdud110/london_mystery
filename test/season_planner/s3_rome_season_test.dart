@@ -12,6 +12,7 @@ import 'package:world_mystery/data/models/scene_place.dart';
 import '../../tool/season_gen/generate_case.dart';
 import '../../tool/season_gen/plan_files.dart';
 import '../../tool/season_gen/plan_ids.dart';
+import '../../tool/season_gen/play_check.dart';
 import '../../tool/season_gen/season_cases.dart';
 import '../../tool/season_planner/finding.dart';
 import '../../tool/season_planner/season_quality.dart';
@@ -83,14 +84,25 @@ void main() {
       expect(g['run'], isTrue);
       expect(g['compatible'], isTrue);
       expect(g['otherFailures'], 0);
-      expect(g['blockedByPictures'], season.places.length);
       try {
         CaseGenerator.sandbox(seasonPath: '$dir/season.plan.json', casePaths: SeasonCases.of('$dir/season.plan.json'));
         fail('made without its pictures');
       } on GenerateFailure catch (e) {
+        // STEP 3-14: the places' pictures, and the pictures the missions on
+        // pictures and the talks show (choices, witnesses, faces), are all
+        // that is missing; nothing else stops the generator.
         final errors = [for (final l in e.lines) if (l.trim().startsWith('error')) l];
-        expect(errors, hasLength(season.places.length));
-        expect(errors.every((l) => l.contains('[place_file_missing]')), isTrue, reason: errors.join('\n'));
+        expect(g['blockedByPictures'], errors.length);
+        expect(errors.where((l) => l.contains('[place_file_missing]')), hasLength(season.places.length));
+        expect(errors.every((l) => l.contains('[place_file_missing]') || l.contains('[asset_file_missing]')), isTrue, reason: errors.join('\n'));
+        final planned = {for (final a in assets) a['outputPath']};
+        for (final c in cases) {
+          for (final m in c.allMissions) {
+            for (final (_, f) in PlayCheck.pictureFiles(m)) {
+              expect(planned, contains(f), reason: '${m.missionId} shows $f: planned in the manifest');
+            }
+          }
+        }
       }
       expect(Directory('test/sandbox/generated/s3_rome').existsSync(), isFalse, reason: 'nothing was written');
     });
@@ -147,8 +159,10 @@ void main() {
         expect(File('${a['outputPath']}').existsSync(), isFalse, reason: '${a['outputPath']} is not made yet');
         expect('${a['outputPath']}', startsWith('assets/seasons/season_03_rome/'));
       }
-      expect(report.picturesPending, season.places.length);
-      expect(report.findings.where((f) => f.code == 'image_pending').every((f) => f.level == Level.info), isTrue);
+      final pending = report.findings.where((f) => f.code == 'image_pending').toList();
+      expect(report.picturesPending, pending.length);
+      expect(pending.where((f) => f.where.startsWith('season.plan.json')), hasLength(season.places.length));
+      expect(pending.every((f) => f.level == Level.info), isTrue);
     });
 
     test('every character has a base portrait, and every other pose is drawn from it', () {

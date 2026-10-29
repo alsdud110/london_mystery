@@ -28,33 +28,45 @@
       "slot": "m1",
       "placeId": "s3_rome.site_office",
       "puzzle": {
-        "paletteId": "text_choice",
+        "paletteId": "picture_choice",
         "surface": "mission",
         "engineTable": null,
-        "missionType": "multipleChoice",
+        "missionType": "imageChoice",
         "answerSpec": {
           "answer": "stone_c",
           "options": [
             {
               "id": "stone_a",
               "label": "Stone A",
-              "feedback": "The real piece shows a street and an owl, not a lion."
+              "feedback": "This stone has a lion, not a street and an owl.",
+              "altText": "a grey marble stone carved with a lion's head",
+              "picture": "assets/seasons/season_03_rome/cases/case_11/stone_lion.png"
             },
             {
               "id": "stone_b",
               "label": "Stone B",
-              "feedback": "Plaster, 4 kg and no crack? That sounds like another copy."
+              "feedback": "It has street lines. But look for the tiny owl and the crack.",
+              "altText": "a grey marble stone carved with street lines, with no owl and no crack",
+              "picture": "assets/seasons/season_03_rome/cases/case_11/stone_street.png"
             },
             {
               "id": "stone_c",
-              "label": "Stone C"
+              "label": "Stone C",
+              "altText": "a grey marble stone carved with street lines, a tiny owl and a crack shaped like a Y",
+              "picture": "assets/seasons/season_03_rome/objects/real_map_piece.png"
             }
           ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.stone_lion",
+          "s3_rome.asset.stone_street",
+          "s3_rome.asset.ev_real_piece",
+          "s3_rome.asset.char_bruno_site"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Recall: Aldo's old photo (Case 06), the Y-shaped crack. Letter: the inspector's notes on three stones."
+          "A picture choice with the names hidden: all three stones are grey marble of 12 kg, so the inspector's notes cannot tell them apart; Aldo's photo (recalled) can: a street, a tiny owl, a Y-shaped crack.",
+          "Stone C is the real piece's own picture (ev_real_piece); A and B are drawn from it so the three look alike but for their carvings."
         ]
       },
       "clueInputs": [
@@ -75,13 +87,15 @@
       },
       "learning": {
         "dependency": "essential",
-        "level": "comprehension",
-        "objective": "세 돌의 설명(재료, 무게, 무늬, 금)을 사진 증거와 비교해 진짜 조각을 고른다.",
-        "skill": "sentenceMeaning",
+        "level": "recall",
+        "objective": "Aldo 사진 속 특징(a tiny owl, a crack shaped like a Y)을 떠올려 세 돌 그림 중 진짜 지도 조각을 고른다.",
+        "skill": "vocabulary",
         "expressions": [
-          "A crack shaped like a Y.",
-          "No crack."
-        ]
+          "a crack shaped like a Y",
+          "a tiny owl",
+          "Only one is the real map piece."
+        ],
+        "recallFrom": "s3_ep06_final"
       },
       "play": {
         "title": "Three Stones",
@@ -89,20 +103,20 @@
         "story": [
           "Sofia arrives with the city inspector, a tall woman with a clipboard.",
           "Signor Valli opens his office with a big smile. \"Search all you like!\"",
-          "In his box room, the inspector finds three stones, and writes notes."
+          "In his box room, there are three grey stones on a shelf."
         ],
         "letterIntro": "The inspector's notes say:",
-        "letter": "THE BOX ROOM\nSTONE A: marble, 12 kg. A carved lion. No crack.\nSTONE B: plaster, 4 kg. A long street and a tiny owl. No crack.\nSTONE C: marble, 12 kg. A long street and a tiny owl. A crack shaped like a Y.",
+        "letter": "THE BOX ROOM — THREE STONES\nAll three are grey marble.\nAll three weigh about 12 kg.\nOnly one is the real map piece.\nCheck them against Aldo's photo.",
         "question": "Which stone is the real map piece?",
         "hints": [
-          "The real piece is marble and shows a street and an owl.",
-          "Look at Aldo's old photo. What mark does the real piece have?"
+          "Open Aldo's photo. What marks does the real piece have?",
+          "Look at each stone for a tiny owl and a crack shaped like a Y."
         ],
         "successMessage": "You found the real piece!",
         "transition": [
-          "Stone C: marble, the street, the owl, and the Y-shaped crack.",
-          "Livia touches it gently. \"It is the real one.\"",
-          "Signor Valli laughs. \"That old thing? I bought it at a market!\""
+          "Livia touches the stone gently. \"It is the real one.\"",
+          "Pia's stall is only two streets away.",
+          "Giulia runs to bring her here."
         ],
         "mapX": 0.52,
         "mapY": 0.52,
@@ -122,25 +136,79 @@
           "title": "Which one is real?",
           "prompt": "Which thing in your Notebook shows the real piece's mark?",
           "miss": "Find the old photo Aldo gave you."
+        },
+        "hideOptionNames": true,
+        "talk": {
+          "speaker": "bruno_valli",
+          "portrait": "assets/seasons/season_03_rome/characters/bruno_site.png",
+          "goal": "Find the real map piece.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "That old thing? It is mine!"
+              },
+              {
+                "by": "speaker",
+                "text": "I bought it last Sunday, at Campo de' Fiori."
+              },
+              {
+                "by": "speaker",
+                "text": "A man called Leo sold it to me."
+              },
+              {
+                "by": "detective",
+                "text": "Then we will ask the flower seller."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "evidenceFound",
+          "title": "THE REAL MAP PIECE",
+          "detail": "The street, the owl and the Y crack, just like Aldo's photo.",
+          "showEvidence": true
         }
       }
     },
     {
       "missionId": "s3_ep11_m2",
       "slot": "m2",
-      "placeId": "s3_rome.flower_market",
+      "placeId": "s3_rome.site_office",
       "puzzle": {
-        "paletteId": "word_entry",
+        "paletteId": "witness_compare",
         "surface": "mission",
-        "engineTable": null,
-        "missionType": "wordInput",
+        "engineTable": "dialogues",
+        "missionType": "multipleChoice",
         "answerSpec": {
-          "answer": "SUNDAY"
+          "answer": "closed",
+          "options": [
+            {
+              "id": "closed",
+              "label": "The market is closed on Sunday."
+            },
+            {
+              "id": "open",
+              "label": "Valli bought the stone there on Sunday.",
+              "feedback": "Only Signor Valli says that. Find two people who agree."
+            },
+            {
+              "id": "leo",
+              "label": "Leo sells stones at the market.",
+              "feedback": "Nobody else knows Leo. Compare the other answers about Sunday."
+            }
+          ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.site_office",
+          "s3_rome.asset.char_bruno_site",
+          "s3_rome.asset.char_pia_base",
+          "s3_rome.asset.char_sofia_base"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Letter: Valli's story (bought on Sunday at Campo de' Fiori) and Pia's answer (open Monday to Saturday)."
+          "Played as a talk (DialogueScene) in Valli's office: Pia and Sofia agree that the market is closed on Sunday, so Valli's story breaks. Pia's 'There is no Leo' is heard after (then) and is what Valli admits in the final.",
+          "Moved from Pia's stall to the site office: the three people it compares are there together."
         ]
       },
       "clueInputs": [
@@ -161,47 +229,42 @@
       },
       "learning": {
         "dependency": "essential",
-        "level": "application",
-        "objective": "from Monday to Saturday를 이해해 시장이 쉬는 요일을 찾아 거짓말을 밝힌다.",
+        "level": "comprehension",
+        "objective": "세 사람에게 시장에 대해 묻고, 일요일에 대해 두 사람이 일치하는 진술(closed on Sunday)을 찾아 Valli의 말이 거짓임을 밝힌다.",
         "skill": "sentenceMeaning",
         "expressions": [
-          "We are open from Monday to Saturday.",
-          "Nobody sells stones at this market."
+          "We open Monday to Saturday.",
+          "On Sunday, the square is empty.",
+          "There is no Leo at my market."
         ]
       },
       "play": {
         "title": "A Market on Sunday?",
-        "location": "CAMPO DE' FIORI",
+        "location": "VALLI'S SITE OFFICE",
         "story": [
-          "\"Campo de' Fiori?\" says Giulia. \"That is two streets away!\"",
-          "You run to the flower stall with the red roof.",
-          "Pia listens, and folds her arms."
+          "Pia comes in with Giulia, her arms full of roses.",
+          "Signor Valli smiles, but his eyes do not.",
+          "Director Sofia stands by the window."
         ],
-        "letterIntro": "Signor Valli and Pia say:",
-        "letter": "SIGNOR VALLI:\n\"That stone is mine! I bought it last Sunday at the Campo de' Fiori market. A man called Leo sold it to me.\"\n\nPIA:\n\"Leo? There is no Leo here. Nobody sells stones at this market.\nAnd we are open every day from Monday to Saturday.\nOn one day of the week, the market is closed.\"",
-        "question": "On which day is the market closed?",
-        "prompt": "The market is closed on ____.",
+        "letterIntro": "Your notes say:",
+        "letter": "Signor Valli says he bought the stone at the market.\nAsk everyone about the market.\nFind two people who say the same thing about Sunday.",
+        "question": "What is true about the market on Sunday?",
         "hints": [
-          "Say the days from Monday to Saturday. Which day is left out?",
-          "It is the day Signor Valli said he bought the stone."
+          "Ask everyone the same question about Sunday.",
+          "Two people agree. One person does not."
         ],
-        "successMessage": "You caught Signor Valli's second story!",
+        "successMessage": "Two people agree about Sunday!",
         "transition": [
-          "The market is closed on Sunday. Nobody could buy a stone there that day.",
-          "Pia waves a rose at the office. \"Tell that man he is not a good liar!\"",
-          "Back at the office, the inspector takes out her notebook."
+          "The market is closed on Sunday. Nobody bought a stone there.",
+          "Pia waves a rose at Signor Valli. \"You are not a good liar!\"",
+          "The inspector takes out her notebook."
         ],
-        "feedback": {
-          "SATURDAY": "The market is open on Saturday. Which day is left?",
-          "MONDAY": "The market opens on Monday. Which day is not in Monday to Saturday?"
-        },
-        "orderFeedback": "Check your spelling of the day.",
         "mapX": 0.3,
         "mapY": 0.55,
         "clue": {
           "title": "The Closed Market",
-          "value": "NO MARKET, NO LEO",
-          "note": "Valli said he bought the stone at Campo de' Fiori on Sunday. The market is closed that day.",
+          "value": "CLOSED ON SUNDAY · NO LEO",
+          "note": "Pia and Sofia say the market is closed on Sunday. And there is no Leo.",
           "symbol": "umbrella"
         },
         "evidence": {
@@ -209,6 +272,123 @@
           "icon": "letter",
           "description": "What Pia said about Signor Valli's story.",
           "inscription": "We are open every day from Monday to Saturday."
+        },
+        "dialogue": {
+          "place": "SITE OFFICE",
+          "background": "assets/seasons/season_03_rome/locations/site_office.png",
+          "goal": "Is Signor Valli's market story true?",
+          "how": "Ask about the market. Write down what they say.",
+          "guide": "Talk to someone.",
+          "questions": [
+            {
+              "id": "stone",
+              "text": "Where did the stone come from?"
+            },
+            {
+              "id": "sunday",
+              "text": "Is the market open on Sunday?"
+            },
+            {
+              "id": "leo",
+              "text": "Who is Leo?"
+            }
+          ],
+          "witnesses": [
+            {
+              "id": "valli",
+              "name": "Bruno Valli",
+              "title": "THE BUILDER",
+              "portrait": "assets/seasons/season_03_rome/characters/bruno_site.png",
+              "description": "a big man in a yellow helmet with a small crane sticker, arms crossed",
+              "greeting": "Ask me anything! I have nothing to hide.",
+              "answers": {
+                "stone": {
+                  "line": "I bought it at Campo de' Fiori.",
+                  "thing": "the flower market"
+                },
+                "sunday": {
+                  "line": "Yes! I was there last Sunday.",
+                  "thing": "open on Sunday"
+                },
+                "leo": {
+                  "line": "Leo sells old stones there.",
+                  "thing": "a stone seller"
+                }
+              }
+            },
+            {
+              "id": "pia",
+              "name": "Pia Ricci",
+              "title": "THE FLOWER SELLER",
+              "portrait": "assets/seasons/season_03_rome/characters/pia_base.png",
+              "description": "a cheerful flower seller in a flowered apron and a red scarf",
+              "greeting": "I came as fast as I could!",
+              "answers": {
+                "stone": {
+                  "line": "Not from my market! Nobody sells stones there.",
+                  "thing": "not from the market"
+                },
+                "sunday": {
+                  "line": "No. We open Monday to Saturday.",
+                  "thing": "closed on Sunday"
+                },
+                "leo": {
+                  "line": "There is no Leo at my market.",
+                  "thing": "no Leo"
+                }
+              }
+            },
+            {
+              "id": "sofia",
+              "name": "Sofia Ferri",
+              "title": "THE DIRECTOR",
+              "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png",
+              "description": "a director in a navy suit, with reading glasses on a chain",
+              "greeting": "I want the truth, Detective.",
+              "answers": {
+                "stone": {
+                  "line": "From my museum. Look at the crack.",
+                  "thing": "the museum"
+                },
+                "sunday": {
+                  "line": "No. On Sunday, the square is empty.",
+                  "thing": "closed on Sunday"
+                },
+                "leo": {
+                  "line": "I have never heard of Leo."
+                }
+              }
+            }
+          ],
+          "deduction": {
+            "topic": "sunday",
+            "pair": [
+              "pia.sunday",
+              "sofia.sunday"
+            ],
+            "then": [
+              "pia.leo"
+            ],
+            "askLine": "Ask a question.",
+            "anotherLine": "Ask someone else.",
+            "readyLine": "Compare two answers.",
+            "compareGoal": "Find two people who say the same thing about Sunday.",
+            "compareHow": "Tap two answers to compare them.",
+            "matchLine": "Both say the market is closed on Sunday.",
+            "offTopicLine": "These answers are not about Sunday.",
+            "checkLine": "Look for what they say about Sunday.",
+            "differentLine": "These two do not agree.",
+            "retryLine": "Try another pair.",
+            "thenGoal": "Find out about Leo.",
+            "thenHow": "Ask Pia about Leo.",
+            "doneLine": "There is no Leo at the market.",
+            "notesLine": "Your notes are ready."
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "NO MARKET ON SUNDAY",
+          "detail": "Signor Valli did not buy the stone. His story is not true."
         }
       }
     },
@@ -319,6 +499,11 @@
           "icon": "letter",
           "description": "The inspector's list of the evidence, put in order.",
           "inscription": "Tuesday: loan, mould. Thursday: swap, site."
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "THE PLAN, STEP BY STEP",
+          "detail": "Loan, mould, swap, site. Every step has its proof in your notebook."
         }
       }
     }
@@ -407,7 +592,7 @@
         "Then he sits down, very slowly."
       ],
       "letterIntro": "Signor Valli says:",
-      "letter": "\"All right. That pass is mine. I dropped it on Thursday night.\nI saw the library on the new piece, before the show.\nIf people saw it, the city would stop my car park.\nI paid for the land. I paid for the machines.\nI did not want to lose my . . . . .\"",
+      "letter": "\"All right. There is no Leo.\nThat pass is mine. I dropped it on Thursday night.\nI saw the library on the new piece, before the show.\nIf people saw it, the city would stop my car park.\nI paid for the land. I paid for the machines.\nI did not want to lose my . . . . .\"",
       "question": "What did Signor Valli not want to lose? Spell it.",
       "hints": [
         "He paid for the land and the machines. What do you pay with?",
@@ -415,12 +600,11 @@
       ],
       "successMessage": "Signor Valli told the truth at last.",
       "transition": [
-        "He did not want to lose his money.",
-        "The inspector closes her notebook. \"Signor Valli, the work stops. Now. There will be no concrete tomorrow.\"",
-        "Livia holds the real piece like a baby bird.",
-        "Sofia turns to her. \"Livia, you were right. I am sorry I did not listen.\""
+        "The inspector closes her notebook. \"The work stops. Now.\"",
+        "There will be no concrete tomorrow.",
+        "Livia holds the real piece like a baby bird."
       ],
-      "orderFeedback": "Those are the right letters. What do you pay with?",
+      "orderFeedback": "All five tiles fit. What do you pay with?",
       "mapX": 0.52,
       "mapY": 0.52,
       "evidence": {
@@ -434,7 +618,36 @@
         "prompt": "Which thing in your Notebook did Signor Valli drop on Thursday night?",
         "miss": "Find the museum pass from Pia's cash box."
       },
-      "lockTitle": "THE LAST WORD"
+      "lockTitle": "THE LAST WORD",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "I wanted my car park. That is all.",
+          "speaker": "bruno_valli",
+          "portrait": "assets/seasons/season_03_rome/characters/bruno_site.png"
+        },
+        {
+          "by": "detective",
+          "text": "You dropped this pass on Thursday night.",
+          "evidence": "s3_ep03_e4"
+        },
+        {
+          "by": "speaker",
+          "text": "Livia, you were right. I am sorry I did not listen.",
+          "speaker": "sofia_ferri",
+          "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "Now we can open the owl square.",
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Under the fence, the old library is waiting."
+        }
+      ]
     }
   },
   "hook": "The work has stopped. Tomorrow, you will see what is under the owl square.",
@@ -453,7 +666,7 @@
       "Director Sofia arrives with the city inspector.",
       "\"Signor Valli,\" says the inspector, \"we would like to see your office.\""
     ],
-    "caseSummary": "The real piece was in Valli's box room: the marble stone with the Y-shaped crack. His story about a Sunday market was not true. Step by step, the evidence showed his plan. Then the pass he dropped made him tell the truth. He did not want to lose his money.",
+    "caseSummary": "The real piece was in Valli's box room. It has the owl and the Y-shaped crack. Pia and Sofia agreed: the market is closed on Sunday. So Valli's story was not true. Step by step, the evidence showed his plan. Then the pass he dropped made him tell the truth. He did not want to lose his money.",
     "place": "PIAZZA DELLA CIVETTA",
     "keyWords": [
       "real",
@@ -473,6 +686,7 @@
   },
   "notes": [
     "The culprit's reveal (mainMystery.revealCase). Every link of his plan was found earlier: s3_ep07_e4, s3_ep05_c3, s3_ep08_c3, s3_ep10_c3, s3_ep03_e4.",
-    "Valli is caught by evidence, not by a guess: the season's rule."
+    "Valli is caught by evidence, not by a guess: the season's rule.",
+    "STEP 3-14: M1 is now a picture choice of three marble stones (Stone B is no longer a second plaster copy, which the detective already holds), M2 a talk with Valli, Pia and Sofia in the site office. Valli's site portrait is shown. Discovery Moments and an ending added."
   ]
 }

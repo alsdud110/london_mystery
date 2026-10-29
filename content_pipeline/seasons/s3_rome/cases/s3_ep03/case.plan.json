@@ -82,8 +82,7 @@
         "location": "CAMPO DE' FIORI",
         "story": [
           "The flower stall with the red roof is full of roses.",
-          "Pia Ricci, the flower seller, smiles at you. \"Box 7? Yes, it is here.\"",
-          "\"A young woman left something in it this morning. Look at my order book.\""
+          "A cheerful woman in a flowered apron waves at you."
         ],
         "letterIntro": "Pia's order book says:",
         "letter": "6:30 — The baker bought red roses.\n5:45 — I opened my stall.\n11:00 — Giulia came with a detective!\n6:10 — A young woman put a bag in Box 7. She had an owl ring.",
@@ -112,6 +111,37 @@
           "icon": "letter",
           "description": "The flower seller's book of this morning's visitors.",
           "inscription": "6:10 — A young woman put a bag in Box 7. She had an owl ring."
+        },
+        "talk": {
+          "speaker": "pia_ricci",
+          "portrait": "assets/seasons/season_03_rome/characters/pia_base.png",
+          "goal": "Find out who left something in Box 7.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Box 7? Yes, it is here!"
+              },
+              {
+                "by": "speaker",
+                "text": "A young woman left something in it."
+              },
+              {
+                "by": "detective",
+                "text": "When did she come?"
+              },
+              {
+                "by": "speaker",
+                "text": "Look in my order book. I write in a hurry!"
+              }
+            ],
+            "finishLabel": "READ THE ORDER BOOK"
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "A WOMAN WITH AN OWL RING",
+          "detail": "She came at 6:10, just after Pia opened. Is she the Owl?"
         }
       }
     },
@@ -218,7 +248,12 @@
           "prompt": "Which thing in your Notebook opens Box 7?",
           "miss": "That does not fit a lock. Look for something with a tag."
         },
-        "evidenceLinkLine": "The same soft white dust as the trail in the map hall."
+        "evidenceLinkLine": "The same soft white dust as the trail in the map hall.",
+        "discovery": {
+          "type": "deduction",
+          "title": "NEW DUST, NOT OLD STONE",
+          "detail": "This dust smells new. Did someone make a copy of the piece?"
+        }
       }
     },
     {
@@ -303,6 +338,32 @@
           "icon": "footprint",
           "description": "What Pia saw on Thursday night.",
           "inscription": "Thursday, 11:30 PM: a big man with a heavy box. A yellow helmet with a crane."
+        },
+        "talk": {
+          "speaker": "pia_ricci",
+          "portrait": "assets/seasons/season_03_rome/characters/pia_base.png",
+          "goal": "Find out what Pia saw on Thursday night.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Yes, a crane! On a yellow helmet."
+              },
+              {
+                "by": "detective",
+                "text": "And he came from the museum road?"
+              },
+              {
+                "by": "speaker",
+                "text": "Yes. He walked fast, like a man with a secret."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "A CRANE ON A YELLOW HELMET",
+          "detail": "A big man carried a heavy box on Thursday night. Who wears a helmet like that?"
         }
       }
     }
@@ -377,16 +438,16 @@
       ],
       "successMessage": "The cash box opens!",
       "transition": [
-        "Inside is a museum pass. It says THURSDAY.",
-        "\"The helmet man dropped it right here,\" says Pia.",
-        "Giulia reads the Owl's card again. \"A roof with a round eye... that is the Pantheon!\""
+        "Pia puts the pass in your hand.",
+        "Giulia reads the Owl's card again: go where the roof has a round eye.",
+        "\"A roof with an eye... that is the Pantheon!\""
       ],
       "feedback": {
-        "347": "Count only people. Opening the stall is not a person.",
+        "246": "Look at the key's tag again. What is the box's number?",
         "257": "Count the days again: Monday, Tuesday, Wednesday, Thursday.",
-        "246": "Look at the key's tag again. What is the box's number?"
+        "347": "Count only people. Opening the stall is not a person."
       },
-      "orderFeedback": "Right numbers, wrong order. People first, then the day, then the box.",
+      "orderFeedback": "Good numbers, wrong places. People first, then the day, then the box.",
       "mapX": 0.3,
       "mapY": 0.55,
       "evidence": {
@@ -394,7 +455,36 @@
         "icon": "ticket",
         "description": "A museum pass the man in the yellow helmet dropped on Thursday night.",
         "inscription": "CAPITOLINE MUSEUMS · VISITOR PASS · THURSDAY"
-      }
+      },
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Two, four, seven! My cash box is open!",
+          "speaker": "pia_ricci",
+          "portrait": "assets/seasons/season_03_rome/characters/pia_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Inside is a museum pass. It says THURSDAY."
+        },
+        {
+          "by": "detective",
+          "text": "The helmet man dropped it here on Thursday.",
+          "evidence": "s3_ep03_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "A museum pass? So he was at the museum!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "Find him, Detective. And find that young woman, too!",
+          "speaker": "pia_ricci",
+          "portrait": "assets/seasons/season_03_rome/characters/pia_base.png"
+        }
+      ]
     }
   },
   "hook": "Who dropped a museum pass on Thursday night?",
@@ -433,6 +523,7 @@
   },
   "notes": [
     "The dropped pass (s3_ep03_e4) proves Bruno was at the museum on Thursday: Case 11.",
-    "The crane helmet (s3_ep03_c3) is matched in Case 06 (the builder) and Case 10 (the helmet's name)."
+    "The crane helmet (s3_ep03_c3) is matched in Case 06 (the builder) and Case 10 (the helmet's name).",
+    "STEP 3-14: puzzles kept; Pia's talks, Discovery Moments and an ending added. A picture choice for the helmet was weighed and left to Case 10, where the helmet is found."
   ]
 }

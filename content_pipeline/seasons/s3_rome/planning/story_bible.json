@@ -31,10 +31,29 @@
       "purpose": "The player's companion: explains Rome, carries the Italian word list, keeps the team moving.",
       "appearance": "Late twenties, short dark curly hair, round glasses, a mustard-yellow scarf, a canvas guide's bag with folded maps.",
       "relationships": [
-        {"charId": "sofia_ferri", "relation": "Her boss at the museum."},
-        {"charId": "livia_conti", "relation": "Her friend and colleague; she never guessed Livia was the Owl."}
+        {
+          "charId": "sofia_ferri",
+          "relation": "Her boss at the museum."
+        },
+        {
+          "charId": "livia_conti",
+          "relation": "Her friend and colleague; she never guessed Livia was the Owl."
+        }
       ],
-      "cases": ["s3_ep01", "s3_ep02", "s3_ep03", "s3_ep04", "s3_ep05", "s3_ep06", "s3_ep07", "s3_ep08", "s3_ep09", "s3_ep10", "s3_ep11", "s3_ep12"]
+      "cases": [
+        "s3_ep01",
+        "s3_ep02",
+        "s3_ep03",
+        "s3_ep04",
+        "s3_ep05",
+        "s3_ep06",
+        "s3_ep07",
+        "s3_ep08",
+        "s3_ep09",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ]
     },
     {
       "charId": "sofia_ferri",
@@ -44,10 +63,21 @@
       "purpose": "Opens the case; her disbelief is why Livia had to act alone; she brings the inspector in Act 3.",
       "appearance": "Fifties, silver bob, navy suit, a small gold brooch, reading glasses on a chain.",
       "relationships": [
-        {"charId": "livia_conti", "relation": "Did not believe Livia on Friday; apologises in Case 11."},
-        {"charId": "bruno_valli", "relation": "Trusted him as the show's sponsor."}
+        {
+          "charId": "livia_conti",
+          "relation": "Did not believe Livia on Friday; apologises in Case 11."
+        },
+        {
+          "charId": "bruno_valli",
+          "relation": "Trusted him as the show's sponsor."
+        }
       ],
-      "cases": ["s3_ep01", "s3_ep10", "s3_ep11", "s3_ep12"]
+      "cases": [
+        "s3_ep01",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ]
     },
     {
       "charId": "enzo_greco",
@@ -57,9 +87,15 @@
       "purpose": "His Friday log sets the dark ten minutes; his word about Thursday's 'lights check' traps Valli.",
       "appearance": "Sixties, grey moustache, guard's cap and jacket, a thermos of coffee.",
       "relationships": [
-        {"charId": "bruno_valli", "relation": "Let him in on Thursday night to 'check the lights'."}
+        {
+          "charId": "bruno_valli",
+          "relation": "Let him in on Thursday night to 'check the lights'."
+        }
       ],
-      "cases": ["s3_ep01", "s3_ep12"]
+      "cases": [
+        "s3_ep01",
+        "s3_ep12"
+      ]
     },
     {
       "charId": "livia_conti",
@@ -69,11 +105,28 @@
       "purpose": "The season's hidden helper: she saw the copy, took it out and left the owl trail; revealed in Case 08.",
       "appearance": "Mid twenties, long brown braid, white lab coat over a green jumper, a silver owl ring; in Case 08 a grey hooded coat.",
       "relationships": [
-        {"charId": "sofia_ferri", "relation": "Her director, who did not believe her."},
-        {"charId": "giulia_marino", "relation": "Her friend at the museum."},
-        {"charId": "enzo_greco", "relation": "Heard from him about Thursday's 'lights check'."}
+        {
+          "charId": "sofia_ferri",
+          "relation": "Her director, who did not believe her."
+        },
+        {
+          "charId": "giulia_marino",
+          "relation": "Her friend at the museum."
+        },
+        {
+          "charId": "enzo_greco",
+          "relation": "Heard from him about Thursday's 'lights check'."
+        }
       ],
-      "cases": ["s3_ep01", "s3_ep07", "s3_ep08", "s3_ep09", "s3_ep10", "s3_ep11", "s3_ep12"],
+      "cases": [
+        "s3_ep01",
+        "s3_ep07",
+        "s3_ep08",
+        "s3_ep09",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ],
       "secret": "She is the Owl (until Case 08)."
     },
     {
@@ -84,11 +137,24 @@
       "purpose": "The culprit: swapped the piece to keep his car park; tries to blame Aldo in Case 07; caught in Case 11.",
       "appearance": "Fifties, big and broad, thick black eyebrows, a gold ring; a fine grey suit in town, a yellow helmet with a small crane sticker at his site.",
       "relationships": [
-        {"charId": "sofia_ferri", "relation": "Sponsor of her show."},
-        {"charId": "aldo_rinaldi", "relation": "Tried to blame him."},
-        {"charId": "carla_bassi", "relation": "Ordered the plaster copy from her, saying the museum sent him."}
+        {
+          "charId": "sofia_ferri",
+          "relation": "Sponsor of her show."
+        },
+        {
+          "charId": "aldo_rinaldi",
+          "relation": "Tried to blame him."
+        },
+        {
+          "charId": "carla_bassi",
+          "relation": "Ordered the plaster copy from her, saying the museum sent him."
+        }
       ],
-      "cases": ["s3_ep01", "s3_ep07", "s3_ep11"],
+      "cases": [
+        "s3_ep01",
+        "s3_ep07",
+        "s3_ep11"
+      ],
       "secret": "He swapped the piece (until Case 11)."
     },
     {
@@ -99,10 +165,21 @@
       "purpose": "Act 1-2 red herring with a real alibi; Act 3's map expert (Latin words, the old street, Roman numbers).",
       "appearance": "Seventies, small and thin, white beard, a green felt hat, ink-green fingers, a green notebook.",
       "relationships": [
-        {"charId": "sofia_ferri", "relation": "Asked twice to see the piece early; she said no."},
-        {"charId": "carla_bassi", "relation": "Buys plaster casts from her for his classes."}
+        {
+          "charId": "sofia_ferri",
+          "relation": "Asked twice to see the piece early; she said no."
+        },
+        {
+          "charId": "carla_bassi",
+          "relation": "Buys plaster casts from her for his classes."
+        }
       ],
-      "cases": ["s3_ep02", "s3_ep06", "s3_ep09", "s3_ep12"]
+      "cases": [
+        "s3_ep02",
+        "s3_ep06",
+        "s3_ep09",
+        "s3_ep12"
+      ]
     },
     {
       "charId": "pia_ricci",
@@ -112,9 +189,16 @@
       "purpose": "Witness of Thursday night (the crane helmet, the heavy box, the dropped pass); breaks Valli's market story.",
       "appearance": "Sixties, round and rosy, flowered apron, a red scarf on her hair.",
       "relationships": [
-        {"charId": "livia_conti", "relation": "Kept Box 7 for 'the young woman with the owl ring'."}
+        {
+          "charId": "livia_conti",
+          "relation": "Kept Box 7 for 'the young woman with the owl ring'."
+        }
       ],
-      "cases": ["s3_ep03", "s3_ep11", "s3_ep12"]
+      "cases": [
+        "s3_ep03",
+        "s3_ep11",
+        "s3_ep12"
+      ]
     },
     {
       "charId": "carla_bassi",
@@ -124,110 +208,724 @@
       "purpose": "Explains how a copy is made (the mould needs the real piece) and holds order 318.",
       "appearance": "Forties, strong arms, rolled sleeves, a white-dusted apron, hair tied with a pencil; her orange cat Tito.",
       "relationships": [
-        {"charId": "bruno_valli", "relation": "Made his copy, told 'the museum sent him'."},
-        {"charId": "aldo_rinaldi", "relation": "A regular customer."}
+        {
+          "charId": "bruno_valli",
+          "relation": "Made his copy, told 'the museum sent him'."
+        },
+        {
+          "charId": "aldo_rinaldi",
+          "relation": "A regular customer."
+        }
       ],
-      "cases": ["s3_ep05", "s3_ep06", "s3_ep12"]
+      "cases": [
+        "s3_ep05",
+        "s3_ep06",
+        "s3_ep12"
+      ]
     }
   ],
   "locations": [
-    {"locId": "capitoline_museums", "name": "Capitoline Museums", "cityArea": "Capitoline Hill, above the Roman Forum", "visual": "Marble halls, tall windows, a glass case on a stand, an old guard room, a bright restoration lab.", "storyRole": "Where the piece vanishes (Case 01), where Livia works (Case 08), where it returns (Case 12).", "cases": ["s3_ep01", "s3_ep08", "s3_ep12"], "placeIds": ["s3_rome.guard_room", "s3_rome.map_hall", "s3_rome.restoration_lab"]},
-    {"locId": "trevi_fountain", "name": "Trevi Fountain", "cityArea": "Trevi district, in narrow streets near the Quirinal", "visual": "A huge baroque fountain of white stone, rushing water, stone shells along the basin, wide steps, coins in the water.", "storyRole": "The Owl's second card, the professor's notebook, the marble tin.", "cases": ["s3_ep02"], "placeIds": ["s3_rome.trevi_fountain"]},
-    {"locId": "campo_de_fiori", "name": "Campo de' Fiori", "cityArea": "Historic centre, near Piazza Navona", "visual": "A morning market of flowers and lemons under white umbrellas; a flower stall with a red roof and numbered wooden boxes.", "storyRole": "Box 7, Pia's witness story (Case 03), Valli's market lie (Case 11).", "cases": ["s3_ep03", "s3_ep11"], "placeIds": ["s3_rome.flower_market"]},
-    {"locId": "pantheon", "name": "The Pantheon", "cityArea": "Piazza della Rotonda, historic centre", "visual": "A round temple with a great dome and an open eye of light; across the square, a tiny old bookshop.", "storyRole": "The sunlight puzzle, the password and the plaster copy (Act 1's turn).", "cases": ["s3_ep04"], "placeIds": ["s3_rome.pantheon_hall", "s3_rome.rotonda_bookshop"]},
-    {"locId": "torre_argentina", "name": "Largo di Torre Argentina", "cityArea": "A sunken square of Roman temples, between the Pantheon and the river", "visual": "Ruined columns below street level, cats asleep on warm stones; nearby, a plaster workshop full of white statues.", "storyRole": "Tito the cat and the Bassi workshop: who made the copy.", "cases": ["s3_ep05"], "placeIds": ["s3_rome.cat_ruins", "s3_rome.cast_workshop"]},
-    {"locId": "piazza_navona", "name": "Piazza Navona", "cityArea": "Historic centre", "visual": "A long oval square, the Fountain of the Four Rivers with its stone giants, painters and pigeons.", "storyRole": "Aldo compared with the helmet man; the mirror word.", "cases": ["s3_ep06"], "placeIds": ["s3_rome.navona_square"]},
-    {"locId": "rome_university", "name": "University of Rome", "cityArea": "Across the city, near the station", "visual": "A lecture hall with wooden seats and a blackboard; a map archive of long flat drawers.", "storyRole": "Aldo's alibi (Hall B) and his map cabinet with the city plan.", "cases": ["s3_ep06", "s3_ep09"], "placeIds": ["s3_rome.lecture_hall", "s3_rome.map_archive"]},
-    {"locId": "spanish_steps", "name": "The Spanish Steps", "cityArea": "Piazza di Spagna", "visual": "Wide stone steps rising to a twin-towered church, the boat fountain at the bottom, flower pots halfway up.", "storyRole": "The chalk code, Valli's first lie, the loan book page.", "cases": ["s3_ep07"], "placeIds": ["s3_rome.spanish_steps"]},
-    {"locId": "tiber_island", "name": "Tiber Island", "cityArea": "In the river Tiber, between Trastevere and the old Jewish quarter", "visual": "A boat-shaped island, the old Ponte Fabricio with its four-faced stone posts, plane trees, evening light on the water.", "storyRole": "The Owl's reveal.", "cases": ["s3_ep08"], "placeIds": ["s3_rome.tiber_bridge"]},
-    {"locId": "roman_forum", "name": "The Roman Forum", "cityArea": "Between the Capitoline and Palatine hills", "visual": "Broken columns in long grass, a stone road, the arches of old temples, umbrella pines.", "storyRole": "Reading the real piece's map: the library, the old street, the owl square.", "cases": ["s3_ep09"], "placeIds": ["s3_rome.forum_view"]},
-    {"locId": "piazza_della_civetta", "name": "Piazza della Civetta", "cityArea": "A small square at the end of the old market street (made up for the story)", "visual": "A quiet square behind a tall site fence, a crane, a site office cabin; below it, a Roman library room with square holes and an owl mosaic.", "storyRole": "Valli's building site, the real piece, the library saved.", "cases": ["s3_ep10", "s3_ep11", "s3_ep12"], "placeIds": ["s3_rome.civetta_square", "s3_rome.site_office", "s3_rome.roman_library"]}
+    {
+      "locId": "capitoline_museums",
+      "name": "Capitoline Museums",
+      "cityArea": "Capitoline Hill, above the Roman Forum",
+      "visual": "Marble halls, tall windows, a glass case on a stand, an old guard room, a bright restoration lab.",
+      "storyRole": "Where the piece vanishes (Case 01), where Livia works (Case 08), where it returns (Case 12).",
+      "cases": [
+        "s3_ep01",
+        "s3_ep08",
+        "s3_ep12"
+      ],
+      "placeIds": [
+        "s3_rome.guard_room",
+        "s3_rome.map_hall",
+        "s3_rome.restoration_lab"
+      ]
+    },
+    {
+      "locId": "trevi_fountain",
+      "name": "Trevi Fountain",
+      "cityArea": "Trevi district, in narrow streets near the Quirinal",
+      "visual": "A huge baroque fountain of white stone, rushing water, stone shells along the basin, wide steps, coins in the water.",
+      "storyRole": "The Owl's second card, the professor's notebook, the marble tin.",
+      "cases": [
+        "s3_ep02"
+      ],
+      "placeIds": [
+        "s3_rome.trevi_fountain"
+      ]
+    },
+    {
+      "locId": "campo_de_fiori",
+      "name": "Campo de' Fiori",
+      "cityArea": "Historic centre, near Piazza Navona",
+      "visual": "A morning market of flowers and lemons under white umbrellas; a flower stall with a red roof and numbered wooden boxes.",
+      "storyRole": "Box 7 and Pia's witness story (Case 03); Pia breaks Valli's market story at his office (Case 11).",
+      "cases": [
+        "s3_ep03",
+        "s3_ep11"
+      ],
+      "placeIds": [
+        "s3_rome.flower_market"
+      ]
+    },
+    {
+      "locId": "pantheon",
+      "name": "The Pantheon",
+      "cityArea": "Piazza della Rotonda, historic centre",
+      "visual": "A round temple with a great dome and an open eye of light; across the square, a tiny old bookshop.",
+      "storyRole": "The sunlight puzzle, the password and the plaster copy (Act 1's turn).",
+      "cases": [
+        "s3_ep04"
+      ],
+      "placeIds": [
+        "s3_rome.pantheon_hall",
+        "s3_rome.rotonda_bookshop"
+      ]
+    },
+    {
+      "locId": "torre_argentina",
+      "name": "Largo di Torre Argentina",
+      "cityArea": "A sunken square of Roman temples, between the Pantheon and the river",
+      "visual": "Ruined columns below street level, cats asleep on warm stones; nearby, a plaster workshop full of white statues.",
+      "storyRole": "Tito the cat and the Bassi workshop: who made the copy.",
+      "cases": [
+        "s3_ep05"
+      ],
+      "placeIds": [
+        "s3_rome.cat_ruins",
+        "s3_rome.cast_workshop"
+      ]
+    },
+    {
+      "locId": "piazza_navona",
+      "name": "Piazza Navona",
+      "cityArea": "Historic centre",
+      "visual": "A long oval square, the Fountain of the Four Rivers with its stone giants, painters and pigeons.",
+      "storyRole": "Aldo compared with the helmet man; the mirror word.",
+      "cases": [
+        "s3_ep06"
+      ],
+      "placeIds": [
+        "s3_rome.navona_square"
+      ]
+    },
+    {
+      "locId": "rome_university",
+      "name": "University of Rome",
+      "cityArea": "Across the city, near the station",
+      "visual": "A lecture hall with wooden seats and a blackboard; a map archive of long flat drawers.",
+      "storyRole": "Aldo's alibi (Hall B) and his map cabinet with the city plan.",
+      "cases": [
+        "s3_ep06",
+        "s3_ep09"
+      ],
+      "placeIds": [
+        "s3_rome.lecture_hall",
+        "s3_rome.map_archive"
+      ]
+    },
+    {
+      "locId": "spanish_steps",
+      "name": "The Spanish Steps",
+      "cityArea": "Piazza di Spagna",
+      "visual": "Wide stone steps rising to a twin-towered church, the boat fountain at the bottom, flower pots halfway up.",
+      "storyRole": "The chalk code, Valli's first lie, the loan book page.",
+      "cases": [
+        "s3_ep07"
+      ],
+      "placeIds": [
+        "s3_rome.spanish_steps"
+      ]
+    },
+    {
+      "locId": "tiber_island",
+      "name": "Tiber Island",
+      "cityArea": "In the river Tiber, between Trastevere and the old Jewish quarter",
+      "visual": "A boat-shaped island, the old Ponte Fabricio with its four-faced stone posts, plane trees, evening light on the water.",
+      "storyRole": "The Owl's reveal.",
+      "cases": [
+        "s3_ep08"
+      ],
+      "placeIds": [
+        "s3_rome.tiber_bridge"
+      ]
+    },
+    {
+      "locId": "roman_forum",
+      "name": "The Roman Forum",
+      "cityArea": "Between the Capitoline and Palatine hills",
+      "visual": "Broken columns in long grass, a stone road, the arches of old temples, umbrella pines.",
+      "storyRole": "Reading the real piece's map: the library, the old street, the owl square.",
+      "cases": [
+        "s3_ep09"
+      ],
+      "placeIds": [
+        "s3_rome.forum_view"
+      ]
+    },
+    {
+      "locId": "piazza_della_civetta",
+      "name": "Piazza della Civetta",
+      "cityArea": "A small square at the end of the old market street (made up for the story)",
+      "visual": "A quiet square behind a tall site fence, a crane, a site office cabin; below it, a Roman library room with square holes and an owl mosaic.",
+      "storyRole": "Valli's building site, the real piece, the library saved.",
+      "cases": [
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ],
+      "placeIds": [
+        "s3_rome.civetta_square",
+        "s3_rome.site_office",
+        "s3_rome.roman_library"
+      ]
+    }
   ],
   "acts": [
-    {"actId": "act1", "title": "THE MISSING PIECE", "summary": "The piece vanishes in ten dark minutes; the Owl's cards lead across Rome to a parcel.", "caseIds": ["s3_ep01", "s3_ep02", "s3_ep03", "s3_ep04"], "turningPoint": "Case 04: the piece in the Owl's parcel is plaster. The Owl took a copy; the real piece was swapped earlier."},
-    {"actId": "act2", "title": "THE COPY MAKER", "summary": "From a cat's paw print to the copy's maker; the professor cleared; the sponsor lies; the Owl revealed.", "caseIds": ["s3_ep05", "s3_ep06", "s3_ep07", "s3_ep08"], "turningPoint": "Case 08: the Owl is Livia. The swap was on Thursday night, and her drawing shows a room under Rome."},
-    {"actId": "act3", "title": "UNDER THE OWL SQUARE", "summary": "The map's library is under Piazza della Civetta, about to be buried; the real piece is found and Valli caught.", "caseIds": ["s3_ep09", "s3_ep10", "s3_ep11", "s3_ep12"], "turningPoint": "Case 11: the real piece in Valli's box room, his lies broken, his plan told in order."}
+    {
+      "actId": "act1",
+      "title": "THE MISSING PIECE",
+      "summary": "The piece vanishes in ten dark minutes; the Owl's cards lead across Rome to a parcel.",
+      "caseIds": [
+        "s3_ep01",
+        "s3_ep02",
+        "s3_ep03",
+        "s3_ep04"
+      ],
+      "turningPoint": "Case 04: the piece in the Owl's parcel is plaster. The Owl took a copy; the real piece was swapped earlier."
+    },
+    {
+      "actId": "act2",
+      "title": "THE COPY MAKER",
+      "summary": "From a cat's paw print to the copy's maker; the professor cleared; the sponsor lies; the Owl revealed.",
+      "caseIds": [
+        "s3_ep05",
+        "s3_ep06",
+        "s3_ep07",
+        "s3_ep08"
+      ],
+      "turningPoint": "Case 08: the Owl is Livia. The swap was on Thursday night, and her drawing shows a room under Rome."
+    },
+    {
+      "actId": "act3",
+      "title": "UNDER THE OWL SQUARE",
+      "summary": "The map's library is under Piazza della Civetta, about to be buried; the real piece is found and Valli caught.",
+      "caseIds": [
+        "s3_ep09",
+        "s3_ep10",
+        "s3_ep11",
+        "s3_ep12"
+      ],
+      "turningPoint": "Case 11: the real piece in Valli's box room, his lies broken, his plan told in order."
+    }
   ],
   "cases": [
-    {"caseId": "s3_ep01", "title": "The Empty Glass Case", "question": "When did the piece go missing, and what was left?", "solution": "In the ten dark minutes at midnight; lights turned off by hand; the Owl's card.", "fromPrevious": "The season opens.", "toNext": "The Owl's card: the fountain of wishes, the second shell."},
-    {"caseId": "s3_ep02", "title": "Under the Second Shell", "question": "Where does the Owl's trail go, and who is the man in the green hat?", "solution": "The riddle (a stone map), Aldo's wish (a suspect), the marble tin (key FIORI 7) and the route.", "fromPrevious": "The Owl's card from the back door.", "toNext": "Box 7 at the flower market."},
-    {"caseId": "s3_ep03", "title": "Box 7 at the Flower Market", "question": "What is in Box 7, and what did Pia see?", "solution": "New white dust (a copy?); a big man in a crane helmet with a heavy box; his dropped museum pass.", "fromPrevious": "Key FIORI 7 and the Owl's route.", "toNext": "The roof with a round eye: the Pantheon."},
-    {"caseId": "s3_ep04", "title": "The Eye of the Pantheon", "question": "What is in the Owl's parcel?", "solution": "A plaster copy: the Owl took the copy out of the case.", "fromPrevious": "The Owl's card in Box 7.", "toNext": "The copy's paw print and No. 3?8."},
-    {"caseId": "s3_ep05", "title": "The Cat Who Walked on the Copy", "question": "Who made the copy, and for whom?", "solution": "Tito the cat leads to the Bassi workshop; order 318 picked up by a man in a yellow helmet who had the real piece on Tuesday.", "fromPrevious": "The paw print on the copy.", "toNext": "Carla: the professor came on Tuesday too."},
-    {"caseId": "s3_ep06", "title": "The Professor's Alibi", "question": "Did Professor Aldo take the piece?", "solution": "No: small, thin, and in Hall B at midnight. He saw a BUILDING box: the man is a builder.", "fromPrevious": "Carla's word about Tuesday.", "toNext": "Aldo's photo of the real piece's crack."},
-    {"caseId": "s3_ep07", "title": "A Code on the Spanish Steps", "question": "What does the Owl's code say, and is the sponsor honest?", "solution": "TUESDAY; Valli's story about Aldo is false; the loan book: B.V. took the piece on Tuesday.", "fromPrevious": "An owl card under Giulia's door.", "toNext": "The Owl wants to meet."},
-    {"caseId": "s3_ep08", "title": "The Owl of Tiber Island", "question": "Who is the Owl, and what happened that week?", "solution": "Livia Conti; the swap on Thursday night; her drawing of the real piece.", "fromPrevious": "Valli's lie caught.", "toNext": "A room with shelves: BIBLIO..."},
-    {"caseId": "s3_ep09", "title": "The Street Under the Streets", "question": "What is the room on the map, and where is it today?", "solution": "A Roman library under Piazza della Civetta, where Valli Building pours concrete on 10 May.", "fromPrevious": "Livia's drawing.", "toNext": "The site at Piazza della Civetta."},
-    {"caseId": "s3_ep10", "title": "The Fence at Piazza della Civetta", "question": "Whose site is it, and what came there on Thursday night?", "solution": "Valli's helmet and work plan; the heavy box at 11:50 PM; Sofia calls the inspector.", "fromPrevious": "The city plan.", "toNext": "The site office with its light on."},
-    {"caseId": "s3_ep11", "title": "The Builder's Box Room", "question": "Is the real piece in Valli's office, and can it be proved?", "solution": "Stone C with the Y crack; the closed-Sunday lie; the plan in order; the dropped pass makes him confess.", "fromPrevious": "Sofia and the inspector arrive.", "toNext": "The work stops; the square will be opened."},
-    {"caseId": "s3_ep12", "title": "The Library Under the Owl", "question": "What is under the owl square?", "solution": "The Roman library of the owl: scrolls, SAPIENTIA; seven gold tiles spell HISTORY.", "fromPrevious": "Valli caught.", "toNext": "The season ends."}
+    {
+      "caseId": "s3_ep01",
+      "title": "The Empty Glass Case",
+      "question": "When did the piece go missing, and what was left?",
+      "solution": "In the ten dark minutes at midnight (two witnesses agree); the power stayed on, so the lights were turned off by hand; the Owl's card points to the fountain of wishes.",
+      "fromPrevious": "The season opens.",
+      "toNext": "The Owl's card: the fountain of wishes, the second shell."
+    },
+    {
+      "caseId": "s3_ep02",
+      "title": "Under the Second Shell",
+      "question": "Where does the Owl's trail go, and who is the man in the green hat?",
+      "solution": "The riddle (a stone map), Aldo's wish (a suspect), the marble tin (key FIORI 7) and the route.",
+      "fromPrevious": "The Owl's card from the back door.",
+      "toNext": "Box 7 at the flower market."
+    },
+    {
+      "caseId": "s3_ep03",
+      "title": "Box 7 at the Flower Market",
+      "question": "What is in Box 7, and what did Pia see?",
+      "solution": "New white dust (a copy?); a big man in a crane helmet with a heavy box; his dropped museum pass.",
+      "fromPrevious": "Key FIORI 7 and the Owl's route.",
+      "toNext": "The roof with a round eye: the Pantheon."
+    },
+    {
+      "caseId": "s3_ep04",
+      "title": "The Eye of the Pantheon",
+      "question": "What is in the Owl's parcel?",
+      "solution": "The book stone (two hours after the ship), the password FOUND, three tests: a plaster copy. The Owl took the copy out of the case.",
+      "fromPrevious": "The Owl's card in Box 7.",
+      "toNext": "The copy's paw print and No. 3?8."
+    },
+    {
+      "caseId": "s3_ep05",
+      "title": "The Cat Who Walked on the Copy",
+      "question": "Who made the copy, and for whom?",
+      "solution": "Tito the cat (orange, short tail, lives with plaster) leads to the Bassi workshop; order 318 was picked up by a man in a yellow helmet who had the real piece on Tuesday.",
+      "fromPrevious": "The paw print on the copy.",
+      "toNext": "Carla: the professor came on Tuesday too."
+    },
+    {
+      "caseId": "s3_ep06",
+      "title": "The Professor's Alibi",
+      "question": "Did Professor Aldo take the piece?",
+      "solution": "No: small and thin, so not Pia's Thursday man; in Hall B at midnight on Friday. He saw a BUILDING box: the man is a builder.",
+      "fromPrevious": "Carla's word about Tuesday.",
+      "toNext": "Aldo's photo of the real piece's crack."
+    },
+    {
+      "caseId": "s3_ep07",
+      "title": "A Code on the Spanish Steps",
+      "question": "What does the Owl's code say, and is the sponsor honest?",
+      "solution": "TUESDAY; Valli's story about Aldo is false; the loan book: B.V. took the piece on Tuesday.",
+      "fromPrevious": "An owl card under Giulia's door.",
+      "toNext": "The Owl wants to meet."
+    },
+    {
+      "caseId": "s3_ep08",
+      "title": "The Owl of Tiber Island",
+      "question": "Who is the Owl, and what happened that week?",
+      "solution": "The bridge with four-faced posts; Livia Conti is the Owl (her 'I worked late' of Case 01); the swap on Thursday night; her drawing of the real piece.",
+      "fromPrevious": "Valli's lie caught.",
+      "toNext": "A room with shelves: BIBLIO..."
+    },
+    {
+      "caseId": "s3_ep09",
+      "title": "The Street Under the Streets",
+      "question": "What is the room on the map, and where is it today?",
+      "solution": "A Roman library (the room with square holes for scrolls) under Piazza della Civetta, where Valli Building pours concrete on 10 May.",
+      "fromPrevious": "Livia's drawing.",
+      "toNext": "The site at Piazza della Civetta."
+    },
+    {
+      "caseId": "s3_ep10",
+      "title": "The Fence at Piazza della Civetta",
+      "question": "Whose site is it, and what came there on Thursday night?",
+      "solution": "The boss's helmet (yellow, with a crane) is B. Valli's; the heavy box came at 11:50 PM; Sofia calls the inspector.",
+      "fromPrevious": "The city plan.",
+      "toNext": "The site office with its light on."
+    },
+    {
+      "caseId": "s3_ep11",
+      "title": "The Builder's Box Room",
+      "question": "Is the real piece in Valli's office, and can it be proved?",
+      "solution": "Stone C matches Aldo's photo; Pia and Sofia agree the market is closed on Sunday; the plan in order; the dropped pass makes him confess.",
+      "fromPrevious": "Sofia and the inspector arrive.",
+      "toNext": "The work stops; the square will be opened."
+    },
+    {
+      "caseId": "s3_ep12",
+      "title": "The Library Under the Owl",
+      "question": "What is under the owl square?",
+      "solution": "The Roman library of the owl: scrolls, SAPIENTIA; seven gold tiles (found Y T, H O, S I R) spell HISTORY.",
+      "fromPrevious": "Valli caught.",
+      "toNext": "The season ends."
+    }
   ],
   "mysteryQuestions": [
-    {"question": "When did the piece go missing?", "raisedIn": "s3_ep01", "answeredIn": "s3_ep01", "answer": "In the ten dark minutes at midnight on Friday."},
-    {"question": "Why does the Owl say the piece is not lost?", "raisedIn": "s3_ep01", "answeredIn": "s3_ep04", "answer": "What the Owl took was a plaster copy."},
-    {"question": "Who is the Owl?", "raisedIn": "s3_ep01", "answeredIn": "s3_ep08", "answer": "Livia Conti, the restorer."},
-    {"question": "Is Professor Aldo the thief?", "raisedIn": "s3_ep02", "answeredIn": "s3_ep06", "answer": "No: he was in Hall B at midnight, and he is not the big man."},
-    {"question": "Who is the big man in the yellow helmet?", "raisedIn": "s3_ep03", "answeredIn": "s3_ep10", "answer": "Bruno Valli (his helmet's name strip)."},
-    {"question": "Who made the plaster copy?", "raisedIn": "s3_ep04", "answeredIn": "s3_ep05", "answer": "Carla Bassi's workshop, order 318, for 'a museum friend'."},
-    {"question": "When was the real piece swapped?", "raisedIn": "s3_ep04", "answeredIn": "s3_ep08", "answer": "On Thursday night, when Valli came to 'check the lights'."},
-    {"question": "Why would a builder want an old map?", "raisedIn": "s3_ep06", "answeredIn": "s3_ep09", "answer": "It shows a Roman library under the square where he will pour concrete."},
-    {"question": "Where is the real piece?", "raisedIn": "s3_ep04", "answeredIn": "s3_ep11", "answer": "In the box room of Valli's site office."},
-    {"question": "What is under Piazza della Civetta?", "raisedIn": "s3_ep09", "answeredIn": "s3_ep12", "answer": "The Roman library of the owl."}
+    {
+      "question": "When did the piece go missing?",
+      "raisedIn": "s3_ep01",
+      "answeredIn": "s3_ep01",
+      "answer": "In the ten dark minutes at midnight on Friday."
+    },
+    {
+      "question": "Why does the Owl say the piece is not lost?",
+      "raisedIn": "s3_ep01",
+      "answeredIn": "s3_ep04",
+      "answer": "What the Owl took was a plaster copy."
+    },
+    {
+      "question": "Who is the Owl?",
+      "raisedIn": "s3_ep01",
+      "answeredIn": "s3_ep08",
+      "answer": "Livia Conti, the restorer."
+    },
+    {
+      "question": "Is Professor Aldo the thief?",
+      "raisedIn": "s3_ep02",
+      "answeredIn": "s3_ep06",
+      "answer": "No: he was in Hall B at midnight, and he is not the big man."
+    },
+    {
+      "question": "Who is the big man in the yellow helmet?",
+      "raisedIn": "s3_ep03",
+      "answeredIn": "s3_ep10",
+      "answer": "Bruno Valli (his helmet's name strip)."
+    },
+    {
+      "question": "Who made the plaster copy?",
+      "raisedIn": "s3_ep04",
+      "answeredIn": "s3_ep05",
+      "answer": "Carla Bassi's workshop, order 318, for 'a museum friend'."
+    },
+    {
+      "question": "When was the real piece swapped?",
+      "raisedIn": "s3_ep04",
+      "answeredIn": "s3_ep08",
+      "answer": "On Thursday night, when Valli came to 'check the lights'."
+    },
+    {
+      "question": "Why would a builder want an old map?",
+      "raisedIn": "s3_ep06",
+      "answeredIn": "s3_ep09",
+      "answer": "It shows a Roman library under the square where he will pour concrete."
+    },
+    {
+      "question": "Where is the real piece?",
+      "raisedIn": "s3_ep04",
+      "answeredIn": "s3_ep11",
+      "answer": "In the box room of Valli's site office."
+    },
+    {
+      "question": "What is under Piazza della Civetta?",
+      "raisedIn": "s3_ep09",
+      "answeredIn": "s3_ep12",
+      "answer": "The Roman library of the owl."
+    }
   ],
   "clueThreads": [
-    {"from": "s3_ep01_c1", "to": ["s3_ep02_m2", "s3_ep06_m2"], "meaning": "Midnight on Friday: the time Aldo's alibi must cover."},
-    {"from": "s3_ep01_e2", "to": ["s3_ep02_m3", "s3_ep03_m2"], "meaning": "The white dust: soft, new, plaster — the copy's dust."},
-    {"from": "s3_ep01_e3", "to": ["s3_ep02_m1", "s3_ep04_m2", "s3_ep08_m2"], "meaning": "The first owl card: the same stamp, 'not lost', and the proof that Livia is the Owl."},
-    {"from": "s3_ep02_e2", "to": ["s3_ep06_m2"], "meaning": "Aldo's own page gives the hours the door log confirms."},
-    {"from": "s3_ep02_e3", "to": ["s3_ep03_m2"], "meaning": "The brass key opens Box 7."},
-    {"from": "s3_ep02_c3", "to": ["s3_ep03_final"], "meaning": "FIORI 7: the box's number in Pia's code."},
-    {"from": "s3_ep03_e3", "to": ["s3_ep06_m1"], "meaning": "Pia's description clears the small, thin professor."},
-    {"from": "s3_ep03_c3", "to": ["s3_ep06_final", "s3_ep10_m2", "s3_ep10_m3"], "meaning": "The crane helmet: a builder, then Valli's own helmet, then the heavy box's night."},
-    {"from": "s3_ep03_e4", "to": ["s3_ep11_final"], "meaning": "The pass Valli dropped on Thursday: the proof that makes him confess."},
-    {"from": "s3_ep04_e4", "to": ["s3_ep05_m1", "s3_ep05_final", "s3_ep08_m2"], "meaning": "The plaster copy: its paw print, its number 3?8, and why Livia took it."},
-    {"from": "s3_ep05_e4", "to": ["s3_ep06_m3"], "meaning": "Tuesday at the workshop: what Aldo saw."},
-    {"from": "s3_ep05_c3", "to": ["s3_ep11_m3"], "meaning": "A mould needs the real piece: a link of Valli's plan."},
-    {"from": "s3_ep06_e2", "to": ["s3_ep07_m3"], "meaning": "The door log breaks Valli's story about Aldo."},
-    {"from": "s3_ep06_e4", "to": ["s3_ep08_final", "s3_ep11_m1"], "meaning": "Aldo's photo of the Y crack tells the real piece from the copies."},
-    {"from": "s3_ep07_e3", "to": ["s3_ep10_m2"], "meaning": "The crane on Valli's card matches the helmet."},
-    {"from": "s3_ep07_e4", "to": ["s3_ep08_m3", "s3_ep11_m3"], "meaning": "The loan book: Tuesday, B.V."},
-    {"from": "s3_ep08_e4", "to": ["s3_ep09_m1", "s3_ep09_m2", "s3_ep09_final"], "meaning": "Livia's drawing: the half word, the street and its Roman-number stones."},
-    {"from": "s3_ep08_c3", "to": ["s3_ep10_m3", "s3_ep11_m3"], "meaning": "Thursday night: the swap."},
-    {"from": "s3_ep09_c1", "to": ["s3_ep10_final", "s3_ep12_m2"], "meaning": "BIBLIOTHECA: a library, the word that stops the concrete."},
-    {"from": "s3_ep09_e4", "to": ["s3_ep10_m1", "s3_ep11_final"], "meaning": "The city plan: concrete on 10 May, and Valli's motive."},
-    {"from": "s3_ep10_c3", "to": ["s3_ep11_m1", "s3_ep11_m3"], "meaning": "The heavy box nobody may open."},
-    {"from": "s3_ep11_e1", "to": ["s3_ep12_m2", "s3_ep12_final"], "meaning": "The real piece: the room it shows, and its return to the case."}
+    {
+      "from": "s3_ep01_c1",
+      "to": [
+        "s3_ep02_m2",
+        "s3_ep06_m2",
+        "s3_ep08_m2"
+      ],
+      "meaning": "Midnight on Friday: the time Aldo's alibi must cover, and Livia's 'I worked late in my lab' that gives the Owl away."
+    },
+    {
+      "from": "s3_ep01_e2",
+      "to": [
+        "s3_ep02_m3",
+        "s3_ep03_m2"
+      ],
+      "meaning": "The white dust: soft, new, plaster — the copy's dust."
+    },
+    {
+      "from": "s3_ep01_e3",
+      "to": [
+        "s3_ep02_m1",
+        "s3_ep04_m2",
+        "s3_ep08_m2"
+      ],
+      "meaning": "The first owl card: the same stamp, 'not lost', and the proof that Livia is the Owl."
+    },
+    {
+      "from": "s3_ep02_e2",
+      "to": [
+        "s3_ep06_m2"
+      ],
+      "meaning": "Aldo's own page gives the hours the door log confirms."
+    },
+    {
+      "from": "s3_ep02_e3",
+      "to": [
+        "s3_ep03_m2"
+      ],
+      "meaning": "The brass key opens Box 7."
+    },
+    {
+      "from": "s3_ep02_c3",
+      "to": [
+        "s3_ep03_final"
+      ],
+      "meaning": "FIORI 7: the box's number in Pia's code."
+    },
+    {
+      "from": "s3_ep03_e3",
+      "to": [
+        "s3_ep06_m1"
+      ],
+      "meaning": "Pia's description clears the small, thin professor."
+    },
+    {
+      "from": "s3_ep03_c3",
+      "to": [
+        "s3_ep06_final",
+        "s3_ep10_m1",
+        "s3_ep10_m3"
+      ],
+      "meaning": "The crane helmet: a builder, then the boss's helmet at Valli's site, then the heavy box's night."
+    },
+    {
+      "from": "s3_ep03_e4",
+      "to": [
+        "s3_ep11_final"
+      ],
+      "meaning": "The pass Valli dropped on Thursday: the proof that makes him confess."
+    },
+    {
+      "from": "s3_ep04_e4",
+      "to": [
+        "s3_ep05_m1",
+        "s3_ep05_final",
+        "s3_ep08_m2"
+      ],
+      "meaning": "The plaster copy: its paw print, its number 3?8, and why Livia took it."
+    },
+    {
+      "from": "s3_ep05_e4",
+      "to": [
+        "s3_ep06_m3"
+      ],
+      "meaning": "Tuesday at the workshop: what Aldo saw."
+    },
+    {
+      "from": "s3_ep05_c3",
+      "to": [
+        "s3_ep11_m3"
+      ],
+      "meaning": "A mould needs the real piece: a link of Valli's plan."
+    },
+    {
+      "from": "s3_ep06_e2",
+      "to": [
+        "s3_ep07_m3"
+      ],
+      "meaning": "The door log breaks Valli's story about Aldo."
+    },
+    {
+      "from": "s3_ep06_e4",
+      "to": [
+        "s3_ep08_final",
+        "s3_ep11_m1"
+      ],
+      "meaning": "Aldo's photo of the Y crack tells the real piece from the copies."
+    },
+    {
+      "from": "s3_ep07_e3",
+      "to": [
+        "s3_ep10_m2"
+      ],
+      "meaning": "The crane on Valli's card matches the helmet."
+    },
+    {
+      "from": "s3_ep07_e4",
+      "to": [
+        "s3_ep08_m1",
+        "s3_ep08_m3",
+        "s3_ep11_m3"
+      ],
+      "meaning": "The loan book page (Tuesday, B.V.) and the bridge card under it."
+    },
+    {
+      "from": "s3_ep08_e4",
+      "to": [
+        "s3_ep09_m1",
+        "s3_ep09_m2",
+        "s3_ep09_final"
+      ],
+      "meaning": "Livia's drawing: the half word, the street and its Roman-number stones."
+    },
+    {
+      "from": "s3_ep08_c3",
+      "to": [
+        "s3_ep10_m3",
+        "s3_ep11_m3"
+      ],
+      "meaning": "Thursday night: the swap."
+    },
+    {
+      "from": "s3_ep09_c1",
+      "to": [
+        "s3_ep10_final",
+        "s3_ep12_m2"
+      ],
+      "meaning": "BIBLIOTHECA: a library, the word that stops the concrete."
+    },
+    {
+      "from": "s3_ep09_e4",
+      "to": [
+        "s3_ep10_m1",
+        "s3_ep11_final",
+        "s3_ep12_m1"
+      ],
+      "meaning": "The city plan: Valli Building's site, his motive, and the concrete that never came."
+    },
+    {
+      "from": "s3_ep10_c3",
+      "to": [
+        "s3_ep11_m1",
+        "s3_ep11_m3"
+      ],
+      "meaning": "The heavy box nobody may open."
+    },
+    {
+      "from": "s3_ep11_e1",
+      "to": [
+        "s3_ep12_m2",
+        "s3_ep12_final"
+      ],
+      "meaning": "The real piece: the room it shows, and its return to the case."
+    },
+    {
+      "from": "s3_ep09_e1",
+      "to": [
+        "s3_ep12_m2"
+      ],
+      "meaning": "Aldo's Latin card: Roman books were scrolls kept in square holes."
+    }
   ],
   "timeline": [
-    {"when": "Tuesday, 2 PM to 5 PM", "what": "Valli borrows the piece from the lab 'for poster photos' (loan book, B.V.). At 3 PM, Carla makes a mould of it."},
-    {"when": "Thursday, 7 PM", "what": "Valli picks up plaster copy 318 from the Bassi workshop."},
-    {"when": "Thursday, 11 PM", "what": "Valli 'checks the lights' in the map hall (Enzo lets him in) and puts the copy in the glass case."},
-    {"when": "Thursday, 11:30 PM", "what": "Pia sees a big man in a crane helmet with a heavy box; he drops his museum pass."},
-    {"when": "Thursday, 11:50 PM", "what": "The heavy box comes through Valli's site gate at Piazza della Civetta."},
-    {"when": "Friday morning", "what": "Livia cleans the piece: too light, no crack. Sofia does not believe her."},
-    {"when": "Friday, 9 PM to 1 AM", "what": "Aldo's talk in Hall B."},
-    {"when": "Friday, midnight", "what": "Livia turns the lights off by hand, carries the copy out, leaves the owl card."},
-    {"when": "Saturday, 6:00 AM to noon", "what": "Enzo finds the case empty (Case 01); Trevi (Case 02); Pia's stall at 11:00 (Case 03); the Pantheon at noon (Case 04)."},
-    {"when": "8 May", "what": "The owl square found, and Valli's site (Cases 09-10)."},
-    {"when": "9 May", "what": "The inspector at Valli's office (Case 11)."},
-    {"when": "10 May and after", "what": "No concrete. The library is opened; the piece returns (Case 12)."}
+    {
+      "when": "Tuesday, 2 PM to 5 PM",
+      "what": "Valli borrows the piece from the lab 'for poster photos' (loan book, B.V.). At 3 PM, Carla makes a mould of it."
+    },
+    {
+      "when": "Thursday, 7 PM",
+      "what": "Valli picks up plaster copy 318 from the Bassi workshop."
+    },
+    {
+      "when": "Thursday, 11 PM",
+      "what": "Valli 'checks the lights' in the map hall (Enzo lets him in) and puts the copy in the glass case."
+    },
+    {
+      "when": "Thursday, 11:30 PM",
+      "what": "Pia sees a big man in a crane helmet with a heavy box; he drops his museum pass."
+    },
+    {
+      "when": "Thursday, 11:50 PM",
+      "what": "The heavy box comes through Valli's site gate at Piazza della Civetta."
+    },
+    {
+      "when": "Friday morning",
+      "what": "Livia cleans the piece: too light, no crack. Sofia does not believe her."
+    },
+    {
+      "when": "Friday, 9 PM to 1 AM",
+      "what": "Aldo's talk in Hall B."
+    },
+    {
+      "when": "Friday, midnight",
+      "what": "Livia turns the lights off by hand, carries the copy out, leaves the owl card."
+    },
+    {
+      "when": "Saturday, 6:00 AM to noon",
+      "what": "Enzo finds the case empty (Case 01); Trevi (Case 02); Pia's stall at 11:00 (Case 03); the Pantheon at noon (Case 04)."
+    },
+    {
+      "when": "8 May",
+      "what": "The owl square found, and Valli's site (Cases 09-10)."
+    },
+    {
+      "when": "9 May",
+      "what": "The inspector at Valli's office (Case 11)."
+    },
+    {
+      "when": "10 May and after",
+      "what": "No concrete. The library is opened; the piece returns (Case 12)."
+    }
   ],
   "englishReview": [
-    {"caseId": "s3_ep01", "level": "A1-A2 (ages 8-10)", "verdict": "Fits.", "notes": ["Short log lines; time words (PM, AM, midnight) taught by the puzzle itself.", "The Trevi answer comes from matching two texts (card and visitor map), not from outside knowledge."]},
-    {"caseId": "s3_ep02", "level": "A2 (ages 9-11)", "verdict": "Fits.", "notes": ["The riddle uses one pattern (I have X, but no Y) three times: easy to follow.", "'Suspect' is in the glossary; the question explains it in its first hint."]},
-    {"caseId": "s3_ep03", "level": "A1-A2 (ages 8-10)", "verdict": "Fits.", "notes": ["Times with minutes (6:10 vs 6:30) are the main skill.", "'Crane' is read from a definition list, so no prior word knowledge is needed."]},
-    {"caseId": "s3_ep04", "level": "A2 (ages 9-11)", "verdict": "Fits.", "notes": ["'Two hours after' is a small calculation in English.", "PLASTER is glossaried and contrasted with marble in the same letter."]},
-    {"caseId": "s3_ep05", "level": "A2 (ages 9-11)", "verdict": "Fits; the round tag is the trickiest reading step.", "notes": ["The circular tag is explained in two lines and two hints.", "'Mould' is British spelling, kept for the series' British voice; glossaried."]},
-    {"caseId": "s3_ep06", "level": "A2 (ages 9-12)", "verdict": "Fits; PM/AM across midnight is new and taught by the hints.", "notes": ["Reading GNIDLIUB backwards is a decoding skill, not vocabulary; hints give the method.", "BUILDER is built from BUILDING: a word-family step."]},
-    {"caseId": "s3_ep07", "level": "A2-B1 (ages 10-12)", "verdict": "Fits older players; the letter-shift code is Act 2's hardest puzzle.", "notes": ["The code's rule is stated with three examples (B means A...).", "Valli's story is short; the challenge is checking it against evidence."]},
-    {"caseId": "s3_ep08", "level": "A2 (ages 9-11)", "verdict": "Fits.", "notes": ["'Each' is taught by the bridge sum.", "Livia's story is the longest speech of Act 2 (6 short lines)."]},
-    {"caseId": "s3_ep09", "level": "A2-B1 (ages 10-12)", "verdict": "Fits; Roman numbers with take-away (IV, IX) may need the second hint for 8-year-olds.", "notes": ["Latin words are always given with their English meaning.", "'Between' and 'just before' carry the street puzzle."]},
-    {"caseId": "s3_ep10", "level": "A2 (ages 9-11)", "verdict": "Fits.", "notes": ["Dates in the British order (1 May).", "The final answer word LIBRARY was learned in Case 09."]},
-    {"caseId": "s3_ep11", "level": "A2 (ages 9-12)", "verdict": "Fits.", "notes": ["'From Monday to Saturday' is the key phrase.", "The inspector's list mixes days and times: the hardest ordering of the season, with two hints."]},
-    {"caseId": "s3_ep12", "level": "A2 (ages 9-12)", "verdict": "Fits.", "notes": ["WISDOM, WEALTH and WEATHER are given with definitions; the contrast carries the theme.", "HISTORY is defined in the card ('the story of the past')."]}
+    {
+      "caseId": "s3_ep01",
+      "level": "A1-A2 (ages 8-10)",
+      "verdict": "Fits.",
+      "notes": [
+        "The witness talk asks three short questions; every answer is 4 to 8 words.",
+        "The Owl's card ('throw coins and make a wish') is matched to a picture of a girl throwing a coin, not to outside knowledge."
+      ]
+    },
+    {
+      "caseId": "s3_ep02",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "The riddle uses one pattern (I have X, but no Y) three times: easy to follow.",
+        "'Suspect' is in the glossary; Aldo's talk lines stay under 10 words."
+      ]
+    },
+    {
+      "caseId": "s3_ep03",
+      "level": "A1-A2 (ages 8-10)",
+      "verdict": "Fits.",
+      "notes": [
+        "Times with minutes (6:10 vs 6:30) are the main skill.",
+        "'Crane' is read from a definition list, so no word needs to be known before."
+      ]
+    },
+    {
+      "caseId": "s3_ep04",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "'Two hours after' is read on the guide sign, then found among four carved floor stones.",
+        "PLASTER is glossaried and contrasted with marble in the same letter."
+      ]
+    },
+    {
+      "caseId": "s3_ep05",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits; the round tag is still the trickiest reading step.",
+      "notes": [
+        "Two cats are orange: 'short tail' and 'plaster workshop' must be read, so colour alone never answers.",
+        "'Mould' is British spelling, kept for the series' British voice; glossaried."
+      ]
+    },
+    {
+      "caseId": "s3_ep06",
+      "level": "A2 (ages 9-12)",
+      "verdict": "Fits; PM/AM across midnight is new and taught by the hints.",
+      "notes": [
+        "M1's notes no longer state the answer: the child compares Aldo with Pia's big man.",
+        "Reading GNIDLIUB backwards is a decoding skill, not vocabulary; hints give the method."
+      ]
+    },
+    {
+      "caseId": "s3_ep07",
+      "level": "A2-B1 (ages 10-12)",
+      "verdict": "Fits older players; the letter-shift code is Act 2's hardest puzzle.",
+      "notes": [
+        "The code's rule is stated with three examples (B means A...).",
+        "Valli's story is short; the challenge is checking it against the Hall B log."
+      ]
+    },
+    {
+      "caseId": "s3_ep08",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "The bridge is chosen among three real bridges by 'two stone posts' and 'four faces'.",
+        "Livia's story is the longest speech of Act 2 (6 short lines); her talk lines are 4 to 9 words."
+      ]
+    },
+    {
+      "caseId": "s3_ep09",
+      "level": "A2-B1 (ages 10-12)",
+      "verdict": "Fits; Roman numbers with take-away (IV, IX) may need the second hint for 8-year-olds.",
+      "notes": [
+        "The library is found in two steps: BIBLIO... in the Latin list, then 'square holes in the walls' in a picture.",
+        "'Between' and 'just before' carry the street puzzle."
+      ]
+    },
+    {
+      "caseId": "s3_ep10",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "The site rules pair a colour with a picture (yellow, with a crane): both must be read.",
+        "The final answer word LIBRARY was learned in Case 09."
+      ]
+    },
+    {
+      "caseId": "s3_ep11",
+      "level": "A2 (ages 9-12)",
+      "verdict": "Fits.",
+      "notes": [
+        "'Monday to Saturday' and 'On Sunday, the square is empty' carry the talk: two agree, one does not.",
+        "The inspector's list mixes days and times: the hardest ordering of the season, with two hints."
+      ]
+    },
+    {
+      "caseId": "s3_ep12",
+      "level": "A2 (ages 9-12)",
+      "verdict": "Fits.",
+      "notes": [
+        "WISDOM, WEALTH and WEATHER are given with definitions; the contrast carries the theme.",
+        "HISTORY is defined in the card ('the story of the past'); the tiles are listed out of order."
+      ]
+    }
   ],
   "notes": [
     "Written by Claude Code for the STEP 3-11 trial (input: Season 3, Rome). Not the decided Season 3.",
-    "Piazza della Civetta and its library are invented; Ponte Fabricio's four-faced posts, the Pantheon's oculus, Torre Argentina's cats and Campo de' Fiori's Monday-Saturday market are real."
+    "Piazza della Civetta and its library are invented; Ponte Fabricio's four-faced posts, the Pantheon's oculus, Torre Argentina's cats and Campo de' Fiori's Monday-Saturday market are real.",
+    "STEP 3-14 (redesign for production): the core mystery, culprit, motive, characters, places and timeline are unchanged. Changed: how nine missions are played (two talks, four looks round, three picture choices), Case 06's two nights cleared in words, Case 11's Stone B (no second plaster copy), Case 12's tile order, and Livia's Case 01 answer paid off in Case 08. See planning/STEP_3_14_REDESIGN.md."
   ]
 }

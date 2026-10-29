@@ -386,18 +386,20 @@ void main() {
   group('the Rome manifest (STEP 3-11), whole', () {
     final plan = AssetPlan.load(manifest);
 
-    test('47 pictures read, checked, no error', () {
+    // STEP 3-14: 47 pictures + 16 a puzzle shows (choice pictures of the
+    // looks round and picture choices).
+    test('63 pictures read, checked, no error', () {
       expect(plan.ok, isTrue, reason: plan.errors.join('\n'));
-      expect(plan.assets, hasLength(47));
+      expect(plan.assets, hasLength(63));
       expect(plan.seasonId, 's3_rome');
     });
 
     test('every reference made before the pictures drawn from it', () {
       final order = plan.schedule!.order;
-      expect(order, hasLength(47));
+      expect(order, hasLength(63));
       final drawn = plan.assets.where((a) => a.references.isNotEmpty).toList();
-      expect(drawn, hasLength(7));
-      expect(drawn.expand((a) => a.references), hasLength(8));
+      expect(drawn, hasLength(14));
+      expect(drawn.expand((a) => a.references), hasLength(15));
       for (final a in drawn) {
         for (final r in a.references) {
           expect(order.indexOf(r), lessThan(order.indexOf(a.assetId)), reason: '$r before ${a.assetId}');
@@ -423,7 +425,10 @@ void main() {
         expect(plan.season!.places.singleWhere((p) => p.placeId == w.asset.subject).file, w.asset.outputPath);
         expect(w.missions, isNotEmpty, reason: w.asset.assetId);
       }
-      expect(AssetWiring.counts(wiring), {'wired': 18, 'ready_to_wire': 17, 'blocked': 0, 'not_supported': 12});
+      // AssetWiring reads a picture's type, not its use (STEP 3-14 gap): the
+      // puzzle pictures are counted as scenes (ready_to_wire) and objects
+      // with no evidence id (not_supported).
+      expect(AssetWiring.counts(wiring), {'wired': 18, 'ready_to_wire': 22, 'blocked': 0, 'not_supported': 23});
       expect(wiring.where((w) => w.asset.type == 'character').every((w) => w.status == WiringStatus.notSupported), isTrue);
       final cover = wiring.singleWhere((w) => w.asset.type == 'cover');
       expect(cover.status, WiringStatus.readyToWire, reason: 'portrait now, but no SeasonCover line in lib/: not wired');
@@ -508,7 +513,7 @@ void main() {
       expect(await AssetPipeline(plan: plan, studio: ImageStudio(api: api, editApi: api, findKey: () => null, log: log.add), log: log.add).run(), 0);
       expect(api.calls, 0);
       expect(_listing(Directory('content_pipeline')), before);
-      expect(log.join('\n'), contains('7 drawn from references'));
+      expect(log.join('\n'), contains('14 drawn from references'));
     });
   });
 }

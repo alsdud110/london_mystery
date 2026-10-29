@@ -27,33 +27,39 @@
       "slot": "m1",
       "placeId": "s3_rome.guard_room",
       "puzzle": {
-        "paletteId": "text_choice",
+        "paletteId": "witness_compare",
         "surface": "mission",
-        "engineTable": null,
+        "engineTable": "dialogues",
         "missionType": "multipleChoice",
         "answerSpec": {
-          "answer": "midnight",
+          "answer": "lights_off",
           "options": [
             {
-              "id": "before_ten",
-              "label": "Before 10:00 PM",
-              "feedback": "At 10:00 PM, Enzo saw the piece in its case."
+              "id": "lights_off",
+              "label": "The lights went off for ten minutes."
             },
             {
-              "id": "midnight",
-              "label": "In the ten dark minutes at midnight"
+              "id": "alarm",
+              "label": "An alarm rang in the hall.",
+              "feedback": "Nobody talked about an alarm. Find two people who say the same thing."
             },
             {
-              "id": "after_six",
-              "label": "After 6:00 AM",
-              "feedback": "At 6:00 AM, the case was already empty."
+              "id": "power",
+              "label": "The power was cut.",
+              "feedback": "Sofia says the power stayed on. What did Enzo and Livia see?"
             }
           ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.guard_room",
+          "s3_rome.asset.char_enzo_base",
+          "s3_rome.asset.char_sofia_base",
+          "s3_rome.asset.char_livia_base"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Letter: Enzo's night log. The piece was there at 10:00 PM and gone at 6:00 AM; only at midnight could nobody see the hall."
+          "Played as a talk (DialogueScene) in the guard room: Enzo and Livia both saw the lights go off at midnight; Sofia says the power stayed on (paid off by the final: the switch was turned by hand).",
+          "Livia's answer to 'Where were you at midnight?' (in her lab, working late) is heard after the deduction (then): the Owl's first slip, paid off in Case 08 M2."
         ]
       },
       "clueInputs": [],
@@ -64,11 +70,12 @@
       "learning": {
         "dependency": "essential",
         "level": "comprehension",
-        "objective": "야간 기록의 시각(PM/AM)을 읽고, 아무도 볼 수 없던 시간을 찾는다.",
+        "objective": "세 사람에게 같은 질문을 하고, 자정에 대해 두 사람이 같은 것을 말한 진술(the lights went off)을 찾는다.",
         "skill": "sentenceMeaning",
         "expressions": [
+          "When did you last see the piece?",
           "The lights went off for ten minutes.",
-          "I could not see a thing."
+          "I worked late in my lab."
         ]
       },
       "play": {
@@ -77,19 +84,20 @@
         "story": [
           "Director Sofia Ferri meets you at the door.",
           "\"The new map piece is gone!\" she says.",
-          "Enzo, the night guard, hands you his log book."
+          "Three people can tell you about last night."
         ],
-        "letterIntro": "Enzo's night log says:",
-        "letter": "NIGHT LOG — THE MAP HALL\n8:00 PM — I locked the hall. The piece was in its case.\n10:00 PM — I looked at the case. The piece was there. All quiet.\n12:00 AM — The lights went off for ten minutes! I could not see a thing. Then all quiet.\n2:00 AM — I sat in the guard room. All quiet.\n6:00 AM — I looked at the case. It was EMPTY!\n— Enzo",
-        "question": "When did the piece most likely go missing?",
+        "letterIntro": "Your notes say:",
+        "letter": "Ask each person what they saw.\nFind two people who say the same thing about midnight.",
+        "question": "What happened in the map hall at midnight?",
         "hints": [
-          "Find the last time Enzo saw the piece.",
-          "After that, when was the hall too dark to see?"
+          "Ask every person the same question: What happened at midnight?",
+          "Two people saw the same thing. Compare their answers."
         ],
-        "successMessage": "You found the dark ten minutes!",
+        "successMessage": "Two witnesses saw the same thing!",
         "transition": [
           "At midnight, the hall was dark for ten minutes.",
           "Someone could take the piece then, and nobody would see.",
+          "Enzo hands you his night log.",
           "Giulia, your guide, waves from the map hall. \"Come and look at the floor!\""
         ],
         "mapX": 0.22,
@@ -97,7 +105,7 @@
         "clue": {
           "title": "The Dark Ten Minutes",
           "value": "12:00 AM · LIGHTS OFF",
-          "note": "The piece was there at 10:00 PM. At midnight, the hall was dark for ten minutes.",
+          "note": "Enzo and Livia saw the lights go off at midnight, for ten minutes.",
           "symbol": "watch"
         },
         "evidence": {
@@ -105,6 +113,124 @@
           "icon": "watch",
           "description": "The night guard's log book for the map hall.",
           "inscription": "12:00 AM — The lights went off for ten minutes!"
+        },
+        "dialogue": {
+          "place": "GUARD ROOM",
+          "background": "assets/seasons/season_03_rome/cases/case_01/guard_room.png",
+          "goal": "Find out what happened at midnight.",
+          "how": "Ask each person. Write down what they say.",
+          "guide": "Talk to a witness.",
+          "questions": [
+            {
+              "id": "last",
+              "text": "When did you last see the piece?"
+            },
+            {
+              "id": "midnight",
+              "text": "What happened at midnight?"
+            },
+            {
+              "id": "where",
+              "text": "Where were you at midnight?"
+            }
+          ],
+          "witnesses": [
+            {
+              "id": "enzo",
+              "name": "Enzo Greco",
+              "title": "THE NIGHT GUARD",
+              "portrait": "assets/seasons/season_03_rome/characters/enzo_base.png",
+              "description": "an old guard with a grey moustache, a cap and a thermos of coffee",
+              "greeting": "I was on duty all night. Ask me.",
+              "answers": {
+                "last": {
+                  "line": "At ten. It was in its glass case.",
+                  "thing": "at ten at night"
+                },
+                "midnight": {
+                  "line": "The lights went off for ten minutes!",
+                  "thing": "the lights went off"
+                },
+                "where": {
+                  "line": "In this room, with my coffee.",
+                  "thing": "the guard room"
+                }
+              }
+            },
+            {
+              "id": "sofia",
+              "name": "Sofia Ferri",
+              "title": "THE DIRECTOR",
+              "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png",
+              "description": "a director in a navy suit, with reading glasses on a chain",
+              "greeting": "I came as soon as Enzo called me.",
+              "answers": {
+                "last": {
+                  "line": "At six, when I locked my office.",
+                  "thing": "at six in the evening"
+                },
+                "midnight": {
+                  "line": "The power box says the power stayed on.",
+                  "thing": "the power stayed on"
+                },
+                "where": {
+                  "line": "At home, fast asleep.",
+                  "thing": "at home"
+                }
+              }
+            },
+            {
+              "id": "livia",
+              "name": "Livia Conti",
+              "title": "THE RESTORER",
+              "portrait": "assets/seasons/season_03_rome/characters/livia_base.png",
+              "description": "a young restorer in a white lab coat, with a long brown braid and a silver owl ring",
+              "greeting": "Oh... yes. I can help, I think.",
+              "answers": {
+                "last": {
+                  "line": "On Friday morning. I cleaned it.",
+                  "thing": "on Friday morning"
+                },
+                "midnight": {
+                  "line": "I saw the lights go off, too.",
+                  "thing": "the lights went off"
+                },
+                "where": {
+                  "line": "In my lab. I worked late.",
+                  "thing": "in the lab"
+                }
+              }
+            }
+          ],
+          "deduction": {
+            "topic": "midnight",
+            "pair": [
+              "enzo.midnight",
+              "livia.midnight"
+            ],
+            "then": [
+              "livia.where"
+            ],
+            "askLine": "Ask a question.",
+            "anotherLine": "Ask another person.",
+            "readyLine": "Compare two answers.",
+            "compareGoal": "Find two people who saw the same thing at midnight.",
+            "compareHow": "Tap two answers to compare them.",
+            "matchLine": "Both saw the lights go off at midnight.",
+            "offTopicLine": "These answers are not about midnight.",
+            "checkLine": "Look for what happened at midnight.",
+            "differentLine": "These two say different things.",
+            "retryLine": "Try another pair.",
+            "thenGoal": "Find out where Livia was.",
+            "thenHow": "Ask Livia where she was at midnight.",
+            "doneLine": "Livia was in her lab at midnight.",
+            "notesLine": "Your witness notes are ready."
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE DARK TEN MINUTES",
+          "detail": "The piece was safe at ten. Then, at midnight, the hall went dark."
         }
       }
     },
@@ -202,6 +328,33 @@
           "icon": "footprint",
           "description": "Fine white dust from the map hall floor. It is soft, like chalk.",
           "inscription": "Case, statue, stairs, back door."
+        },
+        "talk": {
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png",
+          "goal": "Follow the white dust.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "The dust goes all over the hall!"
+              },
+              {
+                "by": "detective",
+                "text": "Where does it start and end?"
+              },
+              {
+                "by": "speaker",
+                "text": "I wrote it down. But my notes are all mixed up!"
+              }
+            ],
+            "finishLabel": "READ GIULIA'S NOTES"
+          }
+        },
+        "discovery": {
+          "type": "newLead",
+          "title": "A TRAIL TO THE BACK DOOR",
+          "detail": "Someone carried something out that way. What is waiting at the door?"
         }
       }
     },
@@ -210,21 +363,40 @@
       "slot": "m3",
       "placeId": "s3_rome.map_hall",
       "puzzle": {
-        "paletteId": "word_entry",
+        "paletteId": "scene_explore_choose",
         "surface": "mission",
-        "engineTable": null,
-        "missionType": "wordInput",
+        "engineTable": "explores",
+        "missionType": "multipleChoice",
         "answerSpec": {
-          "answer": "TREVI",
-          "acceptedAnswers": [
-            "TREVI FOUNTAIN",
-            "THE TREVI FOUNTAIN"
+          "answer": "trevi",
+          "options": [
+            {
+              "id": "pantheon",
+              "label": "The Pantheon",
+              "feedback": "This place has a round hole in its roof. Where do people throw coins?"
+            },
+            {
+              "id": "trevi",
+              "label": "The Trevi Fountain"
+            },
+            {
+              "id": "colosseum",
+              "label": "The Colosseum",
+              "feedback": "This is where the old games were. Where do people make a wish?"
+            }
           ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.map_hall",
+          "s3_rome.asset.pantheon_hall",
+          "s3_rome.asset.trevi_fountain",
+          "s3_rome.asset.colosseum"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Letter: the Owl's card and the museum's visitor map. The card says where people throw coins; the map says which place that is."
+          "Played as a look round (ExploreScene) in the map hall: the dust leads to the back door, where the Owl's card lies; the visitor map board opens once it is read, and its three place pictures are told apart by what people do there (a girl throws a coin into the fountain).",
+          "The choice pictures reuse two place pictures (trevi_fountain, pantheon_hall) and add one (colosseum), all 1536x1024.",
+          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the map_hall prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
         ]
       },
       "clueInputs": [
@@ -241,7 +413,7 @@
       "learning": {
         "dependency": "essential",
         "level": "application",
-        "objective": "부엉이 카드의 설명(동전을 던지고 소원을 비는 곳)을 박물관 지도와 맞춰 장소 이름을 쓴다.",
+        "objective": "부엉이 카드의 'throw coins and make a wish'를 읽고, 방문객 지도의 세 그림 중 사람들이 동전을 던지는 곳을 고른다.",
         "skill": "sentenceMeaning",
         "expressions": [
           "Go where people throw coins and make a wish.",
@@ -252,17 +424,16 @@
         "title": "The Owl's Card",
         "location": "THE BACK DOOR",
         "story": [
-          "Under the back door, there is a small white card.",
-          "It has a stamp of an owl on it.",
-          "Next to it is a museum visitor map."
+          "The dust trail ends at the heavy back door.",
+          "Something small and white lies on the floor there.",
+          "An owl card? Or just a ticket?"
         ],
-        "letterIntro": "The owl card and the visitor map say:",
-        "letter": "THE OWL CARD:\nDear Detective,\nThe piece is not lost.\nGo where people throw coins and make a wish.\nLook under the second shell.\n— The Owl\n\nTHE VISITOR MAP:\nPANTHEON — Look up at the round hole in the roof!\nTREVI FOUNTAIN — Throw a coin and make a wish!\nCOLOSSEUM — Walk where the old games were.",
+        "letterIntro": "Under the back door, a card with an owl stamp:",
+        "letter": "Dear Detective,\nThe piece is not lost.\nGo where people throw coins and make a wish.\nLook under the second shell.\n— The Owl",
         "question": "Where does the Owl want you to go?",
-        "prompt": "The Owl wants me to go to the ____ Fountain.",
         "hints": [
-          "Read the Owl's card. What do people do there?",
-          "Find the same words on the visitor map."
+          "Find the card at the back door and read it first.",
+          "Look at each picture on the visitor map. Where are people throwing coins?"
         ],
         "successMessage": "You read the Owl's card!",
         "transition": [
@@ -270,11 +441,6 @@
           "\"The piece is not lost?\" Sofia says. \"Then where is it?\"",
           "Behind her, Signor Bruno Valli, the show's sponsor, is red in the face."
         ],
-        "feedback": {
-          "PANTHEON": "The Pantheon has a hole in its roof. Where do people throw coins?",
-          "COLOSSEUM": "The Colosseum is for old games. Where do people make a wish?"
-        },
-        "orderFeedback": "Check your spelling on the visitor map.",
         "mapX": 0.25,
         "mapY": 0.34,
         "clue": {
@@ -288,6 +454,181 @@
           "icon": "seal",
           "description": "A small white card with an owl stamp, left at the back door.",
           "inscription": "The piece is not lost. Look under the second shell."
+        },
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_03_rome/locations/map_hall.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            }
+          },
+          "place": "The map hall",
+          "task": "Look around the map hall. Where does the dust trail end?",
+          "nextTask": "Where does the Owl want you to go? Check the visitor map.",
+          "missLine": "Nothing here. Follow the dust to the back door.",
+          "guideAt": [
+            600,
+            930
+          ],
+          "spots": [
+            {
+              "id": "card",
+              "kind": "document",
+              "title": "THE OWL'S CARD",
+              "label": "A white card under the back door",
+              "areas": [
+                [
+                  1240,
+                  760,
+                  1480,
+                  920
+                ]
+              ],
+              "mark": [
+                1450,
+                770
+              ]
+            },
+            {
+              "id": "case",
+              "kind": "note",
+              "title": "THE EMPTY CASE",
+              "label": "The empty glass case",
+              "areas": [
+                [
+                  400,
+                  330,
+                  640,
+                  720
+                ]
+              ],
+              "mark": [
+                620,
+                340
+              ],
+              "line": "The case is empty. The dust trail starts here."
+            },
+            {
+              "id": "statue",
+              "kind": "note",
+              "title": "THE STATUE",
+              "label": "A big white statue",
+              "areas": [
+                [
+                  760,
+                  150,
+                  920,
+                  740
+                ]
+              ],
+              "mark": [
+                900,
+                170
+              ],
+              "line": "White dust on the statue's foot. The trail went past it."
+            },
+            {
+              "id": "stairs",
+              "kind": "note",
+              "title": "THE STAIRS",
+              "label": "Stairs going down",
+              "areas": [
+                [
+                  960,
+                  560,
+                  1220,
+                  900
+                ]
+              ],
+              "mark": [
+                1200,
+                570
+              ],
+              "line": "Dust on every step. The trail goes down to the door."
+            },
+            {
+              "id": "map",
+              "kind": "choice",
+              "title": "THE VISITOR MAP",
+              "label": "The museum's visitor map on a stand",
+              "areas": [
+                [
+                  40,
+                  260,
+                  290,
+                  760
+                ]
+              ],
+              "mark": [
+                270,
+                270
+              ],
+              "requires": "card",
+              "lockedLine": "The museum's visitor map. But where should you go? Find a clue first.",
+              "unreadLine": "Read the Owl's card first."
+            }
+          ],
+          "others": [
+            {
+              "label": "Tall windows",
+              "areas": [
+                [
+                  380,
+                  30,
+                  1240,
+                  140
+                ]
+              ],
+              "line": "Tall windows. They are all shut tight."
+            },
+            {
+              "label": "The marble floor",
+              "areas": [
+                [
+                  300,
+                  820,
+                  900,
+                  1010
+                ]
+              ],
+              "line": "Only the dust trail here. Follow it to the door."
+            }
+          ],
+          "choiceTitle": "THE VISITOR MAP",
+          "choiceHow": "Where do people throw coins and make a wish? Tap one picture.",
+          "choicePixels": {
+            "width": 1536,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "pantheon",
+              "picture": "assets/seasons/season_03_rome/locations/pantheon_hall.png",
+              "description": "inside a round temple, sunlight falling through a round hole in the roof"
+            },
+            {
+              "optionId": "trevi",
+              "picture": "assets/seasons/season_03_rome/locations/trevi_fountain.png",
+              "description": "a great fountain of rushing water, a girl throwing a coin into it"
+            },
+            {
+              "optionId": "colosseum",
+              "picture": "assets/seasons/season_03_rome/cases/case_01/colosseum.png",
+              "description": "a huge round stone arena with rows of arches"
+            }
+          ],
+          "opening": [
+            20,
+            20,
+            1516,
+            1004
+          ]
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE FOUNTAIN OF WISHES",
+          "detail": "The Owl says the piece is not lost. Next stop: the Trevi Fountain."
         }
       }
     }
@@ -302,7 +643,7 @@
       "engineTable": null,
       "missionType": "finalCode",
       "answerSpec": {
-        "answer": "432",
+        "answer": "422",
         "codeLength": 3,
         "dialSymbols": [
           "footprint",
@@ -313,7 +654,7 @@
       "assetNeeds": [],
       "status": "ready",
       "notes": [
-        "The Owl put a lock on the light box. Its three numbers are the case's three clues: 4 places on the trail, 3 'All quiet' lines, the second shell."
+        "The Owl put a lock on the light box. Its three numbers are the case's three clues: 4 places on the trail, 2 people who saw the lights go off (Enzo and Livia; Sofia says the power stayed on), the second shell."
       ]
     },
     "clueInputs": [
@@ -323,9 +664,9 @@
         "note": "First number: the trail passes 4 places."
       },
       {
-        "ref": "s3_ep01_e1",
+        "ref": "s3_ep01_c1",
         "use": "answerDerivation",
-        "note": "Second number: Enzo wrote 'All quiet' 3 times."
+        "note": "Second number: Enzo and Livia saw the lights go off."
       },
       {
         "ref": "s3_ep01_c3",
@@ -339,11 +680,11 @@
     "learning": {
       "dependency": "essential",
       "level": "application",
-      "objective": "세 단서(먼지 자국, 야간 기록, 부엉이 카드)를 다시 읽어 숫자 4·3·2를 순서대로 맞춘다.",
+      "objective": "세 단서(먼지 자국, 증인 진술, 부엉이 카드)를 다시 확인해 숫자 4·2·2를 순서대로 맞춘다.",
       "skill": "sentenceMeaning",
       "expressions": [
         "How many places did my trail pass?",
-        "Which shell did I write about?"
+        "How many people saw the lights go off?"
       ]
     },
     "play": {
@@ -355,25 +696,25 @@
         "A tag with an owl stamp hangs from the lock."
       ],
       "letterIntro": "The owl tag says:",
-      "letter": "My lock is made of your first clues, Detective.\nFirst number: How many places did my dust trail pass?\nSecond number: How many times did Enzo write \"All quiet\" last night?\nThird number: Which shell did I write about on my card?\n— The Owl",
+      "letter": "My lock is made of your first clues, Detective.\nFirst number: How many places did my dust trail pass?\nSecond number: How many people saw the lights go off at midnight?\nThird number: Which shell did I write about on my card?\n— The Owl",
       "question": "Turn the dials to the Owl's three numbers. Then open the light box.",
       "hints": [
         "Your notebook has the dust trail. Count its places.",
-        "Read Enzo's log again, line by line. Count every \"All quiet\"."
+        "Open your witness notes. Who saw the lights go off?"
       ],
       "successMessage": "The light box opens!",
       "transition": [
-        "Inside, the big switch is down. There is white dust on it.",
-        "Nobody cut the power. Someone turned the lights off by hand.",
-        "Sofia goes pale. \"So this was a plan.\"",
-        "Giulia holds up the Owl's card. \"Then let's follow the Owl. To the Trevi Fountain!\""
+        "White dust on the switch, and an owl card at the door.",
+        "Somebody planned the dark ten minutes.",
+        "Giulia holds up the Owl's card. \"To the Trevi Fountain!\""
       ],
       "feedback": {
-        "422": "Count \"All quiet\" again. Read the midnight line to the end.",
-        "433": "Read the Owl's card again. Which shell?",
-        "332": "Count the places on the trail again. The empty case is one of them."
+        "322": "Count the places on the trail again. The empty case is one of them.",
+        "412": "Open your witness notes. More than one person saw the lights go off.",
+        "423": "Read the Owl's card again. Which shell?",
+        "432": "Count again. Who saw the lights go off? Not Sofia."
       },
-      "orderFeedback": "Right numbers, wrong order. The trail first, then Enzo's log, then the shell.",
+      "orderFeedback": "These numbers fit, but not in this order. Trail, witnesses, then the shell.",
       "mapX": 0.22,
       "mapY": 0.3,
       "evidence": {
@@ -381,7 +722,40 @@
         "icon": "key",
         "description": "The map hall's light box. Its switch was turned off by hand.",
         "inscription": "The switch is down, with white dust on it."
-      }
+      },
+      "ending": [
+        {
+          "by": "narrator",
+          "text": "The lid opens. The big switch is down."
+        },
+        {
+          "by": "speaker",
+          "text": "But the power never went off!",
+          "speaker": "sofia_ferri",
+          "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "Someone turned the lights off by hand.",
+          "evidence": "s3_ep01_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "So this was a plan, not an accident.",
+          "speaker": "sofia_ferri",
+          "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "There is white dust on the switch, too."
+        },
+        {
+          "by": "speaker",
+          "text": "Who is this Owl? Let's follow the card!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        }
+      ]
     }
   },
   "hook": "Who is the Owl, and why does the Owl say the piece is not lost?",
@@ -391,7 +765,7 @@
   },
   "play": {
     "objectives": [
-      "Read the night guard's log.",
+      "Talk to the three witnesses.",
       "Follow the dust trail.",
       "Open the light box."
     ],
@@ -401,7 +775,7 @@
       "But the glass case is empty!",
       "\"Please, Detective,\" says Director Sofia Ferri. \"Help us find it!\""
     ],
-    "caseSummary": "The piece went missing at midnight, in ten dark minutes. Someone turned the lights off by hand. A white dust trail led to the back door. There, the Owl left a card: the piece is not lost.",
+    "caseSummary": "The piece went missing at midnight, in ten dark minutes. Enzo and Livia saw the lights go off. But the power stayed on: someone turned the lights off by hand. A white dust trail led to the back door. There, the Owl left a card: the piece is not lost.",
     "place": "CAPITOLINE MUSEUMS",
     "keyWords": [
       "midnight",
@@ -416,12 +790,13 @@
       "statue": "조각상",
       "trail": "자국, 흔적",
       "shell": "조개 모양 장식",
-      "switch": "스위치"
+      "switch": "스위치",
+      "witness": "목격자"
     }
   },
   "notes": [
     "STEP 3-11 trial season (Rome), planned by Claude Code with tool/season_planner/PLAYBOOK.md.",
     "The white dust (s3_ep01_e2) is plaster from the copy Livia carried out: it pays off in Case 03 and Case 04.",
-    "Enzo's night log (s3_ep01_e1) is Friday night's. Bruno's Thursday 'lights check' is found in Case 08 and Case 11."
+    "STEP 3-14: M1 is now a talk with three witnesses (Enzo, Sofia, Livia) and M3 a look round the map hall ending in a picture choice. Enzo's night log (s3_ep01_e1) is still the evidence of M1, handed over after the talk. Livia's 'I worked late in my lab' is paid off in Case 08."
   ]
 }

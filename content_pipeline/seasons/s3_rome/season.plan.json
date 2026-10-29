@@ -318,6 +318,7 @@
   "notes": [
     "STEP 3-11 trial season, planned by Claude Code with tool/season_planner (PLAYBOOK.md) from the input 'Season 3, Rome'. Not a released season: never in SeasonCatalog, not the decided Season 3.",
     "Every place's picture is planned in assets.manifest.json and not made yet: the files above are where they will be written. No London or Paris picture stands in for them.",
-    "Piazza della Civetta and its Roman library are made up for the story; every other place is a real place in Rome."
+    "Piazza della Civetta and its Roman library are made up for the story; every other place is a real place in Rome.",
+    "STEP 3-14: the twelve cases were redesigned for production (missions on pictures, talks, Discovery Moments, endings); still a trial, not in SeasonCatalog. No place was added or moved."
   ]
 }

@@ -23,9 +23,9 @@
       "slot": "m1",
       "placeId": "s3_rome.pantheon_hall",
       "puzzle": {
-        "paletteId": "text_choice",
+        "paletteId": "scene_explore_choose",
         "surface": "mission",
-        "engineTable": null,
+        "engineTable": "explores",
         "missionType": "multipleChoice",
         "answerSpec": {
           "answer": "book",
@@ -33,12 +33,12 @@
             {
               "id": "ship",
               "label": "The stone with a ship",
-              "feedback": "That is the ship itself. The Owl says two hours after it."
+              "feedback": "The light is on the ship at 10:00. Where is it two hours later?"
             },
             {
               "id": "lion",
               "label": "The stone with a lion",
-              "feedback": "The lion is one hour after the ship. The Owl says two."
+              "feedback": "The lion is only one hour after the ship. The card says two hours."
             },
             {
               "id": "book",
@@ -47,14 +47,21 @@
             {
               "id": "key",
               "label": "The stone with a key",
-              "feedback": "The key is three hours after the ship."
+              "feedback": "The key is three hours after the ship. Count again from 10:00."
             }
           ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.pantheon_hall",
+          "s3_rome.asset.floor_stone_ship",
+          "s3_rome.asset.floor_stone_lion",
+          "s3_rome.asset.floor_stone_book",
+          "s3_rome.asset.floor_stone_key"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Letter: the Owl's card and the Pantheon's guide sign. The light is on the ship at 10:00; two hours later it is on the book."
+          "Played as a look round (ExploreScene) inside the Pantheon: the Owl's card and the guide sign lie on the bench by the door; the floor stones open once it is read. The four stones are told apart by their carvings (ship, lion, book, key).",
+          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the pantheon_hall prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
         ]
       },
       "clueInputs": [
@@ -71,11 +78,11 @@
       "learning": {
         "dependency": "essential",
         "level": "application",
-        "objective": "two hours after the ship을 시간표에 적용해 햇빛이 닿는 돌을 고른다.",
-        "skill": "grammarInContext",
+        "objective": "부엉이 카드의 'two hours after the ship'과 안내판의 시각을 읽고, 바닥 돌 그림 중 책이 새겨진 돌을 고른다.",
+        "skill": "sentenceMeaning",
         "expressions": [
-          "Come when the light is two hours after the ship.",
-          "The sun moves the light across the floor."
+          "two hours after the ship",
+          "The sun moves the light like a clock hand."
         ]
       },
       "play": {
@@ -84,16 +91,16 @@
         "story": [
           "The Pantheon has a big round hole in its roof. People call it the eye.",
           "A circle of sunlight moves slowly across the floor.",
-          "On a bench by the door, you find an owl card."
+          "Somewhere in here, the Owl left a card."
         ],
-        "letterIntro": "The owl card and the guide sign say:",
+        "letterIntro": "On the bench, an owl card and a guide sign:",
         "letter": "THE OWL CARD:\nLook for the stone the light falls on two hours after the ship.\nThat stone tells you where my parcel waits.\n— The Owl\n\nGUIDE SIGN — THE LIGHT FROM THE EYE:\nThe sun moves the light like a clock hand.\n10:00 — on the stone with a SHIP\n11:00 — on the stone with a LION\n12:00 — on the stone with a BOOK\n1:00 — on the stone with a KEY",
         "question": "Which stone does the Owl mean?",
         "hints": [
-          "Find the ship's time on the guide sign first.",
-          "Add two hours to it. Where is the light then?"
+          "Find the card on the bench by the door and read it first.",
+          "The light is on the ship at 10:00. Count two hours on the guide sign."
         ],
-        "successMessage": "You found the right stone!",
+        "successMessage": "You found the Owl's stone!",
         "transition": [
           "Two hours after the ship, the light falls on the book stone.",
           "\"A book... a bookshop!\" says Giulia.",
@@ -112,6 +119,167 @@
           "icon": "seal",
           "description": "The Owl's card from the bench inside the Pantheon.",
           "inscription": "Look for the stone the light falls on two hours after the ship."
+        },
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_03_rome/locations/pantheon_hall.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            }
+          },
+          "place": "Inside the Pantheon",
+          "task": "Look around the Pantheon. Find the Owl's card.",
+          "nextTask": "Which floor stone does the Owl mean? Look at the stones.",
+          "missLine": "Nothing here. Look for the Owl's card.",
+          "guideAt": [
+            900,
+            680
+          ],
+          "spots": [
+            {
+              "id": "bench",
+              "kind": "document",
+              "title": "THE OWL'S CARD",
+              "label": "A card on the bench by the door",
+              "areas": [
+                [
+                  1140,
+                  600,
+                  1460,
+                  800
+                ]
+              ],
+              "mark": [
+                1440,
+                610
+              ]
+            },
+            {
+              "id": "eye",
+              "kind": "note",
+              "title": "THE EYE",
+              "label": "The round hole in the roof",
+              "areas": [
+                [
+                  640,
+                  10,
+                  900,
+                  150
+                ]
+              ],
+              "mark": [
+                880,
+                30
+              ],
+              "line": "The eye in the roof. The sun shines through it."
+            },
+            {
+              "id": "light",
+              "kind": "note",
+              "title": "THE CIRCLE OF LIGHT",
+              "label": "A circle of sunlight on the floor",
+              "areas": [
+                [
+                  380,
+                  560,
+                  720,
+                  780
+                ]
+              ],
+              "mark": [
+                700,
+                570
+              ],
+              "line": "The circle of light moves slowly, like a clock hand."
+            },
+            {
+              "id": "stones",
+              "kind": "choice",
+              "title": "THE FLOOR STONES",
+              "label": "A row of carved stones in the floor",
+              "areas": [
+                [
+                  180,
+                  840,
+                  1360,
+                  1010
+                ]
+              ],
+              "mark": [
+                1340,
+                850
+              ],
+              "requires": "bench",
+              "lockedLine": "Four carved stones in the floor. Which one? Find a clue first.",
+              "unreadLine": "Read the Owl's card first."
+            }
+          ],
+          "others": [
+            {
+              "label": "Great columns",
+              "areas": [
+                [
+                  40,
+                  150,
+                  300,
+                  800
+                ]
+              ],
+              "line": "Great stone columns. Nothing is hidden here."
+            },
+            {
+              "label": "The bronze door",
+              "areas": [
+                [
+                  1320,
+                  180,
+                  1520,
+                  590
+                ]
+              ],
+              "line": "The great bronze door. You came in this way."
+            }
+          ],
+          "choiceTitle": "THE FLOOR STONES",
+          "choiceHow": "Which stone does the Owl mean? Tap one stone.",
+          "choicePixels": {
+            "width": 1024,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "ship",
+              "picture": "assets/seasons/season_03_rome/cases/case_04/floor_stone_ship.png",
+              "description": "a round floor stone carved with a sailing ship"
+            },
+            {
+              "optionId": "lion",
+              "picture": "assets/seasons/season_03_rome/cases/case_04/floor_stone_lion.png",
+              "description": "a round floor stone carved with a lion"
+            },
+            {
+              "optionId": "book",
+              "picture": "assets/seasons/season_03_rome/cases/case_04/floor_stone_book.png",
+              "description": "a round floor stone carved with an open book"
+            },
+            {
+              "optionId": "key",
+              "picture": "assets/seasons/season_03_rome/cases/case_04/floor_stone_key.png",
+              "description": "a round floor stone carved with a large key"
+            }
+          ],
+          "opening": [
+            20,
+            0,
+            1516,
+            1020
+          ]
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "TWO HOURS AFTER THE SHIP",
+          "detail": "The book stone tells you where the Owl's parcel waits."
         }
       }
     },
@@ -199,6 +367,11 @@
           "icon": "letter",
           "description": "The Owl's note asking the bookseller to keep the parcel.",
           "inscription": "The password is the opposite of LOST."
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE OPPOSITE OF LOST",
+          "detail": "The Owl keeps saying the piece is not lost. Now the parcel is yours."
         }
       }
     },
@@ -296,6 +469,11 @@
           "icon": "letter",
           "description": "The Owl's card with three tests for a stone.",
           "inscription": "First, weigh it. Next, tap it. Last, scratch a hidden corner."
+        },
+        "discovery": {
+          "type": "newLead",
+          "title": "TEST IT BEFORE YOU TRUST IT",
+          "detail": "Is the stone in the parcel really the old map piece?"
         }
       }
     }
@@ -396,12 +574,11 @@
       ],
       "successMessage": "You found the truth about the piece!",
       "transition": [
-        "This is not the old map piece. It is a plaster copy!",
-        "Giulia turns it over. On the back: a tiny paw print and a smudged number, No. 3?8.",
-        "\"So the Owl took the COPY out of the glass case,\" you say.",
-        "\"Then where is the real piece?\""
+        "Someone made a copy of the map piece.",
+        "And someone put it in the glass case before Friday night.",
+        "The tiny paw print is your next clue."
       ],
-      "orderFeedback": "Those are the right letters. Read the Owl's note again.",
+      "orderFeedback": "Every tile is right. Now read the Owl's note again.",
       "mapX": 0.44,
       "mapY": 0.45,
       "evidence": {
@@ -411,7 +588,36 @@
         "inscription": "Plaster, not marble."
       },
       "evidenceLinkLine": "The same soft white dust as the bag in Box 7.",
-      "lockTitle": "THE PARCEL"
+      "lockTitle": "THE PARCEL",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Plaster? Not marble?",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "The same soft white dust as in Box 7.",
+          "evidence": "s3_ep03_e2"
+        },
+        {
+          "by": "speaker",
+          "text": "So the Owl took a copy out of the case!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "On its back: a tiny paw print and No. 3?8."
+        },
+        {
+          "by": "speaker",
+          "text": "Then where is the real piece?",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        }
+      ]
     }
   },
   "hook": "Someone made a plaster copy. Who made it, and where is the real piece?",
@@ -421,7 +627,7 @@
   },
   "play": {
     "objectives": [
-      "Find the stone under the round eye.",
+      "Find the stone the light points to.",
       "Say the bookseller's password.",
       "Test the piece in the parcel."
     ],
@@ -450,6 +656,7 @@
   },
   "notes": [
     "Act 1's turn: the piece the Owl carried out was a plaster copy. The real piece was swapped before Friday.",
-    "The copy's paw print and No. 3?8 lead to the Bassi workshop in Case 05."
+    "The copy's paw print and No. 3?8 lead to the Bassi workshop in Case 05.",
+    "STEP 3-14: M1 is now a look round the Pantheon ending in a choice of four carved floor stones (new pictures). Discovery Moments and an ending added."
   ]
 }

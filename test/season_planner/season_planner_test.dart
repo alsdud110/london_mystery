@@ -193,19 +193,37 @@ void main() {
       });
     }
 
+    // STEP 3-14: the trial already plays nine missions on pictures and shows
+    // portraits in its talks; the counts below are the added picture choice's.
     test('a puzzle\'s pictures planned, not made: no ERROR, each picture pending, the generator waiting for them', () {
+      final before = check();
       pictureChoice();
       final r = check();
       expect(errors(r), isEmpty, reason: r.findings.where((f) => f.isError).join('\n'));
-      final pending = [for (final f in r.findings) if (f.code == 'image_pending' && f.where.startsWith('cases/s3_ep06')) f.where];
+      final pending = [for (final f in r.findings) if (f.code == 'image_pending' && f.message.contains('trial_pick')) f.where];
       expect(pending, hasLength(3));
+      expect(pending.every((w) => w.startsWith('cases/s3_ep06')), isTrue);
       expect((r.summary['generator'] as Map)['compatible'], isTrue);
-      expect(r.findings.where((f) => f.code == 'generator_waits_for_pictures').single.message, contains('3 puzzle pictures'));
-      expect(r.summary['puzzlesOnPictures'], 1);
-      expect(r.findings.where((f) => f.code == 'season_play_text_only'), isEmpty, reason: 'one mission on pictures');
+      final blocked = (before.summary['generator'] as Map)['blockedByPictures'] as int;
+      expect((r.summary['generator'] as Map)['blockedByPictures'], blocked + 3);
+      expect(r.summary['puzzlesOnPictures'], (before.summary['puzzlesOnPictures'] as int) + 1);
+      expect(r.findings.where((f) => f.code == 'season_play_text_only'), isEmpty, reason: 'missions on pictures');
     });
 
     test('a season read and answered only is a WARNING (no quota, the story chooses)', () {
+      // The trial's missions on pictures, made text puzzles again.
+      const pictured = {'picture_choice', 'scene_explore_choose', 'dark_room_search', 'witness_compare'};
+      for (var n = 1; n <= 12; n++) {
+        edit('cases/s3_ep${n.toString().padLeft(2, '0')}/case.plan.json', (c) {
+          for (final m in [...c['missions'] as List, c['final']]) {
+            final p = (m as Map)['puzzle'] as Map;
+            if (!pictured.contains(p['paletteId'])) continue;
+            p['paletteId'] = 'text_choice';
+            p['missionType'] = 'multipleChoice';
+            p['engineTable'] = null;
+          }
+        });
+      }
       final r = check();
       expect(r.findings.where((f) => f.code == 'season_play_text_only').single.isError, isFalse);
       expect(r.summary['puzzlesOnPictures'], 0);
@@ -220,7 +238,7 @@ void main() {
       pictureChoice(asked: false);
       final r = check();
       expect(errors(r), isEmpty);
-      expect([for (final f in r.findings) if (f.code == 'asset_need_missing') f.code], hasLength(1));
+      expect([for (final f in r.findings) if (f.code == 'asset_need_missing' && f.message.contains('trial_pick')) f.code], hasLength(1));
     });
 
     test('an asset id of another season', () {

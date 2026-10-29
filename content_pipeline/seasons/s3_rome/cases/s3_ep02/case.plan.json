@@ -75,9 +75,9 @@
         "story": [
           "The Trevi Fountain is loud and bright.",
           "Stone shells line the edge of the water.",
-          "Under the second shell, you find a dry paper roll."
+          "Coins shine at the bottom of the pool."
         ],
-        "letterIntro": "The paper roll says:",
+        "letterIntro": "Under the second shell, a dry paper roll says:",
         "letter": "Well done, Detective. Here is my riddle.\nI have streets, but no cars.\nI have rooms, but no doors.\nI am made of stone, and now I am in pieces.\nWhat am I?\nMy tin waits under the third step.\n— The Owl",
         "question": "What is the Owl's riddle about?",
         "prompt": "It is a ____.",
@@ -110,7 +110,34 @@
           "description": "A paper roll with an owl stamp, from under the second shell.",
           "inscription": "I have streets, but no cars. I have rooms, but no doors."
         },
-        "evidenceLinkLine": "The same owl stamp as the card at the museum's back door."
+        "evidenceLinkLine": "The same owl stamp as the card at the museum's back door.",
+        "talk": {
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png",
+          "goal": "Find the second shell.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Look! Shells all along the water."
+              },
+              {
+                "by": "detective",
+                "text": "The card says the second shell."
+              },
+              {
+                "by": "speaker",
+                "text": "Count from the left. One, two... there!"
+              }
+            ],
+            "finishLabel": "OPEN THE PAPER"
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "A STONE MAP",
+          "detail": "Streets but no cars, rooms but no doors: the old marble map."
+        }
       }
     },
     {
@@ -186,9 +213,9 @@
         ],
         "successMessage": "You see why the professor is a suspect.",
         "transition": [
-          "Aldo wanted the piece, and Sofia said no.",
-          "But his page says he was at the university on Friday night.",
-          "\"We must check that later,\" says Giulia. Aldo walks away, grumbling."
+          "\"We must check his story later,\" says Giulia.",
+          "Aldo walks away, grumbling.",
+          "Now, the Owl's tin under the third step."
         ],
         "mapX": 0.55,
         "mapY": 0.3,
@@ -203,6 +230,36 @@
           "icon": "letter",
           "description": "A page that fell out of Professor Aldo's green notebook.",
           "inscription": "Friday night: my talk at the university, 9:00 PM to 1:00 AM."
+        },
+        "talk": {
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png",
+          "goal": "Find out why the professor wants the piece.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Give me that! That page is mine."
+              },
+              {
+                "by": "detective",
+                "text": "You wanted the piece very much."
+              },
+              {
+                "by": "speaker",
+                "text": "Of course! It belongs in my book."
+              },
+              {
+                "by": "speaker",
+                "text": "On Friday night, I was at my talk. Ask anyone!"
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "newLead",
+          "title": "A SUSPECT IN A GREEN HAT",
+          "detail": "Aldo wanted the piece, and Sofia said no. But where was he on Friday night?"
         }
       }
     },
@@ -297,7 +354,7 @@
           "Its tag says: FIORI · 7.",
           "Under the key is one more card."
         ],
-        "orderFeedback": "Those are the right letters. Read the museum label again.",
+        "orderFeedback": "All six letters fit. Read the museum label again.",
         "mapX": 0.56,
         "mapY": 0.32,
         "clue": {
@@ -312,7 +369,13 @@
           "description": "A small brass key from the Owl's tin.",
           "inscription": "Tag: FIORI · 7"
         },
-        "lockTitle": "THE OWL'S TIN"
+        "lockTitle": "THE OWL'S TIN",
+        "discovery": {
+          "type": "evidenceFound",
+          "title": "A LITTLE BRASS KEY",
+          "detail": "A key for a box. But which box, and where in Rome?",
+          "showEvidence": true
+        }
       }
     }
   ],
@@ -396,9 +459,9 @@
       ],
       "successMessage": "You put the Owl's route together!",
       "transition": [
-        "Gelato shop, Pantheon, market square, flower stall.",
-        "\"Fiori means flowers in Italian,\" says Giulia.",
-        "\"Box 7 must be at the flower market. Campo de' Fiori!\""
+        "You walk past the gelato shop and the great Pantheon.",
+        "The market square is full of flowers and lemons.",
+        "At the far end, there is a stall with a red roof."
       ],
       "orderFeedback": "Start with First and end with Finally. Then read After and Before.",
       "mapX": 0.55,
@@ -408,7 +471,36 @@
         "icon": "map",
         "description": "The Owl's route from the fountain to Box 7.",
         "inscription": "Finally, find Box 7 at the flower stall with the red roof."
-      }
+      },
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Gelato shop, Pantheon, market square, flower stall!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "And the key's tag says FIORI 7.",
+          "evidence": "s3_ep02_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "Fiori means flowers in Italian.",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "Box 7 must be at Campo de' Fiori!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Behind you, the man in the green hat is watching."
+        }
+      ]
     }
   },
   "hook": "What is waiting in Box 7?",
@@ -447,6 +539,7 @@
   },
   "notes": [
     "Aldo's page (s3_ep02_e2) holds his alibi; Case 06 checks it against the university's door log.",
-    "The brass key (s3_ep02_e3) opens Box 7 in Case 03."
+    "The brass key (s3_ep02_e3) opens Box 7 in Case 03.",
+    "STEP 3-14: puzzles kept (a riddle, a suspect, a tile lock, a route); talks with Giulia and Aldo, Discovery Moments and an ending added."
   ]
 }

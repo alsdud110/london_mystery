@@ -24,40 +24,47 @@
       "slot": "m1",
       "placeId": "s3_rome.cat_ruins",
       "puzzle": {
-        "paletteId": "text_choice",
+        "paletteId": "scene_explore_choose",
         "surface": "mission",
-        "engineTable": null,
+        "engineTable": "explores",
         "missionType": "multipleChoice",
         "answerSpec": {
           "answer": "tito",
           "options": [
             {
-              "id": "luna",
-              "label": "Luna",
-              "feedback": "Luna is black. The hair in the paw print is orange."
+              "id": "rosso",
+              "label": "The orange cat with a long tail",
+              "feedback": "This cat is orange, but look at its tail. And where does it live?"
             },
             {
               "id": "tito",
-              "label": "Tito"
+              "label": "The orange cat with a short tail"
             },
             {
-              "id": "neve",
-              "label": "Neve",
-              "feedback": "Neve is white and fluffy. The hair in the paw print is orange."
+              "id": "luna",
+              "label": "The black cat",
+              "feedback": "The hair in the paw print is orange, not black."
             }
           ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.cat_ruins",
+          "s3_rome.asset.cat_rosso",
+          "s3_rome.asset.cat_tito",
+          "s3_rome.asset.cat_luna"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Recall: the plaster copy of Case 04 (its paw print holds an orange hair). Letter: the cat sanctuary's board."
+          "Played as a look round (ExploreScene) of the cat ruins: the cat board is read, then the cats on the stones are looked at. Two cats are orange: the board's 'short tail' and 'plaster workshop' (the copy is plaster) pick Tito, never the colour alone.",
+          "No recall here: the evidence card is not tried over a look round; the copy is named by a text mention.",
+          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the cat_ruins prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
         ]
       },
       "clueInputs": [
         {
           "ref": "s3_ep04_e4",
-          "use": "recall",
-          "note": "The plaster copy, with the paw print on its back."
+          "use": "textMention",
+          "note": "The paw print and the orange hair on the copy's back."
         }
       ],
       "clueOutputs": {
@@ -66,11 +73,11 @@
       },
       "learning": {
         "dependency": "essential",
-        "level": "comprehension",
-        "objective": "고양이 게시판의 색깔·사는 곳 설명을 읽고 주황색 털의 주인을 고른다.",
+        "level": "application",
+        "objective": "고양이 게시판의 orange, short tail, plaster workshop을 읽고, 주황색 고양이 두 마리 중 꼬리와 사는 곳으로 Tito를 골라낸다.",
         "skill": "vocabulary",
         "expressions": [
-          "Tito is orange, with a short tail.",
+          "orange, with a short tail",
           "He lives at a plaster workshop."
         ]
       },
@@ -79,20 +86,20 @@
         "location": "LARGO DI TORRE ARGENTINA",
         "story": [
           "Old Roman temples stand in a square below the street.",
-          "Cats sleep on the warm stones. A volunteer feeds them.",
+          "Cats sleep on the warm stones.",
           "In the copy's paw print, Giulia finds one short orange hair."
         ],
-        "letterIntro": "The volunteer's board says:",
-        "letter": "CATS WHO VISIT US\nLUNA — black, with a long tail. She lives at the bakery.\nTITO — orange, with a short tail. He lives at a plaster workshop.\nNEVE — white and fluffy. She lives at the bookshop.",
+        "letterIntro": "On the cat board:",
+        "letter": "CATS WHO VISIT US\nROSSO — orange, with a long, fluffy tail. He lives at the fish shop.\nTITO — orange, with a short tail. He lives at a plaster workshop.\nLUNA — black, with a long tail. She lives at the bakery.",
         "question": "Which cat walked on the wet plaster copy?",
         "hints": [
-          "What colour is the hair in the paw print?",
-          "Which cat lives at a place that uses plaster?"
+          "Find the board about the cats and read it first.",
+          "The hair is orange, and the copy is plaster. Which cat lives with plaster?"
         ],
         "successMessage": "You found the cat!",
         "transition": [
           "Orange hair and a plaster workshop. It must be Tito!",
-          "\"Tito comes every day at noon,\" says the volunteer.",
+          "\"Tito comes here every day at noon,\" says a woman with cat food.",
           "And there he is, jumping down from a column."
         ],
         "mapX": 0.38,
@@ -109,10 +116,161 @@
           "description": "A short orange hair from the paw print on the plaster copy.",
           "inscription": "Tito: orange, with a short tail."
         },
-        "recall": {
-          "title": "Find the paw print",
-          "prompt": "Which thing in your Notebook has a paw print on it?",
-          "miss": "Look for the thing with a paw print on its back."
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_03_rome/locations/cat_ruins.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            }
+          },
+          "place": "The cat ruins at Torre Argentina",
+          "task": "Look around the ruins. Who looks after these cats?",
+          "nextTask": "Which cat walked on the copy? Look at the cats.",
+          "missLine": "Nothing here. Look for something about the cats.",
+          "guideAt": [
+            800,
+            960
+          ],
+          "spots": [
+            {
+              "id": "board",
+              "kind": "document",
+              "title": "THE CAT BOARD",
+              "label": "A board about the cats, on a post",
+              "areas": [
+                [
+                  60,
+                  520,
+                  330,
+                  880
+                ]
+              ],
+              "mark": [
+                310,
+                530
+              ]
+            },
+            {
+              "id": "bowls",
+              "kind": "note",
+              "title": "CAT BOWLS",
+              "label": "Food bowls on a stone",
+              "areas": [
+                [
+                  340,
+                  820,
+                  540,
+                  960
+                ]
+              ],
+              "mark": [
+                520,
+                830
+              ],
+              "line": "Clean bowls. The cats are fed here every day at noon."
+            },
+            {
+              "id": "temples",
+              "kind": "note",
+              "title": "THE TEMPLES",
+              "label": "Old temple columns",
+              "areas": [
+                [
+                  450,
+                  150,
+                  1100,
+                  500
+                ]
+              ],
+              "mark": [
+                1080,
+                160
+              ],
+              "line": "Temples from long ago. Today, cats live here."
+            },
+            {
+              "id": "cats",
+              "kind": "choice",
+              "title": "THE CATS",
+              "label": "Cats asleep on the warm stones",
+              "areas": [
+                [
+                  600,
+                  560,
+                  1400,
+                  900
+                ]
+              ],
+              "mark": [
+                1380,
+                570
+              ],
+              "requires": "board",
+              "lockedLine": "So many cats! Which one? Read something first.",
+              "unreadLine": "Read the cat board first."
+            }
+          ],
+          "others": [
+            {
+              "label": "The street above",
+              "areas": [
+                [
+                  0,
+                  0,
+                  1536,
+                  130
+                ]
+              ],
+              "line": "The street is up there. Nothing to see."
+            },
+            {
+              "label": "Old stone floor",
+              "areas": [
+                [
+                  560,
+                  900,
+                  1100,
+                  1020
+                ]
+              ],
+              "line": "An old stone floor. Only a few leaves here."
+            }
+          ],
+          "choiceTitle": "THE CATS",
+          "choiceHow": "Which cat walked on the copy? Tap one cat.",
+          "choicePixels": {
+            "width": 1024,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "rosso",
+              "picture": "assets/seasons/season_03_rome/cases/case_05/cat_rosso.png",
+              "description": "an orange cat with a long fluffy tail, sitting on a stone"
+            },
+            {
+              "optionId": "tito",
+              "picture": "assets/seasons/season_03_rome/cases/case_05/cat_tito.png",
+              "description": "an orange cat with a short tail and white dust on its paws"
+            },
+            {
+              "optionId": "luna",
+              "picture": "assets/seasons/season_03_rome/cases/case_05/cat_luna.png",
+              "description": "a black cat with a long tail, on a warm stone"
+            }
+          ],
+          "opening": [
+            20,
+            100,
+            1516,
+            1010
+          ]
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "TITO THE CAT",
+          "detail": "Orange, with a short tail, and he lives with plaster. Follow Tito!"
         }
       }
     },
@@ -195,10 +353,10 @@
         "successMessage": "You read Tito's tag!",
         "transition": [
           "B, A, S, S, I. Tito belongs to the Bassi family.",
-          "\"The Bassi workshop is around the corner,\" says the volunteer.",
+          "\"The Bassi workshop is around the corner,\" says the cat woman.",
           "Tito walks in front of you, tail up, as if he knows the way."
         ],
-        "orderFeedback": "Those are the right letters. Start at the big B and go round.",
+        "orderFeedback": "Every letter is on the tag. Start at the big B and go round.",
         "mapX": 0.38,
         "mapY": 0.58,
         "clue": {
@@ -213,7 +371,12 @@
           "description": "A round metal tag on Tito's collar.",
           "inscription": "S · I · B · A · S (start at the big B)"
         },
-        "lockTitle": "TITO'S TAG"
+        "lockTitle": "TITO'S TAG",
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE BASSI FAMILY",
+          "detail": "Tito's tag gives his family's name. Tito knows the way home."
+        }
       }
     },
     {
@@ -279,8 +442,8 @@
         "location": "THE BASSI WORKSHOP",
         "story": [
           "The workshop is full of white statues and white dust.",
-          "Carla Bassi wipes her hands. \"Tito! Who did you bring home?\"",
-          "On the wall is a sign for her visitors."
+          "Tito jumps onto the work table.",
+          "On the wall is a sign for visitors."
         ],
         "letterIntro": "The workshop sign says:",
         "letter": "HOW WE MAKE A COPY\nThen, we pour wet plaster into the mould.\nFirst, we press soft rubber around the real thing. This makes a mould.\nLast, we paint the copy to look like old stone.\nAfter the plaster is dry, we take the copy out.",
@@ -292,8 +455,8 @@
         "successMessage": "You know how a copy is made!",
         "transition": [
           "Mould, pour, dry, paint.",
-          "\"Wait,\" you say. \"To make a mould, you need the REAL piece!\"",
-          "Carla's face goes white. \"Yes. Someone brought it here.\""
+          "Carla opens her big order book.",
+          "\"I keep every order,\" she says. \"Let's look.\""
         ],
         "orderFeedback": "Read First, Then, After and Last again.",
         "mapX": 0.36,
@@ -309,6 +472,49 @@
           "icon": "frame",
           "description": "The sign on the wall of the Bassi workshop.",
           "inscription": "First, we press soft rubber around the real thing."
+        },
+        "talk": {
+          "speaker": "carla_bassi",
+          "portrait": "assets/seasons/season_03_rome/characters/carla_base.png",
+          "goal": "Find out how a copy is made.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Tito! Who did you bring home?"
+              },
+              {
+                "by": "detective",
+                "text": "We are looking for a copy of a map piece."
+              },
+              {
+                "by": "speaker",
+                "text": "Copies? That is my job. Read my sign."
+              }
+            ],
+            "finishLabel": "READ THE SIGN"
+          },
+          "after": {
+            "lines": [
+              {
+                "by": "detective",
+                "text": "To make a mould, you need the REAL piece!"
+              },
+              {
+                "by": "speaker",
+                "text": "Yes... Someone brought it here."
+              },
+              {
+                "by": "speaker",
+                "text": "He said the museum sent him."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "A MOULD NEEDS THE REAL PIECE",
+          "detail": "Someone brought the real piece here. Who was it?"
         }
       }
     }
@@ -379,16 +585,16 @@
       ],
       "successMessage": "The drawer opens!",
       "transition": [
-        "Order card 318: \"Picked up Thursday, 7 PM, by a big man in a yellow helmet.\"",
-        "Carla frowns. \"On Tuesday, he brought the real piece here for three hours. He said the museum sent him.\"",
-        "\"A yellow helmet,\" says Giulia. \"Like the man Pia saw on Thursday night!\""
+        "The man with the copy had the real piece on Tuesday.",
+        "On Thursday, he took the copy away.",
+        "And on Tuesday, a grumpy professor was here, too."
       ],
       "feedback": {
         "317": "Order 317 is a stone shell for a garden.",
         "319": "Order 319 is a lion's head, and it is not done yet.",
         "338": "Find the order of an old map piece in the book."
       },
-      "orderFeedback": "Right numbers, wrong order. Read the order number from left to right.",
+      "orderFeedback": "The digits are right. Read the order number from left to right.",
       "mapX": 0.36,
       "mapY": 0.62,
       "evidence": {
@@ -396,7 +602,36 @@
         "icon": "ticket",
         "description": "The Bassi workshop's card for the plaster map copy.",
         "inscription": "Picked up Thursday, 7 PM, by a big man in a yellow helmet."
-      }
+      },
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Order 318. Here is its card.",
+          "speaker": "carla_bassi",
+          "portrait": "assets/seasons/season_03_rome/characters/carla_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Picked up on Thursday, 7 PM. A big man, yellow helmet."
+        },
+        {
+          "by": "speaker",
+          "text": "On Tuesday, he brought the real piece for three hours.",
+          "speaker": "carla_bassi",
+          "portrait": "assets/seasons/season_03_rome/characters/carla_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "A yellow helmet, like the man Pia saw!",
+          "evidence": "s3_ep03_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "Oh! Professor Aldo came on Tuesday, too.",
+          "speaker": "carla_bassi",
+          "portrait": "assets/seasons/season_03_rome/characters/carla_base.png"
+        }
+      ]
     }
   },
   "hook": "On Tuesday, a big man in a yellow helmet had the real piece. Who is he?",
@@ -426,7 +661,6 @@
     ],
     "glossary": {
       "ruins": "유적",
-      "volunteer": "자원봉사자",
       "collar": "목걸이",
       "mould": "틀",
       "pour": "붓다",
@@ -435,6 +669,7 @@
   },
   "notes": [
     "Act 2 opens: who made the copy, and who had the real piece. Order card 318 (s3_ep05_e4) is used again in Case 10 and Case 11.",
-    "Carla Bassi made the copy in good faith: she was told the museum sent him."
+    "Carla Bassi made the copy in good faith: she was told the museum sent him.",
+    "STEP 3-14: M1 is now a look round the cat ruins ending in a choice of three cats (new pictures); two are orange, so the board's words decide. Carla's talks, Discovery Moments and an ending added."
   ]
 }

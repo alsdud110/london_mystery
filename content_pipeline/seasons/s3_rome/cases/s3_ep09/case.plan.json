@@ -26,33 +26,45 @@
       "slot": "m1",
       "placeId": "s3_rome.forum_view",
       "puzzle": {
-        "paletteId": "text_choice",
+        "paletteId": "picture_choice",
         "surface": "mission",
         "engineTable": null,
-        "missionType": "multipleChoice",
+        "missionType": "imageChoice",
         "answerSpec": {
           "answer": "library",
           "options": [
             {
               "id": "bath",
-              "label": "A bath, a room for washing",
-              "feedback": "BALNEUM starts with BAL. The half word on the drawing starts with BIBLIO."
+              "label": "The room with a pool of water",
+              "feedback": "That room is for washing: a BALNEUM. Livia's half word is BIBLIO...",
+              "altText": "a Roman room with a big pool of water and columns",
+              "picture": "assets/seasons/season_03_rome/cases/case_09/room_bath.png"
             },
             {
               "id": "library",
-              "label": "A library, a room for books"
+              "label": "The room with square holes in the walls",
+              "altText": "an old stone room with rows of small square holes in the walls, lit by a lamp",
+              "picture": "assets/seasons/season_03_rome/locations/roman_library.png"
             },
             {
               "id": "theatre",
-              "label": "A theatre, a place for shows",
-              "feedback": "THEATRUM starts with THEA. Look at the half word again."
+              "label": "The room with rows of stone seats",
+              "feedback": "That is a place for shows: a THEATRUM. Does it start with BIBLIO?",
+              "altText": "a half-round Roman theatre with rows of stone seats",
+              "picture": "assets/seasons/season_03_rome/cases/case_09/room_theatre.png"
             }
           ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.room_bath",
+          "s3_rome.asset.roman_library",
+          "s3_rome.asset.room_theatre",
+          "s3_rome.asset.char_aldo_base"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Recall: Livia's drawing (Case 08), BIBLIO... and shelves. Letter: Aldo's card of Latin room words."
+          "A picture choice with the names hidden, two steps: BIBLIO... is BIBLIOTHECA, a library; Roman books were scrolls kept in square holes; so the room with the square holes. Not by the pictures' look alone.",
+          "The library picture is the Case 12 place picture (roman_library): seen here as the kind of room, found for real in Case 12."
         ]
       },
       "clueInputs": [
@@ -68,12 +80,12 @@
       },
       "learning": {
         "dependency": "essential",
-        "level": "comprehension",
-        "objective": "라틴어 단어의 앞부분(BIBLIO…)과 뜻풀이를 맞춰 방의 종류를 고른다.",
+        "level": "application",
+        "objective": "BIBLIO...를 라틴어 단어표에서 찾아(library), 두루마리를 보관한 square holes가 있는 방 그림을 고른다.",
         "skill": "vocabulary",
         "expressions": [
-          "A library is a room for books.",
-          "A bath is a room for washing."
+          "BIBLIOTHECA — a library, a room for books",
+          "They were kept in square holes in the walls."
         ]
       },
       "play": {
@@ -85,17 +97,16 @@
           "\"Show me Livia's drawing,\" he says. \"Old maps used Latin words.\""
         ],
         "letterIntro": "Aldo's card says:",
-        "letter": "LATIN WORDS FOR ROOMS ON OLD MAPS\nBIBLIOTHECA — a library, a room for books\nBALNEUM — a bath, a room for washing\nTHEATRUM — a theatre, a place for shows",
-        "question": "What kind of room is on the real piece?",
+        "letter": "LATIN WORDS FOR ROOMS ON OLD MAPS\nBIBLIOTHECA — a library, a room for books\nBALNEUM — a bath, a room for washing\nTHEATRUM — a theatre, a place for shows\n\nRoman books were scrolls. They were kept in square holes in the walls.",
+        "question": "Which picture shows the room on Livia's drawing?",
         "hints": [
-          "Look at the half word on Livia's drawing. How does it start?",
-          "The room also has lines like shelves. What do shelves hold?"
+          "Find the Latin word that starts with BIBLIO.",
+          "Where did the Romans keep their scrolls? Look at the walls."
         ],
         "successMessage": "You read the old Latin word!",
         "transition": [
-          "BIBLIO... is BIBLIOTHECA: a library!",
-          "\"A Roman library, never found,\" Aldo whispers. \"That would be amazing.\"",
-          "\"But where was it? Let's follow the street on the map.\""
+          "\"But where was it?\" asks Giulia.",
+          "Aldo smiles. \"The drawing has a street. Let's follow it.\""
         ],
         "mapX": 0.58,
         "mapY": 0.66,
@@ -115,6 +126,33 @@
           "title": "The half word",
           "prompt": "Which thing in your Notebook shows the half word?",
           "miss": "Find Livia's drawing of the real piece."
+        },
+        "hideOptionNames": true,
+        "talk": {
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png",
+          "goal": "Read the half word on the map.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "A Roman library, never found!"
+              },
+              {
+                "by": "speaker",
+                "text": "If it is real, it is amazing."
+              },
+              {
+                "by": "detective",
+                "text": "Then let's find where it was."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "BIBLIOTHECA: A LIBRARY",
+          "detail": "A Roman library that nobody has found. Where is it today?"
         }
       }
     },
@@ -216,6 +254,11 @@
           "icon": "map",
           "description": "The street on the real piece, as Aldo read it from Livia's drawing.",
           "inscription": "The library is at the end of the street, in a small owl square."
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE OWL SQUARE",
+          "detail": "The library was just after the long market. What is that square called now?"
         }
       }
     },
@@ -278,9 +321,8 @@
         ],
         "successMessage": "You found the owl square!",
         "transition": [
-          "Piazza della Civetta: the Square of the Owl.",
-          "Livia goes pale. \"I know that square. There is a building site there now.\"",
-          "\"Whose building site?\" asks Aldo. \"My map cabinet will tell us.\""
+          "\"My map cabinet will tell us,\" says Aldo.",
+          "\"The newest city plans are in there.\""
         ],
         "feedback": {
           "LEONI": "Leone means lion. Which word means owl?",
@@ -300,6 +342,32 @@
           "icon": "letter",
           "description": "Giulia's list of Italian words, and the three squares after the market.",
           "inscription": "CIVETTA = OWL"
+        },
+        "talk": {
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png",
+          "goal": "Find the owl square on a map of today.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Piazza della Civetta? I know that square."
+              },
+              {
+                "by": "speaker",
+                "text": "There is a building site there now."
+              },
+              {
+                "by": "detective",
+                "text": "Whose building site?"
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "PIAZZA DELLA CIVETTA",
+          "detail": "The old owl square has an Italian name today. What is happening there?"
         }
       }
     }
@@ -375,16 +443,15 @@
       ],
       "successMessage": "Aldo's cabinet opens!",
       "transition": [
-        "Inside is the city's plan for Piazza della Civetta.",
-        "\"UNDERGROUND CAR PARK. BUILDER: VALLI BUILDING.\"",
-        "\"CONCRETE WILL BE POURED ON 10 MAY, AT 7 AM.\"",
-        "Livia grabs your arm. \"That is in two days! The library will be covered forever!\""
+        "The plan says: concrete at 7 AM on 10 May.",
+        "Today is 8 May.",
+        "You run across Rome to Piazza della Civetta."
       ],
       "feedback": {
-        "649": "Start at the Forum. Which marker stone comes first on the street?",
-        "459": "VI has the small number after the big one: 5 + 1."
+        "459": "VI has the small number after the big one: 5 + 1.",
+        "649": "Start at the Forum. Which marker stone comes first on the street?"
       },
-      "orderFeedback": "Right numbers, wrong order. Walk the street from the Forum.",
+      "orderFeedback": "The three numbers fit. Walk the street from the Forum.",
       "mapX": 0.78,
       "mapY": 0.44,
       "evidence": {
@@ -392,7 +459,36 @@
         "icon": "map",
         "description": "The city's plan for Piazza della Civetta, from Aldo's cabinet.",
         "inscription": "UNDERGROUND CAR PARK · BUILDER: VALLI BUILDING · CONCRETE: 10 MAY, 7 AM"
-      }
+      },
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Four, six, nine. The cabinet opens!",
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "UNDERGROUND CAR PARK. BUILDER: VALLI BUILDING."
+        },
+        {
+          "by": "detective",
+          "text": "Valli again. He took the piece on Tuesday.",
+          "evidence": "s3_ep07_e4"
+        },
+        {
+          "by": "speaker",
+          "text": "Concrete on 10 May. That is in two days!",
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "The library will be covered forever.",
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png"
+        }
+      ]
     }
   },
   "hook": "Valli Building will pour concrete over the owl square on Monday. Can you stop it?",
@@ -402,7 +498,7 @@
   },
   "play": {
     "objectives": [
-      "Read the half word on the map.",
+      "Find the room of the half word.",
       "Walk the old street.",
       "Find the owl square today."
     ],
@@ -431,6 +527,7 @@
   },
   "notes": [
     "Act 3 opens: the reason for the swap. The plan (s3_ep09_e4) gives Bruno's motive; Case 10 finds the real piece's trail at his site.",
-    "Piazza della Civetta is made up for the story (season.plan.json notes)."
+    "Piazza della Civetta is made up for the story (season.plan.json notes).",
+    "STEP 3-14: M1 is now a picture choice of three Roman rooms (two new pictures and Case 12's library). The Forum picture (made in STEP 3-12B) stays the place of M1-M3. Talks, Discovery Moments and an ending added."
   ]
 }

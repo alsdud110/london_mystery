@@ -69,9 +69,9 @@
           "note": "Valli's plan is known and the work has stopped."
         },
         {
-          "ref": "s3_ep10_c1",
+          "ref": "s3_ep09_e4",
           "use": "textMention",
-          "note": "There will be no concrete."
+          "note": "The concrete of the city plan never came."
         }
       ],
       "clueOutputs": {
@@ -92,8 +92,7 @@
         "title": "Safety First",
         "location": "PIAZZA DELLA CIVETTA",
         "story": [
-          "The machines are quiet. In the middle of the square, there is a hole and a ladder.",
-          "Livia smiles. \"One last Owl game. I hid seven gold letter tiles today. Find them all!\"",
+          "The machines are quiet. In the middle of the square is a hole with a ladder.",
           "The inspector hands you a card. \"Nobody goes down without reading this.\""
         ],
         "letterIntro": "The safety card says:",
@@ -106,7 +105,7 @@
         "successMessage": "You are ready to go down!",
         "transition": [
           "Helmet, rope, ladder, lamp.",
-          "On the top step of the ladder, two gold tiles shine: H and I.",
+          "On the top step of the ladder, two gold tiles shine: Y and T.",
           "You go down, slowly. Then you turn on your lamp."
         ],
         "orderFeedback": "Read First, Next, Then and Last again.",
@@ -114,8 +113,8 @@
         "mapY": 0.5,
         "clue": {
           "title": "Gold Tiles by the Ladder",
-          "value": "GOLD TILES: H · I",
-          "note": "Livia hid two gold tiles on the ladder: H and I.",
+          "value": "GOLD TILES: Y · T",
+          "note": "Two of Livia's gold tiles were on the ladder: Y and T.",
           "symbol": "gem"
         },
         "evidence": {
@@ -123,6 +122,33 @@
           "icon": "letter",
           "description": "The inspector's card for going down under the square.",
           "inscription": "First, put on a helmet."
+        },
+        "talk": {
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png",
+          "goal": "Play the Owl's last game.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "One last Owl game, Detective!"
+              },
+              {
+                "by": "speaker",
+                "text": "I hid seven gold letter tiles today."
+              },
+              {
+                "by": "speaker",
+                "text": "Find them all, and spell my last word."
+              }
+            ],
+            "finishLabel": "READ THE SAFETY CARD"
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "TWO GOLD TILES: Y AND T",
+          "detail": "Five more tiles are hidden down below. Go down slowly!"
         }
       }
     },
@@ -170,6 +196,11 @@
           "ref": "s3_ep09_c1",
           "use": "textMention",
           "note": "The room is a library (BIBLIOTHECA)."
+        },
+        {
+          "ref": "s3_ep09_e1",
+          "use": "textMention",
+          "note": "Aldo's Latin card: Roman books were scrolls in square holes."
         }
       ],
       "clueOutputs": {
@@ -191,8 +222,7 @@
         "location": "THE ROMAN LIBRARY",
         "story": [
           "Your lamp shines on old walls full of small square holes.",
-          "Aldo climbs down after you. His voice shakes. \"It is real. It is all real.\"",
-          "He gives you a card he wrote for his students."
+          "Aldo climbs down after you."
         ],
         "letterIntro": "Aldo's card says:",
         "letter": "IN A ROMAN LIBRARY\nBooks were not like our books.\nThey were scrolls: long pages, rolled up.\nScrolls were kept in square holes in the walls.\nRoman baths had pools of water, not holes in the walls.",
@@ -204,15 +234,15 @@
         "successMessage": "You understand the old library!",
         "transition": [
           "Each square hole once held scrolls.",
-          "In one hole, you find two gold tiles: S and T.",
+          "In one hole, you find two gold tiles: H and O.",
           "Livia points to the floor. \"Look at the middle of the room.\""
         ],
         "mapX": 0.5,
         "mapY": 0.53,
         "clue": {
           "title": "The Scroll Holes",
-          "value": "GOLD TILES: S · T",
-          "note": "The square holes in the walls held scrolls. Two gold tiles were in one: S and T.",
+          "value": "GOLD TILES: H · O",
+          "note": "Two gold tiles were in a scroll hole: H and O.",
           "symbol": "letter"
         },
         "evidence": {
@@ -225,6 +255,33 @@
           "title": "Is this the room?",
           "prompt": "Which thing in your Notebook shows this room on the old map?",
           "miss": "Find the real map piece from Valli's box room."
+        },
+        "talk": {
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png",
+          "goal": "Find out what the holes were for.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "It is real. It is all real!"
+              },
+              {
+                "by": "detective",
+                "text": "What were these holes for?"
+              },
+              {
+                "by": "speaker",
+                "text": "Remember my Latin card? Read this one."
+              }
+            ],
+            "finishLabel": "READ ALDO'S CARD"
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "SCROLLS IN THE WALLS",
+          "detail": "This was a real Roman library. And two more tiles were waiting."
         }
       }
     },
@@ -277,8 +334,7 @@
         "location": "THE ROMAN LIBRARY",
         "story": [
           "In the middle of the floor is an owl made of tiny stone tiles.",
-          "Around it are Latin letters: SAPIENTIA.",
-          "\"The library of the owl,\" Livia whispers. \"Now I know why I chose the owl.\""
+          "Around it are Latin letters: SAPIENTIA."
         ],
         "letterIntro": "Aldo's word box says:",
         "letter": "SAPIENTIA is a Latin word.\nIt means knowing a lot and making good choices.\nThe Romans said the owl was the bird of SAPIENTIA.\n\nWORD BOX:\nWISDOM — knowing a lot and making good choices.\nWEALTH — having a lot of money.\nWEATHER — rain, sun and wind.",
@@ -291,7 +347,7 @@
         "successMessage": "You read the owl's word!",
         "transition": [
           "SAPIENTIA means wisdom.",
-          "Under the owl's eye, three gold tiles are waiting: O, R and Y.",
+          "Under the owl's eye, three gold tiles are waiting: S, I and R.",
           "\"That makes seven,\" says Giulia. \"Let's go back to the museum.\""
         ],
         "feedback": {
@@ -303,8 +359,8 @@
         "mapY": 0.53,
         "clue": {
           "title": "The Owl's Word",
-          "value": "GOLD TILES: O · R · Y",
-          "note": "The owl mosaic says SAPIENTIA, wisdom. Three gold tiles: O, R and Y.",
+          "value": "GOLD TILES: S · I · R",
+          "note": "Three gold tiles were under the owl's eye: S, I and R.",
           "symbol": "feather"
         },
         "evidence": {
@@ -312,6 +368,32 @@
           "icon": "feather",
           "description": "An owl made of tiny stone tiles, in the floor of the Roman library.",
           "inscription": "SAPIENTIA"
+        },
+        "talk": {
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png",
+          "goal": "Read the word around the owl.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "The library of the owl."
+              },
+              {
+                "by": "speaker",
+                "text": "Now I know why I chose the owl."
+              },
+              {
+                "by": "detective",
+                "text": "Wisdom, not money."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "SAPIENTIA MEANS WISDOM",
+          "detail": "The Romans called the owl the bird of wisdom. Now you have all seven tiles."
         }
       }
     }
@@ -329,39 +411,40 @@
         "answer": "HISTORY",
         "options": [
           {
-            "id": "h",
-            "label": "H"
-          },
-          {
-            "id": "i",
-            "label": "I"
-          },
-          {
-            "id": "s",
-            "label": "S"
+            "id": "y",
+            "label": "Y"
           },
           {
             "id": "t",
             "label": "T"
           },
           {
+            "id": "h",
+            "label": "H"
+          },
+          {
             "id": "o",
             "label": "O"
           },
           {
-            "id": "r",
-            "label": "R"
+            "id": "s",
+            "label": "S"
           },
           {
-            "id": "y",
-            "label": "Y"
+            "id": "i",
+            "label": "I"
+          },
+          {
+            "id": "r",
+            "label": "R"
           }
         ]
       },
       "assetNeeds": [],
       "status": "ready",
       "notes": [
-        "The season's letter-collecting final: the seven gold tiles found in this case's three missions spell HISTORY, 'the story of the past'."
+        "The season's letter-collecting final: the seven gold tiles found in this case's three missions spell HISTORY, 'the story of the past'.",
+        "STEP 3-14: the tiles are found Y T, H O, S I R and listed in that order, so the letter no longer spells the answer; the tile strip is shuffled the same way."
       ]
     },
     "clueInputs": [
@@ -410,7 +493,7 @@
         "Enzo, Pia, Carla and Aldo are all here. Livia gives you one last owl card, and a little lock with seven empty slots."
       ],
       "letterIntro": "The Owl's last card says:",
-      "letter": "Dear Detective,\nYou found my seven gold tiles: H, I, S, T, O, R, Y.\nPut them in order to spell what the old map gave back to Rome.\nIt is not money.\nIt is the story of the past.\n— The Owl (Livia)",
+      "letter": "Dear Detective,\nYou found my seven gold tiles: Y, T, H, O, S, I, R.\nPut them in order to spell what the old map gave back to Rome.\nIt is not money.\nIt is the story of the past.\n— The Owl (Livia)",
       "question": "Spell the word with your seven gold tiles.",
       "hints": [
         "The word means the story of the past.",
@@ -418,13 +501,12 @@
       ],
       "successMessage": "The last lock opens. Everyone claps!",
       "transition": [
-        "HISTORY: the story of the past.",
-        "The city will make Piazza della Civetta a small museum, with the library below it.",
+        "The city will make Piazza della Civetta a small museum.",
+        "The old library below it will be open to everyone.",
         "Bruno Valli must answer to the city for what he did.",
-        "Aldo is already writing a new chapter: The Library Under the Owl.",
-        "Giulia smiles at you. \"Rome is full of stories. You found one more, piece by piece.\""
+        "Giulia smiles at you. \"You found one more story, piece by piece.\""
       ],
-      "orderFeedback": "Those are the right tiles. What word means the story of the past?",
+      "orderFeedback": "All seven tiles are right. Which word means the story of the past?",
       "mapX": 0.25,
       "mapY": 0.34,
       "evidence": {
@@ -434,7 +516,44 @@
         "inscription": "It is not money. It is the story of the past."
       },
       "evidenceLinkLine": "The real piece from Valli's box room, back in its glass case.",
-      "lockTitle": "THE OWL'S LAST LOCK"
+      "lockTitle": "THE OWL'S LAST LOCK",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "HISTORY. The story of the past.",
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "The old map kept this story safe.",
+          "evidence": "s3_ep11_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "And now it is back where it belongs.",
+          "speaker": "sofia_ferri",
+          "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "No more dark ten minutes in my hall!",
+          "speaker": "enzo_greco",
+          "portrait": "assets/seasons/season_03_rome/characters/enzo_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "I will write a new chapter tonight!",
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "Rome has more stories, Detective. Come back soon.",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        }
+      ]
     }
   },
   "hook": "The broken map of Rome is whole again. Where will your next case take you?",
@@ -473,6 +592,7 @@
   },
   "notes": [
     "The season's end: the core mystery resolved (story bible coreMystery.resolvedCase). The final is the season's letter-collecting final.",
-    "Its last scene is the map hall of Case 01: the season closes where it opened."
+    "Its last scene is the map hall of Case 01: the season closes where it opened.",
+    "STEP 3-14: the gold tiles are found in a new order (Y T, H O, S I R) so the final's letter no longer spells HISTORY. Talks, Discovery Moments and a season ending with every helper added."
   ]
 }

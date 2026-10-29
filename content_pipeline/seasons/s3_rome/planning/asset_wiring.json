@@ -5,9 +5,9 @@
   "checkedAgainst": "lib/ as of 2026-10-29 (SeasonContent.places, ArtAssets.seasonCovers, SeasonMap.bySeason, ArtAssets.evidencePictures, SeasonContent.storyScenes)",
   "counts": {
     "wired": 18,
-    "ready_to_wire": 17,
+    "ready_to_wire": 22,
     "blocked": 0,
-    "not_supported": 12
+    "not_supported": 23
   },
   "assets": [
     {
@@ -109,8 +109,7 @@
       "type": "place",
       "subject": "s3_rome.flower_market",
       "caseIds": [
-        "s3_ep03",
-        "s3_ep11"
+        "s3_ep03"
       ],
       "outputPath": "assets/seasons/season_03_rome/locations/flower_market.png",
       "status": "wired",
@@ -121,8 +120,7 @@
         "s3_ep03_m1",
         "s3_ep03_m2",
         "s3_ep03_m3",
-        "s3_ep03_final",
-        "s3_ep11_m2"
+        "s3_ep03_final"
       ],
       "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
     },
@@ -362,6 +360,7 @@
       "via": "generator",
       "missions": [
         "s3_ep11_m1",
+        "s3_ep11_m2",
         "s3_ep11_m3",
         "s3_ep11_final"
       ],
@@ -448,6 +447,7 @@
       "subject": "livia_conti",
       "caseIds": [
         "s3_ep01",
+        "s3_ep08",
         "s3_ep09",
         "s3_ep10",
         "s3_ep11",
@@ -821,6 +821,230 @@
       "field": null,
       "via": null,
       "note": "s3_rome.gold_tiles is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.colosseum",
+      "type": "scene",
+      "subject": "s3_rome.colosseum",
+      "caseIds": [
+        "s3_ep01"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_01/colosseum.png",
+      "status": "ready_to_wire",
+      "screen": "Story scene before or after a mission (StorySceneScreen)",
+      "field": "SeasonContent.storyScenes[<missionId>] (StoryScenes.place / after / next: StoryPicture)",
+      "via": "generatorExtension",
+      "note": "The table is a SeasonContent one, but the generator writes no storyScenes yet and the manifest names no mission for it (cases s3_ep01)."
+    },
+    {
+      "assetId": "s3_rome.asset.floor_stone_ship",
+      "type": "object",
+      "subject": "s3_rome.floor_stone_ship",
+      "caseIds": [
+        "s3_ep04"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_04/floor_stone_ship.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.floor_stone_ship is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.floor_stone_lion",
+      "type": "object",
+      "subject": "s3_rome.floor_stone_lion",
+      "caseIds": [
+        "s3_ep04"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_04/floor_stone_lion.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.floor_stone_lion is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.floor_stone_book",
+      "type": "object",
+      "subject": "s3_rome.floor_stone_book",
+      "caseIds": [
+        "s3_ep04"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_04/floor_stone_book.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.floor_stone_book is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.floor_stone_key",
+      "type": "object",
+      "subject": "s3_rome.floor_stone_key",
+      "caseIds": [
+        "s3_ep04"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_04/floor_stone_key.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.floor_stone_key is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.cat_tito",
+      "type": "object",
+      "subject": "s3_rome.cat_tito",
+      "caseIds": [
+        "s3_ep05"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_05/cat_tito.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.cat_tito is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.cat_rosso",
+      "type": "object",
+      "subject": "s3_rome.cat_rosso",
+      "caseIds": [
+        "s3_ep05"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_05/cat_rosso.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.cat_rosso is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.cat_luna",
+      "type": "object",
+      "subject": "s3_rome.cat_luna",
+      "caseIds": [
+        "s3_ep05"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_05/cat_luna.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.cat_luna is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.bridge_angels",
+      "type": "scene",
+      "subject": "s3_rome.bridge_angels",
+      "caseIds": [
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_08/bridge_angels.png",
+      "status": "ready_to_wire",
+      "screen": "Story scene before or after a mission (StorySceneScreen)",
+      "field": "SeasonContent.storyScenes[<missionId>] (StoryScenes.place / after / next: StoryPicture)",
+      "via": "generatorExtension",
+      "note": "The table is a SeasonContent one, but the generator writes no storyScenes yet and the manifest names no mission for it (cases s3_ep08)."
+    },
+    {
+      "assetId": "s3_rome.asset.bridge_hole",
+      "type": "scene",
+      "subject": "s3_rome.bridge_hole",
+      "caseIds": [
+        "s3_ep08"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_08/bridge_hole.png",
+      "status": "ready_to_wire",
+      "screen": "Story scene before or after a mission (StorySceneScreen)",
+      "field": "SeasonContent.storyScenes[<missionId>] (StoryScenes.place / after / next: StoryPicture)",
+      "via": "generatorExtension",
+      "note": "The table is a SeasonContent one, but the generator writes no storyScenes yet and the manifest names no mission for it (cases s3_ep08)."
+    },
+    {
+      "assetId": "s3_rome.asset.room_bath",
+      "type": "scene",
+      "subject": "s3_rome.room_bath",
+      "caseIds": [
+        "s3_ep09"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_09/room_bath.png",
+      "status": "ready_to_wire",
+      "screen": "Story scene before or after a mission (StorySceneScreen)",
+      "field": "SeasonContent.storyScenes[<missionId>] (StoryScenes.place / after / next: StoryPicture)",
+      "via": "generatorExtension",
+      "note": "The table is a SeasonContent one, but the generator writes no storyScenes yet and the manifest names no mission for it (cases s3_ep09)."
+    },
+    {
+      "assetId": "s3_rome.asset.room_theatre",
+      "type": "scene",
+      "subject": "s3_rome.room_theatre",
+      "caseIds": [
+        "s3_ep09"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_09/room_theatre.png",
+      "status": "ready_to_wire",
+      "screen": "Story scene before or after a mission (StorySceneScreen)",
+      "field": "SeasonContent.storyScenes[<missionId>] (StoryScenes.place / after / next: StoryPicture)",
+      "via": "generatorExtension",
+      "note": "The table is a SeasonContent one, but the generator writes no storyScenes yet and the manifest names no mission for it (cases s3_ep09)."
+    },
+    {
+      "assetId": "s3_rome.asset.helmet_white_crane",
+      "type": "object",
+      "subject": "s3_rome.helmet_white_crane",
+      "caseIds": [
+        "s3_ep10"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_10/helmet_white_crane.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.helmet_white_crane is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.helmet_yellow_plain",
+      "type": "object",
+      "subject": "s3_rome.helmet_yellow_plain",
+      "caseIds": [
+        "s3_ep10"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_10/helmet_yellow_plain.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.helmet_yellow_plain is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.stone_lion",
+      "type": "object",
+      "subject": "s3_rome.stone_lion",
+      "caseIds": [
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_11/stone_lion.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.stone_lion is no evidence id: no screen shows a picture by it."
+    },
+    {
+      "assetId": "s3_rome.asset.stone_street",
+      "type": "object",
+      "subject": "s3_rome.stone_street",
+      "caseIds": [
+        "s3_ep11"
+      ],
+      "outputPath": "assets/seasons/season_03_rome/cases/case_11/stone_street.png",
+      "status": "not_supported",
+      "screen": null,
+      "field": null,
+      "via": null,
+      "note": "s3_rome.stone_street is no evidence id: no screen shows a picture by it."
     },
     {
       "assetId": "s3_rome.asset.scene_owl_reveal",

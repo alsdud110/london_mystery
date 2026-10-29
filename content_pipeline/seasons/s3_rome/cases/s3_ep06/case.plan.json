@@ -36,7 +36,7 @@
             {
               "id": "helmet",
               "label": "Yes. Aldo wears a yellow helmet.",
-              "feedback": "Look at Aldo again. He wears a green hat."
+              "feedback": "Read Giulia's notes again. What kind of hat does Aldo wear?"
             },
             {
               "id": "not_him",
@@ -44,8 +44,8 @@
             },
             {
               "id": "strong",
-              "label": "Yes. Aldo carries heavy boxes every day.",
-              "feedback": "Read Giulia's notes. Aldo's back hurts, and he cannot lift heavy things."
+              "label": "Yes. He was at the workshop on Tuesday.",
+              "feedback": "Many people visit the workshop. Is Aldo big, like Pia's man?"
             }
           ]
         },
@@ -86,11 +86,10 @@
         "location": "PIAZZA NAVONA",
         "story": [
           "Professor Aldo sits by a big fountain with four stone giants.",
-          "He is drawing in his green notebook again.",
-          "\"He was at the workshop on Tuesday,\" whispers Giulia. \"Is he the helmet man?\""
+          "He is drawing in his green notebook again."
         ],
         "letterIntro": "Giulia's notes say:",
-        "letter": "PROFESSOR ALDO RINALDI\nHe is small and thin.\nHe always wears a green hat.\nHis fingers are green with ink.\nHe says his back hurts. He cannot lift heavy things.",
+        "letter": "GIULIA'S NOTES — PROFESSOR ALDO RINALDI\nHe is small and thin.\nHe always wears a green hat.\nHis fingers are green with ink.\nHe was at the Bassi workshop on Tuesday afternoon.",
         "question": "Could Aldo be the man Pia saw on Thursday night?",
         "hints": [
           "Read Pia's story again. What did the man look like?",
@@ -120,6 +119,33 @@
           "title": "What did Pia see?",
           "prompt": "Which thing in your Notebook tells you about the man Pia saw?",
           "miss": "Find what Pia told you about Thursday night."
+        },
+        "talk": {
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png",
+          "goal": "Compare Aldo with Pia's helmet man.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Carla says he was at her workshop on Tuesday."
+              },
+              {
+                "by": "detective",
+                "text": "Is he the man Pia saw on Thursday?"
+              },
+              {
+                "by": "speaker",
+                "text": "Let's compare. Look at my notes."
+              }
+            ],
+            "finishLabel": "READ GIULIA'S NOTES"
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "NOT THE HELMET MAN",
+          "detail": "Pia's Thursday man was big. Aldo is small and thin."
         }
       }
     },
@@ -192,8 +218,7 @@
         "location": "UNIVERSITY HALL B",
         "story": [
           "Hall B is a big room with rows of wooden seats.",
-          "A guard keeps a log by the door every night.",
-          "Aldo points at Friday's page. \"Read it!\""
+          "A guard keeps a log by the door every night."
         ],
         "letterIntro": "The door log says:",
         "letter": "HALL B — FRIDAY NIGHT\n11:15 PM — Prof. Rinaldi showed photos of old maps.\n9:00 PM — Prof. Rinaldi started his talk.\n1:00 AM — The talk ended. Prof. Rinaldi locked Hall B.\n12:00 AM — Students asked questions. The professor answered for an hour.",
@@ -204,9 +229,9 @@
         ],
         "successMessage": "You put Aldo's night in order!",
         "transition": [
-          "At midnight, when the map hall went dark, Aldo was answering questions in Hall B.",
-          "Forty students saw him there.",
-          "\"So it was not me,\" says Aldo. Then, more quietly: \"But I saw something on Tuesday.\""
+          "At midnight on Friday, Aldo was answering questions in Hall B.",
+          "And Pia's Thursday man was big, not small and thin.",
+          "\"So it was not me,\" says Aldo. Then, quietly: \"But I saw something on Tuesday.\""
         ],
         "orderFeedback": "Read the times again. Which ones are PM, and which are AM?",
         "mapX": 0.8,
@@ -223,7 +248,34 @@
           "description": "The university's door log for Friday night.",
           "inscription": "12:00 AM — Students asked questions. The professor answered for an hour."
         },
-        "evidenceLinkLine": "Aldo's notebook page said the same: Friday, 9:00 PM to 1:00 AM."
+        "evidenceLinkLine": "Aldo's notebook page said the same: Friday, 9:00 PM to 1:00 AM.",
+        "talk": {
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png",
+          "goal": "Check where Aldo was on Friday at midnight.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "You think I am a thief? Me?"
+              },
+              {
+                "by": "speaker",
+                "text": "Read the guard's log. Every line!"
+              },
+              {
+                "by": "detective",
+                "text": "Friday night, Hall B."
+              }
+            ],
+            "finishLabel": "READ THE LOG"
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "IN HALL B AT MIDNIGHT",
+          "detail": "Forty students saw Aldo at midnight. He did not carry the copy out."
+        }
       }
     },
     {
@@ -309,6 +361,11 @@
           "icon": "letter",
           "description": "Aldo's sketch of the word he saw in the workshop mirror.",
           "inscription": "GNIDLIUB"
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "A BOX THAT SAYS BUILDING",
+          "detail": "The big man's box came from a building company. What is his job?"
         }
       }
     }
@@ -403,12 +460,11 @@
       ],
       "successMessage": "You found the man's job!",
       "transition": [
-        "He is a builder!",
-        "Aldo opens a drawer. \"I took this photo of the real piece on the day it was found.\"",
-        "\"Look at the crack. It is shaped like a Y. A copy would not have it.\"",
-        "\"I was rude to you,\" he says. \"But I love that map. Let me help.\""
+        "Aldo was rude, but now he is on your side.",
+        "That night, an owl card slides under Giulia's door.",
+        "\"The Spanish Steps,\" she reads. \"Tomorrow morning.\""
       ],
-      "orderFeedback": "Those are the right letters. A ____ builds houses.",
+      "orderFeedback": "All seven letters fit. A ____ builds houses.",
       "mapX": 0.8,
       "mapY": 0.4,
       "evidence": {
@@ -417,7 +473,44 @@
         "description": "Aldo's photo of the real piece, on the day it was found. It shows a street, an owl and a crack.",
         "inscription": "The real piece has a crack shaped like a Y."
       },
-      "lockTitle": "THE BLACKBOARD"
+      "lockTitle": "THE BLACKBOARD",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "A builder! Good. You think like a detective.",
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "A crane helmet, a BUILDING box, big hands.",
+          "evidence": "s3_ep06_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "Here. I took this photo of the real piece.",
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "See the crack? It is shaped like a Y.",
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "A copy would not have it. Let me help you.",
+          "speaker": "aldo_rinaldi",
+          "portrait": "assets/seasons/season_03_rome/characters/aldo_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "But which builder? Rome has hundreds!",
+          "speaker": "giulia_marino",
+          "portrait": "assets/seasons/season_03_rome/characters/giulia_base.png"
+        }
+      ]
     }
   },
   "hook": "A builder had the real piece. But why would a builder want an old map?",
@@ -456,6 +549,7 @@
   },
   "notes": [
     "Aldo is cleared here (his revealCase). From Case 09 he is the season's map expert.",
-    "Aldo's old photo (s3_ep06_e4) is how the real piece is told from a copy in Case 08 and Case 11."
+    "Aldo's old photo (s3_ep06_e4) is how the real piece is told from a copy in Case 08 and Case 11.",
+    "STEP 3-14: puzzles kept; M1's letter no longer says the answer (Aldo is compared with Pia's man, not told he cannot lift). Both nights are now cleared in words: Thursday by Pia's description, Friday midnight by the Hall B log. Talks, Discovery Moments and an ending added."
   ]
 }

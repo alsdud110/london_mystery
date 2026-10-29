@@ -25,48 +25,58 @@
       "slot": "m1",
       "placeId": "s3_rome.civetta_square",
       "puzzle": {
-        "paletteId": "order_sequence",
+        "paletteId": "scene_explore_choose",
         "surface": "mission",
-        "engineTable": null,
-        "missionType": "sequence",
+        "engineTable": "explores",
+        "missionType": "multipleChoice",
         "answerSpec": {
-          "answer": "fence,close,dig,pour",
+          "answer": "boss",
           "options": [
             {
-              "id": "pour",
-              "label": "Pour the concrete"
+              "id": "worker",
+              "label": "The white helmet with a crane",
+              "feedback": "This one has a crane, but it is white. Pia saw a yellow helmet."
             },
             {
-              "id": "dig",
-              "label": "Dig the big hole"
+              "id": "visitor",
+              "label": "The yellow helmet with no picture",
+              "feedback": "This one is yellow, but it has no crane on it."
             },
             {
-              "id": "fence",
-              "label": "Put up the fence"
-            },
-            {
-              "id": "close",
-              "label": "Close the square to people"
+              "id": "boss",
+              "label": "The yellow helmet with a crane"
             }
-          ],
-          "codeLength": 4
+          ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.civetta_square",
+          "s3_rome.asset.helmet_white_crane",
+          "s3_rome.asset.helmet_yellow_plain",
+          "s3_rome.asset.ev_yellow_helmet",
+          "s3_rome.asset.char_livia_base"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Letter: the work plan on the fence, its dates out of order (1, 2, 3 and 10 May)."
+          "Played as a look round (ExploreScene) of the site fence: the site rules are read, then the three helmets by the gate. Each wrong helmet shares one thing with Pia's (the crane, or the yellow): colour and picture together decide.",
+          "Replaces the work-plan order: the concrete date is already the city plan's (Case 09 final).",
+          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the civetta_square prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
         ]
       },
       "clueInputs": [
         {
-          "ref": "s3_ep09_e4",
-          "use": "evidenceLink",
-          "note": "The city plan: concrete on 10 May, 7 AM."
-        },
-        {
           "ref": "s3_ep09_c3",
           "use": "textMention",
           "note": "The owl square is Piazza della Civetta."
+        },
+        {
+          "ref": "s3_ep03_c3",
+          "use": "answerDerivation",
+          "note": "Pia saw a yellow helmet with a crane."
+        },
+        {
+          "ref": "s3_ep09_e4",
+          "use": "evidenceLink",
+          "note": "The site on the city plan: Valli Building's car park."
         }
       ],
       "clueOutputs": {
@@ -75,51 +85,240 @@
       },
       "learning": {
         "dependency": "essential",
-        "level": "comprehension",
-        "objective": "날짜(1 May, 2 May, 3 May, 10 May)를 비교해 공사 계획을 순서대로 놓는다.",
+        "level": "application",
+        "objective": "현장 규칙의 helmet 색과 그림(yellow, white, crane)을 읽고, Pia가 본 헬멧(노란색+크레인)을 그림에서 고른다.",
         "skill": "vocabulary",
         "expressions": [
-          "On 1 May, they put up the fence.",
-          "On 10 May, they will pour the concrete."
+          "The boss wears a yellow helmet with our crane.",
+          "Workers wear white helmets."
         ]
       },
       "play": {
-        "title": "The Work Plan",
-        "location": "PIAZZA DELLA CIVETTA",
+        "title": "The Helmet on the Hook",
+        "location": "THE SITE FENCE",
         "story": [
           "Today is 8 May. Piazza della Civetta is hidden behind a tall fence.",
-          "Above the gate is a sign with a little crane on it.",
-          "A work plan is pinned to the fence."
+          "Behind it, a crane stands still.",
+          "This is Signor Valli's building site."
         ],
-        "letterIntro": "The work plan says:",
-        "letter": "VALLI BUILDING — WORK PLAN\n10 May, 7 AM — Pour the concrete.\n1 May — Put up the fence.\n3 May — Dig the big hole.\n2 May — Close the square to people.",
-        "question": "Put the work plan in order, from the first day to the last.",
+        "letterIntro": "On the site notice board:",
+        "letter": "VALLI BUILDING — SITE RULES\nEveryone must wear a helmet.\nWorkers wear WHITE helmets with our crane.\nVisitors wear YELLOW helmets with no picture.\nThe BOSS wears a YELLOW helmet with our crane.\nNobody opens the box room. Boss's orders!",
+        "question": "Which helmet did the man Pia saw wear?",
         "hints": [
-          "Look only at the dates. Which number is the smallest?",
-          "10 May comes after 3 May."
+          "Find the notice board on the fence and read it first.",
+          "Pia saw a yellow helmet with a crane. Check the colour AND the picture."
         ],
-        "successMessage": "You read the work plan!",
+        "successMessage": "You found the boss's helmet!",
         "transition": [
-          "Fence, close the square, dig, pour the concrete.",
-          "Today is 8 May. The concrete comes in two days.",
-          "Through a gap in the fence, Livia points. \"Look! A yellow helmet!\""
+          "The boss's helmet: yellow, with a crane.",
+          "Just like the helmet Pia saw on Thursday night.",
+          "Inside it, there is a name strip, torn in two."
         ],
-        "orderFeedback": "Read the dates again. Start with the smallest number.",
         "mapX": 0.5,
         "mapY": 0.5,
         "clue": {
-          "title": "The Work Plan",
-          "value": "CONCRETE: 10 MAY, 7 AM",
-          "note": "Valli Building will pour concrete over the square on 10 May. Today is 8 May.",
-          "symbol": "clock"
+          "title": "The Boss's Helmet",
+          "value": "YELLOW · A CRANE · THE BOSS",
+          "note": "At this site, only the boss wears a yellow helmet with a crane.",
+          "symbol": "gear"
         },
         "evidence": {
-          "name": "Valli's Work Plan",
+          "name": "The Site Rules",
           "icon": "letter",
-          "description": "The work plan pinned to the building site's fence.",
-          "inscription": "10 May, 7 AM — Pour the concrete."
+          "description": "The rules on the fence of Valli's building site.",
+          "inscription": "The BOSS wears a YELLOW helmet with our crane."
         },
-        "evidenceLinkLine": "The city plan in Aldo's cabinet said the same: concrete on 10 May at 7 AM."
+        "evidenceLinkLine": "The site on the city plan: the car park of Valli Building.",
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_03_rome/locations/civetta_square.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            }
+          },
+          "place": "The site fence at Piazza della Civetta",
+          "task": "Look around the site. What are the rules here?",
+          "nextTask": "Which helmet did Pia see? Look at the helmets.",
+          "missLine": "Nothing here. Look for the site rules.",
+          "guideAt": [
+            600,
+            780
+          ],
+          "spots": [
+            {
+              "id": "notice",
+              "kind": "document",
+              "title": "THE SITE RULES",
+              "label": "A notice board on the fence",
+              "areas": [
+                [
+                  120,
+                  380,
+                  400,
+                  680
+                ]
+              ],
+              "mark": [
+                380,
+                390
+              ]
+            },
+            {
+              "id": "crane",
+              "kind": "note",
+              "title": "THE CRANE",
+              "label": "A tall yellow crane",
+              "areas": [
+                [
+                  460,
+                  20,
+                  800,
+                  480
+                ]
+              ],
+              "mark": [
+                780,
+                40
+              ],
+              "line": "A tall crane. On it is the little crane from Valli's card."
+            },
+            {
+              "id": "office",
+              "kind": "note",
+              "title": "THE SITE OFFICE",
+              "label": "A site office with a lit window",
+              "areas": [
+                [
+                  1120,
+                  170,
+                  1480,
+                  420
+                ]
+              ],
+              "mark": [
+                1460,
+                180
+              ],
+              "line": "A light is on in the office. Somebody is inside."
+            },
+            {
+              "id": "hooks",
+              "kind": "choice",
+              "title": "THE HELMETS",
+              "label": "Three helmets hanging by the gate",
+              "areas": [
+                [
+                  1100,
+                  440,
+                  1400,
+                  640
+                ]
+              ],
+              "mark": [
+                1380,
+                450
+              ],
+              "requires": "notice",
+              "lockedLine": "Three helmets on hooks. Which one matters? Read something first.",
+              "unreadLine": "Read the site rules first."
+            }
+          ],
+          "others": [
+            {
+              "label": "The gate",
+              "areas": [
+                [
+                  820,
+                  400,
+                  1080,
+                  860
+                ]
+              ],
+              "line": "The gate is locked with a heavy chain."
+            },
+            {
+              "label": "The tall fence",
+              "areas": [
+                [
+                  420,
+                  520,
+                  800,
+                  900
+                ]
+              ],
+              "line": "The fence is too tall to climb."
+            },
+            {
+              "label": "Old houses",
+              "areas": [
+                [
+                  0,
+                  60,
+                  440,
+                  360
+                ]
+              ],
+              "line": "Old ochre houses. Their windows are shut."
+            }
+          ],
+          "choiceTitle": "THE HELMETS",
+          "choiceHow": "Which helmet did Pia see? Tap one helmet.",
+          "choicePixels": {
+            "width": 1024,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "worker",
+              "picture": "assets/seasons/season_03_rome/cases/case_10/helmet_white_crane.png",
+              "description": "a white helmet with a small crane sticker, on a hook"
+            },
+            {
+              "optionId": "visitor",
+              "picture": "assets/seasons/season_03_rome/cases/case_10/helmet_yellow_plain.png",
+              "description": "a plain yellow helmet with no sticker, on a hook"
+            },
+            {
+              "optionId": "boss",
+              "picture": "assets/seasons/season_03_rome/objects/yellow_helmet.png",
+              "description": "a yellow helmet with a small crane sticker, on a hook"
+            }
+          ],
+          "opening": [
+            40,
+            0,
+            1500,
+            1000
+          ]
+        },
+        "talk": {
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png",
+          "goal": "Look around the site.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "This is it. The owl square."
+              },
+              {
+                "by": "speaker",
+                "text": "The library is under this fence."
+              },
+              {
+                "by": "detective",
+                "text": "Then let's look around."
+              }
+            ],
+            "finishLabel": "LOOK AROUND"
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "THE BOSS'S HELMET",
+          "detail": "Pia's man wore the boss's helmet. Who is the boss?"
+        }
       }
     },
     {
@@ -169,9 +368,9 @@
           "note": "Bruno's card has the same crane as the helmet."
         },
         {
-          "ref": "s3_ep03_c3",
+          "ref": "s3_ep10_c1",
           "use": "textMention",
-          "note": "Pia saw a yellow helmet with a crane on Thursday night."
+          "note": "The boss's helmet, chosen at the hooks."
         }
       ],
       "clueOutputs": {
@@ -192,7 +391,7 @@
         "title": "The Yellow Helmet",
         "location": "THE SITE FENCE",
         "story": [
-          "A yellow helmet hangs on a hook by the fence.",
+          "You reach through the fence for the yellow helmet.",
           "It has a little crane on the front, just like Pia said.",
           "Inside the helmet is a name strip, torn in two."
         ],
@@ -209,7 +408,7 @@
           "The big man Pia saw on Thursday night wore this helmet.",
           "A young worker sees you at the fence. He looks around, then comes closer."
         ],
-        "orderFeedback": "Those are the right letters. Put the left piece first.",
+        "orderFeedback": "All five letters fit. Put the left piece first.",
         "mapX": 0.51,
         "mapY": 0.49,
         "clue": {
@@ -229,7 +428,12 @@
           "prompt": "Which thing in your Notebook has the same little crane?",
           "miss": "Look for a card with a crane on it."
         },
-        "lockTitle": "THE NAME STRIP"
+        "lockTitle": "THE NAME STRIP",
+        "discovery": {
+          "type": "deduction",
+          "title": "B. VALLI'S HELMET",
+          "detail": "The boss is Bruno Valli. He is the man Pia saw on Thursday night."
+        }
       }
     },
     {
@@ -313,9 +517,9 @@
         ],
         "successMessage": "You put the times together!",
         "transition": [
-          "At 11:30 PM, Pia saw the heavy box. At 11:50 PM, it came through this gate.",
-          "The real piece came here on the night of the swap!",
-          "Livia's hands shake. \"We must tell Sofia. Now.\""
+          "At 11:30 PM, Pia saw the heavy box.",
+          "At 11:50 PM, it came through this gate.",
+          "Livia's hands shake as she holds the gate log."
         ],
         "mapX": 0.5,
         "mapY": 0.5,
@@ -330,6 +534,32 @@
           "icon": "letter",
           "description": "The log of everything that came through the site gate.",
           "inscription": "THURSDAY, 11:50 PM — B. Valli. One heavy box."
+        },
+        "talk": {
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png",
+          "goal": "Find out what the heavy box is.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "The night of the swap!"
+              },
+              {
+                "by": "speaker",
+                "text": "The real piece came here. I am sure."
+              },
+              {
+                "by": "speaker",
+                "text": "We must tell Sofia. Now."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "THE HEAVY BOX CAME HERE",
+          "detail": "11:50 PM on Thursday, the night of the swap. Is the real piece inside?"
         }
       }
     }
@@ -391,8 +621,8 @@
       "title": "A Message for Sofia",
       "location": "PIAZZA DELLA CIVETTA",
       "story": [
-        "Giulia calls Director Sofia. Then Sofia sends a message.",
-        "She needs one word to make the city listen."
+        "Giulia calls Director Sofia on her phone.",
+        "\"I need one word to make the city listen,\" Sofia says."
       ],
       "letterIntro": "Sofia's message and your notes say:",
       "letter": "SOFIA:\n\"I can bring the city inspector tomorrow.\nBut I must tell him why the work must stop.\nWhat is under the square?\"\n\nYOUR NOTES:\nThe real piece shows a room under the owl square.\nThe room's Latin name is BIBLIOTHECA.",
@@ -404,8 +634,7 @@
       ],
       "successMessage": "Your message is sent!",
       "transition": [
-        "Sofia writes back at once: \"I am coming with the inspector!\"",
-        "\"But we need proof. Without the real piece, Signor Valli will say there is nothing down there.\"",
+        "Signor Valli will say there is nothing down there.",
         "In the site office, behind the fence, a light is still on."
       ],
       "feedback": {
@@ -420,7 +649,38 @@
         "icon": "letter",
         "description": "Your message to Director Sofia about the square.",
         "inscription": "Under the square, there is an old Roman library."
-      }
+      },
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "A Roman library? Under the square?",
+          "speaker": "sofia_ferri",
+          "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "BIBLIOTHECA. A room for books, on the old map.",
+          "evidence": "s3_ep09_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "Then the concrete must not come.",
+          "speaker": "sofia_ferri",
+          "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "I am bringing the city inspector tomorrow!",
+          "speaker": "sofia_ferri",
+          "portrait": "assets/seasons/season_03_rome/characters/sofia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "But without the real piece, who will believe us?",
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png"
+        }
+      ]
     }
   },
   "hook": "Is the real piece in Valli's office? Tomorrow, the inspector will come.",
@@ -430,7 +690,7 @@
   },
   "play": {
     "objectives": [
-      "Read the work plan on the fence.",
+      "Find the helmet Pia saw at Valli's site.",
       "Find the helmet's owner.",
       "Find out what came on Thursday night."
     ],
@@ -439,10 +699,10 @@
       "Or it was. Now there is a tall fence all around it.",
       "\"Two more days,\" Livia says. \"Then the concrete comes.\""
     ],
-    "caseSummary": "The work plan says concrete on 10 May. The yellow crane helmet is B. Valli's. On Thursday at 11:50 PM, Valli brought a heavy box to the site: the real piece. You told Sofia an old Roman library is under the square.",
+    "caseSummary": "At Valli's site, only the boss wears a yellow helmet with a crane. Pia saw that helmet. The helmet is B. Valli's. On Thursday at 11:50 PM, Valli brought a heavy box to the site: the real piece. You told Sofia an old Roman library is under the square.",
     "place": "PIAZZA DELLA CIVETTA",
     "keyWords": [
-      "date",
+      "yellow",
       "fence",
       "helmet",
       "nobody",
@@ -459,6 +719,7 @@
   },
   "notes": [
     "Bruno is not met here: his helmet, his gate log and his work plan speak for him. He is revealed face to face in Case 11.",
-    "The worker is unnamed on purpose (not a season character)."
+    "The worker is unnamed on purpose (not a season character).",
+    "STEP 3-14: M1 is now a look round the site fence ending in a choice of three helmets (two new pictures and the evidence helmet); the work-plan order is gone (its date is the city plan's). Talks, Discovery Moments and an ending added."
   ]
 }

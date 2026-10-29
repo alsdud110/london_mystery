@@ -25,27 +25,51 @@
       "slot": "m1",
       "placeId": "s3_rome.tiber_bridge",
       "puzzle": {
-        "paletteId": "word_entry",
+        "paletteId": "picture_choice",
         "surface": "mission",
         "engineTable": null,
-        "missionType": "wordInput",
+        "missionType": "imageChoice",
         "answerSpec": {
-          "answer": "EIGHT",
-          "acceptedAnswers": [
-            "8"
+          "answer": "fabricio",
+          "options": [
+            {
+              "id": "angels",
+              "label": "The bridge with angel statues",
+              "feedback": "This bridge has angels, not stone faces. Read the card again.",
+              "altText": "a long stone bridge with white angel statues along both sides",
+              "picture": "assets/seasons/season_03_rome/cases/case_08/bridge_angels.png"
+            },
+            {
+              "id": "fabricio",
+              "label": "The bridge with faces on its posts",
+              "altText": "an old stone bridge with two arches and two stone posts, each with four carved faces",
+              "picture": "assets/seasons/season_03_rome/locations/tiber_bridge.png"
+            },
+            {
+              "id": "hole",
+              "label": "The bridge with a round hole",
+              "feedback": "This bridge has a round hole, not stone faces. Look for faces on the posts.",
+              "altText": "a stone bridge with a big round hole above its middle arch",
+              "picture": "assets/seasons/season_03_rome/cases/case_08/bridge_hole.png"
+            }
           ]
         },
-        "assetNeeds": [],
-        "status": "ready",
+        "assetNeeds": [
+          "s3_rome.asset.bridge_angels",
+          "s3_rome.asset.tiber_bridge",
+          "s3_rome.asset.bridge_hole"
+        ],
+        "status": "awaitingAssets",
         "notes": [
-          "Letter: the Owl's card and Giulia's guidebook: two stone posts, four faces each."
+          "A picture choice with the names hidden: the card's words (two stone posts, four faces each, to the island) are matched to what each bridge shows. Real bridges of Rome: Ponte Sant'Angelo (angels), Ponte Sisto (the round hole), Ponte Fabricio (the four-faced posts).",
+          "The right picture is the place picture of the mission (tiber_bridge), drawn with nobody on the bridge so it gives nothing away."
         ]
       },
       "clueInputs": [
         {
-          "ref": "s3_ep07_c3",
+          "ref": "s3_ep07_e4",
           "use": "textMention",
-          "note": "The Owl saw you catch Valli's story, and now wants to meet."
+          "note": "The bridge card was under the loan book page."
         }
       ],
       "clueOutputs": {
@@ -54,11 +78,11 @@
       },
       "learning": {
         "dependency": "essential",
-        "level": "application",
-        "objective": "each(각각)를 이해해 기둥 2개 × 얼굴 4개를 계산하고 숫자를 영어 단어로 쓴다.",
+        "level": "comprehension",
+        "objective": "부엉이 카드의 'two stone posts', 'four faces'를 읽고 세 다리 그림 중 맞는 다리를 고른다.",
         "skill": "vocabulary",
         "expressions": [
-          "It has two stone posts.",
+          "the bridge with the stone faces",
           "Each post has four faces."
         ]
       },
@@ -66,42 +90,42 @@
         "title": "The Bridge of Four Heads",
         "location": "TIBER ISLAND",
         "story": [
-          "Tiber Island sits in the middle of the river like a little boat.",
-          "An old stone bridge joins it to the city.",
-          "On the bridge, a woman in a hood is waiting."
+          "Rome has many old bridges over the river Tiber.",
+          "The Owl's card names only one.",
+          "Giulia opens her guidebook."
         ],
-        "letterIntro": "The Owl's card and Giulia's guidebook say:",
-        "letter": "THE OWL CARD:\nMeet me on the bridge with the stone faces.\nCall out how many faces you see, so I know it is you.\n— The Owl\n\nGUIDEBOOK:\nPONTE FABRICIO is the oldest bridge in Rome that people still use.\nPeople call it the Bridge of Four Heads.\nIt has two stone posts. Each post has four faces.",
-        "question": "How many stone faces are there in all? Write the number as a word.",
-        "prompt": "I can see ____ faces.",
+        "letterIntro": "The card from the Owl's box says:",
+        "letter": "Meet me on the bridge with the stone faces.\nIt goes to the little island in the river.\nIt has two stone posts. Each post has four faces.\n— The Owl",
+        "question": "Which bridge does the Owl mean?",
         "hints": [
-          "Each means every one. Every post has four faces.",
-          "Add the faces on both posts."
+          "Read the card. What does each post have?",
+          "Look closely at each bridge. Which one has faces?"
         ],
-        "successMessage": "The woman in the hood turns around.",
+        "successMessage": "You found the Bridge of Four Heads!",
         "transition": [
-          "Two posts, four faces each: eight faces.",
-          "\"Eight,\" you call out.",
-          "The woman takes off her hood. It is Livia Conti, the restorer!"
+          "Two posts, and four stone faces on each one.",
+          "On the bridge, a woman in a grey hood is waiting.",
+          "She takes off her hood. It is Livia Conti, the restorer!"
         ],
-        "feedback": {
-          "FOUR": "Each post has four faces. How many posts are there?",
-          "TWO": "There are two posts. How many faces does each one have?"
-        },
-        "orderFeedback": "Check your spelling of the number.",
         "mapX": 0.4,
         "mapY": 0.75,
         "clue": {
-          "title": "The Bridge Password",
-          "value": "EIGHT STONE FACES",
-          "note": "The Owl asked you to count the faces on the Bridge of Four Heads.",
-          "symbol": "mask"
+          "title": "The Owl's Bridge",
+          "value": "TWO POSTS · FOUR FACES EACH",
+          "note": "The Owl waited on Ponte Fabricio, the old bridge to Tiber Island.",
+          "symbol": "map"
         },
         "evidence": {
           "name": "The Bridge Owl Card",
           "icon": "seal",
           "description": "The Owl's card asking to meet on the old bridge.",
           "inscription": "Call out how many faces you see, so I know it is you."
+        },
+        "hideOptionNames": true,
+        "discovery": {
+          "type": "newLead",
+          "title": "TWO POSTS, EIGHT FACES",
+          "detail": "This old bridge goes to Tiber Island. Someone in a hood is waiting there."
         }
       }
     },
@@ -154,6 +178,11 @@
           "ref": "s3_ep04_e4",
           "use": "textMention",
           "note": "The plaster copy Livia carried out."
+        },
+        {
+          "ref": "s3_ep01_c1",
+          "use": "textMention",
+          "note": "On Saturday, Livia said she was in her lab at midnight (Case 01's talk)."
         }
       ],
       "clueOutputs": {
@@ -174,9 +203,8 @@
         "title": "The Owl Takes Off Her Hood",
         "location": "THE BRIDGE OF FOUR HEADS",
         "story": [
-          "\"I am the Owl,\" Livia says quietly.",
-          "\"But first, show me you followed my trail from the start.\"",
-          "Then she tells you everything."
+          "Livia's hood is down. Her silver owl ring shines.",
+          "She looks tired, but she smiles."
         ],
         "letterIntro": "Livia says:",
         "letter": "\"On Friday morning, I cleaned the new piece.\nIt was wrong! It was too light, and the old crack was gone.\nI told Director Sofia. She said, 'You are tired, Livia.'\nSo at midnight, I turned off the lights and took the piece out.\nIt was a copy. I did not want people to call a copy real.\nI left cards so you could find the truth with your own eyes.\"",
@@ -187,9 +215,8 @@
         ],
         "successMessage": "Now you know who the Owl is, and why.",
         "transition": [
-          "Livia took the copy so nobody would show it as the real piece.",
-          "\"I was scared,\" she says. \"Nobody believed me.\"",
-          "\"Come to my lab. I wrote down the whole week.\""
+          "Livia took the copy so nobody would call it the real piece.",
+          "\"Come to my lab,\" she says. \"I wrote down the whole week.\""
         ],
         "mapX": 0.4,
         "mapY": 0.75,
@@ -209,6 +236,53 @@
           "title": "Prove it",
           "prompt": "Livia asks: which card did I leave for you first?",
           "miss": "That is not my first card. Where did your trail begin?"
+        },
+        "talk": {
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_hood.png",
+          "goal": "Hear the Owl out.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Yes. I am the Owl."
+              },
+              {
+                "by": "detective",
+                "text": "On Saturday, you said you worked late."
+              },
+              {
+                "by": "speaker",
+                "text": "I did. I was in my lab at midnight."
+              },
+              {
+                "by": "speaker",
+                "text": "But first, show me you followed my trail."
+              }
+            ],
+            "finishLabel": "SHOW HER"
+          },
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "I was scared. Nobody believed me."
+              },
+              {
+                "by": "speaker",
+                "text": "So I left cards for you."
+              },
+              {
+                "by": "detective",
+                "text": "So I could find the truth myself."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "storyDiscovery",
+          "title": "THE OWL IS LIVIA CONTI",
+          "detail": "She saw the copy on Friday morning. Nobody believed her, so she acted alone."
         }
       }
     },
@@ -311,7 +385,12 @@
           "description": "Livia's diary of the week, put back in order.",
           "inscription": "THURSDAY NIGHT — Signor Valli came at 11 PM to \"check the lights\"."
         },
-        "evidenceLinkLine": "The loan book page says the same: on Tuesday, B.V. took the piece out."
+        "evidenceLinkLine": "The loan book page says the same: on Tuesday, B.V. took the piece out.",
+        "discovery": {
+          "type": "deduction",
+          "title": "THE SWAP WAS ON THURSDAY",
+          "detail": "On Friday morning, the case already held a copy. Who came on Thursday night?"
+        }
       }
     }
   ],
@@ -397,12 +476,11 @@
       ],
       "successMessage": "Livia's locker opens!",
       "transition": [
-        "Inside is Livia's drawing of the real piece, line by line.",
-        "Next to the tiny owl is a room with lines like shelves. Beside it is half a word: BIBLIO...",
         "\"I think this room is under Rome today,\" Livia says.",
-        "\"And I think Signor Valli knows it.\""
+        "\"And I think Signor Valli knows it.\"",
+        "One man reads old maps like a book: Professor Aldo."
       ],
-      "orderFeedback": "Those are the right letters. What can you see on the real piece?",
+      "orderFeedback": "The five tiles fit. What can you see on the real piece?",
       "mapX": 0.27,
       "mapY": 0.36,
       "evidence": {
@@ -411,7 +489,36 @@
         "description": "Livia drew the real piece from memory, line by line.",
         "inscription": "Next to the tiny owl: a room with shelves, and half a word: BIBLIO..."
       },
-      "lockTitle": "LIVIA'S LOCKER"
+      "lockTitle": "LIVIA'S LOCKER",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Yes. The crack. Only the real piece has it.",
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "Aldo's photo shows the same Y-shaped crack.",
+          "evidence": "s3_ep06_e4"
+        },
+        {
+          "by": "narrator",
+          "text": "In the locker is Livia's drawing of the real piece."
+        },
+        {
+          "by": "speaker",
+          "text": "Next to the tiny owl, there is a room.",
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "And half a word: BIBLIO... What does it mean?",
+          "speaker": "livia_conti",
+          "portrait": "assets/seasons/season_03_rome/characters/livia_base.png"
+        }
+      ]
     }
   },
   "hook": "What is the room on the map, and where is it now?",
@@ -421,7 +528,7 @@
   },
   "play": {
     "objectives": [
-      "Give the Owl the password.",
+      "Find the Owl's bridge.",
       "Find out why the Owl took the copy.",
       "Put the Owl's week in order."
     ],
@@ -434,7 +541,7 @@
     "place": "TIBER ISLAND",
     "keyWords": [
       "each",
-      "eight",
+      "post",
       "because",
       "copy",
       "crack"
@@ -450,6 +557,7 @@
   },
   "notes": [
     "Livia's secret ends here (secretUntil, revealCase s3_ep08). Act 2 closes with the swap's night known and its reason still open.",
-    "Livia's drawing (s3_ep08_e4) opens Act 3: Case 09 reads the room on it."
+    "Livia's drawing (s3_ep08_e4) opens Act 3: Case 09 reads the room on it.",
+    "STEP 3-14: M1 is now a picture choice of three real Roman bridges (two new pictures and the place's own); the counting password is gone. Livia's talks show her hooded portrait (made in STEP 3-12B) and pay off her Case 01 answer."
   ]
 }
