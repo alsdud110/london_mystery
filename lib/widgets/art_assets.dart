@@ -95,14 +95,36 @@ abstract final class ArtAssets {
   /// Pixel size of [parisMap].
   static const parisMapPixels = Size(1536, 1024);
 
-  /// The World Map: the whole world, 2:1 (longitude -180..180 across,
-  /// latitude 90..-90 down), navy sea and golden land. No names, pins or
-  /// landmarks: the cities are placed by the app (`WorldCities`). A missing
-  /// or broken file shows plain navy sea, never another map.
-  static const worldMap = 'assets/shared/world_map/world_map_v1.png';
+  /// The World Map: the whole world (1983 × 793), navy sea and golden land
+  /// with landmarks, no Antarctica. Round markers are painted by some
+  /// landmarks; a game city sits on its painted marker (`WorldCity.mapAt`),
+  /// the rest are decoration. A missing or broken file shows plain navy
+  /// sea, never another map.
+  static const worldMap = 'assets/shared/world_map/world_map_v3.png';
 
   /// Width / height of [worldMap].
-  static const worldMapAspect = 2.0;
+  static const worldMapAspect = 1983 / 793;
+
+  /// A round marker painted on [worldMap], in fractions of its width: the
+  /// circle's radius, and from its middle down to its tip.
+  static const worldMapMarkerRadius = 15 / 1983;
+  static const worldMapMarkerTip = 28 / 1983;
+
+  /// The middles of markers painted on [worldMap] close to the game's
+  /// cities that are no city in the game (fractions of its width / height):
+  /// by Beijing, and the one under Seoul's. Names keep off them.
+  static const worldMapOtherMarkers = [Offset(1538 / 1983, 315 / 793), Offset(1632 / 1983, 335 / 793)];
+
+  /// The longitudes at [worldMap]'s west and east edges and the latitudes
+  /// at its north and south edges (for a city with no painted marker, and
+  /// the opening zoom), read off world_map_v2's coastlines (a painting, so
+  /// near enough: within about 2° around the game's cities). It reaches a
+  /// little past one turn of the world, so the Bering Strait shows at both
+  /// ends.
+  static const worldMapWest = -163.6;
+  static const worldMapEast = 211.2;
+  static const worldMapNorth = 90.0;
+  static const worldMapSouth = -66.0;
 
   /// The title screen: the detective's study on a London evening, in warm
   /// watercolour — bookshelves and the lamp on the left, the desk with a

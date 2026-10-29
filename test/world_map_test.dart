@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io' show File;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show ByteData;
@@ -84,16 +85,31 @@ void main() {
     return {for (final k in prefs.getKeys()) k: prefs.get(k)};
   }
 
-  /// Drags the map until [cityId]'s pin is well inside it, clear of the
-  /// map's buttons (east when it is not on the map yet).
+  /// The part of the map in view: between the header and the card.
+  Rect inView(WidgetTester t) {
+    final area = t.getRect(find.byKey(const ValueKey('world-map-viewer')));
+    final header = t.getRect(find.byKey(const ValueKey('world-map-header')));
+    final card = t.getRect(find.byKey(const ValueKey('world-map-card')));
+    return Rect.fromLTRB(area.left, header.bottom, area.right, card.top);
+  }
+
+  /// Drags the map until [cityId]'s pin is well inside the part in view,
+  /// clear of the map's buttons (east when it is not on the map yet).
   Future<void> bringIntoView(WidgetTester t, String cityId) async {
     final viewer = find.byKey(const ValueKey('world-map-viewer'));
     for (var i = 0; i < 10; i++) {
-      final area = t.getRect(viewer);
-      final safe = Rect.fromLTRB(area.left + 50, area.top + 50, area.right - 80, area.bottom - 30);
+      final area = inView(t);
+      final safe = Rect.fromLTRB(area.left + 50, area.top + 40, area.right - 80, area.bottom - 30);
       final f = pin(cityId);
       if (f.evaluate().isNotEmpty && safe.contains(t.getCenter(f))) return;
-      final d = f.evaluate().isEmpty ? const Offset(-150, 0) : safe.center - t.getCenter(f);
+      // Where the city is on screen now, on the map or off it (the world
+      // covers the viewer: its height, twice as wide).
+      final box = t.getRect(viewer);
+      final h = math.max(box.height, box.width / ArtAssets.worldMapAspect);
+      final city = WorldCities.all.firstWhere((c) => c.id == cityId);
+      final m = t.widget<InteractiveViewer>(viewer).transformationController!.value;
+      final at = MatrixUtils.transformPoint(m, Offset(city.at.dx * h * ArtAssets.worldMapAspect, city.at.dy * h)) + box.topLeft;
+      final d = safe.center - at;
       await t.drag(viewer, Offset(d.dx.clamp(-150.0, 150.0), d.dy.clamp(-150.0, 150.0)));
       await wait(t, const Duration(milliseconds: 300));
     }
@@ -134,11 +150,31 @@ void main() {
       expect({for (final c in WorldCities.all) c.id}.length, WorldCities.all.length);
     });
 
-    test('a city is placed by its latitude and longitude', () {
-      const nullIsland = WorldCity(id: 'x', name: 'X', latitude: 0, longitude: 0);
-      expect(nullIsland.at, const Offset(0.5, 0.5));
-      const corner = WorldCity(id: 'y', name: 'Y', latitude: 90, longitude: -180);
-      expect(corner.at, Offset.zero);
+    test('a city with no painted marker is placed by its latitude and longitude', () {
+      const northWest = WorldCity(id: 'x', name: 'X', latitude: ArtAssets.worldMapNorth, longitude: ArtAssets.worldMapWest);
+      expect(northWest.at, Offset.zero);
+      const southEast = WorldCity(id: 'y', name: 'Y', latitude: ArtAssets.worldMapSouth, longitude: ArtAssets.worldMapEast);
+      expect(southEast.at.dx, closeTo(1, 1e-9));
+      expect(southEast.at.dy, closeTo(1, 1e-9));
+      const marked = WorldCity(id: 'z', name: 'Z', latitude: 0, longitude: 0, mapAt: Offset(0.25, 0.75));
+      expect(marked.at, const Offset(0.25, 0.75));
+    });
+
+    test('each city sits on its marker painted on world_map_v3; its latitude and longitude kept', () {
+      // The middles of the round markers by Big Ben, the Eiffel Tower, the
+      // Colosseum, Korea (the upper one) and the castle (1983 × 793).
+      for (final (city, x, y) in const [
+        (WorldCities.london, 898.0, 182.0),
+        (WorldCities.paris, 964.0, 250.0),
+        (WorldCities.rome, 1042.0, 302.0),
+        (WorldCities.seoul, 1632.0, 297.0),
+        (WorldCities.tokyo, 1735.0, 322.0),
+      ]) {
+        final at = Offset(city.at.dx * 1983, city.at.dy * 793);
+        expect((at - Offset(x, y)).distance, lessThan(1), reason: city.name);
+      }
+      expect((WorldCities.london.latitude, WorldCities.london.longitude), (51.51, -0.13));
+      expect((WorldCities.tokyo.latitude, WorldCities.tokyo.longitude), (35.68, 139.69));
       for (final c in WorldCities.all) {
         expect(c.at.dx, inInclusiveRange(0, 1), reason: c.name);
         expect(c.at.dy, inInclusiveRange(0, 1), reason: c.name);
@@ -148,22 +184,32 @@ void main() {
       expect(WorldCities.tokyo.at.dx, greaterThan(WorldCities.seoul.at.dx));
     });
 
-    test('pins that would cover each other step apart, west to east', () {
-      final out = spreadPins(const [Offset(100, 100), Offset(108, 106), Offset(300, 100)], gap: 80, rise: 60);
-      expect(out[1].dx - out[0].dx, closeTo(80, 1e-9));
-      expect(out[0].dy, out[1].dy);
-      expect(out[2], const Offset(300, 100)); // far away: where it is
-      // London, Paris, Rome: a row, west to east.
-      final row = spreadPins(const [Offset(180, 74), Offset(185, 81), Offset(204, 93)], gap: 80, rise: 60);
-      expect(row[1].dx - row[0].dx, closeTo(80, 1e-9));
-      expect(row[2].dx - row[1].dx, closeTo(80, 1e-9));
-      final ring = spreadPins(const [Offset(0, 0), Offset(4, 0), Offset(0, 4), Offset(4, 4)], gap: 80, rise: 60);
-      for (var i = 0; i < 4; i++) {
-        for (var j = i + 1; j < 4; j++) {
-          expect((ring[i] - ring[j]).distance, greaterThanOrEqualTo(79.9));
+    test("names stay clear of each other's marks and names; only the chosen city's always shows", () {
+      Rect dot(Offset p) => Rect.fromCircle(center: p, radius: 7);
+      // London, Paris and Rome close together, London chosen.
+      const points = [Offset(180, 200), Offset(200, 222), Offset(250, 260)];
+      final marks = [Rect.fromLTRB(166, 172, 194, 202), dot(points[1]), dot(points[2])];
+      const sizes = [Size(64, 22), Size(40, 15), Size(40, 15)];
+      final out = placeLabels(points: points, marks: marks, sizes: sizes, order: const [0, 1, 2], viewport: const Size(390, 600), selected: 0);
+      expect(out.every((r) => r != null), isTrue, reason: 'room for all three');
+      for (var a = 0; a < 3; a++) {
+        for (var b = 0; b < 3; b++) {
+          if (a != b) expect(out[a]!.overlaps(marks[b]), isFalse, reason: 'name $a clear of mark $b');
+          if (a < b) expect(out[a]!.overlaps(out[b]!), isFalse, reason: 'names $a and $b');
         }
       }
-    });
+      // No room: another city's name hides, the chosen one's never.
+      final crowded = placeLabels(
+        points: const [Offset(20, 20), Offset(22, 22)],
+        marks: [dot(const Offset(20, 20)), dot(const Offset(22, 22))],
+        sizes: const [Size(300, 30), Size(300, 30)],
+        order: const [1, 0],
+        viewport: const Size(60, 60),
+        selected: 1,
+      );
+      expect(crowded[1], isNotNull);
+      expect(crowded[0], isNull);
+  });
   });
 
   group('where the map opens', () {
@@ -173,9 +219,9 @@ void main() {
       expect(appRef.read(homeCityIdProvider), WorldCities.london.id);
       expect(find.text('WORLD MYSTERY'), findsOneWidget);
       expect(find.text('Detective MINYOUNG'), findsOneWidget);
-      expect(inCard('london', 'SEASON 1'), findsOneWidget);
-      expect(inCard('london', 'LONDON'), findsOneWidget);
+      expect(inCard('london', 'SEASON 1 · LONDON'), findsOneWidget);
       expect(inCard('london', 'Shadows over London'), findsOneWidget);
+      expect(inCard('london', '12 cases · Not started'), findsOneWidget);
       expect(inCard('london', 'BEGIN ADVENTURE'), findsOneWidget);
       final states = {for (final s in appRef.read(worldCityStatesProvider)) s.city.id: s.status};
       expect(states, {
@@ -188,7 +234,7 @@ void main() {
       // London at the middle of the map, Paris beside it, named.
       final viewer = t.getRect(find.byKey(const ValueKey('world-map-viewer')));
       expect((t.getCenter(pin('london')).dx - viewer.center.dx).abs(), lessThan(90));
-      expect(find.descendant(of: pin('paris'), matching: find.text('PARIS')), findsOneWidget);
+      expect(find.descendant(of: find.byKey(const ValueKey('city-label-paris')), matching: find.text('Paris')), findsOneWidget);
     });
 
     testWidgets('London under way: London, to continue', (t) async {
@@ -196,7 +242,7 @@ void main() {
       await openMap(t);
       expect(appRef.read(homeCityIdProvider), WorldCities.london.id);
       expect(inCard('london', 'CONTINUE'), findsOneWidget);
-      expect(inCard('london', 'IN PROGRESS • 3 / 12 SOLVED'), findsOneWidget);
+      expect(inCard('london', 'In progress · 3 of 12 solved'), findsOneWidget);
     });
 
     testWidgets('London solved, Paris not begun: Paris — and looking does not choose it', (t) async {
@@ -204,7 +250,7 @@ void main() {
       final before = saves();
       await openMap(t);
       expect(appRef.read(homeCityIdProvider), WorldCities.paris.id);
-      expect(inCard('paris', 'SEASON 2'), findsOneWidget);
+      expect(inCard('paris', 'SEASON 2 · PARIS'), findsOneWidget);
       expect(inCard('paris', 'Paris Stands Still'), findsOneWidget);
       expect(inCard('paris', 'BEGIN ADVENTURE'), findsOneWidget);
       // Opening the map chose nothing and saved nothing.
@@ -220,7 +266,7 @@ void main() {
       await openMap(t);
       expect(appRef.read(homeCityIdProvider), WorldCities.paris.id);
       expect(inCard('paris', 'CONTINUE'), findsOneWidget);
-      expect(inCard('paris', 'IN PROGRESS • 2 / 12 SOLVED'), findsOneWidget);
+      expect(inCard('paris', 'In progress · 2 of 12 solved'), findsOneWidget);
     });
 
     testWidgets('Paris solved, no next season out: Paris', (t) async {
@@ -230,7 +276,128 @@ void main() {
       await openMap(t);
       expect(appRef.read(homeCityIdProvider), WorldCities.paris.id);
       expect(inCard('paris', 'REVISIT'), findsOneWidget);
-      expect(inCard('paris', 'COMPLETED • 12 / 12 SOLVED'), findsOneWidget);
+      expect(inCard('paris', 'Completed · 12 of 12 solved'), findsOneWidget);
+    });
+  });
+
+  // The opening view: close on the home city, which stands at 45% of the
+  // map left in view (between the header and the card), across the middle.
+  group('the camera', () {
+    void expectFramed(WidgetTester t, String cityId) {
+      final area = inView(t);
+      final at = t.getCenter(pin(cityId));
+      expect(at.dx, closeTo(area.center.dx, 1), reason: '$cityId across the middle');
+      expect(at.dy, closeTo(area.top + area.height * WorldMapView.focusHeight, 1), reason: '$cityId at 45% of the view');
+    }
+
+    for (final size in const [Size(390, 844), Size(360, 640)]) {
+      final tag = '${size.width.toInt()}x${size.height.toInt()}';
+
+      testWidgets('$tag: London opens close, chosen across the middle, Paris and Rome whole beside it', (t) async {
+        await pumpApp(t, seasonSaves(0), size: size);
+        await openMap(t);
+        final s = view(t).getMaxScaleOnAxis();
+        expect(s, inInclusiveRange(1.0, 2.6), reason: 'about ${WorldMapView.openingSpan}° across');
+        final area = inView(t);
+        final london = t.getCenter(pin('london'));
+        // Across the middle, or slid a little west when Rome would be under
+        // the map's buttons.
+        expect(london.dx, inInclusiveRange(area.width * 0.4, area.center.dx + 1), reason: 'london across the middle');
+        // At 45% of the view, or a little above it when Rome needs the
+        // room (the world's north edge then holds London up).
+        expect(london.dy, inInclusiveRange(area.top + area.height * 0.3, area.top + area.height * WorldMapView.focusHeight + 1));
+        expect(find.byKey(const ValueKey('mark-london-selected')), findsOneWidget);
+        for (final id in ['london', 'paris', 'rome']) {
+          // The whole touch square and the name, inside the part in view.
+          expect(area.contains(t.getRect(pin(id)).topLeft) && area.contains(t.getRect(pin(id)).bottomRight), isTrue, reason: '$id touch in view');
+          final label = find.byKey(ValueKey('city-label-$id'));
+          expect(label, findsOneWidget, reason: '$id named');
+          expect(area.contains(t.getRect(label).topLeft) && area.contains(t.getRect(label).bottomRight), isTrue, reason: '$id name in view');
+          final buttons = t.getRect(find.byKey(const ValueKey('world-map-home'))).expandToInclude(t.getRect(find.byKey(const ValueKey('world-map-zoom-out'))));
+          expect(t.getRect(pin(id)).overlaps(buttons), isFalse, reason: '$id touch clear of the buttons');
+          expect(t.getRect(label).overlaps(buttons), isFalse, reason: '$id name clear of the buttons');
+        }
+      });
+
+      testWidgets('$tag: Paris (London solved) opens on Paris the same way', (t) async {
+        await pumpApp(t, seasonSaves(12), size: size);
+        await openMap(t);
+        expectFramed(t, 'paris');
+        expect(card('paris'), findsOneWidget);
+      });
+    }
+
+    testWidgets('London, Paris and Rome can each be chosen, close as they are', (t) async {
+      await pumpApp(t, seasonSaves(3, activeBegun: true));
+      await openMap(t);
+      final before = saves();
+      for (final id in ['paris', 'london', 'rome', 'paris', 'london']) {
+        await t.tap(pin(id));
+        await wait(t, const Duration(milliseconds: 600));
+        expect(card(id), findsOneWidget, reason: id);
+      }
+      expect(saves(), before, reason: 'choosing saves nothing');
+    });
+
+    testWidgets('a locked city chosen keeps its lock in a gold ring, no drop; once open, the drop', (t) async {
+      await pumpApp(t, seasonSaves(3, activeBegun: true));
+      await openMap(t);
+      final before = saves();
+      await t.tap(pin('paris'));
+      await wait(t, const Duration(milliseconds: 600));
+      expect(card('paris'), findsOneWidget);
+      expect(find.byKey(const ValueKey('mark-paris-selectedLocked')), findsOneWidget);
+      expect(find.byKey(const ValueKey('mark-paris-selected')), findsNothing);
+      expect(find.byKey(const ValueKey('city-card-enter')), findsNothing, reason: 'a locked season cannot be entered');
+      await tapCity(t, 'tokyo');
+      expect(find.byKey(const ValueKey('mark-tokyo-selectedComingSoon')), findsOneWidget, reason: 'coming soon: its ring, not the lock');
+      await bringIntoView(t, 'paris');
+      expect(find.byKey(const ValueKey('mark-paris-locked')), findsOneWidget, reason: 'not chosen: the plain lock again');
+      expect(saves(), before, reason: 'choosing saves nothing');
+    });
+
+    testWidgets('Paris open and chosen: the gold drop', (t) async {
+      await pumpApp(t, seasonSaves(12));
+      await openMap(t);
+      expect(card('paris'), findsOneWidget);
+      expect(find.byKey(const ValueKey('mark-paris-selected')), findsOneWidget);
+      expect(find.byKey(const ValueKey('city-card-enter')), findsOneWidget);
+    });
+
+    testWidgets("Seoul's name keeps off the marker painted under Seoul's", (t) async {
+      await pumpApp(t, seasonSaves(0), size: const Size(390, 844));
+      await openMap(t);
+      await tapCity(t, 'tokyo');
+      await bringIntoView(t, 'seoul');
+      final label = find.byKey(const ValueKey('city-label-seoul'));
+      expect(label, findsOneWidget);
+      // Where the painted marker below Seoul's is on screen: its circle and tip.
+      final viewer = find.byKey(const ValueKey('world-map-viewer'));
+      final box = t.getRect(viewer);
+      final h = math.max(box.height, box.width / ArtAssets.worldMapAspect);
+      final w = h * ArtAssets.worldMapAspect;
+      final m = view(t);
+      final other = ArtAssets.worldMapOtherMarkers[1];
+      final at = MatrixUtils.transformPoint(m, Offset(other.dx * w, other.dy * h)) + box.topLeft;
+      final r = w * m.getMaxScaleOnAxis() * ArtAssets.worldMapMarkerRadius;
+      final tip = w * m.getMaxScaleOnAxis() * ArtAssets.worldMapMarkerTip;
+      final painted = Rect.fromLTRB(at.dx - r, at.dy - r, at.dx + r, at.dy + tip);
+      expect(t.getRect(label).overlaps(painted), isFalse);
+      expect(t.getCenter(pin('seoul')).dy, lessThan(at.dy), reason: "Seoul's pin is the upper marker");
+    });
+
+    testWidgets('back to my city: the opening view again, my city chosen', (t) async {
+      await pumpApp(t, seasonSaves(3, activeBegun: true));
+      await openMap(t);
+      final opening = view(t).clone();
+      final home = t.getCenter(pin('london'));
+      await tapCity(t, 'tokyo');
+      expect(card('tokyo'), findsOneWidget);
+      await t.tap(find.byKey(const ValueKey('world-map-home')));
+      await wait(t, const Duration(milliseconds: 800));
+      expect(card('london'), findsOneWidget);
+      expect(view(t).getMaxScaleOnAxis(), closeTo(opening.getMaxScaleOnAxis(), 0.001));
+      expect((t.getCenter(pin('london')) - home).distance, lessThan(1), reason: 'where it opened');
     });
   });
 
@@ -241,20 +408,19 @@ void main() {
       final before = saves();
 
       await tapCity(t, 'paris');
-      expect(inCard('paris', 'PARIS'), findsOneWidget);
+      expect(inCard('paris', 'SEASON 2 · PARIS'), findsOneWidget);
       expect(inCard('paris', 'Paris Stands Still'), findsOneWidget);
       expect(inCard('paris', 'Complete London to unlock.'), findsOneWidget);
-      expect(inCard('paris', 'LOCKED'), findsOneWidget);
-      // The locked button does nothing.
-      await t.tap(find.byKey(const ValueKey('city-card-enter')));
-      await wait(t, const Duration(milliseconds: 400));
+      // Locked: why, and no button that cannot be pressed.
+      expect(find.byKey(const ValueKey('city-card-enter')), findsNothing);
       expect(path(), Routes.worldMap);
 
       // Tokyo is east: the map is dragged there.
       await tapCity(t, 'tokyo');
       expect(inCard('tokyo', 'TOKYO'), findsOneWidget);
-      expect(inCard('tokyo', 'COMING SOON'), findsWidgets);
+      expect(inCard('tokyo', 'Coming Soon'), findsOneWidget);
       expect(inCard('tokyo', 'A new mystery is on its way.'), findsOneWidget);
+      expect(find.byKey(const ValueKey('city-card-enter')), findsNothing);
 
       expect(appRef.read(selectedSeasonIdProvider), SeasonIds.london);
       expect(saves(), before);
@@ -275,12 +441,14 @@ void main() {
     testWidgets('the map pinches, drags and zooms with its buttons, inside the world', (t) async {
       await pumpApp(t, seasonSaves(0));
       await openMap(t);
-      final start = view(t).clone();
-      expect(start.getMaxScaleOnAxis(), 1);
+      final start = view(t).getMaxScaleOnAxis();
+      final box = t.getRect(find.byKey(const ValueKey('world-map-viewer')));
+      final world = math.max(box.height, box.width / ArtAssets.worldMapAspect) * ArtAssets.worldMapAspect * start;
+      expect(box.width / world, lessThan(1 / 3), reason: 'opens close on the city: under a third of the world across');
 
       await t.tap(find.byKey(const ValueKey('world-map-zoom-in')));
       await wait(t, const Duration(milliseconds: 600));
-      expect(view(t).getMaxScaleOnAxis(), closeTo(WorldMapView.zoomStep, 0.01));
+      expect(view(t).getMaxScaleOnAxis(), closeTo(start * WorldMapView.zoomStep, 0.01));
       final pinSize = t.getRect(pin('london')).size;
 
       await t.tap(find.byKey(const ValueKey('world-map-zoom-in')));
@@ -292,7 +460,22 @@ void main() {
 
       await t.tap(find.byKey(const ValueKey('world-map-zoom-out')));
       await wait(t, const Duration(milliseconds: 600));
-      expect(view(t).getMaxScaleOnAxis(), closeTo(WorldMapView.zoomStep, 0.01));
+      expect(view(t).getMaxScaleOnAxis(), closeTo(start * WorldMapView.zoomStep, 0.01));
+
+      // Two fingers apart: closer in.
+      final before = view(t).getMaxScaleOnAxis();
+      final mid = inView(t).center;
+      final a = await t.startGesture(mid - const Offset(30, 0));
+      final b = await t.startGesture(mid + const Offset(30, 0), pointer: 7);
+      for (var k = 1; k <= 5; k++) {
+        await a.moveTo(mid - Offset(30.0 + 12 * k, 0));
+        await b.moveTo(mid + Offset(30.0 + 12 * k, 0));
+        await t.pump(const Duration(milliseconds: 16));
+      }
+      await a.up();
+      await b.up();
+      await wait(t, const Duration(milliseconds: 600));
+      expect(view(t).getMaxScaleOnAxis(), greaterThan(before * 1.3), reason: 'pinched');
 
       final moved = view(t).getTranslation();
       await t.drag(find.byKey(const ValueKey('world-map-viewer')), const Offset(-120, 0));
@@ -300,13 +483,14 @@ void main() {
       expect(view(t).getTranslation().x, lessThan(moved.x));
 
       // Zoomed out as far as it goes: the world still covers the viewport.
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < 6; i++) {
         await t.tap(find.byKey(const ValueKey('world-map-zoom-out')));
         await wait(t, const Duration(milliseconds: 600));
       }
       expect(view(t).getMaxScaleOnAxis(), 1);
       expect(view(t).getTranslation().x, lessThanOrEqualTo(WorldMapView.edge));
-      expect(view(t).getTranslation().y, lessThanOrEqualTo(0));
+      // The whole world's height: its top no lower than the header.
+      expect(view(t).getTranslation().y, lessThanOrEqualTo(inView(t).top + 0.01));
     });
 
     testWidgets('World Archive opens from the map header', (t) async {
@@ -379,8 +563,8 @@ void main() {
       final before = saves();
       for (final id in ['tokyo', 'rome', 'seoul']) {
         await tapCity(t, id);
-        await t.tap(find.byKey(const ValueKey('city-card-enter')), warnIfMissed: false);
-        await wait(t, const Duration(milliseconds: 400));
+        expect(card(id), findsOneWidget);
+        expect(find.byKey(const ValueKey('city-card-enter')), findsNothing, reason: '$id: nothing to enter');
         expect(path(), Routes.worldMap, reason: id);
       }
       expect(appRef.read(selectedSeasonIdProvider), SeasonIds.london);
@@ -437,12 +621,16 @@ void main() {
     }
   });
 
-  test('the world map artwork is a 2:1 PNG, listed in the app', () {
+  test('the world map artwork is world_map_v3 (1983 × 793), listed in the app; v1 and v2 kept', () {
     final file = File(ArtAssets.worldMap);
     expect(file.existsSync(), isTrue);
+    expect(ArtAssets.worldMap, endsWith('world_map_v3.png'));
     // The PNG header: width and height, big-endian, at bytes 16..23.
     final head = ByteData.sublistView(file.readAsBytesSync().sublist(16, 24));
+    expect((head.getUint32(0), head.getUint32(4)), (1983, 793));
     expect(head.getUint32(0) / head.getUint32(4), ArtAssets.worldMapAspect);
+    expect(File('assets/shared/world_map/world_map_v1.png').existsSync(), isTrue);
+    expect(File('assets/shared/world_map/world_map_v2.png').existsSync(), isTrue);
     expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/shared/world_map/'));
   });
 }

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,12 +9,9 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
-import '../../core/utils/audio_service.dart' show TapRole;
 import '../../widgets/art_assets.dart';
-import '../../widgets/game_button.dart';
 import '../../widgets/game_toast.dart';
 import '../../widgets/ink_icon.dart';
-import '../../widgets/paper.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../onboarding/detective_form.dart' show DetectivePortrait;
@@ -37,6 +35,15 @@ class _WorldMapScreenState extends ConsumerState<WorldMapScreen> {
 
   /// Whether a season is being opened (one tap opens one).
   bool _opening = false;
+
+  /// The card's height as last laid out (null: not yet; a guess is used).
+  double? _cardHeight;
+
+  /// The header's height under the status bar.
+  static const headerHeight = 56.0;
+
+  /// The card's height before it is first laid out.
+  static const _cardGuess = 164.0;
 
   void _enter(WorldCityState city) {
     final seasonId = city.city.seasonId;
@@ -66,36 +73,103 @@ class _WorldMapScreenState extends ConsumerState<WorldMapScreen> {
     final cities = ref.watch(worldCityStatesProvider);
     final home = ref.watch(homeCityIdProvider);
     final selected = cities.firstWhere((c) => c.city.id == _selected, orElse: () => cities.first);
+    final pad = MediaQuery.paddingOf(context);
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    final top = pad.top + headerHeight;
+    final cardBottom = pad.bottom + AppSpace.md;
+    final covered = cardBottom + (_cardHeight ?? _cardGuess);
     return Scaffold(
-      backgroundColor: AppColors.nightBottom,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const _Header(),
-            Expanded(
-              child: WorldMapView(
-                cities: cities,
-                selectedId: selected.city.id,
-                homeId: home,
-                onSelect: (id) => setState(() => _selected = id),
-              ),
+      backgroundColor: AppColors.navyDeep,
+      body: Stack(
+        children: [
+          // The world fills the page; the header and the card lie over it.
+          Positioned.fill(
+            child: WorldMapView(
+              cities: cities,
+              selectedId: selected.city.id,
+              homeId: home,
+              obscured: EdgeInsets.only(top: top, bottom: covered),
+              onSelect: (id) => setState(() => _selected = id),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.md),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 520),
-                  child: _CityCard(
-                    key: ValueKey('city-card-${selected.city.id}'),
-                    state: selected,
-                    before: _before(cities, selected),
-                    onEnter: () => _enter(selected),
+          ),
+          // Night shading behind the header and the card, fading into the map.
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            height: top + 56,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.navyDeep.withValues(alpha: 0.9),
+                      AppColors.navyDeep.withValues(alpha: 0.6),
+                      AppColors.navyDeep.withValues(alpha: 0),
+                    ],
+                    stops: const [0, 0.55, 1],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: covered + 72,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [AppColors.navyDeep.withValues(alpha: 0), AppColors.navyDeep.withValues(alpha: 0.75)],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            key: const ValueKey('world-map-header'),
+            left: 0,
+            right: 0,
+            top: pad.top,
+            height: headerHeight,
+            child: const _Header(),
+          ),
+          Positioned(
+            left: AppSpace.md + pad.left,
+            right: AppSpace.md + pad.right,
+            bottom: cardBottom,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: _MeasureHeight(
+                  key: const ValueKey('world-map-card'),
+                  onHeight: (h) {
+                    if (mounted && h != _cardHeight) setState(() => _cardHeight = h);
+                  },
+                  child: AnimatedSwitcher(
+                    duration: still ? Duration.zero : const Duration(milliseconds: 200),
+                    layoutBuilder: (current, previous) => Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [...previous, ?current],
+                    ),
+                    child: _CityCard(
+                      key: ValueKey('city-card-${selected.city.id}'),
+                      state: selected,
+                      before: _before(cities, selected),
+                      onEnter: () => _enter(selected),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -108,7 +182,37 @@ class _WorldMapScreenState extends ConsumerState<WorldMapScreen> {
   }
 }
 
-/// WORLD MYSTERY, the detective, and the way to the archives.
+/// Reports its child's height after each layout that changes it.
+class _MeasureHeight extends SingleChildRenderObjectWidget {
+  const _MeasureHeight({super.key, required this.onHeight, required super.child});
+
+  final ValueChanged<double> onHeight;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) => _RenderMeasureHeight(onHeight);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderMeasureHeight renderObject) => renderObject.onHeight = onHeight;
+}
+
+class _RenderMeasureHeight extends RenderProxyBox {
+  _RenderMeasureHeight(this.onHeight);
+
+  ValueChanged<double> onHeight;
+  double? _last;
+
+  @override
+  void performLayout() {
+    super.performLayout();
+    final h = size.height;
+    if (h == _last) return;
+    _last = h;
+    WidgetsBinding.instance.addPostFrameCallback((_) => onHeight(h));
+  }
+}
+
+/// The detective (picture and name, under the game's name) and the way to
+/// the World Archive, over the top of the map.
 class _Header extends ConsumerWidget {
   const _Header();
 
@@ -118,40 +222,48 @@ class _Header extends ConsumerWidget {
     final name = profile.detectiveName ?? ref.watch(gameControllerProvider).detectiveName ?? '';
     final avatar = profile.avatar;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.sm),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
       child: Row(
         children: [
-          Container(
-            width: 44,
-            height: 44,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.parchment,
-              border: Border.all(color: AppColors.gold, width: AppLine.rule),
-            ),
-            child: avatar == null
-                ? const Center(child: InkIcon(InkGlyph.deerstalker, size: AppIconSize.medium, color: AppColors.inkBrown))
-                : DetectivePortrait(avatar: avatar, alignment: Alignment.topCenter),
-          ),
-          const SizedBox(width: AppSpace.sm),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text('WORLD MYSTERY', style: AppText.logo(size: 24, color: AppColors.goldLight)),
-                ),
-                Text(
-                  'Detective $name',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppText.caption(color: AppColors.creamGold),
-                ),
-              ],
+            child: IgnorePointer(
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.parchment,
+                      border: Border.all(color: AppColors.goldLight, width: AppLine.hairline),
+                    ),
+                    child: avatar == null
+                        ? const Center(child: InkIcon(InkGlyph.deerstalker, size: AppIconSize.small, color: AppColors.inkBrown))
+                        : DetectivePortrait(avatar: avatar, alignment: Alignment.topCenter),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'WORLD MYSTERY',
+                          maxLines: 1,
+                          style: AppText.eyebrow(color: AppColors.goldLight).copyWith(fontSize: 10, letterSpacing: 2.4, height: 1.2),
+                        ),
+                        Text(
+                          'Detective $name',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.style(AppText.body, size: 16, weight: FontWeight.w600, color: AppColors.paper, height: 1.25),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(width: AppSpace.sm),
@@ -165,21 +277,27 @@ class _Header extends ConsumerWidget {
               onTap: () => context.go(Routes.seasons),
               child: Container(
                 constraints: const BoxConstraints(minHeight: 44, minWidth: 44),
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xs),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.gold, width: AppLine.hairline),
-                  borderRadius: BorderRadius.circular(AppRadius.paper),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const InkIcon(InkGlyph.folder, size: AppIconSize.small, color: AppColors.goldLight),
-                    Text(
-                      'ARCHIVE',
-                      textScaler: TextScaler.noScaling,
-                      style: AppText.eyebrow(color: AppColors.goldLight).copyWith(fontSize: 10),
-                    ),
-                  ],
+                alignment: Alignment.center,
+                child: Container(
+                  height: 36,
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.navyDeep.withValues(alpha: 0.65),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppColors.goldLight.withValues(alpha: 0.6), width: AppLine.hairline),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const InkIcon(InkGlyph.folder, size: 16, color: AppColors.goldLight),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Archive',
+                        textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.15),
+                        style: AppText.style(AppText.body, size: 13, weight: FontWeight.w600, color: AppColors.paper),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -190,8 +308,9 @@ class _Header extends ConsumerWidget {
   }
 }
 
-/// The chosen city's season: its number, the city, the season's title,
-/// where the detective stands with it, and the way in.
+/// The chosen city's season on a card over the map: its cover, which
+/// season and city, its title, where the detective stands with it, and the
+/// way in. A city that cannot be entered says why instead of a button.
 class _CityCard extends StatelessWidget {
   const _CityCard({super.key, required this.state, required this.before, required this.onEnter});
 
@@ -205,81 +324,148 @@ class _CityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final season = state.season;
     final status = state.status;
+    final city = state.city.name;
     final cover = season == null ? null : ArtAssets.seasonCovers[season.id];
     final file = state.file;
-    final (label, onPressed) = switch (status) {
-      WorldCityStatus.playable => ('BEGIN ADVENTURE', onEnter),
-      WorldCityStatus.inProgress => ('CONTINUE', onEnter),
-      WorldCityStatus.completed => ('REVISIT', onEnter),
-      WorldCityStatus.locked => ('LOCKED', null),
-      WorldCityStatus.comingSoon => ('COMING SOON', null),
+    final label = switch (status) {
+      WorldCityStatus.playable => 'BEGIN ADVENTURE',
+      WorldCityStatus.inProgress => 'CONTINUE',
+      WorldCityStatus.completed => 'REVISIT',
+      WorldCityStatus.locked || WorldCityStatus.comingSoon => null,
     };
     final standing = switch (status) {
-      WorldCityStatus.playable => '${file!.availability.plannedCount} CASES • NOT STARTED',
-      WorldCityStatus.inProgress => 'IN PROGRESS • ${file!.availability.solvedCount} / ${file.availability.plannedCount} SOLVED',
-      WorldCityStatus.completed => 'COMPLETED • ${file!.availability.solvedCount} / ${file.availability.plannedCount} SOLVED',
+      WorldCityStatus.playable => '${file!.availability.plannedCount} cases · Not started',
+      WorldCityStatus.inProgress => 'In progress · ${file!.availability.solvedCount} of ${file.availability.plannedCount} solved',
+      WorldCityStatus.completed => 'Completed · ${file!.availability.solvedCount} of ${file.availability.plannedCount} solved',
       WorldCityStatus.locked => 'Complete ${before?.city.name ?? 'the season before'} to unlock.',
       WorldCityStatus.comingSoon => 'A new mystery is on its way.',
     };
-    return CaseFolder(
-      tab: season == null ? 'COMING SOON' : 'SEASON ${season.number}',
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpace.md),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Thumb(cover: cover, locked: !state.canEnter),
-            const SizedBox(width: AppSpace.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    state.city.name.toUpperCase(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.placeTitle(size: 24),
-                  ),
-                  Text(
-                    season?.title ?? 'Coming Soon',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.aside(size: 15, color: AppColors.inkBrown),
-                  ),
-                  const SizedBox(height: AppSpace.xs),
-                  Row(
-                    children: [
-                      if (status == WorldCityStatus.locked) ...[
-                        const InkIcon(InkGlyph.lock, size: AppIconSize.tiny, color: AppColors.inkBrown),
-                        const SizedBox(width: AppSpace.xs),
+    final shut = status == WorldCityStatus.locked || status == WorldCityStatus.comingSoon;
+    final progress = status == WorldCityStatus.inProgress && file!.availability.plannedCount > 0
+        ? file.availability.solvedCount / file.availability.plannedCount
+        : null;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.paperLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.45), width: AppLine.hairline),
+        boxShadow: const [
+          BoxShadow(color: Color(0x40000000), blurRadius: 24, offset: Offset(0, 8)),
+          BoxShadow(color: Color(0x26000000), blurRadius: 4, offset: Offset(0, 1)),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              _Thumb(cover: cover, locked: shut),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      season == null ? city.toUpperCase() : 'SEASON ${season.number} · ${city.toUpperCase()}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.eyebrow(color: AppColors.goldDeep).copyWith(fontSize: 11, height: 1.3),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      season?.title ?? 'Coming Soon',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.placeTitle(size: 20),
+                    ),
+                    const SizedBox(height: AppSpace.xs),
+                    Row(
+                      children: [
+                        if (status == WorldCityStatus.locked) ...[
+                          const InkIcon(InkGlyph.lock, size: 13, color: AppColors.muted),
+                          const SizedBox(width: AppSpace.xs),
+                        ],
+                        Expanded(
+                          child: Text(
+                            standing,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppText.caption(color: AppColors.muted).copyWith(fontSize: 13, height: 1.3),
+                          ),
+                        ),
                       ],
-                      Expanded(
-                        child: Text(
-                          standing,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: status == WorldCityStatus.locked || status == WorldCityStatus.comingSoon
-                              ? AppText.caption(color: AppColors.inkBrown)
-                              : AppText.eyebrow(),
+                    ),
+                    if (progress != null) ...[
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 3,
+                          color: AppColors.gold,
+                          backgroundColor: AppColors.parchmentDark.withValues(alpha: 0.6),
                         ),
                       ),
                     ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (label != null) ...[
+            const SizedBox(height: AppSpace.md),
+            _EnterButton(label: label, onPressed: onEnter),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// The way into the city's season: a flat navy bar across the card.
+class _EnterButton extends StatelessWidget {
+  const _EnterButton({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: Material(
+        color: AppColors.navy,
+        borderRadius: BorderRadius.circular(10),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          key: const ValueKey('city-card-enter'),
+          onTap: onPressed,
+          splashColor: AppColors.goldLight.withValues(alpha: 0.15),
+          highlightColor: AppColors.goldLight.withValues(alpha: 0.08),
+          child: SizedBox(
+            height: 48,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(label, maxLines: 1, style: AppText.button(size: 15, color: AppColors.paperLight)),
+                    ),
                   ),
-                  const SizedBox(height: AppSpace.sm),
-                  GameButton(
-                    key: const ValueKey('city-card-enter'),
-                    label: label,
-                    glyph: onPressed == null ? InkGlyph.lock : null,
-                    arrow: onPressed != null,
-                    singleLine: true,
-                    style: GameButtonStyle.navy,
-                    tap: onPressed == null ? null : TapRole.primary,
-                    onPressed: onPressed,
-                  ),
+                  const SizedBox(width: AppSpace.sm),
+                  const InkIcon(InkGlyph.arrow, size: 16, color: AppColors.goldLight),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -294,8 +480,8 @@ class _Thumb extends StatelessWidget {
   final SeasonCover? cover;
   final bool locked;
 
-  static const width = 72.0;
-  static const height = 100.0;
+  static const width = 56.0;
+  static const height = 72.0;
 
   @override
   Widget build(BuildContext context) {
@@ -304,13 +490,14 @@ class _Thumb extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      padding: const EdgeInsets.all(3),
-      decoration: const BoxDecoration(color: AppColors.paperLight, boxShadow: AppShadow.pinned),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: AppColors.navy,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.35), width: AppLine.hairline),
+      ),
       child: c == null
-          ? const ColoredBox(
-              color: AppColors.navy,
-              child: Center(child: InkIcon(InkGlyph.seal, size: AppIconSize.large, color: AppColors.goldLight)),
-            )
+          ? const Center(child: InkIcon(InkGlyph.seal, size: AppIconSize.medium, color: AppColors.goldLight))
           : Opacity(
               opacity: locked ? 0.55 : 1,
               child: Image.asset(
