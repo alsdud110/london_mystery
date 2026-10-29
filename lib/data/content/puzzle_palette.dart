@@ -751,14 +751,13 @@ abstract final class PuzzlePalette {
       constraints: ['The evidence shown is the notebook\'s (earlier missions\' evidence ids).'],
     ),
 
-    // ── Conditional ────────────────────────────────────────────────────
     PuzzleDefinition(
       id: 'picture_choice',
       name: 'Choose the picture',
-      description: 'One of four pictures (their names can be hidden) answers the clues.',
+      description: 'One of three or four pictures (their names can be hidden) answers the clues.',
       actions: [PuzzleAction.readDocument, PuzzleAction.chooseOption],
-      reuseGrade: PuzzleReuseGrade.conditional,
-      generationMode: PuzzleGenerationMode.requiresDevelopment,
+      reuseGrade: PuzzleReuseGrade.ready,
+      generationMode: PuzzleGenerationMode.requiresAssets,
       engines: [
         PuzzleEngineBinding(widget: 'ImageChoiceQuestion', source: _q, missionTypes: {MissionType.imageChoice}, surfaces: _both),
       ],
@@ -772,12 +771,52 @@ abstract final class PuzzlePalette {
         PuzzleField('Mission', 'answer'),
         PuzzleField('Mission', 'hints'),
       ],
-      requiredAssets: [PuzzleAsset('Each option', PuzzleField('ChoiceOption', 'artwork'))],
+      requiredAssets: [PuzzleAsset('Each option', PuzzleField('ChoiceOption', 'picture'))],
       constraints: [
-        "ChoiceOption.artwork is an Artwork value (a code enum): a new season's picture needs code.",
-        'An option without one is drawn as Big Ben (question_widgets.dart).',
+        "A new season's option is its picture file (ChoiceOption.picture, shown whole); London's are Artwork values.",
       ],
     ),
+    PuzzleDefinition(
+      id: 'dark_room_search',
+      name: 'Search the room',
+      description: 'A room in the dark; the things a report lists are found by tapping where it says.',
+      actions: [PuzzleAction.readDocument, PuzzleAction.tapPicture],
+      reuseGrade: PuzzleReuseGrade.ready,
+      generationMode: PuzzleGenerationMode.requiresAssets,
+      engines: [
+        PuzzleEngineBinding(
+          widget: 'InvestigationSearch',
+          source: '$_w/investigation_search.dart',
+          table: 'investigations',
+          model: 'InvestigationScene',
+          missionTypes: {MissionType.multipleChoice},
+          surfaces: _m,
+        ),
+      ],
+      requiredData: [
+        PuzzleField('Mission', 'letter'),
+        PuzzleField('Mission', 'answer'),
+        PuzzleField('InvestigationScene', 'picture'),
+        PuzzleField('InvestigationScene', 'pixels'),
+        PuzzleField('InvestigationScene', 'task'),
+        PuzzleField('InvestigationScene', 'documentTitle'),
+        PuzzleField('InvestigationScene', 'finds'),
+        PuzzleField('InvestigationFind', 'reportLine'),
+        PuzzleField('InvestigationFind', 'areas'),
+        PuzzleField('InvestigationScene', 'answer'),
+        PuzzleField('InvestigationScene', 'arrival'),
+        PuzzleField('InvestigationScene', 'guideAt'),
+        PuzzleField('InvestigationScene', 'opening'),
+        PuzzleField('InvestigationScene', 'inside'),
+      ],
+      requiredAssets: [
+        PuzzleAsset('The room', PuzzleField('InvestigationScene', 'picture')),
+        PuzzleAsset('Each thing found, cut out', PuzzleField('InvestigationFind', 'picture')),
+      ],
+      constraints: ["A new season's room is its picture file (InvestigationScene.picture and pixels); London's is an Artwork value."],
+    ),
+
+    // ── Conditional ────────────────────────────────────────────────────
     PuzzleDefinition(
       id: 'clock_set',
       name: 'Set the clock',
@@ -801,49 +840,12 @@ abstract final class PuzzlePalette {
       constraints: ['ClockPuzzle.face is an Artwork value: only the faces already in the game, or code for a new one.'],
     ),
     PuzzleDefinition(
-      id: 'dark_room_search',
-      name: 'Search the room',
-      description: 'A room in the dark; the things a report lists are found by tapping where it says.',
-      actions: [PuzzleAction.readDocument, PuzzleAction.tapPicture],
-      reuseGrade: PuzzleReuseGrade.conditional,
-      generationMode: PuzzleGenerationMode.requiresDevelopment,
-      engines: [
-        PuzzleEngineBinding(
-          widget: 'InvestigationSearch',
-          source: '$_w/investigation_search.dart',
-          table: 'investigations',
-          model: 'InvestigationScene',
-          missionTypes: {MissionType.multipleChoice},
-          surfaces: _m,
-        ),
-      ],
-      requiredData: [
-        PuzzleField('Mission', 'letter'),
-        PuzzleField('Mission', 'answer'),
-        PuzzleField('InvestigationScene', 'task'),
-        PuzzleField('InvestigationScene', 'documentTitle'),
-        PuzzleField('InvestigationScene', 'finds'),
-        PuzzleField('InvestigationFind', 'reportLine'),
-        PuzzleField('InvestigationFind', 'areas'),
-        PuzzleField('InvestigationScene', 'answer'),
-        PuzzleField('InvestigationScene', 'arrival'),
-        PuzzleField('InvestigationScene', 'guideAt'),
-        PuzzleField('InvestigationScene', 'opening'),
-        PuzzleField('InvestigationScene', 'inside'),
-      ],
-      requiredAssets: [
-        PuzzleAsset('The room', PuzzleField('InvestigationScene', 'artwork')),
-        PuzzleAsset('Each thing found, cut out', PuzzleField('InvestigationFind', 'picture')),
-      ],
-      constraints: ['InvestigationScene.artwork is an Artwork value: a new room needs code.'],
-    ),
-    PuzzleDefinition(
       id: 'witness_compare',
       name: 'Question the witnesses',
       description: 'Each witness is asked the same questions; the two statements that agree are matched.',
       actions: [PuzzleAction.talk, PuzzleAction.compare, PuzzleAction.matchPairs],
       reuseGrade: PuzzleReuseGrade.conditional,
-      generationMode: PuzzleGenerationMode.requiresDevelopment,
+      generationMode: PuzzleGenerationMode.requiresAssets,
       engines: [
         PuzzleEngineBinding(
           widget: 'DialogueInvestigation',
@@ -871,7 +873,10 @@ abstract final class PuzzlePalette {
         PuzzleAsset('Where the talk is', PuzzleField('DialogueScene', 'background')),
         PuzzleAsset('Each witness', PuzzleField('DialogueSpeaker', 'portrait')),
       ],
-      constraints: ['No level variant: its words cannot differ by level (London Case 06 is written at Rookie only for it).'],
+      constraints: [
+        'No level variant: its words cannot differ by level (London Case 06 is written at Rookie only for it). A generated season writes its base words only, so it plays as it is.',
+        'Its letter page is never shown (skipsLetter): what the witnesses say is the English read.',
+      ],
     ),
     PuzzleDefinition(
       id: 'scene_compare_report',

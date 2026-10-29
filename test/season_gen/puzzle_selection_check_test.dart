@@ -151,8 +151,13 @@ void main() {
     });
 
     test('a puzzle whose code must change, planned as ready or awaiting its assets', () {
-      expect(found(puzzle('picture_choice', type: 'imageChoice', answer: abc)), ['error not_generatable \$.missions[0].puzzle.status']);
-      expect(found(puzzle('picture_choice', type: 'imageChoice', answer: abc, assets: hall, status: 'awaitingAssets')), ['error not_generatable \$.missions[0].puzzle.status']);
+      const time = {'answer': '0915', 'codeLength': 4, 'codeFormat': 'time'};
+      expect(found(puzzle('clock_set', table: 'clocks', type: 'numberCode', answer: time)), contains('error not_generatable \$.missions[0].puzzle.status'));
+      expect(found(puzzle('clock_set', table: 'clocks', type: 'numberCode', answer: time, assets: hall, status: 'awaitingAssets')), ['error not_generatable \$.missions[0].puzzle.status']);
+      // STEP 3-13: a picture choice takes a season's own picture files now, so
+      // it is planned as any puzzle with pictures to make.
+      expect(found(puzzle('picture_choice', type: 'imageChoice', answer: abc, assets: hall, status: 'awaitingAssets')), isEmpty);
+      expect(found(puzzle('picture_choice', type: 'imageChoice', answer: abc)), contains('error status_mode_conflict \$.missions[0].puzzle.status'));
     });
 
     test('a status its generation mode does not allow', () {

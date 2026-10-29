@@ -124,6 +124,79 @@ void main() {
     final validator = File('lib/data/content/season_content_validator.dart').readAsStringSync();
     expect(validator, contains("if (ids.length < ${PlayCheck.minChoiceOptions}) out.add('\${ids.length} options: a guess, not a choice');"));
   });
+
+  // STEP 3-13: puzzles played on pictures (the sandbox's Case 03).
+  group('scenes and picture options', () {
+    final scened = PlanFiles.readJson('$seasonDir/cases/s9_ep03/case.plan.json') as Map<String, Object?>;
+    List<String> on(void Function(Map<String, Object?> c) change) =>
+        [for (final i in PlayCheck.casePlan(CasePlan.fromJson(copy(scened)..let(change)), season)) '[${i.code}] ${i.path}'];
+    Map<String, Object?> scene(Map<String, Object?> j, int i, String key) => words(j, i)[key] as Map<String, Object?>;
+    Map<String, Object?> spot(Map<String, Object?> j, int n) => (scene(j, 0, 'explore')['spots'] as List)[n] as Map<String, Object?>;
+    Map<String, Object?> witness(Map<String, Object?> j, int n) => (scene(j, 2, 'dialogue')['witnesses'] as List)[n] as Map<String, Object?>;
+    Map<String, Object?> option(Map<String, Object?> j, int n) =>
+        ((mission(j, 3)['puzzle'] as Map)['answerSpec'] as Map)['options'][n] as Map<String, Object?>;
+
+    test('Case 03 can be made: a look round, a search, a talk, a picture choice, every picture on disk', () {
+      expect(on((_) {}), isEmpty);
+      expect(PlayCheck.generatable.keys, containsAll(['scene_explore_choose', 'dark_room_search', 'witness_compare', 'picture_choice']));
+    });
+
+    test('the scene its engine table reads, and no other', () {
+      expect(on((c) => words(c, 0).remove('explore')), ['[play_field_missing] \$.missions[0].play.explore']);
+      expect(on((c) => words(c, 0)['search'] = scene(c, 1, 'search')), ['[play_scene_mismatch] \$.missions[0].play.search']);
+      // A scene puzzle played from its type alone is not one the generator makes.
+      expect(on((c) => (mission(c, 0)['puzzle'] as Map)['engineTable'] = null), contains('[generate_unsupported] \$.missions[0].puzzle.paletteId'));
+      expect(on((c) => (mission(c, 0)['puzzle'] as Map)['status'] = 'devRequest'), contains('[generate_unsupported] \$.missions[0].puzzle.paletteId'));
+    });
+
+    test('a picture not made yet stops it, never a stand-in; a picture of another size too', () {
+      expect(on((c) => (scene(c, 0, 'explore')['picture'] as Map)['file'] = 'assets/seasons/season_09_none/station.png'),
+          ['[asset_file_missing] \$.missions[0].play.explore.picture.file']);
+      expect(on((c) => ((scene(c, 0, 'explore')['picture'] as Map)['pixels'] as Map)['width'] = 2048),
+          ['[asset_size_mismatch] \$.missions[0].play.explore.picture.file']);
+      expect(on((c) => (scene(c, 0, 'explore')['choicePixels'] as Map)['height'] = 1086), hasLength(4), reason: 'each poster measured');
+      expect(on((c) => witness(c, 1)['portrait'] = 'assets/seasons/season_09_none/juggler.png'),
+          ['[asset_file_missing] \$.missions[2].play.dialogue.witnesses[1].portrait']);
+      expect(on((c) => option(c, 1)['picture'] = 'assets/seasons/season_09_none/case.png'),
+          ['[asset_file_missing] \$.missions[3].puzzle.answerSpec.options[1].picture']);
+    });
+
+    test('every place on a picture is on it, in its pixels', () {
+      expect(on((c) => spot(c, 0)['areas'] = [[282, 660, 1600, 848]]), ['[scene_area_invalid] \$.missions[0].play.explore.spots[0].areas[0]']);
+      expect(on((c) => spot(c, 0)['areas'] = [[522, 660, 282, 848]]), ['[scene_area_invalid] \$.missions[0].play.explore.spots[0].areas[0]'], reason: 'right before left');
+      expect(on((c) => scene(c, 1, 'search')['guideAt'] = [960, 1100]), ['[scene_area_invalid] \$.missions[1].play.search.guideAt']);
+    });
+
+    test('a look round: one letter, one choice, its pictures the options', () {
+      expect(on((c) => spot(c, 1)['kind'] = 'document'), ['[scene_invalid] \$.missions[0].play.explore.spots']);
+      expect(on((c) => spot(c, 2)['requires'] = 'bench'), ['[scene_invalid] \$.missions[0].play.explore.spots[2].requires']);
+      expect(on((c) => spot(c, 1).remove('line')), ['[play_field_missing] \$.missions[0].play.explore.spots[1].line']);
+      expect(on((c) => (scene(c, 0, 'explore')['choices'] as List).removeLast()), ['[scene_answer_mismatch] \$.missions[0].play.explore.choices']);
+    });
+
+    test('a search: each thing where a line of the letter says, word for word', () {
+      expect(on((c) => ((scene(c, 1, 'search')['finds'] as List).first as Map)['reportLine'] = 'The button is under a bench.'),
+          ['[scene_text_mismatch] \$.missions[1].play.search.finds[0].reportLine']);
+      expect(on((c) => ((scene(c, 1, 'search')['finds'] as List)[1] as Map)['id'] = 'button'), ['[scene_invalid] \$.missions[1].play.search.finds']);
+    });
+
+    test('a talk: two witnesses agree, one pair only, every question answered', () {
+      Map<String, Object?> answer(Map<String, Object?> c, int w, String q) => (witness(c, w)['answers'] as Map)[q] as Map<String, Object?>;
+      expect(on((c) => answer(c, 1, 'carry')['thing'] = 'a brown case'), ['[scene_answer_mismatch] \$.missions[2].play.dialogue.deduction.pair']);
+      expect(on((c) => answer(c, 2, 'carry')['thing'] = 'a black case'), ['[scene_ambiguous] \$.missions[2].play.dialogue.deduction.pair', '[scene_ambiguous] \$.missions[2].play.dialogue.deduction.pair']);
+      expect(on((c) => (scene(c, 2, 'dialogue')['deduction'] as Map)['pair'] = ['flower_seller.carry', 'flower_seller.wearing']),
+          containsAll(['[scene_answer_mismatch] \$.missions[2].play.dialogue.deduction.pair[1]']));
+      expect(on((c) => (witness(c, 2)['answers'] as Map).remove('when')), ['[scene_invalid] \$.missions[2].play.dialogue.witnesses[2].answers']);
+      expect(on((c) => (scene(c, 2, 'dialogue')['deduction'] as Map).remove('thenGoal')), ['[play_field_missing] \$.missions[2].play.dialogue.deduction.thenGoal']);
+      expect(on((c) => (scene(c, 2, 'dialogue')['deduction'] as Map)['then'] = ['juggler.hat']), ['[scene_invalid] \$.missions[2].play.dialogue.deduction.then[0]']);
+    });
+
+    test('a picture choice: a picture and words for each option, names hidden only there', () {
+      expect(on((c) => option(c, 0).remove('picture')), ['[play_field_missing] \$.missions[3].puzzle.answerSpec.options[0].picture']);
+      expect(on((c) => option(c, 2).remove('altText')), ['[play_field_missing] \$.missions[3].puzzle.answerSpec.options[2].altText']);
+      expect(on((c) => words(c, 0)['hideOptionNames'] = true), ['[play_range] \$.missions[0].play.hideOptionNames']);
+    });
+  });
 }
 
 extension<T> on T {

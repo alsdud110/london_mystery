@@ -613,10 +613,13 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
   @override
   Widget build(BuildContext context) {
     final options = widget.mission.options;
-    // Landmarks are named under their picture unless the mission asks the
-    // child to tell them apart by the description alone.
+    // Landmarks and a season's own pictures are named under their picture
+    // unless the mission asks the child to tell them apart by the
+    // description alone.
     String? nameOf(ChoiceOption o) =>
-        !widget.mission.hideOptionNames && ArtAssets.landmarkScenes.containsKey(o.artwork) ? o.label : null;
+        !widget.mission.hideOptionNames && (ArtAssets.landmarkScenes.containsKey(o.artwork) || o.picture != null)
+            ? o.label
+            : null;
     final named = options.any((o) => nameOf(o) != null);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -637,6 +640,7 @@ class _ImageChoiceQuestionState extends ConsumerState<ImageChoiceQuestion> {
                 // Unnamed pictures are described to screen readers instead.
                 description: nameOf(options[i]) == null ? options[i].altText : null,
                 artwork: options[i].artwork ?? Artwork.bigBen,
+                picture: options[i].picture,
                 selected: _selected == options[i].id,
                 onTap: () => setState(() => _selected = options[i].id),
               ),
@@ -660,12 +664,16 @@ class _ImageTile extends StatelessWidget {
     required this.artwork,
     required this.selected,
     required this.onTap,
+    this.picture,
     this.name,
     this.description,
   });
 
   final String letter;
   final Artwork artwork;
+
+  /// A season's own picture file, shown in place of [artwork].
+  final String? picture;
 
   /// What an unnamed picture shows, for screen readers (never the name).
   final String? description;
@@ -720,7 +728,17 @@ class _ImageTile extends StatelessWidget {
 
   Widget _tile() => Stack(
             children: [
-              Positioned.fill(child: LandmarkArt(artwork, borderRadius: 2, showName: false)),
+              Positioned.fill(
+                child: switch (picture) {
+                  // Whole, never cropped: what tells the pictures apart may
+                  // be at their edge.
+                  final file? => ColoredBox(
+                      color: AppColors.ink,
+                      child: Image.asset(file, fit: BoxFit.contain, excludeFromSemantics: true),
+                    ),
+                  null => LandmarkArt(artwork, borderRadius: 2, showName: false),
+                },
+              ),
               Positioned(left: 6, top: 6, child: _LetterMark(letter)),
               if (selected)
                 Positioned(

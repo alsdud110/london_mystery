@@ -260,7 +260,7 @@ dart run tool/season_gen/generate_case.dart --season content_pipeline/seasons/s9
 the real app for the tests (`test/sandbox/s9_ep01_test.dart`,
 `integration_test/sandbox_case_qa_test.dart`). Only the sandbox's text
 puzzles (`text_choice`, `order_sequence`, `word_entry`, `letter_tile_lock`,
-and the final's `combo_dial_lock`) are made. Nothing is written when a check
+and the final's `combo_dial_lock`) are made (STEP 3-13 adds four on pictures, below). Nothing is written when a check
 fails; a generated file changed by hand, or one without its header, is never
 written over (`--force`); line endings are LF and read back CRLF-blind.
 
@@ -309,3 +309,35 @@ Code" (STEP 3-9, planned by Claude Code), played one after the other in
 `test/sandbox/s9_multi_case_test.dart` and on a device by
 `integration_test/sandbox_multi_case_qa_test.dart` (screenshots under
 `qa/screenshots/sandbox/multi_case/`).
+
+## Missions on pictures (STEP 3-13)
+
+What London and Paris play, mission by mission, and what the generator makes
+of it: [`GAMEPLAY_CATALOG.md`](GAMEPLAY_CATALOG.md). Besides the text
+puzzles, the generator now makes four puzzles played on pictures, each on
+the game's own engine (`PlayCheck.generatable`):
+
+| Puzzle | Plan | Written into |
+|---|---|---|
+| `scene_explore_choose` (a look round) | `play.explore` | `<caseId>Explores` → `SeasonContent.explores` |
+| `dark_room_search` (a search) | `play.search` | `<caseId>Investigations` → `SeasonContent.investigations` |
+| `witness_compare` (a talk with witnesses) | `play.dialogue` | `<caseId>Dialogues` → `SeasonContent.dialogues` |
+| `picture_choice` | `answerSpec.options[].picture`, `altText`, `play.hideOptionNames` | the case JSON (`ChoiceOption.picture`) |
+
+- Places on a picture are its own pixels in the plan; the generator writes
+  them as constant fractions (`Rect.fromLTRB(282 / 1536, …)`), as the game's
+  scenes keep them. A picture's `pixels` are its file's (checked).
+- A picture not on disk stops the generator (`asset_file_missing`); nothing
+  stands in for it. Such puzzles are planned `awaitingAssets`.
+- `PlayCheck` checks each scene's own rules (one letter and one choice in a
+  look round, report lines in the letter, one pair of witnesses that agree,
+  areas on their picture…): the table in the catalog, §4.4.
+- Two changes in `lib/` made the search and the picture choice take a
+  season's own files, the game's own content unchanged:
+  `InvestigationScene.picture`/`pixels` beside its `Artwork`, and
+  `ChoiceOption.picture`. `SeasonCatalog.testSeasons` (tests only, like
+  `testPlaces`) lets a season outside the game find its scene tables.
+
+The sandbox's Case 03, "The Travelling Book", is one mission of each:
+`test/sandbox/s9_ep03_test.dart` checks it against its plan and the game's
+validator, then plays it from the map with each engine's own controls.

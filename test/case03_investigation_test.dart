@@ -105,7 +105,8 @@ void main() {
 
     test('its pictures: Gallery 8 as the theft left it, and the three things on transparency', () {
       expect(ArtAssets.scenes[scene.artwork], 'assets/seasons/season_01_london/locations/british_museum/british_museum_gallery_8.png');
-      expect(ArtAssets.sceneAspect(scene.artwork), 1536 / 1024);
+      expect(scene.picture, isNull, reason: "London's room is its Artwork, no file of its own");
+      expect(ArtAssets.sceneAspect(scene.artwork!), 1536 / 1024);
       for (final f in scene.finds) {
         expect(File(f.picture).existsSync(), isTrue, reason: f.picture);
       }

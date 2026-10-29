@@ -295,11 +295,16 @@ final class SeasonScene extends MissionScene {
 
 @immutable
 class ChoiceOption {
-  const ChoiceOption({required this.id, required this.label, this.artwork, this.feedback, this.altText});
+  const ChoiceOption({required this.id, required this.label, this.artwork, this.picture, this.feedback, this.altText});
 
   final String id;
   final String label;
   final Artwork? artwork;
+
+  /// An `imageChoice` option's own picture file (a season's evidence or
+  /// place, `assets/…`), in place of an [artwork]: a new season's picture
+  /// needs no code. Shown whole, never cropped.
+  final String? picture;
 
   /// One short line shown when this (wrong) option is chosen: what was
   /// misread, never the answer. Null: the general "look again" line.
@@ -314,6 +319,7 @@ class ChoiceOption {
     id: json['id'] as String,
     label: json['label'] as String,
     artwork: json['artwork'] == null ? null : Artwork.fromJson(json['artwork'] as String),
+    picture: json['picture'] as String?,
     feedback: json['feedback'] as String?,
     altText: json['altText'] as String?,
   );
@@ -322,6 +328,7 @@ class ChoiceOption {
     'id': id,
     'label': label,
     if (artwork != null) 'artwork': artwork!.name,
+    if (picture != null) 'picture': picture,
     if (feedback != null) 'feedback': feedback,
     if (altText != null) 'altText': altText,
   };

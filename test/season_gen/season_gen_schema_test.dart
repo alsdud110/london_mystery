@@ -268,6 +268,40 @@ void main() {
     for (final MapEntry(key: name, value: change) in played.entries) {
       test('case: $name', () => agree(copy(samplePlayCaseJson())..let(change), 'case_plan.schema.json', valid: false, reason: name));
     }
+
+    // STEP 3-13: the scenes of puzzles played on pictures (the sandbox's Case 03).
+    final scenes = jsonDecode(File('content_pipeline/seasons/s9_sandbox/cases/s9_ep03/case.plan.json').readAsStringSync()) as Map<String, Object?>;
+    Map<String, Object?> sceneOf(Map<String, Object?> j, int i, String key) =>
+        (((j['missions'] as List)[i] as Map)['play'] as Map)[key] as Map<String, Object?>;
+    Map<String, Object?> optionOf(Map<String, Object?> j) =>
+        (((((j['missions'] as List)[3] as Map)['puzzle'] as Map)['answerSpec'] as Map)['options'] as List).first as Map<String, Object?>;
+    test('case: the scenes of Case 03, accepted by both', () => agree(copy(scenes), 'case_plan.schema.json', valid: true));
+    final scened = <String, void Function(Map<String, Object?>)>{
+      'a rect of three numbers': (j) => (sceneOf(j, 0, 'explore')['spots'] as List).first['areas'] = [[1, 2, 3]],
+      'a rect of text': (j) => (sceneOf(j, 0, 'explore')['spots'] as List).first['areas'] = [['1', 2, 3, 4]],
+      'no areas': (j) => (sceneOf(j, 0, 'explore')['spots'] as List).first['areas'] = [],
+      'a point of one number': (j) => sceneOf(j, 0, 'explore')['guideAt'] = [4],
+      'a spot of no known kind': (j) => (sceneOf(j, 0, 'explore')['spots'] as List).first['kind'] = 'door',
+      'one spot': (j) => (sceneOf(j, 0, 'explore')['spots'] as List).removeRange(1, 3),
+      'a scene picture with no pixels': (j) => (sceneOf(j, 0, 'explore')['picture'] as Map).remove('pixels'),
+      'a scene picture outside assets': (j) => (sceneOf(j, 1, 'search')['picture'] as Map)['file'] = 'lib/room.png',
+      'a find with no width': (j) => ((sceneOf(j, 1, 'search')['finds'] as List).first as Map).remove('width'),
+      'a find squashed flat': (j) => ((sceneOf(j, 1, 'search')['finds'] as List).first as Map)['squash'] = 0,
+      'no arrival': (j) => sceneOf(j, 1, 'search')['arrival'] = [],
+      'one witness': (j) => (sceneOf(j, 2, 'dialogue')['witnesses'] as List).removeRange(1, 3),
+      'a witness id in camel case': (j) => ((sceneOf(j, 2, 'dialogue')['witnesses'] as List).first as Map)['id'] = 'flowerSeller',
+      'a face off the portrait': (j) => (((sceneOf(j, 2, 'dialogue')['witnesses'] as List).first as Map)['face'] as Map)['x'] = 1.2,
+      'an answer with no line': (j) => ((((sceneOf(j, 2, 'dialogue')['witnesses'] as List).first as Map)['answers'] as Map)['when'] as Map).remove('line'),
+      'a pair of three': (j) => (sceneOf(j, 2, 'dialogue')['deduction'] as Map)['pair'] = ['a.b', 'c.d', 'e.f'],
+      'a pair twice the same': (j) => (sceneOf(j, 2, 'dialogue')['deduction'] as Map)['pair'] = ['a.b', 'a.b'],
+      'a deduction with no matchLine': (j) => (sceneOf(j, 2, 'dialogue')['deduction'] as Map).remove('matchLine'),
+      'a field no scene has': (j) => sceneOf(j, 2, 'dialogue')['secret'] = 'x',
+      'an option picture outside assets': (j) => optionOf(j)['picture'] = 'http://example.com/a.png',
+      'hideOptionNames as text': (j) => (((j['missions'] as List)[3] as Map)['play'] as Map)['hideOptionNames'] = 'yes',
+    };
+    for (final MapEntry(key: name, value: change) in scened.entries) {
+      test('case: $name', () => agree(copy(scenes)..let(change), 'case_plan.schema.json', valid: false, reason: name));
+    }
   });
 
   group("what a schema cannot say is PlanCheck's: both formats accept it", () {

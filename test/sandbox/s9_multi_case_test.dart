@@ -41,17 +41,17 @@ void main() {
   group('the generated season', () {
     test('holds every case its folder has, in play order, made together (generate_season --check)', () {
       final cases = SeasonCases.of(seasonPath);
-      expect(cases, ['$seasonDir/cases/s9_ep01/case.plan.json', '$seasonDir/cases/s9_ep02/case.plan.json']);
+      expect(cases, ['$seasonDir/cases/s9_ep01/case.plan.json', '$seasonDir/cases/s9_ep02/case.plan.json', '$seasonDir/cases/s9_ep03/case.plan.json']);
       final made = CaseGenerator.sandbox(seasonPath: seasonPath, casePaths: cases.reversed.toList());
-      expect(made.files.keys, ['s9_sandbox_season.g.dart', 's9_ep01.g.dart', 's9_ep02.g.dart', 's9_sandbox_cases.g.dart', 'generated.manifest.json'],
+      expect(made.files.keys, ['s9_sandbox_season.g.dart', 's9_ep01.g.dart', 's9_ep02.g.dart', 's9_ep03.g.dart', 's9_sandbox_cases.g.dart', 'generated.manifest.json'],
           reason: 'in play order, whatever order they are given in');
       expect(GeneratedFiles.stale('test/sandbox/generated/s9_sandbox', made.files), isEmpty,
           reason: 'run: dart run tool/season_gen/generate_season.dart --season $seasonPath --target sandbox');
       final manifest = jsonDecode(made.files[manifestName]!) as Map;
-      expect(manifest['cases'], ['s9_ep01', 's9_ep02']);
-      expect((manifest['inputs'] as Map).keys, ['season.plan.json', 'cases/s9_ep01/case.plan.json', 'cases/s9_ep02/case.plan.json']);
+      expect(manifest['cases'], ['s9_ep01', 's9_ep02', 's9_ep03']);
+      expect((manifest['inputs'] as Map).keys, ['season.plan.json', 'cases/s9_ep01/case.plan.json', 'cases/s9_ep02/case.plan.json', 'cases/s9_ep03/case.plan.json']);
       expect((manifest['outputs'] as Map).keys, [for (final f in made.files.keys) if (f != manifestName) f]);
-      expect([for (final e in sandboxEpisodes()) e.id], ['s9_ep01', 's9_ep02'], reason: 'the game has both, from the generated list alone');
+      expect([for (final e in sandboxEpisodes()) e.id], ['s9_ep01', 's9_ep02', 's9_ep03'], reason: 'the game has every case, from the generated list alone');
     });
 
     test('Case 02 is its plan: ids, order, answers, dials, clues, learning', () {
@@ -120,7 +120,7 @@ void main() {
       c.read(seasonPreviewSwitchProvider.notifier).set(true); // the sandbox opens unreleased
       expect(ctrl.openSeason(sandboxSeasonId), isTrue);
       expect(c.read(operatorAccessProvider), isFalse, reason: "a player's unlocks, not the operator's");
-      final [case01, _] = sandboxEpisodes();
+      final [case01, _, _] = sandboxEpisodes();
       final play = SandboxPlay(t);
 
       // ── Case 02 sealed: refused by the game, sealed on the board and in the case files.
@@ -136,7 +136,8 @@ void main() {
       router.go(Routes.episodes);
       await wait(t, const Duration(milliseconds: 1500));
       expect(find.bySemanticsLabel('Case 2, The Story Box Code, sealed'), findsOneWidget, reason: play.texts());
-      expect(find.text('SEALED'), findsOneWidget);
+      expect(find.bySemanticsLabel('Case 3, The Travelling Book, sealed'), findsOneWidget, reason: play.texts());
+      expect(find.text('SEALED'), findsNWidgets(2), reason: 'Cases 02 and 03');
 
       // ── Case 01, played through (its own checks are s9_ep01_test's).
       expect(ctrl.openEpisode('s9_ep01'), isTrue);
@@ -168,8 +169,8 @@ void main() {
         's9_ep02_m3': ('FUOR', 'Read them from the top line down.'),
         's9_ep02_final': ('144', 'Mr. Bell fixed one.'),
       }, fromIntro: false);
-      await reveal(t, find.text('CASE 03 · COMING SOON')); // under the report
-      expect(find.text('CASE 03 · COMING SOON'), findsOneWidget, reason: 'the season goes on, its next case not written yet: ${play.texts()}');
+      await reveal(t, find.text('OPEN CASE 03')); // under the report (Case 03: STEP 3-13)
+      expect(find.text('OPEN CASE 03'), findsOneWidget, reason: 'the season goes on to its next case: ${play.texts()}');
 
       // ── Saved: each case under its own key, its own missions, clues and evidence.
       await wait(t, const Duration(milliseconds: 500));

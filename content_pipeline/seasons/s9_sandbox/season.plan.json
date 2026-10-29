@@ -32,6 +32,21 @@
       "locId": "town_library",
       "name": "Town Library",
       "landmarkKey": "townLibrary"
+    },
+    {
+      "locId": "night_station",
+      "name": "The Night Station",
+      "landmarkKey": "nightStation"
+    },
+    {
+      "locId": "city_museum",
+      "name": "The City Museum",
+      "landmarkKey": "cityMuseum"
+    },
+    {
+      "locId": "market_hall",
+      "name": "The Market Hall",
+      "landmarkKey": "marketHall"
     }
   ],
   "acts": [
@@ -90,11 +105,44 @@
         "width": 1536,
         "height": 1024
       }
+    },
+    {
+      "placeId": "s9_sandbox.station",
+      "file": "assets/seasons/season_01_london/cases/case_01/kings_cross_platform_night.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s9_sandbox.gallery",
+      "file": "assets/seasons/season_01_london/locations/british_museum/british_museum_gallery_8.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    {
+      "placeId": "s9_sandbox.market",
+      "file": "assets/seasons/season_01_london/locations/covent_garden/covent_garden_market_hall.png",
+      "pixels": {
+        "width": 1024,
+        "height": 1536
+      }
+    },
+    {
+      "placeId": "s9_sandbox.lost_property",
+      "file": "assets/seasons/season_01_london/locations/kings_cross/kings_cross_waiting_hall.png",
+      "pixels": {
+        "width": 1273,
+        "height": 832
+      }
     }
   ],
   "notes": [
     "STEP 3-6 sandbox: a trial season for the pipeline only. Not London, not Paris, never in SeasonCatalog.",
     "STEP 3-8: the places borrow Paris Case 11's bundled pictures, for the sandbox only (never a season's own pictures).",
-    "STEP 3-9: Case 02 (The Story Box Code) is written, in the same library and places as Case 01. Cases 03-12 are placeholders and are not planned."
+    "STEP 3-9: Case 02 (The Story Box Code) is written, in the same library and places as Case 01.",
+    "STEP 3-13: Case 03 (The Travelling Book) tries the puzzles played on pictures: a look round, a search, a talk with witnesses, a picture choice. Its places, scenes and their measured areas borrow London's bundled pictures (Case 01's station, Case 03's gallery, Case 06's market hall), for the sandbox only: never a season's own pictures. Cases 04-12 are placeholders and are not planned."
   ]
 }

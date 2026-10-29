@@ -25,6 +25,9 @@ const sandboxContent = SeasonContent(
   learning: s9SandboxLearning,
   languageTopics: s9SandboxLanguageTopics,
   evidenceLinks: s9SandboxEvidenceLinks,
+  explores: s9SandboxExplores,
+  investigations: s9SandboxInvestigations,
+  dialogues: s9SandboxDialogues,
 );
 
 /// Its cases as the game reads them.
@@ -45,3 +48,17 @@ List<Override> sandboxOverrides() => [
 /// Its places, registered as a test's (`SeasonCatalog.testPlaces`); cleared
 /// with `SeasonCatalog.testPlaces.clear` after the test.
 void registerSandboxPlaces() => SeasonCatalog.testPlaces.addAll(sandboxContent.places);
+
+/// Its places and the season itself, registered as a test's
+/// (`SeasonCatalog.testSeasons`): its missions find their scenes, talks,
+/// learning and evidence links as the game's own do (STEP 3-13). Undone by
+/// [unregisterSandboxSeason] after the test.
+void registerSandboxSeason() {
+  registerSandboxPlaces();
+  SeasonCatalog.testSeasons.add(sandboxContent);
+}
+
+void unregisterSandboxSeason() {
+  SeasonCatalog.testPlaces.clear();
+  SeasonCatalog.testSeasons.clear();
+}

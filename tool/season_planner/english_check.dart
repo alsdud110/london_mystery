@@ -79,6 +79,49 @@ abstract final class EnglishCheck {
         add('$at.play.recall.prompt', r.prompt);
         add('$at.play.recall.miss', r.miss);
       }
+      // The scenes' words the player reads (STEP 3-13).
+      if (w.explore case final s?) {
+        final sa = '$at.play.explore';
+        for (final (k, v) in [('task', s.task), ('nextTask', s.nextTask), ('missLine', s.missLine), ('choiceHow', s.choiceHow)]) {
+          add('$sa.$k', v);
+        }
+        for (final (j, x) in s.spots.indexed) {
+          add('$sa.spots[$j].line', x.line);
+          add('$sa.spots[$j].lockedLine', x.lockedLine);
+        }
+        for (final (j, o) in s.others.indexed) {
+          add('$sa.others[$j].line', o.line);
+        }
+      }
+      if (w.search case final s?) {
+        final sa = '$at.play.search';
+        add('$sa.task', s.task);
+        add('$sa.missLine', s.missLine);
+        lines('$sa.arrival', s.arrival);
+        for (final (j, f) in s.finds.indexed) {
+          add('$sa.finds[$j].foundLine', f.foundLine);
+        }
+        for (final (j, o) in s.spots.indexed) {
+          add('$sa.spots[$j].line', o.line);
+        }
+      }
+      if (w.dialogue case final s?) {
+        final sa = '$at.play.dialogue';
+        add('$sa.goal', s.goal);
+        add('$sa.how', s.how);
+        for (final (j, q) in s.questions.indexed) {
+          add('$sa.questions[$j].text', q.text);
+        }
+        for (final (j, x) in s.witnesses.indexed) {
+          add('$sa.witnesses[$j].greeting', x.greeting);
+          for (final MapEntry(:key, :value) in x.answers.entries) {
+            add('$sa.witnesses[$j].answers.$key', value.line);
+          }
+        }
+        for (final MapEntry(:key, :value) in s.deduction.lines.entries) {
+          add('$sa.deduction.$key', value);
+        }
+      }
     }
     return out;
   }

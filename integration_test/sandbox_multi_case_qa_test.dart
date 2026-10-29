@@ -39,7 +39,7 @@ void main() {
     ctrl.createDetective('Minyoung', DetectiveAvatar.girl);
     c.read(seasonPreviewSwitchProvider.notifier).set(true);
     expect(ctrl.openSeason(sandboxSeasonId), isTrue);
-    final [case01, case02] = sandboxEpisodes();
+    final [case01, case02, ...] = sandboxEpisodes();
     expect(ctrl.openEpisode(case02.id), isFalse, reason: 'Case 02 is sealed');
     await t.pumpWidget(UncontrolledProviderScope(container: c, child: const WorldMysteryApp()));
 

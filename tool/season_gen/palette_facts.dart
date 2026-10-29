@@ -286,13 +286,23 @@ abstract final class PaletteFacts {
     ),
     PalettePuzzle(
       'picture_choice',
-      PaletteGrade.conditional,
-      PaletteMode.requiresDevelopment,
+      PaletteGrade.ready,
+      PaletteMode.requiresAssets,
       engines: [
         PaletteEngine('ImageChoiceQuestion', null, {'imageChoice'}, {PlanSurface.mission, PlanSurface.finalMission}),
       ],
       requiredData: ['Mission.letter', 'Mission.question', 'Mission.options', 'ChoiceOption.altText', 'ChoiceOption.feedback', 'Mission.hideOptionNames', 'Mission.answer', 'Mission.hints'],
-      requiredAssets: ['ChoiceOption.artwork'],
+      requiredAssets: ['ChoiceOption.picture'],
+    ),
+    PalettePuzzle(
+      'dark_room_search',
+      PaletteGrade.ready,
+      PaletteMode.requiresAssets,
+      engines: [
+        PaletteEngine('InvestigationSearch', 'investigations', {'multipleChoice'}, {PlanSurface.mission}),
+      ],
+      requiredData: ['Mission.letter', 'Mission.answer', 'InvestigationScene.picture', 'InvestigationScene.pixels', 'InvestigationScene.task', 'InvestigationScene.documentTitle', 'InvestigationScene.finds', 'InvestigationFind.reportLine', 'InvestigationFind.areas', 'InvestigationScene.answer', 'InvestigationScene.arrival', 'InvestigationScene.guideAt', 'InvestigationScene.opening', 'InvestigationScene.inside'],
+      requiredAssets: ['InvestigationScene.picture', 'InvestigationFind.picture'],
     ),
     PalettePuzzle(
       'clock_set',
@@ -305,19 +315,9 @@ abstract final class PaletteFacts {
       requiredAssets: ['ClockPuzzle.face'],
     ),
     PalettePuzzle(
-      'dark_room_search',
-      PaletteGrade.conditional,
-      PaletteMode.requiresDevelopment,
-      engines: [
-        PaletteEngine('InvestigationSearch', 'investigations', {'multipleChoice'}, {PlanSurface.mission}),
-      ],
-      requiredData: ['Mission.letter', 'Mission.answer', 'InvestigationScene.task', 'InvestigationScene.documentTitle', 'InvestigationScene.finds', 'InvestigationFind.reportLine', 'InvestigationFind.areas', 'InvestigationScene.answer', 'InvestigationScene.arrival', 'InvestigationScene.guideAt', 'InvestigationScene.opening', 'InvestigationScene.inside'],
-      requiredAssets: ['InvestigationScene.artwork', 'InvestigationFind.picture'],
-    ),
-    PalettePuzzle(
       'witness_compare',
       PaletteGrade.conditional,
-      PaletteMode.requiresDevelopment,
+      PaletteMode.requiresAssets,
       engines: [
         PaletteEngine('DialogueInvestigation', 'dialogues', {'multipleChoice'}, {PlanSurface.mission}),
       ],

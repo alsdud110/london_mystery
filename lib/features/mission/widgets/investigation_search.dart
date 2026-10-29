@@ -111,7 +111,7 @@ class _InvestigationArrivalState extends ConsumerState<InvestigationArrival> wit
     return Stack(
       fit: StackFit.expand,
       children: [
-        PlaceScenery(widget.scene.artwork),
+        if (widget.scene.artwork case final artwork?) PlaceScenery(artwork) else PlaceScenery.file(widget.scene.picture!),
         InkSurface(
           night: true,
           child: GestureDetector(
@@ -413,7 +413,7 @@ class _InvestigationSearchState extends ConsumerState<InvestigationSearch> with 
   /// Where the picture sits for a screen [width] wide.
   SearchFrame _frame(double width) => SearchFrame(
     width: width,
-    aspect: ArtAssets.sceneAspect(widget.scene.artwork),
+    aspect: widget.scene.pixels?.aspect ?? ArtAssets.sceneAspect(widget.scene.artwork!),
     inside: widget.scene.inside,
     focus: widget.scene.opening,
     maxScale: maxScale,
@@ -627,7 +627,14 @@ class _SearchPicture extends StatelessWidget {
             child: Stack(
             clipBehavior: Clip.hardEdge,
             children: [
-              Positioned.fill(child: LandmarkArt(scene.artwork, borderRadius: 2)),
+              Positioned.fill(
+                child: switch (scene.artwork) {
+                  final artwork? => LandmarkArt(artwork, borderRadius: 2),
+                  // A season's own room: its file, laid on the frame its
+                  // places are measured on (fractions of the whole file).
+                  null => Image.asset(scene.picture!, fit: BoxFit.fill, excludeFromSemantics: true),
+                },
+              ),
               for (final f in scene.finds)
                 if (found.contains(f.id))
                   _FoundThing(key: ValueKey('found-${f.id}'), find: f, size: size, still: still),

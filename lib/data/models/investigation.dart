@@ -3,6 +3,7 @@ import 'dart:ui' show Offset, Rect, Size;
 import 'package:flutter/foundation.dart';
 
 import 'mission.dart';
+import 'scene_explore.dart' show ScenePixels;
 
 /// A thing to find in an [InvestigationScene]: where it is in the picture,
 /// the line of the mission's document that says where (the English the
@@ -105,7 +106,9 @@ class InvestigationSpot {
 @immutable
 class InvestigationScene {
   const InvestigationScene({
-    required this.artwork,
+    this.artwork,
+    this.picture,
+    this.pixels,
     required this.task,
     required this.documentTitle,
     required this.finds,
@@ -121,10 +124,15 @@ class InvestigationScene {
     this.documentLabel = 'Report',
     this.tapGuide = 'Tap the picture to investigate!',
     this.zoomGuide = 'Pinch to zoom in for a closer look.',
-  });
+  }) : assert((artwork == null) != (picture == null), 'an Artwork or a picture file, one of them'),
+       assert((picture == null) == (pixels == null), "a picture file is given with its size");
 
-  /// The picture searched (its file: `ArtAssets.scenes`).
-  final Artwork artwork;
+  /// The picture searched, one of the game's scenes (its file:
+  /// `ArtAssets.scenes`); or, for a season's own room, its [picture] file
+  /// and that file's size in [pixels] (a new season needs no code).
+  final Artwork? artwork;
+  final String? picture;
+  final ScenePixels? pixels;
 
   /// What to do, in one line (the search's heading).
   final String task;
@@ -185,6 +193,8 @@ class InvestigationScene {
   }) =>
       InvestigationScene(
         artwork: artwork,
+        picture: picture,
+        pixels: pixels,
         task: task ?? this.task,
         documentTitle: documentTitle,
         finds: finds ?? this.finds,

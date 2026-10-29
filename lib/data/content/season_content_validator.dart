@@ -292,7 +292,12 @@ class _SeasonCheck {
       case MissionType.multipleChoice || MissionType.imageChoice || MissionType.canvasChoice:
         if (!ids.contains(m.answer)) out.add('answer ${m.answer} is not an option');
         if (ids.length < 3) out.add('${ids.length} options: a guess, not a choice');
-        if (m.type == MissionType.imageChoice && m.options.any((o) => o.artwork == null)) out.add('an option with no picture');
+        if (m.type == MissionType.imageChoice && m.options.any((o) => o.artwork == null && o.picture == null)) out.add('an option with no picture');
+        if (m.options.any((o) => o.artwork != null && o.picture != null)) out.add('an option with an Artwork and a picture file');
+        // A season's own picture is read by screen readers from its words.
+        if (m.type == MissionType.imageChoice && m.options.any((o) => o.picture != null && o.altText == null)) {
+          out.add('a picture option with no altText');
+        }
       case MissionType.sequence:
         final order = Mission.sequenceIds(m.answer);
         if (!ids.containsAll(order)) out.add('its order names ${order.toSet().difference(ids)}, not options');

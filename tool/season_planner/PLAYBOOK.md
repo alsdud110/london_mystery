@@ -69,9 +69,12 @@ three acts of four, `mainMystery`, `places` (each place's picture file under
 Write `cases/<caseId>/case.plan.json` for Case 01 to 12, in order, each from
 the bible. Run the checks after each case or two (step 4) instead of at the end.
 
-**What the generator makes today** (`PlayCheck.generatable`): only text
-puzzles, played by the mission page's own widgets. Each case is 3 missions
-and a final:
+**What the generator makes today** (`PlayCheck.generatable`; the whole map
+of the game's play types is `tool/season_gen/GAMEPLAY_CATALOG.md`). Each case
+is 3 missions (up to 5) and a final.
+
+Text puzzles, played by the mission page's own widgets (`status: ready`, no
+picture beyond the place's):
 
 | Puzzle (`paletteId`) | `missionType` | Where | Answer data |
 |---|---|---|---|
@@ -81,9 +84,58 @@ and a final:
 | `letter_tile_lock` | `letterLock` | mission, final | one option per tile, the tiles spell the answer exactly |
 | `combo_dial_lock` | `finalCode` | final only | digits, `codeLength`, `dialSymbols` (GameSymbols) |
 
-Anything else (scenes, lenses, talks, picture choices) needs pictures and
-engine data: plan it as `awaitingAssets` or `devRequest` only if the user
-asks, and say the generator cannot make it yet.
+Puzzles played on pictures (STEP 3-13; `status: awaitingAssets`, their
+pictures in `assetNeeds` and in the manifest with `use: puzzle`). The worked
+example is the sandbox's `s9_sandbox/cases/s9_ep03/case.plan.json`.
+
+| Puzzle (`paletteId`) | `engineTable` · `missionType` | The detective… | Plan data |
+|---|---|---|---|
+| `scene_explore_choose` | `explores` · `multipleChoice` (missions) | looks round a place, finds the thing that holds the letter, notes what is seen, then picks one of the pictures the letter points to | `play.explore`: the place picture, spots (one `document`, one `choice` that `requires` it, `note`s), empty places (`others`), the choice pictures (one per option, one size) |
+| `dark_room_search` | `investigations` · `multipleChoice` (missions) | reads a report and finds each thing where its line says (under, on, next to…), zooms, drags | `play.search`: the room picture, finds (each `reportLine` a line of the letter word for word, its cut-out picture), empty places with a line that teaches the word |
+| `witness_compare` | `dialogues` · `multipleChoice` (missions) | chooses a witness, asks questions, compares two statements to find the two that agree (or the one that contradicts) | `play.dialogue`: the place, questions, witnesses (portrait, answers; an answer with a `thing` is a statement `<witness>.<question>`), the deduction (`topic`, the one `pair`, `then` still to hear) |
+| `picture_choice` | none · `imageChoice` (mission, final) | reads a description and looks at 3-4 pictures (names hidden with `play.hideOptionNames`) | each option's `picture` and `altText` (what it shows, for screen readers) |
+
+**Places on pictures** are written in the picture's own pixels (`[left, top,
+right, bottom]`, `[x, y]`), with the picture's size as its file has it. While
+a picture is only planned, its places are where its prompt puts things:
+write the prompt so each target is where the scene says ("the suitcase on
+the bench, lower left, about a sixth of the width"), and say in the
+mission's `notes` that the areas are to be measured on the made picture.
+Once it is made, measure each area on the file and correct the plan before
+anything is generated. A picture not on disk stops the generator
+(`image_pending` here); never put another picture in its stead.
+
+Other engines (lens, traces, a talk with evidence shown, step by step,
+spot the difference…) need their scenes in a plan first: plan them as
+`awaitingAssets` only if the user asks, and say the generator cannot make
+them yet (`generate_unsupported`).
+
+**Choosing how each mission is played.** Start from the case's clue, not
+from a list: what is the player finding out, and what would a detective
+physically do there? A letter or log read closely → a text puzzle; a place
+where something was left → a look round; a report of where things are → a
+search; people who saw something → a talk; a description of a thing or a
+place → a picture choice. Then check the season as a whole: the same kind
+of mission no more than about a third of the season, at least one mission
+on pictures in most cases, no two cases in a row with the same set of
+kinds. There is no quota per kind; `PuzzleSelectionCheck.season` warns when
+one kind is more than half.
+
+**Rules for puzzles on pictures** (on top of the rules below):
+
+- The answer is seen or deduced, never guessed: the picture shows what the
+  English says (the poster with the mummies the letter names; the footprint
+  next to the door the report names; two witnesses who say the same thing).
+- Every place in a scene that holds nothing says something useful when
+  tapped ("Nothing on the bench. The report says UNDER it."): a wrong tap
+  teaches the word.
+- A talk has exactly one pair that answers it (`scene_ambiguous` otherwise),
+  and what is heard after it (`then`) is used later in the case or season.
+- Picture choices with names hidden are told apart by the words of the
+  letter (colour, shape, what it has), never by the picture's style alone,
+  and never by colour alone (say "two brown straps", not only "brown").
+- Targets big enough for a finger (60 px or more on a 1536 px picture), all
+  inside the part the page opens on (`opening`).
 
 **Every mission** needs, in `play`: title, location (CAPS), story (2-4 lines),
 letterIntro, letter (the document the player reads), question, hints (2),
@@ -104,8 +156,9 @@ intro, caseSummary, place, keyWords, glossary (one lower-case word each).
    before/after, a definition, a code with its rule stated, a witness who
    contradicts the evidence.
 3. The four puzzles of a case are four different kinds, and at least one is
-   hands-on (order, tiles or dials). Spread the kinds over the season (no
-   kind more than half).
+   hands-on (order, tiles, dials, or a mission on pictures). Spread the
+   kinds over the season (no kind more than half; see "Choosing how each
+   mission is played" above).
 4. Wrong-answer lines point back to the text without giving the answer.
    Hints: the first says where to look, the second how to think. Neither
    says the answer.
@@ -132,6 +185,12 @@ picture, else `notWired`), `subject` (placeId, charId, evidence id, or
 
 - Every `season.plan.json` place has one `place` asset at the **same file and
   size**. Never point a place at another season's picture.
+- Every picture a puzzle shows (a scene's picture, a found thing cut out, a
+  witness portrait, a picture option) is an asset with `use: puzzle`, its
+  `outputPath` the file the plan names, its id in the puzzle's `assetNeeds`
+  (`asset_scene_unplanned` is an ERROR). A witness who is a season
+  character reuses their portrait; a talk's background may be the place's
+  own picture.
 - Define the city's scene style once in `seasonStyles` (the common lines of
   `tool/ai_agents/image_styles.dart` + the city's look); characters and
   objects use `character` / `object`.

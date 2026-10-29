@@ -41,7 +41,222 @@
         "evidence": { "$ref": "#/$defs/evidenceText" },
         "recall": { "$ref": "#/$defs/recallText" },
         "evidenceLinkLine": { "$ref": "common.schema.json#/$defs/text" },
-        "lockTitle": { "$ref": "common.schema.json#/$defs/text" }
+        "lockTitle": { "$ref": "common.schema.json#/$defs/text" },
+        "hideOptionNames": { "type": "boolean" },
+        "explore": { "$ref": "#/$defs/explore" },
+        "search": { "$ref": "#/$defs/search" },
+        "dialogue": { "$ref": "#/$defs/dialogue" }
+      }
+    },
+    "point": {
+      "description": "A point on a picture, [x, y] in its pixels.",
+      "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" }
+    },
+    "rect": {
+      "description": "A rectangle on a picture, [left, top, right, bottom] in its pixels.",
+      "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number" }
+    },
+    "rects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/rect" } },
+    "pixels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "picture": {
+      "description": "A picture file and its size in pixels.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "pixels"],
+      "properties": {
+        "file": { "$ref": "common.schema.json#/$defs/assetFile" },
+        "pixels": { "$ref": "#/$defs/pixels" }
+      }
+    },
+    "emptySpot": {
+      "description": "A place on a picture that holds nothing (InvestigationSpot).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "areas", "line"],
+      "properties": {
+        "label": { "$ref": "common.schema.json#/$defs/text" },
+        "areas": { "$ref": "#/$defs/rects" },
+        "line": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "explore": {
+      "description": "A look round the place (ExploreScene, table explores).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["picture", "place", "task", "nextTask", "missLine", "guideAt", "spots", "choiceTitle", "choiceHow", "choicePixels", "choices"],
+      "properties": {
+        "picture": { "$ref": "#/$defs/picture" },
+        "place": { "$ref": "common.schema.json#/$defs/text" },
+        "task": { "$ref": "common.schema.json#/$defs/text" },
+        "nextTask": { "$ref": "common.schema.json#/$defs/text" },
+        "missLine": { "$ref": "common.schema.json#/$defs/text" },
+        "guideAt": { "$ref": "#/$defs/point" },
+        "spots": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/exploreSpot" } },
+        "others": { "type": "array", "items": { "$ref": "#/$defs/emptySpot" } },
+        "choiceTitle": { "$ref": "common.schema.json#/$defs/text" },
+        "choiceHow": { "$ref": "common.schema.json#/$defs/text" },
+        "choicePixels": { "$ref": "#/$defs/pixels" },
+        "choices": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/exploreChoice" } },
+        "inside": { "$ref": "#/$defs/rect" },
+        "opening": { "$ref": "#/$defs/rect" },
+        "documentLabel": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "exploreSpot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "label", "areas", "mark"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/localId" },
+        "kind": { "type": "string", "enum": ["document", "note", "choice"] },
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "label": { "$ref": "common.schema.json#/$defs/text" },
+        "areas": { "$ref": "#/$defs/rects" },
+        "mark": { "$ref": "#/$defs/point" },
+        "line": { "$ref": "common.schema.json#/$defs/text" },
+        "requires": { "$ref": "common.schema.json#/$defs/localId" },
+        "lockedLine": { "$ref": "common.schema.json#/$defs/text" },
+        "unreadLine": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "exploreChoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["optionId", "picture", "description"],
+      "properties": {
+        "optionId": { "$ref": "common.schema.json#/$defs/text" },
+        "picture": { "$ref": "common.schema.json#/$defs/assetFile" },
+        "description": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "search": {
+      "description": "A search of the place for what the letter lists (InvestigationScene, table investigations).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["picture", "task", "documentTitle", "missLine", "doneLine", "arrival", "guideAt", "finds"],
+      "properties": {
+        "picture": { "$ref": "#/$defs/picture" },
+        "task": { "$ref": "common.schema.json#/$defs/text" },
+        "documentTitle": { "$ref": "common.schema.json#/$defs/text" },
+        "missLine": { "$ref": "common.schema.json#/$defs/text" },
+        "doneLine": { "$ref": "common.schema.json#/$defs/text" },
+        "arrival": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/text" } },
+        "guideAt": { "$ref": "#/$defs/point" },
+        "finds": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/searchFind" } },
+        "spots": { "type": "array", "items": { "$ref": "#/$defs/emptySpot" } },
+        "opening": { "$ref": "#/$defs/rect" },
+        "inside": { "$ref": "#/$defs/rect" },
+        "startLabel": { "$ref": "common.schema.json#/$defs/text" },
+        "documentLabel": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "searchFind": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "title", "reportLine", "spot", "areas", "foundLine", "picture", "at", "width"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/localId" },
+        "name": { "$ref": "common.schema.json#/$defs/text" },
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "reportLine": { "$ref": "common.schema.json#/$defs/text" },
+        "spot": { "$ref": "common.schema.json#/$defs/text" },
+        "areas": { "$ref": "#/$defs/rects" },
+        "foundLine": { "$ref": "common.schema.json#/$defs/text" },
+        "picture": { "$ref": "#/$defs/picture" },
+        "at": { "$ref": "#/$defs/point" },
+        "width": { "type": "number", "minimum": 1 },
+        "squash": { "type": "number", "minimum": 0.1, "maximum": 1 },
+        "turn": { "type": "number", "minimum": -3.2, "maximum": 3.2 }
+      }
+    },
+    "dialogue": {
+      "description": "A talk with the witnesses (DialogueScene, table dialogues). A statement is an answer with a thing; its id is <witness>.<question>.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["place", "background", "goal", "how", "guide", "questions", "witnesses", "deduction"],
+      "properties": {
+        "place": { "$ref": "common.schema.json#/$defs/text" },
+        "background": { "$ref": "common.schema.json#/$defs/assetFile" },
+        "goal": { "$ref": "common.schema.json#/$defs/text" },
+        "how": { "$ref": "common.schema.json#/$defs/text" },
+        "guide": { "$ref": "common.schema.json#/$defs/text" },
+        "questions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/talkQuestion" } },
+        "witnesses": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/talkWitness" } },
+        "deduction": { "$ref": "#/$defs/talkDeduction" }
+      }
+    },
+    "talkQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/localId" },
+        "text": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "talkWitness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "title", "portrait", "description", "greeting", "answers"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/localId" },
+        "name": { "$ref": "common.schema.json#/$defs/text" },
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "portrait": { "$ref": "common.schema.json#/$defs/assetFile" },
+        "description": { "$ref": "common.schema.json#/$defs/text" },
+        "greeting": { "$ref": "common.schema.json#/$defs/text" },
+        "answers": { "type": "object", "additionalProperties": { "$ref": "#/$defs/talkAnswer" } },
+        "face": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "$ref": "common.schema.json#/$defs/fraction" },
+            "y": { "$ref": "common.schema.json#/$defs/fraction" }
+          }
+        }
+      }
+    },
+    "talkAnswer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["line"],
+      "properties": {
+        "line": { "$ref": "common.schema.json#/$defs/text" },
+        "thing": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "talkDeduction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["topic", "pair", "askLine", "anotherLine", "readyLine", "compareGoal", "compareHow", "matchLine", "offTopicLine", "checkLine", "differentLine", "retryLine"],
+      "properties": {
+        "topic": { "$ref": "common.schema.json#/$defs/localId" },
+        "pair": { "type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/text" } },
+        "then": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/text" } },
+        "witnesses": { "type": "integer", "minimum": 1 },
+        "askLine": { "$ref": "common.schema.json#/$defs/text" },
+        "anotherLine": { "$ref": "common.schema.json#/$defs/text" },
+        "readyLine": { "$ref": "common.schema.json#/$defs/text" },
+        "compareGoal": { "$ref": "common.schema.json#/$defs/text" },
+        "compareHow": { "$ref": "common.schema.json#/$defs/text" },
+        "matchLine": { "$ref": "common.schema.json#/$defs/text" },
+        "offTopicLine": { "$ref": "common.schema.json#/$defs/text" },
+        "checkLine": { "$ref": "common.schema.json#/$defs/text" },
+        "differentLine": { "$ref": "common.schema.json#/$defs/text" },
+        "retryLine": { "$ref": "common.schema.json#/$defs/text" },
+        "thenGoal": { "$ref": "common.schema.json#/$defs/text" },
+        "thenHow": { "$ref": "common.schema.json#/$defs/text" },
+        "doneLine": { "$ref": "common.schema.json#/$defs/text" },
+        "notesLine": { "$ref": "common.schema.json#/$defs/text" }
       }
     },
     "clueText": {

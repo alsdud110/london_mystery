@@ -4,7 +4,7 @@
   "tool": "tool/season_planner/plan_season.dart check",
   "counts": {
     "ERROR": 0,
-    "WARNING": 29,
+    "WARNING": 30,
     "INFO": 32
   },
   "summary": {
@@ -58,6 +58,7 @@
       "combo_dial_lock": 5,
       "letter_tile_lock": 8
     },
+    "puzzlesOnPictures": 0,
     "finalsByKind": {
       "combo_dial_lock": 5,
       "order_sequence": 1,
@@ -388,6 +389,13 @@
       "where": "season.plan.json $.places[17].file",
       "source": "play",
       "message": "assets/seasons/season_03_rome/locations/roman_library.png is not on disk: a picture still to be made (assets.manifest.json)"
+    },
+    {
+      "level": "WARNING",
+      "code": "season_play_text_only",
+      "where": "season",
+      "source": "puzzle",
+      "message": "every mission is read and answered: no look round, search, talk with witnesses or picture choice (tool/season_gen/GAMEPLAY_CATALOG.md)"
     },
     {
       "level": "WARNING",

@@ -614,9 +614,26 @@ abstract final class SeasonCatalog {
           m.id: (s, caseId),
   };
 
+  /// Seasons that are not in the game, registered by a test only (cleared
+  /// by it), so their missions find their puzzle tables as the game's do:
+  /// a generated sandbox season's scenes and talks (STEP 3-13). Looked at
+  /// only for a mission no season of the game has.
+  @visibleForTesting
+  static final List<SeasonContent> testSeasons = [];
+
+  static (SeasonContent, String)? _testMission(String missionId) {
+    for (final s in testSeasons) {
+      for (final MapEntry(key: caseId, value: json) in s.episodes.entries) {
+        final e = Episode.fromJson({...json, 'seasonId': s.id});
+        if (e.allMissions.any((m) => m.id == missionId)) return (s, caseId);
+      }
+    }
+    return null;
+  }
+
   /// The season of the mission with [missionId], or null.
   static SeasonContent? ofMission(String missionId) =>
-      _missionSeason[missionId]?.$1;
+      _missionSeason[missionId]?.$1 ?? _testMission(missionId)?.$1;
 
   /// [m]'s entry in one of its season's tables (by mission id), at [m]'s
   /// level: the level's own entry ([SeasonContent.variants], looked for as
@@ -636,7 +653,7 @@ abstract final class SeasonCatalog {
 
   /// The case of the mission with [missionId], or null.
   static String? episodeOfMission(String missionId) =>
-      _missionSeason[missionId]?.$2;
+      _missionSeason[missionId]?.$2 ?? _testMission(missionId)?.$2;
 
   static InvestigationScene? investigation(Mission m) =>
       _pick(m, (s) => s.investigations);

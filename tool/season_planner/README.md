@@ -57,13 +57,16 @@ dart run tool/season_planner/plan_season.dart generate content_pipeline/seasons/
 1. The season_gen checks on every plan, as `validate_plan.dart --season`
    does: schema, structure (`PlanCheck`), puzzle selection, clue graph (one
    case, then across cases), and the season's puzzle variety.
-2. `PlayCheck` on every case. A place picture not on disk is `image_pending`
+2. `PlayCheck` on every case. A place picture, or a puzzle's picture (a
+   scene, a picture option: STEP 3-13), not on disk is `image_pending`
    (INFO), the one thing allowed to be missing; every other finding is an ERROR.
 3. Twelve cases, each in its folder; a character never in a case before
    their `firstCase`; a "Mr./Signor/Professor X" no character of the season;
    another season's city named.
 4. Puzzles: an answer; a line for every wrong option; a wrong-answer line
-   for the right answer; a hint that says the answer (WARNING).
+   for the right answer; a hint that says the answer (WARNING). How the
+   season is played (STEP 3-13, WARNING, no quota): no mission on pictures
+   in the whole season (`season_play_text_only`), a case of one kind only.
 5. The English (heuristics only, WARNING): sentences over 15 words, long
    words no glossary has, letters over 110 words, the same sentence 3+ times.
    Claude's own reading is the bible's `englishReview` (INFO, source `claudeReview`).
@@ -75,8 +78,9 @@ dart run tool/season_planner/plan_season.dart generate content_pipeline/seasons/
    (`image_styles.dart` or the manifest's `seasonStyles`), every place's
    picture at the season plan's file and size, a base portrait for every
    character and every other pose drawn from it, references to real
-   assets, a `generated` picture on disk. Cost: `ImagePricing.estimate`,
-   list prices, no call.
+   assets, a `generated` picture on disk, every picture a puzzle shows an
+   asset of the manifest (`use: puzzle`, in its `assetNeeds`). Cost:
+   `ImagePricing.estimate`, list prices, no call.
 8. The real generator, in memory (`CaseGenerator.sandbox`, nothing written),
    once there is no ERROR: compatible when its only failures are the
    missing place pictures.

@@ -4,6 +4,7 @@ import '../ai_agents/image_pricing.dart';
 import '../ai_agents/image_styles.dart';
 import '../season_gen/plan_ids.dart';
 import '../season_gen/plan_models.dart';
+import '../season_gen/play_check.dart';
 import 'finding.dart';
 
 /// A season's pictures, planned with its story (STEP 3-11):
@@ -39,8 +40,12 @@ abstract final class AssetManifest {
   static const types = {'cover', 'map', 'prologue', 'place', 'scene', 'character', 'object', 'document'};
 
   /// `seasonPlace`: the generated content shows it (its place's picture).
+  /// `puzzle`: a generated puzzle shows it (STEP 3-13): a scene's picture
+  /// (a look round, a search, a talk's place or witness) or a picture
+  /// choice's option, named by its file in the case plan and by its id in
+  /// the puzzle's `assetNeeds`.
   /// `notWired`: no generated table shows it yet (a later step's).
-  static const uses = {'seasonPlace', 'notWired'};
+  static const uses = {'seasonPlace', 'puzzle', 'notWired'};
   static const statuses = {'planned', 'generated'};
 
   /// The sizes the GPT image models make without resizing, which are the
@@ -141,6 +146,7 @@ abstract final class AssetManifest {
 
     final ids = <String, int>{};
     final paths = <String, String>{};
+    final useOf = <String, String>{};
     final byPlace = <String, String>{};
     final bases = <String, String>{};
     final poses = <(String, String, List<String>, String)>[];
@@ -180,6 +186,7 @@ abstract final class AssetManifest {
       if (use != null && !uses.contains(use)) error('asset_field_invalid', '$at.use', '$use (${uses.join(', ')})');
       if (use == 'seasonPlace' && type != 'place') error('asset_field_invalid', '$at.use', 'seasonPlace is a place\'s picture only');
       if (type == 'place' && use != 'seasonPlace') error('asset_field_invalid', '$at.use', 'a place\'s picture is shown as a season place (seasonPlace)');
+      if (id != null && use != null) useOf[id] = use;
       counts[type ?? '?'] = (counts[type ?? '?'] ?? 0) + 1;
       final subject = str('subject');
       str('description');
@@ -348,6 +355,33 @@ abstract final class AssetManifest {
       if (!bases.containsKey(c.charId)) warning('asset_portrait_missing', c.charId, 'no base portrait planned for ${c.name}');
     }
     if ((counts['cover'] ?? 0) == 0) warning('asset_cover_missing', r'$.assets', 'no season cover planned');
+
+    // The pictures a puzzle shows (STEP 3-13): each a picture of the
+    // manifest, asked for by its puzzle; each planned for a puzzle, shown.
+    final shown = <String>{};
+    for (final c in cases) {
+      for (final (i, m) in c.allMissions.indexed) {
+        final at = 'cases/${c.caseId} ${m.isFinal ? r'$.final' : '\$.missions[$i]'}';
+        for (final (path, file) in PlayCheck.pictureFiles(m)) {
+          final owner = paths[file];
+          if (owner == null) {
+            out.error('asset_scene_unplanned', '$at$path', '$file is no outputPath of $where: a puzzle\'s picture is planned with the others',
+                source: Source.assets);
+            continue;
+          }
+          shown.add(owner);
+          if (!m.puzzle.assetNeeds.contains(owner)) {
+            out.warning('asset_need_missing', '$at.puzzle.assetNeeds', '$owner is shown ($file) but not asked for', source: Source.assets);
+          }
+          if (useOf[owner] case final use? when use != 'puzzle' && use != 'seasonPlace') {
+            warning('asset_use_mismatch', owner, '$use, but a generated puzzle shows it ($at$path): puzzle');
+          }
+        }
+      }
+    }
+    for (final MapEntry(key: id, value: use) in useOf.entries) {
+      if (use == 'puzzle' && !shown.contains(id)) warning('asset_unused', id, 'planned for a puzzle, but no scene or option of the cases shows it');
+    }
     if (pending > 0) {
       info('asset_pending', r'$.assets', '$pending of ${list.length} pictures planned, not made yet (no API was called)');
     }

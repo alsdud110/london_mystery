@@ -135,6 +135,11 @@ abstract final class SeasonQuality {
       for (final i in PlayCheck.casePlan(c, season, root: root)) {
         if (i.code == 'place_file_missing') {
           if (pendingPlaces.add(i.path)) out.info('image_pending', 'season.plan.json ${i.path}', '${i.message}: a picture still to be made (assets.manifest.json)', source: Source.play);
+        } else if (i.code == 'asset_file_missing') {
+          // A puzzle's picture (STEP 3-13): the generator waits for it as for a place's.
+          if (pendingPlaces.add('cases/${c.caseId} ${i.path}')) {
+            out.info('image_pending', 'cases/${c.caseId} ${i.path}', '${i.message} (assets.manifest.json)', source: Source.play);
+          }
         } else {
           out.error(i.code, '${i.inSeason ? 'season.plan.json' : 'cases/${c.caseId}'} ${i.path}', i.message, source: Source.play);
         }
@@ -144,6 +149,7 @@ abstract final class SeasonQuality {
     // 5. The season's own rules: people, places, puzzles, words.
     _people(season, plans, out);
     _puzzles(plans, out);
+    _play(plans, out);
     EnglishCheck.check(plans, out);
 
     // 6. The story bible and the pictures.
@@ -260,6 +266,23 @@ abstract final class SeasonQuality {
     }
   }
 
+  /// How the season is played, as a whole (STEP 3-13): not reading alone.
+  /// No quota per kind: the story chooses (PLAYBOOK §2); a season with no
+  /// mission on pictures, or a case all of one kind, is said.
+  static void _play(List<CasePlan> plans, Findings out) {
+    if (plans.isEmpty) return;
+    final onPictures = [for (final c in plans) for (final m in c.allMissions) if (PlayCheck.pictured.contains(m.puzzle.paletteId)) m.missionId];
+    if (onPictures.isEmpty) {
+      out.warning('season_play_text_only', 'season',
+          'every mission is read and answered: no look round, search, talk with witnesses or picture choice (tool/season_gen/GAMEPLAY_CATALOG.md)',
+          source: Source.puzzle);
+    }
+    for (final c in plans) {
+      final kinds = {for (final m in c.allMissions) m.puzzle.paletteId};
+      if (kinds.length == 1) out.warning('case_play_one_kind', 'cases/${c.caseId}', 'every mission is ${kinds.single}', source: Source.puzzle);
+    }
+  }
+
   /// The real generator, in memory: `CaseGenerator.sandbox` on the case
   /// plans (nothing written), and each case's game JSON. Its only failures
   /// allowed are the pictures not made yet.
@@ -283,14 +306,17 @@ abstract final class SeasonQuality {
       return {'run': true, 'compatible': true, 'files': made.files.length, 'blockedByPictures': 0};
     } on GenerateFailure catch (e) {
       final errors = [for (final l in e.lines) if (l.trimLeft().startsWith('error')) l.trim()];
-      final pictures = errors.where((l) => l.contains('[place_file_missing]')).length;
-      final other = errors.where((l) => !l.contains('[place_file_missing]')).toList();
+      bool waits(String l) => l.contains('[place_file_missing]') || l.contains('[asset_file_missing]');
+      final pictures = errors.where(waits).length;
+      final other = errors.where((l) => !waits(l)).toList();
       for (final l in other) {
         out.error('generator', 'generate_season', l, source: Source.generator);
       }
       if (other.isEmpty) {
+        final puzzles = errors.where((l) => l.contains('[asset_file_missing]')).length;
+        final what = puzzles == 0 ? '$pictures place pictures' : '${pictures - puzzles} place and $puzzles puzzle pictures';
         out.info('generator_waits_for_pictures', 'generate_season',
-            'every check of the generator passes but one: $pictures place pictures are not on disk yet', source: Source.generator);
+            'every check of the generator passes but one: $what are not on disk yet', source: Source.generator);
       }
       return {'run': true, 'compatible': other.isEmpty, 'blockedByPictures': pictures, 'otherFailures': other.length};
     }
@@ -319,6 +345,7 @@ abstract final class SeasonQuality {
       'missions': plans.fold<int>(0, (n, c) => n + c.missions.length),
       'finals': plans.length,
       'puzzlesByKind': byKind,
+      'puzzlesOnPictures': [for (final MapEntry(:key, :value) in byKind.entries) if (PlayCheck.pictured.contains(key)) value].fold<int>(0, (s, n) => s + n),
       'finalsByKind': finals,
       'crossCaseClueInputs': crossCase,
       'recallSteps': recalls,

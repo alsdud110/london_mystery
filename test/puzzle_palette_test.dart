@@ -31,11 +31,11 @@ void main() {
     'viewpoint_match',
     'guided_steps',
     'evidence_talk',
+    'picture_choice',
+    'dark_room_search',
   ];
   const conditionalIds = [
-    'picture_choice',
     'clock_set',
-    'dark_room_search',
     'witness_compare',
     'scene_compare_report',
     'evidence_board',
@@ -71,7 +71,7 @@ void main() {
       expect(PuzzlePalette.contains(''), isFalse);
     });
 
-    test('grades: 19 ready, 9 conditional, no custom engine offered', () {
+    test('grades: 21 ready, 7 conditional, no custom engine offered', () {
       expect([for (final p in PuzzlePalette.ready) p.id], readyIds);
       expect([for (final p in PuzzlePalette.conditional) p.id], conditionalIds);
       expect(PuzzlePalette.ofGrade(PuzzleReuseGrade.custom), isEmpty);
@@ -94,7 +94,12 @@ void main() {
       for (final p in PuzzlePalette.generatable) {
         expect(p.needsAssetApproval, p.generationMode == PuzzleGenerationMode.requiresAssets, reason: p.id);
       }
-      expect(PuzzlePalette.byId('picture_choice').generationMode, PuzzleGenerationMode.requiresDevelopment);
+      // STEP 3-13: a new season's pictures are files (ChoiceOption.picture,
+      // InvestigationScene.picture), and a talk's words are its base level's.
+      for (final id in ['picture_choice', 'dark_room_search', 'witness_compare']) {
+        expect(PuzzlePalette.byId(id).generationMode, PuzzleGenerationMode.requiresAssets, reason: id);
+      }
+      expect(PuzzlePalette.byId('clock_set').generationMode, PuzzleGenerationMode.requiresDevelopment, reason: 'its clock face is an Artwork value');
     });
 
     test('a puzzle that needs pictures is never text only, ready or not', () {

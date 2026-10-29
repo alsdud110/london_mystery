@@ -23,16 +23,21 @@ class SandboxPlay {
     for (final e in find.byType(Text).evaluate()) (e.widget as Text).data ?? (e.widget as Text).textSpan?.toPlainText() ?? '',
   ].where((s) => s.trim().isNotEmpty).join(' | ');
 
-  /// From the map to [m]'s puzzle: GO TO the place, INVESTIGATE, the letter, SOLVE.
-  Future<void> toPuzzle(Mission m) async {
+  /// From the map to [m]'s place: GO TO it, its story, INVESTIGATE waiting.
+  Future<void> toPlace(Mission m) async {
     await t.tap(find.bySemanticsLabel('GO TO ${m.location}'));
     await wait(t, const Duration(milliseconds: 2800));
     expect(find.text('INVESTIGATE'), findsOneWidget, reason: '${m.id}: ${texts()}');
+  }
+
+  /// From the map to [m]'s puzzle: GO TO the place, INVESTIGATE, the letter, SOLVE.
+  Future<void> toPuzzle(Mission m) async {
+    await toPlace(m);
     await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
     await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
     expect(findReadableContaining(m.letter.split('\n').first), findsWidgets, reason: '${m.id} letter: ${texts()}');
     await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
-    expect(find.text(m.question), findsOneWidget, reason: '${m.id}: ${texts()}');
+    expect(findReadable(m.question), findsOneWidget, reason: '${m.id}: ${texts()}');
   }
 
   /// The answer's Discovery Moment, the story after it, back to the map.
@@ -50,7 +55,7 @@ class SandboxPlay {
   Future<void> toFinal(Mission fin) async {
     await tapText(t, 'OPEN THE FINAL CASE', after: Duration.zero);
     await wait(t, const Duration(milliseconds: 2800));
-    expect(find.text(fin.question), findsWidgets, reason: texts());
+    expect(findReadable(fin.question), findsWidgets, reason: texts());
     _dials
       ..clear()
       ..addAll(List.filled(fin.codeLength ?? fin.answer.length, 0));

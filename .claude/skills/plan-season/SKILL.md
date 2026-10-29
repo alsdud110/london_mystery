@@ -18,6 +18,13 @@ Follow `tool/season_planner/PLAYBOOK.md` step by step. In short:
 2. `dart run tool/season_planner/plan_season.dart init --season <n> --city <City>`
 3. Write `planning/story_bible.json`, then `season.plan.json`, then the twelve
    `cases/<caseId>/case.plan.json`, and `assets.manifest.json` alongside.
+   Choose each mission's play from its clue (PLAYBOOK §2 "Choosing how each
+   mission is played"; the game's play types are in
+   `tool/season_gen/GAMEPLAY_CATALOG.md`): text puzzles, and the missions on
+   pictures the generator makes — a look round (`explores`), a search
+   (`investigations`), a talk with witnesses (`dialogues`), a picture choice
+   (`imageChoice`). Their pictures go in the manifest with `use: puzzle`;
+   their areas are measured on the made pictures before generation.
 4. `plan_season.dart format <dir>` then `plan_season.dart check <dir>`; fix every
    ERROR and the real WARNINGs; repeat.
 5. Write each case's `englishReview`, run `check` once more, and report in Korean.

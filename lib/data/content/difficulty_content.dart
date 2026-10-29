@@ -311,7 +311,7 @@ abstract final class DifficultyContent {
         m.codeLength,
         m.codeFormat,
         m.dialSymbols.join(','),
-        m.options.map((o) => '${o.id}:${o.artwork?.name}').join(','),
+        m.options.map((o) => '${o.id}:${o.artwork?.name ?? o.picture}').join(','),
         m.hints.length,
         m.clue == null ? null : '${m.clue!.id}:${m.clue!.value}:${m.clue!.symbol}',
         m.evidence == null
@@ -360,7 +360,7 @@ abstract final class DifficultyContent {
             s.clearedArea, s.revealed, s.ink, s.messageTilt, s.inside,
           ].join('|'),
         final InvestigationScene s => [
-            s.artwork.name, s.answer, s.guideAt, s.opening, s.inside,
+            s.artwork?.name ?? s.picture, s.answer, s.guideAt, s.opening, s.inside,
             for (final f in s.finds)
               '${f.id}:${f.areas}:${f.picture}:${f.at}:${f.width}:${f.pictureAspect}:${f.squash}:${f.turn}',
             for (final o in s.spots) '${o.areas}',

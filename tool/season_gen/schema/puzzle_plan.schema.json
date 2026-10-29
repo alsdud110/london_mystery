@@ -44,7 +44,8 @@
         "id": { "$ref": "common.schema.json#/$defs/text" },
         "label": { "$ref": "common.schema.json#/$defs/text" },
         "feedback": { "$ref": "common.schema.json#/$defs/text" },
-        "altText": { "$ref": "common.schema.json#/$defs/text" }
+        "altText": { "$ref": "common.schema.json#/$defs/text" },
+        "picture": { "$ref": "common.schema.json#/$defs/assetFile" }
       }
     }
   }

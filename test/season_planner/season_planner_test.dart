@@ -154,6 +154,75 @@ void main() {
   group('asset manifest', () {
     Map<String, dynamic> asset(Map<String, dynamic> m, String id) => ((m['assets'] as List).cast<Map<String, dynamic>>()).firstWhere((a) => a['assetId'] == id);
 
+    /// STEP 3-13: Case 06's first puzzle made a picture choice, its three
+    /// pictures planned in the manifest (not made: no file on disk).
+    void pictureChoice({bool planned = true, bool asked = true}) {
+      final ids = <String, String>{};
+      edit('cases/s3_ep06/case.plan.json', (c) {
+        final p = ((c['missions'] as List)[0] as Map)['puzzle'] as Map;
+        p['paletteId'] = 'picture_choice';
+        p['missionType'] = 'imageChoice';
+        p['status'] = 'awaitingAssets';
+        for (final o in (p['answerSpec'] as Map)['options'] as List) {
+          ids[o['id'] as String] = 's3_rome.asset.trial_pick_${o['id']}';
+          o['picture'] = 'assets/seasons/season_03_rome/objects/trial_pick_${o['id']}.png';
+          o['altText'] = 'a picture to tell apart';
+        }
+        p['assetNeeds'] = [for (final (i, id) in ids.values.indexed) if (asked || i > 0) id];
+      });
+      if (!planned) return;
+      edit('assets.manifest.json', (m) {
+        for (final MapEntry(key: option, value: id) in ids.entries) {
+          (m['assets'] as List).add({
+            'assetId': id,
+            'type': 'object',
+            'use': 'puzzle',
+            'subject': 's3_rome.trial_pick',
+            'caseIds': ['s3_ep06'],
+            'description': 'A picture for option $option.',
+            'prompt': 'A plain object on paper.',
+            'stylePreset': 'object',
+            'width': 1024,
+            'height': 1024,
+            'transparent': false,
+            'outputPath': 'assets/seasons/season_03_rome/objects/trial_pick_$option.png',
+            'references': [],
+            'status': 'planned',
+          });
+        }
+      });
+    }
+
+    test('a puzzle\'s pictures planned, not made: no ERROR, each picture pending, the generator waiting for them', () {
+      pictureChoice();
+      final r = check();
+      expect(errors(r), isEmpty, reason: r.findings.where((f) => f.isError).join('\n'));
+      final pending = [for (final f in r.findings) if (f.code == 'image_pending' && f.where.startsWith('cases/s3_ep06')) f.where];
+      expect(pending, hasLength(3));
+      expect((r.summary['generator'] as Map)['compatible'], isTrue);
+      expect(r.findings.where((f) => f.code == 'generator_waits_for_pictures').single.message, contains('3 puzzle pictures'));
+      expect(r.summary['puzzlesOnPictures'], 1);
+      expect(r.findings.where((f) => f.code == 'season_play_text_only'), isEmpty, reason: 'one mission on pictures');
+    });
+
+    test('a season read and answered only is a WARNING (no quota, the story chooses)', () {
+      final r = check();
+      expect(r.findings.where((f) => f.code == 'season_play_text_only').single.isError, isFalse);
+      expect(r.summary['puzzlesOnPictures'], 0);
+    });
+
+    test('a puzzle\'s picture no asset plans is an ERROR', () {
+      pictureChoice(planned: false);
+      expect(errors(check()), contains('asset_scene_unplanned'));
+    });
+
+    test('a puzzle\'s picture shown but not in its assetNeeds', () {
+      pictureChoice(asked: false);
+      final r = check();
+      expect(errors(r), isEmpty);
+      expect([for (final f in r.findings) if (f.code == 'asset_need_missing') f.code], hasLength(1));
+    });
+
     test('an asset id of another season', () {
       edit('assets.manifest.json', (m) => asset(m, 's3_rome.asset.cover')['assetId'] = 's3_other.asset.cover');
       expect(errors(check()), contains('asset_id_invalid'));

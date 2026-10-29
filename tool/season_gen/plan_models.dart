@@ -249,6 +249,28 @@ class _Reader {
     return [for (final (i, x) in _list(_map[key], at, null, null).indexed) parse(x, '$at[$i]')];
   }
 
+  List<double> _numbers(Object? v, String at, int count) {
+    final list = _list(v, at, count, count);
+    return [
+      for (final (i, x) in list.indexed)
+        if (x is num && x.isFinite) x.toDouble() else throw PlanFormatException('$at[$i]', 'not a number'),
+    ];
+  }
+
+  /// A point on a picture, `[x, y]` in its pixels.
+  ScenePoint point(String key) => ScenePoint._(_numbers(_required(key), _at(key), 2));
+
+  ScenePoint? optPoint(String key) => _has(key) ? ScenePoint._(_numbers(_map[key], _at(key), 2)) : null;
+
+  /// A rectangle on a picture, `[left, top, right, bottom]` in its pixels.
+  SceneRect? optRect(String key) => _has(key) ? SceneRect._(_numbers(_map[key], _at(key), 4)) : null;
+
+  /// One rectangle or more.
+  List<SceneRect> rects(String key) {
+    final at = _at(key);
+    return [for (final (i, x) in _list(_required(key), at, 1, null).indexed) SceneRect._(_numbers(x, '$at[$i]', 4))];
+  }
+
   /// Rejects the keys no one asked for.
   void done() {
     final unknown = _map.keys.where((k) => !_read.contains(k)).toList();
@@ -991,6 +1013,660 @@ class RecallText {
   }
 }
 
+// ── Scenes (STEP 3-13) ───────────────────────────────────────────────────
+//
+// A mission played on a picture: what its engine's table entry holds
+// (`ExploreScene`, `InvestigationScene`, `DialogueScene`), with places on
+// its pictures in the pictures' own pixels, as they are measured on the
+// file. The generator turns them into fractions of the picture (the game's
+// `ScenePixels.rect`), so a tap lands on the same spot at every screen size
+// and every crop the engine makes (`inside`, `opening`).
+
+/// A point on a picture, in its pixels.
+class ScenePoint {
+  ScenePoint._(List<double> xy) : x = xy[0], y = xy[1];
+  const ScenePoint(this.x, this.y);
+
+  final double x;
+  final double y;
+
+  List<num> toJson() => [_whole(x), _whole(y)];
+}
+
+/// A rectangle on a picture, in its pixels.
+class SceneRect {
+  SceneRect._(List<double> ltrb) : left = ltrb[0], top = ltrb[1], right = ltrb[2], bottom = ltrb[3];
+  const SceneRect(this.left, this.top, this.right, this.bottom);
+
+  final double left;
+  final double top;
+  final double right;
+  final double bottom;
+
+  List<num> toJson() => [_whole(left), _whole(top), _whole(right), _whole(bottom)];
+}
+
+List<List<num>> _rectsJson(List<SceneRect> rects) => [for (final r in rects) r.toJson()];
+
+/// A whole number of pixels as a whole number (`282`, never `282.0`).
+num _whole(double v) => v == v.truncateToDouble() ? v.toInt() : v;
+
+/// A picture file and its size in pixels (the file's own: `PlayCheck`
+/// reads it).
+class PicturePlan {
+  const PicturePlan({required this.file, required this.width, required this.height});
+
+  /// From the repository's root (`assets/…`).
+  final String file;
+  final int width;
+  final int height;
+
+  factory PicturePlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final size = r.obj('pixels', _pixels);
+    final out = PicturePlan(file: r.str('file', pattern: PlanIds.assetFile), width: size.$1, height: size.$2);
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {
+    'file': file,
+    'pixels': {'width': width, 'height': height},
+  };
+}
+
+(int, int) _pixels(Object? json, String path) {
+  final p = _Reader(json, path);
+  final size = (p.integer('width', min: 1), p.integer('height', min: 1));
+  p.done();
+  return size;
+}
+
+/// A place on a picture that holds nothing (`InvestigationSpot`): a tap
+/// says why.
+class EmptySpotPlan {
+  const EmptySpotPlan({required this.label, required this.areas, required this.line});
+
+  /// What it is, for screen readers.
+  final String label;
+  final List<SceneRect> areas;
+  final String line;
+
+  factory EmptySpotPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = EmptySpotPlan(label: r.str('label'), areas: r.rects('areas'), line: r.str('line'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {'label': label, 'areas': _rectsJson(areas), 'line': line};
+}
+
+/// The kinds of `ExploreKind`.
+const exploreKinds = ['document', 'note', 'choice'];
+
+/// A thing to look at when the place is looked round (`ExploreSpot`).
+class ExploreSpotPlan {
+  const ExploreSpotPlan({
+    required this.id,
+    required this.kind,
+    required this.title,
+    required this.label,
+    required this.areas,
+    required this.mark,
+    this.line,
+    this.requires,
+    this.lockedLine,
+    this.unreadLine,
+  });
+
+  final String id;
+
+  /// `document` (holds the mission's letter), `note` (a line worth
+  /// remembering) or `choice` (opens the puzzle's pictures).
+  final String kind;
+  final String title;
+
+  /// What it is, for screen readers.
+  final String label;
+  final List<SceneRect> areas;
+
+  /// Where its small glass sits.
+  final ScenePoint mark;
+  final String? line;
+  final String? requires;
+  final String? lockedLine;
+  final String? unreadLine;
+
+  factory ExploreSpotPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = ExploreSpotPlan(
+      id: r.str('id', pattern: PlanIds.local),
+      kind: r.str('kind', oneOf: exploreKinds),
+      title: r.str('title'),
+      label: r.str('label'),
+      areas: r.rects('areas'),
+      mark: r.point('mark'),
+      line: r.optStr('line'),
+      requires: r.optStr('requires', pattern: PlanIds.local),
+      lockedLine: r.optStr('lockedLine'),
+      unreadLine: r.optStr('unreadLine'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{
+      'id': id,
+      'kind': kind,
+      'title': title,
+      'label': label,
+      'areas': _rectsJson(areas),
+      'mark': mark.toJson(),
+    };
+    _putText(json, 'line', line);
+    _putText(json, 'requires', requires);
+    _putText(json, 'lockedLine', lockedLine);
+    _putText(json, 'unreadLine', unreadLine);
+    return json;
+  }
+}
+
+/// One picture of a look round's choice (`ExplorePicture`), for its option.
+class ExploreChoicePlan {
+  const ExploreChoicePlan({required this.optionId, required this.picture, required this.description});
+
+  final String optionId;
+
+  /// Its file, from the repository's root.
+  final String picture;
+
+  /// What it shows, for screen readers (never which one is right).
+  final String description;
+
+  factory ExploreChoicePlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = ExploreChoicePlan(
+      optionId: r.str('optionId'),
+      picture: r.str('picture', pattern: PlanIds.assetFile),
+      description: r.str('description'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {'optionId': optionId, 'picture': picture, 'description': description};
+}
+
+/// A mission played by looking round its place (`ExploreScene`, table
+/// `explores`): the letter is found in the picture, then the puzzle's
+/// option chosen among its pictures.
+class ExplorePlan {
+  const ExplorePlan({
+    required this.picture,
+    required this.place,
+    required this.task,
+    required this.nextTask,
+    required this.missLine,
+    required this.guideAt,
+    required this.spots,
+    required this.choiceTitle,
+    required this.choiceHow,
+    required this.choicePixels,
+    required this.choices,
+    this.others = const [],
+    this.inside,
+    this.opening,
+    this.documentLabel,
+  });
+
+  final PicturePlan picture;
+
+  /// The place, for screen readers.
+  final String place;
+  final String task;
+  final String nextTask;
+  final String missLine;
+  final ScenePoint guideAt;
+  final List<ExploreSpotPlan> spots;
+  final List<EmptySpotPlan> others;
+  final String choiceTitle;
+  final String choiceHow;
+
+  /// The size of every choice picture (one shape for all).
+  final (int, int) choicePixels;
+  final List<ExploreChoicePlan> choices;
+  final SceneRect? inside;
+  final SceneRect? opening;
+  final String? documentLabel;
+
+  factory ExplorePlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = ExplorePlan(
+      picture: r.obj('picture', PicturePlan.fromJson),
+      place: r.str('place'),
+      task: r.str('task'),
+      nextTask: r.str('nextTask'),
+      missLine: r.str('missLine'),
+      guideAt: r.point('guideAt'),
+      spots: r.objs('spots', ExploreSpotPlan.fromJson, min: 2),
+      others: r.optObjs('others', EmptySpotPlan.fromJson),
+      choiceTitle: r.str('choiceTitle'),
+      choiceHow: r.str('choiceHow'),
+      choicePixels: r.obj('choicePixels', _pixels),
+      choices: r.objs('choices', ExploreChoicePlan.fromJson, min: 2),
+      inside: r.optRect('inside'),
+      opening: r.optRect('opening'),
+      documentLabel: r.optStr('documentLabel'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{
+      'picture': picture.toJson(),
+      'place': place,
+      'task': task,
+      'nextTask': nextTask,
+      'missLine': missLine,
+      'guideAt': guideAt.toJson(),
+      'spots': [for (final s in spots) s.toJson()],
+    };
+    _putList(json, 'others', [for (final o in others) o.toJson()]);
+    json['choiceTitle'] = choiceTitle;
+    json['choiceHow'] = choiceHow;
+    json['choicePixels'] = {'width': choicePixels.$1, 'height': choicePixels.$2};
+    json['choices'] = [for (final c in choices) c.toJson()];
+    if (inside case final r?) json['inside'] = r.toJson();
+    if (opening case final r?) json['opening'] = r.toJson();
+    _putText(json, 'documentLabel', documentLabel);
+    return json;
+  }
+}
+
+/// A thing to find in a searched room (`InvestigationFind`).
+class SearchFindPlan {
+  const SearchFindPlan({
+    required this.id,
+    required this.name,
+    required this.title,
+    required this.reportLine,
+    required this.spot,
+    required this.areas,
+    required this.foundLine,
+    required this.picture,
+    required this.at,
+    required this.width,
+    this.squash,
+    this.turn,
+  });
+
+  final String id;
+  final String name;
+  final String title;
+
+  /// The letter's line that says where it is, word for word.
+  final String reportLine;
+
+  /// Where it is, for screen readers (the place, never the thing).
+  final String spot;
+  final List<SceneRect> areas;
+  final String foundLine;
+
+  /// The thing, cut out, laid on the room where it was found.
+  final PicturePlan picture;
+
+  /// Its centre on the room, and its width on the room (in the room's pixels).
+  final ScenePoint at;
+  final double width;
+  final double? squash;
+  final double? turn;
+
+  factory SearchFindPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = SearchFindPlan(
+      id: r.str('id', pattern: PlanIds.local),
+      name: r.str('name'),
+      title: r.str('title'),
+      reportLine: r.str('reportLine'),
+      spot: r.str('spot'),
+      areas: r.rects('areas'),
+      foundLine: r.str('foundLine'),
+      picture: r.obj('picture', PicturePlan.fromJson),
+      at: r.point('at'),
+      width: r.optNum('width', min: 1) ?? r._fail('width', 'missing'),
+      squash: r.optNum('squash', min: 0.1, max: 1),
+      turn: r.optNum('turn', min: -3.2, max: 3.2),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{
+      'id': id,
+      'name': name,
+      'title': title,
+      'reportLine': reportLine,
+      'spot': spot,
+      'areas': _rectsJson(areas),
+      'foundLine': foundLine,
+      'picture': picture.toJson(),
+      'at': at.toJson(),
+      'width': _whole(width),
+    };
+    if (squash != null) json['squash'] = squash;
+    if (turn != null) json['turn'] = turn;
+    return json;
+  }
+}
+
+/// A mission played by searching its place for what its letter lists
+/// (`InvestigationScene`, table `investigations`): the last thing found
+/// answers the puzzle.
+class SearchPlan {
+  const SearchPlan({
+    required this.picture,
+    required this.task,
+    required this.documentTitle,
+    required this.missLine,
+    required this.doneLine,
+    required this.arrival,
+    required this.guideAt,
+    required this.finds,
+    this.spots = const [],
+    this.opening,
+    this.inside,
+    this.startLabel,
+    this.documentLabel,
+  });
+
+  final PicturePlan picture;
+  final String task;
+  final String documentTitle;
+  final String missLine;
+  final String doneLine;
+  final List<String> arrival;
+  final ScenePoint guideAt;
+  final List<SearchFindPlan> finds;
+  final List<EmptySpotPlan> spots;
+  final SceneRect? opening;
+  final SceneRect? inside;
+  final String? startLabel;
+  final String? documentLabel;
+
+  factory SearchPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = SearchPlan(
+      picture: r.obj('picture', PicturePlan.fromJson),
+      task: r.str('task'),
+      documentTitle: r.str('documentTitle'),
+      missLine: r.str('missLine'),
+      doneLine: r.str('doneLine'),
+      arrival: r.strings('arrival', min: 1),
+      guideAt: r.point('guideAt'),
+      finds: r.objs('finds', SearchFindPlan.fromJson, min: 1),
+      spots: r.optObjs('spots', EmptySpotPlan.fromJson),
+      opening: r.optRect('opening'),
+      inside: r.optRect('inside'),
+      startLabel: r.optStr('startLabel'),
+      documentLabel: r.optStr('documentLabel'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{
+      'picture': picture.toJson(),
+      'task': task,
+      'documentTitle': documentTitle,
+      'missLine': missLine,
+      'doneLine': doneLine,
+      'arrival': arrival,
+      'guideAt': guideAt.toJson(),
+      'finds': [for (final f in finds) f.toJson()],
+    };
+    _putList(json, 'spots', [for (final s in spots) s.toJson()]);
+    if (opening case final r?) json['opening'] = r.toJson();
+    if (inside case final r?) json['inside'] = r.toJson();
+    _putText(json, 'startLabel', startLabel);
+    _putText(json, 'documentLabel', documentLabel);
+    return json;
+  }
+}
+
+/// A question any witness can be asked (`DialogueQuestion`).
+class TalkQuestionPlan {
+  const TalkQuestionPlan({required this.id, required this.text});
+
+  final String id;
+  final String text;
+
+  factory TalkQuestionPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = TalkQuestionPlan(id: r.str('id', pattern: PlanIds.local), text: r.str('text'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {'id': id, 'text': text};
+}
+
+/// A witness's answer to one question. With [thing], it is a statement
+/// written in the notes (`DialogueStatement`, its id `<witness>.<question>`):
+/// two statements match when their things are the same.
+class TalkAnswerPlan {
+  const TalkAnswerPlan({required this.line, this.thing});
+
+  final String line;
+  final String? thing;
+
+  factory TalkAnswerPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = TalkAnswerPlan(line: r.str('line'), thing: r.optStr('thing'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'line': line};
+    _putText(json, 'thing', thing);
+    return json;
+  }
+}
+
+/// A witness (`DialogueSpeaker`).
+class TalkWitnessPlan {
+  const TalkWitnessPlan({
+    required this.id,
+    required this.name,
+    required this.title,
+    required this.portrait,
+    required this.description,
+    required this.greeting,
+    required this.answers,
+    this.face,
+  });
+
+  final String id;
+  final String name;
+  final String title;
+
+  /// Their portrait file, from the repository's root.
+  final String portrait;
+
+  /// What the portrait shows, for screen readers.
+  final String description;
+  final String greeting;
+
+  /// By question id.
+  final Map<String, TalkAnswerPlan> answers;
+
+  /// Where their face is in the portrait, as fractions (0..1).
+  final (double, double)? face;
+
+  factory TalkWitnessPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final answersAt = '$path.answers';
+    final out = TalkWitnessPlan(
+      id: r.str('id', pattern: PlanIds.local),
+      name: r.str('name'),
+      title: r.str('title'),
+      portrait: r.str('portrait', pattern: PlanIds.assetFile),
+      description: r.str('description'),
+      greeting: r.str('greeting'),
+      answers: {
+        for (final e in _Reader._object(r._required('answers'), answersAt).entries)
+          e.key: TalkAnswerPlan.fromJson(e.value, '$answersAt.${e.key}'),
+      },
+      face: r.optObj('face', (json, path) {
+        final f = _Reader(json, path);
+        final out = (f.optNum('x', min: 0, max: 1) ?? f._fail('x', 'missing'), f.optNum('y', min: 0, max: 1) ?? f._fail('y', 'missing'));
+        f.done();
+        return out;
+      }),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{
+      'id': id,
+      'name': name,
+      'title': title,
+      'portrait': portrait,
+      'description': description,
+      'greeting': greeting,
+      'answers': {for (final MapEntry(:key, :value) in answers.entries) key: value.toJson()},
+    };
+    if (face case (final x, final y)) json['face'] = {'x': x, 'y': y};
+    return json;
+  }
+}
+
+/// The deduction that ends a talk (`DialogueDeduction`); its answer is the
+/// puzzle's (`answerSpec.answer`).
+class TalkDeductionPlan {
+  const TalkDeductionPlan({
+    required this.topic,
+    required this.pair,
+    required this.lines,
+    this.then = const [],
+    this.witnesses,
+  });
+
+  /// The question id the two matching statements answer.
+  final String topic;
+
+  /// The two statement ids (`<witness>.<question>`) that answer it.
+  final List<String> pair;
+
+  /// Statements still to be found once it is made.
+  final List<String> then;
+  final int? witnesses;
+
+  /// Its lines, by the game's names ([requiredLines], then [thenLines]).
+  final Map<String, String> lines;
+
+  static const requiredLines = [
+    'askLine', 'anotherLine', 'readyLine', 'compareGoal', 'compareHow', //
+    'matchLine', 'offTopicLine', 'checkLine', 'differentLine', 'retryLine',
+  ];
+
+  /// Said only when [then] has statements.
+  static const thenLines = ['thenGoal', 'thenHow', 'doneLine', 'notesLine'];
+
+  factory TalkDeductionPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = TalkDeductionPlan(
+      topic: r.str('topic', pattern: PlanIds.local),
+      pair: r.strings('pair', min: 2, max: 2, unique: true),
+      then: r.optStrings('then', unique: true),
+      witnesses: r.optInt('witnesses', min: 1),
+      lines: {
+        for (final k in requiredLines) k: r.str(k),
+        for (final k in thenLines) k: ?r.optStr(k),
+      },
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'topic': topic, 'pair': pair};
+    _putList(json, 'then', then);
+    if (witnesses != null) json['witnesses'] = witnesses;
+    for (final k in [...requiredLines, ...thenLines]) {
+      _putText(json, k, lines[k]);
+    }
+    return json;
+  }
+}
+
+/// A mission played by talking to its witnesses (`DialogueScene`, table
+/// `dialogues`): questions asked, statements written down, two compared.
+class DialoguePlan {
+  const DialoguePlan({
+    required this.place,
+    required this.background,
+    required this.goal,
+    required this.how,
+    required this.guide,
+    required this.questions,
+    required this.witnesses,
+    required this.deduction,
+  });
+
+  final String place;
+
+  /// The place behind the people, from the repository's root.
+  final String background;
+  final String goal;
+  final String how;
+  final String guide;
+  final List<TalkQuestionPlan> questions;
+  final List<TalkWitnessPlan> witnesses;
+  final TalkDeductionPlan deduction;
+
+  /// `<witness>.<question>` of every answer that is a statement.
+  Map<String, (TalkWitnessPlan, String, TalkAnswerPlan)> get statements => {
+    for (final w in witnesses)
+      for (final MapEntry(key: q, value: a) in w.answers.entries)
+        if (a.thing != null) '${w.id}.$q': (w, q, a),
+  };
+
+  factory DialoguePlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = DialoguePlan(
+      place: r.str('place'),
+      background: r.str('background', pattern: PlanIds.assetFile),
+      goal: r.str('goal'),
+      how: r.str('how'),
+      guide: r.str('guide'),
+      questions: r.objs('questions', TalkQuestionPlan.fromJson, min: 1),
+      witnesses: r.objs('witnesses', TalkWitnessPlan.fromJson, min: 2),
+      deduction: r.obj('deduction', TalkDeductionPlan.fromJson),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {
+    'place': place,
+    'background': background,
+    'goal': goal,
+    'how': how,
+    'guide': guide,
+    'questions': [for (final q in questions) q.toJson()],
+    'witnesses': [for (final w in witnesses) w.toJson()],
+    'deduction': deduction.toJson(),
+  };
+}
+
 /// A mission's words as the game shows them (`Mission`, its keys). What the
 /// plan already holds (its id, order, place, type, answer, options) is not
 /// repeated here. Every field is optional while the mission is planned;
@@ -1016,6 +1692,10 @@ class MissionPlayPlan {
     this.recall,
     this.evidenceLinkLine,
     this.lockTitle,
+    this.hideOptionNames,
+    this.explore,
+    this.search,
+    this.dialogue,
   });
 
   final String? title;
@@ -1050,6 +1730,23 @@ class MissionPlayPlan {
   /// plain "THE LOCK" when not given.
   final String? lockTitle;
 
+  /// A picture choice told apart by its words only (`Mission.hideOptionNames`):
+  /// the pictures are not named under them.
+  final bool? hideOptionNames;
+
+  /// The scene of a puzzle played on its engine's table (STEP 3-13), the
+  /// one its `engineTable` reads: `explores`, `investigations`, `dialogues`.
+  final ExplorePlan? explore;
+  final SearchPlan? search;
+  final DialoguePlan? dialogue;
+
+  /// The scene given, by the table it is written into.
+  Map<String, Object> get scenes => {
+    'explores': ?explore,
+    'investigations': ?search,
+    'dialogues': ?dialogue,
+  };
+
   factory MissionPlayPlan.fromJson(Object? json, String path) {
     final r = _Reader(json, path);
     final out = MissionPlayPlan(
@@ -1072,6 +1769,10 @@ class MissionPlayPlan {
       recall: r.optObj('recall', RecallText.fromJson),
       evidenceLinkLine: r.optStr('evidenceLinkLine'),
       lockTitle: r.optStr('lockTitle'),
+      hideOptionNames: r.optBool('hideOptionNames'),
+      explore: r.optObj('explore', ExplorePlan.fromJson),
+      search: r.optObj('search', SearchPlan.fromJson),
+      dialogue: r.optObj('dialogue', DialoguePlan.fromJson),
     );
     r.done();
     return out;
@@ -1098,6 +1799,10 @@ class MissionPlayPlan {
     if (recall case final r?) json['recall'] = r.toJson();
     _putText(json, 'evidenceLinkLine', evidenceLinkLine);
     _putText(json, 'lockTitle', lockTitle);
+    if (hideOptionNames != null) json['hideOptionNames'] = hideOptionNames;
+    if (explore case final s?) json['explore'] = s.toJson();
+    if (search case final s?) json['search'] = s.toJson();
+    if (dialogue case final s?) json['dialogue'] = s.toJson();
     return json;
   }
 }
@@ -1171,14 +1876,18 @@ class MissionPlan {
 // ── PuzzlePlan ───────────────────────────────────────────────────────────
 
 /// A choice of a puzzle (`ChoiceOption`, without its `Artwork`: a new
-/// season's pictures are its own files).
+/// season's pictures are its own files, [picture]).
 class OptionPlan {
-  const OptionPlan({required this.id, required this.label, this.feedback, this.altText});
+  const OptionPlan({required this.id, required this.label, this.feedback, this.altText, this.picture});
 
   final String id;
   final String label;
   final String? feedback;
   final String? altText;
+
+  /// A picture choice's picture (`ChoiceOption.picture`), from the
+  /// repository's root.
+  final String? picture;
 
   factory OptionPlan.fromJson(Object? json, String path) {
     final r = _Reader(json, path);
@@ -1187,6 +1896,7 @@ class OptionPlan {
       label: r.str('label'),
       feedback: r.optStr('feedback'),
       altText: r.optStr('altText'),
+      picture: r.optStr('picture', pattern: PlanIds.assetFile),
     );
     r.done();
     return out;
@@ -1196,6 +1906,7 @@ class OptionPlan {
     final json = <String, Object?>{'id': id, 'label': label};
     _putText(json, 'feedback', feedback);
     _putText(json, 'altText', altText);
+    _putText(json, 'picture', picture);
     return json;
   }
 }

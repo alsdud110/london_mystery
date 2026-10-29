@@ -137,8 +137,10 @@ const manifestName = 'generated.manifest.json';
 
 /// Raised when the version of what is made changes how it is made.
 /// 2 (STEP 3-9): the season's cases in one file (`<seasonId>_cases.g.dart`),
-/// their order in the manifest.
-const generatorVersion = 2;
+/// their order in the manifest. 3 (STEP 3-13): the scene tables
+/// (`explores`, `investigations`, `dialogues`) and picture options, the
+/// imports each file needs.
+const generatorVersion = 3;
 
 /// Why nothing was made or written, a line each (as `validate_plan` prints them).
 class GenerateFailure implements Exception {
@@ -343,13 +345,7 @@ abstract final class CaseGenerator {
     final name = constName(s.seasonId);
     String spread(String suffix) => '{\n${[for (final id in caseIds) '  ...${constName(id)}$suffix,\n'].join()}}';
     String byCase(String suffix) => DartLiteral.of({for (final id in caseIds) id: DartCode('${constName(id)}$suffix')});
-    return '$generatedHeader\n// source: ${caseIds.join(', ')} (in play order)\n\n'
-        "import 'package:world_mystery/data/models/learning.dart';\n"
-        "import 'package:world_mystery/data/models/scene_exhibit.dart' show EvidenceLink;\n"
-        '\n'
-        '${[for (final id in caseIds) "import '$id.g.dart';\n"].join()}'
-        '\n'
-        '/// The cases of season ${s.seasonId} made, in play order (`SeasonContent.episodes`).\n'
+    final body = '/// The cases of season ${s.seasonId} made, in play order (`SeasonContent.episodes`).\n'
         'const ${name}Episodes = <String, Map<String, dynamic>>${byCase('Json')};\n'
         '\n'
         '/// Their missions\' learning design (`SeasonContent.learning`).\n'
@@ -359,7 +355,44 @@ abstract final class CaseGenerator {
         'const ${name}LanguageTopics = <String, CaseLanguageTopic>${byCase('LanguageTopic')};\n'
         '\n'
         '/// Their evidence matched to earlier evidence (`SeasonContent.evidenceLinks`).\n'
-        'const ${name}EvidenceLinks = <String, EvidenceLink>${spread('EvidenceLinks')};\n';
+        'const ${name}EvidenceLinks = <String, EvidenceLink>${spread('EvidenceLinks')};\n'
+        '${[
+          for (final MapEntry(key: table, value: model) in sceneTables.entries)
+            '\n/// Their missions played on `$table` (`SeasonContent.$table`).\n'
+                'const $name${_suffix(table)} = <String, $model>${spread(_suffix(table))};\n',
+        ].join()}';
+    return '$generatedHeader\n// source: ${caseIds.join(', ')} (in play order)\n\n'
+        '${_imports(body)}\n'
+        '${[for (final id in caseIds) "import '$id.g.dart';\n"].join()}'
+        '\n'
+        '$body';
+  }
+
+  /// Where the game's types a generated file names are declared.
+  static const _libraries = {
+    'dart:ui': ['Offset', 'Rect'],
+    'package:world_mystery/data/models/dialogue.dart': [
+      'DialogueAnswer', 'DialogueDeduction', 'DialogueQuestion', 'DialogueScene', 'DialogueSpeaker', 'DialogueStatement', //
+    ],
+    'package:world_mystery/data/models/investigation.dart': ['InvestigationFind', 'InvestigationScene', 'InvestigationSpot'],
+    'package:world_mystery/data/models/learning.dart': [],
+    'package:world_mystery/data/models/scene_exhibit.dart': ['EvidenceLink'],
+    'package:world_mystery/data/models/scene_explore.dart': ['ExploreKind', 'ExplorePicture', 'ExploreScene', 'ExploreSpot', 'ScenePixels'],
+  };
+
+  /// The imports of [body]: each library whose types it names, showing only
+  /// those (the learning models whole, as before).
+  static String _imports(String body) {
+    final b = StringBuffer();
+    for (final MapEntry(key: lib, value: names) in _libraries.entries) {
+      if (names.isEmpty) {
+        b.write("import '$lib';\n");
+        continue;
+      }
+      final used = [for (final n in names) if (RegExp('\\b$n\\b').hasMatch(body)) n];
+      if (used.isNotEmpty) b.write("import '$lib' show ${used.join(', ')};\n");
+    }
+    return b.toString();
   }
 
   // ── A case ─────────────────────────────────────────────────────────────
@@ -385,11 +418,7 @@ abstract final class CaseGenerator {
             m.clueOutputs.evidence: DartCall('EvidenceLink', named: {'to': input.ref, 'line': m.play!.evidenceLinkLine!}),
     };
     final topic = DartCall('CaseLanguageTopic', named: {'title': c.learningGoal.title, 'titleKo': c.learningGoal.titleKo});
-    return '${_head(source, hash)}\n'
-        "import 'package:world_mystery/data/models/learning.dart';\n"
-        "import 'package:world_mystery/data/models/scene_exhibit.dart' show EvidenceLink;\n"
-        '\n'
-        '/// Case ${c.caseId} as `Episode.fromJson` reads it.\n'
+    final body = '/// Case ${c.caseId} as `Episode.fromJson` reads it.\n'
         'const ${name}Json = <String, dynamic>${DartLiteral.of(episodeJson(c))};\n'
         '\n'
         "/// Its missions' learning design (`SeasonContent.learning`).\n"
@@ -399,7 +428,17 @@ abstract final class CaseGenerator {
         'const ${name}LanguageTopic = ${DartLiteral.of(topic)};\n'
         '\n'
         '/// Its evidence matched to earlier evidence (`SeasonContent.evidenceLinks`).\n'
-        'const ${name}EvidenceLinks = <String, EvidenceLink>${DartLiteral.of(links)};\n';
+        'const ${name}EvidenceLinks = <String, EvidenceLink>${DartLiteral.of(links)};\n'
+        '${[
+          for (final MapEntry(key: table, value: model) in sceneTables.entries)
+            '\n/// Its missions played on `$table` (`SeasonContent.$table`): their scenes,\n'
+                '/// places on their pictures as the pictures\' pixels (fractions at run time).\n'
+                'const $name${_suffix(table)} = <String, $model>${DartLiteral.of({
+                  for (final m in all)
+                    if (m.puzzle.engineTable == table) m.missionId: ?scene(m),
+                })};\n',
+        ].join()}';
+    return '${_head(source, hash)}\n${_imports(body)}\n$body';
   }
 
   /// [c] as the game's case JSON, its keys in `Episode.toJson`'s order (and
@@ -459,8 +498,167 @@ abstract final class CaseGenerator {
       if (w.feedback.isNotEmpty) 'feedback': w.feedback,
       'orderFeedback': ?w.orderFeedback,
       if (recall.length == 1) 'recall': {'evidence': recall.single, ...?w.recall?.toJson()},
+      if (w.hideOptionNames == true) 'hideOptionNames': true,
       'lockTitle': ?w.lockTitle,
     };
+  }
+
+  // ── Scenes (STEP 3-13) ─────────────────────────────────────────────────
+
+  /// The scene tables a case file writes, by their `SeasonContent` name:
+  /// its Dart model and the plan's scene of each mission played on it.
+  static const sceneTables = {
+    'explores': 'ExploreScene',
+    'investigations': 'InvestigationScene',
+    'dialogues': 'DialogueScene',
+  };
+
+  /// `explores` → `Explores` (a constant's suffix).
+  static String _suffix(String table) => '${table[0].toUpperCase()}${table.substring(1)}';
+
+  /// [m]'s scene as its engine's model, or null when it has none.
+  static DartCall? scene(MissionPlan m) {
+    final w = m.play;
+    if (w == null) return null;
+    return switch (m.puzzle.engineTable) {
+      'explores' => w.explore == null ? null : _explore(w.explore!),
+      'investigations' => w.search == null ? null : _search(w.search!, m.puzzle.answerSpec.answer),
+      'dialogues' => w.dialogue == null ? null : _dialogue(w.dialogue!, m.puzzle.answerSpec.answer),
+      _ => null,
+    };
+  }
+
+  /// A number of a picture's pixels: written whole when it is.
+  static String _n(double v) => v == v.truncateToDouble() ? '${v.toInt()}' : '$v';
+
+  /// [r] on a [w]×[h] picture as the fractions the game keeps (a constant
+  /// expression, its pixels as measured on the file).
+  static DartCode _rect(SceneRect r, int w, int h) =>
+      DartCode('Rect.fromLTRB(${_n(r.left)} / $w, ${_n(r.top)} / $h, ${_n(r.right)} / $w, ${_n(r.bottom)} / $h)');
+
+  static DartCode _point(ScenePoint p, int w, int h) => DartCode('Offset(${_n(p.x)} / $w, ${_n(p.y)} / $h)');
+
+  static List<DartCode> _rects(List<SceneRect> rs, int w, int h) => [for (final r in rs) _rect(r, w, h)];
+
+  static DartCall _empty(EmptySpotPlan s, int w, int h) =>
+      DartCall('InvestigationSpot', named: {'label': s.label, 'areas': _rects(s.areas, w, h), 'line': s.line});
+
+  static DartCall _explore(ExplorePlan s) {
+    final (w, h) = (s.picture.width, s.picture.height);
+    return DartCall('ExploreScene', named: {
+      'picture': s.picture.file,
+      'pixels': DartCall('ScenePixels', positional: [w.toDouble(), h.toDouble()]),
+      'place': s.place,
+      'task': s.task,
+      'nextTask': s.nextTask,
+      'spots': [
+        for (final x in s.spots)
+          DartCall('ExploreSpot', named: {
+            'id': x.id,
+            'kind': DartCode('ExploreKind.${x.kind}'),
+            'title': x.title,
+            'label': x.label,
+            'areas': _rects(x.areas, w, h),
+            'mark': _point(x.mark, w, h),
+            'line': ?x.line,
+            'requires': ?x.requires,
+            'lockedLine': ?x.lockedLine,
+            'unreadLine': ?x.unreadLine,
+          }),
+      ],
+      'others': [for (final o in s.others) _empty(o, w, h)],
+      'missLine': s.missLine,
+      'choiceTitle': s.choiceTitle,
+      'choiceHow': s.choiceHow,
+      'choices': [
+        for (final c in s.choices) DartCall('ExplorePicture', named: {'optionId': c.optionId, 'picture': c.picture, 'description': c.description}),
+      ],
+      'pictureAspect': DartCode('${s.choicePixels.$1} / ${s.choicePixels.$2}'),
+      'guideAt': _point(s.guideAt, w, h),
+      if (s.inside case final r?) 'inside': _rect(r, w, h),
+      if (s.opening case final r?) 'opening': _rect(r, w, h),
+      'documentLabel': ?s.documentLabel,
+    });
+  }
+
+  static DartCall _search(SearchPlan s, String answer) {
+    final (w, h) = (s.picture.width, s.picture.height);
+    return DartCall('InvestigationScene', named: {
+      'picture': s.picture.file,
+      'pixels': DartCall('ScenePixels', positional: [w.toDouble(), h.toDouble()]),
+      'task': s.task,
+      'documentTitle': s.documentTitle,
+      'finds': [
+        for (final f in s.finds)
+          DartCall('InvestigationFind', named: {
+            'id': f.id,
+            'name': f.name,
+            'title': f.title,
+            'reportLine': f.reportLine,
+            'spot': f.spot,
+            'areas': _rects(f.areas, w, h),
+            'foundLine': f.foundLine,
+            'picture': f.picture.file,
+            'at': _point(f.at, w, h),
+            'width': DartCode('${_n(f.width)} / $w'),
+            'pictureAspect': DartCode('${f.picture.width} / ${f.picture.height}'),
+            'squash': ?f.squash,
+            'turn': ?f.turn,
+          }),
+      ],
+      'spots': [for (final o in s.spots) _empty(o, w, h)],
+      'answer': answer,
+      'missLine': s.missLine,
+      'doneLine': s.doneLine,
+      'arrival': s.arrival,
+      'guideAt': _point(s.guideAt, w, h),
+      if (s.opening case final r?) 'opening': _rect(r, w, h),
+      if (s.inside case final r?) 'inside': _rect(r, w, h),
+      'startLabel': ?s.startLabel,
+      'documentLabel': ?s.documentLabel,
+    });
+  }
+
+  static DartCall _dialogue(DialoguePlan s, String answer) {
+    final d = s.deduction;
+    return DartCall('DialogueScene', named: {
+      'place': s.place,
+      'background': s.background,
+      'goal': s.goal,
+      'how': s.how,
+      'guide': s.guide,
+      'speakers': [
+        for (final x in s.witnesses)
+          DartCall('DialogueSpeaker', named: {
+            'id': x.id,
+            'name': x.name,
+            'title': x.title,
+            'portrait': x.portrait,
+            'description': x.description,
+            'greeting': x.greeting,
+            'answers': {
+              for (final q in s.questions)
+                if (x.answers[q.id] case final a?)
+                  q.id: DartCall('DialogueAnswer', positional: [a.line], named: {if (a.thing != null) 'statementId': '${x.id}.${q.id}'}),
+            },
+            if (x.face case (final fx, final fy)) 'face': DartCode('Offset($fx, $fy)'),
+          }),
+      ],
+      'questions': [for (final q in s.questions) DartCall('DialogueQuestion', named: {'id': q.id, 'text': q.text})],
+      'statements': [
+        for (final MapEntry(key: id, value: (x, q, a)) in s.statements.entries)
+          DartCall('DialogueStatement', named: {'id': id, 'speakerId': x.id, 'about': q, 'text': a.line, 'thing': a.thing!}),
+      ],
+      'deduction': DartCall('DialogueDeduction', named: {
+        'topic': d.topic,
+        'pair': DartCode('{${d.pair.map(DartLiteral.string).join(', ')}}'),
+        'answer': answer,
+        for (final k in TalkDeductionPlan.requiredLines) k: d.lines[k],
+        if (d.then.isNotEmpty) 'then': DartCode('{${d.then.map(DartLiteral.string).join(', ')}}'),
+        for (final k in TalkDeductionPlan.thenLines) k: ?d.lines[k],
+        'witnesses': ?d.witnesses,
+      }),
+    });
   }
 }
 
