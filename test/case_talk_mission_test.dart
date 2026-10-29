@@ -116,10 +116,18 @@ void main() {
     await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 600));
   }
 
+  /// The letter after the talk before: opened, read, on to the puzzle.
+  Future<void> readLetter(WidgetTester t) async {
+    expect(find.text('CHECK ANSWER'), findsNothing, reason: 'the letter comes first');
+    await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
+    expect(findReadableContaining(m2.letter.split('\n').first), findsWidgets);
+    await tapText(t, 'SOLVE THE PUZZLE', after: const Duration(milliseconds: 900));
+  }
+
   bool examined(String k) => ref.read(gameControllerProvider).hasExamined(k);
 
   group('talk → puzzle → talk', () {
-    testWidgets('from its place: the talk first (no letter), then the puzzle, then the talk after, then the moment',
+    testWidgets('from its place: the talk first, then its letter and the puzzle, then the talk after, then the moment',
         (t) async {
       await open(t, m2.id, started: false);
       await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 1500));
@@ -131,8 +139,11 @@ void main() {
       expect(find.text('LOOK IN THE BOOK'), findsOneWidget);
       await tapKey(t, 'case-talk-finish');
       expect(examined(TalkMission.beforeKey(m2.id)), isTrue);
-      expect(find.text('CHECK ANSWER'), findsOneWidget, reason: 'the puzzle now');
       expect(key('case-talk-line'), findsNothing);
+      // STEP 3-13B: then the mission's letter, as without a talk (a plain
+      // puzzle is read from it), then the puzzle.
+      await readLetter(t);
+      expect(find.text('CHECK ANSWER'), findsOneWidget, reason: 'the puzzle now');
 
       await answerPuzzle(t, m2);
       expect(ref.read(gameControllerProvider).isCompleted(m2.id), isTrue, reason: 'solved and saved as always');
@@ -239,6 +250,7 @@ void main() {
     await tapKey(t, 'case-talk-q-where');
     await sayAll(t);
     await tapKey(t, 'case-talk-finish');
+    await readLetter(t);
     await answerPuzzle(t, m2);
     expect(key('discovery-moment'), findsOneWidget);
   });

@@ -110,6 +110,40 @@
           "icon": "letter",
           "description": "A note Mr. Bell left on the front desk.",
           "inscription": "The code has three numbers. I hid one number at each place I went this morning."
+        },
+        "talk": {
+          "speaker": "ms_rosa",
+          "goal": "Read Mr. Bell's note.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Detective! The story box is locked."
+              },
+              {
+                "by": "speaker",
+                "text": "Mr. Bell left this note on my desk."
+              },
+              {
+                "by": "detective",
+                "text": "Does it give the code?"
+              },
+              {
+                "by": "speaker",
+                "text": "No. It tells his morning, all mixed up."
+              },
+              {
+                "by": "speaker",
+                "text": "Can you put it in order?"
+              }
+            ],
+            "finishLabel": "READ THE NOTE"
+          }
+        },
+        "discovery": {
+          "type": "newLead",
+          "title": "BOOK, SHELF, LAMP",
+          "detail": "Mr. Bell hid a number at each place. Start with the visitor book."
         }
       }
     },
@@ -208,7 +242,36 @@
           "description": "A tiny line under Mr. Bell's name in the visitor book.",
           "inscription": "The first number: How many visitors came before me?"
         },
-        "evidenceLinkLine": "The same visitor book you read in Case 01, now with Mr. Bell's pencil line."
+        "evidenceLinkLine": "The same visitor book you read in Case 01, now with Mr. Bell's pencil line.",
+        "talk": {
+          "speaker": "ms_rosa",
+          "goal": "Find the first number.",
+          "after": {
+            "lines": [
+              {
+                "by": "narrator",
+                "text": "You show Ms. Rosa the pencil line."
+              },
+              {
+                "by": "speaker",
+                "text": "Only Tom came before Mr. Bell?"
+              },
+              {
+                "by": "detective",
+                "text": "Yes. So the first number is one."
+              },
+              {
+                "by": "speaker",
+                "text": "Well done! Now, where did he go next?"
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "THE FIRST NUMBER: 1",
+          "detail": "Tom came at 9:10, before Mr. Bell. The next number waits at the blue shelf."
+        }
       }
     },
     {
@@ -295,6 +358,11 @@
           "icon": "letter",
           "description": "A card with a poem, under a book on the blue shelf.",
           "inscription": "Fix the lamp, Open the door, Up the ladder, Read some more!"
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "THE SECOND NUMBER: 4",
+          "detail": "The lines of the poem begin F, O, U, R. One number is left, at the lamp."
         }
       }
     }
@@ -390,7 +458,33 @@
         "icon": "letter",
         "description": "A gift from Mr. Bell, found in the story box.",
         "inscription": "For story hour. Thank you, Ms. Rosa! — Mr. Bell"
-      }
+      },
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "One, four, five! The dials are right.",
+          "speaker": "ms_rosa"
+        },
+        {
+          "by": "detective",
+          "text": "Mr. Bell's morning was the code.",
+          "evidence": "s9_ep02_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "First the book, then the shelf, last the lamp.",
+          "speaker": "ms_rosa"
+        },
+        {
+          "by": "narrator",
+          "text": "On the top shelf, there is an empty space."
+        },
+        {
+          "by": "speaker",
+          "text": "Our oldest book is not here. But first, the story box!",
+          "speaker": "ms_rosa"
+        }
+      ]
     }
   },
   "hook": "The story box is open. Who wants a story?",

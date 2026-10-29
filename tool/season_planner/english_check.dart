@@ -122,6 +122,23 @@ abstract final class EnglishCheck {
           add('$sa.deduction.$key', value);
         }
       }
+      // The story around the puzzle (STEP 3-13B).
+      if (w.talk case final t?) {
+        add('$at.play.talk.goal', t.goal);
+        for (final (part, p) in [('before', t.before), ('after', t.after)]) {
+          for (final (j, l) in (p?.lines ?? const <TalkLinePlan>[]).indexed) {
+            add('$at.play.talk.$part.lines[$j]', l.text);
+          }
+        }
+      }
+      if (w.discovery case final d?) {
+        add('$at.play.discovery.title', d.title);
+        add('$at.play.discovery.detail', d.detail);
+        add('$at.play.discovery.note', d.note);
+      }
+      for (final (j, l) in w.ending.indexed) {
+        add('$at.play.ending[$j]', l.text);
+      }
     }
     return out;
   }

@@ -197,6 +197,55 @@ void main() {
       expect(on((c) => words(c, 0)['hideOptionNames'] = true), ['[play_range] \$.missions[0].play.hideOptionNames']);
     });
   });
+
+  // STEP 3-13B: the story around the puzzles (the sandbox's Case 02).
+  group('the story around the puzzles', () {
+    final storyJson = PlanFiles.readJson('$seasonDir/cases/s9_ep02/case.plan.json') as Map<String, Object?>;
+    Map<String, Object?> fin(Map<String, Object?> c) => (c['final'] as Map<String, Object?>)['play'] as Map<String, Object?>;
+    Map<String, Object?> talk(Map<String, Object?> c, int i) => words(c, i)['talk'] as Map<String, Object?>;
+    Map<String, Object?> found(Map<String, Object?> c, int i) => words(c, i)['discovery'] as Map<String, Object?>;
+    Map<String, Object?> line(Map<String, Object?> c, int i) => (fin(c)['ending'] as List)[i] as Map<String, Object?>;
+    List<String> on(void Function(Map<String, Object?> c) change) {
+      final c = copy(storyJson)..let(change);
+      return [for (final i in PlayCheck.casePlan(CasePlan.fromJson(c), season)) '[${i.code}] ${i.path}'];
+    }
+
+    test('Case 02 can be made: talks, discoveries and an ending, nothing missing', () {
+      expect(on((_) {}), isEmpty);
+      final plan = CasePlan.fromJson(storyJson);
+      expect(plan.missions[0].play!.talk!.before!.lines, hasLength(5));
+      expect(plan.finalMission.play!.ending, hasLength(5));
+      expect(CasePlan.fromJson(plan.toJson()).toJson(), plan.toJson(), reason: 'read back as it is written');
+    });
+
+    test('each only where its page plays it: talks and discoveries on missions, endings on finals', () {
+      expect(on((c) => fin(c)['talk'] = talk(c, 0)), ['[play_range] \$.final.play.talk']);
+      expect(on((c) => fin(c)['discovery'] = found(c, 0)), ['[play_range] \$.final.play.discovery']);
+      expect(on((c) => words(c, 2)['ending'] = fin(c)['ending']), ['[play_range] \$.missions[2].play.ending']);
+      expect(on((c) => talk(c, 0).remove('before')), ['[play_field_missing] \$.missions[0].play.talk']);
+    });
+
+    test('the people are the case\'s, a speaker\'s line names one, the evidence is held by then', () {
+      expect(on((c) => talk(c, 0)['speaker'] = 'mrs_lee'), ['[play_story_person] \$.missions[0].play.talk.speaker']);
+      expect(on((c) => line(c, 0).remove('speaker')), ['[play_field_missing] \$.final.play.ending[0].speaker']);
+      expect(on((c) => line(c, 3)['speaker'] = 'ms_rosa'), ['[play_range] \$.final.play.ending[3].speaker']);
+      expect(on((c) => line(c, 1)['evidence'] = 's9_ep03_e1'), ['[play_range] \$.final.play.ending[1].evidence'], reason: 'a later case');
+      expect(on((c) => line(c, 1)['evidence'] = 's9_ep02_e9'), ['[play_range] \$.final.play.ending[1].evidence'], reason: 'none of the case');
+      expect(on((c) => line(c, 1)['evidence'] = 's9_ep01_e2'), isEmpty, reason: 'an earlier case: in the notebook');
+      expect(on((c) => talk(c, 0)['portrait'] = 'assets/sandbox/not_made.png'), ['[asset_file_missing] \$.missions[0].play.talk.portrait']);
+    });
+
+    test("a discovery says something of its own, and keeps the game's timing rule", () {
+      expect(on((c) => found(c, 0)['detail'] = found(c, 0)['title']), ['[play_range] \$.missions[0].play.discovery.detail']);
+      expect(on((c) => found(c, 0)
+        ..['timing'] = 'beforePuzzle'
+        ..['type'] = 'clueFound'), ['[play_range] \$.missions[0].play.discovery.type']);
+      expect(on((c) => found(c, 0)['type'] = 'evidenceFound'), ['[play_range] \$.missions[0].play.discovery.type'], reason: 'found evidence is shown');
+      expect(on((c) => found(c, 0)
+        ..['type'] = 'evidenceFound'
+        ..['showEvidence'] = true), isEmpty);
+    });
+  });
 }
 
 extension<T> on T {

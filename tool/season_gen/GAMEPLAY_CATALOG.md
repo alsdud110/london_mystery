@@ -30,10 +30,13 @@
 
 ```
 Story Intro(타자기) → Map(핀) → 장소 도착 Story(INVESTIGATE)
+   → [퍼즐 전 대화]                                ← talkMissions.before (STEP 3-13B: 모든 엔진 앞)
    → [편지 봉투 TAP TO OPEN → SOLVE THE PUZZLE]   ← skipsLetter 테이블이면 생략
    → 엔진 화면(퍼즐/상호작용) → submitAnswer(정답 판정·저장·보상)
+   → [퍼즐 후 대화]                                ← talkMissions.after
    → Discovery Moment → transition 장면 → TO THE MAP (다음 미션 해금)
    … → Final(FinalMissionScreen) → CASE SOLVED → 사건 후 장면 → Case Report → 다음 Case 해금
+     (Final에 endings가 있으면: 정답 → 엔딩 대사 → 사건 종료 → 사건 후 장면 → Case Report)
 ```
 
 - 정답 판정은 모든 엔진이 같은 길을 쓴다: 엔진이 고른 답을 `GameController.submitAnswer(mission, answer)`가 `AnswerChecker`로 판정하고 저장(`GameProgress.completedMissionIds`), XP·코인, 단서·증거 수첩 반영까지 한다. 엔진 화면 안의 진행(본 곳, 들은 진술, 찾은 물건)은 **저장하지 않는다**. 앱을 다시 열면 그 미션은 처음부터 다시 한다.
@@ -111,11 +114,11 @@ Story Intro(타자기) → Map(핀) → 장소 도착 Story(INVESTIGATE)
 | 이전 증거 꺼내 보기(`Mission.recall`) | P 08-M1·F | `EvidenceRecall` | ✅ (`play.recall`) |
 | 증거끼리 연결(`evidenceLinks`) | P 02~12 | 수첩 | ✅ (`evidenceLinkLine`) |
 | 편지와 함께 받는 물건(`exhibits`) | P 01-M2 | `Exhibit` | ❌ |
-| 퍼즐 전후 대화(`talkMissions`) | P 11·12 | `CaseTalk` | ❌ |
+| 퍼즐 전후 대화(`talkMissions`) | P 11·12 | `CaseTalk` | ✅ (`play.talk`, STEP 3-13B: 듣기만 하는 대화. 질문·증거 제시는 미지원) |
 | 문자 잠금 상자 연출(`lockBoxes`) | P 01-F | `LockBoxStage` | ❌ (상자 없이 생성) |
-| 사건 후 엔딩 대사(`endings`) | P 12-F | `CaseTalk` 엔딩 | ❌ |
+| 사건 후 엔딩 대사(`endings`) | P 12-F | `CaseEnding` | ✅ (`play.ending`, STEP 3-13B) |
 | 장면 그림(`storyScenes`, `introPictures` …) | Paris 전체 | `StoryPicture` | ❌ |
-| Discovery Moment 전용 문구(`discoveries`) | London 전체 | `DiscoveryMoment` | ❌ (`successMessage`로 대체 표시) |
+| Discovery Moment 전용 문구(`discoveries`) | London 전체 | `DiscoveryMoment` | ✅ (`play.discovery`, STEP 3-13B. 없으면 `successMessage`로 대체 표시) |
 | 난이도별 문구(`casePatches`, `variants`) | London·Paris | `DifficultyContent` | ❌ (기본 Rookie만) |
 
 ---
@@ -175,7 +178,7 @@ Story Intro(타자기) → Map(핀) → 장소 도착 Story(INVESTIGATE)
 1. **기본 질문 1종:** `number_entry`(키패드). 팔레트상 textOnly라 생성기 목록에 넣기만 하면 되지만 Sandbox 플레이 검증이 없어 이번에 넣지 않았다.
 2. **그림 엔진 13종(3.3):** `lens_inspect_word`, `trace_deduction`, `object_decode`, `spot_difference`, `room_find_match`, `layer_reveal`, `clue_filter_choice`, `record_mismatch`, `symbol_dial_lock`, `viewpoint_match`, `guided_steps`, `evidence_talk`, `scene_compare_report`. 엔진은 파일 기반이라 같은 방식(Plan 장면 객체 + PlayCheck + 생성기)으로 추가할 수 있다. 우선순위 제안: `trace_deduction`·`lens_inspect_word`(탐색과 구조가 거의 같음) → `evidence_talk`(인물 대화) → `guided_steps`.
 3. **코드 변경 필요 5종(3.4)** 과 **Paris 전용 23종(3.5)**.
-4. **동반 연출:** `exhibits`, `talkMissions`, `lockBoxes`, `endings`, `storyScenes`, `discoveries`, 난이도 변형.
+4. **동반 연출:** `exhibits`, `lockBoxes`, `storyScenes`, 난이도 변형. (`talkMissions`·`endings`·`discoveries`는 STEP 3-13B에서 지원: README "The story around the puzzles")
 5. **현장 탐색의 `note` 단서:** 화면에 메모로만 보이고 수첩 Clue로 저장되지는 않는다(London과 같음). 저장되는 단서는 미션의 `clue`다.
 6. **엔진 화면 안의 진행 저장:** 게임 자체가 저장하지 않는다(재진입 시 그 미션을 처음부터). 생성 콘텐츠도 같다.
 7. **시각 검증:** 위젯 테스트는 실제 그림 픽셀을 그리지 않는다. 좌표가 그림 속 물건에 정확히 맞는지는 기기 캡처나 사람의 눈으로 확인해야 한다. Sandbox Case 03은 London의 측정된 좌표를 그대로 써서 이 위험이 없다.

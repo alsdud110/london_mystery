@@ -356,7 +356,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         _stage == MissionStage.puzzle &&
         SeasonCatalog.deduction(_mission) != null;
     setState(() {
-      if (_stage == MissionStage.puzzle) _letterOpened = true;
+      // Back from the puzzle: its letter was read. (Not from a talk: a talk
+      // before the puzzle comes before its letter.)
+      if (_stage == MissionStage.puzzle && !talking) _letterOpened = true;
       _stage =
           _stage == MissionStage.puzzle &&
               !talking &&
@@ -1183,9 +1185,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
         },
       );
 
-  /// The talk before the puzzle finished: the puzzle (already this step).
-  void _afterTalkBefore() {
-    if (mounted) setState(() {});
+  /// The talk before the puzzle finished: on to the step INVESTIGATE leads
+  /// to without it ([noLetter]: the puzzle, already this step; otherwise the
+  /// letter, read before the puzzle as always).
+  void _afterTalkBefore({required bool noLetter}) {
+    if (mounted) _goTo(noLetter ? MissionStage.puzzle : MissionStage.letter);
   }
 
   /// The talk after the puzzle finished: the mission's Discovery Moment,
@@ -1474,6 +1478,42 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final city = SeasonCatalog.cityClocks(m);
     final shadow = SeasonCatalog.shadowCheck(m);
     final easy = SeasonCatalog.easySteps(m);
+    // A talk, a look round, a place read for its traces, a thing to examine
+    // and the like start at once: the letter is found in the place itself,
+    // or there is none. (A searched place shows its own arrival.)
+    final noLetter =
+        talk != null ||
+        caseTalk != null ||
+        easy != null ||
+        hall != null ||
+        studio != null ||
+        records != null ||
+        lift != null ||
+        marks != null ||
+        hut != null ||
+        boxes != null ||
+        bench != null ||
+        wall != null ||
+        blotter != null ||
+        rack != null ||
+        plan != null ||
+        archive != null ||
+        strip != null ||
+        lights != null ||
+        ropes != null ||
+        corners != null ||
+        sketches != null ||
+        slip != null ||
+        trial != null ||
+        gears != null ||
+        makers != null ||
+        tape != null ||
+        city != null ||
+        shadow != null ||
+        explore != null ||
+        inspect != null ||
+        deduction != null ||
+        decode != null;
 
     final Widget body = solved
         // The talk after the puzzle, until the detective goes on from it.
@@ -1516,44 +1556,9 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                 // A place read for its traces starts at once too: the notes
                 // are written as the traces are found. So does a thing to
                 // examine: what it hides is shown on it. (Its place keeps
-                // the place's own scene: the thing is found after.)
-                onInvestigate: () => _goTo(
-                  talk != null ||
-                          caseTalk != null ||
-                          talkBefore ||
-                          easy != null ||
-                          hall != null ||
-                          studio != null ||
-                          records != null ||
-                          lift != null ||
-                          marks != null ||
-                          hut != null ||
-                          boxes != null ||
-                          bench != null ||
-                          wall != null ||
-                          blotter != null ||
-                          rack != null ||
-                          plan != null ||
-                          archive != null ||
-                          strip != null ||
-                          lights != null ||
-                          ropes != null ||
-                          corners != null ||
-                          sketches != null ||
-                          slip != null ||
-                          trial != null ||
-                          gears != null ||
-                          makers != null ||
-                          tape != null ||
-                          city != null ||
-                          shadow != null ||
-                          explore != null ||
-                          inspect != null ||
-                          deduction != null ||
-                          decode != null
-                      ? MissionStage.puzzle
-                      : MissionStage.letter,
-                ),
+                // the place's own scene: the thing is found after.) A talk
+                // before the puzzle comes first, whatever follows it.
+                onInvestigate: () => _goTo(talkBefore || noLetter ? MissionStage.puzzle : MissionStage.letter),
               ),
             // A searched place: the arrival in the dark, the document handed
             // over (no envelope to open), then the search.
@@ -1564,6 +1569,15 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               instant: _arrived,
               onArrived: () => _arrived = true,
               onStart: () => _goTo(MissionStage.puzzle),
+            ),
+            // The talk before the puzzle comes first, whatever the puzzle:
+            // then the letter or the puzzle, as INVESTIGATE leads without it.
+            MissionStage.puzzle when talkBefore => _aroundTalkStage(
+              m,
+              talks!.before!,
+              TalkMission.beforeKey(m.id),
+              progress,
+              () => _afterTalkBefore(noLetter: noLetter),
             ),
             MissionStage.letter => _LetterStage(
               key: const ValueKey('letter'),
@@ -1638,14 +1652,6 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               m,
               inspect,
               progress.hintsFor(m.id),
-            ),
-            // The talk before the puzzle comes first, whatever the puzzle.
-            MissionStage.puzzle when talkBefore => _aroundTalkStage(
-              m,
-              talks!.before!,
-              TalkMission.beforeKey(m.id),
-              progress,
-              _afterTalkBefore,
             ),
             MissionStage.puzzle when easy != null => _easyStage(m, easy, progress),
             MissionStage.puzzle when caseTalk != null => _caseTalkStage(m, caseTalk, progress),

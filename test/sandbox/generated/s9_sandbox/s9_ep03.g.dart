@@ -2,7 +2,9 @@
 // source: cases/s9_ep03/case.plan.json sha256:001a2180ddd998d1d08645b83d7619890c4c7bdc161c7a15dca66ca48cce96bd
 
 import 'dart:ui' show Offset, Rect;
+import 'package:world_mystery/data/models/case_talk.dart' show EndingLine, TalkMission;
 import 'package:world_mystery/data/models/dialogue.dart' show DialogueAnswer, DialogueDeduction, DialogueQuestion, DialogueScene, DialogueSpeaker, DialogueStatement;
+import 'package:world_mystery/data/models/discovery.dart' show Discovery;
 import 'package:world_mystery/data/models/investigation.dart' show InvestigationFind, InvestigationScene, InvestigationSpot;
 import 'package:world_mystery/data/models/learning.dart';
 import 'package:world_mystery/data/models/scene_exhibit.dart' show EvidenceLink;
@@ -866,3 +868,12 @@ const s9Ep03Dialogues = <String, DialogueScene>{
     ),
   ),
 };
+
+/// Its missions' talks before and after their puzzles (`SeasonContent.talkMissions`).
+const s9Ep03TalkMissions = <String, TalkMission>{};
+
+/// Its missions' own Discovery Moments (`SeasonContent.discoveries`).
+const s9Ep03Discoveries = <String, Discovery>{};
+
+/// Its finals' endings after their answers (`SeasonContent.endings`).
+const s9Ep03Endings = <String, List<EndingLine>>{};

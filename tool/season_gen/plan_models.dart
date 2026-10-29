@@ -1671,6 +1671,188 @@ class DialoguePlan {
 /// plan already holds (its id, order, place, type, answer, options) is not
 /// repeated here. Every field is optional while the mission is planned;
 /// `PlayCheck` asks for what the game needs.
+// ── Around the puzzle (STEP 3-13B) ───────────────────────────────────────
+
+/// Who says a line of a talk or an ending (the game's `TalkVoice`): the
+/// person talked to, the detective (YOU), or the story's narrator.
+enum TalkBy { speaker, detective, narrator }
+
+/// One short line of a talk around a puzzle (`TalkLine`).
+class TalkLinePlan {
+  const TalkLinePlan({required this.by, required this.text});
+
+  final TalkBy by;
+  final String text;
+
+  factory TalkLinePlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = TalkLinePlan(by: r.enumOf('by', TalkBy.values), text: r.str('text'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {'by': by.name, 'text': text};
+}
+
+/// The talk before or after a puzzle: its lines, and the button that goes
+/// on from it (the game's CONTINUE when not given).
+class TalkPartPlan {
+  const TalkPartPlan({required this.lines, this.finishLabel});
+
+  final List<TalkLinePlan> lines;
+  final String? finishLabel;
+
+  factory TalkPartPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = TalkPartPlan(lines: r.objs('lines', TalkLinePlan.fromJson, min: 1), finishLabel: r.optStr('finishLabel'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'lines': [for (final l in lines) l.toJson()]};
+    _putText(json, 'finishLabel', finishLabel);
+    return json;
+  }
+}
+
+/// The talks around a mission's puzzle with one person of the case
+/// (`TalkMission`): [before] it, [after] it, or both. Its place and the
+/// picture behind it are the mission's own; [portrait] is the person's
+/// picture (none: no portrait is shown, never a stand-in).
+class MissionTalkPlan {
+  const MissionTalkPlan({required this.speaker, this.portrait, required this.goal, this.before, this.after});
+
+  /// A charId of the case's characters (their name from the season plan).
+  final String speaker;
+  final String? portrait;
+
+  /// What the detective is finding out, one line over the talk.
+  final String goal;
+  final TalkPartPlan? before;
+  final TalkPartPlan? after;
+
+  factory MissionTalkPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = MissionTalkPlan(
+      speaker: r.str('speaker', pattern: PlanIds.local),
+      portrait: r.optStr('portrait', pattern: PlanIds.assetFile),
+      goal: r.str('goal'),
+      before: r.optObj('before', TalkPartPlan.fromJson),
+      after: r.optObj('after', TalkPartPlan.fromJson),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'speaker': speaker};
+    _putText(json, 'portrait', portrait);
+    json['goal'] = goal;
+    if (before case final b?) json['before'] = b.toJson();
+    if (after case final a?) json['after'] = a.toJson();
+    return json;
+  }
+}
+
+/// A mission's own Discovery Moment (`Discovery`): what was found
+/// ([title]), why it matters and where it leads ([detail]).
+class DiscoveryPlan {
+  const DiscoveryPlan({
+    required this.type,
+    this.timing,
+    required this.title,
+    required this.detail,
+    this.note,
+    this.showEvidence,
+    this.seasonClue,
+  });
+
+  /// The game's `DiscoveryType` names (its fallback, a solved puzzle, is
+  /// what a mission without a discovery shows).
+  static const types = ['evidenceFound', 'clueFound', 'clueConfirmed', 'deduction', 'newLead', 'storyDiscovery'];
+
+  /// The game's `DiscoveryTiming` names.
+  static const timings = ['beforePuzzle', 'fromPuzzle', 'afterPuzzle'];
+
+  final String type;
+
+  /// When the detective first had it (null: from the puzzle).
+  final String? timing;
+  final String title;
+  final String detail;
+
+  /// A fact seen before the puzzle the notebook keeps (shown small).
+  final String? note;
+
+  /// Lay the mission's evidence on screen (only evidence the puzzle puts in
+  /// the detective's hands).
+  final bool? showEvidence;
+  final bool? seasonClue;
+
+  String get timingOrDefault => timing ?? 'fromPuzzle';
+
+  factory DiscoveryPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = DiscoveryPlan(
+      type: r.str('type', oneOf: types),
+      timing: r.optStr('timing', oneOf: timings),
+      title: r.str('title'),
+      detail: r.str('detail'),
+      note: r.optStr('note'),
+      showEvidence: r.optBool('showEvidence'),
+      seasonClue: r.optBool('seasonClue'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'type': type};
+    _putText(json, 'timing', timing);
+    json['title'] = title;
+    json['detail'] = detail;
+    _putText(json, 'note', note);
+    if (showEvidence != null) json['showEvidence'] = showEvidence;
+    if (seasonClue != null) json['seasonClue'] = seasonClue;
+    return json;
+  }
+}
+
+/// One line of a final's ending (`EndingLine`), over the final's place: a
+/// [speaker]'s (a charId of the case, with their [portrait] if any), the
+/// detective's or the narrator's, a piece of [evidence] laid over it.
+class EndingLinePlan {
+  const EndingLinePlan({required this.by, required this.text, this.speaker, this.portrait, this.evidence});
+
+  final TalkBy by;
+  final String text;
+  final String? speaker;
+  final String? portrait;
+  final String? evidence;
+
+  factory EndingLinePlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = EndingLinePlan(
+      by: r.enumOf('by', TalkBy.values),
+      text: r.str('text'),
+      speaker: r.optStr('speaker', pattern: PlanIds.local),
+      portrait: r.optStr('portrait', pattern: PlanIds.assetFile),
+      evidence: r.optStr('evidence', pattern: PlanIds.evidence),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() {
+    final json = <String, Object?>{'by': by.name, 'text': text};
+    _putText(json, 'speaker', speaker);
+    _putText(json, 'portrait', portrait);
+    _putText(json, 'evidence', evidence);
+    return json;
+  }
+}
+
 class MissionPlayPlan {
   const MissionPlayPlan({
     this.title,
@@ -1696,6 +1878,9 @@ class MissionPlayPlan {
     this.explore,
     this.search,
     this.dialogue,
+    this.talk,
+    this.discovery,
+    this.ending = const [],
   });
 
   final String? title;
@@ -1740,6 +1925,14 @@ class MissionPlayPlan {
   final SearchPlan? search;
   final DialoguePlan? dialogue;
 
+  /// The story around the puzzle (STEP 3-13B), each optional: without it the
+  /// mission plays as it always did. A mission's talks before and after its
+  /// puzzle (`talkMissions`) and its own Discovery Moment (`discoveries`); a
+  /// final's ending after its answer (`endings`).
+  final MissionTalkPlan? talk;
+  final DiscoveryPlan? discovery;
+  final List<EndingLinePlan> ending;
+
   /// The scene given, by the table it is written into.
   Map<String, Object> get scenes => {
     'explores': ?explore,
@@ -1773,6 +1966,9 @@ class MissionPlayPlan {
       explore: r.optObj('explore', ExplorePlan.fromJson),
       search: r.optObj('search', SearchPlan.fromJson),
       dialogue: r.optObj('dialogue', DialoguePlan.fromJson),
+      talk: r.optObj('talk', MissionTalkPlan.fromJson),
+      discovery: r.optObj('discovery', DiscoveryPlan.fromJson),
+      ending: r._has('ending') ? r.objs('ending', EndingLinePlan.fromJson, min: 1) : const [],
     );
     r.done();
     return out;
@@ -1803,6 +1999,9 @@ class MissionPlayPlan {
     if (explore case final s?) json['explore'] = s.toJson();
     if (search case final s?) json['search'] = s.toJson();
     if (dialogue case final s?) json['dialogue'] = s.toJson();
+    if (talk case final t?) json['talk'] = t.toJson();
+    if (discovery case final d?) json['discovery'] = d.toJson();
+    _putList(json, 'ending', [for (final l in ending) l.toJson()]);
     return json;
   }
 }

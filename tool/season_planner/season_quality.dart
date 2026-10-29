@@ -150,6 +150,7 @@ abstract final class SeasonQuality {
     _people(season, plans, out);
     _puzzles(plans, out);
     _play(plans, out);
+    _story(plans, out);
     EnglishCheck.check(plans, out);
 
     // 6. The story bible and the pictures.
@@ -280,6 +281,39 @@ abstract final class SeasonQuality {
     for (final c in plans) {
       final kinds = {for (final m in c.allMissions) m.puzzle.paletteId};
       if (kinds.length == 1) out.warning('case_play_one_kind', 'cases/${c.caseId}', 'every mission is ${kinds.single}', source: Source.puzzle);
+    }
+  }
+
+  /// The story around the puzzles (STEP 3-13B), where a case has it: each
+  /// Discovery Moment says what this mission found (never the success line
+  /// again, never another mission's words), and a talk's person speaks.
+  /// Nothing asks for a talk or a discovery: the story chooses where.
+  static void _story(List<CasePlan> plans, Findings out) {
+    final titles = <String, String>{};
+    for (final c in plans) {
+      for (final (i, m) in c.allMissions.indexed) {
+        final at = 'cases/${c.caseId} ${m.isFinal ? r'$.final' : '\$.missions[$i]'}.play';
+        final w = m.play;
+        if (w == null) continue;
+        if (w.discovery case final d?) {
+          final key = d.title.trim().toLowerCase();
+          if (w.successMessage?.trim().toLowerCase() == key) {
+            out.warning('story_discovery_generic', '$at.discovery.title', 'the success line again: say what was found', source: Source.play);
+          }
+          if (titles[key] case final first?) {
+            out.warning('story_discovery_repeated', '$at.discovery.title', '"${d.title}" is $first\'s too: each discovery says its own find', source: Source.play);
+          } else {
+            titles[key] = m.missionId;
+          }
+        }
+        if (w.talk case final t?) {
+          for (final (part, p) in [('before', t.before), ('after', t.after)]) {
+            if (p != null && !p.lines.any((l) => l.by == TalkBy.speaker)) {
+              out.warning('story_talk_silent', '$at.talk.$part', '${t.speaker} says nothing in the talk: their own words, or no talk', source: Source.play);
+            }
+          }
+        }
+      }
     }
   }
 

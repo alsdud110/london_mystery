@@ -139,8 +139,9 @@ const manifestName = 'generated.manifest.json';
 /// 2 (STEP 3-9): the season's cases in one file (`<seasonId>_cases.g.dart`),
 /// their order in the manifest. 3 (STEP 3-13): the scene tables
 /// (`explores`, `investigations`, `dialogues`) and picture options, the
-/// imports each file needs.
-const generatorVersion = 3;
+/// imports each file needs. 4 (STEP 3-13B): the story around the puzzles
+/// (`talkMissions`, `discoveries`, `endings`).
+const generatorVersion = 4;
 
 /// Why nothing was made or written, a line each (as `validate_plan` prints them).
 class GenerateFailure implements Exception {
@@ -270,8 +271,8 @@ abstract final class CaseGenerator {
     final seasonJson = PlanFiles.readJson(seasonPath);
     final files = <String, String>{
       '${season.seasonId}_season.g.dart': _seasonFile(season, ContentHash.ofJson(seasonJson)),
-      for (final (path, p) in plans) '${p.caseId}.g.dart': _caseFile(p, relative[p.caseId]!, ContentHash.ofJson(PlanFiles.readJson(path))),
-      '${season.seasonId}_cases.g.dart': _casesFile(season, [for (final (_, p) in plans) p.caseId]),
+      for (final (path, p) in plans) '${p.caseId}.g.dart': _caseFile(p, season, relative[p.caseId]!, ContentHash.ofJson(PlanFiles.readJson(path))),
+      '${season.seasonId}_cases.g.dart': _casesFile(season, [for (final (_, p) in plans) p]),
     };
     final manifest = <String, Object?>{
       'generator': 'generate_case.dart',
@@ -341,8 +342,9 @@ abstract final class CaseGenerator {
 
   /// Every case made, in play order, as `SeasonContent` takes them: a new
   /// case of the season is in the game's content with no line written by hand.
-  static String _casesFile(SeasonPlan s, List<String> caseIds) {
+  static String _casesFile(SeasonPlan s, List<CasePlan> plans) {
     final name = constName(s.seasonId);
+    final caseIds = [for (final p in plans) p.caseId];
     String spread(String suffix) => '{\n${[for (final id in caseIds) '  ...${constName(id)}$suffix,\n'].join()}}';
     String byCase(String suffix) => DartLiteral.of({for (final id in caseIds) id: DartCode('${constName(id)}$suffix')});
     final body = '/// The cases of season ${s.seasonId} made, in play order (`SeasonContent.episodes`).\n'
@@ -360,6 +362,11 @@ abstract final class CaseGenerator {
           for (final MapEntry(key: table, value: model) in sceneTables.entries)
             '\n/// Their missions played on `$table` (`SeasonContent.$table`).\n'
                 'const $name${_suffix(table)} = <String, $model>${spread(_suffix(table))};\n',
+        ].join()}'
+        '${[
+          for (final MapEntry(key: table, value: (model, doc)) in storyTables.entries)
+            '\n/// Their $doc (`SeasonContent.$table`).\n'
+                '${_keyword(table, [for (final p in plans) ...p.allMissions])} $name${_suffix(table)} = <String, $model>${spread(_suffix(table))};\n',
         ].join()}';
     return '$generatedHeader\n// source: ${caseIds.join(', ')} (in play order)\n\n'
         '${_imports(body)}\n'
@@ -371,9 +378,11 @@ abstract final class CaseGenerator {
   /// Where the game's types a generated file names are declared.
   static const _libraries = {
     'dart:ui': ['Offset', 'Rect'],
+    'package:world_mystery/data/models/case_talk.dart': ['EndingLine', 'TalkLine', 'TalkMission', 'TalkScene', 'TalkSpeaker', 'TalkVoice'],
     'package:world_mystery/data/models/dialogue.dart': [
       'DialogueAnswer', 'DialogueDeduction', 'DialogueQuestion', 'DialogueScene', 'DialogueSpeaker', 'DialogueStatement', //
     ],
+    'package:world_mystery/data/models/discovery.dart': ['Discovery', 'DiscoveryTiming', 'DiscoveryType'],
     'package:world_mystery/data/models/investigation.dart': ['InvestigationFind', 'InvestigationScene', 'InvestigationSpot'],
     'package:world_mystery/data/models/learning.dart': [],
     'package:world_mystery/data/models/scene_exhibit.dart': ['EvidenceLink'],
@@ -397,7 +406,7 @@ abstract final class CaseGenerator {
 
   // ── A case ─────────────────────────────────────────────────────────────
 
-  static String _caseFile(CasePlan c, String source, String hash) {
+  static String _caseFile(CasePlan c, SeasonPlan season, String source, String hash) {
     final name = constName(c.caseId);
     final all = c.allMissions;
     final learning = {
@@ -436,6 +445,13 @@ abstract final class CaseGenerator {
                 'const $name${_suffix(table)} = <String, $model>${DartLiteral.of({
                   for (final m in all)
                     if (m.puzzle.engineTable == table) m.missionId: ?scene(m),
+                })};\n',
+        ].join()}'
+        '${[
+          for (final MapEntry(key: table, value: (model, doc)) in storyTables.entries)
+            '\n/// Its $doc (`SeasonContent.$table`).\n'
+                '${_keyword(table, all)} $name${_suffix(table)} = <String, $model>${DartLiteral.of({
+                  for (final m in all) m.missionId: ?story(table, m, season),
                 })};\n',
         ].join()}';
     return '${_head(source, hash)}\n${_imports(body)}\n$body';
@@ -660,6 +676,90 @@ abstract final class CaseGenerator {
       }),
     });
   }
+
+  // ── The story around the puzzles (STEP 3-13B) ──────────────────────────
+
+  /// The `SeasonContent` tables of the story around a puzzle a case file
+  /// writes, each optional for a mission: their entries' type, and what
+  /// they hold (for the files' comments).
+  static const storyTables = {
+    'talkMissions': ('TalkMission', "missions' talks before and after their puzzles"),
+    'discoveries': ('Discovery', "missions' own Discovery Moments"),
+    'endings': ('List<EndingLine>', "finals' endings after their answers"),
+  };
+
+  /// A talk's scene cannot be a constant (`TalkScene` checks its steps when
+  /// made): the talks of [missions] are `final` when there are any.
+  static String _keyword(String table, List<MissionPlan> missions) =>
+      table == 'talkMissions' && missions.any((m) => m.play?.talk != null) ? 'final' : 'const';
+
+  /// [m]'s entry in story table [table], or null when its plan has none.
+  static Object? story(String table, MissionPlan m, SeasonPlan season) {
+    final w = m.play;
+    if (w == null) return null;
+    return switch (table) {
+      'talkMissions' => w.talk == null ? null : _talkMission(m, w.talk!, season),
+      'discoveries' => w.discovery == null ? null : _discovery(w.discovery!),
+      'endings' => w.ending.isEmpty ? null : [for (final l in w.ending) _endingLine(l, m, season)],
+      _ => null,
+    };
+  }
+
+  /// The picture of [m]'s place: the talks and the ending are over it.
+  static String _placeFile(MissionPlan m, SeasonPlan season) => season.places.firstWhere((p) => p.placeId == m.placeId).file;
+
+  /// [charId]'s name plate, as the game's talks print it.
+  static String _nameOf(String charId, SeasonPlan season) =>
+      season.characters.firstWhere((c) => c.charId == charId).name.toUpperCase();
+
+  static DartCall _talkLine(TalkLinePlan l) => switch (l.by) {
+    TalkBy.speaker => DartCall('TalkLine', positional: [l.text]),
+    TalkBy.detective => DartCall('TalkLine.detective', positional: [l.text]),
+    TalkBy.narrator => DartCall('TalkLine.narrator', positional: [l.text]),
+  };
+
+  static DartCall _talkMission(MissionPlan m, MissionTalkPlan t, SeasonPlan season) {
+    final speaker = DartConst(DartCall('TalkSpeaker', named: {
+      'id': t.speaker,
+      'name': _nameOf(t.speaker, season),
+      if (t.portrait case final p?) 'portraits': {'base': p},
+    }));
+    // Only listened to: finished once its lines are heard.
+    DartCall scene(String part, TalkPartPlan p) => DartCall('TalkScene', named: {
+      'id': '${m.missionId}:$part',
+      'speaker': speaker,
+      'goal': t.goal,
+      'opening': DartConst([for (final l in p.lines) _talkLine(l)]),
+      'finishWhen': const DartCode('const {}'),
+      'place': m.play!.location!,
+      'background': _placeFile(m, season),
+      'finishLabel': ?p.finishLabel,
+    });
+    return DartCall('TalkMission', named: {
+      if (t.before case final b?) 'before': scene('before', b),
+      if (t.after case final a?) 'after': scene('after', a),
+    });
+  }
+
+  static DartCall _discovery(DiscoveryPlan d) => DartCall('Discovery', named: {
+    'type': DartCode('DiscoveryType.${d.type}'),
+    'timing': DartCode('DiscoveryTiming.${d.timingOrDefault}'),
+    'title': d.title,
+    'detail': d.detail,
+    if (d.showEvidence == true) 'showEvidence': true,
+    if (d.seasonClue == true) 'seasonClue': true,
+    'note': ?d.note,
+  });
+
+  static DartCall _endingLine(EndingLinePlan l, MissionPlan m, SeasonPlan season) => DartCall('EndingLine', positional: [
+    l.text,
+  ], named: {
+    if (l.by != TalkBy.narrator) 'voice': DartCode('TalkVoice.${l.by.name}'),
+    if (l.speaker case final s?) 'name': _nameOf(s, season),
+    'portrait': ?l.portrait,
+    'background': _placeFile(m, season),
+    'evidenceId': ?l.evidence,
+  });
 }
 
 /// The generated files on disk.

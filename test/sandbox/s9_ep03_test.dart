@@ -13,6 +13,7 @@ import 'package:world_mystery/data/content/season_content_validator.dart';
 import 'package:world_mystery/data/mock/season_catalog.dart';
 import 'package:world_mystery/data/models/dialogue.dart';
 import 'package:world_mystery/data/models/episode.dart';
+import 'package:world_mystery/data/models/game_progress.dart';
 import 'package:world_mystery/data/models/mission.dart';
 import 'package:world_mystery/data/models/profile.dart';
 import 'package:world_mystery/data/models/scene_explore.dart';
@@ -166,6 +167,11 @@ void main() {
         ctrl.startInvestigation();
         for (final m in e.allMissions) {
           expect(ctrl.submitAnswer(m, m.answer).result.name, 'correct', reason: m.id);
+        }
+        // A final with an ending (Case 02, STEP 3-13B) closes its case once
+        // the ending is seen, as its page does (s9_presentation_test plays it).
+        if (SeasonCatalog.caseEnding(e.finalMission) != null) {
+          expect(ctrl.closeCase(GameProgress.examinedKey(e.finalMission.id, 'ending')), isTrue, reason: e.id);
         }
       }
       expect(c.read(seasonProvider).solvedEpisodeIds, ['s9_ep01', 's9_ep02']);

@@ -274,6 +274,54 @@ void main() {
     });
   });
 
+  // STEP 3-13B: the story around the puzzles, where a case has it.
+  group('story around the puzzles', () {
+    Map<String, dynamic> playOf(Map<String, dynamic> c, int i) => ((c['missions'] as List)[i] as Map)['play'] as Map<String, dynamic>;
+    List<Finding> found(String code) => [for (final f in check().findings) if (f.code == code) f];
+
+    test('none at all is fine: nothing asks for a talk or a discovery', () {
+      final codes = {for (final f in check().findings) f.code};
+      expect(codes.where((c) => c.startsWith('story_discovery') || c.startsWith('story_talk')), isEmpty);
+    });
+
+    test("a discovery that is the success line again, or another mission's, is a WARNING", () {
+      edit('cases/s3_ep02/case.plan.json', (c) {
+        playOf(c, 0)['discovery'] = {'type': 'clueFound', 'title': playOf(c, 0)['successMessage'], 'detail': 'It points to the next place.'};
+        playOf(c, 1)['discovery'] = {'type': 'deduction', 'title': playOf(c, 0)['successMessage'], 'detail': 'Another find, the same words.'};
+      });
+      // M1's is its own success line; M2's is M1's title again.
+      expect(found('story_discovery_generic').single.where, contains(r'$.missions[0].play.discovery.title'));
+      expect(found('story_discovery_generic').single.level, Level.warning);
+      expect(found('story_discovery_repeated').single.where, contains(r'$.missions[1].play.discovery.title'));
+    });
+
+    test("a talk whose person says nothing is a WARNING; a person not of the case is an ERROR; its lines are read as English", () {
+      edit('cases/s3_ep02/case.plan.json', (c) {
+        playOf(c, 0)['talk'] = {
+          'speaker': 'giulia_marino',
+          'goal': 'Find the clue.',
+          'before': {
+            'lines': [
+              {'by': 'narrator', 'text': 'The square is very quiet this morning, and the old fountain is not making any sound at all.'},
+            ],
+          },
+        };
+        playOf(c, 1)['talk'] = {
+          'speaker': 'nobody_here',
+          'goal': 'Ask about it.',
+          'after': {
+            'lines': [
+              {'by': 'speaker', 'text': 'I saw it.'},
+            ],
+          },
+        };
+      });
+      expect(found('story_talk_silent').single.level, Level.warning);
+      expect(found('play_story_person').single.level, Level.error);
+      expect(found('en_long_sentence').where((f) => f.where.contains(r'$.missions[0].play.talk.before.lines[0]')), isNotEmpty);
+    });
+  });
+
   group('English heuristics', () {
     test('only warn, and say they are heuristics', () {
       edit('cases/s3_ep01/case.plan.json', (c) => (c['play'] as Map)['intro'] = [

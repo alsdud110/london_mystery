@@ -341,3 +341,31 @@ the game's own engine (`PlayCheck.generatable`):
 The sandbox's Case 03, "The Travelling Book", is one mission of each:
 `test/sandbox/s9_ep03_test.dart` checks it against its plan and the game's
 validator, then plays it from the map with each engine's own controls.
+
+## The story around the puzzles (STEP 3-13B)
+
+Optional words in a mission's `play`, written into tables the game already
+plays (no new screen). Without them a mission plays as it always did.
+
+| Plan | Where | Written into | Played |
+|---|---|---|---|
+| `play.talk` (`speaker`, `goal`, `before` and/or `after`: `lines` of `{by, text}`, `finishLabel`) | missions | `<caseId>TalkMissions` → `SeasonContent.talkMissions` (`TalkMission`) | before: after INVESTIGATE, before the letter or the scene; after: after the right answer, before the Discovery Moment |
+| `play.discovery` (`type`, `title`, `detail`, `timing`, `note`, `showEvidence`) | missions | `<caseId>Discoveries` → `SeasonContent.discoveries` (`Discovery`) | the Discovery Moment, in place of the success line |
+| `play.ending` (`[{by, text, speaker, portrait, evidence}]`) | finals | `<caseId>Endings` → `SeasonContent.endings` (`EndingLine`) | after the final's answer; the case closes once it is seen, then its story and report |
+
+- `by` is `speaker`, `detective` (YOU) or `narrator`. A talk has one person
+  (`speaker`, a charId of the case); an ending's speaker lines each name
+  theirs. Names come from the season plan, printed in capitals.
+- The talks and the ending are over the mission's own place picture. A
+  `portrait` is optional: none, no face is shown (never a stand-in).
+- `PlayCheck` keeps each where its page plays it, the people the case's, an
+  ending's evidence held by then (this case or one before), and the game's
+  discovery timing rule (what was seen before the puzzle is never "found").
+- One change in `lib/` made the talk before work with every puzzle: it now
+  comes before any engine (it used to be shown only before the text puzzles
+  and the talks), and after it the mission goes on to its letter or scene as
+  INVESTIGATE leads without it (`MissionScreen`, `PuzzleEngineDispatch`).
+- The talks are `final` in the generated files (`TalkScene` is not constant).
+
+The sandbox's Case 02 has each of them: `test/sandbox/s9_presentation_test.dart`
+plays it in the app (talks, discoveries, the ending, saves left halfway).

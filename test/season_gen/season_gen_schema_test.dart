@@ -123,6 +123,13 @@ void main() {
     ('clueText', samplePlayCaseJson, ['missions', 1, 'play', 'clue'], 'mission_plan.schema.json', '#/\$defs/clueText'),
     ('evidenceText', samplePlayCaseJson, ['missions', 1, 'play', 'evidence'], 'mission_plan.schema.json', '#/\$defs/evidenceText'),
     ('recallText', samplePlayCaseJson, ['missions', 1, 'play', 'recall'], 'mission_plan.schema.json', '#/\$defs/recallText'),
+    // The story around the puzzle (STEP 3-13B).
+    ('talk', samplePlayCaseJson, ['missions', 1, 'play', 'talk'], 'mission_plan.schema.json', '#/\$defs/talk'),
+    ('talkPart', samplePlayCaseJson, ['missions', 1, 'play', 'talk', 'before'], 'mission_plan.schema.json', '#/\$defs/talkPart'),
+    ('talkLine', samplePlayCaseJson, ['missions', 1, 'play', 'talk', 'before', 'lines', 0], 'mission_plan.schema.json', '#/\$defs/talkLine'),
+    ('discovery', samplePlayCaseJson, ['missions', 1, 'play', 'discovery'], 'mission_plan.schema.json', '#/\$defs/discovery'),
+    ('final play', samplePlayCaseJson, ['final', 'play'], 'mission_plan.schema.json', '#/\$defs/play'),
+    ('endingLine', samplePlayCaseJson, ['final', 'play', 'ending', 0], 'mission_plan.schema.json', '#/\$defs/endingLine'),
   ];
 
   Map<String, Object?> at(Map<String, Object?> json, List<Object> path) {
@@ -264,6 +271,17 @@ void main() {
       'evidence with no icon': (j) => (words(j)['evidence'] as Map).remove('icon'),
       'a glossary meaning empty': (j) => (j['play'] as Map)['glossary'] = {'platform': ''},
       'the case play as lines': (j) => j['play'] = ['The station is quiet.'],
+      // The story around the puzzle (STEP 3-13B).
+      'a talk line by someone else': (j) => (((words(j)['talk'] as Map)['before'] as Map)['lines'] as List).first['by'] = 'guide',
+      'a talk with no lines': (j) => ((words(j)['talk'] as Map)['before'] as Map)['lines'] = <Object?>[],
+      'a talk speaker in capitals': (j) => (words(j)['talk'] as Map)['speaker'] = 'Guide',
+      'a talk portrait outside assets': (j) => (words(j)['talk'] as Map)['portrait'] = '../guide.png',
+      'a discovery of no kind': (j) => (words(j)['discovery'] as Map)['type'] = 'clue',
+      'a discovery puzzleComplete': (j) => (words(j)['discovery'] as Map)['type'] = 'puzzleComplete',
+      'a discovery timing unknown': (j) => (words(j)['discovery'] as Map)['timing'] = 'later',
+      'a discovery with no detail': (j) => (words(j)['discovery'] as Map).remove('detail'),
+      'an empty ending': (j) => ((j['final'] as Map)['play'] as Map)['ending'] = <Object?>[],
+      'an ending line naming a clue as evidence': (j) => ((((j['final'] as Map)['play'] as Map)['ending'] as List).first as Map)['evidence'] = 's3_ep01_c2',
     };
     for (final MapEntry(key: name, value: change) in played.entries) {
       test('case: $name', () => agree(copy(samplePlayCaseJson())..let(change), 'case_plan.schema.json', valid: false, reason: name));

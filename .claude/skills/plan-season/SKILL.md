@@ -25,6 +25,10 @@ Follow `tool/season_planner/PLAYBOOK.md` step by step. In short:
    (`investigations`), a talk with witnesses (`dialogues`), a picture choice
    (`imageChoice`). Their pictures go in the manifest with `use: puzzle`;
    their areas are measured on the made pictures before generation.
+   Where the story needs it (not everywhere), add the story around a
+   puzzle (PLAYBOOK §2 "The story around the puzzles"): a short talk before
+   or after it (`play.talk`), the mission's own Discovery Moment
+   (`play.discovery`), and the final's ending (`play.ending`).
 4. `plan_season.dart format <dir>` then `plan_season.dart check <dir>`; fix every
    ERROR and the real WARNINGs; repeat.
 5. Write each case's `englishReview`, run `check` once more, and report in Korean.

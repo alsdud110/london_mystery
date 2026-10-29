@@ -153,6 +153,39 @@ Map<String, Object?> samplePlayCaseJson() {
     'recall': {'title': 'Find an old clue', 'prompt': 'Look in your Notebook.', 'feedback': {'s3_ep01_e3': 'Not that one.'}, 'miss': 'Look again.'},
     'evidenceLinkLine': 'Both name Platform 2.',
     'lockTitle': 'THE PLATFORM LOCK',
+    // The story around the puzzle (STEP 3-13B).
+    'talk': {
+      'speaker': 'guide',
+      'portrait': 'assets/sample/guide.png',
+      'goal': 'Find the platform.',
+      'before': {
+        'lines': [
+          {'by': 'speaker', 'text': 'Look at the board.'},
+          {'by': 'detective', 'text': 'Which train?'},
+        ],
+        'finishLabel': 'READ THE BOARD',
+      },
+      'after': {
+        'lines': [
+          {'by': 'narrator', 'text': 'The guide nods.'},
+        ],
+      },
+    },
+    'discovery': {
+      'type': 'clueFound',
+      'timing': 'fromPuzzle',
+      'title': 'PLATFORM 2',
+      'detail': 'The 9:10 train left from there.',
+      'note': 'The board was by the clock.',
+      'showEvidence': false,
+      'seasonClue': true,
+    },
+  };
+  (json['final'] as Map<String, Object?>)['play'] = {
+    'ending': [
+      {'by': 'speaker', 'text': 'You found it!', 'speaker': 'guide', 'portrait': 'assets/sample/guide.png', 'evidence': 's3_ep01_e2'},
+      {'by': 'narrator', 'text': 'The clock starts again.'},
+    ],
   };
   json['play'] = {
     'objectives': ['Find the platform.'],

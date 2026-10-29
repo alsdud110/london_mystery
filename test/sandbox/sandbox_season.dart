@@ -16,7 +16,8 @@ import 'generated/s9_sandbox/s9_sandbox_season.g.dart';
 const sandboxSeasonId = 's9_sandbox';
 
 /// The season as the game's validator checks a season (`SeasonContentValidator.validate`).
-const sandboxContent = SeasonContent(
+/// Not a constant: its talks are not (STEP 3-13B).
+final sandboxContent = SeasonContent(
   info: s9SandboxInfoJson,
   episodes: s9SandboxEpisodes,
   places: s9SandboxPlaces,
@@ -28,6 +29,9 @@ const sandboxContent = SeasonContent(
   explores: s9SandboxExplores,
   investigations: s9SandboxInvestigations,
   dialogues: s9SandboxDialogues,
+  talkMissions: s9SandboxTalkMissions,
+  discoveries: s9SandboxDiscoveries,
+  endings: s9SandboxEndings,
 );
 
 /// Its cases as the game reads them.

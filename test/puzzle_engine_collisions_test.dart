@@ -56,10 +56,10 @@ void main() {
     });
 
     test('the story goes straight to the puzzle for the same tables', () {
-      final start = missionPage.indexOf('onInvestigate: () => _goTo(');
+      final start = missionPage.indexOf('final noLetter =');
       final listed = missionPage.substring(
         start,
-        missionPage.indexOf('? MissionStage.puzzle', start),
+        missionPage.indexOf(';', start),
       );
       final vars = {
         for (final m in RegExp(
@@ -71,7 +71,13 @@ void main() {
         for (final m in RegExp(r'(\w+) != null').allMatches(listed))
           m[1] == 'caseTalk' ? 'talks' : vars[m[1]!]!,
       };
-      expect(listed, contains('talkBefore'));
+      // The talk before goes to the puzzle stage first; once had, the
+      // mission goes on as INVESTIGATE leads without it.
+      expect(
+        missionPage,
+        contains('onInvestigate: () => _goTo(talkBefore || noLetter ? MissionStage.puzzle : MissionStage.letter)'),
+      );
+      expect(missionPage, contains('() => _afterTalkBefore(noLetter: noLetter)'));
       expect(tables, PuzzleEngineDispatch.skipsLetter);
     });
 
@@ -404,7 +410,7 @@ void main() {
       );
     });
 
-    test('registered, never played: a talk before, an exhibit, a box, a type looked at first', () {
+    test('registered, never played: an exhibit, a box, a type looked at first (a talk before is had first, whatever the puzzle)', () {
       final s = _season(
         cases: {
           's3_ep01': _case(
@@ -420,8 +426,12 @@ void main() {
         canvases: {'s3_ep01_final': _canvas},
         lockBoxes: {'s3_ep01_final': _box},
       );
+      // STEP 3-13B: the talk before comes before every engine (it was
+      // never shown before a picture's engine).
+      final m1 = PuzzleEngineCollisionCheck.slotsOf(s).firstWhere((x) => x.mission.id == 's3_ep01_m1');
+      expect(m1.companions, ['talkMissions']);
+      expect(m1.hiddenCompanions, isEmpty);
       expect(_found(s), [
-        '[companion_hidden] s3_test s3_ep01 s3_ep01_m1: talkMissions never shown: its talk before comes after SpotDifferences (compares)',
         '[companion_hidden] s3_test s3_ep01 s3_ep01_m2: exhibits never shown: the mission goes from its story straight to its puzzle: its letter page is never shown',
         '[type_override] s3_test s3_ep01 s3_ep01_final: CanvasPicker (canvases) never played: a finalCode is played on _Dial, looked at first',
         '[companion_hidden] s3_test s3_ep01 s3_ep01_final: lockBoxes never shown: a finalCode has no letter lock',

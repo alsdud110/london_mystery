@@ -186,6 +186,7 @@ abstract final class PlayCheck {
         issue('play_range', '$pa.hideOptionNames', 'a $type shows no pictures to name');
       }
       _pictures(m, at, root, out);
+      _aroundPuzzle(plan, m, at, root, out);
 
       // The notebook evidence a mission recalls: one, found before (the clue graph's).
       final recalls = [for (final c in m.clueInputs) if (c.use == ClueUse.recall) c];
@@ -397,6 +398,84 @@ abstract final class PlayCheck {
     }
   }
 
+  /// The story around [m]'s puzzle (STEP 3-13B), each part optional: the
+  /// talks before and after a mission's puzzle with a person of the case,
+  /// its own Discovery Moment (the game's timing rule: what was seen before
+  /// the puzzle is never "found"), a final's ending. Each only where its
+  /// page plays it.
+  static void _aroundPuzzle(CasePlan plan, MissionPlan m, String at, String root, List<PlayIssue> out) {
+    void issue(String code, String path, String message) => out.add(PlayIssue(code, path, message));
+    final w = m.play!;
+    final pa = '$at.play';
+    final people = plan.characters.toSet();
+
+    void person(String path, String id) {
+      if (!people.contains(id)) issue('play_story_person', path, '"$id" is not a character of the case (characters)');
+    }
+
+    void portrait(String path, String? f) {
+      if (f != null && !File('$root/$f').existsSync()) issue('asset_file_missing', path, '$f is not on disk: a picture still to be made');
+    }
+
+    if (w.talk case final t?) {
+      final ta = '$pa.talk';
+      if (m.isFinal) {
+        issue('play_range', ta, "a final's page has no talk around its puzzle (its words after the answer are its ending)");
+      } else if (t.before == null && t.after == null) {
+        issue('play_field_missing', ta, 'missing: a talk before the puzzle, after it, or both');
+      }
+      person('$ta.speaker', t.speaker);
+      portrait('$ta.portrait', t.portrait);
+    }
+
+    if (w.discovery case final d?) {
+      final da = '$pa.discovery';
+      if (m.isFinal) issue('play_range', da, "a final has no Discovery Moment (its page opens the case's own lock)");
+      if (d.detail == d.title) issue('play_range', '$da.detail', 'says its title again: why it matters, or where it leads');
+      if (d.note != null && d.note == d.detail) issue('play_range', '$da.note', 'says the detail again');
+      final before = d.timingOrDefault == 'beforePuzzle';
+      if (before && (d.type == 'evidenceFound' || d.type == 'clueFound')) {
+        issue('play_range', '$da.type', 'what was seen before the puzzle is confirmed or noted, never found');
+      }
+      if (before && d.showEvidence == true) issue('play_range', '$da.showEvidence', 'evidence held before the puzzle is never laid out as new');
+      if (d.type == 'evidenceFound' && (d.timingOrDefault != 'fromPuzzle' || d.showEvidence != true)) {
+        issue('play_range', '$da.type', 'evidence found is found by the puzzle (timing fromPuzzle) and shown (showEvidence)');
+      }
+      final words = w.evidence?.inscription;
+      if (d.showEvidence == true && words != null && d.detail.contains(words)) {
+        issue('play_range', '$da.detail', 'says what the evidence card shows');
+      }
+    }
+
+    if (w.ending.isNotEmpty) {
+      if (!m.isFinal) issue('play_range', '$pa.ending', 'a mission has no ending (the person reacts in its talk after)');
+      final numbers = PlanIds.caseNumbers(plan.caseId);
+      for (final (i, l) in w.ending.indexed) {
+        final la = '$pa.ending[$i]';
+        if (l.by == TalkBy.speaker) {
+          if (l.speaker case final s?) {
+            person('$la.speaker', s);
+          } else {
+            issue('play_field_missing', '$la.speaker', "missing: who says a speaker's line");
+          }
+        } else {
+          if (l.speaker != null) issue('play_range', '$la.speaker', "a ${l.by.name}'s line names no speaker");
+          if (l.portrait != null) issue('play_range', '$la.portrait', "a ${l.by.name}'s line shows no face");
+        }
+        portrait('$la.portrait', l.portrait);
+        // Evidence the detective holds by then: of this case, or one before it.
+        if (l.evidence case final e?) {
+          final of = PlanIds.caseNumbers(PlanIds.caseOfChild(e) ?? '');
+          if (numbers == null || of == null || of.$1 != numbers.$1 || of.$2 > numbers.$2) {
+            issue('play_range', '$la.evidence', '$e is not evidence of ${plan.caseId} or a case before it');
+          } else if (of.$2 == numbers.$2 && !{for (final x in plan.allMissions) x.clueOutputs.evidence}.contains(e)) {
+            issue('play_range', '$la.evidence', '$e is no evidence of ${plan.caseId}');
+          }
+        }
+      }
+    }
+  }
+
   /// Every picture file [m] shows beyond its place's, with where the plan
   /// names it (its JSON path from the mission, `.play.explore.picture.file`):
   /// its scene's pictures (the one its engine table reads) and its options'.
@@ -417,6 +496,10 @@ abstract final class PlayCheck {
         ('.play.dialogue.background', s.background),
         for (final (i, x) in s.witnesses.indexed) ('.play.dialogue.witnesses[$i].portrait', x.portrait),
       ],
+      // The faces of the story around the puzzle (STEP 3-13B).
+      if (w?.talk?.portrait case final f?) ('.play.talk.portrait', f),
+      for (final (i, l) in (w?.ending ?? const <EndingLinePlan>[]).indexed)
+        if (l.portrait case final f?) ('.play.ending[$i].portrait', f),
     ];
   }
 

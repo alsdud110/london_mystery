@@ -147,6 +147,30 @@ umbrella whistle. At most one `recall` input (evidence, with `play.recall`)
 and one `evidenceLink` (with `evidenceLinkLine`). Case `play`: objectives,
 intro, caseSummary, place, keyWords, glossary (one lower-case word each).
 
+**The story around the puzzles** (optional, STEP 3-13B; the worked example
+is the sandbox's `s9_sandbox/cases/s9_ep02/case.plan.json`). Use them where
+the story needs a voice, not on every mission:
+
+- `play.talk.before` — a short talk with a person of the case before the
+  puzzle: what the detective must look into, and why now. It never gives the
+  answer. Then the letter or the scene, as without it.
+- `play.talk.after` — the person reacts to what was just found (surprise,
+  worry, a new question). Then the Discovery Moment.
+- `play.discovery` — the Discovery Moment in the mission's own words:
+  `title` what was found (a few words, often CAPS), `detail` why it matters
+  and where it leads next (one or two short sentences). `type`:
+  evidenceFound (with `showEvidence: true`), clueFound, clueConfirmed (seen
+  before the puzzle: `timing: beforePuzzle`), deduction, newLead,
+  storyDiscovery. Never the success line again, never the same title twice.
+- `play.ending` (finals only) — after the answer: the people react to the
+  solution, one line says what the key clue meant (lay its `evidence` on
+  it), and a last line leaves a small question for the next case.
+
+Lines are 3-12 words for ages 8-12, one sentence each; `by` is `speaker`,
+`detective` or `narrator`; a talk's `speaker` (and each ending speaker) is a
+charId of the case. A `portrait` is the character's portrait file, only once
+it is planned in the manifest; without one, no face is shown.
+
 **Puzzle design rules** (CLAUDE.md §20):
 
 1. The answer is deduced from what the player read in this case or found

@@ -196,5 +196,7 @@ void main() {
     expect(DartLiteral.string(r"it's $5 \ a" '\n'), r"'it\'s \$5 \\ a\n'");
     expect(DartLiteral.of({'b': 1, 'a': 0.5, 'c': 2.0, 'd': <Object?>[]}), "{\n  'b': 1,\n  'a': 0.5,\n  'c': 2.0,\n  'd': [],\n}");
     expect(DartLiteral.of(const DartCall('X', named: {'k': DartCode('Y.z')})), 'X(\n  k: Y.z,\n)');
+    // A constant inside a call that cannot be one (a talk's lines, STEP 3-13B).
+    expect(DartLiteral.of(const DartCall('X', named: {'k': DartConst(['a'])})), "X(\n  k: const [\n    'a',\n  ],\n)");
   });
 }

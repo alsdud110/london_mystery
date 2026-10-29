@@ -24,6 +24,14 @@ class DartCode {
   final String source;
 }
 
+/// A value written as a constant inside data that is not (`const [...]` in
+/// a call that cannot be const: a talk's lines).
+class DartConst {
+  const DartConst(this.value);
+
+  final Object? value;
+}
+
 abstract final class DartLiteral {
   /// [s] as a single-quoted Dart string: `\`, `'`, `$` and control
   /// characters escaped.
@@ -56,6 +64,7 @@ abstract final class DartLiteral {
       double() => value == value.truncateToDouble() && value.abs() < 1e15 ? '${value.toInt()}.0' : '$value',
       String() => string(value),
       DartCode() => value.source,
+      DartConst(:final value) => 'const ${of(value, indent: indent)}',
       List() when value.isEmpty => '[]',
       List() => '[\n${[for (final v in value) '$inner${of(v, indent: inner)},\n'].join()}$indent]',
       Map() when value.isEmpty => '{}',

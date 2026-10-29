@@ -50,6 +50,8 @@ class EngineStep {
 abstract final class PuzzleEngineDispatch {
   /// The mission page's steps (its puzzle stage's `switch`).
   static const mission = [
+    // The talk before the puzzle, whatever the puzzle (STEP 3-13B).
+    EngineStep.talkBefore(),
     EngineStep('investigations', 'InvestigationSearch'),
     EngineStep('stationClocks', 'StationClocks'),
     EngineStep('compares', 'SpotDifferences'),
@@ -83,7 +85,6 @@ abstract final class PuzzleEngineDispatch {
     EngineStep('deductions', 'SceneDeduction'),
     EngineStep('decodes', 'SceneDecode'),
     EngineStep('inspections', 'LensInspect'),
-    EngineStep.talkBefore(),
     EngineStep('easySteps', 'EasyStepsPuzzle'),
     EngineStep('talks', 'CaseTalk'),
     EngineStep('dialogues', 'DialogueInvestigation'),
@@ -122,9 +123,10 @@ abstract final class PuzzleEngineDispatch {
   static const notEngines = {'storyScenes', 'discoveries', 'learning'};
 
   /// Tables whose entry (played or not) takes the mission from its story
-  /// straight to its puzzle (the story page's `onInvestigate`), with the talk
-  /// before: its letter page, where an exhibit is handed over, is never
-  /// shown. A searched place (`investigations`) shows its own arrival there.
+  /// straight to its puzzle (the story page's `noLetter`): its letter page,
+  /// where an exhibit is handed over, is never shown. A searched place
+  /// (`investigations`) shows its own arrival there. A talk before the
+  /// puzzle comes first, then the letter as without it.
   static const skipsLetter = {
     'dialogues',
     'talks',
@@ -440,12 +442,11 @@ abstract final class PuzzleEngineCollisionCheck {
       if (here.contains('exhibits')) {
         companion(
           'exhibits',
-          talk?.before == null &&
-              !slot.tables.any(
-                (t) =>
-                    t == 'investigations' ||
-                    PuzzleEngineDispatch.skipsLetter.contains(t),
-              ),
+          !slot.tables.any(
+            (t) =>
+                t == 'investigations' ||
+                PuzzleEngineDispatch.skipsLetter.contains(t),
+          ),
         );
       }
     } else {
