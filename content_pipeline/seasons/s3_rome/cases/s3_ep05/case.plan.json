@@ -57,7 +57,7 @@
         "notes": [
           "Played as a look round (ExploreScene) of the cat ruins: the cat board is read, then the cats on the stones are looked at. Two cats are orange: the board's 'short tail' and 'plaster workshop' (the copy is plaster) pick Tito, never the colour alone.",
           "No recall here: the evidence card is not tried over a look round; the copy is named by a text mention.",
-          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the cat_ruins prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
+          "COORDINATES MEASURED (STEP 3-15A): every area and point read off the drawn cat_ruins.png (1536x1024; its sha256 is play.explore.picture.measuredOn) with a pixel grid laid over the file. The cats spot is two areas: the long-haired orange cat on the left, the two cats on the right."
         ]
       },
       "clueInputs": [
@@ -122,15 +122,16 @@
             "pixels": {
               "width": 1536,
               "height": 1024
-            }
+            },
+            "measuredOn": "sha256:b4a020112fdfd47ea51f76209c790426666482b3f97ea7f1473fb7d7f01690e3"
           },
           "place": "The cat ruins at Torre Argentina",
           "task": "Look around the ruins. Who looks after these cats?",
           "nextTask": "Which cat walked on the copy? Look at the cats.",
           "missLine": "Nothing here. Look for something about the cats.",
           "guideAt": [
-            800,
-            960
+            190,
+            575
           ],
           "spots": [
             {
@@ -140,15 +141,15 @@
               "label": "A board about the cats, on a post",
               "areas": [
                 [
-                  60,
-                  520,
-                  330,
-                  880
+                  40,
+                  400,
+                  345,
+                  750
                 ]
               ],
               "mark": [
-                310,
-                530
+                330,
+                415
               ]
             },
             {
@@ -158,15 +159,15 @@
               "label": "Food bowls on a stone",
               "areas": [
                 [
-                  340,
-                  820,
-                  540,
-                  960
+                  215,
+                  780,
+                  485,
+                  905
                 ]
               ],
               "mark": [
-                520,
-                830
+                470,
+                790
               ],
               "line": "Clean bowls. The cats are fed here every day at noon."
             },
@@ -177,15 +178,15 @@
               "label": "Old temple columns",
               "areas": [
                 [
-                  450,
-                  150,
-                  1100,
-                  500
+                  430,
+                  80,
+                  925,
+                  470
                 ]
               ],
               "mark": [
-                1080,
-                160
+                905,
+                95
               ],
               "line": "Temples from long ago. Today, cats live here."
             },
@@ -196,15 +197,21 @@
               "label": "Cats asleep on the warm stones",
               "areas": [
                 [
+                  645,
                   600,
-                  560,
-                  1400,
-                  900
+                  1045,
+                  960
+                ],
+                [
+                  1065,
+                  580,
+                  1405,
+                  965
                 ]
               ],
               "mark": [
-                1380,
-                570
+                1390,
+                595
               ],
               "requires": "board",
               "lockedLine": "So many cats! Which one? Read something first.",
@@ -218,8 +225,14 @@
                 [
                   0,
                   0,
+                  430,
+                  390
+                ],
+                [
+                  925,
+                  0,
                   1536,
-                  130
+                  390
                 ]
               ],
               "line": "The street is up there. Nothing to see."
@@ -228,10 +241,16 @@
               "label": "Old stone floor",
               "areas": [
                 [
-                  560,
-                  900,
-                  1100,
-                  1020
+                  330,
+                  490,
+                  640,
+                  690
+                ],
+                [
+                  640,
+                  490,
+                  940,
+                  600
                 ]
               ],
               "line": "An old stone floor. Only a few leaves here."
@@ -261,10 +280,10 @@
             }
           ],
           "opening": [
-            20,
-            100,
-            1516,
-            1010
+            0,
+            60,
+            1536,
+            1000
           ]
         },
         "discovery": {

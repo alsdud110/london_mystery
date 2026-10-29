@@ -1,5 +1,9 @@
+import 'dart:math';
+
 /// OpenAI's list prices for the GPT image models, per 1M tokens, as the
 /// pricing page gave them on 2026-10-29 (https://developers.openai.com/api/docs/pricing).
+/// Square pictures' output tokens corrected by our own calls' usage on
+/// 2026-10-30 (`ImagePricing.measuredOutputTokens`).
 /// The bill is OpenAI's: these only estimate a request before it is sent and
 /// price the `usage` a response reports.
 class TokenRates {
@@ -36,11 +40,30 @@ abstract final class ImagePricing {
     'high': (square: 4160, portrait: 6240, landscape: 6208),
   };
 
+  /// The output tokens one image actually took, by model and quality, read
+  /// off the `usage` of our own calls (STEP 3-15A, 2026-10-30: 8 calls of
+  /// gpt-image-2 at `medium`, each shape the same count every time). They
+  /// turn the guide's shapes round: a square costs more than a landscape
+  /// or portrait. An estimate takes the larger of the guide's and these, so
+  /// it never falls under what was paid; other qualities are not measured.
+  static const measuredOutputTokens = {
+    'gpt-image-2': {'medium': (square: 1756, portrait: 1372, landscape: 1372)},
+  };
+
   /// The output tokens [size] and [quality] are estimated at: `auto` (and the
   /// 2.5 models' `xhigh`, `max`) as `high` at least; a size of another area
-  /// in proportion to its shape's.
-  static int estimatedOutputTokens(String size, String quality) {
-    final row = _outputTokens[quality] ?? _outputTokens['high']!;
+  /// in proportion to its shape's; for [model], at least what its calls
+  /// were measured at ([measuredOutputTokens]).
+  static int estimatedOutputTokens(String size, String quality, {String? model}) {
+    final guide = _outputTokens[quality] ?? _outputTokens['high']!;
+    final seen = model == null ? null : measuredOutputTokens[model.replaceFirst(RegExp(r'-\d{4}-\d{2}-\d{2}$'), '')]?[quality];
+    final row = seen == null
+        ? guide
+        : (
+            square: max(guide.square, seen.square),
+            portrait: max(guide.portrait, seen.portrait),
+            landscape: max(guide.landscape, seen.landscape),
+          );
     if (size == 'auto') return row.landscape;
     final [w, h] = size.split('x').map(int.parse).toList();
     final (base, area) = w == h ? (row.square, 1024 * 1024) : w > h ? (row.landscape, 1536 * 1024) : (row.portrait, 1024 * 1536);
@@ -65,7 +88,7 @@ abstract final class ImagePricing {
   static double? estimate({required String model, required String size, required String quality, required String prompt, int n = 1, int references = 0}) {
     final r = ratesOf(model);
     if (r == null) return null;
-    return n * estimatedOutputTokens(size, quality) * r.imageOut / 1e6 +
+    return n * estimatedOutputTokens(size, quality, model: model) * r.imageOut / 1e6 +
         estimatedTextTokens(prompt) * r.textIn / 1e6 +
         references * referenceImageTokens * r.imageIn / 1e6;
   }

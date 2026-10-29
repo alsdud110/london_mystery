@@ -1054,17 +1054,31 @@ num _whole(double v) => v == v.truncateToDouble() ? v.toInt() : v;
 /// A picture file and its size in pixels (the file's own: `PlayCheck`
 /// reads it).
 class PicturePlan {
-  const PicturePlan({required this.file, required this.width, required this.height});
+  const PicturePlan({required this.file, required this.width, required this.height, this.measuredOn});
 
   /// From the repository's root (`assets/…`).
   final String file;
   final int width;
   final int height;
 
+  /// The file's hash (`sha256:…`) when the places on it were measured on
+  /// the drawn picture (STEP 3-15A). Null: not measured yet (the places are
+  /// where a prompt put things). A scene's places are played only when this
+  /// is its file's hash now (`PlayCheck`: `coordinates_unmeasured`,
+  /// `coordinates_stale`).
+  final String? measuredOn;
+
+  static final _hash = RegExp(r'^sha256:[0-9a-f]{64}$');
+
   factory PicturePlan.fromJson(Object? json, String path) {
     final r = _Reader(json, path);
     final size = r.obj('pixels', _pixels);
-    final out = PicturePlan(file: r.str('file', pattern: PlanIds.assetFile), width: size.$1, height: size.$2);
+    final out = PicturePlan(
+      file: r.str('file', pattern: PlanIds.assetFile),
+      width: size.$1,
+      height: size.$2,
+      measuredOn: r.optStr('measuredOn', pattern: _hash),
+    );
     r.done();
     return out;
   }
@@ -1072,6 +1086,7 @@ class PicturePlan {
   Map<String, Object?> toJson() => {
     'file': file,
     'pixels': {'width': width, 'height': height},
+    'measuredOn': ?measuredOn,
   };
 }
 

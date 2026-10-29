@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'content_hash.dart';
 import 'palette_facts.dart';
 import 'plan_ids.dart';
 import 'plan_models.dart';
@@ -7,7 +8,7 @@ import 'plan_models.dart';
 /// One thing a plan lacks to be made into the game's content: which kind
 /// ([code]), where ([path], as `$.missions[1].play.hints`) and why.
 class PlayIssue {
-  const PlayIssue(this.code, this.path, this.message, {this.inSeason = false});
+  const PlayIssue(this.code, this.path, this.message, {this.inSeason = false, this.blocking = true});
 
   final String code;
   final String path;
@@ -15,6 +16,11 @@ class PlayIssue {
 
   /// In the season plan (its places), not the case plan.
   final bool inSeason;
+
+  /// Whether it stops the generator. A story picture not made yet
+  /// (`story_picture_missing`, STEP 3-15A) does not: the puzzle plays
+  /// without it, its line shows no face until it is made.
+  final bool blocking;
 
   @override
   String toString() => '[$code] ${inSeason ? 'season ' : ''}$path: $message';
@@ -62,6 +68,10 @@ abstract final class PlayCheck {
 
   /// The generatable puzzles that need pictures beyond the place's.
   static const pictured = {'picture_choice', 'scene_explore_choose', 'dark_room_search', 'witness_compare'};
+
+  /// A story picture (a talk's or an ending's face) not on disk: never
+  /// blocking (STEP 3-15A).
+  static const storyPictureMissing = 'story_picture_missing';
 
   /// The `play` key a table's scene is written under.
   static const sceneKeys = {'explores': 'explore', 'investigations': 'search', 'dialogues': 'dialogue'};
@@ -238,6 +248,20 @@ abstract final class PlayCheck {
 
     void picture(String path, PicturePlan pic) => file('$path.file', pic.file, size: (pic.width, pic.height));
 
+    // The picture a scene's places are on (STEP 3-15A): measured on the
+    // drawn file, that very file. A place a prompt put somewhere is never
+    // played as if it were measured.
+    void measured(String path, PicturePlan pic) {
+      final disk = File('$root/${pic.file}');
+      if (!disk.existsSync()) return;
+      if (pic.measuredOn == null) {
+        issue('coordinates_unmeasured', '$path.measuredOn',
+            'the places on ${pic.file} are not measured on the drawn picture: measure them, then write its sha256 here');
+      } else if (ContentHash.ofBytes(disk.readAsBytesSync()) != pic.measuredOn) {
+        issue('coordinates_stale', '$path.measuredOn', '${pic.file} changed since its places were measured: measure them again');
+      }
+    }
+
     bool inside(PicturePlan pic, double x, double y) => x >= 0 && y >= 0 && x <= pic.width && y <= pic.height;
     void point(String path, PicturePlan pic, ScenePoint pt) {
       if (!inside(pic, pt.x, pt.y)) issue('scene_area_invalid', path, '(${pt.x}, ${pt.y}) is off the ${pic.width}x${pic.height} picture');
@@ -289,6 +313,7 @@ abstract final class PlayCheck {
     if (w.explore case final s? when table == 'explores') {
       final sa = '$pa.explore';
       picture('$sa.picture', s.picture);
+      measured('$sa.picture', s.picture);
       point('$sa.guideAt', s.picture, s.guideAt);
       if (s.inside case final r?) rect('$sa.inside', s.picture, r);
       if (s.opening case final r?) rect('$sa.opening', s.picture, r);
@@ -324,6 +349,7 @@ abstract final class PlayCheck {
     if (w.search case final s? when table == 'investigations') {
       final sa = '$pa.search';
       picture('$sa.picture', s.picture);
+      measured('$sa.picture', s.picture);
       point('$sa.guideAt', s.picture, s.guideAt);
       if (s.inside case final r?) rect('$sa.inside', s.picture, r);
       if (s.opening case final r?) rect('$sa.opening', s.picture, r);
@@ -413,8 +439,12 @@ abstract final class PlayCheck {
       if (!people.contains(id)) issue('play_story_person', path, '"$id" is not a character of the case (characters)');
     }
 
+    // A face is the story's, never the puzzle's (STEP 3-15A): one not made
+    // yet is reported, and the line is written without it.
     void portrait(String path, String? f) {
-      if (f != null && !File('$root/$f').existsSync()) issue('asset_file_missing', path, '$f is not on disk: a picture still to be made');
+      if (f != null && !File('$root/$f').existsSync()) {
+        out.add(PlayIssue(storyPictureMissing, path, '$f is not on disk: shown with no face until it is made', blocking: false));
+      }
     }
 
     if (w.talk case final t?) {
@@ -479,7 +509,12 @@ abstract final class PlayCheck {
   /// Every picture file [m] shows beyond its place's, with where the plan
   /// names it (its JSON path from the mission, `.play.explore.picture.file`):
   /// its scene's pictures (the one its engine table reads) and its options'.
-  static List<(String, String)> pictureFiles(MissionPlan m) {
+  static List<(String, String)> pictureFiles(MissionPlan m) => [...puzzlePictureFiles(m), ...storyPictureFiles(m)];
+
+  /// The pictures [m]'s puzzle cannot be played without (STEP 3-15A): its
+  /// scene, its choices, its witnesses. Asked for in `assetNeeds`; one not
+  /// on disk stops the generator (`asset_file_missing`).
+  static List<(String, String)> puzzlePictureFiles(MissionPlan m) {
     final w = m.play;
     return [
       for (final (i, o) in m.puzzle.answerSpec.options.indexed)
@@ -496,7 +531,15 @@ abstract final class PlayCheck {
         ('.play.dialogue.background', s.background),
         for (final (i, x) in s.witnesses.indexed) ('.play.dialogue.witnesses[$i].portrait', x.portrait),
       ],
-      // The faces of the story around the puzzle (STEP 3-13B).
+    ];
+  }
+
+  /// The faces of the story around [m]'s puzzle (STEP 3-13B): its talk's and
+  /// its ending's. The puzzle plays without them (STEP 3-15A), so they are
+  /// not its `assetNeeds`; one not on disk is `story_picture_missing`.
+  static List<(String, String)> storyPictureFiles(MissionPlan m) {
+    final w = m.play;
+    return [
       if (w?.talk?.portrait case final f?) ('.play.talk.portrait', f),
       for (final (i, l) in (w?.ending ?? const <EndingLinePlan>[]).indexed)
         if (l.portrait case final f?) ('.play.ending[$i].portrait', f),

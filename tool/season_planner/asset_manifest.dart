@@ -358,10 +358,14 @@ abstract final class AssetManifest {
 
     // The pictures a puzzle shows (STEP 3-13): each a picture of the
     // manifest, asked for by its puzzle; each planned for a puzzle, shown.
+    // A talk's or an ending's face is the story's, not the puzzle's
+    // (STEP 3-15A): planned and shown, never asked for in assetNeeds (a
+    // text puzzle is `ready` with none), and the case is made without it.
     final shown = <String>{};
     for (final c in cases) {
       for (final (i, m) in c.allMissions.indexed) {
         final at = 'cases/${c.caseId} ${m.isFinal ? r'$.final' : '\$.missions[$i]'}';
+        final story = {for (final (path, _) in PlayCheck.storyPictureFiles(m)) path};
         for (final (path, file) in PlayCheck.pictureFiles(m)) {
           final owner = paths[file];
           if (owner == null) {
@@ -370,7 +374,7 @@ abstract final class AssetManifest {
             continue;
           }
           shown.add(owner);
-          if (!m.puzzle.assetNeeds.contains(owner)) {
+          if (!story.contains(path) && !m.puzzle.assetNeeds.contains(owner)) {
             out.warning('asset_need_missing', '$at.puzzle.assetNeeds', '$owner is shown ($file) but not asked for', source: Source.assets);
           }
           if (useOf[owner] case final use? when use != 'puzzle' && use != 'seasonPlace') {

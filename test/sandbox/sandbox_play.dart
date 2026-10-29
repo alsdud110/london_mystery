@@ -70,7 +70,9 @@ class SandboxPlay {
         await tapText(t, 'CHECK ANSWER', after: Duration.zero);
       case MissionType.sequence:
         for (final id in Mission.sequenceIds(answer)) {
-          await t.tap(find.text(m.options.firstWhere((o) => o.id == id).label).last);
+          final step = find.text(m.options.firstWhere((o) => o.id == id).label).last;
+          await reveal(t, step); // a long step can be below the fold
+          await t.tap(step);
           await t.pump(const Duration(milliseconds: 150));
         }
         await tapText(t, 'CHECK ANSWER', after: Duration.zero);

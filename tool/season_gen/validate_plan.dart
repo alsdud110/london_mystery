@@ -57,12 +57,15 @@ void main(List<String> args) {
       (final c?, final s?) => PlayCheck.casePlan(c, s),
       _ => null,
     };
-    final playSummary = play == null ? null : 'playable: ${play.isEmpty ? 'yes' : 'no (${play.length} to write)'}';
-    final found = [...r.errors, if (playable) ...[for (final i in play ?? const <PlayIssue>[]) 'play $i']];
+    final blocking = [for (final i in play ?? const <PlayIssue>[]) if (i.blocking) i];
+    final playSummary = play == null ? null : 'playable: ${blocking.isEmpty ? 'yes' : 'no (${blocking.length} to write)'}';
+    final found = [...r.errors, if (playable) ...[for (final i in blocking) 'play $i']];
+    final notes = [...r.warnings, if (playable) ...[for (final i in play ?? const <PlayIssue>[]) if (!i.blocking) 'play $i']];
     errors += found.length - r.errors.length;
+    warnings += notes.length - r.warnings.length;
     final summary = [?r.summary, ?r.clueSummary, ?playSummary].join('; ');
     stdout.writeln('${found.isEmpty ? 'ok     ' : 'FAILED '} $path${summary.isEmpty ? '' : '  ($summary)'}');
-    _print(found, r.warnings);
+    _print(found, notes);
   }
   for (final MapEntry(key: seasonId, value: plans) in cases.entries) {
     final found = PuzzleSelectionCheck.season(plans);

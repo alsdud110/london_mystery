@@ -26,6 +26,10 @@ import 'validate_plan.dart' show check;
 /// * `--check`: nothing written; exit 1 when the files on disk are not what
 ///   the plans make now (line endings aside).
 /// * `--force`: writes over generated files changed by hand.
+/// * `--slice` (STEP 3-15A): cases from the middle of a season, for a test
+///   of them alone before the season is drawn whole: written under
+///   `test/sandbox/generated/<seasonId>_slice/`, with the places they use
+///   only (each on disk, as always). Every other check is the same.
 ///
 /// Nothing is written unless every plan keeps its format, structure, puzzle
 /// selection and clue graph (as `validate_plan.dart` checks them) and
@@ -36,7 +40,7 @@ import 'validate_plan.dart' show check;
 Future<void> main(List<String> args) async {
   String? seasonPath, out;
   var target = 'sandbox';
-  var checkOnly = false, force = false;
+  var checkOnly = false, force = false, slice = false;
   final cases = <String>[];
   for (var i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -50,6 +54,8 @@ Future<void> main(List<String> args) async {
         checkOnly = true;
       case '--force':
         force = true;
+      case '--slice':
+        slice = true;
       default:
         cases.add(args[i]);
     }
@@ -65,23 +71,26 @@ Future<void> main(List<String> args) async {
   }
   // The season's other written cases are made with it (generate_season.dart):
   // a case made alone would leave the season's list of cases without them.
-  try {
-    final given = {for (final c in cases) File(c).absolute.path.replaceAll(r'\', '/')};
-    final left = [for (final c in SeasonCases.of(seasonPath)) if (!given.contains(File(c).absolute.path.replaceAll(r'\', '/'))) c];
-    if (left.isNotEmpty) {
-      stdout.writeln('FAILED  $seasonPath');
-      for (final c in left) {
-        stdout.writeln('  error    [case_left_out] $c is a case of the season too: '
-            'run dart run tool/season_gen/generate_season.dart --season $seasonPath --target sandbox');
+  // A slice is a list of its own (STEP 3-15A).
+  if (!slice) {
+    try {
+      final given = {for (final c in cases) File(c).absolute.path.replaceAll(r'\', '/')};
+      final left = [for (final c in SeasonCases.of(seasonPath)) if (!given.contains(File(c).absolute.path.replaceAll(r'\', '/'))) c];
+      if (left.isNotEmpty) {
+        stdout.writeln('FAILED  $seasonPath');
+        for (final c in left) {
+          stdout.writeln('  error    [case_left_out] $c is a case of the season too: '
+              'run dart run tool/season_gen/generate_season.dart --season $seasonPath --target sandbox');
+        }
+        stdout.writeln('nothing written');
+        exit(1);
       }
-      stdout.writeln('nothing written');
-      exit(1);
+    } on GenerateFailure {
+      // The season's folder as it is: the plans given are checked below.
     }
-  } on GenerateFailure {
-    // The season's folder as it is: the plans given are checked below.
   }
   final schemaDir = '${File.fromUri(Platform.script).parent.path}/schema';
-  exit(makeAndWrite(() => CaseGenerator.sandbox(seasonPath: seasonPath!, casePaths: cases, schemaDir: schemaDir),
+  exit(makeAndWrite(() => CaseGenerator.sandbox(seasonPath: seasonPath!, casePaths: cases, schemaDir: schemaDir, slice: slice),
       out: out, checkOnly: checkOnly, force: force));
 }
 
@@ -155,7 +164,7 @@ class GenerateFailure implements Exception {
 
 /// What the plans make: the files by name (the manifest last), not yet written.
 class Generated {
-  const Generated(this.seasonId, this.files, this.notes);
+  const Generated(this.seasonId, this.files, this.notes, {this.slice = false});
 
   final String seasonId;
   final Map<String, String> files;
@@ -163,7 +172,10 @@ class Generated {
   /// For the person running it (the approvals' state).
   final List<String> notes;
 
-  String get defaultDir => 'test/sandbox/generated/$seasonId';
+  /// Cases from the middle of the season, made alone (STEP 3-15A).
+  final bool slice;
+
+  String get defaultDir => 'test/sandbox/generated/$seasonId${slice ? '_slice' : ''}';
 }
 
 abstract final class CaseGenerator {
@@ -177,11 +189,17 @@ abstract final class CaseGenerator {
   /// before it, so a case made without it could never be reached, or would
   /// be the season's first. They are made in that order, whatever the order
   /// of [casePaths].
+  ///
+  /// With [slice] (STEP 3-15A), the cases given are any run of the season's
+  /// cases in play order, none missing between them (a case before them is
+  /// opened by the test), and only the places their missions use are made
+  /// and must be on disk: a first playable case before the season is drawn.
   static Generated sandbox({
     required String seasonPath,
     required List<String> casePaths,
     String root = '.',
     String schemaDir = 'tool/season_gen/schema',
+    bool slice = false,
   }) {
     final schemas = SchemaSet.load(schemaDir);
     final lines = <String>[];
@@ -218,9 +236,10 @@ abstract final class CaseGenerator {
     // 2. The season's play order: the cases given are its first, none missing.
     final order = season.caseIds;
     plans.sort((a, b) => order.indexOf(a.$2.caseId).compareTo(order.indexOf(b.$2.caseId)));
+    final first = slice && plans.isNotEmpty ? order.indexOf(plans.first.$2.caseId) : 0;
     for (final (i, (path, p)) in plans.indexed) {
-      if (order.indexOf(p.caseId) != i) {
-        failed(path, ['[case_missing] ${order[i]} comes before ${p.caseId} in ${season.seasonId} and is not given: '
+      if (order.indexOf(p.caseId) != first + i) {
+        failed(path, ['[case_missing] ${order[first + i]} comes before ${p.caseId} in ${season.seasonId} and is not given: '
             '${p.caseId} could never be unlocked']);
         break;
       }
@@ -241,18 +260,28 @@ abstract final class CaseGenerator {
     }
     if (lines.isNotEmpty) throw GenerateFailure(lines);
 
-    // 4. What the game needs of them.
+    // 4. What the game needs of them. A slice's places are the ones its
+    // missions use (each still on disk); the season's others are not made.
+    final used = {for (final (_, p) in plans) for (final m in p.allMissions) m.placeId};
+    final places = [for (final p in season.places) if (!slice || used.contains(p.placeId)) p];
+    final otherPlaces = {
+      for (final (i, p) in season.places.indexed)
+        if (!places.contains(p)) '\$.places[$i].file',
+    };
     final seasonIssues = <String>{};
+    final notes = <String>[];
     for (final (path, p) in plans) {
       final found = PlayCheck.casePlan(p, season, root: root);
-      failed(path, [for (final i in found) if (!i.inSeason) 'play $i']);
-      seasonIssues.addAll([for (final i in found) if (i.inSeason) 'play $i']);
+      failed(path, [for (final i in found) if (i.blocking && !i.inSeason) 'play $i']);
+      seasonIssues.addAll([for (final i in found) if (i.blocking && i.inSeason && !otherPlaces.contains(i.path)) 'play $i']);
+      // A face not made yet: written without it (STEP 3-15A), and said.
+      notes.addAll([for (final i in found) if (!i.blocking) '${p.caseId} $i']);
     }
     failed(seasonPath, seasonIssues);
     if (lines.isNotEmpty) throw GenerateFailure(lines);
+    bool onDisk(String file) => File('$root/$file').existsSync();
 
     // 5. The approvals: a sandbox is made from drafts too, and says so.
-    final notes = <String>[];
     var approved = true;
     for (final (_, p) in plans) {
       try {
@@ -270,14 +299,15 @@ abstract final class CaseGenerator {
     // 6. The files.
     final seasonJson = PlanFiles.readJson(seasonPath);
     final files = <String, String>{
-      '${season.seasonId}_season.g.dart': _seasonFile(season, ContentHash.ofJson(seasonJson)),
-      for (final (path, p) in plans) '${p.caseId}.g.dart': _caseFile(p, season, relative[p.caseId]!, ContentHash.ofJson(PlanFiles.readJson(path))),
+      '${season.seasonId}_season.g.dart': _seasonFile(season, ContentHash.ofJson(seasonJson), places),
+      for (final (path, p) in plans) '${p.caseId}.g.dart': _caseFile(p, season, relative[p.caseId]!, ContentHash.ofJson(PlanFiles.readJson(path)), onDisk),
       '${season.seasonId}_cases.g.dart': _casesFile(season, [for (final (_, p) in plans) p]),
     };
     final manifest = <String, Object?>{
       'generator': 'generate_case.dart',
       'generatorVersion': generatorVersion,
       'target': 'sandbox',
+      if (slice) 'slice': true,
       'seasonId': season.seasonId,
       'cases': [for (final (_, p) in plans) p.caseId],
       'approved': approved,
@@ -288,7 +318,7 @@ abstract final class CaseGenerator {
       'outputs': {for (final MapEntry(:key, :value) in files.entries) key: ContentHash.ofBytes(utf8.encode(value))},
     };
     files[manifestName] = PlanFiles.encode(manifest);
-    return Generated(season.seasonId, files, notes);
+    return Generated(season.seasonId, files, notes, slice: slice);
   }
 
   static String _slashes(String path) => path.replaceAll(r'\', '/');
@@ -303,7 +333,7 @@ abstract final class CaseGenerator {
 
   // ── The season ─────────────────────────────────────────────────────────
 
-  static String _seasonFile(SeasonPlan s, String hash) {
+  static String _seasonFile(SeasonPlan s, String hash, List<PlacePlan> shown) {
     final name = constName(s.seasonId);
     final info = <String, Object?>{
       'id': s.seasonId,
@@ -318,7 +348,7 @@ abstract final class CaseGenerator {
       if (s.prologue case final p?) 'prologue': p.toJson(),
     };
     final places = {
-      for (final p in s.places)
+      for (final p in shown)
         p.placeId: DartCall('ScenePlace', named: {
           'file': p.file,
           'pixels': DartCall('ScenePixels', positional: [p.width.toDouble(), p.height.toDouble()]),
@@ -406,7 +436,7 @@ abstract final class CaseGenerator {
 
   // ── A case ─────────────────────────────────────────────────────────────
 
-  static String _caseFile(CasePlan c, SeasonPlan season, String source, String hash) {
+  static String _caseFile(CasePlan c, SeasonPlan season, String source, String hash, bool Function(String file) onDisk) {
     final name = constName(c.caseId);
     final all = c.allMissions;
     final learning = {
@@ -451,7 +481,7 @@ abstract final class CaseGenerator {
           for (final MapEntry(key: table, value: (model, doc)) in storyTables.entries)
             '\n/// Its $doc (`SeasonContent.$table`).\n'
                 '${_keyword(table, all)} $name${_suffix(table)} = <String, $model>${DartLiteral.of({
-                  for (final m in all) m.missionId: ?story(table, m, season),
+                  for (final m in all) m.missionId: ?story(table, m, season, onDisk: onDisk),
                 })};\n',
         ].join()}';
     return '${_head(source, hash)}\n${_imports(body)}\n$body';
@@ -694,13 +724,16 @@ abstract final class CaseGenerator {
       table == 'talkMissions' && missions.any((m) => m.play?.talk != null) ? 'final' : 'const';
 
   /// [m]'s entry in story table [table], or null when its plan has none.
-  static Object? story(String table, MissionPlan m, SeasonPlan season) {
+  /// A face is written only when [onDisk] holds its file (STEP 3-15A):
+  /// one not made yet is left out, never stood in for.
+  static Object? story(String table, MissionPlan m, SeasonPlan season, {bool Function(String file)? onDisk}) {
+    String? face(String? file) => file != null && (onDisk?.call(file) ?? true) ? file : null;
     final w = m.play;
     if (w == null) return null;
     return switch (table) {
-      'talkMissions' => w.talk == null ? null : _talkMission(m, w.talk!, season),
+      'talkMissions' => w.talk == null ? null : _talkMission(m, w.talk!, season, face(w.talk!.portrait)),
       'discoveries' => w.discovery == null ? null : _discovery(w.discovery!),
-      'endings' => w.ending.isEmpty ? null : [for (final l in w.ending) _endingLine(l, m, season)],
+      'endings' => w.ending.isEmpty ? null : [for (final l in w.ending) _endingLine(l, m, season, face(l.portrait))],
       _ => null,
     };
   }
@@ -718,11 +751,11 @@ abstract final class CaseGenerator {
     TalkBy.narrator => DartCall('TalkLine.narrator', positional: [l.text]),
   };
 
-  static DartCall _talkMission(MissionPlan m, MissionTalkPlan t, SeasonPlan season) {
+  static DartCall _talkMission(MissionPlan m, MissionTalkPlan t, SeasonPlan season, String? portrait) {
     final speaker = DartConst(DartCall('TalkSpeaker', named: {
       'id': t.speaker,
       'name': _nameOf(t.speaker, season),
-      if (t.portrait case final p?) 'portraits': {'base': p},
+      if (portrait case final p?) 'portraits': {'base': p},
     }));
     // Only listened to: finished once its lines are heard.
     DartCall scene(String part, TalkPartPlan p) => DartCall('TalkScene', named: {
@@ -751,12 +784,12 @@ abstract final class CaseGenerator {
     'note': ?d.note,
   });
 
-  static DartCall _endingLine(EndingLinePlan l, MissionPlan m, SeasonPlan season) => DartCall('EndingLine', positional: [
+  static DartCall _endingLine(EndingLinePlan l, MissionPlan m, SeasonPlan season, String? portrait) => DartCall('EndingLine', positional: [
     l.text,
   ], named: {
     if (l.by != TalkBy.narrator) 'voice': DartCode('TalkVoice.${l.by.name}'),
     if (l.speaker case final s?) 'name': _nameOf(s, season),
-    'portrait': ?l.portrait,
+    'portrait': ?portrait,
     'background': _placeFile(m, season),
     'evidenceId': ?l.evidence,
   });

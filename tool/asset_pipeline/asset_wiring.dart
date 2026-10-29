@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import '../season_gen/play_check.dart';
 import '../season_gen/plan_ids.dart';
 import '../season_gen/plan_models.dart';
 import 'asset_plan.dart';
@@ -6,8 +9,11 @@ import 'asset_plan.dart';
 /// the game's code (STEP 3-12A, `lib/` as of 2026-10-29; nothing there is
 /// changed by this step).
 ///
-/// * `wired`: the plans already name the file where the game reads it, and
-///   the generator writes that into the season's content.
+/// * `wired`: the plans already name the file where the game reads it, the
+///   generator writes that into the season's content, and the file is in
+///   `assets/`: shown now.
+/// * `wired_when_made`: the same, but the file is not in `assets/` yet:
+///   shown as soon as the picture is made and copied there (STEP 3-15A).
 /// * `ready_to_wire`: the game has a place that shows this kind of picture,
 ///   but nothing names this file there yet: a line in `lib/` (`libEdit`) or
 ///   a table the generator does not write yet (`generatorExtension`).
@@ -16,6 +22,7 @@ import 'asset_plan.dart';
 /// * `not_supported`: no screen of the game shows it for a generated season.
 enum WiringStatus {
   wired('wired'),
+  wiredWhenMade('wired_when_made'),
   readyToWire('ready_to_wire'),
   blocked('blocked'),
   notSupported('not_supported');
@@ -69,12 +76,78 @@ class Wiring {
 }
 
 abstract final class AssetWiring {
-  /// Every picture of [plan], in the manifest's order.
-  static List<Wiring> of(AssetPlan plan) => [for (final a in plan.assets) wiringOf(a, plan.season!, plan.cases)];
+  /// Every picture of [plan], in the manifest's order. [root]: the
+  /// repository's root, where `assets/` is looked in.
+  static List<Wiring> of(AssetPlan plan, {String root = '.'}) =>
+      [for (final a in plan.assets) wiringOf(a, plan.season!, plan.cases, root: root)];
+
+  /// The screen and the field that show each picture a case plan names
+  /// (`PlayCheck.pictureFiles`, its path with the indexes taken out), read
+  /// from `lib/` on 2026-10-30: the widget that draws the file.
+  static const shownBy = <String, (String, String)>{
+    '.play.explore.picture.file': ('Look round (SceneExplore, scene_explore.dart)', 'SeasonContent.explores → ExploreScene.picture'),
+    '.play.explore.choices[].picture': ('Look round, its choice page (SceneExplore)', 'SeasonContent.explores → ExplorePicture.picture'),
+    '.play.search.picture.file': ('Search (InvestigationSearch, investigation_search.dart)', 'SeasonContent.investigations → InvestigationScene.picture'),
+    '.play.search.finds[].picture.file': ('Search, a find laid over the scene (InvestigationSearch)', 'SeasonContent.investigations → InvestigationFind'),
+    '.play.dialogue.background': ('Talk with witnesses (DialogueInvestigation)', 'SeasonContent.dialogues → DialogueScene.background'),
+    '.play.dialogue.witnesses[].portrait': ('Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart)', 'SeasonContent.dialogues → DialogueSpeaker.portrait'),
+    '.puzzle.answerSpec.options[].picture': ('Picture choice (question_widgets.dart)', 'case JSON → ChoiceOption.picture'),
+    '.play.talk.portrait': ('Talk before or after a mission (CaseTalk, case_talk.dart)', 'SeasonContent.talkMissions → TalkSpeaker.portraits'),
+    '.play.ending[].portrait': ('Final ending (CaseTalk, case_talk.dart)', 'SeasonContent.endings → EndingLine.portrait'),
+  };
+
+  /// Whether the generator writes [m] (its puzzle one it makes, not a
+  /// development request): only then is a picture it names shown.
+  static bool _made(MissionPlan m) {
+    final id = m.puzzle.paletteId;
+    return id != null &&
+        PlayCheck.generatable.containsKey(id) &&
+        m.puzzle.engineTable == PlayCheck.generatable[id] &&
+        m.puzzle.status != PuzzleStatus.devRequest;
+  }
 
   /// Where [a] is shown, for [season] and its [cases].
-  static Wiring wiringOf(PipelineAsset a, SeasonPlan season, List<CasePlan> cases) {
+  static Wiring wiringOf(PipelineAsset a, SeasonPlan season, List<CasePlan> cases, {String root = '.'}) {
     final id = season.seasonId;
+    final made = File('$root/${a.outputPath}').existsSync();
+    final generated = made ? WiringStatus.wired : WiringStatus.wiredWhenMade;
+
+    // A picture a case plan names (STEP 3-15A): by where it is named, never
+    // by its type or its use alone. Each a field the game draws.
+    if (a.type != 'place') {
+      final named = <String, List<String>>{};
+      final waiting = <String>[];
+      for (final c in cases) {
+        for (final m in c.allMissions) {
+          for (final (path, file) in PlayCheck.pictureFiles(m)) {
+            if (file != a.outputPath) continue;
+            if (!_made(m)) {
+              waiting.add(m.missionId);
+              continue;
+            }
+            (named[path.replaceAll(RegExp(r'\[\d+\]'), '[]')] ??= []).add(m.missionId);
+          }
+        }
+      }
+      if (named.isNotEmpty) {
+        final shown = [for (final p in named.keys) ?shownBy[p]];
+        final story = named.keys.every((p) => p == '.play.talk.portrait' || p == '.play.ending[].portrait');
+        final evidence = PlanIds.evidence.hasMatch(a.subject) ? ' As evidence ${a.subject}, its notebook card still needs one '
+            'lib/ line (ArtAssets.evidencePictures).' : '';
+        return Wiring(
+          asset: a,
+          status: generated,
+          screen: {for (final (screen, _) in shown) screen}.join('; '),
+          field: {for (final (_, field) in shown) field}.join('; '),
+          via: 'generator',
+          missions: {for (final ms in named.values) ...ms}.toList(),
+          note: '${story ? 'A face of the story (talk, ending): the mission plays without it, the line shows no face until it is made.' : 'Needed to play: the generator stops without it (asset_file_missing).'}'
+              '${made ? '' : ' Not in assets/ yet.'}$evidence'
+              '${waiting.isEmpty ? '' : ' Also named by ${waiting.join(', ')}, a development request: not shown there.'}',
+        );
+      }
+    }
+
     switch (a.type) {
       case 'place':
         final place = season.places.where((p) => p.placeId == a.subject).firstOrNull;
@@ -90,7 +163,7 @@ abstract final class AssetWiring {
         }
         return Wiring(
           asset: a,
-          status: WiringStatus.wired,
+          status: generated,
           screen: 'Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)',
           field: 'season.plan.json places[${a.subject}].file → SeasonContent.places[\'${a.subject}\'] (ScenePlace); missions name it by sceneKey',
           via: 'generator',
@@ -146,8 +219,7 @@ abstract final class AssetWiring {
           status: WiringStatus.notSupported,
           screen: null,
           field: null,
-          note: 'No table the generator writes shows a portrait. Portraits are shown only by Season 1 and 2\'s hand-written talk '
-              'scenes (ArtAssets.characters, TalkSpeaker.portraits, DialogueScene speakers), which the plans and the generator do not make.',
+          note: 'No case plan names it: no talk, ending or witness of a generated mission shows this face.',
         );
       case 'object' || 'document':
         if (PlanIds.evidence.hasMatch(a.subject)) {
@@ -171,7 +243,7 @@ abstract final class AssetWiring {
           status: WiringStatus.notSupported,
           screen: null,
           field: null,
-          note: '${a.subject} is no evidence id: no screen shows a picture by it.',
+          note: '${a.subject} is no evidence id and no case plan names its file: no screen shows it.',
         );
     }
     return Wiring(asset: a, status: WiringStatus.notSupported, screen: null, field: null, note: 'type ${a.type}');
@@ -184,14 +256,15 @@ abstract final class AssetWiring {
 
   /// What `planning/asset_wiring.json` keeps: the same plans always make the
   /// same file (no time, no machine), for a generator to read back.
-  static Map<String, Object?> report(AssetPlan plan) {
-    final all = of(plan);
+  static Map<String, Object?> report(AssetPlan plan, {String root = '.'}) {
+    final all = of(plan, root: root);
     return {
       'schemaVersion': 1,
       'seasonId': plan.seasonId,
       'tool': 'tool/asset_pipeline/asset_pipeline.dart --wiring --write',
-      'checkedAgainst': 'lib/ as of 2026-10-29 (SeasonContent.places, ArtAssets.seasonCovers, SeasonMap.bySeason, '
-          'ArtAssets.evidencePictures, SeasonContent.storyScenes)',
+      'checkedAgainst': 'lib/ as of 2026-10-30 (SeasonContent.places, explores, investigations, dialogues, talkMissions, endings, '
+          'ChoiceOption.picture, ArtAssets.seasonCovers, SeasonMap.bySeason, ArtAssets.evidencePictures, SeasonContent.storyScenes); '
+          'wired: in assets/ now',
       'counts': counts(all),
       'assets': [for (final w in all) w.toJson()],
     };

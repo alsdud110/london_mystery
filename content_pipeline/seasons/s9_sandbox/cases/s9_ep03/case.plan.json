@@ -121,7 +121,8 @@
             "pixels": {
               "width": 1536,
               "height": 1024
-            }
+            },
+            "measuredOn": "sha256:a648d80959381e48d85c45f6a40160dc576dffc681cdd9564ddc29699d22955b"
           },
           "place": "The station at night",
           "task": "Look around the station. What did the courier leave?",
@@ -329,7 +330,8 @@
             "pixels": {
               "width": 1536,
               "height": 1024
-            }
+            },
+            "measuredOn": "sha256:406bf4e50187fba44fc7eafd4a011e5653b593279be67ee58ad7a70eb43d3591"
           },
           "task": "Find the three things in the report.",
           "documentTitle": "GUARD REPORT",

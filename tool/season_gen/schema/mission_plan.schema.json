@@ -130,13 +130,14 @@
       }
     },
     "picture": {
-      "description": "A picture file and its size in pixels.",
+      "description": "A picture file and its size in pixels; measuredOn: the file's hash when the places on it were measured (STEP 3-15A).",
       "type": "object",
       "additionalProperties": false,
       "required": ["file", "pixels"],
       "properties": {
         "file": { "$ref": "common.schema.json#/$defs/assetFile" },
-        "pixels": { "$ref": "#/$defs/pixels" }
+        "pixels": { "$ref": "#/$defs/pixels" },
+        "measuredOn": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
       }
     },
     "emptySpot": {

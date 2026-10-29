@@ -65,6 +65,8 @@ storage). Losing it means paying for the pictures again. The season's plans
 (`assets.manifest.json`, `planning/asset_wiring.json`) stay in Git, and a
 picture copied into `assets/` is tracked there. `.env` (the API key) is never
 in Git either.
+(STEP 3-15A: a commit that had forced five of its files in was undone with
+`git rm --cached`; `test/asset_pipeline` checks that nothing there is tracked.)
 
 ## Covers
 
@@ -171,17 +173,23 @@ the game's older sizes, as `1122x1402`):
 
 ## Wiring (where the game shows each picture)
 
-`planning/asset_wiring.json`, from the game's code as of 2026-10-29:
+`planning/asset_wiring.json`, from the game's code as of 2026-10-30. Since
+STEP 3-15A a picture is wired by **where a case plan names its file**
+(`PlayCheck.pictureFiles`: a scene, a choice, a witness, a talk's or an
+ending's face) and the widget in `lib/` that draws that field
+(`AssetWiring.shownBy`), never by its `type` or `use` alone:
 
-| Status | Meaning | Rome |
+| Status | Meaning | Rome (2026-10-30) |
 |---|---|---|
-| `wired` | the plans already name the file where the game reads it, and the generator writes it | 18 places (`SeasonContent.places`) |
-| `ready_to_wire` | the game has a place for it; a `lib/` line (`libEdit`) or a generator table (`generatorExtension`) is missing | 14 evidence pictures (`ArtAssets.evidencePictures`), the cover (`ArtAssets.seasonCovers`), the map (`SeasonMap.bySeason`), the owl scene (`SeasonContent.storyScenes`) |
+| `wired` | the generator writes the file where the game reads it, and the file is in `assets/`: shown now | 5 (Case 05: cat_ruins, cast_workshop, three cats) |
+| `wired_when_made` | the same, but the file is not in `assets/` yet: shown as soon as it is made and copied there | 41 (16 places, 10 portraits, 15 puzzle pictures) |
+| `ready_to_wire` | the game has a place for it; a `lib/` line (`libEdit`) or a generator table (`generatorExtension`) is missing | 15: 12 evidence cards (`ArtAssets.evidencePictures`), the cover, the map, the owl scene |
 | `blocked` | the game has a place, but the picture as planned does not fit it | none |
-| `not_supported` | no screen shows it for a generated season | 10 portraits, the prologue, the gold tiles (no evidence id) |
+| `not_supported` | no screen shows it for a generated season | 2: the prologue, the gold tiles |
 
-Rome's `ready_to_wire` also holds the cover (portrait since STEP 3-12A's wrap-up;
-not wired until a `SeasonCover` line is in `lib/`).
+A picture that is both a puzzle's and an evidence card (`ev_yellow_helmet`,
+`ev_real_piece`) is wired for the puzzle; its note says the notebook card
+still needs its `lib/` line.
 
 ## Applying pictures to the game (STEP 3-12C, designed here)
 
@@ -197,6 +205,12 @@ not wired until a `SeasonCover` line is in `lib/`).
    manifest's `status` is set to `generated` and `pubspec.yaml` gets the folders.
 5. `plan_season.dart check`, then `generate`: the place pictures on disk, the
    generator stops waiting for them.
+
+STEP 3-15A did steps 3–4 by hand for Case 05's five pictures: each copied
+from `raw/` to its `outputPath` (never over a file; its sha256 compared after
+the copy), its manifest `status` set to `generated`, and two folders added
+to `pubspec.yaml`. Not approved (`approve.dart` asks a person at a terminal):
+the sandbox is made from drafts and says so.
 
 Names: the manifest's `outputPath` is the file name (`snake_case.png`, under
 `assets/seasons/season_NN_<city>/`), checked by the planner; places at the

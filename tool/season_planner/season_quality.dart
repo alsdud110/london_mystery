@@ -135,6 +135,9 @@ abstract final class SeasonQuality {
       for (final i in PlayCheck.casePlan(c, season, root: root)) {
         if (i.code == 'place_file_missing') {
           if (pendingPlaces.add(i.path)) out.info('image_pending', 'season.plan.json ${i.path}', '${i.message}: a picture still to be made (assets.manifest.json)', source: Source.play);
+        } else if (i.code == PlayCheck.storyPictureMissing) {
+          // A talk's or an ending's face (STEP 3-15A): the case is made without it.
+          out.info('story_picture_pending', 'cases/${c.caseId} ${i.path}', '${i.message} (assets.manifest.json)', source: Source.play);
         } else if (i.code == 'asset_file_missing') {
           // A puzzle's picture (STEP 3-13): the generator waits for it as for a place's.
           if (pendingPlaces.add('cases/${c.caseId} ${i.path}')) {

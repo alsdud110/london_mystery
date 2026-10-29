@@ -196,7 +196,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/cat_ruins.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: Case 05 M1 is a look round this picture (the board and bowls lower left, the temples, the three cats). The cats here match the three choice pictures (cat_rosso, cat_tito, cat_luna)."
       ]
@@ -210,14 +210,17 @@
         "s3_ep05"
       ],
       "description": "The Bassi plaster workshop: white statues and moulds, a big wall mirror, a cabinet of small drawers.",
-      "prompt": "A plaster cast workshop in an old Roman street: shelves of white plaster statues, lion heads and shells, rubber moulds on a work table, white dust in the sunlight, a large old mirror on one wall and a wooden cabinet with many small numbered-looking drawers without readable numbers. An orange cat sits on the table.",
+      "prompt": "A plaster cast workshop in an old Roman street, seen from just inside its open doorway. On the left, the doorway opens onto a sunny cobbled street with ochre houses and old stone columns. In the middle, tall wooden shelves of white plaster busts, lion heads and shells. On the right, a large old gilt mirror on the wall and a wooden cabinet with many small drawers without readable numbers. In the foreground, a long wooden work table with blue-grey rubber moulds and a plaster lion relief, white dust in the sunlight. Tito the cat sits on the right end of the table, seen from the side: an orange short-haired tabby with a very short, stubby tail, only a small stump, clearly much shorter than a normal cat's tail, and white plaster dust on its paws.",
       "stylePreset": "rome_scene",
       "width": 1536,
       "height": 1024,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/cast_workshop.png",
       "references": [],
-      "status": "planned"
+      "status": "generated",
+      "notes": [
+        "STEP 3-15A wrap-up: drawn again once (the first picture's cat had a long fluffy tail, against Case 05's clue 'short tail'). The prompt keeps the first picture's layout in words; the first picture is kept in content_pipeline/asset_work/s3_rome/superseded/."
+      ]
     },
     {
       "assetId": "s3_rome.asset.navona_square",
@@ -1091,7 +1094,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_05/cat_tito.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: Tito is also on Carla Bassi's shoulder in her portrait (an orange short-tailed cat): keep them alike."
       ]
@@ -1112,7 +1115,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_05/cat_rosso.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.cat_luna",
@@ -1130,7 +1133,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_05/cat_luna.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.bridge_angels",

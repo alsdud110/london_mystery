@@ -161,6 +161,19 @@ void main() {
           ['[asset_file_missing] \$.missions[3].puzzle.answerSpec.options[1].picture']);
     });
 
+    test('places measured on the drawn picture, that very file; else it is not made (STEP 3-15A)', () {
+      Map<String, Object?> picture(Map<String, Object?> c, int i, String key) => scene(c, i, key)['picture'] as Map<String, Object?>;
+      expect(on((c) => picture(c, 0, 'explore').remove('measuredOn')), ['[coordinates_unmeasured] \$.missions[0].play.explore.picture.measuredOn']);
+      expect(on((c) => picture(c, 1, 'search').remove('measuredOn')), ['[coordinates_unmeasured] \$.missions[1].play.search.picture.measuredOn']);
+      expect(on((c) => picture(c, 0, 'explore')['measuredOn'] = 'sha256:${'0' * 64}'),
+          ['[coordinates_stale] \$.missions[0].play.explore.picture.measuredOn'], reason: 'the picture changed since');
+      expect(() => on((c) => picture(c, 0, 'explore')['measuredOn'] = 'measured'), throwsA(isA<PlanFormatException>()));
+      // A picture not made yet: only that, never its places' measure.
+      expect(on((c) => picture(c, 0, 'explore')
+        ..['file'] = 'assets/seasons/season_09_none/station.png'
+        ..remove('measuredOn')), ['[asset_file_missing] \$.missions[0].play.explore.picture.file']);
+    });
+
     test('every place on a picture is on it, in its pixels', () {
       expect(on((c) => spot(c, 0)['areas'] = [[282, 660, 1600, 848]]), ['[scene_area_invalid] \$.missions[0].play.explore.spots[0].areas[0]']);
       expect(on((c) => spot(c, 0)['areas'] = [[522, 660, 282, 848]]), ['[scene_area_invalid] \$.missions[0].play.explore.spots[0].areas[0]'], reason: 'right before left');
@@ -232,7 +245,11 @@ void main() {
       expect(on((c) => line(c, 1)['evidence'] = 's9_ep03_e1'), ['[play_range] \$.final.play.ending[1].evidence'], reason: 'a later case');
       expect(on((c) => line(c, 1)['evidence'] = 's9_ep02_e9'), ['[play_range] \$.final.play.ending[1].evidence'], reason: 'none of the case');
       expect(on((c) => line(c, 1)['evidence'] = 's9_ep01_e2'), isEmpty, reason: 'an earlier case: in the notebook');
-      expect(on((c) => talk(c, 0)['portrait'] = 'assets/sandbox/not_made.png'), ['[asset_file_missing] \$.missions[0].play.talk.portrait']);
+      // A face not drawn yet is the story's (STEP 3-15A): said, never stopping the case.
+      expect(on((c) => talk(c, 0)['portrait'] = 'assets/sandbox/not_made.png'), ['[story_picture_missing] \$.missions[0].play.talk.portrait']);
+      expect(on((c) => line(c, 0)['portrait'] = 'assets/sandbox/not_made.png'), ['[story_picture_missing] \$.final.play.ending[0].portrait']);
+      final c = copy(storyJson)..let((c) => talk(c, 0)['portrait'] = 'assets/sandbox/not_made.png');
+      expect([for (final i in PlayCheck.casePlan(CasePlan.fromJson(c), season)) i.blocking], [false]);
     });
 
     test("a discovery says something of its own, and keeps the game's timing rule", () {

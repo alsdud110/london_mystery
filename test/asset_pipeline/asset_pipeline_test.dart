@@ -290,7 +290,7 @@ void main() {
       expect(s.statusOf('s3_rome.asset.guard_room'), AssetStatus.validated);
       expect(s.runs, hasLength(2));
       expect(s.runs.last['apiCalls'], 2);
-      expect(Directory('${tmp.path}/assets').existsSync(), isFalse, reason: 'nothing in assets/');
+      expect(_assetFiles(tmp), _generatedFiles(), reason: 'nothing written in assets/: only the pictures copied with the season');
     });
 
     test('a pose drawn from its base: the base first, then the pose through images/edits with the base\'s picture', () async {
@@ -420,20 +420,33 @@ void main() {
       final wiring = AssetWiring.of(plan);
       final places = wiring.where((w) => w.asset.type == 'place').toList();
       expect(places, hasLength(18));
-      expect(places.every((w) => w.status == WiringStatus.wired), isTrue);
       for (final w in places) {
         expect(plan.season!.places.singleWhere((p) => p.placeId == w.asset.subject).file, w.asset.outputPath);
         expect(w.missions, isNotEmpty, reason: w.asset.assetId);
+        // Shown now when the picture is in assets/ (STEP 3-15A), else once it is made.
+        final made = File(w.asset.outputPath).existsSync();
+        expect(w.status, made ? WiringStatus.wired : WiringStatus.wiredWhenMade, reason: w.asset.assetId);
       }
-      // AssetWiring reads a picture's type, not its use (STEP 3-14 gap): the
-      // puzzle pictures are counted as scenes (ready_to_wire) and objects
-      // with no evidence id (not_supported).
-      expect(AssetWiring.counts(wiring), {'wired': 18, 'ready_to_wire': 22, 'blocked': 0, 'not_supported': 23});
-      expect(wiring.where((w) => w.asset.type == 'character').every((w) => w.status == WiringStatus.notSupported), isTrue);
+      // By where a case plan names the file, not by its type (STEP 3-15A):
+      // every picture a generated mission shows (scene, choice, witness,
+      // talk or ending face) goes in through the generator.
+      expect(AssetWiring.counts(wiring), {'wired': 5, 'wired_when_made': 41, 'ready_to_wire': 15, 'blocked': 0, 'not_supported': 2});
+      expect({for (final w in wiring) if (w.status == WiringStatus.wired) w.asset.assetId.split('.').last},
+          {'cat_ruins', 'cast_workshop', 'cat_tito', 'cat_rosso', 'cat_luna'}, reason: 'Case 05\'s pictures, in assets/');
+      final characters = wiring.where((w) => w.asset.type == 'character');
+      expect(characters.every((w) => w.status == WiringStatus.wiredWhenMade && w.via == 'generator'), isTrue,
+          reason: 'every face is a talk\'s, an ending\'s or a witness\'s');
+      final cats = wiring.singleWhere((w) => w.asset.assetId == 's3_rome.asset.cat_tito');
+      expect(cats.missions, ['s3_ep05_m1']);
+      expect(cats.field, 'SeasonContent.explores → ExplorePicture.picture');
+      final helmet = wiring.singleWhere((w) => w.asset.assetId == 's3_rome.asset.ev_yellow_helmet');
+      expect(helmet.status, WiringStatus.wiredWhenMade, reason: 'a choice in Case 10');
+      expect(helmet.note, contains('ArtAssets.evidencePictures'), reason: 'its notebook card still needs a lib/ line');
+      expect({for (final w in wiring) if (w.status == WiringStatus.notSupported) w.asset.assetId.split('.').last}, {'prologue', 'ev_gold_tiles'});
       final cover = wiring.singleWhere((w) => w.asset.type == 'cover');
       expect(cover.status, WiringStatus.readyToWire, reason: 'portrait now, but no SeasonCover line in lib/: not wired');
       expect(cover.via, 'libEdit');
-      expect(wiring.where((w) => w.status != WiringStatus.wired).every((w) => w.via != 'generator'), isTrue);
+      expect(wiring.where((w) => w.status == WiringStatus.readyToWire || w.status == WiringStatus.notSupported).every((w) => w.via != 'generator'), isTrue);
     });
 
     test('the cover: portrait at the API\'s 1024x1536, a safe area in its prompt; a landscape cover is warned of', () {
@@ -532,16 +545,32 @@ AssetPipeline _pipeline(AssetPlan plan, _FakeApi api, String root, List<String> 
   return AssetPipeline(plan: plan, studio: studio, log: log.add, now: now);
 }
 
-/// The season's folder copied under a new temporary root.
+/// The season's folder copied under a new temporary root, with the pictures
+/// its manifest marks `generated` (in `assets/` since STEP 3-15A).
 Directory _copySeason(String seasonDir) {
   final tmp = Directory.systemTemp.createTempSync('asset_pipeline');
-  for (final f in Directory(seasonDir).listSync(recursive: true).whereType<File>()) {
-    final rel = f.path.replaceAll(r'\', '/');
+  for (final rel in [
+    for (final f in Directory(seasonDir).listSync(recursive: true).whereType<File>()) f.path.replaceAll(r'\', '/'),
+    ..._generatedFiles(),
+  ]) {
     File('${tmp.path}/$rel')
       ..createSync(recursive: true)
-      ..writeAsBytesSync(f.readAsBytesSync());
+      ..writeAsBytesSync(File(rel).readAsBytesSync());
   }
   return tmp;
+}
+
+/// The game files of the Rome manifest's `generated` pictures.
+Set<String> _generatedFiles() => {
+  for (final a in (jsonDecode(File('content_pipeline/seasons/s3_rome/assets.manifest.json').readAsStringSync()) as Map)['assets'] as List)
+    if ((a as Map)['status'] == 'generated') a['outputPath'] as String,
+};
+
+/// The files under [root]'s `assets/`, from [root].
+Set<String> _assetFiles(Directory root) {
+  final dir = Directory('${root.path}/assets');
+  if (!dir.existsSync()) return {};
+  return {for (final f in dir.listSync(recursive: true).whereType<File>()) f.path.replaceAll(r'\', '/').substring(root.path.length + 1)};
 }
 
 /// Every file under [dir] with its size and time.

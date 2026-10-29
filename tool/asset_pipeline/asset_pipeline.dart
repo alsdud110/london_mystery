@@ -286,7 +286,7 @@ class AssetPipeline {
         '$withRefs drawn from references, each reference priced at ${ImagePricing.referenceImageTokens} image input tokens; '
         'list prices of ${ImagePricing.checkedOn}, the bill is OpenAI\'s');
     log('left     ${ImagePricing.usd(remaining)} conservative for the pictures not validated yet');
-    final wiring = AssetWiring.counts(AssetWiring.of(plan));
+    final wiring = AssetWiring.counts(AssetWiring.of(plan, root: root));
     log('wiring   ${jsonEncode(wiring)} (--wiring to list)');
     if (state.records.isNotEmpty) log('state    ${jsonEncode(state.counts)} ($statePath)');
     if (maxBudget != null) {
@@ -433,14 +433,14 @@ class AssetPipeline {
   /// Where each picture is shown; with [write], `planning/asset_wiring.json`.
   int wiring({bool write = false}) {
     if (!_checked()) return 2;
-    final all = AssetWiring.of(plan);
+    final all = AssetWiring.of(plan, root: root);
     for (final w in all) {
       log('${w.status.id.padRight(14)} ${w.asset.assetId.padRight(34)} ${w.field ?? '-'}');
     }
     log('wiring   ${jsonEncode(AssetWiring.counts(all))}');
     if (write) {
       final path = '${plan.seasonDir}/planning/asset_wiring.json';
-      File('$root/$path').writeAsStringSync(PlanFiles.encode(AssetWiring.report(plan)));
+      File('$root/$path').writeAsStringSync(PlanFiles.encode(AssetWiring.report(plan, root: root)));
       log('wrote    $path');
     }
     return 0;

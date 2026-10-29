@@ -67,6 +67,25 @@ void main() {
       expect(ImagePricing.estimate(model: 'gpt-image-9', size: '1024x1024', quality: 'low', prompt: 'x'), isNull);
     });
 
+    test('a gpt-image-2 square at medium: never under what its calls took (1756 output tokens, STEP 3-15A)', () {
+      expect(ImagePricing.estimatedOutputTokens('1024x1024', 'medium', model: 'gpt-image-2'), 1756);
+      expect(ImagePricing.estimatedOutputTokens('1024x1024', 'medium', model: 'gpt-image-2-2026-04-21'), 1756, reason: 'a snapshot as its model');
+      // The landscape and portrait measured lower (1372): the guide's larger count kept.
+      expect(ImagePricing.estimatedOutputTokens('1536x1024', 'medium', model: 'gpt-image-2'), 1568);
+      expect(ImagePricing.estimatedOutputTokens('1024x1536', 'medium', model: 'gpt-image-2'), 1584);
+      // Not measured: the guide's.
+      expect(ImagePricing.estimatedOutputTokens('1024x1024', 'medium', model: 'gpt-image-1.5'), 1056);
+      expect(ImagePricing.estimatedOutputTokens('1024x1024', 'high', model: 'gpt-image-2'), 4160);
+      // Case 05's Tito (1024x1024, medium): its prompt read as 129 text tokens, its usage priced.
+      final paid = ImagePricing.ofUsage('gpt-image-2', {
+        'input_tokens': 129,
+        'input_tokens_details': {'text_tokens': 129, 'image_tokens': 0},
+        'output_tokens': 1756,
+      })!;
+      final cat = ImagePricing.estimate(model: 'gpt-image-2', size: '1024x1024', quality: 'medium', prompt: 'x' * 129 * 4)!;
+      expect(cat, closeTo(paid, 1e-9), reason: 'estimated at what was paid (\$0.0533), not \$0.0324');
+    });
+
     test("after: the answer's usage at the list prices", () {
       final usd = ImagePricing.ofUsage('gpt-image-2', {
         'input_tokens': 120,

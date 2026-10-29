@@ -369,3 +369,36 @@ plays (no new screen). Without them a mission plays as it always did.
 
 The sandbox's Case 02 has each of them: `test/sandbox/s9_presentation_test.dart`
 plays it in the app (talks, discoveries, the ending, saves left halfway).
+
+## Story faces, measured places, a slice (STEP 3-15A)
+
+- **A face is the story's, not the puzzle's.** `PlayCheck.puzzlePictureFiles`
+  (scenes, choices, witnesses: asked for in `assetNeeds`, `asset_file_missing`
+  stops the generator) and `PlayCheck.storyPictureFiles` (a talk's or an
+  ending's portrait: never in `assetNeeds`; one not on disk is
+  `story_picture_missing`, a `PlayIssue` that is not `blocking`). The
+  generator then writes the line without the face (never another one) and
+  prints a note; once the portrait is drawn the next run writes it in.
+- **Places measured on the drawn picture.** A scene's `picture` takes an
+  optional `measuredOn`: the file's `sha256:` when its places (areas,
+  marks, `guideAt`, `opening`) were measured on it. A look round or a search
+  whose picture is on disk is made only when `measuredOn` is that file's hash
+  now: `coordinates_unmeasured` (none), `coordinates_stale` (the picture
+  changed since). The picture's size is its `pixels`, checked against the
+  file as before. Places a prompt put somewhere are never played.
+- **`--slice`.** `generate_case.dart --target sandbox --slice <case.plan.json>…`
+  makes any run of a season's cases in play order (none missing between
+  them), with only the places their missions use (each on disk), under
+  `test/sandbox/generated/<seasonId>_slice/` (`"slice": true` in its
+  manifest). Every other check is the same. The game's validator then finds
+  one thing only, the slice itself: the case is numbered 05 but is the
+  slice's first.
+
+```sh
+dart run tool/season_gen/generate_case.dart --season content_pipeline/seasons/s3_rome/season.plan.json \
+  --target sandbox --slice content_pipeline/seasons/s3_rome/cases/s3_ep05/case.plan.json
+```
+
+Rome's Case 05 is played that way (`test/sandbox/rome_slice_season.dart`,
+`test/sandbox/s3_rome_ep05_test.dart`): see
+`content_pipeline/seasons/s3_rome/planning/STEP_3_15A_FIRST_PLAYABLE.md`.
