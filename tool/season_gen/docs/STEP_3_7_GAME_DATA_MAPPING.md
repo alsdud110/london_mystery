@@ -17,6 +17,8 @@
 | Sandbox 연결 | **가능하며 `lib/` 변경이 0줄이다.** `test/season_scene_playthrough_test.dart`가 이미 `SeasonCatalog.all`에 없는 시즌을 provider override와 `SeasonCatalog.testPlaces`로 실제 앱에서 끝까지 플레이한다. |
 | `released: false` | **격리되지 않는다.** 출시 빌드에서도 World Archive에 시즌 제목이 COMING SOON으로 노출되고, Paris 마지막 Case 리포트의 다음 시즌 표시가 바뀐다(§6.2). |
 | 기존 코드 변경 범위 | STEP 3-8 기준으로 `lib/`는 0, London·Paris 콘텐츠도 0. `tool/season_gen/`(모델, 스키마, 검사, 생성기)과 `test/`, `integration_test/`만 바뀐다. |
+| 객관식 보기 개수 | Plan은 2개 이상(`puzzle_selection_check.dart:311`), 게임은 3개 이상(`season_content_validator.dart:294`). 기존 검사는 그대로 두고, 생성 직전 `PlayCheck`가 3개 미만을 오류로 막는다(§5.5). |
+| 다른 도시 문구 노출 | `caseSummary`가 없으면 London 문구가 나온다 → `play.caseSummary` 필수로 해결. **데이터로 덮을 수 없는 문구 2곳**이 더 있다: 문자 잠금판 "THE CLOCKMAKER'S LOCK", 일반 프롤로그의 "LONDON"(§1.13). Sandbox에서는 알려진 문제로 기록하고, 실제 새 시즌 전에 `lib/` 수정이 필요하다. |
 
 ---
 
@@ -183,6 +185,23 @@ Case를 열고 시작하는 상태 전환은 `GameController.openSeason / openEp
 - **Paris 12:** 미션 48개. 모두 장면 테이블 또는 Paris 전용 엔진을 쓰고, `storyScenes`와 `learning`이 있다. 시즌 장소(`sceneKey`)는 0개로, 모두 `Artwork`다. `evidenceLinks`는 Case 02부터 쓰인다.
 - 모든 미션: 힌트 2개, `evidence` 있음. 최종 전 미션은 모두 `clue`가 있다. 객관식 보기는 3개 이상이다.
 
+### 1.13 콘텐츠와 상관없이 화면에 고정된 도시 문구
+
+새 시즌에서 다른 도시·이야기의 문구가 나올 수 있는 곳을 `lib/features/`에서 찾았다(문자열 리터럴 검색).
+
+| 위치 | 문구 | 새 시즌에서 | 데이터로 해결 |
+|---|---|---|---|
+| `detective_report.dart:151` | "You followed the clues across London and found the missing crown." | `caseSummary`가 없을 때 Case Solved에 나온다 | **가능**: `play.caseSummary` 필수 + `PlayCheck` |
+| `letter_lock.dart:111` | "THE CLOCKMAKER'S LOCK" (잠금판 제목) | `letterLock` 미션이면 **항상** 나온다. Paris의 시계공 이야기다 | **불가**: 위젯에 고정 |
+| `letter_lock.dart:312` | "The Clockmaker's lock" (최종 화면 `LetterLockReveal`의 Semantics) | 최종 미션이 `letterLock`이면 나온다(`final_mission_screen.dart:1095-1101`) | **불가** |
+| `season_prologue_screen.dart:219` | "LONDON" | Paris가 아닌 시즌은 모두 이 화면으로 간다(`season_screen.dart:160`) | **불가** |
+
+그 밖의 London 문구(`register_screen.dart:175` 앱 이름 "LONDON DETECTIVE AGENCY", `scoring.dart:98,108` Season 1 배지, `map_world.dart` London 랜드마크)는 시즌 콘텐츠가 아니라 앱·Season 1 고유 요소라 이번 범위가 아니다.
+
+판단:
+- Sandbox(s9)는 플레이 검증이 목적이라 `lib/` 0을 유지하고, 잠금판 문구는 QA 기록에 "알려진 문제"로 남긴다. Sandbox 플레이는 Case를 직접 열어서(`openEpisode`) 프롤로그를 거치지 않는다.
+- 실제 새 시즌 전에는 `lib/` 수정이 필요하다(§9.2-6). 예: 잠금판 제목을 미션 데이터(`prompt` 등)나 시즌 값에서 받고, 없으면 중립 문구("THE LOCK")를 쓴다. 게임 코드 변경이므로 사용자 승인 후 진행한다.
+
 ---
 
 ## 2. Studio Plan 현황
@@ -304,9 +323,13 @@ STEP 3-6 `content_pipeline/seasons/s9_sandbox/`(미추적): 검증 0 errors / 0 
 | M3 | `word_entry` | `wordInput` | `WordInputQuestion`(:933) | `LAMP` / `the lamp`는 정규화하면 `THELAMP`. `AnswerChecker`(:76-83)로 판정 가능 | **호환** |
 | Final | `letter_tile_lock` | `letterLock` | `lockBoxes`가 없으므로 `questionFor` → `LetterLockQuestion`(final_mission_screen.dart:1569) | 타일 L·E·L·B가 BELL을 정확히 만듦(:322-326 규칙) | **호환** |
 
-STEP 3-8에서 확인할 점:
-1. 타일 두 개가 같은 글자 `L`이다. `LetterLockQuestion`은 id로 슬롯을 관리해서(`letter_lock.dart:38-61`) 동작에는 문제가 없다. 그런데 테스트 헬퍼(`test/mission_play.dart:233`)는 `find.bySemanticsLabel('Letter L').first`로 타일을 찾는다. 이미 놓인 타일을 다시 집을 수 있는지 실제로 확인해야 한다.
-2. 힌트에 정답 표기가 그대로 들어가면 게임 검증기가 막는다(`season_content_validator.dart:400-425`). M1은 "On the blue shelf by the window", M3은 LAMP, Final은 BELL을 힌트에 쓰면 안 된다.
+확인한 점:
+1. **중복 `L` 타일(BELL = `l1`·`e`·`l2`·`b`)은 게임과 테스트 헬퍼 모두에서 정상이다(코드 확인, 실행 확인은 STEP 3-8).**
+   - 게임 로직: `LetterLockQuestion`은 슬롯에 **타일 id**를 넣는다(`letter_lock.dart:38`). 놓인 타일 판정(`_placed`, :47), 빼기(`_tapLoose`, :68), 자리 바꾸기(`_place`, :55)도 모두 id 기준이다. 글자는 제출할 때만 이어 붙인다(:85, :175). 같은 글자 두 개가 섞이지 않는다.
+   - 테스트 헬퍼: `test/mission_play.dart:233-240`은 정답 글자마다 `find.bySemanticsLabel('Letter $letter')`의 `.first`를 누른다. 문자열 인자는 **정확히 같은 라벨**만 찾는다. 놓인 타일의 라벨은 `'Letter L, in the lock. Tap to take it out.'`으로 바뀌고(:264), 슬롯 안의 타일은 `excludeSemantics: true`로 가려진다(:210). 그래서 두 번째 `L`은 남은 `l2`를 집는다. 이미 놓인 타일을 다시 눌러 빼는 일은 없다.
+   - 정답 판정: `PuzzleSelectionCheck._sameLetters`(:355)는 글자 수까지 비교하므로 L 두 개가 필요하다는 것도 Plan 단계에서 검사된다.
+2. 힌트에 정답 표기가 그대로 들어가면 게임 검증기가 막는다(`season_content_validator.dart:399-411`, 정규화 후 부분 문자열 비교, 3글자 미만 제외). M1은 "On the blue shelf by the window", M3은 LAMP, Final은 BELL을 힌트에 쓰면 안 된다. **"Mr. Bell"도 BELL을 포함하므로 Final 힌트에 이름을 쓸 수 없다.** 검사 대상은 힌트뿐이며 letter·question·story에는 이름을 써도 된다.
+3. Final 화면의 잠금판에는 "THE CLOCKMAKER'S LOCK"이 나온다(§1.13). 플레이에는 영향이 없다.
 
 ---
 
@@ -378,6 +401,14 @@ STEP 3-8에서 확인할 점:
 - `recall`·`evidenceLink` 규칙 위반 → `play_recall`, `play_link`
 - 장소 미등록 또는 파일 없음 → `place_unregistered`, `place_file_missing`
 - 생성기가 아직 만들 수 없는 퍼즐(§4 A 외) → `generate_unsupported`
+- 객관식(`multipleChoice`·`imageChoice`·`canvasChoice`) 보기가 3개 미만 → `play_choice_few`
+
+**객관식 보기 개수 차이의 해결:**
+- 현재: `PuzzleSelectionCheck`는 2개 미만만 막는다(`puzzle_selection_check.dart:310-311`, `_choiceTypes` :168). 게임 검증기는 3개 미만을 막는다(`season_content_validator.dart:292-294`, "a guess, not a choice").
+- `PuzzleSelectionCheck`는 **바꾸지 않는다.** 설계 단계의 Plan(보기를 아직 다 정하지 않은 것)이 지금처럼 통과해야 하고, 기존 테스트 결과도 바뀌지 않아야 한다.
+- 대신 생성 직전 `PlayCheck`가 게임과 같은 기준(3개)으로 막는다. 작성자는 생성 전에 JSON 경로(`$.missions[0].puzzle.answerSpec.options`)가 붙은 오류를 본다. 생성 후 `SeasonContentValidator`도 한 번 더 검사한다.
+- 기준 숫자 3은 게임 코드에서 가져올 수 없으므로(`tool/`은 Flutter를 import하지 않음) `PaletteFacts`에 상수로 두고, 게임 검증기와 값이 같은지 확인하는 테스트를 `palette_facts_test.dart` 방식(게임 소스 텍스트 대조)으로 추가한다.
+- s9 M1은 보기가 3개라 이미 통과한다.
 
 `validate_plan.dart`는 기본 동작을 바꾸지 않는다. 요약에 "playable: yes / no(n개 누락)"만 덧붙인다. `--playable`을 주거나 생성기가 실행할 때만 오류로 처리한다. 그래서 기존 테스트 211개의 결과는 바뀌지 않는다.
 
@@ -400,7 +431,7 @@ STEP 3-8에서 확인할 점:
 seasonsProvider.overrideWithValue([...SeasonCatalog.all.map((s) => s.season), Season.fromJson(sandboxInfo)]),
 allEpisodesProvider.overrideWithValue([...MockEpisodeRepository.bundled(), ...sandboxEpisodes]),
 seasonMapsProvider.overrideWithValue({...SeasonMap.bySeason, sandboxId: SeasonMap.paris}),
-seasonReleasedProvider.overrideWithValue((id) => id == sandboxId || seasonReleased(id)),
+seasonReleasedProvider.overrideWithValue((id) => id == sandboxId || seasonReleased(id)), // 기존 테스트는 (_) => true. Sandbox는 이 좁은 형태를 제안
 operatorToolsAvailableProvider.overrideWithValue(true),   // + seasonPreviewSwitchProvider.set(true)
 SeasonCatalog.testPlaces.addAll(sandboxPlaces);           // tearDown에서 clear
 // 저장소: testOverrides(prefs: {...}) — 메모리 SharedPreferences
@@ -540,6 +571,9 @@ manifest:
   - 숫자는 `ContentHash`의 정규화 규칙을 따른다.
   - 파일 끝 줄바꿈은 1개이고 시간 값은 없다.
   - 같은 입력이면 항상 같은 바이트가 나온다. `--check`와 테스트로 확인한다.
+  - **줄바꿈은 항상 LF로 쓴다.** Windows 체크아웃(`core.autocrlf=true`)에서는 작업 트리 파일이 CRLF가 되어 바이트 비교가 깨진다. 실제로 이 환경에서 기존 테스트 2개가 같은 이유로 실패한다(§10). 그래서:
+    - `--check`와 `hand_edited` 판정은 디스크 파일을 읽을 때 CRLF를 LF로 바꾼 뒤 비교한다.
+    - STEP 3-8에서 `.gitattributes`에 `*.g.dart`, `generated.manifest.json`, `content_pipeline/**/*.json`, `test/fixtures/season_gen/**`를 `eol=lf`로 지정하는 것을 제안한다(저장소 설정 변경이므로 사용자 확인 후).
 - **덮어쓰기 방지:**
   - 생성기는 자기 `generated/` 디렉터리 밖에는 쓰지 않는다. `season_catalog.dart` 같은 손으로 쓴 파일은 절대 수정하지 않는다.
   - 모든 생성 파일의 첫 두 줄은 다음과 같다.
@@ -575,6 +609,8 @@ manifest:
 ### 8.2 기존 퍼즐 엔진으로 구현할 수 있는가
 
 **예.** §4.1 표대로 네 개 모두 테이블 없이 `questionFor` 경로로 플레이된다. London Case 02~12의 미션 45개가 같은 경로로 출시되어 있다(§1.12). 새 엔진도, 새 위젯 분기도 필요 없다.
+
+최종 정답 BELL의 중복 `L`: 게임 로직(타일 id 기준)과 테스트 헬퍼(정확한 Semantics 라벨, 놓인 타일은 라벨이 바뀜) 모두 정상 처리된다(§4.1-1). STEP 3-8 플레이 테스트에서 `LetterLockQuestion`에 `l1`·`l2`가 모두 슬롯에 들어간 상태로 제출되는지 확인한다.
 
 ### 8.3 생성해야 하는 게임 데이터
 
@@ -627,7 +663,7 @@ manifest:
 | 1 | Plan 모델 확장: `CasePlayPlan`, `MissionPlayPlan`, `ClueText`, `EvidenceText`, `RecallText`, `PlacePlan`, `SeasonPlan.storyGreeting` | `tool/season_gen/plan_models.dart` | 선택 필드, 키 순서 고정 |
 | 2 | 스키마 확장(같은 규칙) | `tool/season_gen/schema/{common,season_plan,case_plan,mission_plan}.schema.json` | `schemaVersion` 1 유지 |
 | 3 | 스키마-모델 일치 테스트와 샘플 갱신 | `test/season_gen/season_gen_schema_test.dart`, `plan_samples.dart` | 기존 211개 유지 |
-| 4 | `PlayCheck` + `validate_plan` 요약에 playable 표시와 `--playable` 옵션 | `tool/season_gen/play_check.dart`, `validate_plan.dart` | §5.5 |
+| 4 | `PlayCheck` + `validate_plan` 요약에 playable 표시와 `--playable` 옵션 | `tool/season_gen/play_check.dart`, `validate_plan.dart` | §5.5. 보기 3개 기준 포함 |
 | 5 | 생성기: 변환, Dart 리터럴 작성기, manifest, `--check`, 덮어쓰기 방지 | `tool/season_gen/generate_case.dart`, `dart_literal.dart` | `--target sandbox`만 구현 |
 | 6 | 생성기 단위 테스트(결정성, 누락 오류, 손으로 고친 파일 거부) | `test/season_gen/generate_case_test.dart` | |
 | 7 | s9 draft에 `play`와 `places` 작성(콘텐츠) | `content_pipeline/seasons/s9_sandbox/…` | 사람 검토 필요 |
@@ -636,6 +672,7 @@ manifest:
 | 10 | 생성 결과 검증 + 실제 앱 플레이 위젯 테스트 | `test/sandbox/s9_ep01_test.dart` | §7.6의 1~5 |
 | 11 | 시뮬레이터 화면 캡처 | `integration_test/sandbox_case_qa_test.dart`, `test_driver/sandbox_qa_driver.dart` → `qa/screenshots/sandbox/` | |
 | 12 | 관련 테스트와 `flutter analyze` | | 전체 테스트 실행 불필요 |
+| 13 | (확인 후) LF 고정 | `.gitattributes` | §7.5. Windows에서 `--check`와 기존 테스트 2개가 CRLF 때문에 실패하는 문제 |
 
 변경 범위: `tool/season_gen/` 수정 5개와 추가 3개, `test/` 추가·수정 약 6개, `integration_test/`·`test_driver/` 추가 2개. **`lib/` 0, London·Paris 콘텐츠 0.**
 
@@ -648,6 +685,25 @@ manifest:
 5. **그림 퍼즐(§4 B) 생성:** Plan에 테이블 데이터(픽셀·영역·대사)를 담는 칸을 추가하거나, 승인된 그림을 측정하는 단계가 필요하다. 퍼즐마다 별도 설계가 필요하다.
 6. **게임 쪽 작은 공백(필요할 때만):**
    - `Episode.introScene`은 `Artwork`만 받는다. 새 시즌의 인트로 배경을 시즌 장소로 쓰려면 코드 변경이 필요하다.
-   - Paris가 아닌 시즌은 일반 `SeasonPrologueScreen`으로 간다(`season_screen.dart:160`).
-   - `Season.label`의 숫자 표는 FOUR까지다.
+   - Paris가 아닌 시즌은 일반 `SeasonPrologueScreen`으로 가는데(`season_screen.dart:160`), 이 화면에 "LONDON"이 고정되어 있다(`season_prologue_screen.dart:219`, §1.13).
+   - 문자 잠금판 제목 "THE CLOCKMAKER'S LOCK"과 최종 화면 Semantics가 고정되어 있다(`letter_lock.dart:111,312`, §1.13).
+   - `Season.label`의 숫자 표는 FOUR까지다. 그 뒤는 숫자로 나온다("SEASON 9", `season.dart:152-154`). 오류는 아니다.
 7. **난이도:** Junior·Master 문구(`casePatches`, `variants`, `writtenLevels`). 없어도 플레이할 수 있다.
+
+---
+
+## 10. 코드 대조 검증 기록 (2026-10-29, 2차)
+
+1차 작성 결과를 실제 코드와 다시 대조했다. 문서의 결론(새 객체 3개 + 시즌 필드 1개, `schemaVersion` 1 유지, `lib/` 0, Sandbox 연결 방식, 텍스트 퍼즐 6종 생성 가능)은 **바뀌지 않는다.**
+
+| 확인 항목 | 근거 | 결과 |
+|---|---|---|
+| `caseSummary` 기본값이 London 문구 | `detective_report.dart:149-151` | 일치 |
+| `SeasonCatalog.all` 고정, `testPlaces`, 미등록 장소 `StateError` | `season_catalog.dart:556, 590, 595, 600, 604` | 일치 |
+| 객관식 보기 Plan 2 / 게임 3 | `puzzle_selection_check.dart:311`, `season_content_validator.dart:294` | 일치. 해결 방향 추가(§5.5) |
+| Plan 모델 위치 | `plan_models.dart:456, 569, 767, 907` | 일치 |
+| Sandbox override 구성 | `season_scene_playthrough_test.dart:114-115, 150-163` | 일치. `seasonReleasedProvider`만 기존 테스트가 더 넓음(§6.1 주석) |
+| 중복 L 타일 | `letter_lock.dart:38-85, 210, 264`, `test/mission_play.dart:233-240` | 미확인 → **정상으로 확정**(§4.1-1) |
+| 힌트 정답 노출 검사 범위 | `season_content_validator.dart:399-411` | 힌트만 검사. "Mr. Bell"도 막힘(§4.1-2) |
+| 고정된 도시 문구 | `letter_lock.dart:111, 312`, `season_prologue_screen.dart:219` | **새로 발견**(§1.13) |
+| 기존 season_gen 테스트 | `flutter test test/season_gen` (이 Windows 작업 트리) | **209 통과 / 2 실패**. 두 실패(`palette_facts_test.dart:66`, `paris_case10_plan_test.dart:31`) 모두 CRLF 차이. 저장소에는 LF로 들어 있고(`git ls-files --eol`: `i/lf w/crlf`) `core.autocrlf=true`가 원인이다. 코드 회귀가 아니다. LF 작업 트리에서는 211개 통과(STEP 3-6 보고). §7.5 대책 추가 |
