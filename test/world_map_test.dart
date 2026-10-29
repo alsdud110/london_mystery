@@ -184,33 +184,6 @@ void main() {
       expect(WorldCities.paris.at.dx, greaterThan(WorldCities.london.at.dx));
       expect(WorldCities.tokyo.at.dx, greaterThan(WorldCities.seoul.at.dx));
     });
-
-    test("names stay clear of each other's marks and names; only the chosen city's always shows", () {
-      Rect dot(Offset p) => Rect.fromCircle(center: p, radius: 7);
-      // London, Paris and Rome close together, London chosen.
-      const points = [Offset(180, 200), Offset(200, 222), Offset(250, 260)];
-      final marks = [Rect.fromLTRB(166, 172, 194, 202), dot(points[1]), dot(points[2])];
-      const sizes = [Size(64, 22), Size(40, 15), Size(40, 15)];
-      final out = placeLabels(points: points, marks: marks, sizes: sizes, order: const [0, 1, 2], viewport: const Size(390, 600), selected: 0);
-      expect(out.every((r) => r != null), isTrue, reason: 'room for all three');
-      for (var a = 0; a < 3; a++) {
-        for (var b = 0; b < 3; b++) {
-          if (a != b) expect(out[a]!.overlaps(marks[b]), isFalse, reason: 'name $a clear of mark $b');
-          if (a < b) expect(out[a]!.overlaps(out[b]!), isFalse, reason: 'names $a and $b');
-        }
-      }
-      // No room: another city's name hides, the chosen one's never.
-      final crowded = placeLabels(
-        points: const [Offset(20, 20), Offset(22, 22)],
-        marks: [dot(const Offset(20, 20)), dot(const Offset(22, 22))],
-        sizes: const [Size(300, 30), Size(300, 30)],
-        order: const [1, 0],
-        viewport: const Size(60, 60),
-        selected: 1,
-      );
-      expect(crowded[1], isNotNull);
-      expect(crowded[0], isNull);
-  });
   });
 
   group('where the map opens', () {
@@ -403,6 +376,26 @@ void main() {
       expect(find.byKey(const ValueKey('mark-london-openChosen')), findsOneWidget);
       expect(find.byKey(const ValueKey('city-card-enter')), findsOneWidget, reason: 'a completed season opens again');
       expect(find.byKey(const ValueKey('mark-paris-home')), findsOneWidget);
+    });
+
+    testWidgets('each name stays just under its pin, moving only with the map', (t) async {
+      await pumpApp(t, seasonSaves(0), size: const Size(390, 844));
+      await openMap(t);
+      Map<String, Offset> under() => {
+        for (final id in ['london', 'paris', 'rome'])
+          id: t.getRect(find.byKey(ValueKey('city-label-$id'))).topCenter - t.getCenter(pin(id)),
+      };
+      final before = under();
+      final pinsBefore = {for (final id in ['london', 'paris', 'rome']) id: t.getCenter(pin(id))};
+      for (final d in const [Offset(-120, 0), Offset(0, -90), Offset(160, 60)]) {
+        await t.drag(find.byKey(const ValueKey('world-map-viewer')), d);
+        await wait(t, const Duration(milliseconds: 400));
+        final now = under();
+        for (final id in before.keys) {
+          expect((now[id]! - before[id]!).distance, lessThan(0.5), reason: '$id name where it was under its pin');
+        }
+      }
+      expect(t.getCenter(pin('london')), isNot(pinsBefore['london']), reason: 'the map moved');
     });
 
     testWidgets('back to my city: the opening view again, my city chosen', (t) async {

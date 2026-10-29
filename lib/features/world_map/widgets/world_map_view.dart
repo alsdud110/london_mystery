@@ -222,14 +222,18 @@ class _WorldMapViewState extends State<WorldMapView> with SingleTickerProviderSt
     final home = _city(widget.homeId);
     final p = _onWorld(home);
     var s = _openingScale(home);
-    final buttons = _controls.inflate(_PinLayer.touch / 2);
+    final buttons = _controls.inflate(4);
     var shift = 0.0;
     for (final n in _neighbours(home)) {
       final q = _onWorld(n);
-      Offset at(double scale) => MatrixUtils.transformPoint(_centredOn(p, scale), q);
-      if (!buttons.contains(at(s))) continue;
-      if (q.dx > p.dx) s = math.max(1.0, s - (at(s).dx - buttons.left) / (q.dx - p.dx));
-      if (buttons.contains(at(s))) shift = math.max(shift, at(s).dx - buttons.left);
+      // The neighbour's pin with its name below, its tip at [tip].
+      final name = _PinLayer.measure(n.name);
+      final half = math.max(_PinLayer.touch, name.width) / 2;
+      Rect room(Offset tip) => Rect.fromLTRB(tip.dx - half, tip.dy - _PinMark.height, tip.dx + half, tip.dy + name.height + 6);
+      Rect at(double scale) => room(MatrixUtils.transformPoint(_centredOn(p, scale), q));
+      if (!at(s).overlaps(buttons)) continue;
+      if (q.dx > p.dx) s = math.max(1.0, s - (at(s).right - buttons.left) / (q.dx - p.dx));
+      if (at(s).overlaps(buttons)) shift = math.max(shift, at(s).right - buttons.left);
     }
     final m = _centredOn(p, s);
     if (shift == 0) return m;
@@ -341,7 +345,6 @@ class _WorldMapViewState extends State<WorldMapView> with SingleTickerProviderSt
                     viewport: box.biggest,
                     selectedId: widget.selectedId,
                     homeId: widget.homeId,
-                    avoid: [controls],
                     still: still,
                     onTap: _select,
                   ),
@@ -387,52 +390,6 @@ Rect _markRect(Offset p, _Mark m) {
   };
 }
 
-/// Where each city's name goes on screen (null: not shown). Names are laid
-/// out in [order] (the selected city first), each in the first of below,
-/// above, right and left of its mark ([marks]) that stays on screen and
-/// clear of the marks, of the names placed before it and of [avoid]. A name
-/// with no room is hidden, except the [selected] city's, which always
-/// shows (below its mark).
-@visibleForTesting
-List<Rect?> placeLabels({
-  required List<Offset> points,
-  required List<Rect> marks,
-  required List<Size> sizes,
-  required List<int> order,
-  required Size viewport,
-  int? selected,
-  List<Rect> avoid = const [],
-}) {
-  const gap = 3.0;
-  final screen = Offset.zero & viewport;
-  final placed = <Rect>[];
-  final out = List<Rect?>.filled(points.length, null);
-  for (final i in order) {
-    final m = marks[i];
-    final s = sizes[i];
-    final p = points[i];
-    final below = Rect.fromLTWH(p.dx - s.width / 2, m.bottom + gap, s.width, s.height);
-    final candidates = [
-      below,
-      Rect.fromLTWH(p.dx - s.width / 2, m.top - gap - s.height, s.width, s.height),
-      Rect.fromLTWH(m.right + gap + 1, p.dy - s.height / 2, s.width, s.height),
-      Rect.fromLTWH(m.left - gap - 1 - s.width, p.dy - s.height / 2, s.width, s.height),
-    ];
-    // Boxes that only touch (within half a point) are clear of each other.
-    bool hits(Rect o, Rect r) => o.deflate(0.5).overlaps(r);
-    bool clear(Rect r) =>
-        screen.contains(r.topLeft) &&
-        screen.contains(r.bottomRight) &&
-        !placed.any((o) => hits(o, r)) &&
-        !avoid.any((o) => hits(o, r)) &&
-        !marks.indexed.any((e) => e.$1 != i && hits(e.$2, r));
-    final at = candidates.where(clear).firstOrNull ?? (i == selected ? below : null);
-    out[i] = at;
-    if (at != null) placed.add(at);
-  }
-  return out;
-}
-
 /// The cities' pins and names over the world, their tips at the places on
 /// screen ([points]). One tap layer under them picks the nearest mark within
 /// reach (or the name tapped), so neighbouring cities never cover each
@@ -444,7 +401,6 @@ class _PinLayer extends StatelessWidget {
     required this.viewport,
     required this.selectedId,
     required this.homeId,
-    required this.avoid,
     required this.still,
     required this.onTap,
   });
@@ -457,7 +413,6 @@ class _PinLayer extends StatelessWidget {
   /// The city of the season under way: the gold pin.
   final String homeId;
 
-  final List<Rect> avoid;
   final bool still;
   final ValueChanged<String> onTap;
 
@@ -492,15 +447,16 @@ class _PinLayer extends StatelessWidget {
       for (var i = 0; i < n; i++)
         if (i != sel) i,
     ];
-    final labels = placeLabels(
-      points: heads,
-      marks: markRects,
-      sizes: [for (var i = 0; i < n; i++) measure(cities[i].city.name)],
-      order: order,
-      viewport: viewport,
-      selected: sel >= 0 ? sel : null,
-      avoid: avoid,
-    );
+    // Each name just under its pin's tip, moving with the map as the pin
+    // does: never moved elsewhere, never hidden.
+    final labels = [
+      for (var i = 0; i < n; i++)
+        Rect.fromCenter(
+          center: points[i] + Offset(0, _CityName.gap + measure(cities[i].city.name).height / 2),
+          width: measure(cities[i].city.name).width,
+          height: measure(cities[i].city.name).height,
+        ),
+    ];
     final reach = Rect.fromLTWH(-touch, -touch, viewport.width + 2 * touch, viewport.height + 2 * touch);
     final shown = [for (var i = 0; i < n; i++) reach.contains(points[i])];
 
@@ -520,7 +476,7 @@ class _PinLayer extends StatelessWidget {
       }
       if (best != null) return cities[best].city.id;
       for (final i in order) {
-        if (shown[i] && (labels[i]?.inflate(4).contains(at) ?? false)) return cities[i].city.id;
+        if (shown[i] && labels[i].inflate(4).contains(at)) return cities[i].city.id;
       }
       return null;
     }
@@ -541,13 +497,12 @@ class _PinLayer extends StatelessWidget {
         ),
         for (final i in layers)
           if (shown[i]) ...[
-            if (labels[i] case final r?)
-              Positioned.fromRect(
-                rect: r,
-                child: IgnorePointer(
-                  child: _CityName(key: ValueKey('city-label-${cities[i].city.id}'), name: cities[i].city.name),
-                ),
+            Positioned.fromRect(
+              rect: labels[i],
+              child: IgnorePointer(
+                child: _CityName(key: ValueKey('city-label-${cities[i].city.id}'), name: cities[i].city.name),
               ),
+            ),
             Positioned(
               left: heads[i].dx - touch / 2,
               top: heads[i].dy - touch / 2,
@@ -729,6 +684,9 @@ class _CityName extends StatelessWidget {
   static final style = AppText.style(AppText.body, size: 13, weight: FontWeight.w700, color: AppColors.paperLight, letterSpacing: 0.4, height: 1.2);
 
   static const padding = EdgeInsets.symmetric(horizontal: 9, vertical: 3);
+
+  /// From the pin's tip down to its name.
+  static const gap = 3.0;
 
   @override
   Widget build(BuildContext context) {

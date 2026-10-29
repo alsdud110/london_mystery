@@ -9,7 +9,9 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/audio_service.dart' show TapRole;
 import '../../widgets/art_assets.dart';
+import '../../widgets/game_button.dart';
 import '../../widgets/game_toast.dart';
 import '../../widgets/ink_icon.dart';
 import '../game/game_controller.dart';
@@ -417,56 +419,16 @@ class _CityCard extends StatelessWidget {
           ),
           if (label != null) ...[
             const SizedBox(height: AppSpace.md),
-            _EnterButton(label: label, onPressed: onEnter),
+            GameButton(
+              key: const ValueKey('city-card-enter'),
+              label: label,
+              onPressed: onEnter,
+              arrow: true,
+              singleLine: true,
+              tap: TapRole.primary,
+            ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-/// The way into the city's season: a flat navy bar across the card.
-class _EnterButton extends StatelessWidget {
-  const _EnterButton({required this.label, required this.onPressed});
-
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: label,
-      excludeSemantics: true,
-      child: Material(
-        color: AppColors.navy,
-        borderRadius: BorderRadius.circular(10),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          key: const ValueKey('city-card-enter'),
-          onTap: onPressed,
-          splashColor: AppColors.goldLight.withValues(alpha: 0.15),
-          highlightColor: AppColors.goldLight.withValues(alpha: 0.08),
-          child: SizedBox(
-            height: 48,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(label, maxLines: 1, style: AppText.button(size: 15, color: AppColors.paperLight)),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpace.sm),
-                  const InkIcon(InkGlyph.arrow, size: 16, color: AppColors.goldLight),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
