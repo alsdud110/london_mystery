@@ -75,6 +75,9 @@ skills-lock.json
 /android/key.properties
 *service-account*.json
 *-firebase-adminsdk-*.json
+# API keys (OPENAI_API_KEY for tool/ai_agents): never commit.
+.env
+.env.*
 
 # Local QA screenshots and capture tools (large, not tracked)
 /qa/
