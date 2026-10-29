@@ -60,7 +60,8 @@ void main() {
 
   test('the copy is the palette and the dial symbols, as they are', () {
     final file = File(path);
-    final source = file.readAsStringSync();
+    // As committed (LF): a Windows checkout (core.autocrlf) has CRLF on disk.
+    final source = file.readAsStringSync().replaceAll('\r\n', '\n');
     final from = source.indexOf(begin);
     final to = source.indexOf(end);
     expect(from >= 0 && to > from, isTrue, reason: 'the markers of $path');

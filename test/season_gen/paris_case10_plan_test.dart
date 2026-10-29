@@ -28,8 +28,10 @@ void main() {
   test('both load, keep their structure, and are written in the canonical form', () {
     expect(PlanCheck.season(season), isEmpty);
     expect(PlanCheck.casePlan(plan, season: season), isEmpty);
-    expect(PlanFiles.encode(season.toJson()), File(seasonFile).readAsStringSync());
-    expect(PlanFiles.encode(plan.toJson()), File(caseFile).readAsStringSync());
+    // As committed (LF): a Windows checkout (core.autocrlf) has CRLF on disk.
+    String onDisk(String path) => File(path).readAsStringSync().replaceAll('\r\n', '\n');
+    expect(PlanFiles.encode(season.toJson()), onDisk(seasonFile));
+    expect(PlanFiles.encode(plan.toJson()), onDisk(caseFile));
   });
 
   test("the season plan is the game's Season 2", () {
