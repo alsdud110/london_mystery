@@ -1,0 +1,15 @@
+{
+  "generator": "generate_case.dart",
+  "generatorVersion": 1,
+  "target": "sandbox",
+  "seasonId": "s9_sandbox",
+  "approved": false,
+  "inputs": {
+    "season.plan.json": "sha256:0157f380e599e6afcb08451e8314039caea845979ccd2cb0cdadf2e57fd1370e",
+    "cases/s9_ep01/case.plan.json": "sha256:9f652f097f29d3b734e46bb7f41271739c307ea380ea61f2aa3504f5d0736d80"
+  },
+  "outputs": {
+    "s9_sandbox_season.g.dart": "sha256:94df2e4f37dd9ca7f41bde2ac5b627318bfb0f89bac2eedc6b00410da7f02c0c",
+    "s9_ep01.g.dart": "sha256:2c763c4de23ed9368a0faa4e4940cc0a43ee6f18767f75ca86f7a8093d95ab68"
+  }
+}

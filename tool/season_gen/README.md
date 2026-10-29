@@ -232,4 +232,34 @@ typed: input piped in is refused. Who approves is `--by`, or Git's
 approved; `impact` with no target looks at every stale target.
 
 Not here: whether a picture is the right size, has transparency, or fits
-its hot spots (STEP 3-8).
+its hot spots (a later step).
+
+## Playable content (STEP 3-8)
+
+A plan's words as the game shows them are written in the plan, in the game's
+own JSON keys (`docs/STEP_3_7_GAME_DATA_MAPPING.md` §5): `CasePlan.play`
+(intro, caseSummary…), `MissionPlan.play` (story, letter, question, hints,
+successMessage, transition, map pin, clue and evidence words…),
+`SeasonPlan.places` (each place's bundled picture) and `storyGreeting`. All
+optional: a plan without them keeps its format and structure as before.
+
+| File | What |
+|---|---|
+| `play_check.dart` | `PlayCheck`: what a case lacks to be generated, each by its JSON path (a choice needs 3 options, as the game asks) |
+| `dart_literal.dart` | Dart constants written the same way every time |
+| `generate_case.dart` | Command line: the plans' checks, `PlayCheck`, then the Dart files and their manifest |
+
+```sh
+dart run tool/season_gen/validate_plan.dart --season <season.plan.json> --playable <case.plan.json>
+dart run tool/season_gen/generate_case.dart --season content_pipeline/seasons/s9_sandbox/season.plan.json \
+  --target sandbox content_pipeline/seasons/s9_sandbox/cases/s9_ep01/case.plan.json   # --check: compare only
+```
+
+`--target sandbox` writes `test/sandbox/generated/<seasonId>/` only (never
+`lib/`, never `SeasonCatalog`); `test/sandbox/sandbox_season.dart` puts it in
+the real app for the tests (`test/sandbox/s9_ep01_test.dart`,
+`integration_test/sandbox_case_qa_test.dart`). Only the sandbox's text
+puzzles (`text_choice`, `order_sequence`, `word_entry`, `letter_tile_lock`)
+are made. Nothing is written when a check fails; a generated file changed by
+hand, or one without its header, is never written over (`--force`); line
+endings are LF and read back CRLF-blind.
