@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s9_sandbox",
+  "number": 9,
+  "city": "Sandbox",
+  "title": "Studio Trial",
+  "tagline": "ONE TRIAL CASE",
+  "plannedCases": 12,
+  "mainMystery": {
+    "truth": "Trial season for STEP 3-6. Only Case 01 is written; it has no season mystery.",
+    "culprit": "No culprit: the key was borrowed, not stolen.",
+    "motive": "Mr. Bell needed the key to fix the lamp before story hour.",
+    "revealCase": "s9_ep01"
+  },
+  "characters": [
+    {
+      "charId": "ms_rosa",
+      "name": "Ms. Rosa",
+      "role": "The librarian",
+      "firstCase": "s9_ep01"
+    },
+    {
+      "charId": "mr_bell",
+      "name": "Mr. Bell",
+      "role": "The library's fix-it man",
+      "firstCase": "s9_ep01",
+      "revealCase": "s9_ep01"
+    }
+  ],
+  "locations": [
+    {
+      "locId": "town_library",
+      "name": "Town Library",
+      "landmarkKey": "townLibrary"
+    }
+  ],
+  "acts": [
+    {
+      "actId": "act1",
+      "theme": "TRIAL",
+      "caseIds": [
+        "s9_ep01",
+        "s9_ep02",
+        "s9_ep03",
+        "s9_ep04"
+      ]
+    },
+    {
+      "actId": "act2",
+      "theme": "TRIAL",
+      "caseIds": [
+        "s9_ep05",
+        "s9_ep06",
+        "s9_ep07",
+        "s9_ep08"
+      ]
+    },
+    {
+      "actId": "act3",
+      "theme": "TRIAL",
+      "caseIds": [
+        "s9_ep09",
+        "s9_ep10",
+        "s9_ep11",
+        "s9_ep12"
+      ]
+    }
+  ],
+  "notes": [
+    "STEP 3-6 sandbox: a trial season for the pipeline only. Not London, not Paris, never in SeasonCatalog. Cases 02-12 are placeholders and are not planned."
+  ]
+}
