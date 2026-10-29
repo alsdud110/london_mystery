@@ -78,7 +78,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_01/guard_room.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.map_hall",
@@ -90,16 +90,17 @@
         "s3_ep12"
       ],
       "description": "The Capitoline map hall: the glass case, a big statue, stairs and a back door; reused for the season's last scene.",
-      "prompt": "A marble exhibition hall in the Capitoline Museums, seen straight from the front, warm daylight from tall windows high on the back wall. Layout from left to right: on the far left, a museum visitor map board on a wooden stand, about a sixth of the width, its panels blank; left of centre, an empty glass display case on a stone stand; just right of centre, a large white classical statue on a low base; on the right, a short flight of stone stairs going down towards the lower right; at the foot of the stairs, on the far right, a heavy wooden back door, with a small white card lying on the floor right at its foot. A faint trail of white dust runs from the glass case, past the statue's foot, down the stairs to the door. A polished marble floor across the bottom of the picture.",
+      "prompt": "A marble exhibition hall in the Capitoline Museums, seen straight from the front, warm daylight from tall windows high on the back wall. Layout from left to right: on the far left, a museum visitor map board on a wooden stand, about a sixth of the width, its panels blank; left of centre, an empty glass display case on a stone stand; just right of centre, a large white marble statue of a Roman senator wrapped in a long toga, on a low base; on the right, a short flight of stone stairs going down towards the lower right; at the foot of the stairs, on the far right, a heavy wooden back door, with a small white card lying on the floor right at its foot. A faint trail of white dust runs from the glass case, past the statue's foot, down the stairs to the door. A polished marble floor across the bottom of the picture.",
       "stylePreset": "rome_scene",
       "width": 1536,
       "height": 1024,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/map_hall.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
-        "STEP 3-14: Case 01 M3 is a look round this picture (map board far left, case, statue, stairs, back door with the card far right). Its areas in the case plan follow this layout and are measured on the made picture (STEP 3-15)."
+        "STEP 3-14: Case 01 M3 is a look round this picture (map board far left, case, statue, stairs, back door with the card far right). Its areas in the case plan follow this layout and are measured on the made picture (STEP 3-15).",
+        "STEP 3-15B: \"classical statue\" was refused by the API safety filter (B1); now a senator in a long toga."
       ]
     },
     {
@@ -111,16 +112,17 @@
         "s3_ep02"
       ],
       "description": "The Trevi Fountain: rushing water, stone shells on the basin's edge, wide steps.",
-      "prompt": "The Trevi Fountain in Rome on a bright morning: a great white stone palace front with statues and rushing turquoise water, carved stone shells along the edge of the basin, wide stone steps in front where a few people sit. In the front, a girl with her back to the fountain throws a coin over her shoulder into the water. Coins glint in the water.",
+      "prompt": "The Trevi Fountain in Rome on a bright morning: a great white stone palace front with statues in long flowing robes and rushing turquoise water, carved stone shells along the edge of the basin, wide stone steps in front where a few people sit. In the front, a girl with her back to the fountain throws a coin over her shoulder into the water. Coins glint in the water.",
       "stylePreset": "rome_scene",
       "width": 1536,
       "height": 1024,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/trevi_fountain.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
-        "STEP 3-14: also a choice picture of Case 01 M3 (where people throw coins and make a wish): the girl throwing a coin must be easy to see."
+        "STEP 3-14: also a choice picture of Case 01 M3 (where people throw coins and make a wish): the girl throwing a coin must be easy to see.",
+        "STEP 3-15B: statues in long flowing robes (map_hall was refused by the API safety filter over a statue)."
       ]
     },
     {
@@ -132,14 +134,17 @@
         "s3_ep03"
       ],
       "description": "Campo de' Fiori market: a flower stall with a red roof and numbered wooden boxes; crates of lemons.",
-      "prompt": "A lively morning market square in old Rome, Campo de' Fiori: stalls under white umbrellas, crates of lemons and vegetables, and in front a flower stall with a red roof, full of roses, with a row of small wooden storage boxes under the counter. Ochre and terracotta buildings around the square.",
+      "prompt": "A lively morning market square in old Rome, Campo de' Fiori. On the left, vegetable stalls under white umbrellas, with crates of lemons and artichokes; in the middle distance, the tall dark hooded statue on its stone base; ochre and terracotta buildings around the square. On the right, in front, a flower stall with a red roof, full of red roses in metal buckets, with a row of small wooden storage boxes under the counter. Standing behind the flower stall's counter is its owner, Pia: a cheerful, round Italian woman in her sixties with grey hair, rosy cheeks, a red scarf over her hair and a flowered apron, waving a hand. She is the only person behind the flower stall; no young man works there.",
       "stylePreset": "rome_scene",
       "width": 1536,
       "height": 1024,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/flower_market.png",
       "references": [],
-      "status": "planned"
+      "status": "generated",
+      "notes": [
+        "STEP 3-15B B2: made again (user approved, 1 call, $0.10): the B1 picture showed a young man as the flower seller. Pia (sixties, flowered apron, red scarf, as her portrait prompt) now stands behind her own stall; the layout (vegetables left, statue in the middle, the red-roofed stall front right) is the B1 picture's. The B1 picture is kept in asset_work/s3_rome/superseded/flower_market_v1_96be0f43eeb6c9a5/."
+      ]
     },
     {
       "assetId": "s3_rome.asset.pantheon_hall",
@@ -157,7 +162,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/pantheon_hall.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: Case 04 M1 is a look round this picture (the eye, the circle of light, the bench with the card, the four floor stones along the bottom), and Case 01 M3 shows it as a choice picture (the round hole in the roof must be easy to see)."
       ]
@@ -178,7 +183,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_04/rotonda_bookshop.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.cat_ruins",
@@ -238,7 +243,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/navona_square.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.lecture_hall",
@@ -256,7 +261,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_06/lecture_hall.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.spanish_steps",
@@ -274,7 +279,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/spanish_steps.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.tiber_bridge",
@@ -292,7 +297,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/tiber_bridge.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: also the right picture of Case 08 M1 (the bridge with four-faced posts): nobody waits on it, so the picture gives nothing away; Livia is shown by her portraits."
       ]
@@ -313,7 +318,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/restoration_lab.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.forum_view",
@@ -443,7 +448,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/giulia_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -468,7 +473,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/sofia_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -491,7 +496,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/enzo_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -518,7 +523,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/livia_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -543,7 +548,7 @@
       "references": [
         "s3_rome.asset.char_livia_base"
       ],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -615,7 +620,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/aldo_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -663,7 +668,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/carla_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -992,7 +997,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_01/colosseum.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: one of three choice pictures of the visitor map, with trevi_fountain and pantheon_hall (place pictures at the same 1536x1024)."
       ]
@@ -1013,7 +1018,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_04/floor_stone_ship.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: the first of four stones; the other three are drawn from it so only the carving differs."
       ]
@@ -1036,7 +1041,7 @@
       "references": [
         "s3_rome.asset.floor_stone_ship"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.floor_stone_book",
@@ -1056,7 +1061,7 @@
       "references": [
         "s3_rome.asset.floor_stone_ship"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.floor_stone_key",
@@ -1076,7 +1081,7 @@
       "references": [
         "s3_rome.asset.floor_stone_ship"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.cat_tito",
@@ -1151,7 +1156,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_08/bridge_angels.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.bridge_hole",
@@ -1169,7 +1174,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_08/bridge_hole.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.room_bath",

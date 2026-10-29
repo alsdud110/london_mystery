@@ -117,7 +117,7 @@ void main() {
   Future<void> openLetterAndSolve(WidgetTester t) async {
     await tapSpot(t, 'suitcase');
     await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1800));
-    await tapText(t, 'BACK TO THE STATION', after: const Duration(milliseconds: 500));
+    await tapText(t, 'BACK TO INVESTIGATION', after: const Duration(milliseconds: 500));
     await tapSpot(t, 'posters');
     expect(find.text('CHECK ANSWER'), findsOneWidget, reason: 'the puzzle step');
   }

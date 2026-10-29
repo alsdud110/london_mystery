@@ -61,7 +61,7 @@
         "status": "awaitingAssets",
         "notes": [
           "Played as a look round (ExploreScene) inside the Pantheon: the Owl's card and the guide sign lie on the bench by the door; the floor stones open once it is read. The four stones are told apart by their carvings (ship, lion, book, key).",
-          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the pantheon_hall prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
+          "Coordinates measured on the made pantheon_hall.png (1536x1024, sha256 d960679b186dda4b…) with a 100px grid overlay, STEP 3-15B B1. The bench area stops at y 880 and the stones start below it at x 1095+, so the two never overlap."
         ]
       },
       "clueInputs": [
@@ -126,15 +126,16 @@
             "pixels": {
               "width": 1536,
               "height": 1024
-            }
+            },
+            "measuredOn": "sha256:d960679b186dda4b511ac068aa9e4161f8e7ed153fbbb2a1e87d89f37e7b4351"
           },
           "place": "Inside the Pantheon",
           "task": "Look around the Pantheon. Find the Owl's card.",
           "nextTask": "Which floor stone does the Owl mean? Look at the stones.",
           "missLine": "Nothing here. Look for the Owl's card.",
           "guideAt": [
-            900,
-            680
+            1230,
+            765
           ],
           "spots": [
             {
@@ -144,15 +145,15 @@
               "label": "A card on the bench by the door",
               "areas": [
                 [
-                  1140,
-                  600,
-                  1460,
-                  800
+                  1095,
+                  690,
+                  1345,
+                  880
                 ]
               ],
               "mark": [
-                1440,
-                610
+                1330,
+                700
               ]
             },
             {
@@ -162,15 +163,15 @@
               "label": "The round hole in the roof",
               "areas": [
                 [
-                  640,
-                  10,
-                  900,
-                  150
+                  530,
+                  0,
+                  800,
+                  120
                 ]
               ],
               "mark": [
-                880,
-                30
+                785,
+                15
               ],
               "line": "The eye in the roof. The sun shines through it."
             },
@@ -181,15 +182,15 @@
               "label": "A circle of sunlight on the floor",
               "areas": [
                 [
-                  380,
-                  560,
-                  720,
-                  780
+                  150,
+                  715,
+                  650,
+                  805
                 ]
               ],
               "mark": [
-                700,
-                570
+                640,
+                725
               ],
               "line": "The circle of light moves slowly, like a clock hand."
             },
@@ -200,15 +201,21 @@
               "label": "A row of carved stones in the floor",
               "areas": [
                 [
-                  180,
-                  840,
-                  1360,
+                  95,
+                  850,
+                  1095,
+                  1010
+                ],
+                [
+                  1095,
+                  885,
+                  1290,
                   1010
                 ]
               ],
               "mark": [
-                1340,
-                850
+                1080,
+                860
               ],
               "requires": "bench",
               "lockedLine": "Four carved stones in the floor. Which one? Find a clue first.",
@@ -220,10 +227,10 @@
               "label": "Great columns",
               "areas": [
                 [
-                  40,
-                  150,
-                  300,
-                  800
+                  0,
+                  380,
+                  330,
+                  705
                 ]
               ],
               "line": "Great stone columns. Nothing is hidden here."
@@ -232,10 +239,16 @@
               "label": "The bronze door",
               "areas": [
                 [
-                  1320,
-                  180,
-                  1520,
-                  590
+                  1300,
+                  290,
+                  1500,
+                  690
+                ],
+                [
+                  1345,
+                  690,
+                  1500,
+                  820
                 ]
               ],
               "line": "The great bronze door. You came in this way."

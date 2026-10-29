@@ -174,6 +174,8 @@ class _SceneExploreState extends ConsumerState<SceneExplore> with TickerProvider
     return Stack(
       children: [
         SearchStage(
+          // The things to find stay in view when a hint opens: it scrolls.
+          pictureFirst: true,
           idealHeight: (width) => _frame(width).idealHeight,
           picture: (context, viewport) {
             final frame = _frame(viewport.width);
@@ -248,6 +250,7 @@ class _SceneExploreState extends ConsumerState<SceneExplore> with TickerProvider
               if (doc != null) _open(doc);
             },
             onTip: widget.onHint,
+            fit: true,
           ),
         ),
         if (open != null)
@@ -578,6 +581,7 @@ class ExploreActions extends StatelessWidget {
     required this.onTip,
     this.hintsHeight = 0.2,
     this.padding = const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xs),
+    this.fit = false,
   });
 
   final List<String> hints;
@@ -593,21 +597,26 @@ class ExploreActions extends StatelessWidget {
   final double hintsHeight;
   final EdgeInsetsGeometry padding;
 
+  /// Given less height than they would take (`SearchStage.pictureFirst`),
+  /// the hints scroll in what is left; the buttons always keep theirs.
+  final bool fit;
+
   @override
   Widget build(BuildContext context) {
     final tipLabel = nextTipLabel(hints, hintsShown);
+    final notes = ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * hintsHeight),
+      child: SingleChildScrollView(
+        key: const ValueKey('explore-hints'),
+        child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
+      ),
+    );
     return Padding(
       padding: padding,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * hintsHeight),
-            child: SingleChildScrollView(
-              key: const ValueKey('explore-hints'),
-              child: DetectiveTipNotes(hints: hints, revealed: hintsShown, compact: true),
-            ),
-          ),
+          if (fit) Flexible(child: notes) else notes,
           Wrap(
             alignment: WrapAlignment.center,
             spacing: AppSpace.sm,
@@ -691,44 +700,66 @@ class _DocumentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final back = GameButton(
+      key: const ValueKey('explore-close'),
+      label: 'BACK TO INVESTIGATION',
+      style: opened ? GameButtonStyle.navy : GameButtonStyle.outline,
+      onPressed: onClose,
+    );
+    // Its words scroll. Sealed, the envelope is what to tap: the way back
+    // comes after it. Open, the way back stays under the letter, however
+    // long it is.
     return OverPicture(
       still: still,
       child: PaperSheet(
         padding: EdgeInsets.zero,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(spot.title, style: AppText.eyebrow()),
-              const SizedBox(height: AppSpace.xs),
-              const OrnamentRule(),
-              const SizedBox(height: AppSpace.md),
-              GlossaryText(
-                mission.letterIntro,
-                textAlign: TextAlign.center,
-                style: AppText.aside(size: 17, color: AppColors.inkBrown),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(spot.title, style: AppText.eyebrow()),
+                    const SizedBox(height: AppSpace.xs),
+                    const OrnamentRule(),
+                    const SizedBox(height: AppSpace.md),
+                    GlossaryText(
+                      mission.letterIntro,
+                      textAlign: TextAlign.center,
+                      style: AppText.aside(size: 17, color: AppColors.inkBrown),
+                    ),
+                    const SizedBox(height: AppSpace.md),
+                    EnvelopeReveal(
+                      letterText: mission.letter,
+                      initiallyOpen: opened,
+                      onOpen: onOpening,
+                      onOpened: onOpened,
+                    ),
+                    const SizedBox(height: AppSpace.md),
+                    if (opened)
+                      Text('Press and hold a word to see what it means.', textAlign: TextAlign.center, style: AppText.caption())
+                    else ...[
+                      back,
+                      const SizedBox(height: AppSpace.xs),
+                    ],
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpace.md),
-              EnvelopeReveal(
-                letterText: mission.letter,
-                initiallyOpen: opened,
-                onOpen: onOpening,
-                onOpened: onOpened,
+            ),
+            if (opened)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: AppColors.goldLight.withValues(alpha: 0.7), width: AppLine.rule)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.lg),
+                  child: back,
+                ),
               ),
-              const SizedBox(height: AppSpace.md),
-              if (opened) ...[
-                Text('Press and hold a word to see what it means.', textAlign: TextAlign.center, style: AppText.caption()),
-                const SizedBox(height: AppSpace.md),
-              ],
-              GameButton(
-                key: const ValueKey('explore-close'),
-                label: 'BACK TO THE STATION',
-                style: opened ? GameButtonStyle.navy : GameButtonStyle.outline,
-                onPressed: onClose,
-              ),
-            ],
-          ),
+          ],
         ),
       ),
     );
@@ -861,7 +892,7 @@ class _ChoicePageState extends State<_ChoicePage> {
                   children: [
                     IconButton(
                       key: const ValueKey('explore-choice-close'),
-                      tooltip: 'Back to the station',
+                      tooltip: 'Back to investigation',
                       onPressed: widget.onClose,
                       icon: const InkIcon(InkGlyph.back, color: AppColors.navy),
                     ),

@@ -318,4 +318,68 @@ void main() {
       expect(t.takeException(), isNull);
     });
   }
+
+  // A place looked round (King's Cross) keeps its picture when a hint opens
+  // (`SearchStage.pictureFirst`): the hint scrolls in its own box. The other
+  // searched places are as before (above).
+  for (final size in const [Size(320, 568), Size(360, 640)]) {
+    final tag = '${size.width.toInt()}x${size.height.toInt()}';
+    testWidgets('m01 at $tag: a hint and the letter read: the station keeps its height (its share on the shortest), all in sight', (t) async {
+      final play = MissionPlay();
+      await play.openPuzzle(t, size, 'm01');
+      Rect picture() => t.getRect(find.byKey(const ValueKey('explore-picture')));
+      final before = t.getRect(find.byType(InteractiveViewer));
+      await tapText(t, 'Get a Free Hint', after: const Duration(milliseconds: 900));
+      expect(t.takeException(), isNull, reason: '$size: no overflow');
+      final suitcase = station.spot('suitcase').areas.first.center;
+      await t.tapAt(Offset(picture().left + suitcase.dx * picture().width, picture().top + suitcase.dy * picture().height));
+      await wait(t, const Duration(milliseconds: 600));
+      await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1600));
+      await tapText(t, 'BACK TO INVESTIGATION', after: const Duration(milliseconds: 600));
+      expect(t.takeException(), isNull, reason: '$size: no overflow');
+      final after = t.getRect(find.byType(InteractiveViewer));
+      // The picture keeps its height, or gives up only what the actions
+      // need to keep their least share of the page (no more).
+      final panel = t.getRect(find.byKey(const ValueKey('explore-panel')));
+      expect(
+        (after.height - before.height).abs() < 0.5 || panel.height <= size.height * SearchStage.actionsShare + 0.5,
+        isTrue,
+        reason: '$size: picture ${before.height} → ${after.height}, actions ${panel.height}',
+      );
+      final hints = t.getRect(find.byKey(const ValueKey('explore-hints')));
+      expect(hints.height, greaterThan(40), reason: '$size: the hint\'s first lines are read');
+      expect(hints.bottom, lessThanOrEqualTo(size.height), reason: '$size: on screen');
+      for (final s in station.spots) {
+        final c = s.areas.first.center;
+        final at = Offset(picture().left + c.dx * picture().width, picture().top + c.dy * picture().height);
+        expect(after.contains(at), isTrue, reason: '$size: ${s.id} in sight');
+      }
+    });
+  }
+
+  testWidgets('the letter\'s way back, BACK TO INVESTIGATION: sealed, after the envelope; open, under the letter on screen (320x568, text ×1.3)', (t) async {
+    final play = MissionPlay();
+    await play.openPuzzle(t, const Size(320, 568), 'm01');
+    t.platformDispatcher.textScaleFactorTestValue = 1.3;
+    addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
+    await t.pump();
+    final p = t.getRect(find.byKey(const ValueKey('explore-picture')));
+    final suitcase = station.spot('suitcase').areas.first.center;
+    await t.tapAt(Offset(p.left + suitcase.dx * p.width, p.top + suitcase.dy * p.height));
+    await wait(t, const Duration(milliseconds: 600));
+    final back = find.byKey(const ValueKey('explore-close'));
+    expect(find.descendant(of: back, matching: find.text('BACK TO INVESTIGATION')), findsOneWidget);
+    expect(find.text('BACK TO THE STATION'), findsNothing);
+    // Sealed: the envelope comes first, the way back under it.
+    expect(t.getRect(back).top, greaterThan(t.getRect(find.text('TAP TO OPEN')).bottom));
+    await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1600));
+    // Open: the way back is on screen with no scroll, under the letter.
+    final r = t.getRect(back);
+    expect(r.top, greaterThanOrEqualTo(0));
+    expect(r.bottom, lessThanOrEqualTo(568), reason: 'no scroll to reach it');
+    expect(t.takeException(), isNull, reason: 'no overflow');
+    await t.tap(find.byKey(const ValueKey('explore-close')));
+    await wait(t, const Duration(milliseconds: 600));
+    expect(find.byKey(const ValueKey('explore-close')), findsNothing, reason: 'back at the station');
+  });
 }

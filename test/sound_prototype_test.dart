@@ -541,7 +541,7 @@ void main() {
       // King's Cross: the letter in the suitcase, then a wrong museum.
       await _tapSpot(t, 'suitcase');
       await tapText(t, 'TAP TO OPEN', after: const Duration(milliseconds: 1200));
-      await tapText(t, 'BACK TO THE STATION', after: const Duration(milliseconds: 500));
+      await tapText(t, 'BACK TO INVESTIGATION', after: const Duration(milliseconds: 500));
       await _tapSpot(t, 'posters');
       await tapText(t, 'The Natural History Museum', after: const Duration(milliseconds: 200));
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 600));

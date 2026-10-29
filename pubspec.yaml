@@ -104,10 +104,15 @@ flutter:
     - assets/seasons/season_02_paris/cases/case_11/
     - assets/seasons/season_02_paris/cases/case_12/
     - assets/seasons/season_02_paris/characters/
-    # Season 3 Rome (not in SeasonCatalog yet): the first pictures made by
-    # the asset pipeline, played by the sandbox tests of Case 05 (STEP 3-15A).
+    # Season 3 Rome (not in SeasonCatalog yet): the pictures made by the
+    # asset pipeline, played by the sandbox tests of Cases 01–08 (STEP 3-15A, 3-15B B1, B2).
     - assets/seasons/season_03_rome/locations/
+    - assets/seasons/season_03_rome/characters/
+    - assets/seasons/season_03_rome/cases/case_01/
+    - assets/seasons/season_03_rome/cases/case_04/
     - assets/seasons/season_03_rome/cases/case_05/
+    - assets/seasons/season_03_rome/cases/case_06/
+    - assets/seasons/season_03_rome/cases/case_08/
     # The title screen (the detective's office).
     - assets/shared/title/
     # The World Map (the cities on it are placed by the app).

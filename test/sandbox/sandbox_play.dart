@@ -68,6 +68,19 @@ class SandboxPlay {
       case MissionType.multipleChoice:
         await tapText(t, m.options.firstWhere((o) => o.id == answer).label, after: const Duration(milliseconds: 200));
         await tapText(t, 'CHECK ANSWER', after: Duration.zero);
+      case MissionType.imageChoice:
+        // Each picture as screen readers hear it: by its name, or by what it
+        // shows when the names are hidden.
+        final i = m.options.indexWhere((o) => o.id == answer);
+        final o = m.options[i];
+        final letter = String.fromCharCode(65 + i);
+        final picture = find.bySemanticsLabel(
+          m.hideOptionNames ? 'Picture $letter${o.altText == null ? '' : ': ${o.altText}'}' : 'Picture $letter, ${o.label}',
+        );
+        await reveal(t, picture);
+        await t.tap(picture);
+        await t.pump(const Duration(milliseconds: 200));
+        await tapText(t, 'CHECK ANSWER', after: Duration.zero);
       case MissionType.sequence:
         for (final id in Mission.sequenceIds(answer)) {
           final step = find.text(m.options.firstWhere((o) => o.id == id).label).last;

@@ -84,13 +84,15 @@ void main() {
       }
     });
 
-    test('Carla\'s face is not drawn yet: her talk and ending lines are written without it, never another face', () {
+    test('Carla\'s face, drawn in STEP 3-15B B1, is written into her talk and her ending lines, never another face', () {
       const carla = 'assets/seasons/season_03_rome/characters/carla_base.png';
-      expect(File(carla).existsSync(), isFalse, reason: 'when it is drawn, the generator writes it in: change this test then');
+      expect(File(carla).existsSync(), isTrue);
       expect(planOf('s3_ep05_m3').play!.talk!.portrait, carla);
       final talk = romeSliceContent.talkMissions['s3_ep05_m3']!;
-      expect(talk.before!.speaker.portraits, isEmpty);
-      expect([for (final l in romeSliceContent.endings['s3_ep05_final']!) l.portrait], everyElement(isNull));
+      expect(talk.before!.speaker.portraits, {'base': carla});
+      final plannedFaces = [for (final l in plan.finalMission.play!.ending) l.portrait];
+      expect([for (final l in romeSliceContent.endings['s3_ep05_final']!) l.portrait], plannedFaces, reason: 'each line the face its plan names');
+      expect(plannedFaces.whereType<String>(), everyElement(carla));
     });
 
     test('the game finds nothing wrong: its validator, engine choice and bundled pictures', () {

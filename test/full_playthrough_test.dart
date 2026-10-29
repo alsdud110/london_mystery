@@ -325,7 +325,7 @@ void main() {
         reason: 'tap a word to see its meaning',
       );
       await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
-      await tapText(t, 'BACK TO THE STATION', after: const Duration(milliseconds: 500));
+      await tapText(t, 'BACK TO INVESTIGATION', after: const Duration(milliseconds: 500));
       await tapStationSpot(t, 'platform');
       expect(find.text('PLATFORM 9'), findsOneWidget);
       await tapText(t, 'Tap to keep looking', after: const Duration(milliseconds: 400));

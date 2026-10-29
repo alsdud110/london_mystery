@@ -107,6 +107,12 @@ class SearchFrame {
 /// The [note] (what the last tap found) is pencilled on the page under the
 /// caption when there is room for it there, the picture left clear; on a
 /// short screen it lies over the top of the picture instead.
+///
+/// With [pictureFirst], the [actions] are given only the height the picture
+/// leaves them (never less than [actionsShare] of the page), so the hints
+/// opened scroll in their own box rather than shrink the picture away from
+/// its things to find; the actions must fit any height they are given
+/// (`ExploreActions.fit`).
 class SearchStage extends StatelessWidget {
   const SearchStage({
     super.key,
@@ -115,9 +121,15 @@ class SearchStage extends StatelessWidget {
     required this.caption,
     required this.actions,
     required this.note,
+    this.pictureFirst = false,
   });
 
   final double Function(double width) idealHeight;
+  final bool pictureFirst;
+
+  /// The least of the page the actions keep with [pictureFirst]: their
+  /// buttons and the first lines of a hint, on the shortest phones.
+  static const actionsShare = 0.3;
 
   /// The picture's place, built for its size on screen.
   final Widget Function(BuildContext context, Size viewport) picture;
@@ -132,7 +144,7 @@ class SearchStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomMultiChildLayout(
-      delegate: _StageLayout(idealHeight),
+      delegate: _StageLayout(idealHeight, pictureFirst: pictureFirst),
       children: [
         LayoutId(
           id: _Part.paper,
@@ -157,16 +169,25 @@ class SearchStage extends StatelessWidget {
 enum _Part { paper, picture, caption, actions, note }
 
 class _StageLayout extends MultiChildLayoutDelegate {
-  _StageLayout(this.idealHeight);
+  _StageLayout(this.idealHeight, {required this.pictureFirst});
 
   final double Function(double width) idealHeight;
+  final bool pictureFirst;
 
   @override
   void performLayout(Size size) {
     BoxConstraints words(double most) =>
         BoxConstraints(minWidth: size.width, maxWidth: size.width, maxHeight: math.max(0.0, most));
-    final actions = layoutChild(_Part.actions, words(size.height));
-    final caption = layoutChild(_Part.caption, words(size.height - actions.height));
+    final Size actions;
+    final Size caption;
+    if (pictureFirst) {
+      caption = layoutChild(_Part.caption, words(size.height));
+      final left = size.height - caption.height - math.min(idealHeight(size.width), size.height);
+      actions = layoutChild(_Part.actions, words(math.max(left, size.height * SearchStage.actionsShare)));
+    } else {
+      actions = layoutChild(_Part.actions, words(size.height));
+      caption = layoutChild(_Part.caption, words(size.height - actions.height));
+    }
     final h = math.max(0.0, math.min(idealHeight(size.width), size.height - actions.height - caption.height));
     layoutChild(_Part.picture, BoxConstraints.tight(Size(size.width, h)));
     layoutChild(_Part.paper, BoxConstraints.tight(Size(size.width, size.height - h)));

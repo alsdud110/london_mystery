@@ -5,7 +5,7 @@
   "counts": {
     "ERROR": 0,
     "WARNING": 28,
-    "INFO": 118
+    "INFO": 39
   },
   "summary": {
     "bible": {
@@ -32,18 +32,18 @@
       "characters": 10,
       "objects": 26,
       "reusedAcrossCases": 22,
-      "planned": 58,
-      "generated": 5,
+      "planned": 33,
+      "generated": 30,
       "shownBySeasonPlaces": 18,
       "model": "gpt-image-2",
       "quality": "medium",
-      "estimatedUsd": 4.13361,
+      "estimatedUsd": 4.1342,
       "estimateNote": "List prices of 2026-10-29 (image_pricing.dart), an estimate before any call, each reference picture priced as 8000 image input tokens; nothing was sent."
     },
     "generator": {
       "run": true,
       "compatible": true,
-      "blockedByPictures": 46,
+      "blockedByPictures": 18,
       "otherFailures": 0
     },
     "cases": 12,
@@ -74,7 +74,7 @@
     "characters": 8,
     "locations": 11,
     "places": 18,
-    "picturesPending": 46,
+    "picturesPending": 18,
     "apiCalls": 0
   },
   "findings": [
@@ -277,83 +277,6 @@
     {
       "level": "INFO",
       "code": "image_pending",
-      "where": "season.plan.json $.places[0].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_01/guard_room.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[1].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/map_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[2].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/trevi_fountain.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[3].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/flower_market.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[4].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/pantheon_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[5].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_04/rotonda_bookshop.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[8].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/navona_square.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[9].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_06/lecture_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[10].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/spanish_steps.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[11].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/tiber_bridge.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "season.plan.json $.places[12].file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/restoration_lab.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
       "where": "season.plan.json $.places[13].file",
       "source": "play",
       "message": "assets/seasons/season_03_rome/locations/forum_view.png is not on disk: a picture still to be made (assets.manifest.json)"
@@ -388,125 +311,6 @@
     },
     {
       "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[0].play.dialogue.background",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_01/guard_room.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[0].play.dialogue.witnesses[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/enzo_base.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[0].play.dialogue.witnesses[1].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[0].play.dialogue.witnesses[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep01 $.missions[1].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[2].play.explore.picture.file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/map_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[2].play.explore.choices[0].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/pantheon_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[2].play.explore.choices[1].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/trevi_fountain.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep01 $.missions[2].play.explore.choices[2].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_01/colosseum.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep01 $.final.play.ending[1].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep01 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep01 $.final.play.ending[5].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep02 $.missions[0].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep02 $.missions[1].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep02 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep02 $.final.play.ending[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep02 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
       "code": "story_picture_pending",
       "where": "cases/s3_ep03 $.missions[0].play.talk.portrait",
       "source": "play",
@@ -529,149 +333,9 @@
     {
       "level": "INFO",
       "code": "story_picture_pending",
-      "where": "cases/s3_ep03 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
       "where": "cases/s3_ep03 $.final.play.ending[4].portrait",
       "source": "play",
       "message": "assets/seasons/season_03_rome/characters/pia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep04 $.missions[0].play.explore.picture.file",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/pantheon_hall.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep04 $.missions[0].play.explore.choices[0].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_04/floor_stone_ship.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep04 $.missions[0].play.explore.choices[1].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_04/floor_stone_lion.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep04 $.missions[0].play.explore.choices[2].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_04/floor_stone_book.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep04 $.missions[0].play.explore.choices[3].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_04/floor_stone_key.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep04 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep04 $.final.play.ending[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep04 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep05 $.missions[2].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/carla_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep05 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/carla_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep05 $.final.play.ending[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/carla_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep05 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/carla_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep06 $.missions[0].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep06 $.missions[1].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep06 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep06 $.final.play.ending[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep06 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep06 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep06 $.final.play.ending[5].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
     },
     {
       "level": "INFO",
@@ -679,69 +343,6 @@
       "where": "cases/s3_ep07 $.missions[2].play.talk.portrait",
       "source": "play",
       "message": "assets/seasons/season_03_rome/characters/bruno_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep07 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep07 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep08 $.missions[0].puzzle.answerSpec.options[0].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_08/bridge_angels.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep08 $.missions[0].puzzle.answerSpec.options[1].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/locations/tiber_bridge.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep08 $.missions[0].puzzle.answerSpec.options[2].picture",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/cases/case_08/bridge_hole.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep08 $.missions[1].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_hood.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep08 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep08 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep08 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
     },
     {
       "level": "INFO",
@@ -763,41 +364,6 @@
       "where": "cases/s3_ep09 $.missions[0].puzzle.answerSpec.options[2].picture",
       "source": "play",
       "message": "assets/seasons/season_03_rome/cases/case_09/room_theatre.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep09 $.missions[0].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep09 $.missions[2].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep09 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep09 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep09 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
     },
     {
       "level": "INFO",
@@ -826,48 +392,6 @@
       "where": "cases/s3_ep10 $.missions[0].play.explore.choices[2].picture",
       "source": "play",
       "message": "assets/seasons/season_03_rome/objects/yellow_helmet.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep10 $.missions[0].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep10 $.missions[2].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep10 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep10 $.final.play.ending[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep10 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep10 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
     },
     {
       "level": "INFO",
@@ -920,87 +444,10 @@
     },
     {
       "level": "INFO",
-      "code": "image_pending",
-      "where": "cases/s3_ep11 $.missions[1].play.dialogue.witnesses[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: a picture still to be made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
       "code": "story_picture_pending",
       "where": "cases/s3_ep11 $.final.play.ending[0].portrait",
       "source": "play",
       "message": "assets/seasons/season_03_rome/characters/bruno_site.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep11 $.final.play.ending[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep11 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.missions[0].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.missions[1].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.missions[2].play.talk.portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.final.play.ending[0].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/livia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.final.play.ending[2].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/sofia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.final.play.ending[3].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/enzo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.final.play.ending[4].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/aldo_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
-    },
-    {
-      "level": "INFO",
-      "code": "story_picture_pending",
-      "where": "cases/s3_ep12 $.final.play.ending[5].portrait",
-      "source": "play",
-      "message": "assets/seasons/season_03_rome/characters/giulia_base.png is not on disk: shown with no face until it is made (assets.manifest.json)"
     },
     {
       "level": "INFO",
@@ -1091,14 +538,14 @@
       "code": "asset_pending",
       "where": "assets.manifest.json $.assets",
       "source": "assets",
-      "message": "58 of 63 pictures planned, not made yet (no API was called)"
+      "message": "33 of 63 pictures planned, not made yet (no API was called)"
     },
     {
       "level": "INFO",
       "code": "generator_waits_for_pictures",
       "where": "generate_season",
       "source": "generator",
-      "message": "every check of the generator passes but one: 16 place and 30 puzzle pictures are not on disk yet"
+      "message": "every check of the generator passes but one: 5 place and 13 puzzle pictures are not on disk yet"
     }
   ]
 }

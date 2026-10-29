@@ -1,0 +1,41 @@
+{
+  "generator": "generate_case.dart",
+  "generatorVersion": 4,
+  "target": "sandbox",
+  "slice": true,
+  "seasonId": "s3_rome",
+  "cases": [
+    "s3_ep01",
+    "s3_ep02",
+    "s3_ep03",
+    "s3_ep04",
+    "s3_ep05",
+    "s3_ep06",
+    "s3_ep07",
+    "s3_ep08"
+  ],
+  "approved": false,
+  "inputs": {
+    "season.plan.json": "sha256:1cd1b9923596c1e71a2bcd9e76fa63725579cbaa34c22fca116fcf2f752c94a8",
+    "cases/s3_ep01/case.plan.json": "sha256:21f9eb7970ffa7b90c07e7f59e6a5c3799a00310e59e863c7ab1c0ed1ada9b7b",
+    "cases/s3_ep02/case.plan.json": "sha256:3714c74d4b533d3357f1e8b9a552ae240b02c0f9fa5d5d0835f9bd6f6234a00e",
+    "cases/s3_ep03/case.plan.json": "sha256:68e776ddf66004b3cda62f595e0bf961abff5b566e27d56fff450c7e2919241d",
+    "cases/s3_ep04/case.plan.json": "sha256:9f4422afcfdac6d6416e1d34672ec4429ebefdc9f31cd568a75a312290fe25b8",
+    "cases/s3_ep05/case.plan.json": "sha256:c6e7cce58a49138ed385466e2f38d8be5d003c284c316f9eb21c378e06ef2d6b",
+    "cases/s3_ep06/case.plan.json": "sha256:e93bb522774eaa9af25e7b339447f82ff3a461a5794de224a9a36a734f28ccb1",
+    "cases/s3_ep07/case.plan.json": "sha256:4bc43ec7e4f20793ddb08b84a41b3994c7ac73c24449f8db0bbd32b612f87807",
+    "cases/s3_ep08/case.plan.json": "sha256:08652c461d5e7e1d9ae1665ecb30fed8b49dcfbab3898c38043f62187bfeceb4"
+  },
+  "outputs": {
+    "s3_rome_season.g.dart": "sha256:634257a12752261a37c39ead5e353dd0100c0c49d3733385afa7c693d3c19ccd",
+    "s3_ep01.g.dart": "sha256:e0288ea0b2e513a237cb11a54cff7a5b796d2ed16f932eda8439b631bbe618fc",
+    "s3_ep02.g.dart": "sha256:57a35a19a8f9e22a47bff040ae8798c454c3463b2ef643a4efb9fd3cce019a4f",
+    "s3_ep03.g.dart": "sha256:2c46290ba9423e8d16fdc1fc37e13733e7869775a9ca6046eb47a4cbabcbee9a",
+    "s3_ep04.g.dart": "sha256:79d8b89c58a137ff7562d6e309d4270cc6e975b3dac23c6b5034f4dc09902800",
+    "s3_ep05.g.dart": "sha256:d086082a9ed52562eba1d2b7ea2d2bba13e0997d350afa67e7ec4c438d9cbb47",
+    "s3_ep06.g.dart": "sha256:838201577b40a29be74428ea79a248fd96c5d6fbd44335a58021ce84c17a3c76",
+    "s3_ep07.g.dart": "sha256:ad35a5c79a6d05de4b1afdcde7efcf4d3741dfd65383978354d1c0dfab747601",
+    "s3_ep08.g.dart": "sha256:58459e32b591072e0aab652ac62973cf5da16323bcc41c3d99368ab6afd78b34",
+    "s3_rome_cases.g.dart": "sha256:c69d9070b3d15f3ee9c4b722cd5c670aec0beefb63a78f1c475ab5b0a8eb82b8"
+  }
+}

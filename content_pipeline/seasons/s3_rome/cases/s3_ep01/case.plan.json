@@ -396,7 +396,7 @@
         "notes": [
           "Played as a look round (ExploreScene) in the map hall: the dust leads to the back door, where the Owl's card lies; the visitor map board opens once it is read, and its three place pictures are told apart by what people do there (a girl throws a coin into the fountain).",
           "The choice pictures reuse two place pictures (trevi_fountain, pantheon_hall) and add one (colosseum), all 1536x1024.",
-          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the map_hall prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
+          "Coordinates measured on the made map_hall.png (1536x1024, sha256 266bb26b88598120…) with a 100px grid overlay, STEP 3-15B B1. The card is drawn small at the door's foot: its area takes in the floor around it. The middle window is split around the statue's head."
         ]
       },
       "clueInputs": [
@@ -461,15 +461,16 @@
             "pixels": {
               "width": 1536,
               "height": 1024
-            }
+            },
+            "measuredOn": "sha256:266bb26b88598120a711939d831c5c009272c389a109c522db9c109fbb586102"
           },
           "place": "The map hall",
           "task": "Look around the map hall. Where does the dust trail end?",
           "nextTask": "Where does the Owl want you to go? Check the visitor map.",
           "missLine": "Nothing here. Follow the dust to the back door.",
           "guideAt": [
-            600,
-            930
+            1358,
+            858
           ],
           "spots": [
             {
@@ -479,15 +480,15 @@
               "label": "A white card under the back door",
               "areas": [
                 [
-                  1240,
-                  760,
-                  1480,
-                  920
+                  1265,
+                  790,
+                  1500,
+                  940
                 ]
               ],
               "mark": [
-                1450,
-                770
+                1480,
+                800
               ]
             },
             {
@@ -497,15 +498,15 @@
               "label": "The empty glass case",
               "areas": [
                 [
-                  400,
-                  330,
-                  640,
-                  720
+                  335,
+                  345,
+                  645,
+                  750
                 ]
               ],
               "mark": [
-                620,
-                340
+                630,
+                360
               ],
               "line": "The case is empty. The dust trail starts here."
             },
@@ -516,15 +517,15 @@
               "label": "A big white statue",
               "areas": [
                 [
-                  760,
-                  150,
-                  920,
+                  725,
+                  90,
+                  980,
                   740
                 ]
               ],
               "mark": [
-                900,
-                170
+                965,
+                100
               ],
               "line": "White dust on the statue's foot. The trail went past it."
             },
@@ -535,15 +536,15 @@
               "label": "Stairs going down",
               "areas": [
                 [
-                  960,
-                  560,
-                  1220,
-                  900
+                  985,
+                  600,
+                  1265,
+                  885
                 ]
               ],
               "mark": [
-                1200,
-                570
+                1250,
+                610
               ],
               "line": "Dust on every step. The trail goes down to the door."
             },
@@ -555,14 +556,14 @@
               "areas": [
                 [
                   40,
-                  260,
-                  290,
-                  760
+                  380,
+                  330,
+                  835
                 ]
               ],
               "mark": [
-                270,
-                270
+                315,
+                395
               ],
               "requires": "card",
               "lockedLine": "The museum's visitor map. But where should you go? Find a clue first.",
@@ -574,10 +575,28 @@
               "label": "Tall windows",
               "areas": [
                 [
-                  380,
-                  30,
-                  1240,
-                  140
+                  280,
+                  0,
+                  445,
+                  255
+                ],
+                [
+                  615,
+                  0,
+                  890,
+                  90
+                ],
+                [
+                  615,
+                  90,
+                  724,
+                  255
+                ],
+                [
+                  1035,
+                  0,
+                  1205,
+                  255
                 ]
               ],
               "line": "Tall windows. They are all shut tight."
@@ -586,10 +605,10 @@
               "label": "The marble floor",
               "areas": [
                 [
-                  300,
-                  820,
-                  900,
-                  1010
+                  0,
+                  860,
+                  960,
+                  1024
                 ]
               ],
               "line": "Only the dust trail here. Follow it to the door."

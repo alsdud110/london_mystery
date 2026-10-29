@@ -239,7 +239,7 @@ void main() {
     await wait(t, const Duration(milliseconds: 600));
     await shot('word_card');
     await tapText(t, 'GOT IT!', after: const Duration(milliseconds: 500));
-    await tapText(t, 'BACK TO THE STATION', after: const Duration(milliseconds: 500));
+    await tapText(t, 'BACK TO INVESTIGATION', after: const Duration(milliseconds: 500));
     await tapStationSpot(t, 'platform');
     await shot('mission_note');
     await tapText(t, 'Tap to keep looking', after: const Duration(milliseconds: 400));

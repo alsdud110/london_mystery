@@ -93,9 +93,11 @@ void main() {
         // that is missing; nothing else stops the generator.
         final errors = [for (final l in e.lines) if (l.trim().startsWith('error')) l];
         expect(g['blockedByPictures'], errors.length);
-        // STEP 3-15A: Case 05's two places are in assets/; the 16 others wait.
+        // STEP 3-15A: Case 05's two places are in assets/; STEP 3-15B B1
+        // added the six of Cases 01–04, B2 the five of Cases 06–08; the 5
+        // others wait.
         final waiting = [for (final p in season.places) if (!File(p.file).existsSync()) p];
-        expect(waiting, hasLength(season.places.length - 2));
+        expect(waiting, hasLength(season.places.length - 13));
         expect(errors.where((l) => l.contains('[place_file_missing]')), hasLength(waiting.length));
         expect(errors.every((l) => l.contains('[place_file_missing]') || l.contains('[asset_file_missing]')), isTrue, reason: errors.join('\n'));
         final planned = {for (final a in assets) a['outputPath']};
@@ -151,13 +153,20 @@ void main() {
   });
 
   group('the pictures', () {
-    test('each place\'s picture is planned at the file the season plan shows; only Case 05\'s are made (STEP 3-15A)', () {
+    test('each place\'s picture is planned at the file the season plan shows; only Cases 01–08\'s are made (STEP 3-15A, 3-15B B1, B2)', () {
       for (final p in season.places) {
         final a = assets.singleWhere((a) => a['subject'] == p.placeId);
         expect(a['outputPath'], p.file);
         expect([a['width'], a['height']], [p.width, p.height]);
       }
-      const made = {'cat_ruins', 'cast_workshop', 'cat_tito', 'cat_rosso', 'cat_luna'};
+      const made = {
+        'cat_ruins', 'cast_workshop', 'cat_tito', 'cat_rosso', 'cat_luna', //
+        'pantheon_hall', 'floor_stone_ship', 'floor_stone_lion', 'floor_stone_book', 'floor_stone_key', //
+        'guard_room', 'map_hall', 'trevi_fountain', 'flower_market', 'rotonda_bookshop', 'colosseum', //
+        'char_giulia_base', 'char_sofia_base', 'char_enzo_base', 'char_aldo_base', 'char_carla_base', 'char_livia_base',
+        'navona_square', 'lecture_hall', 'spanish_steps', 'tiber_bridge', 'restoration_lab', 'bridge_angels', 'bridge_hole',
+        'char_livia_hood',
+      };
       for (final a in assets) {
         final isMade = made.contains('${a['assetId']}'.split('.').last);
         expect(a['status'], isMade ? 'generated' : 'planned', reason: '${a['assetId']}');
@@ -166,7 +175,7 @@ void main() {
       }
       final pending = report.findings.where((f) => f.code == 'image_pending').toList();
       expect(report.picturesPending, pending.length);
-      expect(pending.where((f) => f.where.startsWith('season.plan.json')), hasLength(season.places.length - 2));
+      expect(pending.where((f) => f.where.startsWith('season.plan.json')), hasLength(season.places.length - 13));
       expect(pending.every((f) => f.level == Level.info), isTrue);
     });
 
@@ -180,11 +189,11 @@ void main() {
       }
     });
 
-    test('the planner calls no API, and the cost is an estimate; the five made by the asset pipeline are counted', () {
+    test('the planner calls no API, and the cost is an estimate; the 30 made by the asset pipeline are counted', () {
       final a = report.summary['assets'] as Map;
       expect(report.summary['apiCalls'], 0);
       expect(a['estimatedUsd'], isA<double>());
-      expect(a['generated'], 5);
+      expect(a['generated'], 30);
       expect(Directory(dir).listSync(recursive: true).whereType<File>().any((f) => f.path.endsWith('image_manifest.json')), isFalse);
     });
   });

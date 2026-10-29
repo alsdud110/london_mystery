@@ -430,12 +430,20 @@ void main() {
       // By where a case plan names the file, not by its type (STEP 3-15A):
       // every picture a generated mission shows (scene, choice, witness,
       // talk or ending face) goes in through the generator.
-      expect(AssetWiring.counts(wiring), {'wired': 5, 'wired_when_made': 41, 'ready_to_wire': 15, 'blocked': 0, 'not_supported': 2});
-      expect({for (final w in wiring) if (w.status == WiringStatus.wired) w.asset.assetId.split('.').last},
-          {'cat_ruins', 'cast_workshop', 'cat_tito', 'cat_rosso', 'cat_luna'}, reason: 'Case 05\'s pictures, in assets/');
+      expect(AssetWiring.counts(wiring), {'wired': 30, 'wired_when_made': 16, 'ready_to_wire': 15, 'blocked': 0, 'not_supported': 2});
+      expect({for (final w in wiring) if (w.status == WiringStatus.wired) w.asset.assetId.split('.').last}, {
+        'cat_ruins', 'cast_workshop', 'cat_tito', 'cat_rosso', 'cat_luna', //
+        'pantheon_hall', 'floor_stone_ship', 'floor_stone_lion', 'floor_stone_book', 'floor_stone_key', //
+        'guard_room', 'map_hall', 'trevi_fountain', 'flower_market', 'rotonda_bookshop', 'colosseum', //
+        'char_giulia_base', 'char_sofia_base', 'char_enzo_base', 'char_aldo_base', 'char_carla_base', 'char_livia_base',
+        'navona_square', 'lecture_hall', 'spanish_steps', 'tiber_bridge', 'restoration_lab', 'bridge_angels', 'bridge_hole',
+        'char_livia_hood',
+      }, reason: 'Cases 01–08\'s pictures, in assets/ (STEP 3-15A, 3-15B B1, B2)');
       final characters = wiring.where((w) => w.asset.type == 'character');
-      expect(characters.every((w) => w.status == WiringStatus.wiredWhenMade && w.via == 'generator'), isTrue,
-          reason: 'every face is a talk\'s, an ending\'s or a witness\'s');
+      for (final w in characters) {
+        expect(w.via, 'generator', reason: 'every face is a talk\'s, an ending\'s or a witness\'s');
+        expect(w.status, File(w.asset.outputPath).existsSync() ? WiringStatus.wired : WiringStatus.wiredWhenMade, reason: w.asset.assetId);
+      }
       final cats = wiring.singleWhere((w) => w.asset.assetId == 's3_rome.asset.cat_tito');
       expect(cats.missions, ['s3_ep05_m1']);
       expect(cats.field, 'SeasonContent.explores → ExplorePicture.picture');

@@ -474,6 +474,9 @@ final s3Ep05TalkMissions = <String, TalkMission>{
       speaker: const TalkSpeaker(
         id: 'carla_bassi',
         name: 'CARLA BASSI',
+        portraits: {
+          'base': 'assets/seasons/season_03_rome/characters/carla_base.png',
+        },
       ),
       goal: 'Find out how a copy is made.',
       opening: const [
@@ -497,6 +500,9 @@ final s3Ep05TalkMissions = <String, TalkMission>{
       speaker: const TalkSpeaker(
         id: 'carla_bassi',
         name: 'CARLA BASSI',
+        portraits: {
+          'base': 'assets/seasons/season_03_rome/characters/carla_base.png',
+        },
       ),
       goal: 'Find out how a copy is made.',
       opening: const [
@@ -546,6 +552,7 @@ const s3Ep05Endings = <String, List<EndingLine>>{
       'Order 318. Here is its card.',
       voice: TalkVoice.speaker,
       name: 'CARLA BASSI',
+      portrait: 'assets/seasons/season_03_rome/characters/carla_base.png',
       background: 'assets/seasons/season_03_rome/locations/cast_workshop.png',
     ),
     EndingLine(
@@ -556,6 +563,7 @@ const s3Ep05Endings = <String, List<EndingLine>>{
       'On Tuesday, he brought the real piece for three hours.',
       voice: TalkVoice.speaker,
       name: 'CARLA BASSI',
+      portrait: 'assets/seasons/season_03_rome/characters/carla_base.png',
       background: 'assets/seasons/season_03_rome/locations/cast_workshop.png',
     ),
     EndingLine(
@@ -568,6 +576,7 @@ const s3Ep05Endings = <String, List<EndingLine>>{
       'Oh! Professor Aldo came on Tuesday, too.',
       voice: TalkVoice.speaker,
       name: 'CARLA BASSI',
+      portrait: 'assets/seasons/season_03_rome/characters/carla_base.png',
       background: 'assets/seasons/season_03_rome/locations/cast_workshop.png',
     ),
   ],

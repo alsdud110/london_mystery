@@ -234,7 +234,7 @@ void main() {
       await wait(t, const Duration(milliseconds: 600));
       await t.tap(find.text('TAP TO OPEN'));
       await wait(t, const Duration(milliseconds: 1600));
-      expect(find.text('BACK TO THE STATION'), findsOneWidget);
+      expect(find.text('BACK TO INVESTIGATION'), findsOneWidget);
       return app;
     }
 
@@ -279,7 +279,7 @@ void main() {
           expect(r.right, lessThanOrEqualTo(letter.right));
           final seal = t.getRect(find.byType(WaxSeal));
           expect(r.overlaps(seal), isFalse, reason: 'the greeting and the seal');
-          expect(t.getRect(find.text('BACK TO THE STATION')).width, greaterThan(0));
+          expect(t.getRect(find.text('BACK TO INVESTIGATION')).width, greaterThan(0));
         });
       }
     }
