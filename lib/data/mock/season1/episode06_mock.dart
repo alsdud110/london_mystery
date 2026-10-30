@@ -129,6 +129,9 @@ const Map<String, dynamic> episode06Json = {
         'BLUE': 'Is a rain cloud blue? Check the witness notes: what colour was his hat?',
       },
       'acceptedAnswers': ['GRAY', 'INSPECTOR GREY', 'INSPECTOR GRAY'],
+      // The hat's colour is Mission 01's: its Witness Notes brought from the
+      // notebook beside the card (2026-10-30).
+      'recall': {'evidence': 'ep06_e1'},
       'hints': [
         'Who dropped the card? Look at the witness notes in your notebook.',
         "'The colour of my hat' means his name is the same colour as the hat he wore. Rain clouds are that colour too.",
@@ -196,6 +199,8 @@ const Map<String, dynamic> episode06Json = {
         },
       ],
       'answer': 'a',
+      // The market's Witness Notes, held against the guard's two nights.
+      'recall': {'evidence': 'ep06_e1'},
       'hints': [
         'Open your notebook: the Witness Notes from the market. Which night matches them?',
         'Only one detail is the same on both nights. Use the details that are different.',

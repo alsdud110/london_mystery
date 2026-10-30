@@ -19,7 +19,8 @@ void main() {
       'ep05_m3.prompt', 'ep05_final.question',
       'ep06_m2.prompt', 'ep06_m3.letter',
     },
-    partly: const {'ep06': ['dialogues/ep06_m1']},
+    // Case 06's talk is written at every level since 2026-10-30.
+    partly: const {},
     sameLearning: const {'ep04_m2'},
   );
 
@@ -79,9 +80,26 @@ void main() {
           }
         }
         expect(fin.transition.join(' '), contains('Find the other half'));
-        // The witness talk is the base's at every level.
-        expect(SeasonCatalog.dialogue(m1), same(season1Content.dialogues['ep06_m1']));
-        expect(DifficultyContent.missingAt('ep06', Difficulty.master), ['dialogues/ep06_m1']);
+        // The witness talk at every level since 2026-10-30: each level's own
+        // words, the base's structure; the juggler still says the grey hat
+        // M2 reads again, and two witnesses still agree on the small bag.
+        final talk = SeasonCatalog.dialogue(m1)!;
+        final base = season1Content.dialogues['ep06_m1']!;
+        if (level == Difficulty.rookie) {
+          expect(talk, same(base));
+        } else {
+          expect(talk, isNot(same(base)));
+          expect(DifficultyContent.structureOf(talk), DifficultyContent.structureOf(base));
+        }
+        expect(talk.statement('juggler.wearing').text, contains('grey hat'));
+        for (final id in talk.deduction.pair) {
+          expect(talk.statement(id).text, contains('small bag'), reason: id);
+        }
+        // What each witness says is in that level's notes (the thing named).
+        for (final s in talk.statements) {
+          expect(m1.letter, contains(s.thing), reason: '${level.name}: ${s.id}');
+        }
+        expect(DifficultyContent.missingAt('ep06', level), isEmpty);
       });
     }
   });

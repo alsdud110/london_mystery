@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:world_mystery/data/models/profile.dart';
 import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/mock/season1/season1_deductions.dart';
 import 'package:world_mystery/data/mock/season1/season1_learning.dart';
 import 'package:world_mystery/data/models/learning.dart';
 import 'package:world_mystery/data/models/mission.dart';
@@ -11,7 +12,7 @@ import 'package:world_mystery/features/game/game_controller.dart';
 import 'package:world_mystery/features/game/game_providers.dart';
 import 'package:world_mystery/features/game/scoring.dart';
 
-import 'full_playthrough_test.dart' show tapText, wait;
+import 'full_playthrough_test.dart' show wait;
 import 'helpers.dart';
 import 'mission_play.dart';
 
@@ -136,8 +137,12 @@ void main() {
       testWidgets("$tag: 04-M2 Platform 7 says what was missed ('but no clock')", (t) async {
         final play = MissionPlay();
         await play.openPuzzle(t, size, 'ep04_m2');
-        await tapText(t, 'Platform 7', after: const Duration(milliseconds: 200));
-        await tapText(t, 'CHECK ANSWER');
+        // Read in the platforms' picture (2026-10-30): every platform noted,
+        // then the red door's platform chosen.
+        final scene = season1Deductions['ep04_m2']!;
+        await play.noteClues(t, scene);
+        await play.chooseAndSearch(t, scene, 'c');
+        await wait(t, const Duration(milliseconds: 600));
         expect(find.text('Not quite!'), findsOneWidget);
         expect(find.textContaining('is there a clock?'), findsOneWidget);
         expect(t.takeException(), isNull);

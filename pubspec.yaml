@@ -130,6 +130,12 @@ flutter:
     # Case 01 Mission 01: King's Cross at night, searched, and its four museum
     # posters (`season1_explores.dart`).
     - assets/seasons/season_01_london/cases/case_01/
+    # Cases 02–12's puzzle scenes (docs/LONDON_GAMEPLAY_UPGRADE_PROGRESS.md).
+    - assets/seasons/season_01_london/cases/case_02/
+    - assets/seasons/season_01_london/cases/case_03/
+    - assets/seasons/season_01_london/cases/case_04/
+    - assets/seasons/season_01_london/cases/case_07/
+    - assets/seasons/season_01_london/cases/case_12/
     # Case 01's Royal Box lock pictures (cut out; the delivered files in
     # symbols/original/ are kept out of the app).
     - assets/images/case01/symbols/

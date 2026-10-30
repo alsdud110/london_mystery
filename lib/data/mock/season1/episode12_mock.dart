@@ -48,27 +48,46 @@ const Map<String, dynamic> episode12Json = {
           'The real gear is brass.\n'
           'It has eight teeth.\n'
           'And it has the small raven stamp — the one you found in Case 02.',
-      'type': 'multipleChoice',
+      // The four gears on the table, drawn (2026-10-30; were their words):
+      // no names under them, so the detective checks each against Mrs
+      // Bell's three words — the metal, the teeth counted, the stamp. Each
+      // wrong gear differs from the real one in one of them only.
+      'type': 'imageChoice',
+      'hideOptionNames': true,
       'question': 'Which gear is the real one?',
       'options': [
         {
           'id': 'a',
           'label': 'Silver, eight teeth, a raven stamp',
+          'picture': 'assets/seasons/season_01_london/cases/case_12/gear_silver_8_stamp.png',
+          'altText': 'a silver gear with eight teeth and a raven stamp',
           'feedback': 'Check the metal first. What did Mrs Bell say the real gear is made of?',
         },
         {
           'id': 'b',
           'label': 'Brass, six teeth, a raven stamp',
+          'picture': 'assets/seasons/season_01_london/cases/case_12/gear_brass_6_stamp.png',
+          'altText': 'a brass gear with six teeth and a raven stamp',
           'feedback': 'Count again: how many teeth does the real gear have?',
         },
         {
           'id': 'c',
           'label': 'Brass, eight teeth, no stamp',
+          'picture': 'assets/seasons/season_01_london/cases/case_12/gear_brass_8_plain.png',
+          'altText': 'a brass gear with eight teeth and no stamp',
           'feedback': 'Brass and eight teeth, yes! But one thing is missing. Read the last line.',
         },
-        {'id': 'd', 'label': 'Brass, eight teeth, a raven stamp'},
+        {
+          'id': 'd',
+          'label': 'Brass, eight teeth, a raven stamp',
+          'picture': 'assets/seasons/season_01_london/cases/case_12/gear_brass_8_stamp.png',
+          'altText': 'a brass gear with eight teeth and a raven stamp',
+        },
       ],
       'answer': 'd',
+      // Case 02's Small Brass Gear, its raven stamp, brought from the Case
+      // Archive beside the four (2026-10-30).
+      'recall': {'evidence': 'ep02_e2'},
       'hints': [
         'Check three things for every gear: the metal, the teeth, the stamp.',
         'Cross out each gear that gets one thing wrong.',

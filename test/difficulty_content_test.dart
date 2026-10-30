@@ -463,17 +463,25 @@ void main() {
         });
       }
       // PART 6A wrote Cases 01–03 whole (the PART 5 sample of Case 02 is
-      // finished); a case not written yet still shows what it lacks — Case
-      // 06 since PART 6B: all but M1's witness talk, which has no level
-      // structure check.
-      for (final caseId in ['ep01', 'ep02', 'ep03']) {
+      // finished); Case 06's M1 witness talk, the last London text missing
+      // at Junior and Master, since 2026-10-30. A case not written still
+      // shows what it lacks: the same season without its level tables.
+      for (final caseId in season1Content.episodes.keys) {
         expect(season1Content.writtenLevels[caseId], Difficulty.values.toSet(), reason: caseId);
+        for (final level in Difficulty.values) {
+          expect(DifficultyContent.missingAt(caseId, level), isEmpty, reason: '$caseId at ${level.name}');
+        }
       }
-      final junior = DifficultyContent.missingAt('ep06', Difficulty.junior);
-      expect(junior, ['dialogues/ep06_m1']);
-      expect(DifficultyContent.missingAt('ep06', Difficulty.master), containsAll(junior));
-      expect(DifficultyContent.missingAt('ep06', Difficulty.rookie), isEmpty);
-      expect(season1Content.writtenLevels['ep06'], isNot(contains(Difficulty.junior)));
+      final sample = SeasonContent(
+        info: season1Content.info,
+        episodes: season1Content.episodes,
+        dialogues: season1Content.dialogues,
+        casePatches: season1Content.casePatches,
+      );
+      final junior = DifficultyContent.missingAt('ep06', Difficulty.junior, season: sample);
+      expect(junior, contains('dialogues/ep06_m1'));
+      expect(DifficultyContent.missingAt('ep06', Difficulty.master, season: sample), contains('dialogues/ep06_m1'));
+      expect(DifficultyContent.missingAt('ep06', Difficulty.rookie, season: sample), isEmpty);
     });
   });
 

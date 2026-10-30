@@ -102,6 +102,81 @@ final Map<String, DeductionScene> season1Deductions = {
       DeductionPlace(optionId: 'c', areas: [_base.rect(915, 860, 1265, 990)], mark: _base.at(1090, 920)),
     ],
   ),
+  // ── Case 04 M2 — the platforms (cases/case_04/kings_cross_platforms.png)
+  // Four platform arches in a row, their sign boards blank: a big white
+  // clock over the first, a small red clock over the second, no clock but a
+  // red door beside the third, a green clock over the fourth. Each one,
+  // tapped, notes the porter's line about it (word for word: Case 12 reads
+  // "Platform 4 has a small red clock." again), so the numbers come from the
+  // English; then the card's three words pick one platform. The red door is
+  // the trap the porter's "but no clock" answers.
+  'ep04_m2': DeductionScene(
+    picture: 'assets/seasons/season_01_london/cases/case_04/kings_cross_platforms.png',
+    pixels: _platforms,
+    place: "King's Cross: four platforms, their clocks and a red door",
+    task: 'Tap each platform. Listen to the porter.',
+    chooseTask: 'RED · SMALL · CLOCK. Tap the platform.',
+    missLine: 'Nothing here. Look up at each platform.',
+    notPlaceLine: 'Tap one of the four platforms.',
+    action: 'LOOK UNDER THE CLOCK',
+    // The floor in the middle: no platform, no thing.
+    guideAt: _platforms.at(770, 850),
+    inside: _platforms.rect(44, 48, 1494, 985),
+    opening: _platforms.rect(44, 48, 1494, 985),
+    clues: [
+      DeductionClue(
+        id: 'p1',
+        label: 'A big white clock over the first platform',
+        areas: [_platforms.rect(165, 70, 345, 285)],
+        mark: _platforms.at(335, 95),
+        line: 'Platform 1 has a big white clock.',
+      ),
+      DeductionClue(
+        id: 'p4',
+        label: 'A small red clock over the second platform',
+        areas: [_platforms.rect(525, 150, 655, 280)],
+        mark: _platforms.at(645, 165),
+        line: 'Platform 4 has a small red clock.',
+      ),
+      DeductionClue(
+        id: 'p7',
+        label: 'A red door beside the third platform, and no clock over it',
+        // The door, and the empty brick above the arch where a clock is not.
+        areas: [_platforms.rect(1035, 485, 1150, 740), _platforms.rect(800, 170, 1020, 300)],
+        mark: _platforms.at(1145, 500),
+        line: 'Platform 7 has a red door, but no clock.',
+      ),
+      DeductionClue(
+        id: 'p9',
+        label: 'A green clock over the fourth platform',
+        areas: [_platforms.rect(1220, 150, 1355, 300)],
+        mark: _platforms.at(1345, 170),
+        line: 'Platform 9 has a green clock.',
+      ),
+    ],
+    others: [
+      InvestigationSpot(
+        label: "A porter's trolley",
+        areas: [_platforms.rect(75, 680, 495, 955)],
+        line: "A porter's trolley. It is empty.",
+      ),
+      InvestigationSpot(
+        label: 'A wooden bench',
+        areas: [_platforms.rect(1080, 750, 1475, 970)],
+        line: 'A wooden bench. Nobody is waiting here.',
+      ),
+    ],
+    places: [
+      DeductionPlace(optionId: 'a', areas: [_platforms.rect(70, 70, 405, 730)], mark: _platforms.at(240, 560)),
+      DeductionPlace(optionId: 'b', areas: [_platforms.rect(425, 150, 730, 730)], mark: _platforms.at(580, 560)),
+      DeductionPlace(
+        optionId: 'c',
+        areas: [_platforms.rect(775, 170, 1030, 730), _platforms.rect(1030, 485, 1150, 740)],
+        mark: _platforms.at(900, 560),
+      ),
+      DeductionPlace(optionId: 'd', areas: [_platforms.rect(1155, 150, 1440, 740)], mark: _platforms.at(1280, 560)),
+    ],
+  ),
 };
 
 /// The traces of [m]'s place to read, or null when [m] is played as before.
@@ -109,3 +184,6 @@ DeductionScene? deductionOf(Mission m) => season1Deductions[m.id];
 
 // The foot of Big Ben at night, in pixels.
 const _base = ScenePixels(1536, 1024);
+
+// Case 04's four platforms, in pixels.
+const _platforms = ScenePixels(1536, 1024);

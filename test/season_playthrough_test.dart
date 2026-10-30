@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:world_mystery/app.dart';
 import 'package:world_mystery/core/constants/app_constants.dart';
+import 'package:world_mystery/data/mock/season1/season1_investigations.dart';
 import 'package:world_mystery/data/models/game_progress.dart';
+import 'package:world_mystery/features/game/game_controller.dart';
 import 'package:world_mystery/features/game/game_providers.dart';
 
 import 'full_playthrough_test.dart'
@@ -126,24 +128,27 @@ void main() {
         sceneLine: 'Mrs Bell opens a small door at the bottom of the tower.',
       );
 
-      // ── Mission 2: a wrong answer first, then the right bell.
-      await openMission(t, 'GO TO THE CLOCK ROOM');
-      await tapText(
-        t,
-        'Under the biggest bell',
-        after: const Duration(milliseconds: 200),
-      );
-      await tapText(t, 'CHECK ANSWER');
-      expect(find.text('Not quite!'), findsOneWidget);
-      await tapText(t, 'GET MORE HINTS');
-      await takeTipFromSheet(t);
-      expect(find.text('DETECTIVE HINT 1'), findsOneWidget);
-      await tapText(
-        t,
-        'Under the smallest bell',
-        after: const Duration(milliseconds: 200),
-      );
-      await tapText(t, 'CHECK ANSWER', after: Duration.zero);
+      // ── Mission 2: the belfry searched with R.'s note (2026-10-30): the
+      // biggest bell first (the note says NOT), then the smallest.
+      final belfry = season1Investigations['ep02_m2']!;
+      Future<void> tapBelfry(Offset point) async {
+        final picture = find.byKey(const ValueKey('investigation-picture'));
+        final box = t.getRect(find.descendant(of: picture, matching: find.byType(GestureDetector)).first);
+        await t.tapAt(Offset(box.left + point.dx * box.width, box.top + point.dy * box.height));
+        await wait(t, const Duration(milliseconds: 700));
+      }
+
+      await t.tap(find.bySemanticsLabel('GO TO THE CLOCK ROOM'));
+      await wait(t, goToTime);
+      await tapText(t, 'INVESTIGATE', after: const Duration(milliseconds: 700));
+      await wait(t, const Duration(milliseconds: 2400)); // the arrival, then the note
+      await tapText(t, belfry.startLabel, after: const Duration(milliseconds: 1400));
+      await tapBelfry(belfry.spots.first.areas.first.center);
+      expect(appRef.read(gameControllerProvider).isCompleted('ep02_m2'), isFalse, reason: 'not under the biggest bell');
+      await tapBelfry(belfry.finds.single.areas.first.center);
+      await wait(t, const Duration(milliseconds: 400));
+      await t.tap(find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('find-card-')));
+      await wait(t, const Duration(milliseconds: 1500));
       await finishMission(
         t,
         sceneLine: 'You hold the brass gear up to the light.',
@@ -195,7 +200,8 @@ void main() {
       await tapText(t, 'CHECK ANSWER', after: Duration.zero);
       await finishMission(t, sceneLine: 'The time was a message.');
 
-      // ── Final case: 8:17 + one hour — set the Great Clock to 9:17 on the dials.
+      // ── Final case: 8:17 + one hour — the Great Clock's own hands, frozen
+      // at 8:17, set to 9:17 (2026-10-30; was three number wheels).
       await tapText(t, 'OPEN THE FINAL CASE', after: goToTime);
       expect(find.text('INSIDE BIG BEN'), findsOneWidget);
       expect(
@@ -203,16 +209,25 @@ void main() {
         findsNothing,
         reason: 'the detective works the time out',
       );
-      for (final (i, digit) in [9, 1, 7].indexed) {
-        final up = find.byTooltip('Lock ${i + 1} up');
-        await reveal(t, up);
-        for (var n = 0; n < digit; n++) {
-          await t.tap(up);
-          await t.pump(const Duration(milliseconds: 20));
-        }
+      expect(find.byTooltip('Lock 1 up'), findsNothing, reason: 'no number wheels: the clock itself');
+      Future<void> key(String k) async {
+        await reveal(t, find.byKey(ValueKey(k)));
+        await t.tap(find.byKey(ValueKey(k)));
+        await t.pump(const Duration(milliseconds: 60));
       }
-      await wait(t, const Duration(milliseconds: 300));
-      await tapText(t, 'UNLOCK', after: const Duration(milliseconds: 3500));
+
+      expect(t.widget<Text>(find.byKey(const ValueKey('clock-time'))).data, '8:17', reason: 'frozen where it stopped');
+      // A minute on is a slip the final answers (the hour moves, not the minutes).
+      await key('clock-minute-plus');
+      await key('clock-submit');
+      await wait(t, const Duration(milliseconds: 600));
+      expect(find.text('Not quite!'), findsOneWidget);
+      await tapText(t, 'TRY AGAIN', after: const Duration(milliseconds: 400));
+      await key('clock-minute-minus');
+      await key('clock-hour-plus');
+      expect(t.widget<Text>(find.byKey(const ValueKey('clock-time'))).data, '9:17');
+      await key('clock-submit');
+      await wait(t, const Duration(milliseconds: 3500));
       expect(find.text('CASE SOLVED'), findsOneWidget);
       expect(find.text('Big Ben rings again!'), findsOneWidget);
 

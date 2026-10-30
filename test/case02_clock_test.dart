@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:world_mystery/core/router/app_router.dart';
 import 'package:world_mystery/core/utils/answer_checker.dart';
+import 'package:world_mystery/data/content/difficulty_content.dart';
 import 'package:world_mystery/data/mock/season1/season1_clocks.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
 import 'package:world_mystery/data/models/clock_puzzle.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
 import 'package:world_mystery/data/models/mission.dart';
 import 'package:world_mystery/data/repositories/episode_repository.dart';
 import 'package:world_mystery/features/game/game_controller.dart';
@@ -82,12 +85,33 @@ void main() {
   });
 
   group('the case is kept', () {
-    test('only Case 02 Mission 01 is played on a clock', () {
+    test('only Case 02 Mission 01 is played on a clock (its final on the finals'' own table)', () {
+      // The final's Great Clock since 2026-10-30 (London gameplay upgrade).
       expect(season1Clocks.keys, ['ep02_m1']);
+      expect(season1FinalClocks.keys, ['ep02_final']);
       for (final e in season) {
         for (final m in e.allMissions) {
           expect(clockPuzzleOf(m) != null, m.id == 'ep02_m1', reason: m.id);
         }
+      }
+    });
+
+    test("the final's Great Clock: the lock's answer, 917, set from the frozen 8:17", () {
+      final fin = ep02.finalMission;
+      final clock = SeasonCatalog.finalClock(fin)!;
+      expect(fin.type, MissionType.finalCode, reason: 'the case data is as it was');
+      expect(fin.answer, '917');
+      expect((clock.start.hour, clock.start.minute), (8, 17), reason: 'where the hands froze');
+      expect(ClockTime.at(clock.start.hour, clock.start.minute).answer, isNot(fin.answer));
+      expect(AnswerChecker.isCorrect(fin, ClockTime.at(9, 17).answer), isTrue);
+      // Every slip the lock answered is still answered, by the time set.
+      for (final (h, m) in const [(8, 17), (7, 17), (8, 18)]) {
+        expect(AnswerChecker.feedbackFor(fin, ClockTime.at(h, m).answer), fin.feedback['$h${m.toString().padLeft(2, '0')}']);
+      }
+      for (final level in Difficulty.values) {
+        final at = DifficultyContent.episodeAt(ep02, level).finalMission;
+        expect(SeasonCatalog.finalClock(at)!.start, clock.start, reason: level.name);
+        expect(SeasonCatalog.finalClock(at)!.question, at.question, reason: '${level.name}: the page asks it once');
       }
     });
 

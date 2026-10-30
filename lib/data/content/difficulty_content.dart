@@ -11,6 +11,7 @@ import '../models/mission.dart';
 import '../models/scene_decode.dart';
 import '../models/scene_deduction.dart';
 import '../models/scene_explore.dart';
+import '../models/scene_trail.dart';
 import '../models/scene_inspect.dart';
 import '../models/season.dart';
 
@@ -407,6 +408,12 @@ abstract final class DifficultyContent {
             for (final f in s.finds)
               '${f.id}:${f.areas}:${f.picture}:${f.at}:${f.width}:${f.pictureAspect}:${f.squash}:${f.turn}',
             for (final o in s.spots) '${o.areas}',
+          ].join('|'),
+        // London Case 03's footprints (2026-10-30): the picture and its
+        // stops, in order — every word may differ.
+        final TrailScene s => [
+            s.picture, s.pixels.width, s.pixels.height, s.inside,
+            for (final p in s.stops) '${p.optionId}:${p.areas}:${p.mark}',
           ].join('|'),
         _ => null,
       };

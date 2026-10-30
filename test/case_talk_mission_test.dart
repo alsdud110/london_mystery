@@ -22,8 +22,10 @@ import 'mission_play.dart' show prefsAt;
 void main() {
   final season = MockEpisodeRepository.bundled();
   final case04 = season.firstWhere((e) => e.id == 'ep04');
-  // A plain multiple-choice puzzle (its own answer, evidence and save).
-  final m2 = case04.missionById('ep04_m2')!;
+  // A plain multiple-choice puzzle (its own answer, evidence and save):
+  // Case 05's way to the locked room (Case 04's platforms are read in their
+  // picture since 2026-10-30).
+  final m2 = season.firstWhere((e) => e.id == 'ep05').missionById('ep05_m1')!;
   final m1 = case04.missionById('ep04_m1')!;
   final found = m2.evidence!.id;
 
@@ -179,6 +181,9 @@ void main() {
         200,
         scrollable: find.descendant(of: find.byType(DraggableScrollableSheet), matching: find.byType(Scrollable)).first,
       );
+      // Case 05's card comes after Case 04's evidence: in the middle first.
+      await Scrollable.ensureVisible(t.element(key('recall-pick-$found')), alignment: 0.5);
+      await t.pump();
       await t.tap(key('recall-pick-$found'));
       await t.pump();
       await wait(t, const Duration(seconds: 3));

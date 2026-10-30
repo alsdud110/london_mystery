@@ -43,16 +43,23 @@ void main() {
       expect(
         missionPage,
         contains(
-          'child: clock == null ? _questionFor(m) : _clockFor(m, clock)',
+          // The question's own clock, then its own trail (2026-10-30), in
+          // place of its keypad or buttons.
+          'child: clock != null\n'
+          '                  ? _clockFor(m, clock)\n'
+          '                  : trail != null\n'
+          '                  ? _trailFor(m, trail)\n'
+          '                  : _questionFor(m),',
         ),
       );
       expect(vars['clock'], 'clocks');
+      expect(vars['trail'], 'trails');
       expect(
         [
           for (final s in PuzzleEngineDispatch.mission)
             s.kind == EngineStepKind.talkBefore ? '<talkBefore>' : s.table,
         ],
-        [...order, 'clocks'],
+        [...order, 'clocks', 'trails'],
       );
     });
 
@@ -286,6 +293,12 @@ void main() {
         'CityClocksPuzzle',
         'ShadowCheckPuzzle',
         'HourRecordPuzzle',
+        // London Case 03 M3's footprints (2026-10-30): kept out of the
+        // palette, so the Season Factory's catalog stays as it is.
+        'TrailOrderQuestion',
+        // London Case 02's final on its Great Clock (its own table,
+        // finalClocks: the palette's clock_set stays the missions').
+        'ClockQuestion',
       });
       final hidden = {for (final s in all) ...s.shadowed.map((u) => u.table)};
       expect(hidden, {'streetBooks', 'postTrails', 'lightTables'});

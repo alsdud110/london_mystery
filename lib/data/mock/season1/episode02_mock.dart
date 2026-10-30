@@ -177,6 +177,10 @@ const Map<String, dynamic> episode02Json = {
         {'id': 'd', 'label': 'Gallery 3 · Picture 2', 'feedback': "Those are the marks in Mrs Bell's note. The plan says to use the stopped TIME."},
       ],
       'answer': 'b',
+      // The stopped time is Mission 01's evidence: brought from the notebook
+      // and read beside the plan (never needed: the letter can be solved
+      // from memory, and the card's own words are the app's).
+      'recall': {'evidence': 'ep02_e1'},
       'hints': [
         'The thief hid the numbers in the stopped clock. What time did it stop?',
         'Your first clue has the stopped time. The hour goes with GALLERY. The minutes go with PICTURE.',

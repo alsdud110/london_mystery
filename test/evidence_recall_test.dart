@@ -64,7 +64,18 @@ void main() {
     test('a mission without a recall reads as before; one with it keeps every field', () {
       // Case 08's M1 (the Hidden Sketch) and M3 (the Amendment Slip) are the
       // game's only missions played with a recall (2026-10-23).
-      const recalling = {'s2_ep08_m1': 's2_ep02_e3', 's2_ep08_m3': 's2_ep07_e3'};
+      // London's, since its gameplay upgrade (2026-10-30): evidence of the
+      // same case or an earlier one, brought where the puzzle reads it.
+      const recalling = {
+        's2_ep08_m1': 's2_ep02_e3',
+        's2_ep08_m3': 's2_ep07_e3',
+        'ep02_m3': 'ep02_e1',
+        'ep03_m2': 'ep03_e1',
+        'ep06_m2': 'ep06_e1',
+        'ep06_m3': 'ep06_e1',
+        'ep10_m3': 'ep10_e2',
+        'ep12_m1': 'ep02_e2',
+      };
       // A season made from its plans recalls as its plans say (clueInputs):
       // only evidence of an earlier case, or of its own, of the same season.
       for (final e in inGame.where((e) => !handMadeSeason(e.seasonId))) {

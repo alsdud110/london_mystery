@@ -23,6 +23,7 @@ import '../models/scene_exhibit.dart';
 import '../models/scene_explore.dart';
 import '../models/scene_inspect.dart';
 import '../models/scene_place.dart';
+import '../models/scene_trail.dart';
 import '../models/season.dart';
 import '../models/station_clocks.dart';
 import '../models/story_picture.dart';
@@ -40,6 +41,7 @@ import 'season1/season1_explores.dart';
 import 'season1/season1_inspections.dart';
 import 'season1/season1_investigations.dart';
 import 'season1/season1_learning.dart';
+import 'season1/season1_trails.dart';
 import 'season1/season1_mock.dart';
 import 'season2/season2_difficulty.dart';
 import 'season2/season2_discoveries.dart';
@@ -83,6 +85,8 @@ class SeasonContent {
     this.easySteps = const {},
     this.endings = const {},
     this.clocks = const {},
+    this.trails = const {},
+    this.finalClocks = const {},
     this.stationClocks = const {},
     this.compares = const {},
     this.studios = const {},
@@ -198,6 +202,15 @@ class SeasonContent {
   /// (Case 12): the case closes once it is seen.
   final Map<String, List<EndingLine>> endings;
   final Map<String, ClockPuzzle> clocks;
+
+  /// Sequence puzzles played on their place: traces tapped in order (London
+  /// Case 03 M3's footprints).
+  final Map<String, TrailScene> trails;
+
+  /// Finals whose number lock is set on a clock's own hands (London Case 02's
+  /// Great Clock): kept apart from [clocks], the missions' table the puzzle
+  /// palette offers, so the Season Factory's offer stays as it is.
+  final Map<String, ClockPuzzle> finalClocks;
 
   /// Missions played by comparing a place's clocks (Season 2, Case 01 M1).
   final Map<String, StationClocksScene> stationClocks;
@@ -364,6 +377,8 @@ class SeasonContent {
     'easySteps': easySteps,
     'endings': endings,
     'clocks': clocks,
+    'trails': trails,
+    'finalClocks': finalClocks,
     'stationClocks': stationClocks,
     'compares': compares,
     'studios': studios,
@@ -424,6 +439,8 @@ final season1Content = SeasonContent(
   decodes: season1Decodes,
   dialogues: season1Dialogues,
   clocks: season1Clocks,
+  trails: season1Trails,
+  finalClocks: season1FinalClocks,
   discoveries: season1Discoveries,
   storyEvidence: season1StoryEvidence,
   learning: season1Learning,
@@ -689,6 +706,10 @@ abstract final class SeasonCatalog {
   static List<EndingLine>? caseEnding(Mission m) => m.isFinal ? _pick(m, (s) => s.endings) : null;
 
   static ClockPuzzle? clock(Mission m) => _pick(m, (s) => s.clocks);
+
+  static TrailScene? trail(Mission m) => _pick(m, (s) => s.trails);
+
+  static ClockPuzzle? finalClock(Mission m) => _pick(m, (s) => s.finalClocks);
 
   static StationClocksScene? stationClocks(Mission m) =>
       _pick(m, (s) => s.stationClocks);

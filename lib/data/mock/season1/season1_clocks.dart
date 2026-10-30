@@ -24,5 +24,25 @@ const Map<String, ClockPuzzle> season1Clocks = {
   ),
 };
 
+/// Finals whose number lock is set on a clock's hands (presentation only,
+/// as [season1Clocks]): the time set is the lock's typed answer ("917").
+const Map<String, ClockPuzzle> season1FinalClocks = {
+  // ── Case 02 Final — inside Big Ben ───────────────────────────────────
+  // The gear is back: the detective sets the Great Clock to the thief's
+  // time, worked out from the stopped time and the plan's "one hour after".
+  // Its hands start where they froze (8:17, known since Mission 01), never
+  // at the answer; the face is the case's own, so the final's stage shows
+  // it only once solved, turning on to the time set.
+  'ep02_final': ClockPuzzle(
+    face: Artwork.clockFace,
+    question: 'Set the time on the Great Clock.',
+    lead: 'The hands are frozen where the clock stopped. Move them to the thief\'s time.',
+    guide: 'Drag the short hand for the hour and the long hand for the minutes.',
+    dialLabel: "Big Ben's Great Clock",
+    start: (hour: 8, minute: 17),
+    submitLabel: 'START THE CLOCK',
+  ),
+};
+
 /// The clock of [m], or null when [m] is played through its puzzle.
 ClockPuzzle? clockPuzzleOf(Mission m) => season1Clocks[m.id];

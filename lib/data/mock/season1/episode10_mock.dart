@@ -169,6 +169,9 @@ const Map<String, dynamic> episode10Json = {
         {'id': 'd', 'label': "King's Cross", 'artwork': 'kingsCross', 'feedback': "Is 'King's' or 'Cross' one of Poppy's words?"},
       ],
       'answer': 'c',
+      // Mission 02's Raven Papers (Poppy's four words) brought from the
+      // notebook beside the pictures (2026-10-30).
+      'recall': {'evidence': 'ep10_e2'},
       'hints': [
         "Look at Poppy's four words again. They are in your notebook.",
         "'Put together' means two words side by side make one name. One word alone is not enough.",

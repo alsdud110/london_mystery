@@ -1,7 +1,9 @@
 import '../../../models/discovery.dart';
 import '../../../models/investigation.dart';
 import '../../../models/learning.dart';
+import '../../../models/scene_trail.dart';
 import '../season1_investigations.dart';
+import '../season1_trails.dart';
 import 'level_words.dart';
 
 // Case 03 — The Vanishing Painting, at each level (PART 6A).
@@ -451,6 +453,23 @@ final Map<String, InvestigationScene> ep03MasterInvestigations = {
       'Not this bench. The report means the one beside you.',
       'Nothing but the glass roof and the sky beyond.',
     ]),
+  ),
+};
+
+// ── Mission 03's footprints (the picture and the four places the base's) ──
+final TrailScene _court = season1Trails['ep03_m3']!;
+
+final Map<String, TrailScene> ep03JuniorTrails = {
+  'ep03_m3': _court.copyWith(
+    lead: 'Four footprints cross the white floor. Tap them in the order Miss Rose made them.',
+    guide: 'Tap a footprint to give it a number. Tap it again to take it back.',
+  ),
+};
+
+final Map<String, TrailScene> ep03MasterTrails = {
+  'ep03_m3': _court.copyWith(
+    lead: 'Four footprints cross the floor of the court. Retrace her steps by tapping them in order.',
+    guide: 'Tap a footprint to number it; tap it again to undo that step.',
   ),
 };
 

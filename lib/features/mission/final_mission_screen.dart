@@ -14,6 +14,7 @@ import '../../data/mock/season1/season1_sounds.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/abbesses_puzzles.dart';
 import '../../data/models/case_talk.dart';
+import '../../data/models/clock_puzzle.dart';
 import '../../data/models/easy_steps.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/garden_puzzles.dart';
@@ -45,6 +46,7 @@ import '../game/game_providers.dart';
 import '../game/scoring.dart';
 import 'widgets/answer_feedback.dart';
 import 'widgets/canvas_choice.dart';
+import 'widgets/clock_question.dart';
 import 'widgets/case_talk.dart';
 import 'widgets/easy_steps.dart';
 import 'widgets/clockwork_garden.dart';
@@ -93,6 +95,15 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
 
   /// Canvases to look at and turn round (Paris Case 02), or null.
   CanvasScene? get _canvases => SeasonCatalog.canvasChoice(_mission);
+
+  /// A number lock played as the hands of a clock (London Case 02: the
+  /// Great Clock set to the thief's time), or null. The time set is the
+  /// lock's typed answer ([ClockTime.answer]); the clock is the case's own
+  /// face, so its stage waits for the solve to show it turning.
+  ClockPuzzle? get _clock => SeasonCatalog.finalClock(_mission);
+
+  /// Where the hands are (null: not moved yet, at the puzzle's start).
+  ClockTime? _clockTime;
 
   /// Evidence linked to questions, the time-recording machine on the stage
   /// (Paris Case 03), or null.
@@ -985,7 +996,13 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                     // are looked at by their choice, the clues in view above
                     // them: the stage shows the right one, turned round.
                     if (canvases == null || solved)
-                    LayoutBuilder(
+                    // A clock set on its own face (London Case 02): the
+                    // stage is built from the start but kept off the page
+                    // until the solve, so its picture is decoded at its size
+                    // and the hands turn on it at once.
+                    Offstage(
+                    offstage: _clock != null && !solved,
+                    child: LayoutBuilder(
                       builder: (context, stage) => SizedBox(
                         height: m.scene == Artwork.royalBox
                             ? _royalBoxStage(stage.maxWidth, MediaQuery.sizeOf(context).height)
@@ -1107,6 +1124,7 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
                         ),
                       ),
                     ),
+                    ),
                     const SizedBox(height: 12),
                     // The story gives way to the banner: the height eases over
                     // instead of jumping.
@@ -1202,7 +1220,30 @@ class _FinalMissionScreenState extends ConsumerState<FinalMissionScreen>
       linkColor: AppColors.paperLight,
     ),
     const SizedBox(height: 16),
-    if (m.type == MissionType.finalCode) ...[
+    if (_clock case final clock? when m.type == MissionType.finalCode) ...[
+      ShakeOnChange(
+        trigger: _wrongPulse,
+        child: PaperSheet(
+          key: const ValueKey('final-clock-sheet'),
+          padding: const EdgeInsets.all(AppSpace.lg),
+          child: ClockQuestion(
+            puzzle: clock,
+            time: _clockTime ?? ClockTime.at(clock.start.hour, clock.start.minute),
+            moved: _clockTime != null,
+            onChanged: (t) => setState(() => _clockTime = t),
+            onSubmit: _submit,
+          ),
+        ),
+      ),
+      Center(
+        child: InkTextButton(
+          label: 'Reread Letter',
+          glyph: InkGlyph.letter,
+          color: AppColors.goldLight,
+          onPressed: _rereadLetter,
+        ),
+      ),
+    ] else if (m.type == MissionType.finalCode) ...[
       ShakeOnChange(
         trigger: _wrongPulse,
         child: Row(

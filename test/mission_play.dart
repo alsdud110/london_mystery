@@ -18,6 +18,8 @@ import 'package:world_mystery/data/mock/season1/season1_inspections.dart';
 import 'package:world_mystery/data/models/scene_explore.dart';
 import 'package:world_mystery/data/models/scene_inspect.dart';
 import 'package:world_mystery/data/mock/season1/season1_investigations.dart';
+import 'package:world_mystery/data/mock/season1/season1_trails.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
 import 'package:world_mystery/data/models/episode.dart';
 import 'package:world_mystery/data/models/game_progress.dart';
 import 'package:world_mystery/data/models/mission.dart';
@@ -44,7 +46,7 @@ Future<void> press(WidgetTester t, Finder f, {Duration after = const Duration(mi
 /// before it solved, the missions before it in its case solved, and the
 /// mission itself started ([started]: back on its puzzle) or not (at its
 /// place).
-Map<String, Object> prefsAt(List<Episode> season, String missionId, {bool started = true, String name = 'MINYOUNG'}) {
+Map<String, Object> prefsAt(List<Episode> season, String missionId, {bool started = true, String name = 'MINYOUNG', Difficulty? level}) {
   final e = season.firstWhere((e) => e.missions.any((m) => m.id == missionId));
   final before = e.missions.takeWhile((m) => m.id != missionId).map((m) => m.id).toList();
   final earlier = [for (final x in season) if (x.number < e.number) x];
@@ -66,7 +68,9 @@ Map<String, Object> prefsAt(List<Episode> season, String missionId, {bool starte
       AppConstants.progressStorageKey: jsonEncode(GameProgress(detectiveName: name).toJson()),
     AppConstants.progressKeyFor(e.id): progress(before, begun: started ? {missionId: start} : const {}),
     AppConstants.seasonStorageKey: jsonEncode(
-      SeasonProgress(activeEpisodeId: e.id, solvedEpisodeIds: [for (final x in earlier) x.id]).toJson(),
+      level == null
+          ? SeasonProgress(activeEpisodeId: e.id, solvedEpisodeIds: [for (final x in earlier) x.id]).toJson()
+          : SeasonProgress(activeEpisodeId: e.id, solvedEpisodeIds: [for (final x in earlier) x.id], difficulty: level).toJson(),
     ),
   };
 }
@@ -89,7 +93,7 @@ class MissionPlay {
 
   /// [missionId] open at its puzzle: earlier cases solved, the missions
   /// before it solved.
-  Future<Mission> openPuzzle(WidgetTester t, Size size, String missionId, {double textScale = 1}) async {
+  Future<Mission> openPuzzle(WidgetTester t, Size size, String missionId, {double textScale = 1, Difficulty? level}) async {
     t.view.physicalSize = size * 3;
     t.view.devicePixelRatio = 3;
     t.platformDispatcher.textScaleFactorTestValue = textScale;
@@ -97,7 +101,7 @@ class MissionPlay {
     addTearDown(t.platformDispatcher.clearTextScaleFactorTestValue);
     final e = caseOf(missionId);
     await t.pumpWidget(ProviderScope(
-      overrides: await testOverrides(audio: audio, prefs: prefsAt(season, missionId)),
+      overrides: await testOverrides(audio: audio, prefs: prefsAt(season, missionId, level: level)),
       child: RepaintBoundary(
         key: const ValueKey('shot'),
         child: Consumer(builder: (context, r, _) {
@@ -204,12 +208,24 @@ class MissionPlay {
       await tapKey(t, 'clock-submit');
       return;
     }
+    // A trail: its traces tapped in the answer's order, then CHECK ANSWER.
+    final trail = trailOf(m);
+    if (trail != null) {
+      for (final id in Mission.sequenceIds(m.answer)) {
+        await tapKey(t, 'trail-$id', after: const Duration(milliseconds: 150));
+      }
+      await tapKey(t, 'trail-check');
+      return;
+    }
     switch (m.type) {
       case MissionType.multipleChoice:
         await tapText(t, m.answerLabel, after: const Duration(milliseconds: 200));
       case MissionType.imageChoice:
         final i = m.options.indexWhere((o) => o.id == m.answer);
-        final picture = find.bySemanticsLabel('Picture ${String.fromCharCode(65 + i)}, ${m.answerLabel}');
+        // Named ("Picture D, …") or, names hidden, described ("Picture D: …").
+        final picture = m.hideOptionNames
+            ? find.bySemanticsLabel(RegExp('^Picture ${String.fromCharCode(65 + i)}: '))
+            : find.bySemanticsLabel('Picture ${String.fromCharCode(65 + i)}, ${m.answerLabel}');
         await reveal(t, picture);
         await t.tap(picture);
         await wait(t, const Duration(milliseconds: 200));

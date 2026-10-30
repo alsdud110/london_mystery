@@ -90,6 +90,9 @@ abstract final class PuzzleEngineDispatch {
     EngineStep('dialogues', 'DialogueInvestigation'),
     // The question's own clock face, in place of its keypad.
     EngineStep('clocks', 'ClockQuestion'),
+    // The question's own place, its traces tapped in order in place of its
+    // buttons (London Case 03 M3).
+    EngineStep('trails', 'TrailOrderQuestion'),
   ];
 
   /// The final page's steps: a talk or steps take the whole page; then its
@@ -97,6 +100,9 @@ abstract final class PuzzleEngineDispatch {
   static const finalMission = [
     EngineStep('talks', 'CaseTalk'),
     EngineStep('easySteps', 'EasyStepsPuzzle'),
+    // A number lock set on a clock's own hands (London Case 02's Great
+    // Clock), in place of its wheels: its own table, outside the palette.
+    EngineStep('finalClocks', 'ClockQuestion'),
     EngineStep.type(MissionType.finalCode, '_Dial'),
     EngineStep('canvases', 'CanvasPicker'),
     EngineStep('hourRecords', 'HourRecordPuzzle'),

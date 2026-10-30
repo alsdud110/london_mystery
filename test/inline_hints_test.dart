@@ -39,13 +39,14 @@ void main() {
       testWidgets(
         'multiple choice: hints on the page, folded and unfolded, piled up, the puzzle still answers',
         (t) async {
-          // Case 01's first mission is a look round now; Case 02's clock
-          // room keeps the answer cards.
+          // Case 01's first mission is a look round now, and Case 02's belfry
+          // is searched (2026-10-30): its Time Card keeps the answer cards,
+          // with the notebook's card at the page's foot.
           final play = MissionPlay();
           final mission = await play.openPuzzle(
             t,
             size,
-            'ep02_m2',
+            'ep02_m3',
             textScale: scale,
           );
           final before = play.ref.read(walletProvider).balance;
@@ -104,7 +105,7 @@ void main() {
           // The puzzle still answers with the hints open.
           await play.solve(t, mission);
           expect(
-            play.ref.read(gameControllerProvider).isCompleted('ep02_m2'),
+            play.ref.read(gameControllerProvider).isCompleted('ep02_m3'),
             isTrue,
           );
           expect(t.takeException(), isNull);

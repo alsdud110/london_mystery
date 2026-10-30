@@ -71,8 +71,10 @@ void main() {
     ),
   };
 
+  // Off the page too: the final's stage waits off it until the solve
+  // (2026-10-30: the clock to set is the case's own face).
   LandmarkArt clockArt(WidgetTester t) =>
-      t.widgetList<LandmarkArt>(find.byType(LandmarkArt)).firstWhere((a) => a.artwork == Artwork.clockFace);
+      t.widgetList<LandmarkArt>(find.byType(LandmarkArt, skipOffstage: false)).firstWhere((a) => a.artwork == Artwork.clockFace);
 
   group('Case 02 clock', () {
     testWidgets('the final clock starts at 8:17 and turns to the solved time with the solve', (t) async {
@@ -81,16 +83,13 @@ void main() {
       await wait(t, const Duration(milliseconds: 1200));
       expect(clockArt(t).solved, 0, reason: 'still stopped before the answer');
 
-      for (final (i, digit) in ep02.finalMission.answer.split('').map(int.parse).indexed) {
-        final up = find.byTooltip('Lock ${i + 1} up');
-        await reveal(t, up);
-        for (var n = 0; n < digit; n++) {
-          await t.tap(up);
-          await t.pump(const Duration(milliseconds: 20));
-        }
+      // The Great Clock's hands, frozen at 8:17, one hour on (no wheels).
+      for (final key in ['clock-hour-plus', 'clock-submit']) {
+        await reveal(t, find.byKey(ValueKey(key)));
+        await t.tap(find.byKey(ValueKey(key)));
+        await t.pump(const Duration(milliseconds: 100));
       }
-      await wait(t, const Duration(milliseconds: 300));
-      await tapText(t, 'UNLOCK', after: const Duration(milliseconds: 3500));
+      await wait(t, const Duration(milliseconds: 3500));
       expect(ref.read(gameControllerProvider).isCaseSolved, isTrue);
       expect(clockArt(t).solved, 1, reason: 'the clock shows the time the detective set');
       await wait(t, const Duration(seconds: 3));

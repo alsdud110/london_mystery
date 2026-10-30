@@ -268,10 +268,11 @@ void main() {
       await _openFinal(t, audio, season, 'ep02');
       expect(audio.target.ambienceBase, AmbienceBase.towerInterior);
       expect(audio.target.ambienceAccent, isNull, reason: 'stopped before the solve');
-      await _dialIn(t, episode('ep02').finalMission.answer);
+      // The Great Clock's own hands (2026-10-30: no number wheels).
+      await _setGreatClock(t);
       audio.played.clear();
       // The clock is brought into view (up to 0.5 s), then it catches.
-      await tapText(t, 'UNLOCK', after: const Duration(milliseconds: 900));
+      await _tapKey(t, 'clock-submit', after: const Duration(milliseconds: 900));
       expect(audio.played, [GameSound.clockRestart], reason: 'the clock first, no bell yet');
       expect(audio.target.ambienceAccent, AmbienceAccent.clockMechanism, reason: 'the clockwork is now the place');
       expect(audio.changesOf(AudioLayer.ambience).where((p) => p == AmbienceBase.towerInterior), hasLength(1),
@@ -371,8 +372,8 @@ void main() {
     testWidgets('sound off: no signature is heard', (t) async {
       final audio = MockAudioService(isEnabled: () => false);
       await _openFinal(t, audio, season, 'ep02');
-      await _dialIn(t, episode('ep02').finalMission.answer);
-      await tapText(t, 'UNLOCK', after: const Duration(milliseconds: 3000));
+      await _setGreatClock(t);
+      await _tapKey(t, 'clock-submit', after: const Duration(milliseconds: 3000));
       expect(audio.played, isEmpty);
       expect(audio.active, AudioScene.silence);
     });
@@ -450,6 +451,19 @@ Future<WidgetRef> _openFinal(
   ref.read(routerProvider).go(Routes.finalMission);
   await wait(t, const Duration(milliseconds: 1500));
   return ref;
+}
+
+/// Taps the widget keyed [key] (scrolled into view first).
+Future<void> _tapKey(WidgetTester t, String key, {Duration after = const Duration(milliseconds: 300)}) async {
+  await reveal(t, find.byKey(ValueKey(key)));
+  await t.tap(find.byKey(ValueKey(key)));
+  await wait(t, after);
+}
+
+/// Case 02's Great Clock, frozen at 8:17, set one hour on: 9:17.
+Future<void> _setGreatClock(WidgetTester t) async {
+  await _tapKey(t, 'clock-hour-plus');
+  expect(t.widget<Text>(find.byKey(const ValueKey('clock-time'))).data, '9:17');
 }
 
 /// Turns the final's dials to [answer].

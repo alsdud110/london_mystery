@@ -21,6 +21,7 @@ import '../../data/models/scene_decode.dart';
 import '../../data/models/scene_explore.dart';
 import '../../data/models/scene_inspect.dart';
 import '../../data/models/clock_puzzle.dart';
+import '../../data/models/scene_trail.dart';
 import '../../data/models/game_progress.dart';
 import '../../data/models/garden_puzzles.dart';
 import '../../data/models/letter_puzzles.dart';
@@ -62,6 +63,7 @@ import 'widgets/case_talk.dart';
 import 'widgets/clock_wall.dart';
 import 'widgets/clockwork_garden.dart';
 import 'widgets/clock_question.dart';
+import 'widgets/trail_order.dart';
 import 'widgets/dial_lock.dart';
 import 'widgets/dialogue_investigation.dart';
 import 'widgets/easy_steps.dart';
@@ -133,6 +135,10 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
   /// (kept while the page is open, so reading the letter again keeps them;
   /// not saved). Null: not touched yet, at the puzzle's start.
   ClockTime? _clockTime;
+
+  /// The traces tapped so far on a trail, in order (kept while the page is
+  /// open, as the clock's hands are; not saved).
+  List<String> _trailOrder = const [];
 
   /// A mission played by looking round its place: what was looked at, the
   /// letter opened, what is open over the picture (kept while the page is
@@ -1413,6 +1419,16 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     onSubmit: (a) => _submit(m, a),
   );
 
+  /// Traces to tap in order on their place (the order tapped answers the
+  /// mission's sequence puzzle).
+  Widget _trailFor(Mission m, TrailScene trail) => TrailOrderQuestion(
+    mission: m,
+    scene: trail,
+    order: _trailOrder,
+    onChanged: (o) => setState(() => _trailOrder = o),
+    onSubmit: (a) => _submit(m, a),
+  );
+
   /// A searched place's search (it answers the mission's puzzle).
   Widget _search(Mission m, InvestigationScene scene, int hintsShown) =>
       InvestigationSearch(
@@ -1445,6 +1461,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
     final talkBefore = _talkBeforePending(m, talks, progress);
     final talkAfter = _talkAfterPending(m, talks, progress);
     final clock = SeasonCatalog.clock(m);
+    final trail = SeasonCatalog.trail(m);
     final explore = SeasonCatalog.explore(m);
     final inspect = SeasonCatalog.inspection(m);
     final deduction = SeasonCatalog.deduction(m);
@@ -1671,7 +1688,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               onReread: () => _rereadLetter(m),
               // A picture choice's last pictures may be below the fold.
               moreCue: clock == null && m.type == MissionType.imageChoice,
-              child: clock == null ? _questionFor(m) : _clockFor(m, clock),
+              child: clock != null
+                  ? _clockFor(m, clock)
+                  : trail != null
+                  ? _trailFor(m, trail)
+                  : _questionFor(m),
             ),
           };
 

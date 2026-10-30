@@ -83,10 +83,13 @@ void main() {
     }
   });
 
-  test('Season 1: every case written at every level but Case 06 M1\'s witness talk', () {
+  // Case 06 M1's witness talk too, since 2026-10-30 (the last text that was
+  // the base's at Junior and Master).
+  test('Season 1: every case written at every level', () {
     for (final e in base.where((e) => e.seasonId == baseCase('ep01').seasonId)) {
       for (final level in [Difficulty.junior, Difficulty.master]) {
-        expect(DifficultyContent.missingAt(e.id, level), e.id == 'ep06' ? ['dialogues/ep06_m1'] : isEmpty, reason: '${e.id} ${level.name}');
+        expect(DifficultyContent.missingAt(e.id, level), isEmpty, reason: '${e.id} ${level.name}');
+        expect(season1Content.writtenLevels[e.id], contains(level), reason: '${e.id} ${level.name}');
       }
     }
     expect(season1Content.writtenLevels.keys, hasLength(12));

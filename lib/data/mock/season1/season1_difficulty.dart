@@ -67,18 +67,22 @@ const Map<Difficulty, Map<String, Map<String, Object?>>> season1CasePatches = {
 
 /// Season 1's puzzle tables at Junior and Master: only the entries whose
 /// words differ (their pictures, places, answers and structure never).
-/// Case 06 M1's witness talk (`dialogues`) has none: the engine has no
-/// structure check for a DialogueScene, so it keeps the base's words.
+/// Case 06 M1's witness talk (`dialogues`) is written at Junior and Master
+/// since 2026-10-30, once `DifficultyContent.structureOf` checked a talk's
+/// structure (it was kept in the base's words until then).
 final Map<Difficulty, SeasonContent> season1Variants = {
   Difficulty.junior: SeasonContent(
     info: const {},
     episodes: const {},
     explores: ep01JuniorExplores,
     inspections: ep01JuniorInspections,
-    deductions: ep01JuniorDeductions,
+    deductions: {...ep01JuniorDeductions, ...ep04JuniorDeductions},
     decodes: ep01JuniorDecodes,
-    investigations: ep03JuniorInvestigations,
+    dialogues: ep06JuniorDialogues,
+    investigations: {...ep02JuniorInvestigations, ...ep03JuniorInvestigations, ...ep07JuniorInvestigations},
     clocks: ep02JuniorClocks,
+    trails: ep03JuniorTrails,
+    finalClocks: ep02JuniorFinalClocks,
     discoveries: const {...ep01JuniorDiscoveries, ...ep02JuniorDiscoveries, ...ep03JuniorDiscoveries, ...ep04JuniorDiscoveries, ...ep05JuniorDiscoveries, ...ep06JuniorDiscoveries, ...ep07JuniorDiscoveries, ...ep08JuniorDiscoveries, ...ep09JuniorDiscoveries, ...ep10JuniorDiscoveries, ...ep11JuniorDiscoveries, ...ep12JuniorDiscoveries},
     learning: {...ep01JuniorLearning, ...ep02JuniorLearning, ...ep03JuniorLearning, ...ep04JuniorLearning, ...ep05JuniorLearning, ...ep06JuniorLearning, ...ep07JuniorLearning, ...ep08JuniorLearning, ...ep09JuniorLearning, ...ep10JuniorLearning, ...ep11JuniorLearning, ...ep12JuniorLearning},
   ),
@@ -87,10 +91,13 @@ final Map<Difficulty, SeasonContent> season1Variants = {
     episodes: const {},
     explores: ep01MasterExplores,
     inspections: ep01MasterInspections,
-    deductions: ep01MasterDeductions,
+    deductions: {...ep01MasterDeductions, ...ep04MasterDeductions},
     decodes: ep01MasterDecodes,
-    investigations: ep03MasterInvestigations,
+    dialogues: ep06MasterDialogues,
+    investigations: {...ep02MasterInvestigations, ...ep03MasterInvestigations, ...ep07MasterInvestigations},
     clocks: ep02MasterClocks,
+    trails: ep03MasterTrails,
+    finalClocks: ep02MasterFinalClocks,
     discoveries: const {...ep01MasterDiscoveries, ...ep02MasterDiscoveries, ...ep03MasterDiscoveries, ...ep04MasterDiscoveries, ...ep05MasterDiscoveries, ...ep06MasterDiscoveries, ...ep07MasterDiscoveries, ...ep08MasterDiscoveries, ...ep09MasterDiscoveries, ...ep10MasterDiscoveries, ...ep11MasterDiscoveries, ...ep12MasterDiscoveries},
     learning: {...ep01MasterLearning, ...ep02MasterLearning, ...ep03MasterLearning, ...ep04MasterLearning, ...ep05MasterLearning, ...ep06MasterLearning, ...ep07MasterLearning, ...ep08MasterLearning, ...ep09MasterLearning, ...ep10MasterLearning, ...ep11MasterLearning, ...ep12MasterLearning},
   ),
@@ -99,15 +106,15 @@ final Map<Difficulty, SeasonContent> season1Variants = {
 /// The cases whose words are written at each level (checked: nothing at a
 /// written Junior or Master falls back on another level's words; Rookie
 /// reviewed — the base kept wherever it already read as Rookie's). Case 06:
-/// Rookie only — its Junior and Master words are all written but M1's witness
-/// talk, which the engine cannot take at a level (see season1Variants).
+/// every level since 2026-10-30, its M1 talk written too (it was Rookie
+/// only while the engine could not check a talk at a level).
 const Map<String, Set<Difficulty>> season1WrittenLevels = {
   'ep01': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep02': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep03': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep04': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep05': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
-  'ep06': {Difficulty.rookie},
+  'ep06': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep07': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep08': {Difficulty.rookie, Difficulty.junior, Difficulty.master},
   'ep09': {Difficulty.rookie, Difficulty.junior, Difficulty.master},

@@ -103,15 +103,36 @@ const Map<String, dynamic> episode03Json = {
           'Miss Rose wore a red coat and a blue scarf.\n\n'
           'Mr Grey wore a black coat and a red scarf.',
       // The button's colour comes from Mission 01 (the guard's report, the
-      // Red Button in the notebook); the cloth's from the scene above.
-      'type': 'multipleChoice',
+      // Red Button brought from the notebook); the cloth's from the scene
+      // above. The visitors are the guard's pencil sketches (2026-10-30):
+      // what each wore, never its colour — only the notes say the colours,
+      // and every coat has all its buttons.
+      'type': 'imageChoice',
       'question': 'Who took the painting?',
       'options': [
-        {'id': 'a', 'label': 'Mr Green', 'feedback': 'Mr Green wore brown and green. Which colours did you find in Gallery 8?'},
-        {'id': 'b', 'label': 'Miss Rose'},
-        {'id': 'c', 'label': 'Mr Grey', 'feedback': 'Mr Grey has something red, but it is his scarf. A button comes from a coat.'},
+        {
+          'id': 'a',
+          'label': 'Mr Green',
+          'picture': 'assets/seasons/season_01_london/cases/case_03/sketch_mr_green.png',
+          'altText': 'a pencil sketch of a man in a buttoned coat and a hat',
+          'feedback': 'Mr Green wore brown and green. Which colours did you find in Gallery 8?',
+        },
+        {
+          'id': 'b',
+          'label': 'Miss Rose',
+          'picture': 'assets/seasons/season_01_london/cases/case_03/sketch_miss_rose.png',
+          'altText': 'a pencil sketch of a woman in a buttoned coat and a scarf',
+        },
+        {
+          'id': 'c',
+          'label': 'Mr Grey',
+          'picture': 'assets/seasons/season_01_london/cases/case_03/sketch_mr_grey.png',
+          'altText': 'a pencil sketch of a man in a buttoned coat and a scarf',
+          'feedback': 'Mr Grey has something red, but it is his scarf. A button comes from a coat.',
+        },
       ],
       'answer': 'b',
+      'recall': {'evidence': 'ep03_e1'},
       'hints': [
         'What colour was the button? What colour was the cloth? Check your notebook.',
         'A button comes from a coat. A piece of cloth can come from a scarf.',

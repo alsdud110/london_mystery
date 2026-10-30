@@ -1,7 +1,10 @@
 import '../../../models/clock_puzzle.dart';
 import '../../../models/discovery.dart';
+import '../../../models/investigation.dart';
 import '../../../models/learning.dart';
 import '../../../models/mission.dart';
+import '../season1_investigations.dart';
+import 'level_words.dart';
 
 // Case 02 — The Silent Clock, at each level (PART 6A; Mission 01 from the
 // PART 5 sample, kept and finished).
@@ -399,6 +402,19 @@ const Map<String, ClockPuzzle> ep02JuniorClocks = {
   ),
 };
 
+// ── The final's Great Clock (the face, its start at 8:17 and the answer never)
+const Map<String, ClockPuzzle> ep02JuniorFinalClocks = {
+  'ep02_final': ClockPuzzle(
+    face: Artwork.clockFace,
+    question: 'Set the time on the Great Clock.',
+    lead: 'The hands are still frozen at the moment the clock stopped. Move them to the time of the thief\'s plan.',
+    guide: 'Drag the short hand for the hour and the long hand for the minutes.',
+    dialLabel: "Big Ben's Great Clock",
+    start: (hour: 8, minute: 17),
+    submitLabel: 'START THE CLOCK',
+  ),
+};
+
 const Map<String, ClockPuzzle> ep02MasterClocks = {
   'ep02_m1': ClockPuzzle(
     face: Artwork.clockFace,
@@ -406,6 +422,72 @@ const Map<String, ClockPuzzle> ep02MasterClocks = {
     lead: 'Mrs Bell entrusts you with her clock face. Place the hands just as she remembers them.',
     guide: 'Drag the short hand for the hour and the long hand for the minutes.',
     dialLabel: "Mrs Bell's clock face",
+  ),
+};
+
+const Map<String, ClockPuzzle> ep02MasterFinalClocks = {
+  'ep02_final': ClockPuzzle(
+    face: Artwork.clockFace,
+    question: 'Set the time on the Great Clock.',
+    lead: 'The great hands remain frozen at the very moment the clock fell silent. Bring them to the hour the thief has planned.',
+    guide: 'Drag the short hand for the hour and the long hand for the minutes.',
+    dialLabel: "Big Ben's Great Clock",
+    start: (hour: 8, minute: 17),
+    submitLabel: 'START THE CLOCK',
+  ),
+};
+
+// ── Mission 02's belfry (its picture, bells, places and answer the base's) ─
+// The find's line is the level letter's own line, word for word.
+final InvestigationScene _belfry = season1Investigations['ep02_m2']!;
+
+final Map<String, InvestigationScene> ep02JuniorInvestigations = {
+  'ep02_m2': _belfry.copyWith(
+    task: 'Read the note and find the gear.',
+    missLine: 'Nothing here. The note says the gear is under one of the bells.',
+    doneLine: 'You found the missing gear at last!',
+    arrival: const [
+      'A ladder climbs from the clock room up to the belfry, where five bells hang.',
+      'Someone has pinned a note to the empty place where the gear should be.',
+    ],
+    finds: [
+      _belfry.finds.single.copyWith(
+        reportLine: 'It is under the bell that is the opposite of the biggest.',
+        foundLine: 'There it is, under the smallest bell: the brass gear!',
+      ),
+    ],
+    spots: relined(_belfry.spots, const [
+      'This is the biggest bell. The note says the gear is NOT under it.',
+      'There is nothing under this bell. Which bell is the opposite of the biggest?',
+      'The back of the clock face. The note says the gear is under a bell.',
+      'The stairs lead down. The note does not say anything about the stairs.',
+      'An old rope hangs on a beam. There is nothing here.',
+    ]),
+  ),
+};
+
+final Map<String, InvestigationScene> ep02MasterInvestigations = {
+  'ep02_m2': _belfry.copyWith(
+    task: 'Track down the gear the note hides.',
+    missLine: 'Nothing here. According to the note, the gear lies beneath a bell.',
+    doneLine: 'The missing gear is back in your hands!',
+    arrival: const [
+      'A narrow ladder leads from the clock room up into the belfry, home to five bells.',
+      'Pinned where the gear ought to be is a note.',
+    ],
+    finds: [
+      _belfry.finds.single.copyWith(
+        reportLine: 'Look instead beneath the bell that is its very opposite.',
+        foundLine: 'Beneath the smallest bell lies the brass gear!',
+      ),
+    ],
+    spots: relined(_belfry.spots, const [
+      'The biggest bell of all. The note says you will NOT find the gear beneath it.',
+      'Nothing beneath this one. Which bell is the very opposite of the biggest?',
+      'The back of a clock face. The note sends you beneath a bell instead.',
+      'The stairs spiral down. The note never mentions them.',
+      'A coil of old rope on a beam, and nothing more.',
+    ]),
   ),
 };
 

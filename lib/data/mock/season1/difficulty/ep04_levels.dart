@@ -1,5 +1,39 @@
 import '../../../models/discovery.dart';
 import '../../../models/learning.dart';
+import '../../../models/scene_deduction.dart';
+import '../season1_deductions.dart';
+import 'level_words.dart';
+
+// ── Mission 02's platforms (2026-10-30): the picture, its places and the
+// porter's four lines (puzzle data, word for word) are the base's; only
+// what the page says around them is each level's.
+final DeductionScene _platforms = season1Deductions['ep04_m2']!;
+
+final Map<String, DeductionScene> ep04JuniorDeductions = {
+  'ep04_m2': _platforms.copyWith(
+    task: 'Tap each platform. What does the porter say?',
+    chooseTask: 'RED · SMALL · CLOCK. Which platform?',
+    missLine: 'Nothing here. Look up above each platform.',
+    notPlaceLine: 'Choose one of the four platforms.',
+    others: relined(_platforms.others, const [
+      "A porter's trolley. There is nothing on it.",
+      'A wooden bench. Nobody is sitting here.',
+    ]),
+  ),
+};
+
+final Map<String, DeductionScene> ep04MasterDeductions = {
+  'ep04_m2': _platforms.copyWith(
+    task: 'Tap each platform and note what the porter says.',
+    chooseTask: 'RED · SMALL · CLOCK: which platform fits all three?',
+    missLine: 'Nothing of note. Look above each platform.',
+    notPlaceLine: 'Choose one of the four platforms to search.',
+    others: relined(_platforms.others, const [
+      "An empty porter's trolley, and nothing more.",
+      'A wooden bench, with no one waiting on it.',
+    ]),
+  ),
+};
 
 // Case 04 — The Secret Letter, at each level (PART 6B).
 //

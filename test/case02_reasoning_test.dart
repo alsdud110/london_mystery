@@ -256,20 +256,27 @@ void main() {
         await wait(t, const Duration(seconds: 2));
       });
 
-      testWidgets('final $tag: the clock at 8:17, three dials, the notebook, no 9:17 written', (t) async {
+      testWidgets('final $tag: the Great Clock frozen at 8:17, its hands to set, the notebook, no 9:17 written', (t) async {
         final go = await start(t, size, [for (final m in ep02.missions) m.id]);
         go(Routes.finalMission);
         await wait(t, const Duration(milliseconds: 1200));
         expect(t.takeException(), isNull);
-        expect(clock(t).solved, 0, reason: 'stopped at 8:17 until the detective sets it');
+        // The clock to set is the case's own face (2026-10-30: no number
+        // wheels): its stage waits for the solve, the hands where they froze.
+        expect(find.byType(LandmarkArt).evaluate().where((e) => (e.widget as LandmarkArt).artwork == Artwork.clockFace), isEmpty);
+        expect(find.byKey(const ValueKey('clock-dial')), findsOneWidget);
+        expect(t.widget<Text>(find.byKey(const ValueKey('clock-time'))).data, '8:17');
         expect(find.textContaining('9:17'), findsNothing);
         await settlePictures(t);
         await capture(t, 'case02_final_page_$tag');
 
-        for (var i = 1; i <= 3; i++) {
-          expect(find.byTooltip('Lock $i up'), findsOneWidget);
+        expect(find.byTooltip('Lock 1 up'), findsNothing);
+        for (final key in ['clock-dial', 'clock-hour-plus', 'clock-minute-plus', 'clock-submit']) {
+          await reveal(t, find.byKey(ValueKey(key)));
+          final r = t.getRect(find.byKey(ValueKey(key)));
+          expect(r.left, greaterThanOrEqualTo(0), reason: key);
+          expect(r.right, lessThanOrEqualTo(size.width), reason: key);
         }
-        expect(find.byTooltip('Lock 4 up'), findsNothing);
         final notebook = find.text('OPEN MY NOTEBOOK');
         await reveal(t, notebook);
         await wait(t, const Duration(milliseconds: 300));
@@ -282,9 +289,11 @@ void main() {
         await wait(t, const Duration(milliseconds: 900));
         expect(find.text('Time Card'), findsOneWidget);
         // The sheet scrolls by itself (over the page): down to CLUE #01.
-        await t.scrollUntilVisible(find.text('8:17'), 200, scrollable: find.byType(Scrollable).last);
+        // (8:17 is on the clock's readout too: the notebook's own, here.)
+        final stopped = find.descendant(of: find.byType(DraggableScrollableSheet), matching: find.text('8:17'));
+        await t.scrollUntilVisible(stopped, 200, scrollable: find.byType(Scrollable).last);
         await wait(t, const Duration(milliseconds: 300));
-        expect(find.text('8:17'), findsOneWidget);
+        expect(stopped, findsOneWidget);
         expect(find.textContaining('9:17'), findsNothing);
         await capture(t, 'case02_final_notebook_$tag');
         expect(t.takeException(), isNull);

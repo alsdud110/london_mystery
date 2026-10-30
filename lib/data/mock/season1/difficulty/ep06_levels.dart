@@ -1,3 +1,6 @@
+import 'dart:ui' show Offset;
+
+import '../../../models/dialogue.dart';
 import '../../../models/discovery.dart';
 import '../../../models/learning.dart';
 
@@ -30,8 +33,194 @@ import '../../../models/learning.dart';
 //   and '"Find the other half\nin Hyde Park."'.
 //
 // Rookie: the base.
+//
+// Mission 01's talk at Junior and Master (2026-10-30, the London gameplay
+// upgrade): written once the engine checked a talk's structure. Its
+// witnesses, questions, statement ids, what each statement is about and
+// the thing it names stay the base's; each level's witnesses say their own
+// letter's words.
 
 const Map<String, Object?> ep06Rookie = {};
+
+// ── Mission 01's talk at each level ──────────────────────────────────────
+const _hall = 'assets/seasons/season_01_london/locations/covent_garden/covent_garden_market_hall.png';
+const _flower = 'assets/seasons/season_01_london/characters/flower_seller.png';
+const _juggler = 'assets/seasons/season_01_london/characters/juggler.png';
+const _baker = 'assets/seasons/season_01_london/characters/baker.png';
+
+const Map<String, DialogueScene> ep06JuniorDialogues = {
+  'ep06_m1': DialogueScene(
+    place: 'MARKET HALL',
+    background: _hall,
+    goal: 'Find out what the stranger was carrying.',
+    how: 'Ask each witness what they saw. Their clues may not be the same.',
+    guide: 'Talk to one of the witnesses.',
+    questions: [
+      DialogueQuestion(id: 'wearing', text: 'What was he wearing?'),
+      DialogueQuestion(id: 'carry', text: 'What was he carrying?'),
+      DialogueQuestion(id: 'when', text: 'When did you see him?'),
+    ],
+    speakers: [
+      DialogueSpeaker(
+        id: 'flowerSeller',
+        name: 'The flower seller',
+        title: 'THE FLOWER SELLER',
+        portrait: _flower,
+        description: 'a young woman in a straw bonnet and a red shawl, with a basket of flowers',
+        face: Offset(0.50, 0.21),
+        greeting: 'The man in the dark coat? Yes, I saw him clearly.',
+        answers: {
+          'wearing': DialogueAnswer('He was wearing a dark coat.', statementId: 'flowerSeller.wearing'),
+          'carry': DialogueAnswer('He was carrying a small bag.', statementId: 'flowerSeller.carry'),
+          'when': DialogueAnswer('Last night, a little before midnight.'),
+        },
+      ),
+      DialogueSpeaker(
+        id: 'juggler',
+        name: 'The juggler',
+        title: 'THE JUGGLER',
+        portrait: _juggler,
+        description: 'a young man in a striped waistcoat, juggling three balls',
+        face: Offset(0.56, 0.19),
+        greeting: 'I saw him while I was practising my juggling!',
+        answers: {
+          'wearing': DialogueAnswer('He was wearing a grey hat.', statementId: 'juggler.wearing'),
+          'carry': DialogueAnswer('He carried a small bag, too.', statementId: 'juggler.carry'),
+          'when': DialogueAnswer('Last night, when the church clock was almost at twelve.'),
+        },
+      ),
+      DialogueSpeaker(
+        id: 'baker',
+        name: 'The baker',
+        title: 'THE BAKER',
+        portrait: _baker,
+        description: 'a bearded baker in a white cap and apron, holding a round loaf',
+        face: Offset(0.50, 0.22),
+        greeting: 'That stranger walked right past my bread stall.',
+        answers: {
+          'wearing': DialogueAnswer('He wore a dark coat.', statementId: 'baker.wearing'),
+          'carry': DialogueAnswer('He had a big red umbrella.', statementId: 'baker.carry'),
+          'when': DialogueAnswer('Last night, while I was closing my stall.'),
+        },
+      ),
+    ],
+    statements: [
+      DialogueStatement(id: 'flowerSeller.wearing', speakerId: 'flowerSeller', about: 'wearing', text: 'He was wearing a dark coat.', thing: 'a dark coat'),
+      DialogueStatement(id: 'flowerSeller.carry', speakerId: 'flowerSeller', about: 'carry', text: 'He was carrying a small bag.', thing: 'a small bag'),
+      DialogueStatement(id: 'juggler.wearing', speakerId: 'juggler', about: 'wearing', text: 'He was wearing a grey hat.', thing: 'a grey hat'),
+      DialogueStatement(id: 'juggler.carry', speakerId: 'juggler', about: 'carry', text: 'He carried a small bag, too.', thing: 'a small bag'),
+      DialogueStatement(id: 'baker.wearing', speakerId: 'baker', about: 'wearing', text: 'He wore a dark coat.', thing: 'a dark coat'),
+      DialogueStatement(id: 'baker.carry', speakerId: 'baker', about: 'carry', text: 'He had a big red umbrella.', thing: 'a big red umbrella'),
+    ],
+    deduction: DialogueDeduction(
+      topic: 'carry',
+      pair: {'flowerSeller.carry', 'juggler.carry'},
+      answer: 'b',
+      askLine: 'Ask them a question.',
+      anotherLine: 'Now ask another witness.',
+      readyLine: 'Now compare two statements.',
+      compareGoal: 'Find two witnesses who saw him carrying the same thing.',
+      compareHow: 'Tap two statements to compare them.',
+      matchLine: 'Both witnesses saw him carrying the same thing.',
+      offTopicLine: 'Both witnesses talked about the same clothes.',
+      checkLine: 'Look for something he carried, not something he wore.',
+      differentLine: 'These witnesses talked about different things.',
+      retryLine: 'Try a different pair.',
+      then: {'juggler.wearing'},
+      thenGoal: 'Find out what the stranger was wearing.',
+      thenHow: "Ask the witnesses about the stranger's clothes.",
+      doneLine: 'Now you know more about how the stranger looked.',
+      notesLine: 'Your witness notes are ready.',
+    ),
+  ),
+};
+
+const Map<String, DialogueScene> ep06MasterDialogues = {
+  'ep06_m1': DialogueScene(
+    place: 'MARKET HALL',
+    background: _hall,
+    goal: 'Discover what the stranger was carrying.',
+    how: 'Question each witness. Their accounts may not all agree.',
+    guide: 'Approach a witness.',
+    questions: [
+      DialogueQuestion(id: 'wearing', text: 'What was he dressed in?'),
+      DialogueQuestion(id: 'carry', text: 'What did he have in his hand?'),
+      DialogueQuestion(id: 'when', text: 'When exactly did you see him?'),
+    ],
+    speakers: [
+      DialogueSpeaker(
+        id: 'flowerSeller',
+        name: 'The flower seller',
+        title: 'THE FLOWER SELLER',
+        portrait: _flower,
+        description: 'a young woman in a straw bonnet and a red shawl, with a basket of flowers',
+        face: Offset(0.50, 0.21),
+        greeting: 'The gentleman in the dark coat? I could hardly miss him.',
+        answers: {
+          'wearing': DialogueAnswer('He had on a dark coat.', statementId: 'flowerSeller.wearing'),
+          'carry': DialogueAnswer('In his hand he carried a small bag.', statementId: 'flowerSeller.carry'),
+          'when': DialogueAnswer('Last night, shortly before midnight.'),
+        },
+      ),
+      DialogueSpeaker(
+        id: 'juggler',
+        name: 'The juggler',
+        title: 'THE JUGGLER',
+        portrait: _juggler,
+        description: 'a young man in a striped waistcoat, juggling three balls',
+        face: Offset(0.56, 0.19),
+        greeting: 'I caught sight of him between two throws!',
+        answers: {
+          'wearing': DialogueAnswer('He wore a grey hat.', statementId: 'juggler.wearing'),
+          'carry': DialogueAnswer('He carried a small bag as well.', statementId: 'juggler.carry'),
+          'when': DialogueAnswer('Last night, as the church clock crept towards twelve.'),
+        },
+      ),
+      DialogueSpeaker(
+        id: 'baker',
+        name: 'The baker',
+        title: 'THE BAKER',
+        portrait: _baker,
+        description: 'a bearded baker in a white cap and apron, holding a round loaf',
+        face: Offset(0.50, 0.22),
+        greeting: 'That stranger strode straight past my stall.',
+        answers: {
+          'wearing': DialogueAnswer('A dark coat.', statementId: 'baker.wearing'),
+          'carry': DialogueAnswer('A big red umbrella.', statementId: 'baker.carry'),
+          'when': DialogueAnswer('Last night, just as I was shutting up my stall.'),
+        },
+      ),
+    ],
+    statements: [
+      DialogueStatement(id: 'flowerSeller.wearing', speakerId: 'flowerSeller', about: 'wearing', text: 'He had on a dark coat.', thing: 'a dark coat'),
+      DialogueStatement(id: 'flowerSeller.carry', speakerId: 'flowerSeller', about: 'carry', text: 'In his hand he carried a small bag.', thing: 'a small bag'),
+      DialogueStatement(id: 'juggler.wearing', speakerId: 'juggler', about: 'wearing', text: 'He wore a grey hat.', thing: 'a grey hat'),
+      DialogueStatement(id: 'juggler.carry', speakerId: 'juggler', about: 'carry', text: 'He carried a small bag as well.', thing: 'a small bag'),
+      DialogueStatement(id: 'baker.wearing', speakerId: 'baker', about: 'wearing', text: 'A dark coat.', thing: 'a dark coat'),
+      DialogueStatement(id: 'baker.carry', speakerId: 'baker', about: 'carry', text: 'A big red umbrella.', thing: 'a big red umbrella'),
+    ],
+    deduction: DialogueDeduction(
+      topic: 'carry',
+      pair: {'flowerSeller.carry', 'juggler.carry'},
+      answer: 'b',
+      askLine: 'Put a question to them.',
+      anotherLine: 'Question another witness.',
+      readyLine: 'Weigh two statements against each other.',
+      compareGoal: 'Find two witnesses whose accounts of what he carried agree.',
+      compareHow: 'Tap two statements to set them side by side.',
+      matchLine: 'Both witnesses describe the very same thing in his hand.',
+      offTopicLine: 'Both witnesses describe the same clothing.',
+      checkLine: 'You need what he carried, not what he wore.',
+      differentLine: 'These accounts describe different things.',
+      retryLine: 'Weigh another pair.',
+      then: {'juggler.wearing'},
+      thenGoal: 'Discover what the stranger was wearing.',
+      thenHow: "Question the witnesses about the stranger's clothing.",
+      doneLine: "You have pieced together the stranger's appearance.",
+      notesLine: 'Your witness notes are complete.',
+    ),
+  ),
+};
 
 // ── Junior ───────────────────────────────────────────────────────────────
 const Map<String, Object?> ep06Junior = {

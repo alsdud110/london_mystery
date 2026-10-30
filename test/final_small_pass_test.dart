@@ -444,11 +444,15 @@ const _otherCases = <String, int>{
   // Puzzle wording (2026-10-23, approved): 02-M2's note says "the opposite
   // of the biggest", not the answer; "opposite" in its glossary. Value
   // before it: ep02 1562541321.
-  'ep02': 1569936382,
+  // London gameplay upgrade (2026-10-30, requested): 02-M3's `recall` of the
+  // Broken Clock Note. Value before it: ep02 1569936382.
+  'ep02': 1622728144,
   // Wave 1 (2026-10-14): 03-M1 tip 2 (the search of Gallery 8); Wave 1.1:
   // its report's first line (three things in the gallery, not on the floor);
   // Wave 1.2: a no-break space in its title ('GALLERY 8').
-  'ep03': 2213693696,
+  // London gameplay upgrade (2026-10-30, requested): 03-M2's pencil
+  // sketches and Red Button recall. Value before it: ep03 2213693696.
+  'ep03': 1384014364,
   // Audit fix D3 (2026-10-12): the postmark keeps only its picture.
   // Puzzle wording (2026-10-23, approved): 04-M2's card says RED · SMALL ·
   // CLOCK · PLATFORM, not FOUR; tip 2 matches it (was 1263118138).
@@ -467,7 +471,9 @@ const _otherCases = <String, int>{
   // Mission links (2026-10-23, approved): 09-M3's scene names Carl as the
   // guard who lent Anna his key (was 660966236).
   'ep09': 1140744217,
-  'ep10': 1827099610,
+  // London gameplay upgrade (2026-10-30, requested): 10-M3's recall of the
+  // Raven Papers. Value before it: ep10 1827099610.
+  'ep10': 905019164,
   // Phase 4 (approved 2026-10-12): 11-M3 tip 1 (never sleeps), 12-M2 board + after, 12-F whose.
   // Audit fix N1 (2026-10-12): 11-M2 tip 1 reads from the last letter, M.
   // Cross-case tip paths (2026-10-23, approved): 11-F tip 1 leads to Case
@@ -481,5 +487,8 @@ const _otherCases = <String, int>{
   // ravens were counted (no number; was 3715848451).
   // Mission links (2026-10-23, approved): 12-M3's story counts the seven
   // ravens its saved clue gives (was 3097016166).
-  'ep12': 1822783536,
+  // London gameplay upgrade (2026-10-30, requested): 12-M1's four gears
+  // drawn, names hidden, with the Small Brass Gear's recall. Value before
+  // it: ep12 1822783536.
+  'ep12': 383368549,
 };

@@ -306,9 +306,10 @@ void main() {
     testWidgets('a wrong answer: not quite, with the shake', (t) async {
       final audio = MockAudioService();
       final play = MissionPlay(audio: audio);
-      await play.openPuzzle(t, phone, 'ep02_m2'); // answer cards (Case 01 M1 is a look round)
+      // Answer cards (Case 01 M1 is a look round, Case 02 M2 a search).
+      await play.openPuzzle(t, phone, 'ep05_m1');
       audio.played.clear();
-      await tapText(t, 'Under the biggest bell', after: const Duration(milliseconds: 200));
+      await tapText(t, 'On the second floor, on the left', after: const Duration(milliseconds: 200));
       expect(audio.played, isEmpty, reason: 'choosing a card is quiet');
       await tapText(t, 'CHECK ANSWER', after: const Duration(milliseconds: 100));
       expect(audio.played, [GameSound.puzzleWrong]);

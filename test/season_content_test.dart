@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:world_mystery/core/constants/app_constants.dart';
 import 'package:world_mystery/core/utils/answer_checker.dart';
@@ -50,9 +52,14 @@ void main() {
             expect(m.options.length, greaterThanOrEqualTo(3), reason: '${m.id}: no 50/50 guessing');
           }
           if (m.type == MissionType.imageChoice) {
-            expect(m.options.every((o) => o.artwork != null), isTrue, reason: m.id);
+            // A landmark, or a picture file of its own (London Cases 03 and
+            // 12 since 2026-10-30: the sketches, the gears).
+            expect(m.options.every((o) => o.artwork != null || o.picture != null), isTrue, reason: m.id);
             final right = m.options.firstWhere((o) => o.id == m.answer).artwork;
-            expect(m.scene, isNot(right), reason: '${m.id}: the scene picture must not show the answer');
+            if (right != null) expect(m.scene, isNot(right), reason: '${m.id}: the scene picture must not show the answer');
+            for (final o in m.options.where((o) => o.picture != null)) {
+              expect(File(o.picture!).existsSync(), isTrue, reason: '${m.id}: ${o.picture}');
+            }
           }
           if (m.type == MissionType.sequence) {
             final ids = Mission.sequenceIds(m.answer);

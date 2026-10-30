@@ -198,12 +198,17 @@ void main() {
         // great bell once the hands are set (was 1023821448).
         // Puzzle wording (2026-10-23, approved): 02-M2's note says "the
         // opposite of the biggest", not the answer (was 4137245326).
-        'ep02': 3936198735,
+        // London gameplay upgrade (2026-10-30, requested): 02-M3 brings the
+        // Broken Clock Note from the notebook (`recall`; was 3936198735).
+        'ep02': 2618298825,
         // Wave 1 (2026-10-14): 03-M1 is searched; its tip 2 reads the place
         // words. Wave 1.1: the report says 'I noticed three things in the
         // gallery' (not all on the floor). Wave 1.2: 'GALLERY 8' in its title
         // never breaks (a no-break space). See test/case03_investigation_test.dart.
-        'ep03': 494843145,
+        // London gameplay upgrade (2026-10-30, requested): 03-M2's visitors
+        // are pencil sketches (imageChoice, pictures, alt text) with the Red
+        // Button brought from the notebook (was 494843145).
+        'ep03': 2465803525,
         // Puzzle wording (2026-10-23, approved): 04-M2's card says RED ·
         // SMALL · CLOCK · PLATFORM, not FOUR; tip 2 matches it (was
         // 3227171614).
@@ -211,8 +216,10 @@ void main() {
         'ep05': 3809709994,
         // Mission links (2026-10-23, approved): 06-M3 asks which night the
         // market witnesses saw (Monday), not how many details differ (was
-        // 878804669).
-        'ep06': 1208524818,
+        // 878804669). London gameplay upgrade (2026-10-30, requested): 06-M2
+        // and 06-M3 bring the Witness Notes from the notebook (`recall`; was
+        // 1208524818).
+        'ep06': 364330942,
         // Puzzle wording (2026-10-23, approved): 07-M3's two lines (not at
         // the top; do not touch), its tips and every wrong order's line
         // (was 923859634). Then (same day, approved) the joined map gives
@@ -225,7 +232,9 @@ void main() {
         // Mission links (2026-10-23, approved): 09-M3's scene names Carl as
         // the guard who lent Anna his key (was 3984906767).
         'ep09': 1856530826,
-        'ep10': 1240895729,
+        // London gameplay upgrade (2026-10-30, requested): 10-M3 brings the
+        // Raven Papers from the notebook (was 1240895729).
+        'ep10': 507417399,
         // Cross-case tip paths (2026-10-23, approved): 11-F tip 1 leads to
         // Case 01 in the Case Archive (no answer; was 2763911661).
         // Puzzle wording (2026-10-23, approved): 11-M2's mask no longer says
@@ -237,7 +246,10 @@ void main() {
         // ravens were counted (no number; was 547534199).
         // Mission links (2026-10-23, approved): 12-M3's story counts the
         // seven ravens its saved clue gives (was 437255976).
-        'ep12': 3678739778,
+        // London gameplay upgrade (2026-10-30, requested): 12-M1's four
+        // gears drawn, names hidden (imageChoice), Case 02's Small Brass Gear
+        // brought from the notebook (was 3678739778).
+        'ep12': 1397412993,
       });
     });
   });
@@ -252,15 +264,16 @@ void main() {
         (t) async {
           final play = MissionPlay();
           // Case 01's first mission is a look round now (its posters: see
-          // case01_explore_test); Case 02's clock room keeps the answer cards.
-          final m = await play.openPuzzle(t, size, 'ep02_m2');
-          const label = 'Under the smallest bell';
+          // case01_explore_test), and Case 02's belfry is searched (2026-10-30):
+          // Case 05's way to the locked room keeps the answer cards.
+          final m = await play.openPuzzle(t, size, 'ep05_m1');
+          const label = 'On the third floor, on the right';
           final card = findReadable(label);
           expect(card, findsOneWidget, reason: 'not chosen: plain words');
 
           // A tap on a word of a card not yet chosen chooses the card.
           await reveal(t, card);
-          await t.tapOnText(find.textRange.ofSubstring('smallest'));
+          await t.tapOnText(find.textRange.ofSubstring('right'));
           await wait(t, const Duration(milliseconds: 400));
           expect(
             find.text('WORD CARD'),
@@ -270,10 +283,10 @@ void main() {
           expect(_chosen(t, label), isTrue);
 
           // On the chosen card, the same word shows its meaning, and nothing else.
-          await t.holdOnText(find.textRange.ofSubstring('smallest'));
+          await t.holdOnText(find.textRange.ofSubstring('right'));
           await wait(t, const Duration(milliseconds: 600));
           expect(
-            find.text('= ${byId('ep02').meaningOf('smallest')}'),
+            find.text('= ${byId('ep05').meaningOf('right')}'),
             findsOneWidget,
           );
           expect(
@@ -287,7 +300,7 @@ void main() {
             isTrue,
             reason: 'the card stays chosen after the word card closes',
           );
-          expect(play.path(), Routes.mission('ep02_m2'));
+          expect(play.path(), Routes.mission('ep05_m1'));
 
           // Every card: inside the screen and a comfortable target.
           for (final o in m.options) {
@@ -372,7 +385,7 @@ void main() {
       final m = await play.openPuzzle(
         t,
         const Size(360, 640),
-        'ep02_m2',
+        'ep05_m1',
         textScale: 1.3,
       );
       for (final o in m.options) {
@@ -390,8 +403,8 @@ void main() {
       (t) async {
         final semantics = t.ensureSemantics();
         final play = MissionPlay();
-        await play.openPuzzle(t, const Size(390, 844), 'ep02_m2');
-        const label = 'C. Under the smallest bell';
+        await play.openPuzzle(t, const Size(390, 844), 'ep05_m1');
+        const label = 'C. On the third floor, on the right';
         final node = t.getSemantics(find.bySemanticsLabel(label));
         final actions = [
           for (final id
@@ -401,7 +414,7 @@ void main() {
         ];
         expect(
           actions,
-          containsAll(['Meaning of smallest', 'Meaning of bell']),
+          containsAll(['Meaning of third', 'Meaning of floor']),
         );
         semantics.dispose();
       },

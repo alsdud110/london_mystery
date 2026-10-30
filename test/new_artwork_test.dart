@@ -396,22 +396,20 @@ void main() {
       expect(picture(face), findsOneWidget);
       expect(painter().hourDegrees, at817);
       await capture(t, 'clock_m3_$tag');
-      // The final: 8:17 until the clock is set.
+      // The final: 8:17 until the clock is set — on the Great Clock's own
+      // face, its hands the detective's (2026-10-30: no number wheels).
       await openMission(t, size, 'ep02_final');
       expect(picture(face), findsOneWidget);
       expect(painter().hourDegrees, at817, reason: 'not 9:17 before the answer');
       expect(painter().hourDegrees, closeTo(248.5, 1e-9));
       expect(painter().minuteDegrees, closeTo(102, 1e-9));
       await capture(t, 'clock_final_unsolved_$tag');
-      for (final (i, digit) in [9, 1, 7].indexed) {
-        final up = find.byTooltip('Lock ${i + 1} up');
-        await reveal(t, up);
-        for (var n = 0; n < digit; n++) {
-          await t.tap(up);
-          await t.pump(const Duration(milliseconds: 20));
-        }
+      expect(find.byTooltip('Lock 1 up'), findsNothing);
+      for (final key in ['clock-hour-plus', 'clock-submit']) {
+        await reveal(t, find.byKey(ValueKey(key)));
+        await t.tap(find.byKey(ValueKey(key)));
+        await t.pump(const Duration(milliseconds: 100));
       }
-      await tapText(t, 'UNLOCK', after: const Duration(milliseconds: 100));
       // The page scrolls up (~0.5 s), then the 2.4 s reveal: the hour hand turns at 15-48 % of it.
       await wait(t, const Duration(milliseconds: 1300)); // mid-turn
       expect(picture(face), findsOneWidget, reason: 'the same face, never another picture');

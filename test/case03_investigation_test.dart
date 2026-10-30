@@ -37,8 +37,8 @@ void main() {
   InvestigationFind thing(String id) => scene.finds.firstWhere((f) => f.id == id);
 
   group('the search data', () {
-    test('only Case 03 M1 is searched; the search ends with its own answer', () {
-      expect(season1Investigations.keys, ['ep03_m1']);
+    test('Case 03 M1 is searched (and Case 02 M2 and 07 M2, since 2026-10-30); the search ends with its own answer', () {
+      expect(season1Investigations.keys, ['ep02_m2', 'ep07_m2', 'ep03_m1']);
       expect(scene.answer, m1.answer);
       expect(m1.answer, 'c');
       expect(m1.answerLabel, 'The wet footprint', reason: 'the thing next to the door, as the puzzle asked');

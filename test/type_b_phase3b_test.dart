@@ -119,10 +119,12 @@ void main() {
         }
       }
       // The same picture is described the same way everywhere.
-      final byArt = <Artwork, String>{};
+      // (A landmark by its artwork; a drawn picture by its file, 2026-10-30.)
+      final byArt = <String, String>{};
       for (final x in unnamed) {
         for (final o in x.options) {
-          expect(byArt.putIfAbsent(o.artwork!, () => o.altText!), o.altText, reason: '${o.artwork}');
+          final art = o.artwork?.name ?? o.picture!;
+          expect(byArt.putIfAbsent(art, () => o.altText!), o.altText, reason: art);
         }
       }
       expect(m('ep11_m3').options.first.altText, isNot(contains('station')));

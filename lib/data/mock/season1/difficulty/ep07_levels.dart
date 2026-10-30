@@ -1,5 +1,64 @@
 import '../../../models/discovery.dart';
+import '../../../models/investigation.dart';
 import '../../../models/learning.dart';
+import '../season1_investigations.dart';
+import 'level_words.dart';
+
+// ── Mission 02's boathouse (2026-10-30): its picture, places and answer the
+// base's; the find's line is the level letter's own, word for word.
+final InvestigationScene _boathouse = season1Investigations['ep07_m2']!;
+
+final Map<String, InvestigationScene> ep07JuniorInvestigations = {
+  'ep07_m2': _boathouse.copyWith(
+    task: 'Read the message and find the box.',
+    missLine: 'Nothing here. What do the place words tell you?',
+    doneLine: 'You found the next map piece!',
+    arrival: const [
+      'The boathouse is dim and silent. Somebody was here last night.',
+      'A message has been scratched on the inside of the door.',
+    ],
+    finds: [
+      _boathouse.finds.single.copyWith(
+        reportLine: 'behind the green watering can.',
+        foundLine: 'Under the table, behind the green watering can: there is the box!',
+      ),
+    ],
+    spots: relined(_boathouse.spots, const [
+      'There are only empty boxes on the shelf. The message says NOT on the shelf.',
+      'There is just a rope on the table. The message says UNDER the table.',
+      'There is nothing in front of the can. The message says BEHIND it.',
+      'You are under the table now. Read the last line of the message.',
+      'These crates are too big. The box is under the table.',
+      'Just oars and a small boat. Nothing is hidden here.',
+    ]),
+  ),
+};
+
+final Map<String, InvestigationScene> ep07MasterInvestigations = {
+  'ep07_m2': _boathouse.copyWith(
+    task: 'Read the message and track down the box.',
+    missLine: 'Nothing of note. What do the place words point to?',
+    doneLine: 'The next piece of the map is yours!',
+    arrival: const [
+      'A hush hangs over the dim boathouse. Someone was here in the night.',
+      'Words have been scratched into the inside of the door.',
+    ],
+    finds: [
+      _boathouse.finds.single.copyWith(
+        reportLine: 'tucked behind the green watering can.',
+        foundLine: 'Tucked behind the green watering can, beneath the table, waits the box.',
+      ),
+    ],
+    spots: relined(_boathouse.spots, const [
+      'Only empty boxes line the shelf. The message rules the shelf out.',
+      'A coil of rope, nothing more. The message says BENEATH the table.',
+      'Nothing lies in front of the can. The message says BEHIND it.',
+      'Beneath the table, as the message says. Now its last line.',
+      'Crates far too large. The box waits beneath the table.',
+      'Oars and a small boat, with nothing hidden among them.',
+    ]),
+  ),
+};
 
 // Case 07 — The Lost Map, at each level (PART 7, London).
 //
