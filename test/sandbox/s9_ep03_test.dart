@@ -304,13 +304,14 @@ void main() {
 /// [talk] played as a child plays it: each statement of its answer and the
 /// ones still to find after it heard (a witness chosen, then the question),
 /// the two that answer it compared, and on.
-Future<void> hearAndCompare(WidgetTester t, MissionPlay engine, DialogueScene talk) async {
+Future<void> hearAndCompare(WidgetTester t, MissionPlay engine, DialogueScene talk, {void Function(DialogueStatement heard)? onHeard}) async {
   String speakerOf(String statement) => talk.statement(statement).speakerId;
   for (final s in [...talk.deduction.pair, ...talk.deduction.then]) {
     final lineup = find.byKey(ValueKey('lineup-${speakerOf(s)}'));
     final arriving = lineup.evaluate().isNotEmpty;
     await engine.tapKey(t, arriving ? 'lineup-${speakerOf(s)}' : 'speaker-${speakerOf(s)}', after: Duration(milliseconds: arriving ? 900 : 400));
     await engine.tapKey(t, 'question-${talk.statement(s).about}');
+    onHeard?.call(talk.statement(s));
   }
   await engine.tapKey(t, 'compare-statements', after: const Duration(milliseconds: 600));
   for (final s in talk.deduction.pair) {

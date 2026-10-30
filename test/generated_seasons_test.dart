@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:world_mystery/data/content/season_content_validator.dart';
 import 'package:world_mystery/data/generated/generated_seasons.g.dart';
 import 'package:world_mystery/data/mock/season_catalog.dart';
+import 'package:world_mystery/data/models/difficulty.dart';
 import 'package:world_mystery/data/models/episode.dart';
 import 'package:world_mystery/data/models/mission.dart';
 import 'package:world_mystery/features/mission_map/map_world.dart';
@@ -143,6 +144,9 @@ void main() {
       });
     });
 
-    seasonPlaythroughTests(id);
+    // Played whole at each level, its words picked by the game (PART 3).
+    for (final level in Difficulty.values) {
+      seasonPlaythroughTests(id, level: level);
+    }
   }
 }
