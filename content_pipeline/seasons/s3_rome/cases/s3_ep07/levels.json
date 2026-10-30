@@ -1,0 +1,610 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep07",
+  "lines": [
+    {
+      "rookie": "A Code on the Spanish Steps",
+      "junior": "A Code on the Spanish Steps",
+      "master": "A Code on the Spanish Steps"
+    },
+    {
+      "rookie": "A new owl card sends you to the Spanish Steps.",
+      "junior": "A new owl card sends you across Rome to the Spanish Steps.",
+      "master": "Another owl card arrives, summoning you to the Spanish Steps."
+    },
+    {
+      "rookie": "The Owl leaves a secret code in chalk.",
+      "junior": "There, the Owl has left a secret code written in chalk.",
+      "master": "There, sketched in chalk, the Owl has left a secret code."
+    },
+    {
+      "rookie": "And the show's smiling sponsor has a story to tell.",
+      "junior": "And the show's smiling sponsor has a story he wants you to hear.",
+      "master": "And the show's ever-smiling sponsor is eager to share a story of his own."
+    },
+    {
+      "rookie": "B.V. took the piece out on Tuesday, and the Owl knew. Who is the Owl?",
+      "junior": "B.V. took the piece out on Tuesday, and somehow the Owl knew. So who is the Owl?",
+      "master": "B.V. had taken the piece out on Tuesday, and the Owl knew it all along. But who is the Owl?"
+    },
+    {
+      "rookie": "Climb to the Owl's sign.",
+      "junior": "Climb up to the Owl's sign.",
+      "master": "Climb the Steps to find the Owl's sign."
+    },
+    {
+      "rookie": "Break the chalk code.",
+      "junior": "Crack the code written in chalk.",
+      "master": "Decipher the Owl's chalk code."
+    },
+    {
+      "rookie": "Check the sponsor's story.",
+      "junior": "Find out whether the sponsor's story is true.",
+      "master": "Test the sponsor's story against the evidence."
+    },
+    {
+      "rookie": "This morning, an owl card was under Giulia's door.",
+      "junior": "This morning, someone had slipped an owl card under Giulia's door.",
+      "master": "At dawn, an owl card had been slipped beneath Giulia's door."
+    },
+    {
+      "rookie": "\"The Spanish Steps hold my next sign,\" it said.",
+      "junior": "\"My next sign is waiting on the Spanish Steps,\" it said.",
+      "master": "\"The Spanish Steps hold my next sign,\" it read, in neat, careful letters."
+    },
+    {
+      "rookie": "\"The Owl is watching us,\" says Giulia. \"But who is it?\"",
+      "junior": "\"The Owl is watching us,\" says Giulia. \"But who could it be?\"",
+      "master": "\"The Owl is watching our every move,\" Giulia murmurs. \"But who is behind it?\""
+    },
+    {
+      "rookie": "The Owl's chalk code said TUESDAY. Bruno Valli, the show's sponsor, said he saw Aldo with a box at midnight. But Aldo was in Hall B. The Owl's box held a page of the loan book. On Tuesday, B.V. took the piece out of the lab for three hours.",
+      "junior": "The Owl's chalk code spelled TUESDAY. Bruno Valli, the show's sponsor, claimed he had seen Aldo with a box at midnight, but Aldo had been in Hall B. The Owl's box held a page of the loan book: on Tuesday, B.V. had taken the piece out of the lab for three hours.",
+      "master": "Decoded, the Owl's chalk message read TUESDAY. Bruno Valli, the show's sponsor, insisted he had seen Aldo with a box at midnight, yet Aldo had been in Hall B the whole time. Inside the Owl's box was a page of the loan book, revealing that on Tuesday B.V. had taken the piece out of the lab for three hours."
+    },
+    {
+      "rookie": "THE SPANISH STEPS",
+      "junior": "THE SPANISH STEPS",
+      "master": "THE SPANISH STEPS"
+    },
+    {
+      "rookie": "The church",
+      "junior": "The church",
+      "master": "The church"
+    },
+    {
+      "rookie": "The Owl's sign",
+      "junior": "The Owl's sign",
+      "master": "The Owl's sign"
+    },
+    {
+      "rookie": "The boat fountain",
+      "junior": "The boat fountain",
+      "master": "The boat fountain"
+    },
+    {
+      "rookie": "The flower pots",
+      "junior": "The flower pots",
+      "master": "The flower pots"
+    },
+    {
+      "rookie": "The church is at the very top.",
+      "junior": "The church is at the very top.",
+      "master": "The church is at the very top."
+    },
+    {
+      "rookie": "My sign is just above the flowers.",
+      "junior": "My sign is just above the flowers.",
+      "master": "My sign is just above the flowers."
+    },
+    {
+      "rookie": "Up the Steps",
+      "junior": "Up the Steps",
+      "master": "Up the Steps"
+    },
+    {
+      "rookie": "It sent you to the Spanish Steps, 135 wide stone steps.",
+      "junior": "The card had sent you to the Spanish Steps, 135 wide stone steps.",
+      "master": "It led you to the Spanish Steps, a grand sweep of 135 wide stone steps."
+    },
+    {
+      "rookie": "People sit on them and eat gelato in the sun.",
+      "junior": "People sit on them in the sunshine, eating gelato.",
+      "master": "People lounge on them in the warm sun, licking gelato."
+    },
+    {
+      "rookie": "The owl card says:",
+      "junior": "The owl card reads:",
+      "master": "The owl card reads:"
+    },
+    {
+      "rookie": "The church is at the very top of the steps.\nThe boat fountain is at the very bottom.\nThe flower pots are in the middle.\nMy sign is just above the flowers.\n— The Owl",
+      "junior": "The church is at the very top of the steps.\nThe boat fountain sits at the very bottom.\nThe flower pots stand in the middle.\nMy sign is just above the flowers.\n— The Owl",
+      "master": "Crowning the steps, the church is at the very top.\nThe boat fountain rests at the very bottom.\nThe flower pots stand in the middle.\nMy sign is just above the flowers.\n— The Owl"
+    },
+    {
+      "rookie": "Put the places in order, from the bottom of the steps to the top.",
+      "junior": "Put the places in order, starting at the bottom of the steps and ending at the top.",
+      "master": "Arrange the places in the order you would pass them, from the bottom of the steps to the top."
+    },
+    {
+      "rookie": "Start at the very bottom.",
+      "junior": "Begin with whatever is at the very bottom.",
+      "master": "Think about where your climb would begin."
+    },
+    {
+      "rookie": "Just above the flowers means right after them, going up.",
+      "junior": "Just above the flowers means the very next place after them as you go up.",
+      "master": "Reread \"just above the flowers\": what would you reach straight after them on the way up?"
+    },
+    {
+      "rookie": "You climbed the steps the right way!",
+      "junior": "You climbed the steps in exactly the right order!",
+      "master": "Step by step, you traced the Owl's path perfectly!"
+    },
+    {
+      "rookie": "Boat, flowers, the Owl's sign, church.",
+      "junior": "Boat, flowers, the Owl's sign, and the church.",
+      "master": "Boat, flowers, the Owl's sign, and finally the church."
+    },
+    {
+      "rookie": "Just above the flower pots, you find a little owl drawn in chalk.",
+      "junior": "Just above the flower pots, you find a little owl that someone has drawn in chalk.",
+      "master": "Just above the flower pots, a small owl has been sketched in chalk."
+    },
+    {
+      "rookie": "Under it are seven strange letters.",
+      "junior": "Beneath it are seven strange letters.",
+      "master": "Beneath it run seven baffling letters."
+    },
+    {
+      "rookie": "Start at the bottom. Read middle and just above again.",
+      "junior": "Begin at the bottom, then read \"in the middle\" and \"just above\" again.",
+      "master": "Your climb went astray. Begin at the bottom and look again at \"in the middle\" and \"just above\"."
+    },
+    {
+      "rookie": "The Owl's sign is just above the flower pots on the Spanish Steps.",
+      "junior": "On the Spanish Steps, the Owl's sign sits just above the flower pots.",
+      "master": "On the Spanish Steps, the Owl left its sign just above the flower pots."
+    },
+    {
+      "rookie": "THE CHALK OWL",
+      "junior": "THE CHALK OWL",
+      "master": "THE CHALK OWL"
+    },
+    {
+      "rookie": "Just above the flower pots, the Owl drew a sign. Under it: seven strange letters.",
+      "junior": "Just above the flower pots, the Owl had drawn a sign, and under it were seven strange letters.",
+      "master": "Just above the flower pots, the Owl had chalked its sign, with seven baffling letters waiting beneath it."
+    },
+    {
+      "rookie": "Move each letter back by one.",
+      "junior": "Move each letter back by one.",
+      "master": "Move each letter back by one."
+    },
+    {
+      "rookie": "Watch the man who borrowed the piece.",
+      "junior": "Watch the man who borrowed the piece.",
+      "master": "Watch the man who borrowed the piece."
+    },
+    {
+      "rookie": "The Chalk Code",
+      "junior": "The Chalk Code",
+      "master": "The Chalk Code"
+    },
+    {
+      "rookie": "The chalk owl has big round eyes.",
+      "junior": "The chalk owl stares out with big round eyes.",
+      "master": "The chalk owl gazes out with wide, round eyes."
+    },
+    {
+      "rookie": "Under it, the Owl wrote a code, and how to read it.",
+      "junior": "Under it, the Owl has written a code, along with how to read it.",
+      "master": "Beneath it, the Owl has written a code, together with instructions for reading it."
+    },
+    {
+      "rookie": "The chalk says:",
+      "junior": "The chalk reads:",
+      "master": "The chalk message reads:"
+    },
+    {
+      "rookie": "UVFTEBZ\n\nHow to read it: B means A. C means B. D means C.\nMove each letter back by one.\nWatch the man who borrowed the piece on this day.\n— The Owl",
+      "junior": "UVFTEBZ\n\nHow to read it: B means A. C means B. D means C.\nMove each letter back by one.\nThen watch the man who borrowed the piece on this day.\n— The Owl",
+      "master": "UVFTEBZ\n\nThe key: B means A. C means B. D means C.\nMove each letter back by one.\nWatch the man who borrowed the piece on this very day.\n— The Owl"
+    },
+    {
+      "rookie": "What does the Owl's code say?",
+      "junior": "What message is hidden in the Owl's code?",
+      "master": "What does the Owl's code really say?"
+    },
+    {
+      "rookie": "The code says ____.",
+      "junior": "The code says ____.",
+      "master": "The code spells ____."
+    },
+    {
+      "rookie": "U moves back to T. V moves back to U.",
+      "junior": "Move U back by one letter and you get T. V becomes U.",
+      "master": "Try the first two letters: step each one back, exactly as the chalk tells you."
+    },
+    {
+      "rookie": "The word is a day of the week.",
+      "junior": "The word you are looking for is a day of the week.",
+      "master": "Think of the calendar: the hidden word names a day."
+    },
+    {
+      "rookie": "You broke the Owl's code!",
+      "junior": "You cracked the Owl's code!",
+      "master": "You've deciphered the Owl's code!"
+    },
+    {
+      "rookie": "UVFTEBZ means TUESDAY.",
+      "junior": "UVFTEBZ turns into TUESDAY.",
+      "master": "Letter by letter, UVFTEBZ becomes TUESDAY."
+    },
+    {
+      "rookie": "\"Someone borrowed the piece on Tuesday?\" says Giulia.",
+      "junior": "\"Somebody borrowed the piece on Tuesday?\" Giulia asks.",
+      "master": "\"Someone borrowed the piece on Tuesday?\" Giulia whispers, frowning."
+    },
+    {
+      "rookie": "Then a big, smiling man in a fine suit walks down the steps to you.",
+      "junior": "Just then, a big, smiling man in an expensive suit comes down the steps toward you.",
+      "master": "At that moment, a large, beaming man in a finely tailored suit strolls down the steps toward you."
+    },
+    {
+      "rookie": "That is the code itself. Move each letter back by one.",
+      "junior": "That's just the code itself. Move each letter back by one.",
+      "master": "You've copied the code exactly as it is. Remember the rule: move each letter back by one."
+    },
+    {
+      "rookie": "Check the letters one by one. U moves back to T. V moves back to U.",
+      "junior": "Check the letters one at a time. U moves back to T, and V moves back to U.",
+      "master": "Close, but check each letter carefully. One step back from U is T, and from V it is U."
+    },
+    {
+      "rookie": "Those letters are right. Check their order in the code.",
+      "junior": "Those are the right letters, but check the order they appear in the code.",
+      "master": "You have the right letters; now look again at the order in which they appear in the code."
+    },
+    {
+      "rookie": "The Owl's Code",
+      "junior": "The Owl's Code",
+      "master": "The Owl's Code"
+    },
+    {
+      "rookie": "The Owl says: watch the man who borrowed the piece on Tuesday.",
+      "junior": "The Owl's message: watch the man who borrowed the piece on Tuesday.",
+      "master": "The Owl's warning: keep watch on the man who borrowed the piece on Tuesday."
+    },
+    {
+      "rookie": "A DAY: TUESDAY",
+      "junior": "A DAY: TUESDAY",
+      "master": "A DAY: TUESDAY"
+    },
+    {
+      "rookie": "Someone borrowed the piece on Tuesday. The Owl says: watch that person.",
+      "junior": "Someone had borrowed the piece on Tuesday, and the Owl says to watch that person.",
+      "master": "Someone had borrowed the piece on Tuesday, and the Owl wants you to keep a close eye on that person."
+    },
+    {
+      "rookie": "Yes. Aldo wanted the piece, so he took it.",
+      "junior": "Yes. Aldo wanted the piece, so he must have taken it.",
+      "master": "Yes. Aldo longed for the piece, so he must have taken it."
+    },
+    {
+      "rookie": "Wanting a thing is not taking it. Where was Aldo at midnight?",
+      "junior": "Wanting something isn't the same as taking it. Where was Aldo at midnight?",
+      "master": "Desire alone proves nothing. Think about where Aldo actually was at midnight."
+    },
+    {
+      "rookie": "Yes. Aldo can carry heavy boxes.",
+      "junior": "Yes. Aldo is able to carry heavy boxes.",
+      "master": "Yes. Aldo could easily have carried a heavy box."
+    },
+    {
+      "rookie": "Aldo's back hurts. And where was he at midnight?",
+      "junior": "Aldo has a bad back. Besides, where was he at midnight?",
+      "master": "Remember Aldo's aching back. And consider where he was at midnight."
+    },
+    {
+      "rookie": "No. At midnight on Friday, Aldo was in Hall B.",
+      "junior": "No. At midnight on Friday, Aldo was in Hall B, not at the back door.",
+      "master": "No. At midnight on Friday, Aldo was in Hall B, so he could not have been at the back door."
+    },
+    {
+      "rookie": "He carried a heavy box out of the museum!",
+      "junior": "He carried a heavy box out of the museum!",
+      "master": "He carried a heavy box out of the museum!"
+    },
+    {
+      "rookie": "Is Signor Valli telling the truth?",
+      "junior": "Is Signor Valli telling the truth?",
+      "master": "Is Signor Valli telling the truth?"
+    },
+    {
+      "rookie": "The Smiling Sponsor",
+      "junior": "The Smiling Sponsor",
+      "master": "The Smiling Sponsor"
+    },
+    {
+      "rookie": "The man stops in front of you, all smiles.",
+      "junior": "The man stops in front of you, smiling widely.",
+      "master": "The man halts before you, beaming from ear to ear."
+    },
+    {
+      "rookie": "He shakes your hand hard.",
+      "junior": "He shakes your hand firmly, a little too hard.",
+      "master": "He pumps your hand with a crushing grip."
+    },
+    {
+      "rookie": "Signor Valli says:",
+      "junior": "Signor Valli explains:",
+      "master": "Signor Valli declares:"
+    },
+    {
+      "rookie": "\"On Friday at midnight, I walked past the museum.\nI saw Professor Aldo at the back door.\nHe carried a heavy box out of the museum!\nHe wanted that piece so much. It was him, I am sure.\"",
+      "junior": "\"On Friday at midnight, I was walking past the museum.\nI saw Professor Aldo at the back door.\nHe carried a heavy box out of the museum!\nHe wanted that piece so badly. It was him, I'm certain.\"",
+      "master": "\"On Friday at midnight, I happened to stroll past the museum.\nThere, at the back door, stood Professor Aldo.\nHe carried a heavy box out of the museum!\nHe had always craved that piece. It was him; I would stake my name on it.\""
+    },
+    {
+      "rookie": "Check your Notebook. Where was Aldo at midnight on Friday?",
+      "junior": "Look in your Notebook. Where was Aldo at midnight on Friday?",
+      "master": "Turn back through your Notebook: where does it place Aldo at midnight on Friday?"
+    },
+    {
+      "rookie": "Could Aldo be in two places at the same time?",
+      "junior": "Could Aldo have been in two places at once?",
+      "master": "Can one man stand in two places at the very same moment?"
+    },
+    {
+      "rookie": "You caught a story that is not true!",
+      "junior": "You caught a story that isn't true!",
+      "master": "You've exposed a story that simply isn't true!"
+    },
+    {
+      "rookie": "Why would the sponsor tell a story that is not true?",
+      "junior": "But why would the sponsor tell a story that isn't true?",
+      "master": "Yet why would the sponsor invent such a story?"
+    },
+    {
+      "rookie": "On his card, there is a little gold crane.",
+      "junior": "On his business card, there is a small gold crane.",
+      "master": "His business card bears a tiny golden crane."
+    },
+    {
+      "rookie": "A Story That Is Not True",
+      "junior": "A Story That Is Not True",
+      "master": "A Story That Is Not True"
+    },
+    {
+      "rookie": "Bruno Valli said Aldo carried a box out at midnight. Aldo was in Hall B. Why did he say it?",
+      "junior": "Bruno Valli said Aldo had carried a box out at midnight, but Aldo was in Hall B. Why did he say it?",
+      "master": "Bruno Valli claimed Aldo carried a box out at midnight, though Aldo was in Hall B. What made him say so?"
+    },
+    {
+      "rookie": "Check his story",
+      "junior": "Check his story",
+      "master": "Test his story"
+    },
+    {
+      "rookie": "Which thing in your Notebook shows where Aldo was at midnight?",
+      "junior": "Which item in your Notebook shows where Aldo was at midnight?",
+      "master": "Which piece of evidence in your Notebook proves where Aldo was at midnight?"
+    },
+    {
+      "rookie": "Look for the log of Friday night at the university.",
+      "junior": "Look for the university's log from Friday night.",
+      "master": "Search for the log the university kept on Friday night."
+    },
+    {
+      "rookie": "Listen to the sponsor's story.",
+      "junior": "Listen to what the sponsor has to say.",
+      "master": "Hear out the sponsor's story."
+    },
+    {
+      "rookie": "Bruno Valli! I pay for the museum's show.",
+      "junior": "Bruno Valli! I'm the one who pays for the museum's show.",
+      "master": "Bruno Valli, at your service! I fund the museum's show."
+    },
+    {
+      "rookie": "I want to help you, Detective.",
+      "junior": "I'd like to help you, Detective.",
+      "master": "I'm only too happy to help you, Detective."
+    },
+    {
+      "rookie": "Listen. I saw something on Friday night.",
+      "junior": "Listen carefully. I saw something on Friday night.",
+      "master": "Now listen. I witnessed something on Friday night."
+    },
+    {
+      "rookie": "LISTEN",
+      "junior": "LISTEN",
+      "master": "LISTEN"
+    },
+    {
+      "rookie": "Hall B? Well... maybe I saw wrong.",
+      "junior": "Hall B? Well... maybe I was wrong about what I saw.",
+      "master": "Hall B? Well... perhaps my eyes deceived me."
+    },
+    {
+      "rookie": "It was very dark, you know.",
+      "junior": "It was very dark that night, you know.",
+      "master": "It was terribly dark that night, you understand."
+    },
+    {
+      "rookie": "He gives you his card and walks away fast.",
+      "junior": "He hands you his card and hurries away.",
+      "master": "He presses his card into your hand and hurries off."
+    },
+    {
+      "rookie": "A STORY THAT IS NOT TRUE",
+      "junior": "A STORY THAT IS NOT TRUE",
+      "master": "A STORY THAT IS NOT TRUE"
+    },
+    {
+      "rookie": "Aldo was in Hall B at midnight. So why did Signor Valli blame him?",
+      "junior": "Aldo had been in Hall B at midnight, so why did Signor Valli blame him?",
+      "master": "Aldo was in Hall B at midnight. Why, then, would Signor Valli point the finger at him?"
+    },
+    {
+      "rookie": "Which day is in my code?",
+      "junior": "Which day is in my code?",
+      "master": "Which day is in my code?"
+    },
+    {
+      "rookie": "How many letters are in my code word?",
+      "junior": "How many letters are in my code word?",
+      "master": "How many letters are in my code word?"
+    },
+    {
+      "rookie": "The Box by the Church",
+      "junior": "The Box by the Church",
+      "master": "The Box by the Church"
+    },
+    {
+      "rookie": "THE TOP OF THE STEPS",
+      "junior": "THE TOP OF THE STEPS",
+      "master": "THE TOP OF THE STEPS"
+    },
+    {
+      "rookie": "At the very top, by the church, there is a small box with three dials.",
+      "junior": "At the very top, beside the church, sits a small box with three dials.",
+      "master": "At the very top, beside the church, rests a small box fitted with three dials."
+    },
+    {
+      "rookie": "It has an owl stamp on the lid.",
+      "junior": "There is an owl stamp on its lid.",
+      "master": "An owl is stamped on its lid."
+    },
+    {
+      "rookie": "Far down the side steps, a young woman with an owl ring is watching you.",
+      "junior": "Far down the side steps, a young woman wearing an owl ring is watching you.",
+      "master": "Far down the side steps, a young woman wearing an owl ring watches you intently."
+    },
+    {
+      "rookie": "The lid says:",
+      "junior": "The lid reads:",
+      "master": "On the lid, the Owl has written:"
+    },
+    {
+      "rookie": "Three numbers from today:\nFirst: How many places did you put in order on the steps?\nSecond: Which day is in my code? Monday is day 1.\nThird: How many letters are in my code word?\n— The Owl",
+      "junior": "Three numbers from today's search:\nFirst: How many places did you put in order on the steps?\nSecond: Which day is in my code? Monday is day 1.\nThird: How many letters are in my code word?\n— The Owl",
+      "master": "Three numbers, all found today:\nFirst: How many places did you set in order on the steps?\nSecond: Which day is in my code? Count Monday as day 1.\nThird: How many letters are in my code word?\n— The Owl"
+    },
+    {
+      "rookie": "Turn the dials to the Owl's three numbers. Then open the box.",
+      "junior": "Turn the dials to the Owl's three numbers, then open the box.",
+      "master": "Set the dials to the Owl's three numbers to open the box."
+    },
+    {
+      "rookie": "Count the places from the boat fountain to the church.",
+      "junior": "Count every place from the boat fountain up to the church.",
+      "master": "Retrace your climb from the boat fountain to the church: how many stops did you make?"
+    },
+    {
+      "rookie": "Count the days from Monday. Then count the letters of the day.",
+      "junior": "Count the days, starting from Monday. Then count the letters in that day.",
+      "master": "Walk through the week from Monday, then spell out the day letter by letter."
+    },
+    {
+      "rookie": "The Owl's box opens!",
+      "junior": "The Owl's box clicks open!",
+      "master": "With a soft click, the Owl's box swings open!"
+    },
+    {
+      "rookie": "The young woman with the owl ring is gone.",
+      "junior": "The young woman with the owl ring has vanished.",
+      "master": "When you look up, the young woman with the owl ring has vanished."
+    },
+    {
+      "rookie": "Under the page is one more owl card.",
+      "junior": "Under the page lies one more owl card.",
+      "master": "Beneath the page lies yet another owl card."
+    },
+    {
+      "rookie": "At last, the Owl wants to meet you.",
+      "junior": "At last, the Owl wants to meet you.",
+      "master": "At long last, the Owl is ready to meet you face to face."
+    },
+    {
+      "rookie": "Count the places on the steps again. The Owl's sign is one of them.",
+      "junior": "Count the places on the steps again. Remember, the Owl's sign is one of them.",
+      "master": "Recount the places on the steps, and don't overlook the Owl's sign: it is one of them."
+    },
+    {
+      "rookie": "Count the letters of the code word again.",
+      "junior": "Count the letters in the code word again.",
+      "master": "Recount the letters of the code word, one by one."
+    },
+    {
+      "rookie": "Tuesday is day 2. Count from Monday.",
+      "junior": "Tuesday is day 2 if you count from Monday.",
+      "master": "Count again from Monday: Tuesday is day 2."
+    },
+    {
+      "rookie": "All three numbers fit. Places first, then the day, then the letters.",
+      "junior": "All three numbers are correct. Put the places first, then the day, then the letters.",
+      "master": "Your three numbers fit, but not their order: places first, then the day, then the letters."
+    },
+    {
+      "rookie": "Four, two, seven. The box opens!",
+      "junior": "Four, two, seven. The box is open!",
+      "master": "Four, two, seven... and the box opens!"
+    },
+    {
+      "rookie": "Inside is a copied page from the lab's loan book.",
+      "junior": "Inside is a copy of a page from the lab's loan book.",
+      "master": "Inside lies a photocopied page from the lab's loan book."
+    },
+    {
+      "rookie": "TUESDAY, 2 PM to 5 PM. Taken for poster photos. B.V.",
+      "junior": "TUESDAY, 2 PM to 5 PM. Taken for poster photos. B.V.",
+      "master": "TUESDAY, 2 PM to 5 PM. Taken for poster photos. B.V."
+    },
+    {
+      "rookie": "B.V. The same name as on this card.",
+      "junior": "B.V. The same initials as on this card.",
+      "master": "B.V. The very same initials as on this card."
+    },
+    {
+      "rookie": "Bruno Valli took the piece out on Tuesday!",
+      "junior": "So Bruno Valli was the one who took the piece out on Tuesday!",
+      "master": "It was Bruno Valli who took the piece out of the lab on Tuesday!"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "slipped": "살짝 밀어 넣었다",
+      "crack": "(암호를) 풀다",
+      "cracked": "(암호를) 풀었다",
+      "whatever": "무엇이든",
+      "stares": "빤히 바라보다",
+      "expensive": "비싼",
+      "firmly": "힘 있게",
+      "certain": "확신하는",
+      "besides": "게다가",
+      "hurries": "서둘러 가다",
+      "vanished": "사라졌다",
+      "initials": "이름의 머리글자"
+    },
+    "master": {
+      "summoning": "불러들이는",
+      "decipher": "해독하다",
+      "deciphered": "해독했다",
+      "eager": "몹시 하고 싶어 하는",
+      "lounge": "느긋하게 앉아 있다",
+      "crowning": "맨 꼭대기를 장식하는",
+      "baffling": "알쏭달쏭한",
+      "astray": "길을 잘못 든",
+      "beaming": "환하게 웃는",
+      "tailored": "몸에 맞게 지은",
+      "longed": "몹시 바랐다",
+      "craved": "몹시 갖고 싶어 했다",
+      "witnessed": "목격했다",
+      "deceived": "속였다",
+      "intently": "뚫어지게",
+      "retrace": "되짚어 가다"
+    }
+  }
+}

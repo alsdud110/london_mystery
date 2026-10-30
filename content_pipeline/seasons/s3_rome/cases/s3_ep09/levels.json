@@ -1,0 +1,621 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep09",
+  "lines": [
+    {
+      "rookie": "The Street Under the Streets",
+      "junior": "The Street Under the Streets",
+      "master": "The Street Under the Streets"
+    },
+    {
+      "rookie": "Livia's drawing shows a room with shelves and half a word.",
+      "junior": "Livia's drawing shows a room with shelves, along with half a word.",
+      "master": "Livia's drawing reveals a room lined with shelves, and half of a mysterious word."
+    },
+    {
+      "rookie": "Professor Aldo can read old maps like a book.",
+      "junior": "Professor Aldo can read old maps as easily as a book.",
+      "master": "Professor Aldo reads ancient maps as easily as other people read books."
+    },
+    {
+      "rookie": "Where is that room in Rome today?",
+      "junior": "Where could that room be in Rome today?",
+      "master": "But where in today's Rome does that room lie?"
+    },
+    {
+      "rookie": "Valli Building will pour concrete over the owl square on Monday. Can you stop it?",
+      "junior": "Valli Building is going to pour concrete over the owl square on Monday. Can you stop it?",
+      "master": "On Monday, Valli Building will bury the owl square under concrete. Can you stop it in time?"
+    },
+    {
+      "rookie": "Find the room of the half word.",
+      "junior": "Find the room that the half word names.",
+      "master": "Identify the room behind the half word."
+    },
+    {
+      "rookie": "Walk the old street.",
+      "junior": "Walk along the old street.",
+      "master": "Trace the old street from start to finish."
+    },
+    {
+      "rookie": "Find the owl square today.",
+      "junior": "Find where the owl square is today.",
+      "master": "Locate the owl square in today's Rome."
+    },
+    {
+      "rookie": "Livia's drawing shows the real piece, line by line.",
+      "junior": "Livia has drawn the real piece, line by line.",
+      "master": "Line by line, Livia's drawing brings the real piece back to life."
+    },
+    {
+      "rookie": "Next to a tiny owl is a room with shelves, and half a word.",
+      "junior": "Next to a tiny owl, there is a room with shelves and half a word.",
+      "master": "Beside a tiny owl lies a room with shelves, and half of a word."
+    },
+    {
+      "rookie": "Professor Aldo is waiting for you at the Roman Forum.",
+      "junior": "Professor Aldo is waiting to meet you at the Roman Forum.",
+      "master": "Professor Aldo awaits you at the Roman Forum."
+    },
+    {
+      "rookie": "The room on the real piece is a Roman library. It is at the end of an old street from the Forum. It stands in a square with an owl. Today, that square is Piazza della Civetta. Valli Building will pour concrete there on 10 May at 7 AM.",
+      "junior": "The room on the real piece is a Roman library. It stands at the end of an old street that starts at the Forum, in a square with an owl. Today, that square is called Piazza della Civetta, and Valli Building will pour concrete there on 10 May at 7 AM.",
+      "master": "The room on the real piece is a Roman library, standing in a square with an owl at the end of an old street that begins at the Forum. Today that square is known as Piazza della Civetta, and Valli Building plans to pour concrete there on 10 May at 7 AM."
+    },
+    {
+      "rookie": "THE ROMAN FORUM",
+      "junior": "THE ROMAN FORUM",
+      "master": "THE ROMAN FORUM"
+    },
+    {
+      "rookie": "The room with a pool of water",
+      "junior": "The room with a pool of water",
+      "master": "The room with a pool of water"
+    },
+    {
+      "rookie": "That room is for washing: a BALNEUM. Livia's half word is BIBLIO...",
+      "junior": "That room was used for washing: a BALNEUM. Livia's half word is BIBLIO...",
+      "master": "A BALNEUM was a room for washing. Remember, Livia's half word is BIBLIO..."
+    },
+    {
+      "rookie": "a Roman room with a big pool of water and columns",
+      "junior": "a Roman room with a big pool of water and columns",
+      "master": "a Roman room with a big pool of water and columns"
+    },
+    {
+      "rookie": "The room with square holes in the walls",
+      "junior": "The room with square holes in the walls",
+      "master": "The room with square holes in the walls"
+    },
+    {
+      "rookie": "an old stone room with rows of small square holes in the walls, lit by a lamp",
+      "junior": "an old stone room with rows of small square holes in the walls, lit by a lamp",
+      "master": "an old stone room with rows of small square holes in the walls, lit by a lamp"
+    },
+    {
+      "rookie": "The room with rows of stone seats",
+      "junior": "The room with rows of stone seats",
+      "master": "The room with rows of stone seats"
+    },
+    {
+      "rookie": "That is a place for shows: a THEATRUM. Does it start with BIBLIO?",
+      "junior": "That's a place for shows: a THEATRUM. Does it begin with BIBLIO?",
+      "master": "A THEATRUM was built for shows. Does that word begin with BIBLIO?"
+    },
+    {
+      "rookie": "a half-round Roman theatre with rows of stone seats",
+      "junior": "a half-round Roman theatre with rows of stone seats",
+      "master": "a half-round Roman theatre with rows of stone seats"
+    },
+    {
+      "rookie": "BIBLIOTHECA — a library, a room for books",
+      "junior": "BIBLIOTHECA — a library, a room for books",
+      "master": "BIBLIOTHECA — a library, a room for books"
+    },
+    {
+      "rookie": "They were kept in square holes in the walls.",
+      "junior": "They were kept in square holes in the walls.",
+      "master": "They were kept in square holes in the walls."
+    },
+    {
+      "rookie": "Half a Word",
+      "junior": "Half a Word",
+      "master": "Half a Word"
+    },
+    {
+      "rookie": "The Roman Forum was the heart of the old city.",
+      "junior": "The Roman Forum was once the heart of the old city.",
+      "master": "The Roman Forum once lay at the very heart of the ancient city."
+    },
+    {
+      "rookie": "Broken columns stand in the grass. Aldo sits on a stone and opens his bag.",
+      "junior": "Broken columns rise from the grass. Aldo sits down on a stone and opens his bag.",
+      "master": "Broken columns rise from the grass. Aldo settles onto a fallen stone and unbuckles his bag."
+    },
+    {
+      "rookie": "\"Show me Livia's drawing,\" he says. \"Old maps used Latin words.\"",
+      "junior": "\"Show me Livia's drawing,\" he says. \"Old maps were written with Latin words.\"",
+      "master": "\"Let me see Livia's drawing,\" he says. \"The old maps were always labeled in Latin.\""
+    },
+    {
+      "rookie": "Aldo's card says:",
+      "junior": "Aldo's card reads:",
+      "master": "Aldo's well-worn card reads:"
+    },
+    {
+      "rookie": "LATIN WORDS FOR ROOMS ON OLD MAPS\nBIBLIOTHECA — a library, a room for books\nBALNEUM — a bath, a room for washing\nTHEATRUM — a theatre, a place for shows\n\nRoman books were scrolls. They were kept in square holes in the walls.",
+      "junior": "LATIN WORDS FOR ROOMS ON OLD MAPS\nBIBLIOTHECA — a library, a room for books\nBALNEUM — a bath, a room for washing\nTHEATRUM — a theatre, a place for shows\n\nRoman books were not like ours: they were scrolls. They were kept in square holes in the walls.",
+      "master": "LATIN WORDS FOR ROOMS ON OLD MAPS\nBIBLIOTHECA — a library, a room for books\nBALNEUM — a bath, a room for washing\nTHEATRUM — a theatre, a place for shows\n\nIn Roman times, books were rolled up as scrolls. They were kept in square holes in the walls."
+    },
+    {
+      "rookie": "Which picture shows the room on Livia's drawing?",
+      "junior": "Which picture shows the room from Livia's drawing?",
+      "master": "Which picture matches the room on Livia's drawing?"
+    },
+    {
+      "rookie": "Find the Latin word that starts with BIBLIO.",
+      "junior": "Find the Latin word that begins with BIBLIO.",
+      "master": "Match Livia's half word to one of the Latin words on the card."
+    },
+    {
+      "rookie": "Where did the Romans keep their scrolls? Look at the walls.",
+      "junior": "Where did the Romans keep their scrolls? Look closely at the walls.",
+      "master": "Think about how Roman scrolls were stored, then study each room's walls."
+    },
+    {
+      "rookie": "You read the old Latin word!",
+      "junior": "You worked out the old Latin word!",
+      "master": "You've unlocked the meaning of the old Latin word!"
+    },
+    {
+      "rookie": "\"But where was it?\" asks Giulia.",
+      "junior": "\"But where was it?\" Giulia asks.",
+      "master": "\"But where did it stand?\" Giulia asks."
+    },
+    {
+      "rookie": "Aldo smiles. \"The drawing has a street. Let's follow it.\"",
+      "junior": "Aldo smiles. \"There is a street on the drawing. Let's follow it.\"",
+      "master": "Aldo's eyes light up. \"The drawing shows a street. Let us follow where it leads.\""
+    },
+    {
+      "rookie": "A Roman Library",
+      "junior": "A Roman Library",
+      "master": "A Roman Library"
+    },
+    {
+      "rookie": "The room on the real piece is an old Roman library.",
+      "junior": "The room on the real piece is an ancient Roman library.",
+      "master": "The room carved on the real piece is a long-lost Roman library."
+    },
+    {
+      "rookie": "The half word",
+      "junior": "The half word",
+      "master": "The half word"
+    },
+    {
+      "rookie": "Which thing in your Notebook shows the half word?",
+      "junior": "Which item in your Notebook shows the half word?",
+      "master": "Which piece of evidence in your Notebook holds the half word?"
+    },
+    {
+      "rookie": "Find Livia's drawing of the real piece.",
+      "junior": "Look for Livia's drawing of the real piece.",
+      "master": "Search your Notebook for Livia's drawing of the real piece."
+    },
+    {
+      "rookie": "Read the half word on the map.",
+      "junior": "Work out the half word on the map.",
+      "master": "Decode the half word on the map."
+    },
+    {
+      "rookie": "A Roman library, never found!",
+      "junior": "A Roman library that nobody has ever found!",
+      "master": "A Roman library that no one has ever discovered!"
+    },
+    {
+      "rookie": "If it is real, it is amazing.",
+      "junior": "If it's real, it's amazing.",
+      "master": "If it is real, it would be an astonishing discovery."
+    },
+    {
+      "rookie": "Then let's find where it was.",
+      "junior": "Then let's find out where it was.",
+      "master": "Then let's discover where it once stood."
+    },
+    {
+      "rookie": "BIBLIOTHECA: A LIBRARY",
+      "junior": "BIBLIOTHECA: A LIBRARY",
+      "master": "BIBLIOTHECA: A LIBRARY"
+    },
+    {
+      "rookie": "A Roman library that nobody has found. Where is it today?",
+      "junior": "It is a Roman library that nobody has found. Where could it be today?",
+      "master": "A Roman library that has never been found. Where might it lie today?"
+    },
+    {
+      "rookie": "A long market",
+      "junior": "A long market",
+      "master": "A long market"
+    },
+    {
+      "rookie": "A small square with an owl",
+      "junior": "A small square with an owl",
+      "master": "A small square with an owl"
+    },
+    {
+      "rookie": "The Forum",
+      "junior": "The Forum",
+      "master": "The Forum"
+    },
+    {
+      "rookie": "A round temple",
+      "junior": "A round temple",
+      "master": "A round temple"
+    },
+    {
+      "rookie": "Between the Forum and the market, there is a round temple.",
+      "junior": "Between the Forum and the market, there is a round temple.",
+      "master": "Between the Forum and the market, there is a round temple."
+    },
+    {
+      "rookie": "Just before the owl square, the street passes a long market.",
+      "junior": "Just before the owl square, the street passes a long market.",
+      "master": "Just before the owl square, the street passes a long market."
+    },
+    {
+      "rookie": "Walk the Old Street",
+      "junior": "Walk the Old Street",
+      "master": "Walk the Old Street"
+    },
+    {
+      "rookie": "On Livia's drawing, a long street runs to the library.",
+      "junior": "On Livia's drawing, a long street leads to the library.",
+      "master": "On Livia's drawing, a long street winds its way to the library."
+    },
+    {
+      "rookie": "Aldo moves his finger along it, slowly.",
+      "junior": "Aldo slowly traces it with his finger.",
+      "master": "Aldo traces it with one finger, slowly and carefully."
+    },
+    {
+      "rookie": "\"Listen carefully,\" he says. \"I will read it like a story.\"",
+      "junior": "\"Listen carefully,\" he says. \"I'll read it to you like a story.\"",
+      "master": "\"Listen closely,\" he says. \"I shall read it to you as if it were a story.\""
+    },
+    {
+      "rookie": "Aldo reads the map:",
+      "junior": "Aldo reads the map aloud:",
+      "master": "Aldo reads the map aloud:"
+    },
+    {
+      "rookie": "The old street starts at the Forum.\nThe library is at the end of the street. It is in a small square with an owl.\nJust before the owl square, the street passes a long market.\nBetween the Forum and the market, there is a round temple.",
+      "junior": "The old street starts at the Forum.\nThe library is at the end of the street, in a small square with an owl.\nJust before the owl square, the street passes a long market.\nBetween the Forum and the market, there is a round temple.",
+      "master": "The old street starts at the Forum.\nAt the end of the street, in a small square with an owl, stands the library.\nJust before the owl square, the street passes a long market.\nBetween the Forum and the market, there is a round temple."
+    },
+    {
+      "rookie": "Put the places on the old street in order, from the Forum.",
+      "junior": "Put the places on the old street in order, starting from the Forum.",
+      "master": "Set the places along the old street in order, beginning at the Forum."
+    },
+    {
+      "rookie": "Find the start and the end first.",
+      "junior": "First, find where the street starts and where it ends.",
+      "master": "Pin down both ends of the street before anything else."
+    },
+    {
+      "rookie": "Between means in the middle of two places.",
+      "junior": "Between means the place in the middle of two others.",
+      "master": "Reread the word Between: what lies in the middle of which two places?"
+    },
+    {
+      "rookie": "You walked the old street!",
+      "junior": "You walked the whole old street!",
+      "master": "You've walked the ancient street from end to end!"
+    },
+    {
+      "rookie": "Forum, round temple, long market, owl square.",
+      "junior": "Forum, round temple, long market, and owl square.",
+      "master": "Forum, round temple, long market, and at last the owl square."
+    },
+    {
+      "rookie": "\"The temple and the market are still there today,\" says Aldo.",
+      "junior": "\"The temple and the market are still standing today,\" says Aldo.",
+      "master": "\"The temple and the market both survive to this day,\" Aldo says."
+    },
+    {
+      "rookie": "\"So the owl square must be just after the market. What is it called now?\"",
+      "junior": "\"So the owl square must come just after the market. What is it called now?\"",
+      "master": "\"Which means the owl square must lie just after the market. But what is it called now?\""
+    },
+    {
+      "rookie": "Start at the Forum and end at the owl square. Then read Between and Just before.",
+      "junior": "Start at the Forum and finish at the owl square. Then read Between and Just before again.",
+      "master": "Begin at the Forum and end at the owl square, then look again at Between and Just before."
+    },
+    {
+      "rookie": "The Old Street",
+      "junior": "The Old Street",
+      "master": "The Old Street"
+    },
+    {
+      "rookie": "The library is in a small owl square, at the end of the old street.",
+      "junior": "The library lies in a small owl square at the end of the old street.",
+      "master": "The library stood in a small owl square, where the old street ends."
+    },
+    {
+      "rookie": "THE OWL SQUARE",
+      "junior": "THE OWL SQUARE",
+      "master": "THE OWL SQUARE"
+    },
+    {
+      "rookie": "The library was just after the long market. What is that square called now?",
+      "junior": "The library was just after the long market. What is that square called today?",
+      "master": "The library lay just beyond the long market. What name does that square bear now?"
+    },
+    {
+      "rookie": "CIVETTA = OWL",
+      "junior": "CIVETTA = OWL",
+      "master": "CIVETTA = OWL"
+    },
+    {
+      "rookie": "Find the owl square on a map of today.",
+      "junior": "Find the owl square on a map of today.",
+      "master": "Find the owl square on a map of today."
+    },
+    {
+      "rookie": "The Owl Square Today",
+      "junior": "The Owl Square Today",
+      "master": "The Owl Square Today"
+    },
+    {
+      "rookie": "Giulia looks at her phone map. \"After the market, there are three squares.\"",
+      "junior": "Giulia checks the map on her phone. \"There are three squares after the market.\"",
+      "master": "Giulia studies the map on her phone. \"Beyond the market, there are three squares.\""
+    },
+    {
+      "rookie": "\"Their names are in Italian,\" she says. \"I have a little word list.\"",
+      "junior": "\"Their names are all in Italian,\" she says. \"Luckily, I have a little word list.\"",
+      "master": "\"Their names are in Italian,\" she says, \"but I happen to carry a little word list.\""
+    },
+    {
+      "rookie": "Giulia's list and the street signs say:",
+      "junior": "Giulia's list and the street signs read:",
+      "master": "Giulia's list and the street signs read:"
+    },
+    {
+      "rookie": "GIULIA'S WORD LIST:\nCIVETTA = OWL\nLEONE = LION\nPOPOLO = PEOPLE\n\nTHE THREE SQUARES AFTER THE MARKET:\nPIAZZA DEI LEONI\nPIAZZA DELLA CIVETTA\nPIAZZA DEL POPOLO",
+      "junior": "GIULIA'S WORD LIST:\nCIVETTA = OWL\nLEONE = LION\nPOPOLO = PEOPLE\n\nTHE THREE SQUARES AFTER THE MARKET:\nPIAZZA DEI LEONI\nPIAZZA DELLA CIVETTA\nPIAZZA DEL POPOLO",
+      "master": "GIULIA'S WORD LIST:\nCIVETTA = OWL\nLEONE = LION\nPOPOLO = PEOPLE\n\nTHE THREE SQUARES AFTER THE MARKET:\nPIAZZA DEI LEONI\nPIAZZA DELLA CIVETTA\nPIAZZA DEL POPOLO"
+    },
+    {
+      "rookie": "Which square was the old owl square? Write the Italian word for owl in its name.",
+      "junior": "Which square used to be the old owl square? Write the Italian word for owl that appears in its name.",
+      "master": "Which of today's squares was once the old owl square? Write the Italian word for owl found in its name."
+    },
+    {
+      "rookie": "It is Piazza della ____.",
+      "junior": "It is Piazza della ____.",
+      "master": "Its name is Piazza della ____."
+    },
+    {
+      "rookie": "Find owl on Giulia's word list.",
+      "junior": "Look for owl on Giulia's word list.",
+      "master": "Giulia's word list will tell you how to say owl in Italian."
+    },
+    {
+      "rookie": "Now find the square with that Italian word in its name.",
+      "junior": "Then find the square that has that Italian word in its name.",
+      "master": "Then see which square carries that word in its name."
+    },
+    {
+      "rookie": "You found the owl square!",
+      "junior": "You've found the owl square!",
+      "master": "You've uncovered the owl square's modern name!"
+    },
+    {
+      "rookie": "\"My map cabinet will tell us,\" says Aldo.",
+      "junior": "\"My map cabinet will tell us more,\" says Aldo.",
+      "master": "\"My map cabinet will have the answer,\" Aldo says."
+    },
+    {
+      "rookie": "\"The newest city plans are in there.\"",
+      "junior": "\"The newest city plans are kept in there.\"",
+      "master": "\"I keep the city's most recent plans inside it.\""
+    },
+    {
+      "rookie": "Leone means lion. Which word means owl?",
+      "junior": "Leone means lion, not owl. Which word means owl?",
+      "master": "Leone is a lion. Look again for the word that means owl."
+    },
+    {
+      "rookie": "Popolo means people. Which word means owl?",
+      "junior": "Popolo means people, not owl. Which word means owl?",
+      "master": "Popolo means the people. Look again for the word that means owl."
+    },
+    {
+      "rookie": "Check your spelling on Giulia's word list.",
+      "junior": "Check your spelling against Giulia's word list.",
+      "master": "Compare your spelling, letter by letter, with Giulia's word list."
+    },
+    {
+      "rookie": "The library's old owl square is Piazza della Civetta today. There is a building site there.",
+      "junior": "Today, the library's old owl square is Piazza della Civetta, and there is a building site there.",
+      "master": "The library's old owl square is now Piazza della Civetta, where a building site has appeared."
+    },
+    {
+      "rookie": "Piazza della Civetta? I know that square.",
+      "junior": "Piazza della Civetta? I know that square well.",
+      "master": "Piazza della Civetta? Why, I know that square."
+    },
+    {
+      "rookie": "There is a building site there now.",
+      "junior": "Right now, there's a building site there.",
+      "master": "These days, a building site covers it."
+    },
+    {
+      "rookie": "Whose building site?",
+      "junior": "Whose building site is it?",
+      "master": "And whose building site would that be?"
+    },
+    {
+      "rookie": "PIAZZA DELLA CIVETTA",
+      "junior": "PIAZZA DELLA CIVETTA",
+      "master": "PIAZZA DELLA CIVETTA"
+    },
+    {
+      "rookie": "The old owl square has an Italian name today. What is happening there?",
+      "junior": "Today, the old owl square has an Italian name. What is happening there?",
+      "master": "The old owl square now bears an Italian name. But what is happening there?"
+    },
+    {
+      "rookie": "A small number before a big one means take away.",
+      "junior": "A small number before a big one means take away.",
+      "master": "A small number before a big one means take away."
+    },
+    {
+      "rookie": "A small number after a big one means add.",
+      "junior": "A small number after a big one means add.",
+      "master": "A small number after a big one means add."
+    },
+    {
+      "rookie": "Aldo's Map Cabinet",
+      "junior": "Aldo's Map Cabinet",
+      "master": "Aldo's Map Cabinet"
+    },
+    {
+      "rookie": "THE MAP ARCHIVE",
+      "junior": "THE MAP ARCHIVE",
+      "master": "THE MAP ARCHIVE"
+    },
+    {
+      "rookie": "Aldo's map archive is full of long, flat drawers.",
+      "junior": "Aldo's map archive is filled with long, flat drawers.",
+      "master": "Aldo's map archive is lined with long, flat drawers."
+    },
+    {
+      "rookie": "His newest city plans are in a cabinet with three dials.",
+      "junior": "His newest city plans are locked in a cabinet with three dials.",
+      "master": "His most recent city plans are locked inside a cabinet with three dials."
+    },
+    {
+      "rookie": "\"I use the old street's marker stones as my code,\" he says. \"Can you read them?\"",
+      "junior": "\"My code comes from the old street's marker stones,\" he says. \"Can you read them?\"",
+      "master": "\"I chose the old street's marker stones as my code,\" he says. \"Can you decipher them?\""
+    },
+    {
+      "rookie": "The cabinet's card says:",
+      "junior": "The cabinet's card reads:",
+      "master": "A card on the cabinet reads:"
+    },
+    {
+      "rookie": "My code: the old street's three marker stones, in order from the Forum.\n\nTHE MARKER STONES ON LIVIA'S DRAWING:\nat the market — VI\nat the temple — IV\nat the owl square — IX\n\nROMAN NUMBERS: I = 1, V = 5, X = 10.\nA small number before a big one means take away: IV = 5 - 1.\nA small number after a big one means add: VI = 5 + 1.",
+      "junior": "My code: the three marker stones of the old street, in order from the Forum.\n\nTHE MARKER STONES ON LIVIA'S DRAWING:\nat the market — VI\nat the temple — IV\nat the owl square — IX\n\nROMAN NUMBERS: I = 1, V = 5, X = 10.\nA small number before a big one means take away: IV = 5 - 1.\nA small number after a big one means add: VI = 5 + 1.",
+      "master": "My code: the old street's three marker stones, read in order from the Forum.\n\nTHE MARKER STONES ON LIVIA'S DRAWING:\nat the market — VI\nat the temple — IV\nat the owl square — IX\n\nROMAN NUMBERS: I = 1, V = 5, X = 10.\nA small number before a big one means take away: IV = 5 - 1.\nA small number after a big one means add: VI = 5 + 1."
+    },
+    {
+      "rookie": "Turn the dials to the three marker stones, in order from the Forum.",
+      "junior": "Turn the dials to the three marker stones, in order starting from the Forum.",
+      "master": "Set the dials to the three marker stones, following the street from the Forum."
+    },
+    {
+      "rookie": "Walk the street from the Forum: which place comes first?",
+      "junior": "Walk along the street from the Forum: which place do you reach first?",
+      "master": "Retrace the old street from the Forum. Which marker would you meet first?"
+    },
+    {
+      "rookie": "IX: the I is before the X. So take one away from ten.",
+      "junior": "In IX, the I comes before the X, so take one away from ten.",
+      "master": "Notice where the I sits in IX, then apply the card's rule."
+    },
+    {
+      "rookie": "Aldo's cabinet opens!",
+      "junior": "Aldo's cabinet clicks open!",
+      "master": "With a click, Aldo's cabinet swings open!"
+    },
+    {
+      "rookie": "The plan says: concrete at 7 AM on 10 May.",
+      "junior": "The plan reads: concrete at 7 AM on 10 May.",
+      "master": "The plan states: concrete to be poured at 7 AM on 10 May."
+    },
+    {
+      "rookie": "Today is 8 May.",
+      "junior": "And today is 8 May.",
+      "master": "And today is already 8 May."
+    },
+    {
+      "rookie": "You run across Rome to Piazza della Civetta.",
+      "junior": "You race across Rome to Piazza della Civetta.",
+      "master": "You dash across Rome toward Piazza della Civetta."
+    },
+    {
+      "rookie": "VI has the small number after the big one: 5 + 1.",
+      "junior": "In VI, the small number comes after the big one: 5 + 1.",
+      "master": "Look again at VI: the smaller number follows the bigger one, so 5 + 1."
+    },
+    {
+      "rookie": "Start at the Forum. Which marker stone comes first on the street?",
+      "junior": "Start at the Forum. Which marker stone comes first along the street?",
+      "master": "Begin at the Forum. Which marker stone would you pass first?"
+    },
+    {
+      "rookie": "The three numbers fit. Walk the street from the Forum.",
+      "junior": "All three numbers are right. Now walk the street from the Forum.",
+      "master": "Your numbers are right, but not their order. Walk the street from the Forum."
+    },
+    {
+      "rookie": "Four, six, nine. The cabinet opens!",
+      "junior": "Four, six, nine. The cabinet is open!",
+      "master": "Four, six, nine... and the cabinet opens!"
+    },
+    {
+      "rookie": "UNDERGROUND CAR PARK. BUILDER: VALLI BUILDING.",
+      "junior": "UNDERGROUND CAR PARK. BUILDER: VALLI BUILDING.",
+      "master": "UNDERGROUND CAR PARK. BUILDER: VALLI BUILDING."
+    },
+    {
+      "rookie": "Valli again. He took the piece on Tuesday.",
+      "junior": "Valli again. He was the one who took the piece on Tuesday.",
+      "master": "Valli once more: the very man who took the piece on Tuesday."
+    },
+    {
+      "rookie": "Concrete on 10 May. That is in two days!",
+      "junior": "Concrete on 10 May? That's only two days away!",
+      "master": "Concrete on 10 May... that is a mere two days from now!"
+    },
+    {
+      "rookie": "The library will be covered forever.",
+      "junior": "The library will be buried forever.",
+      "master": "The library will be sealed beneath the concrete forever."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "scrolls": "두루마리",
+      "columns": "기둥",
+      "traces": "손가락으로 따라가다",
+      "luckily": "다행히",
+      "archive": "기록 보관소",
+      "drawers": "서랍",
+      "marker": "표지석",
+      "buried": "묻힌",
+      "race": "급히 달려가다",
+      "spelling": "철자"
+    },
+    "master": {
+      "identify": "알아내다",
+      "locate": "위치를 찾다",
+      "unbuckles": "버클을 풀다",
+      "labeled": "이름표가 붙은",
+      "stored": "보관되었다",
+      "astonishing": "놀라운",
+      "winds": "구불구불 이어지다",
+      "survive": "남아 있다",
+      "beyond": "~너머에",
+      "bears": "(이름을) 지니다",
+      "decipher": "해독하다",
+      "dash": "급히 달려가다",
+      "mere": "겨우",
+      "sealed": "봉해진"
+    }
+  }
+}

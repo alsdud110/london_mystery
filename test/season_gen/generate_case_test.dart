@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../tool/season_gen/case_levels.dart';
 import '../../tool/season_gen/content_hash.dart';
 import '../../tool/season_gen/dart_literal.dart';
 import '../../tool/season_gen/generate_case.dart';
+import '../../tool/season_gen/plan_models.dart' show CasePlan;
 import '../../tool/season_gen/season_cases.dart';
 
 /// The Dart generator (STEP 3-8, 3-9) on copies of the sandbox plans: the
@@ -142,6 +144,69 @@ void main() {
     test("a plan that breaks the plans' own rules is refused before anything else", () {
       edit(casePath, (json) => json['number'] = 2);
       expect(make, failsWith(contains(contains('structure'))));
+    });
+  });
+
+  group('the levels (Junior, Master): the same game, other English', () {
+    /// Every line of the case at [path] written at both levels as [words] makes it.
+    void writeLevels(String path, String Function(String rookie, String level) words) {
+      final isSeason = path.endsWith('season.plan.json');
+      if (isSeason) {
+        SeasonLevels.writeSkeleton(path);
+        edit(SeasonLevels.pathFor(path), (json) {
+          for (final l in json['lines'] as List) {
+            for (final level in ['junior', 'master']) {
+              (l as Map)[level] = words(l['rookie'] as String, level);
+            }
+          }
+        });
+        return;
+      }
+      CaseLevels.writeSkeleton(path);
+      edit(CaseLevels.pathFor(path), (json) {
+        for (final l in json['lines'] as List) {
+          for (final level in ['junior', 'master']) {
+            (l as Map)[level] = words(l['rookie'] as String, level);
+          }
+        }
+      });
+    }
+
+    test('every case written: its levels made beside it, read from its words alone', () {
+      writeLevels(casePath, (s, level) => s);
+      writeLevels(case02Path, (s, level) => s);
+      if (SeasonLevels.rookieLines(read(season)).isNotEmpty) {
+        expect(make, failsWith(contains(contains('[levels_missing]'))), reason: "the season's own lines too");
+      }
+      writeLevels(season, (s, level) => '$s ($level)');
+      final made = make();
+      if (SeasonLevels.rookieLines(read(season)).isNotEmpty) {
+        expect(made.files['s9_sandbox_levels.g.dart'], contains(' (master)'), reason: "the season's own lines at its level");
+      }
+      expect(made.files.keys, containsAll(['s9_ep01_levels.g.dart', 's9_ep02_levels.g.dart', 's9_sandbox_levels.g.dart']));
+      expect((jsonDecode(made.files[manifestName]!) as Map)['inputs'], containsPair('cases/s9_ep01/levels.json', ContentHash.ofJson(read(CaseLevels.pathFor(casePath)))));
+      final all = made.files['s9_sandbox_levels.g.dart']!;
+      expect(all, contains("'s9_ep01': {Difficulty.rookie, Difficulty.junior, Difficulty.master}"));
+      expect(all, contains("Difficulty.master: {\n    's9_ep01': s9Ep01MasterPatch,"));
+      expect(made.files['s9_ep01.g.dart'], CaseGenerator.sandbox(seasonPath: season, casePaths: [casePath]).files['s9_ep01.g.dart'],
+          reason: "the case's own file is the same with or without its levels");
+    });
+
+    test('a line not written, or one case without levels, is refused', () {
+      writeLevels(casePath, (s, level) => s);
+      expect(make, failsWith(contains(contains('[levels_partial]'))));
+      writeLevels(case02Path, (s, level) => level == 'master' && s == (read(CaseLevels.pathFor(case02Path))['lines'] as List).first['rookie'] ? '' : s);
+      expect(make, failsWith(contains(contains('[level_missing] master'))));
+    });
+
+    test('nothing but the words may differ: an id, an answer or a choice changed is another game', () {
+      final base = CasePlan.fromJson(read(casePath));
+      final reworded = CasePlan.fromJson(CaseLevels.applyWords(read(casePath), (s) => '$s!'));
+      expect(CaseLevels.sameGame(base, reworded), isEmpty);
+      final other = read(casePath);
+      final spec = ((other['missions'] as List).first as Map)['puzzle']['answerSpec'] as Map;
+      spec['answer'] = '${spec['answer']}x';
+      expect(CaseLevels.sameGame(base, CasePlan.fromJson(other)), [contains('answerSpec.answer differs')]);
     });
   });
 

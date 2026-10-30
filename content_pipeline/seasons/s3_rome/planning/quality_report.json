@@ -43,7 +43,7 @@
     "generator": {
       "run": true,
       "compatible": true,
-      "files": 15,
+      "files": 28,
       "blockedByPictures": 0
     },
     "cases": 12,
@@ -370,7 +370,7 @@
       "code": "generator_ok",
       "where": "generate_season",
       "source": "generator",
-      "message": "15 files made in memory (nothing written)"
+      "message": "28 files made in memory (nothing written)"
     }
   ]
 }

@@ -136,6 +136,7 @@ class SeasonContent {
     this.variants = const {},
     this.discoveryOf,
     this.writtenLevels = const {},
+    this.infoLevels = const {},
     this.retiredEngines = const {},
   });
 
@@ -335,6 +336,11 @@ class SeasonContent {
   /// another level's. Rookie written: its words were reviewed (the base
   /// stays wherever they were kept).
   final Map<String, Set<Difficulty>> writtenLevels;
+
+  /// The season's own lines at each level (the generated seasons): by
+  /// level, `outro` / `finale` → its lines, as many as [info]'s own (see
+  /// `DifficultyContent.seasonAt`). A level without them reads [info]'s.
+  final Map<Difficulty, Map<String, List<String>>> infoLevels;
 
   /// Puzzle tables (by their name in [missionTables]) kept but never
   /// played: each of their entries is under an engine the page plays before

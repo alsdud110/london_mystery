@@ -1,0 +1,668 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep08",
+  "lines": [
+    {
+      "rookie": "The Owl of Tiber Island",
+      "junior": "The Owl of Tiber Island",
+      "master": "The Owl of Tiber Island"
+    },
+    {
+      "rookie": "The Owl wants to meet you at last.",
+      "junior": "At last, the Owl is ready to meet you.",
+      "master": "At long last, the Owl asks to meet you in person."
+    },
+    {
+      "rookie": "On an old bridge over the river, a familiar face is waiting.",
+      "junior": "A familiar face is waiting on an old bridge over the river.",
+      "master": "On an ancient bridge above the river, a familiar face is waiting for you."
+    },
+    {
+      "rookie": "Now the Owl can tell you what really happened.",
+      "junior": "Now the Owl can finally tell you what really happened.",
+      "master": "Now, at last, the Owl can reveal what truly happened."
+    },
+    {
+      "rookie": "What is the room on the map, and where is it now?",
+      "junior": "What is the room on the map, and where can it be found today?",
+      "master": "What is the room hidden on the map, and where does it lie today?"
+    },
+    {
+      "rookie": "Find the Owl's bridge.",
+      "junior": "Find the bridge where the Owl is waiting.",
+      "master": "Track down the Owl's bridge."
+    },
+    {
+      "rookie": "Find out why the Owl took the copy.",
+      "junior": "Find out why the Owl took the copy away.",
+      "master": "Discover what drove the Owl to take the copy."
+    },
+    {
+      "rookie": "Put the Owl's week in order.",
+      "junior": "Put the Owl's week back in order.",
+      "master": "Piece together the Owl's week in the right order."
+    },
+    {
+      "rookie": "A new owl card came to the museum this morning.",
+      "junior": "This morning, a new owl card arrived at the museum.",
+      "master": "This morning, yet another owl card turned up at the museum."
+    },
+    {
+      "rookie": "\"You caught Signor Valli's story. Now we can meet.\"",
+      "junior": "\"You saw through Signor Valli's story. Now we can meet.\"",
+      "master": "\"You saw through Signor Valli's tale. The time has come for us to meet.\""
+    },
+    {
+      "rookie": "\"Come to the bridge with the stone faces. — The Owl\"",
+      "junior": "\"Come to the bridge with the stone faces. — The Owl\"",
+      "master": "\"Come to the bridge with the stone faces. — The Owl\""
+    },
+    {
+      "rookie": "The Owl is Livia Conti, the young restorer. She saw the piece was a copy, but nobody believed her. So she took it out and led you to the truth. Her week shows the swap was on Thursday night. Her drawing of the real piece shows a room with shelves: BIBLIO...",
+      "junior": "The Owl is Livia Conti, the young restorer. She had noticed the piece was a copy, but nobody believed her, so she took it out and led you to the truth. Her week shows the swap happened on Thursday night, and her drawing of the real piece shows a room with shelves: BIBLIO...",
+      "master": "The Owl is Livia Conti, the young restorer. When she realized the piece was a copy, no one would believe her, so she removed it herself and guided you toward the truth. Her diary reveals that the swap took place on Thursday night, while her drawing of the real piece shows a room lined with shelves: BIBLIO..."
+    },
+    {
+      "rookie": "TIBER ISLAND",
+      "junior": "TIBER ISLAND",
+      "master": "TIBER ISLAND"
+    },
+    {
+      "rookie": "The bridge with angel statues",
+      "junior": "The bridge with angel statues",
+      "master": "The bridge with angel statues"
+    },
+    {
+      "rookie": "This bridge has angels, not stone faces. Read the card again.",
+      "junior": "This bridge has angels, not stone faces. Read the card once more.",
+      "master": "Angels line this bridge, but the card speaks of stone faces. Reread it."
+    },
+    {
+      "rookie": "a long stone bridge with white angel statues along both sides",
+      "junior": "a long stone bridge with white angel statues along both sides",
+      "master": "a long stone bridge with white angel statues along both sides"
+    },
+    {
+      "rookie": "The bridge with faces on its posts",
+      "junior": "The bridge with faces on its posts",
+      "master": "The bridge with faces on its posts"
+    },
+    {
+      "rookie": "an old stone bridge with two arches and two stone posts, each with four carved faces",
+      "junior": "an old stone bridge with two arches and two stone posts, each with four carved faces",
+      "master": "an old stone bridge with two arches and two stone posts, each with four carved faces"
+    },
+    {
+      "rookie": "The bridge with a round hole",
+      "junior": "The bridge with a round hole",
+      "master": "The bridge with a round hole"
+    },
+    {
+      "rookie": "This bridge has a round hole, not stone faces. Look for faces on the posts.",
+      "junior": "This bridge has a round hole, not stone faces. Look for faces on its posts.",
+      "master": "This one has a round hole, but no stone faces. Turn your attention to the posts, and look for faces."
+    },
+    {
+      "rookie": "a stone bridge with a big round hole above its middle arch",
+      "junior": "a stone bridge with a big round hole above its middle arch",
+      "master": "a stone bridge with a big round hole above its middle arch"
+    },
+    {
+      "rookie": "the bridge with the stone faces",
+      "junior": "the bridge with the stone faces",
+      "master": "the bridge with the stone faces"
+    },
+    {
+      "rookie": "Each post has four faces.",
+      "junior": "Each post has four faces.",
+      "master": "Each post has four faces."
+    },
+    {
+      "rookie": "The Bridge of Four Heads",
+      "junior": "The Bridge of Four Heads",
+      "master": "The Bridge of Four Heads"
+    },
+    {
+      "rookie": "THE MAP HALL",
+      "junior": "THE MAP HALL",
+      "master": "THE MAP HALL"
+    },
+    {
+      "rookie": "Rome has many old bridges over the river Tiber.",
+      "junior": "Many old bridges cross the river Tiber in Rome.",
+      "master": "In Rome, the river Tiber is crossed by many ancient bridges."
+    },
+    {
+      "rookie": "The Owl's card names only one.",
+      "junior": "The Owl's card points to just one of them.",
+      "master": "Yet the Owl's card points to only one."
+    },
+    {
+      "rookie": "Giulia opens her guidebook.",
+      "junior": "Giulia opens her guidebook to check.",
+      "master": "Giulia flips open her guidebook."
+    },
+    {
+      "rookie": "The card from the Owl's box says:",
+      "junior": "The card from the Owl's box reads:",
+      "master": "The card found in the Owl's box reads:"
+    },
+    {
+      "rookie": "Meet me on the bridge with the stone faces.\nIt goes to the little island in the river.\nIt has two stone posts. Each post has four faces.\n— The Owl",
+      "junior": "Meet me on the bridge with the stone faces.\nIt leads to the little island in the river.\nIt has two stone posts. Each post has four faces.\n— The Owl",
+      "master": "Meet me on the bridge with the stone faces.\nIt carries you to the little island in the river.\nTwo stone posts rise from it. Each post has four faces.\n— The Owl"
+    },
+    {
+      "rookie": "Which bridge does the Owl mean?",
+      "junior": "Which bridge is the Owl talking about?",
+      "master": "Which bridge does the Owl have in mind?"
+    },
+    {
+      "rookie": "Read the card. What does each post have?",
+      "junior": "Read the card again. What does each post have on it?",
+      "master": "The card describes the posts closely. What do they carry?"
+    },
+    {
+      "rookie": "Look closely at each bridge. Which one has faces?",
+      "junior": "Look carefully at each bridge. Which one has faces?",
+      "master": "Compare each picture with what the card says about the posts."
+    },
+    {
+      "rookie": "You found the Bridge of Four Heads!",
+      "junior": "You've found the Bridge of Four Heads!",
+      "master": "You've tracked down the Bridge of Four Heads!"
+    },
+    {
+      "rookie": "Two posts, and four stone faces on each one.",
+      "junior": "There are two posts, with four stone faces on each one.",
+      "master": "Two posts, each one carved with four stone faces."
+    },
+    {
+      "rookie": "On the bridge, a woman in a grey hood is waiting.",
+      "junior": "On the bridge, a woman in a grey hood stands waiting.",
+      "master": "On the bridge, a woman in a grey hood waits in silence."
+    },
+    {
+      "rookie": "She takes off her hood. It is Livia Conti, the restorer!",
+      "junior": "She pulls back her hood. It's Livia Conti, the restorer!",
+      "master": "Slowly, she lowers her hood. It is Livia Conti, the restorer!"
+    },
+    {
+      "rookie": "The Owl's Bridge",
+      "junior": "The Owl's Bridge",
+      "master": "The Owl's Bridge"
+    },
+    {
+      "rookie": "The Owl waited on Ponte Fabricio, the old bridge to Tiber Island.",
+      "junior": "The Owl was waiting on Ponte Fabricio, the old bridge that leads to Tiber Island.",
+      "master": "The Owl kept watch on Ponte Fabricio, the ancient bridge to Tiber Island."
+    },
+    {
+      "rookie": "TWO POSTS, EIGHT FACES",
+      "junior": "TWO POSTS, EIGHT FACES",
+      "master": "TWO POSTS, EIGHT FACES"
+    },
+    {
+      "rookie": "This old bridge goes to Tiber Island. Someone in a hood is waiting there.",
+      "junior": "This old bridge leads to Tiber Island, and someone in a hood is waiting there.",
+      "master": "This ancient bridge leads to Tiber Island, where a hooded figure is waiting."
+    },
+    {
+      "rookie": "She wanted to sell it.",
+      "junior": "She wanted to sell it for money.",
+      "master": "She planned to sell it."
+    },
+    {
+      "rookie": "Livia left the copy for you at the bookshop. Would a seller do that?",
+      "junior": "Livia left the copy at the bookshop for you to find. Would someone who wanted to sell it do that?",
+      "master": "Livia left the copy at the bookshop for you. Is that how a seller would behave?"
+    },
+    {
+      "rookie": "Professor Aldo asked her to.",
+      "junior": "Professor Aldo asked her to do it.",
+      "master": "Professor Aldo put her up to it."
+    },
+    {
+      "rookie": "Read Livia's words again. Who did she tell about the piece?",
+      "junior": "Look at Livia's words again. Who did she tell about the piece?",
+      "master": "Go back over Livia's words. Who was the one she told about the piece?"
+    },
+    {
+      "rookie": "So nobody would show a copy and call it real.",
+      "junior": "So that nobody would show a copy and call it real.",
+      "master": "So that no one could display a copy and pass it off as real."
+    },
+    {
+      "rookie": "I did not want people to call a copy real.",
+      "junior": "I did not want people to call a copy real.",
+      "master": "I did not want people to call a copy real."
+    },
+    {
+      "rookie": "She said, \"You are tired.\"",
+      "junior": "She said, \"You are tired.\"",
+      "master": "She said, \"You are tired.\""
+    },
+    {
+      "rookie": "The Owl Takes Off Her Hood",
+      "junior": "The Owl Takes Off Her Hood",
+      "master": "The Owl Takes Off Her Hood"
+    },
+    {
+      "rookie": "THE BRIDGE OF FOUR HEADS",
+      "junior": "THE BRIDGE OF FOUR HEADS",
+      "master": "THE BRIDGE OF FOUR HEADS"
+    },
+    {
+      "rookie": "Livia's hood is down. Her silver owl ring shines.",
+      "junior": "Livia's hood is down, and her silver owl ring shines.",
+      "master": "Livia's hood is lowered, and her silver owl ring glints in the light."
+    },
+    {
+      "rookie": "She looks tired, but she smiles.",
+      "junior": "She looks tired, but she manages a smile.",
+      "master": "Weariness shows on her face, yet she smiles."
+    },
+    {
+      "rookie": "Livia says:",
+      "junior": "Livia explains:",
+      "master": "Livia begins:"
+    },
+    {
+      "rookie": "\"On Friday morning, I cleaned the new piece.\nIt was wrong! It was too light, and the old crack was gone.\nI told Director Sofia. She said, 'You are tired, Livia.'\nSo at midnight, I turned off the lights and took the piece out.\nIt was a copy. I did not want people to call a copy real.\nI left cards so you could find the truth with your own eyes.\"",
+      "junior": "\"On Friday morning, I was cleaning the new piece.\nSomething was wrong! It was too light, and the old crack had disappeared.\nI told Director Sofia. She said, 'You are tired, Livia.'\nSo at midnight, I turned off the lights and took the piece out.\nIt was a copy. I did not want people to call a copy real.\nI left cards so that you could find the truth with your own eyes.\"",
+      "master": "\"On Friday morning, as I cleaned the new piece, I knew at once that something was wrong.\nIt was far too light, and the old crack had vanished.\nI told Director Sofia, but she said, 'You are tired, Livia.'\nSo at midnight, I switched off the lights and carried the piece out.\nIt was a copy. I did not want people to call a copy real.\nI left my cards so that you could uncover the truth with your own eyes.\""
+    },
+    {
+      "rookie": "Why did Livia take the copy out of the glass case?",
+      "junior": "Why did Livia remove the copy from the glass case?",
+      "master": "What made Livia take the copy out of the glass case?"
+    },
+    {
+      "rookie": "Livia knew the piece in the case was a copy. What would happen at the show?",
+      "junior": "Livia knew the piece in the case was a copy. What would have happened at the show?",
+      "master": "Livia knew the case held only a copy. Imagine what the show would have presented to the world."
+    },
+    {
+      "rookie": "Find the line that begins: I did not want...",
+      "junior": "Find the line that starts with: I did not want...",
+      "master": "One of Livia's lines begins: I did not want... Read it closely."
+    },
+    {
+      "rookie": "Now you know who the Owl is, and why.",
+      "junior": "Now you know who the Owl is, and why she did it.",
+      "master": "The Owl's identity, and her reason, are no longer a mystery."
+    },
+    {
+      "rookie": "Livia took the copy so nobody would call it the real piece.",
+      "junior": "Livia took the copy so that nobody would call it the real piece.",
+      "master": "Livia removed the copy so that no one could pass it off as the real piece."
+    },
+    {
+      "rookie": "\"Come to my lab,\" she says. \"I wrote down the whole week.\"",
+      "junior": "\"Come to my lab,\" she says. \"I wrote down everything that happened this week.\"",
+      "master": "\"Come to my lab,\" she urges. \"I recorded the entire week in my diary.\""
+    },
+    {
+      "rookie": "The Owl Is Livia",
+      "junior": "The Owl Is Livia",
+      "master": "The Owl Is Livia"
+    },
+    {
+      "rookie": "Livia saw the piece was a copy. She took it out and left the owl cards.",
+      "junior": "Livia realized the piece was a copy, so she took it out and left the owl cards.",
+      "master": "Livia recognized the piece as a copy; she removed it and left a trail of owl cards."
+    },
+    {
+      "rookie": "Prove it",
+      "junior": "Prove it",
+      "master": "Prove it"
+    },
+    {
+      "rookie": "Livia asks: which card did I leave for you first?",
+      "junior": "Livia asks: which card did I leave for you first?",
+      "master": "Livia asks: which card did I leave for you at the very start?"
+    },
+    {
+      "rookie": "That is not my first card. Where did your trail begin?",
+      "junior": "That isn't my first card. Where did your trail begin?",
+      "master": "No, that one came later. Think back: where did your trail begin?"
+    },
+    {
+      "rookie": "Hear the Owl out.",
+      "junior": "Hear what the Owl has to say.",
+      "master": "Let the Owl tell her story."
+    },
+    {
+      "rookie": "Yes. I am the Owl.",
+      "junior": "Yes. I'm the Owl.",
+      "master": "Yes. It is true: I am the Owl."
+    },
+    {
+      "rookie": "On Saturday, you said you worked late.",
+      "junior": "On Saturday, you told me you had worked late.",
+      "master": "On Saturday, you claimed you had been working late."
+    },
+    {
+      "rookie": "I did. I was in my lab at midnight.",
+      "junior": "That was true. I was in my lab at midnight.",
+      "master": "And that was the truth. At midnight, I was in my lab."
+    },
+    {
+      "rookie": "But first, show me you followed my trail.",
+      "junior": "But first, show me that you followed my trail.",
+      "master": "But first, prove to me that you followed my trail."
+    },
+    {
+      "rookie": "SHOW HER",
+      "junior": "SHOW HER",
+      "master": "SHOW HER"
+    },
+    {
+      "rookie": "I was scared. Nobody believed me.",
+      "junior": "I was frightened, because nobody believed me.",
+      "master": "I was afraid. Not a single person believed me."
+    },
+    {
+      "rookie": "So I left cards for you.",
+      "junior": "So I left a trail of cards for you.",
+      "master": "So I left my cards for you to follow."
+    },
+    {
+      "rookie": "So I could find the truth myself.",
+      "junior": "So that I could find the truth myself.",
+      "master": "So that I could uncover the truth for myself."
+    },
+    {
+      "rookie": "THE OWL IS LIVIA CONTI",
+      "junior": "THE OWL IS LIVIA CONTI",
+      "master": "THE OWL IS LIVIA CONTI"
+    },
+    {
+      "rookie": "She saw the copy on Friday morning. Nobody believed her, so she acted alone.",
+      "junior": "She had spotted the copy on Friday morning. Nobody believed her, so she acted alone.",
+      "master": "She discovered the copy on Friday morning. With no one willing to believe her, she acted alone."
+    },
+    {
+      "rookie": "Livia found the piece was too light",
+      "junior": "Livia found out the piece was too light",
+      "master": "Livia discovered the piece was too light"
+    },
+    {
+      "rookie": "Signor Valli took the piece for photos",
+      "junior": "Signor Valli took the piece away for photos",
+      "master": "Signor Valli borrowed the piece for photos"
+    },
+    {
+      "rookie": "Livia took the copy out",
+      "junior": "Livia took the copy out",
+      "master": "Livia carried the copy out"
+    },
+    {
+      "rookie": "Signor Valli came to check the lights",
+      "junior": "Signor Valli came to check the lights",
+      "master": "Signor Valli arrived to check the lights"
+    },
+    {
+      "rookie": "Signor Valli took the piece out of the lab for poster photos.",
+      "junior": "Signor Valli took the piece out of the lab for poster photos.",
+      "master": "Signor Valli took the piece out of the lab for poster photos."
+    },
+    {
+      "rookie": "Signor Valli came at 11 PM to \"check the lights\".",
+      "junior": "Signor Valli came at 11 PM to \"check the lights\".",
+      "master": "Signor Valli came at 11 PM to \"check the lights\"."
+    },
+    {
+      "rookie": "Livia's Week",
+      "junior": "Livia's Week",
+      "master": "Livia's Week"
+    },
+    {
+      "rookie": "THE RESTORATION LAB",
+      "junior": "THE RESTORATION LAB",
+      "master": "THE RESTORATION LAB"
+    },
+    {
+      "rookie": "Livia's lab is quiet and full of old stones.",
+      "junior": "Livia's lab is quiet and filled with old stones.",
+      "master": "Livia's lab is hushed and crowded with ancient stones."
+    },
+    {
+      "rookie": "She opens her diary on the table.",
+      "junior": "She lays her diary open on the table.",
+      "master": "She spreads her diary open across the table."
+    },
+    {
+      "rookie": "\"The pages fell out,\" she says. \"Can you put them back?\"",
+      "junior": "\"The pages fell out,\" she says. \"Can you put them back in order?\"",
+      "master": "\"The pages came loose,\" she sighs. \"Could you put them back where they belong?\""
+    },
+    {
+      "rookie": "Livia's diary pages say:",
+      "junior": "Livia's diary pages read:",
+      "master": "The loose diary pages read:"
+    },
+    {
+      "rookie": "FRIDAY MORNING — I cleaned the piece. It is light! The crack is gone!\nTUESDAY — Signor Valli took the piece out of the lab for poster photos.\nFRIDAY, MIDNIGHT — I turned off the lights and took the copy.\nTHURSDAY NIGHT — Enzo says Signor Valli came at 11 PM to \"check the lights\".",
+      "junior": "FRIDAY MORNING — I cleaned the piece. It is too light! The crack has gone!\nTUESDAY — Signor Valli took the piece out of the lab for poster photos.\nFRIDAY, MIDNIGHT — I switched off the lights and took the copy.\nTHURSDAY NIGHT — Enzo says Signor Valli came at 11 PM to \"check the lights\".",
+      "master": "FRIDAY MORNING — While cleaning the piece, I noticed it is far too light! The crack has vanished!\nTUESDAY — Signor Valli took the piece out of the lab for poster photos.\nFRIDAY, MIDNIGHT — I switched off the lights and slipped out with the copy.\nTHURSDAY NIGHT — Enzo tells me Signor Valli came at 11 PM to \"check the lights\"."
+    },
+    {
+      "rookie": "Put Livia's week in order.",
+      "junior": "Put the pages of Livia's week in order.",
+      "master": "Arrange Livia's week in the order it happened."
+    },
+    {
+      "rookie": "Say the days: Monday, Tuesday, Wednesday, Thursday, Friday.",
+      "junior": "Say the days of the week: Monday, Tuesday, Wednesday, Thursday, Friday.",
+      "master": "Recite the days of the week, starting from Monday."
+    },
+    {
+      "rookie": "On Friday, morning comes before midnight.",
+      "junior": "On Friday, the morning comes before midnight.",
+      "master": "Two pages share Friday. Which part of the day comes first?"
+    },
+    {
+      "rookie": "You put the week together!",
+      "junior": "You pieced the week back together!",
+      "master": "Page by page, you've rebuilt Livia's week!"
+    },
+    {
+      "rookie": "Tuesday, Thursday night, Friday morning, Friday midnight.",
+      "junior": "Tuesday, then Thursday night, Friday morning, and Friday midnight.",
+      "master": "Tuesday, Thursday night, Friday morning, and finally Friday midnight."
+    },
+    {
+      "rookie": "On Friday morning, the piece in the case was already a copy.",
+      "junior": "By Friday morning, the piece in the case was already a copy.",
+      "master": "By Friday morning, the piece in the case had already been replaced with a copy."
+    },
+    {
+      "rookie": "\"So the swap happened on Thursday night,\" you say. \"When Signor Valli came to check the lights.\"",
+      "junior": "\"So the swap happened on Thursday night,\" you say, \"when Signor Valli came to check the lights.\"",
+      "master": "\"Then the swap must have happened on Thursday night,\" you say, \"when Signor Valli dropped by to 'check the lights'.\""
+    },
+    {
+      "rookie": "Read the days again. Which day comes first in the week?",
+      "junior": "Look at the days again. Which one comes first in the week?",
+      "master": "Reconsider the days. Which comes earliest in the week?"
+    },
+    {
+      "rookie": "The swap happened on Thursday night, when Valli came to the museum.",
+      "junior": "The swap took place on Thursday night, when Valli came to the museum.",
+      "master": "The swap took place on Thursday night, during Valli's visit to the museum."
+    },
+    {
+      "rookie": "THE SWAP WAS ON THURSDAY",
+      "junior": "THE SWAP WAS ON THURSDAY",
+      "master": "THE SWAP WAS ON THURSDAY"
+    },
+    {
+      "rookie": "On Friday morning, the case already held a copy. Who came on Thursday night?",
+      "junior": "By Friday morning, the case already held a copy. So who came on Thursday night?",
+      "master": "By Friday morning, the case already held a copy. Who, then, paid a visit on Thursday night?"
+    },
+    {
+      "rookie": "K",
+      "junior": "K",
+      "master": "K"
+    },
+    {
+      "rookie": "C",
+      "junior": "C",
+      "master": "C"
+    },
+    {
+      "rookie": "A",
+      "junior": "A",
+      "master": "A"
+    },
+    {
+      "rookie": "R",
+      "junior": "R",
+      "master": "R"
+    },
+    {
+      "rookie": "A crack shaped like a Y.",
+      "junior": "A crack shaped like a Y.",
+      "master": "A crack shaped like a Y."
+    },
+    {
+      "rookie": "THE COPY: plaster, 4 kg, a street, an owl, no crack.",
+      "junior": "THE COPY: plaster, 4 kg, a street, an owl, no crack.",
+      "master": "THE COPY: plaster, 4 kg, a street, an owl, no crack."
+    },
+    {
+      "rookie": "Livia's Locker",
+      "junior": "Livia's Locker",
+      "master": "Livia's Locker"
+    },
+    {
+      "rookie": "Livia's locker has a letter lock.",
+      "junior": "Livia's locker is closed with a letter lock.",
+      "master": "Livia's locker is sealed with a letter lock."
+    },
+    {
+      "rookie": "\"I hid my best clue in here,\" she says.",
+      "junior": "\"I hid my most important clue in here,\" she says.",
+      "master": "\"My most precious clue is hidden in here,\" she says."
+    },
+    {
+      "rookie": "\"The lock word is the mark only the real piece has.\"",
+      "junior": "\"The lock word is the mark that only the real piece has.\"",
+      "master": "\"The lock word is the one mark found only on the real piece.\""
+    },
+    {
+      "rookie": "Livia's table says:",
+      "junior": "Livia's table reads:",
+      "master": "Livia's comparison table reads:"
+    },
+    {
+      "rookie": "THE REAL PIECE: marble, 12 kg, a street, an owl, a crack shaped like a Y.\nTHE COPY: plaster, 4 kg, a street, an owl, no crack.\n\nThe lock word: a mark you can see on the real piece. The copy does not have it.",
+      "junior": "THE REAL PIECE: marble, 12 kg, a street, an owl, a crack shaped like a Y.\nTHE COPY: plaster, 4 kg, a street, an owl, no crack.\n\nThe lock word: a mark you can see on the real piece, which the copy does not have.",
+      "master": "THE REAL PIECE: marble, 12 kg, a street, an owl, a crack shaped like a Y.\nTHE COPY: plaster, 4 kg, a street, an owl, no crack.\n\nThe lock word: a mark that anyone can see on the real piece, but which the copy lacks."
+    },
+    {
+      "rookie": "Spell the mark that only the real piece has.",
+      "junior": "Spell out the mark that only the real piece has.",
+      "master": "Spell the mark that belongs to the real piece alone."
+    },
+    {
+      "rookie": "Both pieces have a long street and a tiny owl.",
+      "junior": "Both pieces have a long street and a tiny owl on them.",
+      "master": "The street and the owl appear on both pieces, so look elsewhere."
+    },
+    {
+      "rookie": "Look at Aldo's old photo in your Notebook. What shape is the mark?",
+      "junior": "Check Aldo's old photo in your Notebook. What shape is the mark?",
+      "master": "Recall Aldo's old photo in your Notebook. Which mark has a shape all its own?"
+    },
+    {
+      "rookie": "Livia's locker opens!",
+      "junior": "Livia's locker clicks open!",
+      "master": "With a click, Livia's locker swings open!"
+    },
+    {
+      "rookie": "\"I think this room is under Rome today,\" Livia says.",
+      "junior": "\"I think this room lies under Rome today,\" Livia says.",
+      "master": "\"I believe this room lies somewhere beneath Rome today,\" Livia says."
+    },
+    {
+      "rookie": "\"And I think Signor Valli knows it.\"",
+      "junior": "\"And I think Signor Valli knows about it.\"",
+      "master": "\"And I suspect Signor Valli knows it too.\""
+    },
+    {
+      "rookie": "One man reads old maps like a book: Professor Aldo.",
+      "junior": "There is one man who reads old maps like a book: Professor Aldo.",
+      "master": "There is one man who reads old maps as easily as a book: Professor Aldo."
+    },
+    {
+      "rookie": "The five tiles fit. What can you see on the real piece?",
+      "junior": "All five tiles fit. What can you see on the real piece?",
+      "master": "The five tiles are right, but not their order. What mark does the real piece show?"
+    },
+    {
+      "rookie": "LIVIA'S LOCKER",
+      "junior": "LIVIA'S LOCKER",
+      "master": "LIVIA'S LOCKER"
+    },
+    {
+      "rookie": "Yes. The crack. Only the real piece has it.",
+      "junior": "Yes, the crack. Only the real piece has it.",
+      "master": "Yes, the crack. The real piece alone has it."
+    },
+    {
+      "rookie": "Aldo's photo shows the same Y-shaped crack.",
+      "junior": "Aldo's photo shows exactly the same Y-shaped crack.",
+      "master": "Aldo's photo shows that very same Y-shaped crack."
+    },
+    {
+      "rookie": "In the locker is Livia's drawing of the real piece.",
+      "junior": "Inside the locker is Livia's drawing of the real piece.",
+      "master": "Inside the locker lies Livia's drawing of the real piece."
+    },
+    {
+      "rookie": "Next to the tiny owl, there is a room.",
+      "junior": "Next to the tiny owl, there's a room.",
+      "master": "Look: beside the tiny owl, there is a room."
+    },
+    {
+      "rookie": "And half a word: BIBLIO... What does it mean?",
+      "junior": "And half a word: BIBLIO... What could it mean?",
+      "master": "And half of a word: BIBLIO... What can it mean?"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "guidebook": "여행 안내서",
+      "leads": "이어지다",
+      "remove": "치우다, 꺼내다",
+      "disappeared": "사라졌다",
+      "realized": "깨달았다",
+      "frightened": "겁먹은",
+      "spotted": "발견했다",
+      "manages": "간신히 해내다",
+      "switched": "(스위치를) 껐다",
+      "pieced": "맞추어 붙였다",
+      "important": "중요한"
+    },
+    "master": {
+      "ancient": "아주 오래된",
+      "reveal": "밝히다",
+      "glints": "반짝이다",
+      "weariness": "피로",
+      "uncover": "밝혀내다",
+      "display": "전시하다",
+      "recognized": "알아보았다",
+      "urges": "재촉하다",
+      "hushed": "조용한",
+      "recite": "차례로 외우다",
+      "precious": "소중한",
+      "suspect": "의심하다, ~라고 생각하다",
+      "lacks": "~이 없다",
+      "comparison": "비교",
+      "earliest": "가장 이른"
+    }
+  }
+}

@@ -160,12 +160,23 @@ PlanFileResult check(String path, SchemaSet schemas, {SeasonPlan? season}) {
   } on PlanFormatException catch (e) {
     return PlanFileResult([e.message]);
   }
-  final out = [for (final p in schemas.validate(json, isSeason ? 'season_plan.schema.json' : 'case_plan.schema.json')) 'schema $p'];
-  try {
-    if (isSeason) {
+  if (isSeason) {
+    final out = [for (final p in schemas.validate(json, 'season_plan.schema.json')) 'schema $p'];
+    try {
       out.addAll(PlanCheck.season(SeasonPlan.fromJson(json)).map((p) => 'structure $p'));
-      return PlanFileResult(out);
+    } on PlanFormatException catch (e) {
+      out.add('model ${e.path}: ${e.message}');
     }
+    return PlanFileResult(out);
+  }
+  return checkJson(json, schemas, season: season);
+}
+
+/// What is wrong with case plan [json] (read from a file or made, as a
+/// case's level is: `case_levels.dart`), as [check] finds it.
+PlanFileResult checkJson(Object? json, SchemaSet schemas, {SeasonPlan? season}) {
+  final out = [for (final p in schemas.validate(json, 'case_plan.schema.json')) 'schema $p'];
+  try {
     final plan = CasePlan.fromJson(json);
     out.addAll(PlanCheck.casePlan(plan, season: season).map((p) => 'structure $p'));
     if (out.isNotEmpty) return PlanFileResult(out);

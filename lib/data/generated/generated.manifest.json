@@ -1,6 +1,6 @@
 {
   "generator": "generate_case.dart",
-  "generatorVersion": 4,
+  "generatorVersion": 5,
   "target": "gameRegistry",
   "seasons": [
     "s3_rome"

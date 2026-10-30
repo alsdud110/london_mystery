@@ -245,16 +245,18 @@ void main() {
       expect(SeasonCatalog.clock(baseMission('ep02_m2')), isNull);
     });
     test('A puzzle object of another kind, or of a kind with no structure check, is caught', () {
+      // (Talks with witnesses have a structure check since the generated
+      // seasons write them at every level: a picture-only table has none.)
+      final lockId = season2Content.lockBoxes.keys.first;
       final bad = SeasonContent(
-        info: season1Content.info,
-        episodes: season1Content.episodes,
-        clocks: season1Content.clocks,
-        dialogues: season1Content.dialogues,
+        info: season2Content.info,
+        episodes: season2Content.episodes,
+        lockBoxes: season2Content.lockBoxes,
         variants: {
-          Difficulty.master: SeasonContent(info: const {}, episodes: const {}, dialogues: {'ep06_m1': season1Content.dialogues['ep06_m1']!}),
+          Difficulty.master: SeasonContent(info: const {}, episodes: const {}, lockBoxes: {lockId: season2Content.lockBoxes[lockId]!}),
         },
       );
-      expect(DifficultyContent.problemsOf(bad).join('\n'), contains('no structure check for DialogueScene'));
+      expect(DifficultyContent.problemsOf(bad).join('\n'), contains('no structure check for LockBoxArt'));
     });
   });
 
@@ -425,6 +427,29 @@ void main() {
           }
         }
       }
+    });
+  });
+
+  group("A season's own lines (outro, finale)", () {
+    test("Rome's at each level, line for line; everything else of the season its own", () {
+      final rome = SeasonCatalog.byId('s3_rome')!;
+      expect(DifficultyContent.seasonAt(rome, Difficulty.rookie).outro, rome.season.outro);
+      for (final level in [Difficulty.junior, Difficulty.master]) {
+        final s = DifficultyContent.seasonAt(rome, level);
+        expect(s.outro, rome.infoLevels[level]!['outro'], reason: level.name);
+        expect(s.finale, rome.infoLevels[level]!['finale'], reason: level.name);
+        expect(s.outro, isNot(rome.season.outro), reason: '${level.name}: its own words');
+        expect((s.id, s.number, s.title, s.city, s.plannedCases), (rome.season.id, rome.season.number, rome.season.title, rome.season.city, rome.season.plannedCases));
+      }
+    });
+
+    test('a line more or less, or another field, is caught and never laid on', () {
+      final rome = SeasonCatalog.byId('s3_rome')!;
+      final bad = SeasonContent(info: rome.info, episodes: const {}, infoLevels: {
+        Difficulty.master: {'outro': ['One line only.'], 'title': ['Another title']},
+      });
+      expect(DifficultyContent.problemsOf(bad), containsAll([contains('season.outro: 1 lines'), contains('season.title: may not change')]));
+      expect(DifficultyContent.seasonAt(bad, Difficulty.master).outro, rome.season.outro);
     });
   });
 

@@ -139,7 +139,11 @@ Episode? caseOfClue(List<Episode> catalog, String clueId) {
 /// who is behind it).
 final seasonInfoProvider = Provider<Season>((ref) {
   final id = ref.watch(selectedSeasonIdProvider);
-  return ref.watch(seasonsProvider).firstWhere((s) => s.id == id);
+  final season = ref.watch(seasonsProvider).firstWhere((s) => s.id == id);
+  // Its own lines (outro, finale) in its level's words, where it has them.
+  final content = SeasonCatalog.byId(id);
+  if (content == null || content.infoLevels.isEmpty) return season;
+  return DifficultyContent.seasonAt(content, ref.watch(seasonDifficultyProvider(id)));
 });
 
 /// Whether a season can be played yet.

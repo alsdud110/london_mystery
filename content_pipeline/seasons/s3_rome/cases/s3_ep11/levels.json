@@ -1,0 +1,880 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep11",
+  "lines": [
+    {
+      "rookie": "The Builder's Box Room",
+      "junior": "The Builder's Box Room",
+      "master": "The Builder's Box Room"
+    },
+    {
+      "rookie": "Sofia comes with the city inspector.",
+      "junior": "Sofia arrives with the city inspector.",
+      "master": "Sofia returns, the city inspector at her side."
+    },
+    {
+      "rookie": "Signor Valli smiles and says, \"Search all you like!\"",
+      "junior": "Signor Valli smiles and says, \"Search all you like!\"",
+      "master": "Signor Valli flashes a smile. \"Search all you like!\" he says."
+    },
+    {
+      "rookie": "Three stones, one story that is not true, and one dropped pass.",
+      "junior": "Three stones, one story that isn't true, and one pass that was dropped.",
+      "master": "Three stones, one story that doesn't hold up, and one pass someone let fall."
+    },
+    {
+      "rookie": "The work has stopped. Tomorrow, you will see what is under the owl square.",
+      "junior": "The work has stopped. Tomorrow, you will finally see what is under the owl square.",
+      "master": "The work has ground to a halt. Tomorrow, you will discover what lies beneath the owl square."
+    },
+    {
+      "rookie": "Find the real piece.",
+      "junior": "Find the real map piece.",
+      "master": "Track down the real map piece."
+    },
+    {
+      "rookie": "Check Valli's market story.",
+      "junior": "Check whether Valli's market story is true.",
+      "master": "Test Valli's story about the market."
+    },
+    {
+      "rookie": "Tell his plan in order.",
+      "junior": "Explain his plan in the right order.",
+      "master": "Lay out his plan, step by step."
+    },
+    {
+      "rookie": "It is the morning of 9 May. The concrete comes tomorrow.",
+      "junior": "It is the morning of 9 May, and the concrete is coming tomorrow.",
+      "master": "It is the morning of 9 May. Tomorrow, the concrete will be poured."
+    },
+    {
+      "rookie": "Director Sofia arrives with the city inspector.",
+      "junior": "Director Sofia turns up with the city inspector.",
+      "master": "Director Sofia appears, the city inspector close behind her."
+    },
+    {
+      "rookie": "\"Signor Valli,\" says the inspector, \"we would like to see your office.\"",
+      "junior": "\"Signor Valli,\" says the inspector, \"we would like to take a look at your office.\"",
+      "master": "\"Signor Valli,\" the inspector announces, \"we would like to inspect your office.\""
+    },
+    {
+      "rookie": "The real piece was in Valli's box room. It has the owl and the Y-shaped crack. Pia and Sofia agreed: the market is closed on Sunday. So Valli's story was not true. Step by step, the evidence showed his plan. Then the pass he dropped made him tell the truth. He did not want to lose his money.",
+      "junior": "The real piece was hidden in Valli's box room; it has the owl and the Y-shaped crack. Pia and Sofia agreed that the market is closed on Sunday, so Valli's story was not true. Step by step, the evidence revealed his plan. Then the pass he had dropped made him tell the truth. He did not want to lose his money.",
+      "master": "The real piece had been hidden in Valli's box room, marked by the owl and the Y-shaped crack. Pia and Sofia agreed that the market is closed on Sunday, so Valli's story fell apart. Step by step, the evidence laid bare his plan, and the pass he had dropped finally forced the truth out of him. He did not want to lose his money."
+    },
+    {
+      "rookie": "PIAZZA DELLA CIVETTA",
+      "junior": "PIAZZA DELLA CIVETTA",
+      "master": "PIAZZA DELLA CIVETTA"
+    },
+    {
+      "rookie": "Stone A",
+      "junior": "Stone A",
+      "master": "Stone A"
+    },
+    {
+      "rookie": "This stone has a lion, not a street and an owl.",
+      "junior": "This stone has a lion on it, not a street and an owl.",
+      "master": "A lion is carved here, but you are looking for a street and an owl."
+    },
+    {
+      "rookie": "a grey marble stone carved with a lion's head",
+      "junior": "a grey marble stone with a lion's head carved on it",
+      "master": "a grey marble stone engraved with a lion's head"
+    },
+    {
+      "rookie": "Stone B",
+      "junior": "Stone B",
+      "master": "Stone B"
+    },
+    {
+      "rookie": "It has street lines. But look for the tiny owl and the crack.",
+      "junior": "It does have street lines, but look for the tiny owl and the crack.",
+      "master": "The street lines are there, but where are the tiny owl and the crack?"
+    },
+    {
+      "rookie": "a grey marble stone carved with street lines, with no owl and no crack",
+      "junior": "a grey marble stone with street lines carved on it, but no owl and no crack",
+      "master": "a grey marble stone engraved with street lines, without any owl or crack"
+    },
+    {
+      "rookie": "Stone C",
+      "junior": "Stone C",
+      "master": "Stone C"
+    },
+    {
+      "rookie": "a grey marble stone carved with street lines, a tiny owl and a crack shaped like a Y",
+      "junior": "a grey marble stone with street lines carved on it, a tiny owl and a crack shaped like a Y",
+      "master": "a grey marble stone engraved with street lines, a tiny owl and a crack shaped like a Y"
+    },
+    {
+      "rookie": "a crack shaped like a Y",
+      "junior": "a crack shaped like a Y",
+      "master": "a crack shaped like a Y"
+    },
+    {
+      "rookie": "a tiny owl",
+      "junior": "a tiny owl",
+      "master": "a tiny owl"
+    },
+    {
+      "rookie": "Only one is the real map piece.",
+      "junior": "Only one is the real map piece.",
+      "master": "Only one is the real map piece."
+    },
+    {
+      "rookie": "Three Stones",
+      "junior": "Three Stones",
+      "master": "Three Stones"
+    },
+    {
+      "rookie": "VALLI'S SITE OFFICE",
+      "junior": "VALLI'S SITE OFFICE",
+      "master": "VALLI'S SITE OFFICE"
+    },
+    {
+      "rookie": "Sofia arrives with the city inspector, a tall woman with a clipboard.",
+      "junior": "Sofia arrives with the city inspector, a tall woman who carries a clipboard.",
+      "master": "Sofia arrives with the city inspector, a tall woman clutching a clipboard."
+    },
+    {
+      "rookie": "Signor Valli opens his office with a big smile. \"Search all you like!\"",
+      "junior": "Signor Valli opens his office with a big smile. \"Search all you like!\"",
+      "master": "Signor Valli throws open his office with a broad smile. \"Search all you like!\""
+    },
+    {
+      "rookie": "In his box room, there are three grey stones on a shelf.",
+      "junior": "In his box room, three grey stones sit on a shelf.",
+      "master": "On a shelf in his box room rest three grey stones."
+    },
+    {
+      "rookie": "The inspector's notes say:",
+      "junior": "Here is what the inspector's notes say:",
+      "master": "The inspector's notes read:"
+    },
+    {
+      "rookie": "THE BOX ROOM — THREE STONES\nAll three are grey marble.\nAll three weigh about 12 kg.\nOnly one is the real map piece.\nCheck them against Aldo's photo.",
+      "junior": "THE BOX ROOM — THREE STONES\nAll three are made of grey marble.\nEach one weighs about 12 kg.\nOnly one is the real map piece.\nCompare them with Aldo's photo.",
+      "master": "THE BOX ROOM — THREE STONES\nAll three: grey marble.\nAll three: roughly 12 kg each.\nOnly one is the real map piece.\nCompare each against Aldo's photo before deciding."
+    },
+    {
+      "rookie": "Which stone is the real map piece?",
+      "junior": "Which of the stones is the real map piece?",
+      "master": "Which of these stones is the genuine map piece?"
+    },
+    {
+      "rookie": "Open Aldo's photo. What marks does the real piece have?",
+      "junior": "Open Aldo's photo. Which marks does the real piece have?",
+      "master": "Aldo's photo shows marks that no copy could fake. What are they?"
+    },
+    {
+      "rookie": "Look at each stone for a tiny owl and a crack shaped like a Y.",
+      "junior": "Check each stone for a tiny owl and a crack shaped like a Y.",
+      "master": "Study each carving closely: only the real piece has both a tiny owl and a crack shaped like a Y."
+    },
+    {
+      "rookie": "You found the real piece!",
+      "junior": "You've found the real piece!",
+      "master": "You've uncovered the real piece!"
+    },
+    {
+      "rookie": "Livia touches the stone gently. \"It is the real one.\"",
+      "junior": "Livia gently touches the stone. \"This is the real one.\"",
+      "master": "Livia runs her fingers gently over the stone. \"This is the real one.\""
+    },
+    {
+      "rookie": "Pia's stall is only two streets away.",
+      "junior": "Pia's stall is just two streets away.",
+      "master": "Pia's flower stall lies only two streets away."
+    },
+    {
+      "rookie": "Giulia runs to bring her here.",
+      "junior": "Giulia runs off to bring her here.",
+      "master": "Giulia dashes off to fetch her."
+    },
+    {
+      "rookie": "The Real Piece",
+      "junior": "The Real Piece",
+      "master": "The Real Piece"
+    },
+    {
+      "rookie": "The real map piece was in Valli's box room, next to a second plaster copy.",
+      "junior": "The real map piece was in Valli's box room, beside a second plaster copy.",
+      "master": "The real map piece was hidden in Valli's box room, alongside a second plaster copy."
+    },
+    {
+      "rookie": "Which one is real?",
+      "junior": "Which one is real?",
+      "master": "Which one is real?"
+    },
+    {
+      "rookie": "Which thing in your Notebook shows the real piece's mark?",
+      "junior": "What in your Notebook shows the real piece's mark?",
+      "master": "What in your Notebook records the real piece's mark?"
+    },
+    {
+      "rookie": "Find the old photo Aldo gave you.",
+      "junior": "Look for the old photo that Aldo gave you.",
+      "master": "Look for the old photograph Aldo handed you."
+    },
+    {
+      "rookie": "Find the real map piece.",
+      "junior": "Find out which stone is the real map piece.",
+      "master": "Identify the real map piece."
+    },
+    {
+      "rookie": "That old thing? It is mine!",
+      "junior": "That old thing? It belongs to me!",
+      "master": "That old lump of stone? It's mine, fair and square!"
+    },
+    {
+      "rookie": "I bought it last Sunday, at Campo de' Fiori.",
+      "junior": "I bought it last Sunday, at Campo de' Fiori.",
+      "master": "I purchased it last Sunday, at Campo de' Fiori."
+    },
+    {
+      "rookie": "A man called Leo sold it to me.",
+      "junior": "A man named Leo sold it to me.",
+      "master": "A fellow by the name of Leo sold it to me."
+    },
+    {
+      "rookie": "Then we will ask the flower seller.",
+      "junior": "Then we'll ask the flower seller.",
+      "master": "In that case, let's ask the flower seller."
+    },
+    {
+      "rookie": "THE REAL MAP PIECE",
+      "junior": "THE REAL MAP PIECE",
+      "master": "THE REAL MAP PIECE"
+    },
+    {
+      "rookie": "The street, the owl and the Y crack, just like Aldo's photo.",
+      "junior": "The street, the owl and the Y crack, exactly like Aldo's photo.",
+      "master": "The street, the owl and the Y crack, matching Aldo's photo perfectly."
+    },
+    {
+      "rookie": "The market is closed on Sunday.",
+      "junior": "The market is closed on Sunday.",
+      "master": "The market is closed on Sunday."
+    },
+    {
+      "rookie": "Valli bought the stone there on Sunday.",
+      "junior": "Valli bought the stone there on Sunday.",
+      "master": "Valli bought the stone there on Sunday."
+    },
+    {
+      "rookie": "Only Signor Valli says that. Find two people who agree.",
+      "junior": "Only Signor Valli says that. Find two people who agree with each other.",
+      "master": "Signor Valli is the only one who claims that. Look for two people whose answers match."
+    },
+    {
+      "rookie": "Leo sells stones at the market.",
+      "junior": "Leo sells stones at the market.",
+      "master": "Leo sells stones at the market."
+    },
+    {
+      "rookie": "Nobody else knows Leo. Compare the other answers about Sunday.",
+      "junior": "Nobody else has heard of Leo. Compare the other answers about Sunday.",
+      "master": "No one else knows anything about Leo. Compare what the others said about Sunday instead."
+    },
+    {
+      "rookie": "We open Monday to Saturday.",
+      "junior": "We open Monday to Saturday.",
+      "master": "We open Monday to Saturday."
+    },
+    {
+      "rookie": "On Sunday, the square is empty.",
+      "junior": "On Sunday, the square is empty.",
+      "master": "On Sunday, the square is empty."
+    },
+    {
+      "rookie": "There is no Leo at my market.",
+      "junior": "There is no Leo at my market.",
+      "master": "There is no Leo at my market."
+    },
+    {
+      "rookie": "A Market on Sunday?",
+      "junior": "A Market on Sunday?",
+      "master": "A Market on Sunday?"
+    },
+    {
+      "rookie": "Pia comes in with Giulia, her arms full of roses.",
+      "junior": "Pia comes in with Giulia, carrying an armful of roses.",
+      "master": "Pia bustles in with Giulia, her arms overflowing with roses."
+    },
+    {
+      "rookie": "Signor Valli smiles, but his eyes do not.",
+      "junior": "Signor Valli smiles, but his eyes stay cold.",
+      "master": "Signor Valli is smiling, but the smile never reaches his eyes."
+    },
+    {
+      "rookie": "Director Sofia stands by the window.",
+      "junior": "Director Sofia is standing by the window.",
+      "master": "Director Sofia waits by the window, watching closely."
+    },
+    {
+      "rookie": "Your notes say:",
+      "junior": "Here is what your notes say:",
+      "master": "Your notes read:"
+    },
+    {
+      "rookie": "Signor Valli says he bought the stone at the market.\nAsk everyone about the market.\nFind two people who say the same thing about Sunday.",
+      "junior": "Signor Valli says he bought the stone at the market.\nAsk everyone about the market.\nFind two people who say the same thing about Sunday.",
+      "master": "Signor Valli claims he bought the stone at the market.\nQuestion everyone about the market.\nFind two people whose answers about Sunday match."
+    },
+    {
+      "rookie": "What is true about the market on Sunday?",
+      "junior": "What is actually true about the market on Sunday?",
+      "master": "What is really the case at the market on Sunday?"
+    },
+    {
+      "rookie": "Ask everyone the same question about Sunday.",
+      "junior": "Ask every person the same question about Sunday.",
+      "master": "Put the same question about Sunday to each person in the room."
+    },
+    {
+      "rookie": "Two people agree. One person does not.",
+      "junior": "Two people agree, but one person does not.",
+      "master": "Two of the answers match. The third stands alone."
+    },
+    {
+      "rookie": "Two people agree about Sunday!",
+      "junior": "Two people agree about Sunday!",
+      "master": "Two witnesses agree about Sunday!"
+    },
+    {
+      "rookie": "The market is closed on Sunday. Nobody bought a stone there.",
+      "junior": "The market is closed on Sunday, so nobody bought a stone there.",
+      "master": "The market is closed on Sunday. No stone was ever sold there."
+    },
+    {
+      "rookie": "Pia waves a rose at Signor Valli. \"You are not a good liar!\"",
+      "junior": "Pia waves a rose at Signor Valli. \"You're not a good liar!\"",
+      "master": "Pia shakes a rose at Signor Valli. \"You're a terrible liar!\""
+    },
+    {
+      "rookie": "The inspector takes out her notebook.",
+      "junior": "The inspector takes out her notebook and starts writing.",
+      "master": "The inspector pulls out her notebook."
+    },
+    {
+      "rookie": "The Closed Market",
+      "junior": "The Closed Market",
+      "master": "The Closed Market"
+    },
+    {
+      "rookie": "Pia and Sofia say the market is closed on Sunday. And there is no Leo.",
+      "junior": "Pia and Sofia both say the market is closed on Sunday. And there is no Leo.",
+      "master": "Pia and Sofia both confirm the market is closed on Sunday. What's more, there is no Leo."
+    },
+    {
+      "rookie": "SITE OFFICE",
+      "junior": "SITE OFFICE",
+      "master": "SITE OFFICE"
+    },
+    {
+      "rookie": "Is Signor Valli's market story true?",
+      "junior": "Is Signor Valli's story about the market true?",
+      "master": "Does Signor Valli's market story hold up?"
+    },
+    {
+      "rookie": "Ask about the market. Write down what they say.",
+      "junior": "Ask about the market, then write down what each person says.",
+      "master": "Ask about the market and note down every answer."
+    },
+    {
+      "rookie": "Talk to someone.",
+      "junior": "Talk to one of them.",
+      "master": "Speak to someone."
+    },
+    {
+      "rookie": "Where did the stone come from?",
+      "junior": "Where did the stone come from?",
+      "master": "Where did the stone come from?"
+    },
+    {
+      "rookie": "Is the market open on Sunday?",
+      "junior": "Is the market open on Sunday?",
+      "master": "Is the market open on Sunday?"
+    },
+    {
+      "rookie": "Who is Leo?",
+      "junior": "Who is Leo?",
+      "master": "Who is Leo?"
+    },
+    {
+      "rookie": "Bruno Valli",
+      "junior": "Bruno Valli",
+      "master": "Bruno Valli"
+    },
+    {
+      "rookie": "THE BUILDER",
+      "junior": "THE BUILDER",
+      "master": "THE BUILDER"
+    },
+    {
+      "rookie": "a big man in a yellow helmet with a small crane sticker, arms crossed",
+      "junior": "a big man in a yellow helmet with a small crane sticker, with his arms crossed",
+      "master": "a big man in a yellow helmet bearing a small crane sticker, his arms folded"
+    },
+    {
+      "rookie": "Ask me anything! I have nothing to hide.",
+      "junior": "Ask me anything you like! I have nothing to hide.",
+      "master": "Ask away! I've got nothing to hide."
+    },
+    {
+      "rookie": "I bought it at Campo de' Fiori.",
+      "junior": "I bought it at Campo de' Fiori, of course.",
+      "master": "I picked it up at Campo de' Fiori."
+    },
+    {
+      "rookie": "Yes! I was there last Sunday.",
+      "junior": "Yes, of course! I was there last Sunday.",
+      "master": "Certainly! I was there myself last Sunday."
+    },
+    {
+      "rookie": "Leo sells old stones there.",
+      "junior": "Leo sells old stones there.",
+      "master": "Leo deals in old stones there."
+    },
+    {
+      "rookie": "Pia Ricci",
+      "junior": "Pia Ricci",
+      "master": "Pia Ricci"
+    },
+    {
+      "rookie": "THE FLOWER SELLER",
+      "junior": "THE FLOWER SELLER",
+      "master": "THE FLOWER SELLER"
+    },
+    {
+      "rookie": "a cheerful flower seller in a flowered apron and a red scarf",
+      "junior": "a cheerful flower seller wearing a flowered apron and a red scarf",
+      "master": "a cheerful flower seller in a flowered apron, a red scarf around her neck"
+    },
+    {
+      "rookie": "I came as fast as I could!",
+      "junior": "I came as quickly as I could!",
+      "master": "I hurried here as fast as my legs would carry me!"
+    },
+    {
+      "rookie": "Not from my market! Nobody sells stones there.",
+      "junior": "Not from my market! Nobody sells stones there.",
+      "master": "Certainly not from my market! Nobody there sells stones."
+    },
+    {
+      "rookie": "No. We open Monday to Saturday.",
+      "junior": "No, it isn't. We open Monday to Saturday.",
+      "master": "Never! We open Monday to Saturday."
+    },
+    {
+      "rookie": "Sofia Ferri",
+      "junior": "Sofia Ferri",
+      "master": "Sofia Ferri"
+    },
+    {
+      "rookie": "THE DIRECTOR",
+      "junior": "THE DIRECTOR",
+      "master": "THE DIRECTOR"
+    },
+    {
+      "rookie": "a director in a navy suit, with reading glasses on a chain",
+      "junior": "a director wearing a navy suit, with reading glasses on a chain",
+      "master": "a director in a navy suit, reading glasses hanging from a chain"
+    },
+    {
+      "rookie": "I want the truth, Detective.",
+      "junior": "I just want the truth, Detective.",
+      "master": "Nothing but the truth will do, Detective."
+    },
+    {
+      "rookie": "From my museum. Look at the crack.",
+      "junior": "From my museum. Just look at the crack.",
+      "master": "From my museum. The crack gives it away."
+    },
+    {
+      "rookie": "No. On Sunday, the square is empty.",
+      "junior": "No, it isn't. On Sunday, the square is empty.",
+      "master": "Not at all. On Sunday, the square is empty."
+    },
+    {
+      "rookie": "I have never heard of Leo.",
+      "junior": "I've never heard of anyone called Leo.",
+      "master": "The name Leo means nothing to me."
+    },
+    {
+      "rookie": "Ask a question.",
+      "junior": "Ask a question.",
+      "master": "Ask a question."
+    },
+    {
+      "rookie": "Ask someone else.",
+      "junior": "Ask someone else.",
+      "master": "Ask someone else."
+    },
+    {
+      "rookie": "Compare two answers.",
+      "junior": "Compare two answers.",
+      "master": "Compare two answers."
+    },
+    {
+      "rookie": "Find two people who say the same thing about Sunday.",
+      "junior": "Find two people who say the same thing about Sunday.",
+      "master": "Find two people whose answers about Sunday match."
+    },
+    {
+      "rookie": "Tap two answers to compare them.",
+      "junior": "Tap two answers to compare them.",
+      "master": "Tap two answers to compare them."
+    },
+    {
+      "rookie": "Both say the market is closed on Sunday.",
+      "junior": "They both say the market is closed on Sunday.",
+      "master": "Both of them say the market is closed on Sunday."
+    },
+    {
+      "rookie": "These answers are not about Sunday.",
+      "junior": "These answers aren't about Sunday.",
+      "master": "Neither of these answers is about Sunday."
+    },
+    {
+      "rookie": "Look for what they say about Sunday.",
+      "junior": "Look for what they said about Sunday.",
+      "master": "Focus on what each person said about Sunday."
+    },
+    {
+      "rookie": "These two do not agree.",
+      "junior": "These two don't agree.",
+      "master": "These two answers contradict each other."
+    },
+    {
+      "rookie": "Try another pair.",
+      "junior": "Try another pair.",
+      "master": "Try another pair."
+    },
+    {
+      "rookie": "Find out about Leo.",
+      "junior": "Find out who Leo is.",
+      "master": "Find out the truth about Leo."
+    },
+    {
+      "rookie": "Ask Pia about Leo.",
+      "junior": "Ask Pia about Leo.",
+      "master": "Ask Pia about Leo."
+    },
+    {
+      "rookie": "There is no Leo at the market.",
+      "junior": "There is no Leo at the market at all.",
+      "master": "Nobody called Leo has ever worked at the market."
+    },
+    {
+      "rookie": "Your notes are ready.",
+      "junior": "Your notes are ready.",
+      "master": "Your notes are ready."
+    },
+    {
+      "rookie": "NO MARKET ON SUNDAY",
+      "junior": "NO MARKET ON SUNDAY",
+      "master": "NO MARKET ON SUNDAY"
+    },
+    {
+      "rookie": "Signor Valli did not buy the stone. His story is not true.",
+      "junior": "Signor Valli didn't buy the stone, so his story is not true.",
+      "master": "Signor Valli never bought the stone. His whole story is false."
+    },
+    {
+      "rookie": "He swapped the copy into the glass case",
+      "junior": "He swapped the copy into the glass case",
+      "master": "He switched the copy into the glass case"
+    },
+    {
+      "rookie": "He carried the real piece to his site",
+      "junior": "He carried the real piece off to his site",
+      "master": "He smuggled the real piece to his site"
+    },
+    {
+      "rookie": "He took the real piece out for photos",
+      "junior": "He took the real piece out to be photographed",
+      "master": "He borrowed the real piece, saying it was for photos"
+    },
+    {
+      "rookie": "He had a mould made from it",
+      "junior": "He had a mould made from the real piece",
+      "master": "He had a mould taken from the real piece"
+    },
+    {
+      "rookie": "Tuesday, 2 PM — the real piece leaves the museum lab.",
+      "junior": "Tuesday, 2 PM — the real piece leaves the museum lab.",
+      "master": "Tuesday, 2 PM — the real piece leaves the museum lab."
+    },
+    {
+      "rookie": "Thursday, 11:50 PM — a heavy box comes to the site.",
+      "junior": "Thursday, 11:50 PM — a heavy box comes to the site.",
+      "master": "Thursday, 11:50 PM — a heavy box comes to the site."
+    },
+    {
+      "rookie": "Valli's Plan, Step by Step",
+      "junior": "Valli's Plan, Step by Step",
+      "master": "Valli's Plan, Step by Step"
+    },
+    {
+      "rookie": "The inspector puts every piece of evidence on Valli's desk.",
+      "junior": "The inspector lays every piece of evidence out on Valli's desk.",
+      "master": "The inspector spreads every piece of evidence across Valli's desk."
+    },
+    {
+      "rookie": "\"Detective,\" she says, \"tell me what happened, in order.\"",
+      "junior": "\"Detective,\" she says, \"tell me what happened, in the right order.\"",
+      "master": "\"Detective,\" she says, \"walk me through what happened, in order.\""
+    },
+    {
+      "rookie": "The inspector's list says:",
+      "junior": "Here is the inspector's list:",
+      "master": "The inspector's list reads:"
+    },
+    {
+      "rookie": "THE GATE LOG: Thursday, 11:50 PM — a heavy box comes to the site.\nTHE LOAN BOOK: Tuesday, 2 PM — the real piece leaves the museum lab.\nCARLA BASSI: Tuesday, 3 PM — a mould is made from the real piece.\nENZO: Thursday, 11:00 PM — Signor Valli \"checks the lights\" in the map hall.",
+      "junior": "THE GATE LOG: Thursday, 11:50 PM — a heavy box comes to the site.\nTHE LOAN BOOK: Tuesday, 2 PM — the real piece leaves the museum lab.\nCARLA BASSI: Tuesday, 3 PM — a mould is made from the real piece.\nENZO: Thursday, 11:00 PM — Signor Valli \"checks the lights\" in the map hall.",
+      "master": "THE GATE LOG: Thursday, 11:50 PM — a heavy box comes to the site.\nTHE LOAN BOOK: Tuesday, 2 PM — the real piece leaves the museum lab.\nCARLA BASSI: Tuesday, 3 PM — a mould is made from the real piece.\nENZO: Thursday, 11:00 PM — Signor Valli \"checks the lights\" in the map hall."
+    },
+    {
+      "rookie": "Put Signor Valli's plan in order.",
+      "junior": "Put the steps of Signor Valli's plan in order.",
+      "master": "Arrange Signor Valli's plan in the order it happened."
+    },
+    {
+      "rookie": "Put the days first: Tuesday comes before Thursday.",
+      "junior": "Sort by day first: Tuesday comes before Thursday.",
+      "master": "Start with the days of the week. Which day came first?"
+    },
+    {
+      "rookie": "On the same day, look at the times: 2 PM is before 3 PM.",
+      "junior": "When two things happen on the same day, look at the times: 2 PM is before 3 PM.",
+      "master": "Where two steps share a day, let the times on the list decide."
+    },
+    {
+      "rookie": "You told the whole plan!",
+      "junior": "You've explained the whole plan!",
+      "master": "You've laid out the whole plan!"
+    },
+    {
+      "rookie": "Tuesday: he took the piece and had a mould made. Thursday: he swapped in the copy and carried the real piece here.",
+      "junior": "On Tuesday, he took the piece and had a mould made. On Thursday, he swapped in the copy and carried the real piece here.",
+      "master": "On Tuesday, he took the piece out and had a mould made. On Thursday, he slipped the copy into its place and carried the real piece here."
+    },
+    {
+      "rookie": "The inspector nods. \"It all fits.\"",
+      "junior": "The inspector nods. \"It all fits together.\"",
+      "master": "The inspector nods slowly. \"Every piece fits.\""
+    },
+    {
+      "rookie": "Signor Valli is not smiling any more.",
+      "junior": "Signor Valli isn't smiling any more.",
+      "master": "The smile has vanished from Signor Valli's face."
+    },
+    {
+      "rookie": "Read the days and times again. Tuesday comes first.",
+      "junior": "Read the days and times again. Tuesday comes first.",
+      "master": "Check the days and times once more: Tuesday must come first."
+    },
+    {
+      "rookie": "Valli's Plan",
+      "junior": "Valli's Plan",
+      "master": "Valli's Plan"
+    },
+    {
+      "rookie": "Tuesday: loan and mould. Thursday: the swap at 11 PM, the site at 11:50 PM.",
+      "junior": "Tuesday: the loan and the mould. Thursday: the swap at 11 PM, then the site at 11:50 PM.",
+      "master": "Tuesday: the loan, then the mould. Thursday: the swap at 11 PM, the site at 11:50 PM."
+    },
+    {
+      "rookie": "THE PLAN, STEP BY STEP",
+      "junior": "THE PLAN, STEP BY STEP",
+      "master": "THE PLAN, STEP BY STEP"
+    },
+    {
+      "rookie": "Loan, mould, swap, site. Every step has its proof in your notebook.",
+      "junior": "Loan, mould, swap, site. Your notebook has proof for every step.",
+      "master": "Loan, mould, swap, site. Each step is backed by proof in your notebook."
+    },
+    {
+      "rookie": "N",
+      "junior": "N",
+      "master": "N"
+    },
+    {
+      "rookie": "Y",
+      "junior": "Y",
+      "master": "Y"
+    },
+    {
+      "rookie": "O",
+      "junior": "O",
+      "master": "O"
+    },
+    {
+      "rookie": "M",
+      "junior": "M",
+      "master": "M"
+    },
+    {
+      "rookie": "E",
+      "junior": "E",
+      "master": "E"
+    },
+    {
+      "rookie": "If people saw it, the city would stop my car park.",
+      "junior": "If people saw it, the city would stop my car park.",
+      "master": "If people saw it, the city would stop my car park."
+    },
+    {
+      "rookie": "What did Signor Valli not want to lose?",
+      "junior": "What did Signor Valli not want to lose?",
+      "master": "What did Signor Valli not want to lose?"
+    },
+    {
+      "rookie": "The Pass He Dropped",
+      "junior": "The Pass He Dropped",
+      "master": "The Pass He Dropped"
+    },
+    {
+      "rookie": "\"You have no proof I was at the museum on Thursday,\" says Signor Valli.",
+      "junior": "\"You have no proof that I was at the museum on Thursday,\" says Signor Valli.",
+      "master": "\"You can't prove I was at the museum on Thursday,\" Signor Valli sneers."
+    },
+    {
+      "rookie": "You open your Notebook.",
+      "junior": "You open your Notebook.",
+      "master": "You calmly open your Notebook."
+    },
+    {
+      "rookie": "Then he sits down, very slowly.",
+      "junior": "Then, very slowly, he sits down.",
+      "master": "Then, ever so slowly, he sinks into his chair."
+    },
+    {
+      "rookie": "Signor Valli says:",
+      "junior": "Signor Valli says:",
+      "master": "Signor Valli admits:"
+    },
+    {
+      "rookie": "\"All right. There is no Leo.\nThat pass is mine. I dropped it on Thursday night.\nI saw the library on the new piece, before the show.\nIf people saw it, the city would stop my car park.\nI paid for the land. I paid for the machines.\nI did not want to lose my . . . . .\"",
+      "junior": "\"All right. There is no Leo.\nThat pass is mine. I dropped it on Thursday night.\nBefore the show, I saw the library on the new piece.\nIf people saw it, the city would stop my car park.\nI had paid for the land. I had paid for the machines.\nI did not want to lose my . . . . .\"",
+      "master": "\"Very well. There is no Leo.\nThat pass is mine. I dropped it on Thursday night.\nBefore the show, I noticed the library carved on the new piece.\nIf people saw it, the city would stop my car park.\nI had paid for the land, and for every machine on the site.\nI could not bear to lose my . . . . .\""
+    },
+    {
+      "rookie": "What did Signor Valli not want to lose? Spell it.",
+      "junior": "What did Signor Valli not want to lose? Spell the word.",
+      "master": "What did Signor Valli not want to lose? Spell it out."
+    },
+    {
+      "rookie": "He paid for the land and the machines. What do you pay with?",
+      "junior": "He had paid for the land and the machines. What do people pay with?",
+      "master": "Think about what he spent on the land and the machines."
+    },
+    {
+      "rookie": "It is in your purse or your piggy bank.",
+      "junior": "You keep it in your purse or your piggy bank.",
+      "master": "It jingles in a piggy bank and folds into a purse."
+    },
+    {
+      "rookie": "Signor Valli told the truth at last.",
+      "junior": "Signor Valli has told the truth at last.",
+      "master": "At long last, Signor Valli has told the truth."
+    },
+    {
+      "rookie": "The inspector closes her notebook. \"The work stops. Now.\"",
+      "junior": "The inspector closes her notebook. \"The work stops. Right now.\"",
+      "master": "The inspector snaps her notebook shut. \"The work stops. Now.\""
+    },
+    {
+      "rookie": "There will be no concrete tomorrow.",
+      "junior": "No concrete will be poured tomorrow.",
+      "master": "Tomorrow, not a drop of concrete will be poured."
+    },
+    {
+      "rookie": "Livia holds the real piece like a baby bird.",
+      "junior": "Livia holds the real piece as gently as a baby bird.",
+      "master": "Livia cradles the real piece as tenderly as a baby bird."
+    },
+    {
+      "rookie": "All five tiles fit. What do you pay with?",
+      "junior": "All five tiles fit. What do people pay with?",
+      "master": "Every tile is in place. Now think about what people pay with."
+    },
+    {
+      "rookie": "Show him the proof",
+      "junior": "Show him the proof",
+      "master": "Show him the proof"
+    },
+    {
+      "rookie": "Which thing in your Notebook did Signor Valli drop on Thursday night?",
+      "junior": "What in your Notebook did Signor Valli drop on Thursday night?",
+      "master": "Which item in your Notebook did Signor Valli let fall on Thursday night?"
+    },
+    {
+      "rookie": "Find the museum pass from Pia's cash box.",
+      "junior": "Look for the museum pass from Pia's cash box.",
+      "master": "Look for the museum pass that turned up in Pia's cash box."
+    },
+    {
+      "rookie": "THE LAST WORD",
+      "junior": "THE LAST WORD",
+      "master": "THE LAST WORD"
+    },
+    {
+      "rookie": "I wanted my car park. That is all.",
+      "junior": "I just wanted my car park. That's all.",
+      "master": "All I wanted was my car park. Nothing more."
+    },
+    {
+      "rookie": "You dropped this pass on Thursday night.",
+      "junior": "You dropped this pass on Thursday night.",
+      "master": "This pass fell from your pocket on Thursday night."
+    },
+    {
+      "rookie": "Livia, you were right. I am sorry I did not listen.",
+      "junior": "Livia, you were right. I'm sorry I didn't listen to you.",
+      "master": "Livia, you were right all along. I'm sorry I didn't listen."
+    },
+    {
+      "rookie": "Now we can open the owl square.",
+      "junior": "Now we can finally open the owl square.",
+      "master": "At last, the owl square can be opened."
+    },
+    {
+      "rookie": "Under the fence, the old library is waiting.",
+      "junior": "Under the fence, the old library is still waiting.",
+      "master": "Beneath the fence, the old library lies waiting."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "photographed": "사진이 찍힌",
+      "armful": "한 아름",
+      "named": "~라는 이름의",
+      "gently": "부드럽게",
+      "revealed": "드러냈다",
+      "explain": "설명하다",
+      "whether": "~인지 아닌지",
+      "sort": "분류하다, 정리하다"
+    },
+    "master": {
+      "genuine": "진짜의",
+      "engraved": "새겨진",
+      "purchased": "구입했다",
+      "contradict": "서로 모순되다",
+      "smuggled": "몰래 옮겼다",
+      "cradles": "소중히 안다",
+      "tenderly": "다정하게",
+      "sneers": "비웃듯 말하다",
+      "halt": "멈춤",
+      "confirm": "확인해 주다",
+      "overflowing": "넘쳐나는",
+      "bustles": "부산하게 움직이다",
+      "clutching": "꽉 쥐고 있는",
+      "inspect": "조사하다",
+      "jingles": "짤랑거리다"
+    }
+  }
+}

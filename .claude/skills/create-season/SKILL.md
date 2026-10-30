@@ -51,11 +51,49 @@ dart run tool/season_factory/season_factory.dart run <seasonDir> --budget <usd>
 | 10 | fix the plans (`plan_season.dart check <seasonDir>`) |
 | 20 | **open the review sheet PNG with the Read tool and look at every picture**: style like the season's others, faces as the character's other portraits, every clue the plans name visible, no text, choices fair, nothing giving an answer away. Then `season_factory.dart reviewed <seasonDir> <assetId>...` for the good ones, and for a bad one fix its prompt in `assets.manifest.json` and `season_factory.dart reject <seasonDir> <assetId> --why "<what was wrong>"`. Never mark a picture reviewed without looking at it. |
 | 30 | open each grid sheet it names (Read tool), read the pixel positions off the grid and write them into the plans: the map's `art.map.landmarks` (each drawing's centre) with `measuredOn` = the sha256 it printed; a look round's `areas`, `mark`, `guideAt`, `opening` (every place's centre inside it), `picture.measuredOn`, and replace its `UNMEASURED` note with how it was measured. No two areas may overlap. If you cannot see a thing on the picture, do not guess: fix the prompt and reject the picture. |
+| 35 | write each case's English at Junior and Master (§ Levels below), then run again |
 | 40 | the budget is spent: stop and report how much more the remaining pictures need (`asset_pipeline.dart --manifest … --only …` dry run shows it) |
 | 50 | read the generator's errors, fix the plans, run again |
 | 60 | read the failing test, fix the cause (never weaken the test), run again |
 | 1 | an API error or a copy problem: read it; retry once only when the cause is clear and fixed (a prompt the safety system refused: rewrite the part it names). Never loop. |
 | 0 | the season is in the game and played through |
+
+### Levels (Rookie / Junior / Master)
+
+The levels are the English, never the game: all three play the very same
+cases, missions, puzzles, choices (as many, in the same order), answers,
+clues, evidence, pictures and rewards. The plans are written once, without
+any level, and their English is Rookie's. Then each case's
+`cases/<caseId>/levels.json` (the factory writes its skeleton) gives every
+Rookie line again at Junior and at Master — never a new or replaced puzzle,
+never a choice more or less.
+
+- **Junior**: natural intermediate English, more varied words and
+  sentences, hints moderately direct.
+- **Master**: rich vocabulary, complex sentences, indirect hints — but never
+  an answer's information left out or a reasoning step added.
+- The same at every level: every fact and action, names (people, evidence,
+  places, titles, ALL-CAPS labels), numbers, times, codes, the words a
+  puzzle reads or the player types, `{detectiveName}`, a mission's short
+  learning expressions (and its level sentences still hold them), a search's
+  `reportLine` word for word inside its letter. Master still tells clearly
+  how to play.
+- The season's own lines (its `outro` and `finale`, shown when its last
+  case is solved and on its completed board) are written the same way in
+  `season.levels.json` beside `season.plan.json`, line for line.
+- Harder words a level brings: `glossary.junior` / `glossary.master` (one
+  lower-case word → Korean).
+- Check each case until it prints `ok` (the plan's own checks run on each
+  level, every line written, answers and expressions kept, nothing but the
+  words changed):
+  `dart run tool/season_gen/case_levels.dart check --season <seasonDir>/season.plan.json <seasonDir>/cases/<caseId>/case.plan.json`
+- Twelve cases are a lot of English: write them in parallel (a subagent for
+  a few cases each, with these rules), then read a sample of each level.
+
+The generator makes `<caseId>_levels.g.dart` and `<seasonId>_levels.g.dart`
+from them (`SeasonContent.casePatches`, `variants`, `writtenLevels`), and
+`test/difficulty_content_test.dart` checks every level of every season is
+the same game, every word written.
 
 Cover framing (`art.cover.archiveLook`, `crop`, `push`): look at the cover
 and set them so the city's landmarks, not the foreground, are framed

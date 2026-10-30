@@ -1,0 +1,761 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep10",
+  "lines": [
+    {
+      "rookie": "The Fence at Piazza della Civetta",
+      "junior": "The Fence at Piazza della Civetta",
+      "master": "The Fence at Piazza della Civetta"
+    },
+    {
+      "rookie": "A tall fence stands around the owl square.",
+      "junior": "A tall fence now surrounds the owl square.",
+      "master": "A towering fence now encloses the owl square on every side."
+    },
+    {
+      "rookie": "Behind it, a building site, a yellow helmet and a locked office.",
+      "junior": "Behind it lie a building site, a yellow helmet and a locked office.",
+      "master": "Behind it wait a building site, a yellow helmet and an office that stays firmly locked."
+    },
+    {
+      "rookie": "In two days, the concrete comes.",
+      "junior": "In just two days, the concrete will be poured.",
+      "master": "In two days' time, the concrete will pour in."
+    },
+    {
+      "rookie": "Is the real piece in Valli's office? Tomorrow, the inspector will come.",
+      "junior": "Could the real piece be in Valli's office? Tomorrow, the inspector is coming.",
+      "master": "Is the real piece locked away in Valli's office? Tomorrow, the inspector arrives, and time is running short."
+    },
+    {
+      "rookie": "Find the helmet Pia saw at Valli's site.",
+      "junior": "Find the helmet that Pia saw at Valli's site.",
+      "master": "Identify the helmet Pia glimpsed at Valli's site."
+    },
+    {
+      "rookie": "Find the helmet's owner.",
+      "junior": "Find out who owns the helmet.",
+      "master": "Discover who the helmet belongs to."
+    },
+    {
+      "rookie": "Find out what came on Thursday night.",
+      "junior": "Find out what arrived at the site on Thursday night.",
+      "master": "Uncover what was delivered on Thursday night."
+    },
+    {
+      "rookie": "Piazza della Civetta is a small, quiet square.",
+      "junior": "Piazza della Civetta is a small, peaceful square.",
+      "master": "Piazza della Civetta is a small square, usually wrapped in quiet."
+    },
+    {
+      "rookie": "Or it was. Now there is a tall fence all around it.",
+      "junior": "At least, it used to be. Now a tall fence runs all the way around it.",
+      "master": "Or at least it was, until a tall fence sprang up around every side of it."
+    },
+    {
+      "rookie": "\"Two more days,\" Livia says. \"Then the concrete comes.\"",
+      "junior": "\"Only two more days,\" Livia says. \"After that, the concrete arrives.\"",
+      "master": "\"Two more days,\" Livia murmurs. \"After that, the concrete swallows everything.\""
+    },
+    {
+      "rookie": "At Valli's site, only the boss wears a yellow helmet with a crane. Pia saw that helmet. The helmet is B. Valli's. On Thursday at 11:50 PM, Valli brought a heavy box to the site: the real piece. You told Sofia an old Roman library is under the square.",
+      "junior": "At Valli's site, only the boss wears a yellow helmet with a crane, and that was the helmet Pia saw. The helmet belongs to B. Valli. On Thursday at 11:50 PM, Valli brought a heavy box to the site: the real piece. You told Sofia that an old Roman library lies under the square.",
+      "master": "On Valli's site, only the boss wears a yellow helmet bearing a crane, exactly the helmet Pia saw. That helmet belongs to B. Valli. On Thursday at 11:50 PM, Valli carried a heavy box onto the site: the real piece. You told Sofia that an old Roman library lies hidden beneath the square."
+    },
+    {
+      "rookie": "PIAZZA DELLA CIVETTA",
+      "junior": "PIAZZA DELLA CIVETTA",
+      "master": "PIAZZA DELLA CIVETTA"
+    },
+    {
+      "rookie": "The white helmet with a crane",
+      "junior": "The white helmet with a crane",
+      "master": "The white helmet bearing a crane"
+    },
+    {
+      "rookie": "This one has a crane, but it is white. Pia saw a yellow helmet.",
+      "junior": "This one has a crane, but it's white, and Pia saw a yellow helmet.",
+      "master": "The crane matches, but this one is white. Remember the colour Pia saw: yellow."
+    },
+    {
+      "rookie": "The yellow helmet with no picture",
+      "junior": "The yellow helmet with no picture",
+      "master": "The plain yellow helmet with no picture"
+    },
+    {
+      "rookie": "This one is yellow, but it has no crane on it.",
+      "junior": "This one is yellow, but there's no crane on it.",
+      "master": "The colour is right, but there's no crane anywhere on this one."
+    },
+    {
+      "rookie": "The yellow helmet with a crane",
+      "junior": "The yellow helmet with a crane",
+      "master": "The yellow helmet bearing a crane"
+    },
+    {
+      "rookie": "The boss wears a yellow helmet with our crane.",
+      "junior": "The boss wears a yellow helmet with our crane.",
+      "master": "The boss wears a yellow helmet with our crane."
+    },
+    {
+      "rookie": "Workers wear white helmets.",
+      "junior": "Workers wear white helmets.",
+      "master": "Workers wear white helmets."
+    },
+    {
+      "rookie": "The Helmet on the Hook",
+      "junior": "The Helmet on the Hook",
+      "master": "The Helmet on the Hook"
+    },
+    {
+      "rookie": "THE SITE FENCE",
+      "junior": "THE SITE FENCE",
+      "master": "THE SITE FENCE"
+    },
+    {
+      "rookie": "Today is 8 May. Piazza della Civetta is hidden behind a tall fence.",
+      "junior": "Today is 8 May, and Piazza della Civetta is hidden behind a tall fence.",
+      "master": "It is 8 May. Piazza della Civetta has vanished behind a tall fence."
+    },
+    {
+      "rookie": "Behind it, a crane stands still.",
+      "junior": "Behind it, a crane stands perfectly still.",
+      "master": "Beyond it, a crane looms, motionless."
+    },
+    {
+      "rookie": "This is Signor Valli's building site.",
+      "junior": "This is the building site of Signor Valli.",
+      "master": "This building site belongs to Signor Valli."
+    },
+    {
+      "rookie": "On the site notice board:",
+      "junior": "On the site's notice board:",
+      "master": "Pinned to the site notice board:"
+    },
+    {
+      "rookie": "VALLI BUILDING — SITE RULES\nEveryone must wear a helmet.\nWorkers wear WHITE helmets with our crane.\nVisitors wear YELLOW helmets with no picture.\nThe BOSS wears a YELLOW helmet with our crane.\nNobody opens the box room. Boss's orders!",
+      "junior": "VALLI BUILDING — SITE RULES\nEveryone on site must wear a helmet.\nWorkers wear WHITE helmets with our crane.\nVisitors wear YELLOW helmets with no picture.\nThe BOSS wears a YELLOW helmet with our crane.\nNobody opens the box room. Those are the boss's orders!",
+      "master": "VALLI BUILDING — SITE RULES\nA helmet must be worn at all times.\nWorkers wear WHITE helmets with our crane.\nVisitors wear YELLOW helmets with no picture.\nThe BOSS wears a YELLOW helmet with our crane.\nThe box room stays closed to everyone. By order of the Boss!"
+    },
+    {
+      "rookie": "Which helmet did the man Pia saw wear?",
+      "junior": "Which helmet was the man Pia saw wearing?",
+      "master": "Which helmet was worn by the man Pia spotted?"
+    },
+    {
+      "rookie": "Find the notice board on the fence and read it first.",
+      "junior": "Before anything else, find the notice board on the fence and read it.",
+      "master": "The fence has something to tell you. Read it before you look at the helmets."
+    },
+    {
+      "rookie": "Pia saw a yellow helmet with a crane. Check the colour AND the picture.",
+      "junior": "Pia saw a yellow helmet with a crane, so check both the colour AND the picture.",
+      "master": "Recall exactly what Pia described: yellow, with a crane. One detail alone isn't enough; the colour AND the picture must both match."
+    },
+    {
+      "rookie": "You found the boss's helmet!",
+      "junior": "You've found the boss's helmet!",
+      "master": "You've picked out the boss's helmet!"
+    },
+    {
+      "rookie": "The boss's helmet: yellow, with a crane.",
+      "junior": "It's the boss's helmet: yellow, with a crane.",
+      "master": "The boss's helmet: yellow, marked with a crane."
+    },
+    {
+      "rookie": "Just like the helmet Pia saw on Thursday night.",
+      "junior": "It's just like the helmet Pia saw on Thursday night.",
+      "master": "Exactly like the one Pia glimpsed on Thursday night."
+    },
+    {
+      "rookie": "Inside it, there is a name strip, torn in two.",
+      "junior": "Inside it is a name strip that has been torn in two.",
+      "master": "Tucked inside is a name strip, ripped clean in two."
+    },
+    {
+      "rookie": "The Boss's Helmet",
+      "junior": "The Boss's Helmet",
+      "master": "The Boss's Helmet"
+    },
+    {
+      "rookie": "At this site, only the boss wears a yellow helmet with a crane.",
+      "junior": "At this site, nobody but the boss wears a yellow helmet with a crane.",
+      "master": "On this site, the yellow helmet with a crane belongs to the boss alone."
+    },
+    {
+      "rookie": "The site fence at Piazza della Civetta",
+      "junior": "The site fence at Piazza della Civetta",
+      "master": "The site fence at Piazza della Civetta"
+    },
+    {
+      "rookie": "Look around the site. What are the rules here?",
+      "junior": "Look around the site. What rules do they follow here?",
+      "master": "Search the site. What rules govern this place?"
+    },
+    {
+      "rookie": "Which helmet did Pia see? Look at the helmets.",
+      "junior": "Which helmet did Pia see? Take a look at the helmets.",
+      "master": "Which helmet did Pia see? Examine the helmets."
+    },
+    {
+      "rookie": "Nothing here. Look for the site rules.",
+      "junior": "There's nothing here. Look for the site rules.",
+      "master": "Nothing of interest here. The site rules must be posted somewhere."
+    },
+    {
+      "rookie": "THE SITE RULES",
+      "junior": "THE SITE RULES",
+      "master": "THE SITE RULES"
+    },
+    {
+      "rookie": "A notice board on the fence",
+      "junior": "A notice board on the fence",
+      "master": "A notice board fixed to the fence"
+    },
+    {
+      "rookie": "THE CRANE",
+      "junior": "THE CRANE",
+      "master": "THE CRANE"
+    },
+    {
+      "rookie": "A tall yellow crane",
+      "junior": "A tall yellow crane",
+      "master": "A towering yellow crane"
+    },
+    {
+      "rookie": "A tall crane. On it is the little crane from Valli's card.",
+      "junior": "A tall crane. On it is the same little crane as on Valli's card.",
+      "master": "A towering crane, painted with the very same little crane as on Valli's card."
+    },
+    {
+      "rookie": "THE SITE OFFICE",
+      "junior": "THE SITE OFFICE",
+      "master": "THE SITE OFFICE"
+    },
+    {
+      "rookie": "A site office with a lit window",
+      "junior": "A site office with a lit window",
+      "master": "A site office with a glowing window"
+    },
+    {
+      "rookie": "A light is on in the office. Somebody is inside.",
+      "junior": "A light is on in the office, so somebody must be inside.",
+      "master": "A lamp burns in the office window. Someone is in there."
+    },
+    {
+      "rookie": "THE HELMETS",
+      "junior": "THE HELMETS",
+      "master": "THE HELMETS"
+    },
+    {
+      "rookie": "Three helmets hanging by the gate",
+      "junior": "Three helmets hanging by the gate",
+      "master": "Three helmets dangling beside the gate"
+    },
+    {
+      "rookie": "Three helmets on hooks. Which one matters? Read something first.",
+      "junior": "Three helmets hang on hooks. Which one matters? You need to read something first.",
+      "master": "Three helmets on hooks, but which one matters? Something on this site must be read first."
+    },
+    {
+      "rookie": "Read the site rules first.",
+      "junior": "You need to read the site rules first.",
+      "master": "Read the site rules before you choose."
+    },
+    {
+      "rookie": "The gate",
+      "junior": "The gate",
+      "master": "The gate"
+    },
+    {
+      "rookie": "The gate is locked with a heavy chain.",
+      "junior": "The gate is locked shut with a heavy chain.",
+      "master": "A heavy chain holds the gate firmly shut."
+    },
+    {
+      "rookie": "The tall fence",
+      "junior": "The tall fence",
+      "master": "The tall fence"
+    },
+    {
+      "rookie": "The fence is too tall to climb.",
+      "junior": "The fence is far too tall to climb.",
+      "master": "The fence rises far too high to climb."
+    },
+    {
+      "rookie": "Old houses",
+      "junior": "Old houses",
+      "master": "Old houses"
+    },
+    {
+      "rookie": "Old ochre houses. Their windows are shut.",
+      "junior": "Old ochre houses, with all their windows shut.",
+      "master": "Old ochre houses, their windows firmly shut."
+    },
+    {
+      "rookie": "Which helmet did Pia see? Tap one helmet.",
+      "junior": "Which helmet did Pia see? Tap one of the helmets.",
+      "master": "Which helmet did Pia see? Tap one of the helmets."
+    },
+    {
+      "rookie": "a white helmet with a small crane sticker, on a hook",
+      "junior": "a white helmet with a small crane sticker, hanging on a hook",
+      "master": "a white helmet bearing a small crane sticker, hanging from a hook"
+    },
+    {
+      "rookie": "a plain yellow helmet with no sticker, on a hook",
+      "junior": "a plain yellow helmet with no sticker, hanging on a hook",
+      "master": "a plain yellow helmet without any sticker, hanging from a hook"
+    },
+    {
+      "rookie": "a yellow helmet with a small crane sticker, on a hook",
+      "junior": "a yellow helmet with a small crane sticker, hanging on a hook",
+      "master": "a yellow helmet bearing a small crane sticker, hanging from a hook"
+    },
+    {
+      "rookie": "Look around the site.",
+      "junior": "Take a look around the site.",
+      "master": "Search the building site."
+    },
+    {
+      "rookie": "This is it. The owl square.",
+      "junior": "This is it: the owl square.",
+      "master": "Here it is. The owl square, at last."
+    },
+    {
+      "rookie": "The library is under this fence.",
+      "junior": "The library lies under this fence.",
+      "master": "Somewhere beneath this fence lies the library."
+    },
+    {
+      "rookie": "Then let's look around.",
+      "junior": "Then let's have a look around.",
+      "master": "Then let's see what we can find."
+    },
+    {
+      "rookie": "LOOK AROUND",
+      "junior": "LOOK AROUND",
+      "master": "LOOK AROUND"
+    },
+    {
+      "rookie": "THE BOSS'S HELMET",
+      "junior": "THE BOSS'S HELMET",
+      "master": "THE BOSS'S HELMET"
+    },
+    {
+      "rookie": "Pia's man wore the boss's helmet. Who is the boss?",
+      "junior": "The man Pia saw was wearing the boss's helmet. So who is the boss?",
+      "master": "The man Pia saw wore the boss's helmet. But who, exactly, is the boss?"
+    },
+    {
+      "rookie": "L",
+      "junior": "L",
+      "master": "L"
+    },
+    {
+      "rookie": "I",
+      "junior": "I",
+      "master": "I"
+    },
+    {
+      "rookie": "V",
+      "junior": "V",
+      "master": "V"
+    },
+    {
+      "rookie": "A",
+      "junior": "A",
+      "master": "A"
+    },
+    {
+      "rookie": "Inside the helmet is a name strip, torn in two.",
+      "junior": "Inside the helmet is a name strip, torn in two.",
+      "master": "Inside the helmet is a name strip, torn in two."
+    },
+    {
+      "rookie": "Put the torn name back together.",
+      "junior": "Put the torn name back together.",
+      "master": "Put the torn name back together."
+    },
+    {
+      "rookie": "The Yellow Helmet",
+      "junior": "The Yellow Helmet",
+      "master": "The Yellow Helmet"
+    },
+    {
+      "rookie": "You reach through the fence for the yellow helmet.",
+      "junior": "You reach through the fence and take hold of the yellow helmet.",
+      "master": "Stretching through the fence, you lift down the yellow helmet."
+    },
+    {
+      "rookie": "It has a little crane on the front, just like Pia said.",
+      "junior": "There's a little crane on the front, just as Pia described.",
+      "master": "A little crane decorates the front, exactly as Pia described."
+    },
+    {
+      "rookie": "The helmet's name strip says:",
+      "junior": "The name strip in the helmet says:",
+      "master": "The helmet's name strip reads:"
+    },
+    {
+      "rookie": "Left piece: B. VAL\nRight piece: LI\n\nThe helmet's little crane looks like the crane on a card in your Notebook.",
+      "junior": "Left piece: B. VAL\nRight piece: LI\n\nThe little crane on the helmet looks like the crane on a card in your Notebook.",
+      "master": "Left piece: B. VAL\nRight piece: LI\n\nThe helmet's little crane seems familiar: a card in your Notebook bears one just like it."
+    },
+    {
+      "rookie": "Put the torn name back together. Spell the family name.",
+      "junior": "Put the torn name back together. Spell the family name it shows.",
+      "master": "Put the torn name back together. Then spell out the owner's family name."
+    },
+    {
+      "rookie": "The left piece comes first.",
+      "junior": "Start with the left piece.",
+      "master": "Think about which side of a name strip is read first."
+    },
+    {
+      "rookie": "Look at the business card with the same crane on it.",
+      "junior": "Check the business card that has the same crane on it.",
+      "master": "The same crane appears on a business card somewhere in your Notebook. Compare the two."
+    },
+    {
+      "rookie": "You found the helmet's owner!",
+      "junior": "You've found the helmet's owner!",
+      "master": "You've named the helmet's owner!"
+    },
+    {
+      "rookie": "B. VALLI. Bruno Valli, the show's sponsor.",
+      "junior": "B. VALLI. That's Bruno Valli, the sponsor of the show.",
+      "master": "B. VALLI. Bruno Valli, the very man who sponsors the show."
+    },
+    {
+      "rookie": "The big man Pia saw on Thursday night wore this helmet.",
+      "junior": "This was the helmet worn by the big man Pia saw on Thursday night.",
+      "master": "The big man Pia saw on Thursday night was wearing this very helmet."
+    },
+    {
+      "rookie": "A young worker sees you at the fence. He looks around, then comes closer.",
+      "junior": "A young worker notices you at the fence. He glances around, then comes closer.",
+      "master": "A young worker spots you by the fence. He glances nervously over his shoulder, then edges closer."
+    },
+    {
+      "rookie": "All five letters fit. Put the left piece first.",
+      "junior": "All five letters fit, but the left piece must come first.",
+      "master": "You have all five letters, but the left piece belongs at the start."
+    },
+    {
+      "rookie": "The Helmet's Owner",
+      "junior": "The Helmet's Owner",
+      "master": "The Helmet's Owner"
+    },
+    {
+      "rookie": "The yellow crane helmet is Bruno Valli's. Pia saw it on Thursday night.",
+      "junior": "The yellow crane helmet belongs to Bruno Valli. Pia saw it on Thursday night.",
+      "master": "The yellow crane helmet belongs to Bruno Valli: the very one Pia saw on Thursday night."
+    },
+    {
+      "rookie": "The same crane",
+      "junior": "The same crane",
+      "master": "The same crane"
+    },
+    {
+      "rookie": "Which thing in your Notebook has the same little crane?",
+      "junior": "What in your Notebook has the same little crane on it?",
+      "master": "What in your Notebook bears the same little crane?"
+    },
+    {
+      "rookie": "Look for a card with a crane on it.",
+      "junior": "Look for a card that has a crane on it.",
+      "master": "Look for a card printed with a crane."
+    },
+    {
+      "rookie": "THE NAME STRIP",
+      "junior": "THE NAME STRIP",
+      "master": "THE NAME STRIP"
+    },
+    {
+      "rookie": "B. VALLI'S HELMET",
+      "junior": "B. VALLI'S HELMET",
+      "master": "B. VALLI'S HELMET"
+    },
+    {
+      "rookie": "The boss is Bruno Valli. He is the man Pia saw on Thursday night.",
+      "junior": "The boss is Bruno Valli, and he is the man Pia saw on Thursday night.",
+      "master": "The boss is Bruno Valli, the very man Pia saw on Thursday night."
+    },
+    {
+      "rookie": "Bricks for the car park",
+      "junior": "Bricks for the car park",
+      "master": "Bricks for the car park"
+    },
+    {
+      "rookie": "Bricks came on Wednesday morning, in the open. Why would bricks be a secret?",
+      "junior": "The bricks arrived on Wednesday morning, in the open. Why would anyone keep bricks secret?",
+      "master": "The bricks arrived openly on Wednesday morning. Why would anyone guard bricks so closely?"
+    },
+    {
+      "rookie": "The real map piece",
+      "junior": "The real map piece",
+      "master": "The real map piece"
+    },
+    {
+      "rookie": "The plaster copy",
+      "junior": "The plaster copy",
+      "master": "The plaster copy"
+    },
+    {
+      "rookie": "The copy was in the museum until Friday at midnight. You found it at the bookshop.",
+      "junior": "The copy stayed in the museum until Friday at midnight, and you found it at the bookshop.",
+      "master": "The copy remained in the museum until Friday at midnight, and it was at the bookshop that you found it."
+    },
+    {
+      "rookie": "Nobody may open it.",
+      "junior": "Nobody may open it.",
+      "master": "Nobody may open it."
+    },
+    {
+      "rookie": "THURSDAY, 11:50 PM — B. Valli. One heavy box.",
+      "junior": "THURSDAY, 11:50 PM — B. Valli. One heavy box.",
+      "master": "THURSDAY, 11:50 PM — B. Valli. One heavy box."
+    },
+    {
+      "rookie": "The Box Nobody May Open",
+      "junior": "The Box Nobody May Open",
+      "master": "The Box Nobody May Open"
+    },
+    {
+      "rookie": "THE SITE GATE",
+      "junior": "THE SITE GATE",
+      "master": "THE SITE GATE"
+    },
+    {
+      "rookie": "\"I am new here,\" the worker whispers. \"Something is strange.\"",
+      "junior": "\"I'm new here,\" the worker whispers. \"Something strange is going on.\"",
+      "master": "\"I only started here recently,\" the worker whispers. \"Something isn't right.\""
+    },
+    {
+      "rookie": "He shows you the gate log, and tells you about his boss.",
+      "junior": "He shows you the gate log and tells you about his boss.",
+      "master": "He hands you the gate log and tells you what he knows about his boss."
+    },
+    {
+      "rookie": "The worker and the gate log say:",
+      "junior": "Here is what the worker and the gate log say:",
+      "master": "The worker's words and the gate log read:"
+    },
+    {
+      "rookie": "THE WORKER:\n\"The boss keeps a heavy box in his office. Nobody may open it.\"\n\nTHE SITE GATE LOG:\nWEDNESDAY, 8:00 AM — Bricks, 200.\nTHURSDAY, 11:50 PM — B. Valli. One heavy box.\nFRIDAY, 7:30 AM — Sand, 3 bags.",
+      "junior": "THE WORKER:\n\"The boss keeps a heavy box locked in his office. Nobody may open it.\"\n\nTHE SITE GATE LOG:\nWEDNESDAY, 8:00 AM — Bricks, 200.\nTHURSDAY, 11:50 PM — B. Valli. One heavy box.\nFRIDAY, 7:30 AM — Sand, 3 bags.",
+      "master": "THE WORKER:\n\"There's a heavy box the boss keeps in his office. Nobody may open it. He's very strict about that.\"\n\nTHE SITE GATE LOG:\nWEDNESDAY, 8:00 AM — Bricks, 200.\nTHURSDAY, 11:50 PM — B. Valli. One heavy box.\nFRIDAY, 7:30 AM — Sand, 3 bags."
+    },
+    {
+      "rookie": "What is most likely in Signor Valli's heavy box?",
+      "junior": "What is most likely inside Signor Valli's heavy box?",
+      "master": "What is Signor Valli's heavy box most likely to contain?"
+    },
+    {
+      "rookie": "Pia saw the big man with a heavy box on Thursday at 11:30 PM.",
+      "junior": "On Thursday at 11:30 PM, Pia saw the big man carrying a heavy box.",
+      "master": "Think back to what Pia saw on Thursday at 11:30 PM, and compare it with the gate log."
+    },
+    {
+      "rookie": "What was taken from the museum on Thursday night?",
+      "junior": "Think about what was taken from the museum on Thursday night.",
+      "master": "Something left the museum on Thursday night. What was it?"
+    },
+    {
+      "rookie": "You put the times together!",
+      "junior": "You've linked the times together!",
+      "master": "You've pieced the timeline together!"
+    },
+    {
+      "rookie": "At 11:30 PM, Pia saw the heavy box.",
+      "junior": "At 11:30 PM, Pia saw the heavy box being carried.",
+      "master": "At 11:30 PM, Pia watched the heavy box go by."
+    },
+    {
+      "rookie": "At 11:50 PM, it came through this gate.",
+      "junior": "At 11:50 PM, it came in through this gate.",
+      "master": "Just twenty minutes later, at 11:50 PM, it passed through this very gate."
+    },
+    {
+      "rookie": "Livia's hands shake as she holds the gate log.",
+      "junior": "Livia's hands tremble as she holds the gate log.",
+      "master": "The gate log trembles in Livia's hands."
+    },
+    {
+      "rookie": "Thursday, 11:50 PM",
+      "junior": "Thursday, 11:50 PM",
+      "master": "Thursday, 11:50 PM"
+    },
+    {
+      "rookie": "On Thursday at 11:50 PM, Valli brought a heavy box to the site. Nobody may open it.",
+      "junior": "On Thursday at 11:50 PM, Valli brought a heavy box onto the site. Nobody may open it.",
+      "master": "At 11:50 PM on Thursday, Valli carried a heavy box onto the site. Nobody may open it."
+    },
+    {
+      "rookie": "Find out what the heavy box is.",
+      "junior": "Find out what the heavy box holds.",
+      "master": "Work out what the heavy box contains."
+    },
+    {
+      "rookie": "The night of the swap!",
+      "junior": "That was the night of the swap!",
+      "master": "That was the very night of the swap!"
+    },
+    {
+      "rookie": "The real piece came here. I am sure.",
+      "junior": "The real piece was brought here. I'm sure of it.",
+      "master": "The real piece was brought here. I'm certain of it."
+    },
+    {
+      "rookie": "We must tell Sofia. Now.",
+      "junior": "We have to tell Sofia. Right now.",
+      "master": "We need to tell Sofia, this instant."
+    },
+    {
+      "rookie": "THE HEAVY BOX CAME HERE",
+      "junior": "THE HEAVY BOX CAME HERE",
+      "master": "THE HEAVY BOX CAME HERE"
+    },
+    {
+      "rookie": "11:50 PM on Thursday, the night of the swap. Is the real piece inside?",
+      "junior": "11:50 PM on Thursday: the night of the swap. Could the real piece be inside?",
+      "master": "11:50 PM on Thursday, the very night of the swap. Is the real piece hidden inside?"
+    },
+    {
+      "rookie": "What is under the square?",
+      "junior": "What is under the square?",
+      "master": "What is under the square?"
+    },
+    {
+      "rookie": "A Message for Sofia",
+      "junior": "A Message for Sofia",
+      "master": "A Message for Sofia"
+    },
+    {
+      "rookie": "Giulia calls Director Sofia on her phone.",
+      "junior": "Giulia phones Director Sofia.",
+      "master": "Giulia rings Director Sofia on her phone."
+    },
+    {
+      "rookie": "\"I need one word to make the city listen,\" Sofia says.",
+      "junior": "\"I need just one word that will make the city listen,\" Sofia says.",
+      "master": "\"Give me one word that will make the city sit up and listen,\" Sofia says."
+    },
+    {
+      "rookie": "Sofia's message and your notes say:",
+      "junior": "Here are Sofia's message and your notes:",
+      "master": "Sofia's message, alongside your own notes:"
+    },
+    {
+      "rookie": "SOFIA:\n\"I can bring the city inspector tomorrow.\nBut I must tell him why the work must stop.\nWhat is under the square?\"\n\nYOUR NOTES:\nThe real piece shows a room under the owl square.\nThe room's Latin name is BIBLIOTHECA.",
+      "junior": "SOFIA:\n\"I can bring the city inspector tomorrow.\nBut I have to tell him why the work must stop.\nWhat is under the square?\"\n\nYOUR NOTES:\nThe real piece shows a room under the owl square.\nThe room's Latin name is BIBLIOTHECA.",
+      "master": "SOFIA:\n\"I can bring the city inspector here tomorrow.\nBut I'll need to convince him that the work must stop.\nWhat is under the square?\"\n\nYOUR NOTES:\nThe real piece marks a room hidden beneath the owl square.\nThe room's Latin name is BIBLIOTHECA."
+    },
+    {
+      "rookie": "Answer Sofia. What is under the square?",
+      "junior": "Answer Sofia's question. What is under the square?",
+      "master": "Reply to Sofia. What is under the square?"
+    },
+    {
+      "rookie": "Under the square, there is an old Roman ____.",
+      "junior": "Under the square, there is an old Roman ____.",
+      "master": "Beneath the square lies an old Roman ____."
+    },
+    {
+      "rookie": "Look at Aldo's Latin card in your Notebook.",
+      "junior": "Check Aldo's Latin card in your Notebook.",
+      "master": "Aldo once gave you a card of Latin words. It is waiting in your Notebook."
+    },
+    {
+      "rookie": "The room is a room for books.",
+      "junior": "The room was a place where books were kept.",
+      "master": "Imagine what once filled the shelves of this room: scrolls and books."
+    },
+    {
+      "rookie": "Your message is sent!",
+      "junior": "Your message has been sent!",
+      "master": "Your message is on its way!"
+    },
+    {
+      "rookie": "Signor Valli will say there is nothing down there.",
+      "junior": "Signor Valli is sure to say there's nothing down there.",
+      "master": "Signor Valli will surely insist there's nothing down there."
+    },
+    {
+      "rookie": "In the site office, behind the fence, a light is still on.",
+      "junior": "Behind the fence, a light is still on in the site office.",
+      "master": "Behind the fence, a light still burns in the site office."
+    },
+    {
+      "rookie": "A bath is BALNEUM in Latin. Look at your notes again.",
+      "junior": "In Latin, a bath is BALNEUM. Look at your notes again.",
+      "master": "BALNEUM is the Latin for a bath, and that is not the word in your notes. Look again."
+    },
+    {
+      "rookie": "A theatre is THEATRUM in Latin. Look at your notes again.",
+      "junior": "In Latin, a theatre is THEATRUM. Look at your notes again.",
+      "master": "THEATRUM is the Latin for a theatre, and that is not the word in your notes. Look again."
+    },
+    {
+      "rookie": "Check your spelling on Aldo's Latin card.",
+      "junior": "Check your spelling against Aldo's Latin card.",
+      "master": "Compare your spelling, letter by letter, with Aldo's Latin card."
+    },
+    {
+      "rookie": "A Roman library? Under the square?",
+      "junior": "A Roman library? Right under the square?",
+      "master": "A Roman library? Hidden beneath the square?"
+    },
+    {
+      "rookie": "BIBLIOTHECA. A room for books, on the old map.",
+      "junior": "BIBLIOTHECA. It's a room for books, marked on the old map.",
+      "master": "BIBLIOTHECA: a room for books, marked on the ancient map."
+    },
+    {
+      "rookie": "Then the concrete must not come.",
+      "junior": "Then the concrete must not be poured.",
+      "master": "Then not a drop of concrete can be poured."
+    },
+    {
+      "rookie": "I am bringing the city inspector tomorrow!",
+      "junior": "I'll bring the city inspector tomorrow!",
+      "master": "I'm bringing the city inspector first thing tomorrow!"
+    },
+    {
+      "rookie": "But without the real piece, who will believe us?",
+      "junior": "But without the real piece, who's going to believe us?",
+      "master": "But without the real piece, who on earth will believe us?"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "surrounds": "둘러싸다",
+      "poured": "(콘크리트를) 붓다",
+      "peaceful": "평화로운",
+      "sponsor": "후원자",
+      "glances": "힐끗 보다",
+      "tremble": "떨리다",
+      "described": "설명했다, 묘사했다",
+      "strip": "가느다란 띠",
+      "perfectly": "완전히"
+    },
+    "master": {
+      "towering": "우뚝 솟은",
+      "encloses": "에워싸다",
+      "looms": "불쑥 솟아 있다",
+      "motionless": "움직이지 않는",
+      "govern": "다스리다, 정하다",
+      "glimpsed": "언뜻 보았다",
+      "edges": "조금씩 다가가다",
+      "nervously": "불안하게",
+      "timeline": "시간 순서",
+      "insist": "우기다",
+      "beneath": "~의 아래에",
+      "bearing": "(무늬 등을) 지닌",
+      "dangling": "매달려 있는",
+      "trembles": "떨리다",
+      "contain": "담고 있다"
+    }
+  }
+}

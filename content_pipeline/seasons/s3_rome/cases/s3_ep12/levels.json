@@ -1,0 +1,695 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep12",
+  "lines": [
+    {
+      "rookie": "The Library Under the Owl",
+      "junior": "The Library Under the Owl",
+      "master": "The Library Under the Owl"
+    },
+    {
+      "rookie": "The work has stopped. A ladder goes down under the owl square.",
+      "junior": "The work has stopped, and a ladder now leads down under the owl square.",
+      "master": "The work has stopped. A ladder now descends beneath the owl square."
+    },
+    {
+      "rookie": "Livia has one last Owl game: seven gold letter tiles to find.",
+      "junior": "Livia has one last Owl game for you: seven gold letter tiles to find.",
+      "master": "Livia has prepared one final Owl game: seven gold letter tiles waiting to be found."
+    },
+    {
+      "rookie": "What has Rome kept under its streets for so long?",
+      "junior": "What has Rome been keeping under its streets for so long?",
+      "master": "What secret has Rome guarded beneath its streets for so many centuries?"
+    },
+    {
+      "rookie": "The broken map of Rome is whole again. Where will your next case take you?",
+      "junior": "The broken map of Rome is whole once more. Where will your next case take you?",
+      "master": "The broken map of Rome is whole once more. Where will your next case lead you?"
+    },
+    {
+      "rookie": "Go down safely.",
+      "junior": "Climb down safely.",
+      "master": "Make your way down safely."
+    },
+    {
+      "rookie": "Find what the old library kept.",
+      "junior": "Find out what the old library kept.",
+      "master": "Discover what the old library once held."
+    },
+    {
+      "rookie": "Spell the word of the seven gold tiles.",
+      "junior": "Spell the word hidden in the seven gold tiles.",
+      "master": "Spell out the word the seven gold tiles conceal."
+    },
+    {
+      "rookie": "The concrete never came.",
+      "junior": "The concrete never arrived.",
+      "master": "In the end, the concrete never came."
+    },
+    {
+      "rookie": "This morning, the city opened a small hole in the middle of Piazza della Civetta.",
+      "junior": "This morning, the city opened up a small hole in the middle of Piazza della Civetta.",
+      "master": "This morning, the city carefully opened a small hole in the heart of Piazza della Civetta."
+    },
+    {
+      "rookie": "Everyone wants to see what is under the owl square.",
+      "junior": "Everyone is eager to see what is under the owl square.",
+      "master": "Everyone is longing to see what lies beneath the owl square."
+    },
+    {
+      "rookie": "Under Piazza della Civetta, you found the old Roman library from the map. Its walls have square holes for scrolls. Its owl mosaic says SAPIENTIA: wisdom. Livia's seven gold tiles spelled HISTORY. The real piece is back in its glass case. The library will become a museum.",
+      "junior": "Under Piazza della Civetta, you found the old Roman library from the map. Its walls are full of square holes for scrolls, and its owl mosaic says SAPIENTIA: wisdom. Livia's seven gold tiles spelled HISTORY. The real piece is back in its glass case, and the library will become a museum.",
+      "master": "Beneath Piazza della Civetta, you uncovered the old Roman library shown on the map. Its walls are lined with square holes for scrolls, and its owl mosaic reads SAPIENTIA: wisdom. Livia's seven gold tiles spelled HISTORY. The real piece has returned to its glass case, and the library will become a museum."
+    },
+    {
+      "rookie": "PIAZZA DELLA CIVETTA",
+      "junior": "PIAZZA DELLA CIVETTA",
+      "master": "PIAZZA DELLA CIVETTA"
+    },
+    {
+      "rookie": "Turn on your lamp",
+      "junior": "Turn on your lamp",
+      "master": "Switch on your lamp"
+    },
+    {
+      "rookie": "Go down the ladder slowly",
+      "junior": "Go down the ladder slowly",
+      "master": "Go down the ladder slowly"
+    },
+    {
+      "rookie": "Put on a helmet",
+      "junior": "Put on a helmet",
+      "master": "Put on a helmet"
+    },
+    {
+      "rookie": "Hold the rope with both hands",
+      "junior": "Hold the rope with both hands",
+      "master": "Grip the rope with both hands"
+    },
+    {
+      "rookie": "First, put on a helmet.",
+      "junior": "First, put on a helmet.",
+      "master": "First, put on a helmet."
+    },
+    {
+      "rookie": "Then, go down the ladder slowly.",
+      "junior": "Then, go down the ladder slowly.",
+      "master": "Then, go down the ladder slowly."
+    },
+    {
+      "rookie": "Safety First",
+      "junior": "Safety First",
+      "master": "Safety First"
+    },
+    {
+      "rookie": "The machines are quiet. In the middle of the square is a hole with a ladder.",
+      "junior": "The machines have fallen quiet. In the middle of the square is a hole with a ladder.",
+      "master": "The machines stand silent. In the centre of the square, a ladder disappears into a hole."
+    },
+    {
+      "rookie": "The inspector hands you a card. \"Nobody goes down without reading this.\"",
+      "junior": "The inspector hands you a card. \"Nobody goes down without reading this first.\"",
+      "master": "The inspector presses a card into your hand. \"Nobody goes down without reading this.\""
+    },
+    {
+      "rookie": "The safety card says:",
+      "junior": "Here is what the safety card says:",
+      "master": "The safety card reads:"
+    },
+    {
+      "rookie": "GOING DOWN SAFELY\nLast, turn on your lamp at the bottom.\nFirst, put on a helmet.\nNext, hold the rope with both hands.\nThen, go down the ladder slowly.",
+      "junior": "GOING DOWN SAFELY\nLast, turn on your lamp at the bottom.\nFirst, put on a helmet.\nNext, hold the rope with both hands.\nThen, go down the ladder slowly.",
+      "master": "GOING DOWN SAFELY\nLast, turn on your lamp at the bottom.\nFirst, put on a helmet.\nNext, hold the rope with both hands.\nThen, go down the ladder slowly."
+    },
+    {
+      "rookie": "Put the safety steps in order.",
+      "junior": "Put the safety steps in the right order.",
+      "master": "Arrange the safety steps in the order you must follow them."
+    },
+    {
+      "rookie": "Find First and Last.",
+      "junior": "Start by finding First and Last.",
+      "master": "Some words on the card mark the beginning and the end. Find them."
+    },
+    {
+      "rookie": "Next comes before Then on this card.",
+      "junior": "On this card, Next comes before Then.",
+      "master": "Between those two, decide whether Next or Then comes first."
+    },
+    {
+      "rookie": "You are ready to go down!",
+      "junior": "You're ready to go down!",
+      "master": "You're ready for the descent!"
+    },
+    {
+      "rookie": "Helmet, rope, ladder, lamp.",
+      "junior": "Helmet, rope, ladder, lamp.",
+      "master": "Helmet, rope, ladder, lamp."
+    },
+    {
+      "rookie": "On the top step of the ladder, two gold tiles shine: Y and T.",
+      "junior": "On the top step of the ladder, two gold tiles are shining: Y and T.",
+      "master": "On the ladder's top step, two gold tiles gleam: Y and T."
+    },
+    {
+      "rookie": "You go down, slowly. Then you turn on your lamp.",
+      "junior": "You climb down slowly. Then you turn on your lamp.",
+      "master": "Slowly, you climb down. Then you switch on your lamp."
+    },
+    {
+      "rookie": "Read First, Next, Then and Last again.",
+      "junior": "Read First, Next, Then and Last again.",
+      "master": "Look again at First, Next, Then and Last."
+    },
+    {
+      "rookie": "Gold Tiles by the Ladder",
+      "junior": "Gold Tiles by the Ladder",
+      "master": "Gold Tiles by the Ladder"
+    },
+    {
+      "rookie": "Two of Livia's gold tiles were on the ladder: Y and T.",
+      "junior": "Two of Livia's gold tiles were waiting on the ladder: Y and T.",
+      "master": "Two of Livia's gold tiles had been left on the ladder: Y and T."
+    },
+    {
+      "rookie": "Play the Owl's last game.",
+      "junior": "Play the Owl's very last game.",
+      "master": "Take on the Owl's final game."
+    },
+    {
+      "rookie": "One last Owl game, Detective!",
+      "junior": "One last Owl game for you, Detective!",
+      "master": "One final Owl game, Detective!"
+    },
+    {
+      "rookie": "I hid seven gold letter tiles today.",
+      "junior": "I've hidden seven gold letter tiles today.",
+      "master": "Today, I've hidden seven gold letter tiles."
+    },
+    {
+      "rookie": "Find them all, and spell my last word.",
+      "junior": "Find every one of them, then spell my last word.",
+      "master": "Track down every one, and spell out my final word."
+    },
+    {
+      "rookie": "READ THE SAFETY CARD",
+      "junior": "READ THE SAFETY CARD",
+      "master": "READ THE SAFETY CARD"
+    },
+    {
+      "rookie": "TWO GOLD TILES: Y AND T",
+      "junior": "TWO GOLD TILES: Y AND T",
+      "master": "TWO GOLD TILES: Y AND T"
+    },
+    {
+      "rookie": "Five more tiles are hidden down below. Go down slowly!",
+      "junior": "Five more tiles are hidden down below. Climb down slowly!",
+      "master": "Five more tiles lie hidden in the darkness below. Go down slowly!"
+    },
+    {
+      "rookie": "Bottles of olive oil",
+      "junior": "Bottles of olive oil",
+      "master": "Bottles of olive oil"
+    },
+    {
+      "rookie": "Read Aldo's card. What did the Romans keep in square holes?",
+      "junior": "Read Aldo's card again. What did the Romans keep in square holes?",
+      "master": "Return to Aldo's card. What did the Romans keep in square holes?"
+    },
+    {
+      "rookie": "Scrolls, long pages rolled up",
+      "junior": "Scrolls, long pages rolled up",
+      "master": "Scrolls, long pages rolled up"
+    },
+    {
+      "rookie": "Pools of water",
+      "junior": "Pools of water",
+      "master": "Pools of water"
+    },
+    {
+      "rookie": "Pools are for baths, and they are in the floor, not in the walls.",
+      "junior": "Pools belong in baths, and they are in the floor, not in the walls.",
+      "master": "Pools belong to baths, and they are sunk into the floor, not set into the walls."
+    },
+    {
+      "rookie": "They were scrolls: long pages, rolled up.",
+      "junior": "They were scrolls: long pages, rolled up.",
+      "master": "They were scrolls: long pages, rolled up."
+    },
+    {
+      "rookie": "Scrolls were kept in square holes in the walls.",
+      "junior": "Scrolls were kept in square holes in the walls.",
+      "master": "Scrolls were kept in square holes in the walls."
+    },
+    {
+      "rookie": "Holes in the Walls",
+      "junior": "Holes in the Walls",
+      "master": "Holes in the Walls"
+    },
+    {
+      "rookie": "THE ROMAN LIBRARY",
+      "junior": "THE ROMAN LIBRARY",
+      "master": "THE ROMAN LIBRARY"
+    },
+    {
+      "rookie": "Your lamp shines on old walls full of small square holes.",
+      "junior": "Your lamp lights up old walls full of small square holes.",
+      "master": "Your lamp sweeps across ancient walls, riddled with small square holes."
+    },
+    {
+      "rookie": "Aldo climbs down after you.",
+      "junior": "Aldo climbs down right after you.",
+      "master": "Aldo clambers down after you."
+    },
+    {
+      "rookie": "Aldo's card says:",
+      "junior": "Here is what Aldo's card says:",
+      "master": "Aldo's card reads:"
+    },
+    {
+      "rookie": "IN A ROMAN LIBRARY\nBooks were not like our books.\nThey were scrolls: long pages, rolled up.\nScrolls were kept in square holes in the walls.\nRoman baths had pools of water, not holes in the walls.",
+      "junior": "IN A ROMAN LIBRARY\nBooks were not like the books we have today.\nThey were scrolls: long pages, rolled up.\nScrolls were kept in square holes in the walls.\nRoman baths had pools of water, not holes in the walls.",
+      "master": "IN A ROMAN LIBRARY\nRoman books looked nothing like ours.\nThey were scrolls: long pages, rolled up.\nScrolls were kept in square holes in the walls.\nRoman baths, by contrast, had pools of water, not holes in the walls."
+    },
+    {
+      "rookie": "What did the Romans keep in these square holes?",
+      "junior": "What did the Romans keep in these square holes?",
+      "master": "What would the Romans have stored in these square holes?"
+    },
+    {
+      "rookie": "This room is a library. What did Roman books look like?",
+      "junior": "This room is a library. What did books look like in Roman times?",
+      "master": "Remember what kind of room this is, and what Roman books were like."
+    },
+    {
+      "rookie": "Find the line about square holes on Aldo's card.",
+      "junior": "Find the line on Aldo's card about square holes.",
+      "master": "One line on Aldo's card explains the square holes."
+    },
+    {
+      "rookie": "You understand the old library!",
+      "junior": "Now you understand the old library!",
+      "master": "The old library has given up its secret!"
+    },
+    {
+      "rookie": "Each square hole once held scrolls.",
+      "junior": "Each square hole used to hold scrolls.",
+      "master": "Every square hole was once filled with scrolls."
+    },
+    {
+      "rookie": "In one hole, you find two gold tiles: H and O.",
+      "junior": "Inside one hole, you find two gold tiles: H and O.",
+      "master": "Tucked inside one hole, you discover two gold tiles: H and O."
+    },
+    {
+      "rookie": "Livia points to the floor. \"Look at the middle of the room.\"",
+      "junior": "Livia points at the floor. \"Look at the middle of the room.\"",
+      "master": "Livia gestures towards the floor. \"Look at the middle of the room.\""
+    },
+    {
+      "rookie": "The Scroll Holes",
+      "junior": "The Scroll Holes",
+      "master": "The Scroll Holes"
+    },
+    {
+      "rookie": "Two gold tiles were in a scroll hole: H and O.",
+      "junior": "Two gold tiles were hidden in a scroll hole: H and O.",
+      "master": "Two gold tiles had been tucked into a scroll hole: H and O."
+    },
+    {
+      "rookie": "Is this the room?",
+      "junior": "Is this the room?",
+      "master": "Is this the room?"
+    },
+    {
+      "rookie": "Which thing in your Notebook shows this room on the old map?",
+      "junior": "What in your Notebook shows this room on the old map?",
+      "master": "What in your Notebook marks this room on the old map?"
+    },
+    {
+      "rookie": "Find the real map piece from Valli's box room.",
+      "junior": "Look for the real map piece from Valli's box room.",
+      "master": "Look for the real map piece rescued from Valli's box room."
+    },
+    {
+      "rookie": "Find out what the holes were for.",
+      "junior": "Find out what the holes were used for.",
+      "master": "Work out what purpose the holes served."
+    },
+    {
+      "rookie": "It is real. It is all real!",
+      "junior": "It's real. It's all real!",
+      "master": "It's real. Every bit of it is real!"
+    },
+    {
+      "rookie": "What were these holes for?",
+      "junior": "What were these holes for?",
+      "master": "What were these holes for?"
+    },
+    {
+      "rookie": "Remember my Latin card? Read this one.",
+      "junior": "Do you remember my Latin card? Read this one.",
+      "master": "You remember my Latin card? Now read this one."
+    },
+    {
+      "rookie": "READ ALDO'S CARD",
+      "junior": "READ ALDO'S CARD",
+      "master": "READ ALDO'S CARD"
+    },
+    {
+      "rookie": "SCROLLS IN THE WALLS",
+      "junior": "SCROLLS IN THE WALLS",
+      "master": "SCROLLS IN THE WALLS"
+    },
+    {
+      "rookie": "This was a real Roman library. And two more tiles were waiting.",
+      "junior": "This was a real Roman library, and two more tiles were waiting.",
+      "master": "This was a genuine Roman library, and two more tiles lay waiting."
+    },
+    {
+      "rookie": "WISDOM — knowing a lot and making good choices.",
+      "junior": "WISDOM — knowing a lot and making good choices.",
+      "master": "WISDOM — knowing a lot and making good choices."
+    },
+    {
+      "rookie": "The Romans said the owl was the bird of SAPIENTIA.",
+      "junior": "The Romans said the owl was the bird of SAPIENTIA.",
+      "master": "The Romans said the owl was the bird of SAPIENTIA."
+    },
+    {
+      "rookie": "The Owl in the Floor",
+      "junior": "The Owl in the Floor",
+      "master": "The Owl in the Floor"
+    },
+    {
+      "rookie": "In the middle of the floor is an owl made of tiny stone tiles.",
+      "junior": "In the middle of the floor, there is an owl made of tiny stone tiles.",
+      "master": "Set into the centre of the floor is an owl made of tiny stone tiles."
+    },
+    {
+      "rookie": "Around it are Latin letters: SAPIENTIA.",
+      "junior": "Latin letters run all around it: SAPIENTIA.",
+      "master": "Encircling it are Latin letters: SAPIENTIA."
+    },
+    {
+      "rookie": "Aldo's word box says:",
+      "junior": "Here is what Aldo's word box says:",
+      "master": "Aldo's word box reads:"
+    },
+    {
+      "rookie": "SAPIENTIA is a Latin word.\nIt means knowing a lot and making good choices.\nThe Romans said the owl was the bird of SAPIENTIA.\n\nWORD BOX:\nWISDOM — knowing a lot and making good choices.\nWEALTH — having a lot of money.\nWEATHER — rain, sun and wind.",
+      "junior": "SAPIENTIA is a word in Latin.\nIt means knowing a lot and making good choices.\nThe Romans said the owl was the bird of SAPIENTIA.\n\nWORD BOX:\nWISDOM — knowing a lot and making good choices.\nWEALTH — having a lot of money.\nWEATHER — rain, sun and wind.",
+      "master": "SAPIENTIA is an ancient Latin word.\nIt means knowing a lot and making good choices.\nThe Romans said the owl was the bird of SAPIENTIA.\n\nWORD BOX:\nWISDOM — knowing a lot and making good choices.\nWEALTH — having a lot of money.\nWEATHER — rain, sun and wind."
+    },
+    {
+      "rookie": "What does SAPIENTIA mean in English?",
+      "junior": "What does SAPIENTIA mean in English?",
+      "master": "What is the English word for SAPIENTIA?"
+    },
+    {
+      "rookie": "SAPIENTIA means ____.",
+      "junior": "SAPIENTIA means ____.",
+      "master": "SAPIENTIA means ____."
+    },
+    {
+      "rookie": "Read what SAPIENTIA means on Aldo's card.",
+      "junior": "Read the meaning of SAPIENTIA on Aldo's card.",
+      "master": "Aldo's card explains SAPIENTIA. Start there."
+    },
+    {
+      "rookie": "Find the word in the word box with the same meaning.",
+      "junior": "Look for the word in the word box that has the same meaning.",
+      "master": "One word in the box shares exactly that meaning."
+    },
+    {
+      "rookie": "You read the owl's word!",
+      "junior": "You've read the owl's word!",
+      "master": "You've deciphered the owl's word!"
+    },
+    {
+      "rookie": "SAPIENTIA means wisdom.",
+      "junior": "SAPIENTIA means wisdom.",
+      "master": "SAPIENTIA means wisdom, just as the Romans believed."
+    },
+    {
+      "rookie": "Under the owl's eye, three gold tiles are waiting: S, I and R.",
+      "junior": "Under the owl's eye, three gold tiles are waiting: S, I and R.",
+      "master": "Beneath the owl's eye, three gold tiles lie waiting: S, I and R."
+    },
+    {
+      "rookie": "\"That makes seven,\" says Giulia. \"Let's go back to the museum.\"",
+      "junior": "\"That makes seven,\" Giulia says. \"Let's head back to the museum.\"",
+      "master": "\"That makes seven,\" Giulia declares. \"Back to the museum!\""
+    },
+    {
+      "rookie": "Wealth is having a lot of money. That is what Signor Valli wanted. What did the owl mean?",
+      "junior": "Wealth means having a lot of money, and that is what Signor Valli wanted. What did the owl mean?",
+      "master": "Wealth is having a lot of money, exactly what Signor Valli was after. But what did the owl stand for?"
+    },
+    {
+      "rookie": "Weather is rain, sun and wind. What means making good choices?",
+      "junior": "Weather means rain, sun and wind. Which word means making good choices?",
+      "master": "Weather is rain, sun and wind. Look for the word about making good choices."
+    },
+    {
+      "rookie": "Check your spelling in the word box.",
+      "junior": "Check your spelling against the word box.",
+      "master": "Compare your spelling, letter by letter, with the word box."
+    },
+    {
+      "rookie": "The Owl's Word",
+      "junior": "The Owl's Word",
+      "master": "The Owl's Word"
+    },
+    {
+      "rookie": "Three gold tiles were under the owl's eye: S, I and R.",
+      "junior": "Three gold tiles were hidden under the owl's eye: S, I and R.",
+      "master": "Three gold tiles had been placed beneath the owl's eye: S, I and R."
+    },
+    {
+      "rookie": "Read the word around the owl.",
+      "junior": "Read the word that surrounds the owl.",
+      "master": "Decipher the word that circles the owl."
+    },
+    {
+      "rookie": "The library of the owl.",
+      "junior": "This is the library of the owl.",
+      "master": "The library of the owl, at long last."
+    },
+    {
+      "rookie": "Now I know why I chose the owl.",
+      "junior": "Now I understand why I chose the owl.",
+      "master": "Now I finally understand why I chose the owl."
+    },
+    {
+      "rookie": "Wisdom, not money.",
+      "junior": "Wisdom, not money.",
+      "master": "Wisdom, not money. That's what the owl stood for."
+    },
+    {
+      "rookie": "SAPIENTIA MEANS WISDOM",
+      "junior": "SAPIENTIA MEANS WISDOM",
+      "master": "SAPIENTIA MEANS WISDOM"
+    },
+    {
+      "rookie": "The Romans called the owl the bird of wisdom. Now you have all seven tiles.",
+      "junior": "The Romans called the owl the bird of wisdom. Now you have all seven tiles.",
+      "master": "To the Romans, the owl was the bird of wisdom. And now all seven tiles are yours."
+    },
+    {
+      "rookie": "Y",
+      "junior": "Y",
+      "master": "Y"
+    },
+    {
+      "rookie": "T",
+      "junior": "T",
+      "master": "T"
+    },
+    {
+      "rookie": "H",
+      "junior": "H",
+      "master": "H"
+    },
+    {
+      "rookie": "O",
+      "junior": "O",
+      "master": "O"
+    },
+    {
+      "rookie": "S",
+      "junior": "S",
+      "master": "S"
+    },
+    {
+      "rookie": "I",
+      "junior": "I",
+      "master": "I"
+    },
+    {
+      "rookie": "R",
+      "junior": "R",
+      "master": "R"
+    },
+    {
+      "rookie": "It is not money.",
+      "junior": "It is not money.",
+      "master": "It is not money."
+    },
+    {
+      "rookie": "It is the story of the past.",
+      "junior": "It is the story of the past.",
+      "master": "It is the story of the past."
+    },
+    {
+      "rookie": "Seven Gold Tiles",
+      "junior": "Seven Gold Tiles",
+      "master": "Seven Gold Tiles"
+    },
+    {
+      "rookie": "THE MAP HALL",
+      "junior": "THE MAP HALL",
+      "master": "THE MAP HALL"
+    },
+    {
+      "rookie": "The map hall is full of people.",
+      "junior": "The map hall is packed with people.",
+      "master": "The map hall is crowded with visitors."
+    },
+    {
+      "rookie": "The real piece is back in its glass case.",
+      "junior": "The real piece has been returned to its glass case.",
+      "master": "The real piece rests once more in its glass case."
+    },
+    {
+      "rookie": "A new label says: \"Found again, with help from Livia Conti.\"",
+      "junior": "A new label says: \"Found again, with help from Livia Conti.\"",
+      "master": "A new label reads: \"Found again, with help from Livia Conti.\""
+    },
+    {
+      "rookie": "Enzo, Pia, Carla and Aldo are all here. Livia gives you one last owl card, and a little lock with seven empty slots.",
+      "junior": "Enzo, Pia, Carla and Aldo have all come. Livia hands you one last owl card, along with a little lock that has seven empty slots.",
+      "master": "Enzo, Pia, Carla and Aldo have all gathered here. Livia hands you one last owl card, together with a little lock bearing seven empty slots."
+    },
+    {
+      "rookie": "The Owl's last card says:",
+      "junior": "Here is what the Owl's last card says:",
+      "master": "The Owl's final card reads:"
+    },
+    {
+      "rookie": "Dear Detective,\nYou found my seven gold tiles: Y, T, H, O, S, I, R.\nPut them in order to spell what the old map gave back to Rome.\nIt is not money.\nIt is the story of the past.\n— The Owl (Livia)",
+      "junior": "Dear Detective,\nYou found all seven of my gold tiles: Y, T, H, O, S, I, R.\nPut them in order to spell what the old map gave back to Rome.\nIt is not money.\nIt is the story of the past.\n— The Owl (Livia)",
+      "master": "Dear Detective,\nYou have gathered all seven of my gold tiles: Y, T, H, O, S, I, R.\nArrange them to spell what the old map returned to Rome.\nIt is not money.\nIt is the story of the past.\n— The Owl (Livia)"
+    },
+    {
+      "rookie": "Spell the word with your seven gold tiles.",
+      "junior": "Use your seven gold tiles to spell the word.",
+      "master": "Spell out the word with your seven gold tiles."
+    },
+    {
+      "rookie": "The word means the story of the past.",
+      "junior": "This word means the story of the past.",
+      "master": "Reread the Owl's card: what is the story of the past called?"
+    },
+    {
+      "rookie": "It starts with the first tile you found in the scroll hole.",
+      "junior": "It begins with the first of the two tiles you found in the scroll hole.",
+      "master": "Think back to the scroll hole: the first tile you found there is where the word begins."
+    },
+    {
+      "rookie": "The last lock opens. Everyone claps!",
+      "junior": "The last lock clicks open. Everyone claps!",
+      "master": "The final lock clicks open, and the whole hall bursts into applause!"
+    },
+    {
+      "rookie": "The city will make Piazza della Civetta a small museum.",
+      "junior": "The city will turn Piazza della Civetta into a small museum.",
+      "master": "The city plans to turn Piazza della Civetta into a small museum."
+    },
+    {
+      "rookie": "The old library below it will be open to everyone.",
+      "junior": "The old library beneath it will be open to everyone.",
+      "master": "The old library beneath it will welcome every visitor."
+    },
+    {
+      "rookie": "Bruno Valli must answer to the city for what he did.",
+      "junior": "Bruno Valli will have to answer to the city for what he did.",
+      "master": "Bruno Valli must now answer to the city for what he has done."
+    },
+    {
+      "rookie": "Giulia smiles at you. \"You found one more story, piece by piece.\"",
+      "junior": "Giulia smiles at you. \"You found one more story, piece by piece.\"",
+      "master": "Giulia gives you a warm smile. \"You uncovered one more story, piece by piece.\""
+    },
+    {
+      "rookie": "All seven tiles are right. Which word means the story of the past?",
+      "junior": "All seven tiles are right. Which word means the story of the past?",
+      "master": "The seven tiles are all correct. Now, which word means the story of the past?"
+    },
+    {
+      "rookie": "THE OWL'S LAST LOCK",
+      "junior": "THE OWL'S LAST LOCK",
+      "master": "THE OWL'S LAST LOCK"
+    },
+    {
+      "rookie": "HISTORY. The story of the past.",
+      "junior": "HISTORY. That's the story of the past.",
+      "master": "HISTORY. The story of the past, kept safe for us all."
+    },
+    {
+      "rookie": "The old map kept this story safe.",
+      "junior": "The old map kept this story safe for all this time.",
+      "master": "The old map guarded this story all along."
+    },
+    {
+      "rookie": "And now it is back where it belongs.",
+      "junior": "And now it's back where it belongs.",
+      "master": "And now it has returned where it truly belongs."
+    },
+    {
+      "rookie": "No more dark ten minutes in my hall!",
+      "junior": "No more ten dark minutes in my hall!",
+      "master": "No more ten minutes of darkness in my hall!"
+    },
+    {
+      "rookie": "I will write a new chapter tonight!",
+      "junior": "I'm going to write a new chapter tonight!",
+      "master": "Tonight, I shall write a brand-new chapter!"
+    },
+    {
+      "rookie": "Rome has more stories, Detective. Come back soon.",
+      "junior": "Rome has more stories to tell, Detective. Come back soon.",
+      "master": "Rome still has many stories to tell, Detective. Do come back soon."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "eager": "몹시 ~하고 싶어 하는",
+      "packed": "꽉 찬",
+      "shining": "빛나는",
+      "begins": "시작하다",
+      "returned": "돌려놓아진, 돌아온",
+      "hidden": "숨겨진",
+      "slots": "칸, 홈",
+      "tiles": "타일, 글자 조각"
+    },
+    "master": {
+      "descends": "아래로 내려가다",
+      "descent": "내려감",
+      "guarded": "지켰다",
+      "centuries": "수 세기",
+      "conceal": "숨기다",
+      "riddled": "(구멍이) 가득한",
+      "clambers": "기어 내려가다",
+      "gleam": "반짝이다",
+      "deciphered": "해독했다",
+      "decipher": "해독하다",
+      "encircling": "둘러싸고 있는",
+      "gestures": "손짓하다",
+      "applause": "박수",
+      "genuine": "진짜의",
+      "longing": "몹시 바라는"
+    }
+  }
+}

@@ -1,0 +1,976 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep01",
+  "lines": [
+    {
+      "rookie": "The Empty Glass Case",
+      "junior": "The Empty Glass Case",
+      "master": "The Empty Glass Case"
+    },
+    {
+      "rookie": "Today the museum will show a new piece of Rome's ancient marble map.",
+      "junior": "Today the museum is going to show a newly found piece of Rome's ancient marble map.",
+      "master": "Today the museum was meant to unveil a newly discovered fragment of Rome's ancient marble map."
+    },
+    {
+      "rookie": "But this morning, its glass case is empty.",
+      "junior": "But when the staff arrived this morning, its glass case was empty.",
+      "master": "Yet when the doors opened this morning, its glass case stood completely empty."
+    },
+    {
+      "rookie": "Who took it, and when?",
+      "junior": "Who took it, and when did it happen?",
+      "master": "Who took it, and at what hour did it vanish?"
+    },
+    {
+      "rookie": "Who is the Owl, and why does the Owl say the piece is not lost?",
+      "junior": "Who is the Owl, and why does the Owl insist the piece is not lost?",
+      "master": "Who is the mysterious Owl, and why would the Owl claim the piece is not lost at all?"
+    },
+    {
+      "rookie": "Talk to the three witnesses.",
+      "junior": "Question the three witnesses.",
+      "master": "Question the three witnesses and weigh their stories."
+    },
+    {
+      "rookie": "Follow the dust trail.",
+      "junior": "Follow the trail of dust.",
+      "master": "Trace the trail of white dust to its end."
+    },
+    {
+      "rookie": "Open the light box.",
+      "junior": "Unlock the light box.",
+      "master": "Unlock the light box and see what it hides."
+    },
+    {
+      "rookie": "Rome. The morning sun is warm on the old stones.",
+      "junior": "Rome. The morning sun warms the old stones of the city.",
+      "master": "Rome. The morning sun spills warm and golden across the city's ancient stones."
+    },
+    {
+      "rookie": "Today the Capitoline Museums will show a new piece of an ancient marble map.",
+      "junior": "Today the Capitoline Museums are going to show a new piece of an ancient marble map.",
+      "master": "Today the Capitoline Museums were to unveil a newly found fragment of an ancient marble map."
+    },
+    {
+      "rookie": "But the glass case is empty!",
+      "junior": "But when you arrive, the glass case is empty!",
+      "master": "But the glass case that should hold it is empty!"
+    },
+    {
+      "rookie": "\"Please, Detective,\" says Director Sofia Ferri. \"Help us find it!\"",
+      "junior": "\"Please, Detective,\" begs Director Sofia Ferri. \"You have to help us find it!\"",
+      "master": "\"Please, Detective,\" pleads Director Sofia Ferri, her voice trembling. \"You must help us find it!\""
+    },
+    {
+      "rookie": "The piece went missing at midnight, in ten dark minutes. Enzo and Livia saw the lights go off. But the power stayed on: someone turned the lights off by hand. A white dust trail led to the back door. There, the Owl left a card: the piece is not lost.",
+      "junior": "The piece went missing at midnight, during ten dark minutes. Enzo and Livia both saw the lights go off. But the power had stayed on, so someone switched the lights off by hand. A white dust trail led to the back door, where the Owl had left a card: the piece is not lost.",
+      "master": "The piece vanished at midnight, in ten minutes of darkness. Enzo and Livia both saw the lights go off, yet the power had never failed: someone had switched the lights off by hand. A trail of white dust led to the back door, where the Owl had left a card insisting that the piece is not lost."
+    },
+    {
+      "rookie": "CAPITOLINE MUSEUMS",
+      "junior": "CAPITOLINE MUSEUMS",
+      "master": "CAPITOLINE MUSEUMS"
+    },
+    {
+      "rookie": "The lights went off for ten minutes.",
+      "junior": "The lights went off for ten minutes.",
+      "master": "The lights went off for ten minutes."
+    },
+    {
+      "rookie": "An alarm rang in the hall.",
+      "junior": "An alarm rang in the hall.",
+      "master": "An alarm rang out in the hall."
+    },
+    {
+      "rookie": "Nobody talked about an alarm. Find two people who say the same thing.",
+      "junior": "Nobody mentioned an alarm. Look for two people who say the same thing.",
+      "master": "Not one witness spoke of an alarm. Which two accounts actually agree?"
+    },
+    {
+      "rookie": "The power was cut.",
+      "junior": "The power was cut.",
+      "master": "The power was cut off."
+    },
+    {
+      "rookie": "Sofia says the power stayed on. What did Enzo and Livia see?",
+      "junior": "Sofia says the power never went off. So what did Enzo and Livia see?",
+      "master": "According to Sofia, the power never failed. Listen again to what Enzo and Livia noticed."
+    },
+    {
+      "rookie": "When did you last see the piece?",
+      "junior": "When did you last see the piece?",
+      "master": "When did you last see the piece?"
+    },
+    {
+      "rookie": "I worked late.",
+      "junior": "I worked late.",
+      "master": "I worked late."
+    },
+    {
+      "rookie": "The Night Log",
+      "junior": "The Night Log",
+      "master": "The Night Log"
+    },
+    {
+      "rookie": "THE GUARD ROOM",
+      "junior": "THE GUARD ROOM",
+      "master": "THE GUARD ROOM"
+    },
+    {
+      "rookie": "Director Sofia Ferri meets you at the door.",
+      "junior": "Director Sofia Ferri is waiting for you at the door.",
+      "master": "Director Sofia Ferri is pacing by the door when you arrive."
+    },
+    {
+      "rookie": "\"The new map piece is gone!\" she says.",
+      "junior": "\"The new map piece has disappeared!\" she cries.",
+      "master": "\"The new map piece has vanished!\" she exclaims, wringing her hands."
+    },
+    {
+      "rookie": "Three people can tell you about last night.",
+      "junior": "Three people can tell you what happened last night.",
+      "master": "Three people were nearby last night, and each of them saw something."
+    },
+    {
+      "rookie": "Your notes say:",
+      "junior": "Your notes say:",
+      "master": "Your notes say:"
+    },
+    {
+      "rookie": "Ask each person what they saw.\nFind two people who say the same thing about midnight.",
+      "junior": "Ask each person what they saw.\nThen find two people who say the same thing about midnight.",
+      "master": "Ask each person what they witnessed.\nThen find the two people whose stories agree about midnight."
+    },
+    {
+      "rookie": "What happened in the map hall at midnight?",
+      "junior": "What happened in the map hall at midnight?",
+      "master": "What really happened in the map hall at midnight?"
+    },
+    {
+      "rookie": "Ask every person the same question: What happened at midnight?",
+      "junior": "Ask everyone the same question: What happened at midnight?",
+      "master": "Put the very same question to everyone: What happened at midnight?"
+    },
+    {
+      "rookie": "Two people saw the same thing. Compare their answers.",
+      "junior": "Two of the witnesses saw the same thing. Compare what they told you.",
+      "master": "Two of the accounts match. Lay their answers side by side."
+    },
+    {
+      "rookie": "Two witnesses saw the same thing!",
+      "junior": "Two witnesses saw exactly the same thing!",
+      "master": "Two witnesses agree on exactly the same thing!"
+    },
+    {
+      "rookie": "At midnight, the hall was dark for ten minutes.",
+      "junior": "At midnight, the hall was dark for ten minutes.",
+      "master": "At midnight, the hall was plunged into darkness for ten minutes."
+    },
+    {
+      "rookie": "Someone could take the piece then, and nobody would see.",
+      "junior": "During that time, someone could have taken the piece without being seen.",
+      "master": "In that darkness, anyone could have slipped the piece away without a single witness."
+    },
+    {
+      "rookie": "Enzo hands you his night log.",
+      "junior": "Enzo hands you his night log.",
+      "master": "Enzo passes you his battered night log."
+    },
+    {
+      "rookie": "Giulia, your guide, waves from the map hall. \"Come and look at the floor!\"",
+      "junior": "Giulia, your guide, waves from the map hall. \"Come and look at the floor!\"",
+      "master": "Giulia, your guide, beckons from the map hall. \"Come quickly and look at the floor!\""
+    },
+    {
+      "rookie": "The Dark Ten Minutes",
+      "junior": "The Dark Ten Minutes",
+      "master": "The Dark Ten Minutes"
+    },
+    {
+      "rookie": "Enzo and Livia saw the lights go off at midnight, for ten minutes.",
+      "junior": "Enzo and Livia both saw the lights go off at midnight, and they stayed off for ten minutes.",
+      "master": "Enzo and Livia both saw the lights go off at midnight, leaving the hall dark for ten minutes."
+    },
+    {
+      "rookie": "GUARD ROOM",
+      "junior": "GUARD ROOM",
+      "master": "GUARD ROOM"
+    },
+    {
+      "rookie": "Find out what happened at midnight.",
+      "junior": "Discover what happened at midnight.",
+      "master": "Uncover what happened at midnight."
+    },
+    {
+      "rookie": "Ask each person. Write down what they say.",
+      "junior": "Ask each person, and write down what they tell you.",
+      "master": "Question each person and note down every answer."
+    },
+    {
+      "rookie": "Talk to a witness.",
+      "junior": "Talk to a witness.",
+      "master": "Talk to a witness."
+    },
+    {
+      "rookie": "What happened at midnight?",
+      "junior": "What happened at midnight?",
+      "master": "What happened at midnight?"
+    },
+    {
+      "rookie": "Where were you at midnight?",
+      "junior": "Where were you at midnight?",
+      "master": "Where were you at midnight?"
+    },
+    {
+      "rookie": "Enzo Greco",
+      "junior": "Enzo Greco",
+      "master": "Enzo Greco"
+    },
+    {
+      "rookie": "THE NIGHT GUARD",
+      "junior": "THE NIGHT GUARD",
+      "master": "THE NIGHT GUARD"
+    },
+    {
+      "rookie": "an old guard with a grey moustache, a cap and a thermos of coffee",
+      "junior": "an old guard with a grey moustache, a cap and a thermos of coffee",
+      "master": "a weathered old guard with a grey moustache, a cap and a thermos of coffee"
+    },
+    {
+      "rookie": "I was on duty all night. Ask me.",
+      "junior": "I was on duty the whole night. Go ahead and ask me.",
+      "master": "I was on duty from dusk till dawn. Ask me anything."
+    },
+    {
+      "rookie": "At ten. It was in its glass case.",
+      "junior": "At ten. It was sitting safely in its glass case.",
+      "master": "At ten o'clock. It was resting safely in its glass case."
+    },
+    {
+      "rookie": "The lights went off for ten minutes!",
+      "junior": "The lights went off for ten whole minutes!",
+      "master": "The lights went off, and for ten whole minutes I couldn't see a thing!"
+    },
+    {
+      "rookie": "In this room, with my coffee.",
+      "junior": "Right here in this room, with my coffee.",
+      "master": "Right here in this room, keeping warm with my coffee."
+    },
+    {
+      "rookie": "Sofia Ferri",
+      "junior": "Sofia Ferri",
+      "master": "Sofia Ferri"
+    },
+    {
+      "rookie": "THE DIRECTOR",
+      "junior": "THE DIRECTOR",
+      "master": "THE DIRECTOR"
+    },
+    {
+      "rookie": "a director in a navy suit, with reading glasses on a chain",
+      "junior": "a director in a navy suit, with reading glasses on a chain",
+      "master": "an elegant director in a navy suit, with reading glasses on a chain"
+    },
+    {
+      "rookie": "I came as soon as Enzo called me.",
+      "junior": "I rushed here as soon as Enzo called me.",
+      "master": "I hurried here the moment Enzo telephoned me."
+    },
+    {
+      "rookie": "At six, when I locked my office.",
+      "junior": "At six, when I locked up my office.",
+      "master": "At six in the evening, when I locked my office for the night."
+    },
+    {
+      "rookie": "The power box says the power stayed on.",
+      "junior": "According to the power box, the power stayed on.",
+      "master": "The power box shows that the power never failed, not even for a second."
+    },
+    {
+      "rookie": "At home, fast asleep.",
+      "junior": "I was at home, fast asleep.",
+      "master": "At home, sound asleep, I'm afraid."
+    },
+    {
+      "rookie": "Livia Conti",
+      "junior": "Livia Conti",
+      "master": "Livia Conti"
+    },
+    {
+      "rookie": "THE RESTORER",
+      "junior": "THE RESTORER",
+      "master": "THE RESTORER"
+    },
+    {
+      "rookie": "a young restorer in a white lab coat, with a long brown braid and a silver owl ring",
+      "junior": "a young restorer in a white lab coat, with a long brown braid and a silver owl ring",
+      "master": "a young restorer in a white lab coat, with a long brown braid and a silver owl ring"
+    },
+    {
+      "rookie": "Oh... yes. I can help, I think.",
+      "junior": "Oh... yes. I think I can help.",
+      "master": "Oh... yes, of course. I suppose I can help."
+    },
+    {
+      "rookie": "On Friday morning. I cleaned it.",
+      "junior": "On Friday morning, when I cleaned it.",
+      "master": "On Friday morning. I cleaned it myself."
+    },
+    {
+      "rookie": "I saw the lights go off, too.",
+      "junior": "I saw the lights go off, too.",
+      "master": "I saw the lights go off as well."
+    },
+    {
+      "rookie": "In my lab. I worked late.",
+      "junior": "In my lab, because I worked late.",
+      "master": "In my lab, as usual. I worked late."
+    },
+    {
+      "rookie": "Ask a question.",
+      "junior": "Ask a question.",
+      "master": "Ask a question."
+    },
+    {
+      "rookie": "Ask another person.",
+      "junior": "Ask another person.",
+      "master": "Ask another person."
+    },
+    {
+      "rookie": "Compare two answers.",
+      "junior": "Compare two answers.",
+      "master": "Compare two answers."
+    },
+    {
+      "rookie": "Find two people who saw the same thing at midnight.",
+      "junior": "Find two people who saw the same thing at midnight.",
+      "master": "Find the two people who witnessed the same thing at midnight."
+    },
+    {
+      "rookie": "Tap two answers to compare them.",
+      "junior": "Tap two answers to compare them.",
+      "master": "Tap two answers to compare them."
+    },
+    {
+      "rookie": "Both saw the lights go off at midnight.",
+      "junior": "Both of them saw the lights go off at midnight.",
+      "master": "Both of them watched the lights go off at midnight."
+    },
+    {
+      "rookie": "These answers are not about midnight.",
+      "junior": "These answers aren't about midnight.",
+      "master": "Neither of these answers is about midnight."
+    },
+    {
+      "rookie": "Look for what happened at midnight.",
+      "junior": "Look for what happened at midnight.",
+      "master": "Focus on what happened at midnight."
+    },
+    {
+      "rookie": "These two say different things.",
+      "junior": "These two say different things.",
+      "master": "These two stories don't match."
+    },
+    {
+      "rookie": "Try another pair.",
+      "junior": "Try another pair.",
+      "master": "Try another pair."
+    },
+    {
+      "rookie": "Find out where Livia was.",
+      "junior": "Find out where Livia was.",
+      "master": "Discover where Livia was."
+    },
+    {
+      "rookie": "Ask Livia where she was at midnight.",
+      "junior": "Ask Livia where she was at midnight.",
+      "master": "Ask Livia where she was at midnight."
+    },
+    {
+      "rookie": "Livia was in her lab at midnight.",
+      "junior": "Livia was in her lab at midnight, working late.",
+      "master": "Livia was in her lab at midnight, working late."
+    },
+    {
+      "rookie": "Your witness notes are ready.",
+      "junior": "Your witness notes are ready.",
+      "master": "Your witness notes are ready."
+    },
+    {
+      "rookie": "THE DARK TEN MINUTES",
+      "junior": "THE DARK TEN MINUTES",
+      "master": "THE DARK TEN MINUTES"
+    },
+    {
+      "rookie": "The piece was safe at ten. Then, at midnight, the hall went dark.",
+      "junior": "The piece was still safe at ten. Then, at midnight, the hall went dark.",
+      "master": "At ten the piece was still safe. Then, at midnight, darkness swallowed the hall."
+    },
+    {
+      "rookie": "The back door",
+      "junior": "The back door",
+      "master": "The back door"
+    },
+    {
+      "rookie": "The stairs",
+      "junior": "The stairs",
+      "master": "The stairs"
+    },
+    {
+      "rookie": "The empty case",
+      "junior": "The empty case",
+      "master": "The empty case"
+    },
+    {
+      "rookie": "The big statue",
+      "junior": "The big statue",
+      "master": "The big statue"
+    },
+    {
+      "rookie": "It starts at the empty case.",
+      "junior": "It begins at the empty case.",
+      "master": "It begins at the empty case."
+    },
+    {
+      "rookie": "After the case, it goes past the big statue.",
+      "junior": "After the case, it passes the big statue.",
+      "master": "After the case, it winds past the big statue."
+    },
+    {
+      "rookie": "Before the back door, it goes down the stairs.",
+      "junior": "Before the back door, it goes down the stairs.",
+      "master": "Before the back door, it descends the stairs."
+    },
+    {
+      "rookie": "The Dust Trail",
+      "junior": "The Dust Trail",
+      "master": "The Dust Trail"
+    },
+    {
+      "rookie": "THE MAP HALL",
+      "junior": "THE MAP HALL",
+      "master": "THE MAP HALL"
+    },
+    {
+      "rookie": "On the floor, there is a line of fine white dust.",
+      "junior": "A thin line of fine white dust runs across the floor.",
+      "master": "A faint line of fine white dust stretches across the marble floor."
+    },
+    {
+      "rookie": "Livia Conti, a young restorer, kneels down. \"Strange,\" she says softly.",
+      "junior": "Livia Conti, a young restorer, kneels beside it. \"Strange,\" she says quietly.",
+      "master": "Livia Conti, a young restorer, kneels beside it. \"How strange,\" she murmurs."
+    },
+    {
+      "rookie": "Giulia writes down where the dust goes.",
+      "junior": "Giulia writes down every place the dust goes.",
+      "master": "Giulia scribbles down each place the dust passes."
+    },
+    {
+      "rookie": "Giulia's notes say:",
+      "junior": "Giulia's notes say:",
+      "master": "Giulia's notes say:"
+    },
+    {
+      "rookie": "The dust trail ends at the back door.\nIt starts at the empty case.\nAfter the case, it goes past the big statue.\nBefore the back door, it goes down the stairs.",
+      "junior": "The dust trail ends at the back door.\nIt begins at the empty case.\nAfter the case, it passes the big statue.\nBefore the back door, it goes down the stairs.",
+      "master": "The dust trail ends at the back door.\nIt begins at the empty case.\nAfter the case, it winds past the big statue.\nBefore the back door, it descends the stairs."
+    },
+    {
+      "rookie": "Follow the dust. Put the places in order, from start to end.",
+      "junior": "Follow the dust and put the places in order, from start to end.",
+      "master": "Trace the dust and arrange the places in order, from start to end."
+    },
+    {
+      "rookie": "One line tells you where the trail starts.",
+      "junior": "One line tells you where the trail begins.",
+      "master": "One of Giulia's lines reveals the beginning."
+    },
+    {
+      "rookie": "Before the back door means just before the end.",
+      "junior": "Before the back door means the step just before the end.",
+      "master": "Reread the line that begins with Before: which place sits just before the end?"
+    },
+    {
+      "rookie": "You followed the dust trail!",
+      "junior": "You followed the dust trail all the way!",
+      "master": "You traced the dust trail from start to finish!"
+    },
+    {
+      "rookie": "Case, statue, stairs, back door.",
+      "junior": "Case, statue, stairs, back door.",
+      "master": "Case, statue, stairs, back door."
+    },
+    {
+      "rookie": "The dust is soft, like chalk. Livia looks at it for a long time.",
+      "junior": "The dust feels soft, like chalk. Livia stares at it for a long time.",
+      "master": "The dust is soft and powdery, like chalk. Livia studies it for a long, silent moment."
+    },
+    {
+      "rookie": "At the back door, something small is waiting.",
+      "junior": "At the back door, something small is waiting.",
+      "master": "At the back door, something small lies waiting."
+    },
+    {
+      "rookie": "Find where the trail starts. Then read After and Before.",
+      "junior": "Find where the trail begins. Then read After and Before.",
+      "master": "Begin with the line about the beginning. Then reread After and Before."
+    },
+    {
+      "rookie": "A trail of fine white dust runs from the empty case to the back door.",
+      "junior": "A trail of fine white dust runs all the way from the empty case to the back door.",
+      "master": "A trail of fine white dust winds from the empty case all the way to the back door."
+    },
+    {
+      "rookie": "Follow the white dust.",
+      "junior": "Follow the trail of white dust.",
+      "master": "Trace the trail of white dust."
+    },
+    {
+      "rookie": "The dust goes all over the hall!",
+      "junior": "The dust goes all over the hall!",
+      "master": "The dust wanders right across the hall!"
+    },
+    {
+      "rookie": "Where does it start and end?",
+      "junior": "Where does it begin, and where does it end?",
+      "master": "Where does it begin, and where does it lead?"
+    },
+    {
+      "rookie": "I wrote it down. But my notes are all mixed up!",
+      "junior": "I wrote it all down, but my notes got completely mixed up!",
+      "master": "I noted every step, but my notes ended up in a terrible muddle!"
+    },
+    {
+      "rookie": "READ GIULIA'S NOTES",
+      "junior": "READ GIULIA'S NOTES",
+      "master": "READ GIULIA'S NOTES"
+    },
+    {
+      "rookie": "A TRAIL TO THE BACK DOOR",
+      "junior": "A TRAIL TO THE BACK DOOR",
+      "master": "A TRAIL TO THE BACK DOOR"
+    },
+    {
+      "rookie": "Someone carried something out that way. What is waiting at the door?",
+      "junior": "Someone carried something out that way. What is waiting at the door?",
+      "master": "Someone must have carried something out this way. What lies waiting at the door?"
+    },
+    {
+      "rookie": "The Pantheon",
+      "junior": "The Pantheon",
+      "master": "The Pantheon"
+    },
+    {
+      "rookie": "This place has a round hole in its roof. Where do people throw coins?",
+      "junior": "This place has a round hole in its roof. Where do people throw coins?",
+      "master": "This temple is famous for the round opening in its roof. Where might coins be tossed?"
+    },
+    {
+      "rookie": "The Trevi Fountain",
+      "junior": "The Trevi Fountain",
+      "master": "The Trevi Fountain"
+    },
+    {
+      "rookie": "The Colosseum",
+      "junior": "The Colosseum",
+      "master": "The Colosseum"
+    },
+    {
+      "rookie": "This is where the old games were. Where do people make a wish?",
+      "junior": "This is where the ancient games were held. Where do people make a wish?",
+      "master": "Ancient games once filled this arena. Where would someone stop to make a wish?"
+    },
+    {
+      "rookie": "Go where people throw coins and make a wish.",
+      "junior": "Go where people throw coins and make a wish.",
+      "master": "Go where people throw coins and make a wish."
+    },
+    {
+      "rookie": "The piece is not lost.",
+      "junior": "The piece is not lost.",
+      "master": "The piece is not lost."
+    },
+    {
+      "rookie": "The Owl's Card",
+      "junior": "The Owl's Card",
+      "master": "The Owl's Card"
+    },
+    {
+      "rookie": "THE BACK DOOR",
+      "junior": "THE BACK DOOR",
+      "master": "THE BACK DOOR"
+    },
+    {
+      "rookie": "The dust trail ends at the heavy back door.",
+      "junior": "The dust trail stops at the heavy back door.",
+      "master": "The dust trail comes to an end at the heavy back door."
+    },
+    {
+      "rookie": "Something small and white lies on the floor there.",
+      "junior": "Something small and white is lying on the floor there.",
+      "master": "Something small and white rests on the floor beside it."
+    },
+    {
+      "rookie": "An owl card? Or just a ticket?",
+      "junior": "Is it an owl card, or just an old ticket?",
+      "master": "Could it be an owl card, or merely a forgotten ticket?"
+    },
+    {
+      "rookie": "Under the back door, a card with an owl stamp:",
+      "junior": "Under the back door, you find a card with an owl stamp:",
+      "master": "Slipped under the back door is a card bearing an owl stamp:"
+    },
+    {
+      "rookie": "Dear Detective,\nThe piece is not lost.\nGo where people throw coins and make a wish.\nLook under the second shell.\n— The Owl",
+      "junior": "Dear Detective,\nThe piece is not lost.\nGo where people throw coins and make a wish.\nLook under the second shell.\n— The Owl",
+      "master": "Dear Detective,\nDo not despair. The piece is not lost.\nGo where people throw coins and make a wish.\nThere, look under the second shell.\n— The Owl"
+    },
+    {
+      "rookie": "Where does the Owl want you to go?",
+      "junior": "Where does the Owl want you to go?",
+      "master": "Where is the Owl sending you?"
+    },
+    {
+      "rookie": "Find the card at the back door and read it first.",
+      "junior": "First find the card at the back door and read it.",
+      "master": "Something at the end of the trail must be read before anything else."
+    },
+    {
+      "rookie": "Look at each picture on the visitor map. Where are people throwing coins?",
+      "junior": "Study each picture on the visitor map. In which one are people throwing coins?",
+      "master": "Compare what people are doing in each picture on the visitor map."
+    },
+    {
+      "rookie": "You read the Owl's card!",
+      "junior": "You understood the Owl's card!",
+      "master": "You deciphered the Owl's card!"
+    },
+    {
+      "rookie": "The Owl wants you at the fountain of wishes.",
+      "junior": "The Owl wants you to go to the fountain of wishes.",
+      "master": "The Owl is summoning you to the fountain of wishes."
+    },
+    {
+      "rookie": "\"The piece is not lost?\" Sofia says. \"Then where is it?\"",
+      "junior": "\"The piece is not lost?\" Sofia repeats. \"Then where on earth is it?\"",
+      "master": "\"The piece is not lost?\" Sofia echoes in disbelief. \"Then where on earth is it?\""
+    },
+    {
+      "rookie": "Behind her, Signor Bruno Valli, the show's sponsor, is red in the face.",
+      "junior": "Behind her, Signor Bruno Valli, the show's sponsor, has turned red in the face.",
+      "master": "Behind her, Signor Bruno Valli, the show's sponsor, has turned red with fury."
+    },
+    {
+      "rookie": "The Owl says the piece is not lost, and sends you to the Trevi Fountain.",
+      "junior": "The Owl says the piece is not lost, and sends you to the Trevi Fountain.",
+      "master": "The Owl insists the piece is not lost, and sends you to the Trevi Fountain."
+    },
+    {
+      "rookie": "The map hall",
+      "junior": "The map hall",
+      "master": "The map hall"
+    },
+    {
+      "rookie": "Look around the map hall. Where does the dust trail end?",
+      "junior": "Search the map hall. Where does the dust trail end?",
+      "master": "Search the map hall. Where does the dust trail finally end?"
+    },
+    {
+      "rookie": "Where does the Owl want you to go? Check the visitor map.",
+      "junior": "Where does the Owl want you to go? Check the visitor map.",
+      "master": "Where is the Owl sending you? Check the visitor map."
+    },
+    {
+      "rookie": "Nothing here. Follow the dust to the back door.",
+      "junior": "Nothing useful here. Follow the dust to the back door.",
+      "master": "Nothing of interest here. Follow the dust to the back door."
+    },
+    {
+      "rookie": "THE OWL'S CARD",
+      "junior": "THE OWL'S CARD",
+      "master": "THE OWL'S CARD"
+    },
+    {
+      "rookie": "A white card under the back door",
+      "junior": "A white card under the back door",
+      "master": "A white card under the back door"
+    },
+    {
+      "rookie": "THE EMPTY CASE",
+      "junior": "THE EMPTY CASE",
+      "master": "THE EMPTY CASE"
+    },
+    {
+      "rookie": "The empty glass case",
+      "junior": "The empty glass case",
+      "master": "The empty glass case"
+    },
+    {
+      "rookie": "The case is empty. The dust trail starts here.",
+      "junior": "The case is empty, and the dust trail starts right here.",
+      "master": "The case stands empty, and the dust trail begins right here."
+    },
+    {
+      "rookie": "THE STATUE",
+      "junior": "THE STATUE",
+      "master": "THE STATUE"
+    },
+    {
+      "rookie": "A big white statue",
+      "junior": "A big white statue",
+      "master": "A big white statue"
+    },
+    {
+      "rookie": "White dust on the statue's foot. The trail went past it.",
+      "junior": "There is white dust on the statue's foot. The trail went past it.",
+      "master": "White dust clings to the statue's foot. The trail passed right by it."
+    },
+    {
+      "rookie": "THE STAIRS",
+      "junior": "THE STAIRS",
+      "master": "THE STAIRS"
+    },
+    {
+      "rookie": "Stairs going down",
+      "junior": "Stairs going down",
+      "master": "Stairs going down"
+    },
+    {
+      "rookie": "Dust on every step. The trail goes down to the door.",
+      "junior": "There is dust on every step. The trail goes down to the door.",
+      "master": "Dust coats every step. The trail leads down toward the door."
+    },
+    {
+      "rookie": "THE VISITOR MAP",
+      "junior": "THE VISITOR MAP",
+      "master": "THE VISITOR MAP"
+    },
+    {
+      "rookie": "The museum's visitor map on a stand",
+      "junior": "The museum's visitor map on a stand",
+      "master": "The museum's visitor map on a stand"
+    },
+    {
+      "rookie": "The museum's visitor map. But where should you go? Find a clue first.",
+      "junior": "The museum's visitor map. But where should you go? You need a clue first.",
+      "master": "The museum's visitor map. But where are you meant to go? You'll need a clue first."
+    },
+    {
+      "rookie": "Read the Owl's card first.",
+      "junior": "Read the Owl's card first.",
+      "master": "Read the Owl's card first."
+    },
+    {
+      "rookie": "Tall windows",
+      "junior": "Tall windows",
+      "master": "Tall windows"
+    },
+    {
+      "rookie": "Tall windows. They are all shut tight.",
+      "junior": "Tall windows. Every one of them is shut tight.",
+      "master": "Tall windows, every one firmly shut and latched."
+    },
+    {
+      "rookie": "The marble floor",
+      "junior": "The marble floor",
+      "master": "The marble floor"
+    },
+    {
+      "rookie": "Only the dust trail here. Follow it to the door.",
+      "junior": "There is only the dust trail here. Follow it to the door.",
+      "master": "Nothing but the dust trail here. Follow it to the door."
+    },
+    {
+      "rookie": "Where do people throw coins and make a wish? Tap one picture.",
+      "junior": "Where do people throw coins and make a wish? Tap one picture.",
+      "master": "Where do people throw coins and make a wish? Tap one picture."
+    },
+    {
+      "rookie": "inside a round temple, sunlight falling through a round hole in the roof",
+      "junior": "inside a round temple, with sunlight falling through a round hole in the roof",
+      "master": "inside a round temple, sunlight pouring through a round hole in the roof"
+    },
+    {
+      "rookie": "a great fountain of rushing water, a girl throwing a coin into it",
+      "junior": "a great fountain of rushing water, with a girl throwing a coin into it",
+      "master": "a magnificent fountain of rushing water, a girl tossing a coin into it"
+    },
+    {
+      "rookie": "a huge round stone arena with rows of arches",
+      "junior": "a huge round stone arena with rows of arches",
+      "master": "a vast round stone arena ringed with rows of arches"
+    },
+    {
+      "rookie": "THE FOUNTAIN OF WISHES",
+      "junior": "THE FOUNTAIN OF WISHES",
+      "master": "THE FOUNTAIN OF WISHES"
+    },
+    {
+      "rookie": "The Owl says the piece is not lost. Next stop: the Trevi Fountain.",
+      "junior": "The Owl says the piece is not lost. Your next stop is the Trevi Fountain.",
+      "master": "The Owl claims the piece is not lost. Your next destination: the Trevi Fountain."
+    },
+    {
+      "rookie": "How many places did my dust trail pass?",
+      "junior": "How many places did my dust trail pass?",
+      "master": "How many places did my dust trail pass?"
+    },
+    {
+      "rookie": "How many people saw the lights go off?",
+      "junior": "How many people saw the lights go off?",
+      "master": "How many people saw the lights go off?"
+    },
+    {
+      "rookie": "The Light Box",
+      "junior": "The Light Box",
+      "master": "The Light Box"
+    },
+    {
+      "rookie": "The big light box is in the guard room.",
+      "junior": "The big light box stands in the guard room.",
+      "master": "The big light box stands against the guard room wall."
+    },
+    {
+      "rookie": "Someone put a new lock on it, with three dials.",
+      "junior": "Someone has put a new lock on it, with three dials.",
+      "master": "Someone has fitted it with a new lock, with three dials."
+    },
+    {
+      "rookie": "A tag with an owl stamp hangs from the lock.",
+      "junior": "A tag with an owl stamp is hanging from the lock.",
+      "master": "A tag bearing an owl stamp dangles from the lock."
+    },
+    {
+      "rookie": "The owl tag says:",
+      "junior": "The owl tag says:",
+      "master": "The owl tag says:"
+    },
+    {
+      "rookie": "My lock is made of your first clues, Detective.\nFirst number: How many places did my dust trail pass?\nSecond number: How many people saw the lights go off at midnight?\nThird number: Which shell did I write about on my card?\n— The Owl",
+      "junior": "My lock is built from your first clues, Detective.\nFirst number: How many places did my dust trail pass?\nSecond number: How many people saw the lights go off at midnight?\nThird number: Which shell did I write about on my card?\n— The Owl",
+      "master": "My lock is built from the very first clues you gathered, Detective.\nFirst number: How many places did my dust trail pass?\nSecond number: How many people saw the lights go off at midnight?\nThird number: Which shell did I mention on my card?\n— The Owl"
+    },
+    {
+      "rookie": "Turn the dials to the Owl's three numbers. Then open the light box.",
+      "junior": "Turn the dials to the Owl's three numbers, then open the light box.",
+      "master": "Set the dials to the Owl's three numbers, then open the light box."
+    },
+    {
+      "rookie": "Your notebook has the dust trail. Count its places.",
+      "junior": "Your notebook has the dust trail. Count how many places it passed.",
+      "master": "The dust trail is waiting in your notebook. How many stops did it make?"
+    },
+    {
+      "rookie": "Open your witness notes. Who saw the lights go off?",
+      "junior": "Open your witness notes. Who saw the lights go off?",
+      "master": "Reread your witness notes. Whose stories agreed about the dark?"
+    },
+    {
+      "rookie": "The light box opens!",
+      "junior": "The light box opens!",
+      "master": "The light box opens!"
+    },
+    {
+      "rookie": "White dust on the switch, and an owl card at the door.",
+      "junior": "White dust on the switch, and an owl card at the door.",
+      "master": "White dust on the switch, and an owl card left at the door."
+    },
+    {
+      "rookie": "Somebody planned the dark ten minutes.",
+      "junior": "Somebody had planned the dark ten minutes.",
+      "master": "The dark ten minutes had been carefully planned."
+    },
+    {
+      "rookie": "Giulia holds up the Owl's card. \"To the Trevi Fountain!\"",
+      "junior": "Giulia holds up the Owl's card. \"To the Trevi Fountain!\"",
+      "master": "Giulia raises the Owl's card triumphantly. \"To the Trevi Fountain!\""
+    },
+    {
+      "rookie": "Count the places on the trail again. The empty case is one of them.",
+      "junior": "Count the places on the trail again. Remember, the empty case is one of them.",
+      "master": "Recount the trail's places. Don't forget where it began: the empty case counts too."
+    },
+    {
+      "rookie": "Open your witness notes. More than one person saw the lights go off.",
+      "junior": "Open your witness notes. More than one person saw the lights go off.",
+      "master": "Check your witness notes again. Only one witness? Look more closely."
+    },
+    {
+      "rookie": "Read the Owl's card again. Which shell?",
+      "junior": "Read the Owl's card again. Which shell did it mention?",
+      "master": "Return to the Owl's card. Which shell did it name?"
+    },
+    {
+      "rookie": "Count again. Who saw the lights go off? Not Sofia.",
+      "junior": "Count again. Who saw the lights go off? Sofia didn't.",
+      "master": "Recount carefully. Sofia never saw the lights go off."
+    },
+    {
+      "rookie": "These numbers fit, but not in this order. Trail, witnesses, then the shell.",
+      "junior": "These numbers are right, but not in this order. Trail first, then witnesses, then the shell.",
+      "master": "The right numbers, in the wrong order. Trail first, then witnesses, then the shell."
+    },
+    {
+      "rookie": "The lid opens. The big switch is down.",
+      "junior": "The lid swings open. The big switch has been pushed down.",
+      "master": "The lid creaks open. The big switch is down."
+    },
+    {
+      "rookie": "But the power never went off!",
+      "junior": "But the power never went off!",
+      "master": "But the power never failed for a moment!"
+    },
+    {
+      "rookie": "Someone turned the lights off by hand.",
+      "junior": "Someone switched the lights off by hand.",
+      "master": "Someone switched the lights off deliberately, by hand."
+    },
+    {
+      "rookie": "So this was a plan, not an accident.",
+      "junior": "So this was planned. It wasn't an accident.",
+      "master": "So this was a carefully laid plan, not an accident."
+    },
+    {
+      "rookie": "There is white dust on the switch, too.",
+      "junior": "There is white dust on the switch, too.",
+      "master": "A smear of white dust clings to the switch, too."
+    },
+    {
+      "rookie": "Who is this Owl? Let's follow the card!",
+      "junior": "Who is this Owl? Let's follow the card!",
+      "master": "Who on earth is this Owl? Let's follow the card!"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "disappeared": "사라졌다",
+      "duty": "근무",
+      "begins": "시작하다",
+      "passes": "지나가다",
+      "unlock": "자물쇠를 열다",
+      "question": "질문하다, 심문하다",
+      "mentioned": "언급했다",
+      "sponsor": "후원자",
+      "planned": "계획된",
+      "switched": "(스위치를) 껐다/켰다"
+    },
+    "master": {
+      "unveil": "공개하다",
+      "fragment": "조각, 파편",
+      "vanished": "사라졌다",
+      "pleads": "간청하다",
+      "descends": "내려가다",
+      "deciphered": "해독했다",
+      "summoning": "불러들이는",
+      "deliberately": "일부러",
+      "weathered": "세월에 닳은",
+      "muddle": "뒤죽박죽",
+      "arena": "원형 경기장",
+      "beckons": "손짓해 부르다",
+      "insists": "우기다, 주장하다",
+      "accounts": "진술, 이야기"
+    }
+  }
+}

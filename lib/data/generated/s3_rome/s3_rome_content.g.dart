@@ -4,6 +4,7 @@
 import 'package:world_mystery/data/mock/season_catalog.dart' show SeasonContent;
 
 import 's3_rome_cases.g.dart';
+import 's3_rome_levels.g.dart';
 import 's3_rome_season.g.dart';
 
 /// Season 3, The Broken Map of Rome: its content as the game plays it, released
@@ -22,4 +23,8 @@ final s3RomeContent = SeasonContent(
   talkMissions: s3RomeTalkMissions,
   discoveries: s3RomeDiscoveries,
   endings: s3RomeEndings,
+  casePatches: s3RomeCasePatches,
+  variants: s3RomeVariants,
+  writtenLevels: s3RomeWrittenLevels,
+  infoLevels: s3RomeInfoLevels,
 );

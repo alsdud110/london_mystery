@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'case_levels.dart';
 import 'clue_graph_check.dart';
 import 'content_approval.dart';
 import 'content_hash.dart';
@@ -150,8 +151,10 @@ const manifestName = 'generated.manifest.json';
 /// their order in the manifest. 3 (STEP 3-13): the scene tables
 /// (`explores`, `investigations`, `dialogues`) and picture options, the
 /// imports each file needs. 4 (STEP 3-13B): the story around the puzzles
-/// (`talkMissions`, `discoveries`, `endings`).
-const generatorVersion = 4;
+/// (`talkMissions`, `discoveries`, `endings`). 5: each case's words at
+/// Junior and Master (`<caseId>_levels.g.dart`, `<seasonId>_levels.g.dart`)
+/// from its `levels.json`.
+const generatorVersion = 5;
 
 /// Why nothing was made or written, a line each (as `validate_plan` prints them).
 class GenerateFailure implements Exception {
@@ -318,6 +321,46 @@ abstract final class CaseGenerator {
       if (lines.isNotEmpty) throw GenerateFailure(lines);
     }
 
+    // 4c. The levels (Junior, Master): each case's `levels.json`, checked as
+    // its plan is and the same game beyond its words (`CaseLevels`). The
+    // game's seasons are played at every level: each case needs its own.
+    final levels = <String, (Map<PlanLevel, CasePlan>, Map<PlanLevel, Map<String, String>>)>{};
+    for (final (path, p) in plans) {
+      final CaseLevels? written;
+      try {
+        written = CaseLevels.load(path);
+      } on PlanFormatException catch (e) {
+        failed(path, ['levels ${e.path}: ${e.message}']);
+        continue;
+      }
+      if (written == null) {
+        if (target == 'game') {
+          failed(path, ['levels [levels_missing] ${CaseLevels.pathFor(path)}: a case of the game is written at every level '
+              '(case_levels.dart skeleton, then each line)']);
+        }
+        continue;
+      }
+      final found = CaseLevels.checkCase(path, season, schemas, root: root);
+      failed(path, [for (final f in found) 'levels $f']);
+      if (found.isNotEmpty) continue;
+      final json = PlanFiles.readJson(path);
+      levels[p.caseId] = ({for (final l in PlanLevel.values) l: CasePlan.fromJson(written.apply(json, l))}, written.glossary);
+    }
+    if (lines.isNotEmpty) throw GenerateFailure(lines);
+    final leveled = plans.isNotEmpty && plans.every((e) => levels.containsKey(e.$2.caseId));
+    if (levels.isNotEmpty && !leveled) {
+      failed(seasonPath, ['[levels_partial] every case of the season is written at every level, or none: '
+          '${[for (final (_, p) in plans) if (!levels.containsKey(p.caseId)) p.caseId].join(', ')} not']);
+      throw GenerateFailure(lines);
+    }
+    // The season's own lines (its outro and finale) at each level, with its cases'.
+    SeasonLevels? seasonLevels;
+    if (leveled) {
+      failed(seasonPath, [for (final f in SeasonLevels.check(seasonPath)) 'levels $f']);
+      if (lines.isNotEmpty) throw GenerateFailure(lines);
+      seasonLevels = SeasonLevels.load(seasonPath);
+    }
+
     // 5. The approvals: a sandbox is made from drafts too, and says so.
     var approved = true;
     for (final (_, p) in plans) {
@@ -340,8 +383,22 @@ abstract final class CaseGenerator {
       '${season.seasonId}_season.g.dart': _seasonFile(season, ContentHash.ofJson(seasonJson), places),
       for (final (path, p) in plans) '${p.caseId}.g.dart': _caseFile(p, season, relative[p.caseId]!, ContentHash.ofJson(PlanFiles.readJson(path)), onDisk),
       '${season.seasonId}_cases.g.dart': _casesFile(season, [for (final (_, p) in plans) p]),
+      if (leveled) ...{
+        for (final (path, p) in plans)
+          '${p.caseId}_levels.g.dart': _levelsFile(
+            p,
+            levels[p.caseId]!,
+            season,
+            'cases/${p.caseId}/${CaseLevels.fileName}',
+            ContentHash.ofJson(PlanFiles.readJson(CaseLevels.pathFor(path))),
+            onDisk,
+          ),
+        '${season.seasonId}_levels.g.dart': _seasonLevelsFile(season, [for (final (_, p) in plans) p], {
+          for (final l in PlanLevel.values) l: seasonLevels?.textAt(PlanFiles.readJson(seasonPath), l) ?? const {},
+        }),
+      },
       if (target == 'game') ...{
-        '${season.seasonId}_content.g.dart': _contentFile(season),
+        '${season.seasonId}_content.g.dart': _contentFile(season, leveled: leveled),
         '${season.seasonId}_art.g.dart': _artFile(
           season,
           [for (final (_, p) in plans) p],
@@ -360,7 +417,12 @@ abstract final class CaseGenerator {
       'approved': approved,
       'inputs': {
         'season.plan.json': ContentHash.ofJson(seasonJson),
-        for (final (path, p) in plans) relative[p.caseId]!: ContentHash.ofJson(PlanFiles.readJson(path)),
+        if (seasonLevels != null) SeasonLevels.fileName: ContentHash.ofJson(PlanFiles.readJson(SeasonLevels.pathFor(seasonPath))),
+        for (final (path, p) in plans) ...{
+          relative[p.caseId]!: ContentHash.ofJson(PlanFiles.readJson(path)),
+          if (levels.containsKey(p.caseId))
+            'cases/${p.caseId}/${CaseLevels.fileName}': ContentHash.ofJson(PlanFiles.readJson(CaseLevels.pathFor(path))),
+        },
       },
       'outputs': {for (final MapEntry(:key, :value) in files.entries) key: ContentHash.ofBytes(utf8.encode(value))},
     };
@@ -371,13 +433,14 @@ abstract final class CaseGenerator {
   // ── The game: the season's content and art ─────────────────────────────
 
   /// The season as the app plays it (`SeasonCatalog.all`, by [GameRegistry]).
-  static String _contentFile(SeasonPlan s) {
+  static String _contentFile(SeasonPlan s, {bool leveled = false}) {
     final name = constName(s.seasonId);
     final tables = [...sceneTables.keys, ...storyTables.keys];
     return '$generatedHeader\n// source: season.plan.json and its cases (in play order)\n\n'
         "import 'package:world_mystery/data/mock/season_catalog.dart' show SeasonContent;\n"
         '\n'
         "import '${s.seasonId}_cases.g.dart';\n"
+        "${leveled ? "import '${s.seasonId}_levels.g.dart';\n" : ''}"
         "import '${s.seasonId}_season.g.dart';\n"
         '\n'
         '/// Season ${s.number}, ${s.title}: its content as the game plays it, released\n'
@@ -391,7 +454,123 @@ abstract final class CaseGenerator {
         '  languageTopics: ${name}LanguageTopics,\n'
         '  evidenceLinks: ${name}EvidenceLinks,\n'
         '${[for (final t in tables) '  $t: $name${_suffix(t)},\n'].join()}'
+        '${leveled ? '  casePatches: ${name}CasePatches,\n  variants: ${name}Variants,\n  writtenLevels: ${name}WrittenLevels,\n  infoLevels: ${name}InfoLevels,\n' : ''}'
         ');\n';
+  }
+
+  // ── The levels (Junior, Master) ────────────────────────────────────────
+
+  /// `junior` → `Junior` (a constant's part).
+  static String _level(PlanLevel l) => _suffix(l.name);
+
+  /// The case's words a level gives, as `DifficultyContent` lays them over
+  /// the case's JSON (`SeasonContent.casePatches`): every text field whole
+  /// (so nothing of the case falls back on another level's words), the
+  /// words the level adds to the glossary. Never an id, an answer or an
+  /// order: `CaseLevels.sameGame` holds the level to its plan's game.
+  static Map<String, Object?> levelPatch(CasePlan level, Map<String, String> glossary) {
+    final json = episodeJson(level);
+    Map<String, Object?> only(Object? from, List<String> keys) => {
+      for (final k in keys)
+        if ((from as Map)[k] != null) k: from[k],
+    };
+    Map<String, Object?> mission(Map<String, Object?> m) => {
+      ...only(m, ['title', 'location', 'story', 'letterIntro', 'letter', 'question', 'prompt', 'hints', 'successMessage', 'transition', 'orderFeedback']),
+      if ((m['options'] as List).isNotEmpty)
+        'options': {for (final o in m['options'] as List) (o as Map)['id']: only(o, ['label', 'feedback', 'altText'])},
+      'feedback': ?m['feedback'],
+      if (m['clue'] != null) 'clue': only(m['clue'], ['title', 'note']),
+      'evidence': only(m['evidence'], ['name', 'description']),
+      if (m['recall'] case final Map<dynamic, dynamic> r) 'recall': only(r, ['title', 'prompt', 'miss', 'feedback']),
+    };
+    return {
+      ...only(json, ['title', 'synopsis', 'objectives', 'intro', 'caseSummary', 'hook', 'place']),
+      if (glossary.isNotEmpty) 'glossary': glossary,
+      'missions': {
+        for (final m in [...json['missions'] as List, json['finalMission']]) (m as Map)['id']: mission(m.cast<String, Object?>()),
+      },
+    };
+  }
+
+  /// A case at Junior and Master: its words ([levelPatch]) and its puzzle
+  /// tables made from its level's plan, as its own are.
+  static String _levelsFile(
+    CasePlan c,
+    (Map<PlanLevel, CasePlan>, Map<PlanLevel, Map<String, String>>) at,
+    SeasonPlan season,
+    String source,
+    String hash,
+    bool Function(String file) onDisk,
+  ) {
+    final name = constName(c.caseId);
+    final b = StringBuffer();
+    for (final l in PlanLevel.values) {
+      final plan = at.$1[l]!;
+      final prefix = '$name${_level(l)}';
+      b
+        ..write('/// Case ${c.caseId} at ${_level(l)}: its words (`SeasonContent.casePatches`).\n')
+        ..write('const ${prefix}Patch = <String, Object?>${DartLiteral.of(levelPatch(plan, at.$2[l] ?? const {}))};\n\n')
+        ..write(_tableDecls(plan, season, prefix, onDisk, doc: 'at ${_level(l)}'))
+        ..write('\n');
+    }
+    final body = b.toString().trimRight();
+    return '${_head(source, hash)}\n${_imports(body)}\n$body\n';
+  }
+
+  /// The season's cases at Junior and Master, as `SeasonContent` takes them.
+  static String _seasonLevelsFile(SeasonPlan s, List<CasePlan> plans, Map<PlanLevel, Map<String, List<String>>> own) {
+    final name = constName(s.seasonId);
+    final ids = [for (final p in plans) p.caseId];
+    final b = StringBuffer()
+      ..write('$generatedHeader\n// source: ${[
+        if (own.values.any((t) => t.isNotEmpty)) SeasonLevels.fileName,
+        for (final id in ids) 'cases/$id/${CaseLevels.fileName}',
+      ].join(', ')}\n\n')
+      ..write("import 'package:world_mystery/data/mock/season_catalog.dart' show SeasonContent;\n")
+      ..write("import 'package:world_mystery/data/models/difficulty.dart';\n\n")
+      ..write([for (final id in ids) "import '${id}_levels.g.dart';\n"].join())
+      ..write('\n/// Each case\'s words at Junior and Master (Rookie\'s are the cases\' own).\n')
+      ..write('const ${name}CasePatches = <Difficulty, Map<String, Map<String, Object?>>>{\n');
+    for (final l in PlanLevel.values) {
+      b.write('  Difficulty.${l.name}: {\n');
+      for (final id in ids) {
+        b.write("    '$id': ${constName(id)}${_level(l)}Patch,\n");
+      }
+      b.write('  },\n');
+    }
+    b
+      ..write('};\n\n')
+      ..write('/// Their puzzle tables at Junior and Master: every entry, made from each level\'s plan.\n')
+      ..write('final ${name}Variants = <Difficulty, SeasonContent>{\n');
+    for (final l in PlanLevel.values) {
+      String spread(String table) => '{${[for (final id in ids) '...${constName(id)}${_level(l)}${_suffix(table)}'].join(', ')}}';
+      b
+        ..write('  Difficulty.${l.name}: SeasonContent(\n')
+        ..write('    info: const {},\n')
+        ..write('    episodes: const {},\n')
+        ..write('    learning: ${spread('learning')},\n');
+      for (final t in [...sceneTables.keys, ...storyTables.keys]) {
+        b.write('    $t: ${spread(t)},\n');
+      }
+      b.write('  ),\n');
+    }
+    b
+      ..write('};\n\n')
+      ..write('/// Every case written at every level: nothing falls back on another level\'s words.\n')
+      ..write('const ${name}WrittenLevels = <String, Set<Difficulty>>{\n');
+    for (final id in ids) {
+      b.write("  '$id': {Difficulty.rookie, Difficulty.junior, Difficulty.master},\n");
+    }
+    b
+      ..write('};\n\n')
+      ..write('/// The season\'s own lines at Junior and Master (`SeasonContent.infoLevels`):\n')
+      ..write('/// its ${SeasonLevels.textKeys.join(' and ')}, as many lines as its own.\n')
+      ..write('const ${name}InfoLevels = <Difficulty, Map<String, List<String>>>{\n');
+    for (final l in PlanLevel.values) {
+      if (own[l]?.isNotEmpty ?? false) b.write('  Difficulty.${l.name}: ${DartLiteral.of(own[l], indent: '  ')},\n');
+    }
+    b.write('};\n');
+    return b.toString();
   }
 
   /// The World Map artwork's pixel size (`ArtAssets.worldMap`): a city's
@@ -591,20 +770,47 @@ abstract final class CaseGenerator {
 
   // ── A case ─────────────────────────────────────────────────────────────
 
+  /// [c]'s missions' learning design (`SeasonContent.learning`).
+  static Map<String, Object?> _learning(CasePlan c) => {
+    for (final m in c.allMissions)
+      m.missionId: DartCall('LearningObjective', named: {
+        'dependency': DartCode('LanguageDependency.${m.learning.dependency}'),
+        'level': DartCode('LearningLevel.${m.learning.level}'),
+        'objective': m.learning.objective,
+        if (m.learning.skill case final s?) 'skill': DartCode('LanguageSkill.$s'),
+        if (m.learning.expressions.isNotEmpty) 'expressions': m.learning.expressions,
+        'recallFrom': ?m.learning.recallFrom,
+      }),
+  };
+
+  /// [c]'s learning and its puzzle tables (scenes, then the story around
+  /// them), each a constant named [prefix] and the table: what a level's
+  /// `SeasonContent` holds of the case ([doc]: which level, for the comments).
+  static String _tableDecls(CasePlan c, SeasonPlan season, String prefix, bool Function(String file) onDisk, {required String doc}) {
+    final all = c.allMissions;
+    return "/// Its missions' learning design $doc.\n"
+        'const ${prefix}Learning = <String, LearningObjective>${DartLiteral.of(_learning(c))};\n'
+        '${[
+          for (final MapEntry(key: table, value: model) in sceneTables.entries)
+            '\n/// Its missions played on `$table` $doc.\n'
+                'const $prefix${_suffix(table)} = <String, $model>${DartLiteral.of({
+                  for (final m in all)
+                    if (m.puzzle.engineTable == table) m.missionId: ?scene(m),
+                })};\n',
+        ].join()}'
+        '${[
+          for (final MapEntry(key: table, value: (model, doc2)) in storyTables.entries)
+            '\n/// Its $doc2 $doc.\n'
+                '${_keyword(table, all)} $prefix${_suffix(table)} = <String, $model>${DartLiteral.of({
+                  for (final m in all) m.missionId: ?story(table, m, season, onDisk: onDisk),
+                })};\n',
+        ].join()}';
+  }
+
   static String _caseFile(CasePlan c, SeasonPlan season, String source, String hash, bool Function(String file) onDisk) {
     final name = constName(c.caseId);
     final all = c.allMissions;
-    final learning = {
-      for (final m in all)
-        m.missionId: DartCall('LearningObjective', named: {
-          'dependency': DartCode('LanguageDependency.${m.learning.dependency}'),
-          'level': DartCode('LearningLevel.${m.learning.level}'),
-          'objective': m.learning.objective,
-          if (m.learning.skill case final s?) 'skill': DartCode('LanguageSkill.$s'),
-          if (m.learning.expressions.isNotEmpty) 'expressions': m.learning.expressions,
-          'recallFrom': ?m.learning.recallFrom,
-        }),
-    };
+    final learning = _learning(c);
     final links = <String, Object?>{
       for (final m in all)
         for (final input in m.clueInputs)

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s3_rome",
+  "lines": [
+    {
+      "rookie": "The real piece is back in its glass case.",
+      "junior": "The real piece is finally back in its glass case.",
+      "master": "At last, the genuine piece rests once more in its glass case."
+    },
+    {
+      "rookie": "Under Piazza della Civetta, an old Roman library sees the light again.",
+      "junior": "Beneath Piazza della Civetta, an old Roman library sees daylight once again.",
+      "master": "Beneath Piazza della Civetta, a long-forgotten Roman library emerges into the light once more."
+    },
+    {
+      "rookie": "Rome keeps its stories under its streets.",
+      "junior": "Rome hides its stories under its streets.",
+      "master": "Rome keeps its oldest stories buried beneath its streets."
+    },
+    {
+      "rookie": "This time, you found one piece by piece.",
+      "junior": "This time, you uncovered one, piece by piece.",
+      "master": "This time, you brought one back to light, piece by piece."
+    }
+  ]
+}

@@ -1,0 +1,617 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep03",
+  "lines": [
+    {
+      "rookie": "Box 7 at the Flower Market",
+      "junior": "Box 7 at the Flower Market",
+      "master": "Box 7 at the Flower Market"
+    },
+    {
+      "rookie": "The Owl's route ends at the flower market.",
+      "junior": "The Owl's route ends at the flower market.",
+      "master": "The Owl's route comes to an end at the bustling flower market."
+    },
+    {
+      "rookie": "Box 7 holds a bag of strange white dust.",
+      "junior": "Box 7 holds a bag of strange white dust.",
+      "master": "Inside Box 7 waits a bag of curious white dust."
+    },
+    {
+      "rookie": "And the flower seller saw something on Thursday night.",
+      "junior": "And the flower seller noticed something on Thursday night.",
+      "master": "And the flower seller witnessed something odd on Thursday night."
+    },
+    {
+      "rookie": "Who dropped a museum pass on Thursday night?",
+      "junior": "Who dropped a museum pass on Thursday night?",
+      "master": "Who could have dropped a museum pass on Thursday night?"
+    },
+    {
+      "rookie": "Read Pia's order book.",
+      "junior": "Read Pia's order book.",
+      "master": "Read Pia's order book."
+    },
+    {
+      "rookie": "Open Box 7.",
+      "junior": "Open Box 7.",
+      "master": "Unlock Box 7."
+    },
+    {
+      "rookie": "Open Pia's cash box.",
+      "junior": "Open Pia's cash box.",
+      "master": "Unlock Pia's cash box."
+    },
+    {
+      "rookie": "Campo de' Fiori is a busy market.",
+      "junior": "Campo de' Fiori is a busy, noisy market.",
+      "master": "Campo de' Fiori is a lively, bustling market."
+    },
+    {
+      "rookie": "There are flowers, lemons and loud voices everywhere.",
+      "junior": "There are flowers, lemons and loud voices in every corner.",
+      "master": "Flowers, lemons and loud, cheerful voices fill every corner."
+    },
+    {
+      "rookie": "At the end of the square is a flower stall with a red roof.",
+      "junior": "At the end of the square stands a flower stall with a red roof.",
+      "master": "At the far end of the square stands a flower stall with a red roof."
+    },
+    {
+      "rookie": "The Owl is a young woman with an owl ring. She left a bag of new white dust in Box 7. On Thursday night, Pia saw a big man with a heavy box. He wore a yellow helmet with a crane, and he dropped a museum pass.",
+      "junior": "The Owl is a young woman who wears an owl ring. She left a bag of new white dust in Box 7. On Thursday night, Pia saw a big man carrying a heavy box. He wore a yellow helmet with a crane on it, and he dropped a museum pass.",
+      "master": "The Owl turns out to be a young woman with an owl ring, who left a bag of new white dust in Box 7. On Thursday night, Pia spotted a big man hauling a heavy box. He wore a yellow helmet with a crane on it, and he dropped a museum pass."
+    },
+    {
+      "rookie": "CAMPO DE' FIORI",
+      "junior": "CAMPO DE' FIORI",
+      "master": "CAMPO DE' FIORI"
+    },
+    {
+      "rookie": "The detective came",
+      "junior": "The detective came",
+      "master": "The detective came"
+    },
+    {
+      "rookie": "The baker bought roses",
+      "junior": "The baker bought roses",
+      "master": "The baker bought roses"
+    },
+    {
+      "rookie": "Pia opened her stall",
+      "junior": "Pia opened her stall",
+      "master": "Pia opened her stall"
+    },
+    {
+      "rookie": "The woman with the owl ring came",
+      "junior": "The woman with the owl ring came",
+      "master": "The woman with the owl ring came"
+    },
+    {
+      "rookie": "I opened my stall.",
+      "junior": "I opened my stall.",
+      "master": "I opened my stall."
+    },
+    {
+      "rookie": "A young woman put a bag in Box 7.",
+      "junior": "A young woman put a bag in Box 7.",
+      "master": "A young woman put a bag in Box 7."
+    },
+    {
+      "rookie": "Pia's Morning",
+      "junior": "Pia's Morning",
+      "master": "Pia's Morning"
+    },
+    {
+      "rookie": "The flower stall with the red roof is full of roses.",
+      "junior": "The flower stall with the red roof is overflowing with roses.",
+      "master": "The flower stall with the red roof is bursting with roses."
+    },
+    {
+      "rookie": "A cheerful woman in a flowered apron waves at you.",
+      "junior": "A cheerful woman in a flowered apron waves at you.",
+      "master": "A cheerful woman in a flowered apron waves you over."
+    },
+    {
+      "rookie": "Pia's order book says:",
+      "junior": "Pia's order book says:",
+      "master": "Pia's order book says:"
+    },
+    {
+      "rookie": "6:30 — The baker bought red roses.\n5:45 — I opened my stall.\n11:00 — Giulia came with a detective!\n6:10 — A young woman put a bag in Box 7. She had an owl ring.",
+      "junior": "6:30 — The baker bought red roses.\n5:45 — I opened my stall.\n11:00 — Giulia came with a detective!\n6:10 — A young woman put a bag in Box 7. She had an owl ring.",
+      "master": "6:30 — The baker bought a bunch of red roses.\n5:45 — I opened my stall.\n11:00 — Giulia came with a detective!\n6:10 — A young woman put a bag in Box 7. She wore an owl ring."
+    },
+    {
+      "rookie": "Put Pia's morning in order, from the earliest time.",
+      "junior": "Put Pia's morning in order, starting with the earliest time.",
+      "master": "Arrange Pia's morning in order, beginning with the earliest time."
+    },
+    {
+      "rookie": "The earliest time is the smallest one.",
+      "junior": "The earliest time is the one with the smallest number.",
+      "master": "Compare the hours first: the earliest is the smallest."
+    },
+    {
+      "rookie": "The minutes matter: 6:10 is before 6:30.",
+      "junior": "The minutes matter too: 6:10 comes before 6:30.",
+      "master": "When two times share an hour, the minutes decide: 6:10 is before 6:30."
+    },
+    {
+      "rookie": "You put Pia's morning in order!",
+      "junior": "You put Pia's whole morning in order!",
+      "master": "You untangled Pia's morning!"
+    },
+    {
+      "rookie": "Pia opened at 5:45. The woman with the owl ring came at 6:10.",
+      "junior": "Pia opened at 5:45, and the woman with the owl ring came at 6:10.",
+      "master": "Pia opened at 5:45, and the woman with the owl ring arrived at 6:10."
+    },
+    {
+      "rookie": "\"So the Owl is a young woman,\" says Giulia.",
+      "junior": "\"So the Owl is a young woman,\" Giulia says.",
+      "master": "\"So the Owl is a young woman,\" Giulia says thoughtfully."
+    },
+    {
+      "rookie": "Pia points to a small wooden box with a 7 on it.",
+      "junior": "Pia points to a small wooden box with a 7 painted on it.",
+      "master": "Pia gestures toward a small wooden box marked with a 7."
+    },
+    {
+      "rookie": "Look at the times again. Start with the earliest.",
+      "junior": "Look at the times again, and start with the earliest.",
+      "master": "Check the times once more, starting with the earliest."
+    },
+    {
+      "rookie": "At 6:10, a young woman with an owl ring left a bag in Box 7.",
+      "junior": "At 6:10, a young woman wearing an owl ring left a bag in Box 7.",
+      "master": "At 6:10, a young woman wearing an owl ring slipped a bag into Box 7."
+    },
+    {
+      "rookie": "Find out who left something in Box 7.",
+      "junior": "Find out who left something in Box 7.",
+      "master": "Discover who left something in Box 7."
+    },
+    {
+      "rookie": "Box 7? Yes, it is here!",
+      "junior": "Box 7? Yes, it's right here!",
+      "master": "Box 7? Ah yes, it's right here!"
+    },
+    {
+      "rookie": "A young woman left something in it.",
+      "junior": "A young woman left something inside it.",
+      "master": "A young woman tucked something inside it."
+    },
+    {
+      "rookie": "When did she come?",
+      "junior": "When did she come by?",
+      "master": "What time did she come?"
+    },
+    {
+      "rookie": "Look in my order book. I write in a hurry!",
+      "junior": "Check my order book. I always write in a hurry!",
+      "master": "Have a look in my order book. I scribble everything in a rush!"
+    },
+    {
+      "rookie": "READ THE ORDER BOOK",
+      "junior": "READ THE ORDER BOOK",
+      "master": "READ THE ORDER BOOK"
+    },
+    {
+      "rookie": "A WOMAN WITH AN OWL RING",
+      "junior": "A WOMAN WITH AN OWL RING",
+      "master": "A WOMAN WITH AN OWL RING"
+    },
+    {
+      "rookie": "She came at 6:10, just after Pia opened. Is she the Owl?",
+      "junior": "She came at 6:10, just after Pia had opened. Could she be the Owl?",
+      "master": "She arrived at 6:10, moments after Pia had opened. Could she be the Owl herself?"
+    },
+    {
+      "rookie": "The real marble piece",
+      "junior": "The real marble piece",
+      "master": "The real marble piece"
+    },
+    {
+      "rookie": "The Owl says old marble smells of nothing. This dust smells new.",
+      "junior": "The Owl says old marble smells of nothing, but this dust smells new.",
+      "master": "The Owl wrote that old marble has no smell. Does this dust smell old?"
+    },
+    {
+      "rookie": "Something new, like a copy of the piece",
+      "junior": "Something new, like a copy of the piece",
+      "master": "Something new, like a copy of the piece"
+    },
+    {
+      "rookie": "Pia's flowers",
+      "junior": "Pia's flowers",
+      "master": "Pia's flowers"
+    },
+    {
+      "rookie": "Flowers do not make white dust like chalk.",
+      "junior": "Flowers don't make white dust like chalk.",
+      "master": "Flowers could never leave chalky white dust."
+    },
+    {
+      "rookie": "Old marble does not smell of anything.",
+      "junior": "Old marble does not smell of anything.",
+      "master": "Old marble does not smell of anything."
+    },
+    {
+      "rookie": "This dust smells new, like a wet wall.",
+      "junior": "This dust smells new, like a wet wall.",
+      "master": "This dust smells new, like a wet wall."
+    },
+    {
+      "rookie": "Inside Box 7",
+      "junior": "Inside Box 7",
+      "master": "Inside Box 7"
+    },
+    {
+      "rookie": "BOX 7",
+      "junior": "BOX 7",
+      "master": "BOX 7"
+    },
+    {
+      "rookie": "Box 7 is locked.",
+      "junior": "Box 7 is locked tight.",
+      "master": "Box 7 is firmly locked."
+    },
+    {
+      "rookie": "Inside, you find a small bag of white dust and an owl card.",
+      "junior": "Inside, you find a small bag of white dust and an owl card.",
+      "master": "Inside, you discover a small bag of white dust and an owl card."
+    },
+    {
+      "rookie": "The owl card says:",
+      "junior": "The owl card says:",
+      "master": "The owl card says:"
+    },
+    {
+      "rookie": "Detective, smell this dust.\nOld marble does not smell of anything.\nThis dust smells new, like a wet wall.\nIt is not from the real piece.\nAsk Pia about Thursday night.\nThen go where the roof has a round eye.\n— The Owl",
+      "junior": "Detective, smell this dust.\nOld marble does not smell of anything.\nThis dust smells new, like a wet wall.\nIt is not from the real piece.\nAsk Pia about Thursday night.\nThen go where the roof has a round eye.\n— The Owl",
+      "master": "Detective, smell this dust.\nOld marble does not smell of anything.\nThis dust smells new, like a wet wall.\nSo it cannot come from the real piece.\nAsk Pia about Thursday night.\nThen go where the roof has a round eye.\n— The Owl"
+    },
+    {
+      "rookie": "The dust is not from the real piece. What could it be from?",
+      "junior": "The dust isn't from the real piece. So what could it be from?",
+      "master": "The dust didn't come from the real piece. Where could it have come from?"
+    },
+    {
+      "rookie": "Old marble smells of nothing. Is this dust old or new?",
+      "junior": "Old marble smells of nothing. Does this dust smell old or new?",
+      "master": "Compare the dust's smell with what the Owl says about old marble."
+    },
+    {
+      "rookie": "Think: what new thing could look like the old piece?",
+      "junior": "Think: what new thing could look just like the old piece?",
+      "master": "What freshly made object could pass for the ancient piece?"
+    },
+    {
+      "rookie": "You thought like a detective!",
+      "junior": "You thought like a detective!",
+      "master": "You reasoned like a true detective!"
+    },
+    {
+      "rookie": "New dust, like a wet wall. Maybe someone made a copy of the piece!",
+      "junior": "New dust that smells like a wet wall. Maybe someone made a copy of the piece!",
+      "master": "Fresh dust that smells like a wet wall. Perhaps someone made a copy of the piece!"
+    },
+    {
+      "rookie": "\"Thursday night?\" says Pia. \"Oh, I remember Thursday night.\"",
+      "junior": "\"Thursday night?\" Pia repeats. \"Oh, I remember Thursday night.\"",
+      "master": "\"Thursday night?\" Pia's eyes widen. \"Oh, I remember Thursday night very well.\""
+    },
+    {
+      "rookie": "Not Old Stone",
+      "junior": "Not Old Stone",
+      "master": "Not Old Stone"
+    },
+    {
+      "rookie": "The white dust smells new. It is not from the real marble piece.",
+      "junior": "The white dust smells new, so it isn't from the real marble piece.",
+      "master": "The white dust smells fresh, so it cannot be from the real marble piece."
+    },
+    {
+      "rookie": "Open Box 7",
+      "junior": "Open Box 7",
+      "master": "Open Box 7"
+    },
+    {
+      "rookie": "Which thing in your Notebook opens Box 7?",
+      "junior": "Which thing in your Notebook can open Box 7?",
+      "master": "Which item in your Notebook will open Box 7?"
+    },
+    {
+      "rookie": "That does not fit a lock. Look for something with a tag.",
+      "junior": "That won't fit a lock. Look for something with a tag.",
+      "master": "That won't fit any lock. Look for something with a tag."
+    },
+    {
+      "rookie": "NEW DUST, NOT OLD STONE",
+      "junior": "NEW DUST, NOT OLD STONE",
+      "master": "NEW DUST, NOT OLD STONE"
+    },
+    {
+      "rookie": "This dust smells new. Did someone make a copy of the piece?",
+      "junior": "This dust smells new. Did someone make a copy of the piece?",
+      "master": "This dust smells fresh. Could someone have made a copy of the piece?"
+    },
+    {
+      "rookie": "He wore a yellow helmet.",
+      "junior": "He wore a yellow helmet.",
+      "master": "He wore a yellow helmet."
+    },
+    {
+      "rookie": "It lifts heavy things up high.",
+      "junior": "It lifts heavy things up high.",
+      "master": "It lifts heavy things up high."
+    },
+    {
+      "rookie": "Thursday Night",
+      "junior": "Thursday Night",
+      "master": "Thursday Night"
+    },
+    {
+      "rookie": "Pia sits down on a crate of lemons.",
+      "junior": "Pia sits down on a crate of lemons.",
+      "master": "Pia settles onto a crate of lemons."
+    },
+    {
+      "rookie": "\"I closed late on Thursday,\" she says.",
+      "junior": "\"I closed my stall late on Thursday,\" she says.",
+      "master": "\"I stayed open late on Thursday,\" she begins."
+    },
+    {
+      "rookie": "\"I saw a man. I can tell you what he wore.\"",
+      "junior": "\"I saw a man, and I can tell you what he was wearing.\"",
+      "master": "\"I noticed a man, and I remember exactly what he was wearing.\""
+    },
+    {
+      "rookie": "Pia tells you:",
+      "junior": "Pia tells you:",
+      "master": "Pia tells you:"
+    },
+    {
+      "rookie": "PIA'S STORY:\nOn Thursday night, I closed my stall at 11:30.\nA big man walked past with a heavy box.\nHe came from the road to the museum.\nHe wore a yellow helmet.\nOn the helmet was a picture of a tall machine.\nIt lifts heavy things up high.\n\nMY GRANDSON'S TOY BOX:\nTRAIN — it runs on tracks.\nCRANE — it lifts heavy things up high.\nBOAT — it floats on water.",
+      "junior": "PIA'S STORY:\nOn Thursday night, I closed my stall at 11:30.\nA big man walked past carrying a heavy box.\nHe came from the road to the museum.\nHe wore a yellow helmet.\nOn the helmet was a picture of a tall machine.\nIt lifts heavy things up high.\n\nMY GRANDSON'S TOY BOX:\nTRAIN — it runs on tracks.\nCRANE — it lifts heavy things up high.\nBOAT — it floats on water.",
+      "master": "PIA'S STORY:\nOn Thursday night, I closed my stall at 11:30.\nA big man hurried past, hauling a heavy box.\nHe came from the road to the museum.\nHe wore a yellow helmet.\nOn the helmet was a picture of a tall machine.\nIt lifts heavy things up high.\n\nMY GRANDSON'S TOY BOX:\nTRAIN — it runs on tracks.\nCRANE — it lifts heavy things up high.\nBOAT — it floats on water."
+    },
+    {
+      "rookie": "What was the picture on the man's helmet?",
+      "junior": "What picture was on the man's helmet?",
+      "master": "What picture was printed on the man's helmet?"
+    },
+    {
+      "rookie": "The helmet had a ____ on it.",
+      "junior": "The helmet had a ____ on it.",
+      "master": "The helmet had a ____ on it."
+    },
+    {
+      "rookie": "Read what the machine on the helmet does.",
+      "junior": "Read what the machine on the helmet can do.",
+      "master": "Pia describes what the helmet's machine does. Reread it."
+    },
+    {
+      "rookie": "Find the toy that does the same thing.",
+      "junior": "Find the toy that does the same thing.",
+      "master": "Then search her grandson's toy box for a match."
+    },
+    {
+      "rookie": "You found the helmet's picture!",
+      "junior": "You found the helmet's picture!",
+      "master": "You identified the helmet's picture!"
+    },
+    {
+      "rookie": "A big man, a yellow helmet with a crane, a heavy box.",
+      "junior": "A big man, a yellow helmet with a crane, and a heavy box.",
+      "master": "A big man, a yellow helmet with a crane, and a mysterious heavy box."
+    },
+    {
+      "rookie": "And he came from the museum road on Thursday night!",
+      "junior": "And he came from the museum road on Thursday night!",
+      "master": "And he came hurrying from the museum road on Thursday night!"
+    },
+    {
+      "rookie": "\"Wait,\" says Pia. \"He dropped something. I locked it in my cash box.\"",
+      "junior": "\"Wait,\" says Pia. \"He dropped something, and I locked it in my cash box.\"",
+      "master": "\"Wait,\" Pia adds. \"He dropped something. I locked it away in my cash box.\""
+    },
+    {
+      "rookie": "A train runs on tracks. What lifts heavy things?",
+      "junior": "A train runs on tracks. Which toy lifts heavy things?",
+      "master": "Trains run on tracks. The helmet's machine lifts heavy things instead."
+    },
+    {
+      "rookie": "A boat floats on water. What lifts heavy things up high?",
+      "junior": "A boat floats on water. Which toy lifts heavy things up high?",
+      "master": "Boats float on water. The helmet's machine lifts heavy things up high."
+    },
+    {
+      "rookie": "Check your spelling in the toy box list.",
+      "junior": "Check your spelling against the toy box list.",
+      "master": "Compare your spelling with the toy box list."
+    },
+    {
+      "rookie": "The Helmet Picture",
+      "junior": "The Helmet Picture",
+      "master": "The Helmet Picture"
+    },
+    {
+      "rookie": "Thursday, 11:30 PM: a big man with a heavy box. His yellow helmet had a crane on it.",
+      "junior": "Thursday, 11:30 PM: a big man carrying a heavy box. His yellow helmet had a crane on it.",
+      "master": "Thursday, 11:30 PM: a big man hauling a heavy box. His yellow helmet had a crane on it."
+    },
+    {
+      "rookie": "Find out what Pia saw on Thursday night.",
+      "junior": "Find out what Pia saw on Thursday night.",
+      "master": "Discover what Pia saw on Thursday night."
+    },
+    {
+      "rookie": "Yes, a crane! On a yellow helmet.",
+      "junior": "Yes, a crane! It was on a yellow helmet.",
+      "master": "Yes, a crane! Painted on a yellow helmet."
+    },
+    {
+      "rookie": "And he came from the museum road?",
+      "junior": "And he came from the museum road?",
+      "master": "And you're sure he came from the museum road?"
+    },
+    {
+      "rookie": "Yes. He walked fast, like a man with a secret.",
+      "junior": "Yes. He walked fast, like a man hiding a secret.",
+      "master": "Yes. He hurried along, like a man guarding a secret."
+    },
+    {
+      "rookie": "A CRANE ON A YELLOW HELMET",
+      "junior": "A CRANE ON A YELLOW HELMET",
+      "master": "A CRANE ON A YELLOW HELMET"
+    },
+    {
+      "rookie": "A big man carried a heavy box on Thursday night. Who wears a helmet like that?",
+      "junior": "A big man carried a heavy box on Thursday night. Who would wear a helmet like that?",
+      "master": "A big man hauled a heavy box through the night on Thursday. What kind of person wears a helmet like that?"
+    },
+    {
+      "rookie": "Which day of the week is Thursday?",
+      "junior": "Which day of the week is Thursday?",
+      "master": "Which day of the week is Thursday?"
+    },
+    {
+      "rookie": "Monday is day 1.",
+      "junior": "Monday is day 1.",
+      "master": "Monday is day 1."
+    },
+    {
+      "rookie": "Pia's Cash Box",
+      "junior": "Pia's Cash Box",
+      "master": "Pia's Cash Box"
+    },
+    {
+      "rookie": "Pia's cash box has three dials.",
+      "junior": "Pia's cash box is locked with three dials.",
+      "master": "Pia's cash box is sealed with three dials."
+    },
+    {
+      "rookie": "\"I always forget my code,\" she laughs. \"So I wrote questions!\"",
+      "junior": "\"I always forget my code,\" she laughs. \"So I wrote down questions!\"",
+      "master": "\"I can never remember my code,\" she chuckles. \"So I wrote myself some questions!\""
+    },
+    {
+      "rookie": "Pia's code card says:",
+      "junior": "Pia's code card says:",
+      "master": "Pia's code card says:"
+    },
+    {
+      "rookie": "MY CODE:\nFirst: How many people came to my stall before the detective this morning?\nSecond: Which day of the week is Thursday? Monday is day 1.\nThird: The number of the Owl's box.",
+      "junior": "MY CODE:\nFirst: How many people came to my stall before the detective this morning?\nSecond: Which day of the week is Thursday? Monday is day 1.\nThird: The number of the Owl's box.",
+      "master": "MY CODE:\nFirst: How many people visited my stall before the detective this morning?\nSecond: Which day of the week is Thursday? Monday is day 1.\nThird: The number of the Owl's box."
+    },
+    {
+      "rookie": "Turn the dials to Pia's three numbers. Then open the cash box.",
+      "junior": "Turn the dials to Pia's three numbers, then open the cash box.",
+      "master": "Set the dials to Pia's three numbers, then open the cash box."
+    },
+    {
+      "rookie": "Read Pia's order book again. Count only people.",
+      "junior": "Read Pia's order book again, and count only people.",
+      "master": "Reread Pia's order book. Not every line is a visitor."
+    },
+    {
+      "rookie": "Count the days: Monday 1, Tuesday 2, and so on.",
+      "junior": "Count the days: Monday is 1, Tuesday is 2, and so on.",
+      "master": "Count through the week from Monday, day 1."
+    },
+    {
+      "rookie": "The cash box opens!",
+      "junior": "The cash box opens!",
+      "master": "The cash box clicks open!"
+    },
+    {
+      "rookie": "Pia puts the pass in your hand.",
+      "junior": "Pia places the pass in your hand.",
+      "master": "Pia presses the pass into your hand."
+    },
+    {
+      "rookie": "Giulia reads the Owl's card again: go where the roof has a round eye.",
+      "junior": "Giulia reads the Owl's card again: go where the roof has a round eye.",
+      "master": "Giulia rereads the Owl's card: go where the roof has a round eye."
+    },
+    {
+      "rookie": "\"A roof with an eye... that is the Pantheon!\"",
+      "junior": "\"A roof with an eye... that must be the Pantheon!\"",
+      "master": "\"A roof with an eye... of course, the Pantheon!\""
+    },
+    {
+      "rookie": "Look at the key's tag again. What is the box's number?",
+      "junior": "Look at the key's tag again. What number is the box?",
+      "master": "Recall the tag on the brass key. Which box did it name?"
+    },
+    {
+      "rookie": "Count the days again: Monday, Tuesday, Wednesday, Thursday.",
+      "junior": "Count the days again: Monday, Tuesday, Wednesday, Thursday.",
+      "master": "Recount the days carefully: Monday, Tuesday, Wednesday, Thursday."
+    },
+    {
+      "rookie": "Count only people. Opening the stall is not a person.",
+      "junior": "Count only people. Opening the stall doesn't count as a person.",
+      "master": "Count visitors only. Opening the stall is not a person."
+    },
+    {
+      "rookie": "Good numbers, wrong places. People first, then the day, then the box.",
+      "junior": "Good numbers, but in the wrong places. People first, then the day, then the box.",
+      "master": "The right numbers, in the wrong order. People first, then the day, then the box."
+    },
+    {
+      "rookie": "Two, four, seven! My cash box is open!",
+      "junior": "Two, four, seven! My cash box is open!",
+      "master": "Two, four, seven! My cash box is finally open!"
+    },
+    {
+      "rookie": "Inside is a museum pass. It says THURSDAY.",
+      "junior": "Inside is a museum pass. It says THURSDAY.",
+      "master": "Inside lies a museum pass, stamped THURSDAY."
+    },
+    {
+      "rookie": "The helmet man dropped it here on Thursday.",
+      "junior": "The man in the helmet dropped it here on Thursday.",
+      "master": "The man in the helmet must have dropped it here on Thursday."
+    },
+    {
+      "rookie": "A museum pass? So he was at the museum!",
+      "junior": "A museum pass? So he had been at the museum!",
+      "master": "A museum pass? Then he had been inside the museum!"
+    },
+    {
+      "rookie": "Find him, Detective. And find that young woman, too!",
+      "junior": "Find him, Detective. And find that young woman, too!",
+      "master": "Track him down, Detective. And find that young woman, too!"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "noticed": "알아챘다",
+      "overflowing": "넘쳐나는",
+      "scribble": "휘갈겨 쓰다",
+      "hurry": "서두름",
+      "copy": "복제품",
+      "tight": "단단히",
+      "repeats": "되풀이하다"
+    },
+    "master": {
+      "bustling": "북적이는",
+      "hauling": "끌고 가는",
+      "untangled": "(엉킨 것을) 풀었다",
+      "gestures": "손짓하다",
+      "tucked": "집어넣었다",
+      "chalky": "분필 같은",
+      "reasoned": "추론했다",
+      "identified": "알아냈다",
+      "chuckles": "킬킬 웃다",
+      "guarding": "지키는",
+      "witnessed": "목격했다",
+      "curious": "이상한, 묘한",
+      "settles": "자리 잡고 앉다"
+    }
+  }
+}

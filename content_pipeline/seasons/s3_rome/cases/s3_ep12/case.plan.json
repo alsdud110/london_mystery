@@ -497,7 +497,7 @@
       "question": "Spell the word with your seven gold tiles.",
       "hints": [
         "The word means the story of the past.",
-        "It starts with the first tile you found, on the ladder."
+        "It starts with the first tile you found in the scroll hole."
       ],
       "successMessage": "The last lock opens. Everyone claps!",
       "transition": [

@@ -7,9 +7,11 @@ import '../asset_pipeline/asset_pipeline.dart';
 import '../asset_pipeline/asset_plan.dart';
 import '../asset_pipeline/asset_state.dart';
 import '../asset_pipeline/asset_wiring.dart';
+import '../season_gen/case_levels.dart';
 import '../season_gen/content_hash.dart';
 import '../season_gen/generate_case.dart';
 import '../season_gen/generate_season.dart';
+import '../season_gen/json_schema_lite.dart';
 import '../season_gen/plan_files.dart';
 import '../season_gen/plan_ids.dart';
 import '../season_gen/season_cases.dart';
@@ -47,6 +49,10 @@ import 'sheets.dart';
 ///  6. measured: the season map's landmarks and every look round's areas,
 ///     on the very files; anything not measured (or measured on another
 ///     file) gets a grid sheet and stops the run (exit 30).
+///  6b. levels: every case's `levels.json` (Rookie / Junior / Master: the
+///     same game, only its English) written and checked
+///     (`case_levels.dart check`); missing lines get a skeleton and stop the
+///     run (exit 35).
 ///  7. generated: `generate_season.dart --target game`: the season in
 ///     `lib/data/generated/`, registered (catalog, map, cover, World Map
 ///     city, evidence pictures); a failure stops (exit 50).
@@ -58,7 +64,7 @@ import 'sheets.dart';
 Future<void> main(List<String> args) async => exit(await SeasonFactory.cli(args));
 
 abstract final class SeasonFactory {
-  static const exitPlans = 10, exitReview = 20, exitMeasure = 30, exitBudget = 40, exitGenerate = 50, exitTests = 60;
+  static const exitPlans = 10, exitReview = 20, exitMeasure = 30, exitLevels = 35, exitBudget = 40, exitGenerate = 50, exitTests = 60;
 
   static Future<int> cli(List<String> args) async {
     if (args.length < 2) return _usage();
@@ -385,6 +391,39 @@ abstract final class SeasonFactory {
       say('measure', 'write each into the plans as read off its sheet, then run again');
       return exitMeasure;
     }
+
+    // 6b. Every case at Junior and Master: the same game, other English.
+    // The common plan is written first; then each case's levels.json
+    // (its skeleton made here) gives each Rookie line again at each level.
+    final schemas = SchemaSet.load('tool/season_gen/schema');
+    final season = PlanFiles.loadSeasonPlan('$dir/season.plan.json');
+    final unwritten = <String, List<String>>{};
+    for (final path in SeasonCases.of('$dir/season.plan.json')) {
+      final found = CaseLevels.checkCase(path, season, schemas);
+      if (found.isEmpty) continue;
+      if (found.any((f) => f.startsWith('[levels_missing]') || f.startsWith('[level_stale]') || f.startsWith('[level_missing]'))) {
+        CaseLevels.writeSkeleton(path);
+      }
+      unwritten[path] = found;
+    }
+    // The season's own lines (its outro and finale), the same way.
+    final own = SeasonLevels.check('$dir/season.plan.json');
+    if (own.isNotEmpty) {
+      SeasonLevels.writeSkeleton('$dir/season.plan.json');
+      unwritten['$dir/season.plan.json'] = own;
+    }
+    if (unwritten.isNotEmpty) {
+      unwritten.forEach((path, found) {
+        say('levels', '${path.endsWith('season.plan.json') ? SeasonLevels.pathFor(path) : CaseLevels.pathFor(path)}: ${found.length} to fix');
+        for (final f in found.take(5)) {
+          stdout.writeln('  $f');
+        }
+      });
+      say('levels', 'write Junior and Master for every line (the same meaning, answers and names; only the English), '
+          'check with case_levels.dart check, then run again');
+      return exitLevels;
+    }
+    say('levels', 'every case written at Rookie, Junior and Master');
 
     // 7. Generated into the game, registered.
     final generated = generateSeason('$dir/season.plan.json', target: 'game');

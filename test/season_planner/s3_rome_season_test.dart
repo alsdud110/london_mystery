@@ -86,13 +86,14 @@ void main() {
       expect(g['run'], isTrue);
       expect(g['compatible'], isTrue);
       expect(g['blockedByPictures'], 0);
-      expect(g['files'], 15);
+      // 15, and every case's levels (Junior, Master): one a case and the season's.
+      expect(g['files'], 15 + 12 + 1);
       // STEP 3-15A: Case 05's two places are in assets/; STEP 3-15B B1 added
       // the six of Cases 01–04, B2 the five of Cases 06–08, B3 the last five
       // (Cases 09–12). Nothing stops the generator now.
       expect([for (final p in season.places) if (!File(p.file).existsSync()) p.placeId], isEmpty);
       final made = CaseGenerator.sandbox(seasonPath: '$dir/season.plan.json', casePaths: SeasonCases.of('$dir/season.plan.json'), target: 'game');
-      expect(made.files, hasLength(17), reason: "the sandbox's 15, its SeasonContent and its art");
+      expect(made.files, hasLength(15 + 12 + 1 + 2), reason: "the sandbox's 15, the levels' 13, its SeasonContent and its art");
       final planned = {for (final a in assets) a['outputPath']};
       for (final c in cases) {
         for (final m in c.allMissions) {

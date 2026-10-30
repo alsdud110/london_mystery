@@ -1,0 +1,661 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s3_ep02",
+  "lines": [
+    {
+      "rookie": "Under the Second Shell",
+      "junior": "Under the Second Shell",
+      "master": "Under the Second Shell"
+    },
+    {
+      "rookie": "The Owl's card sends you to the Trevi Fountain.",
+      "junior": "The Owl's card sends you off to the Trevi Fountain.",
+      "master": "The Owl's card summons you to the glittering Trevi Fountain."
+    },
+    {
+      "rookie": "A riddle waits under a stone shell.",
+      "junior": "A riddle is waiting under a stone shell.",
+      "master": "Beneath a carved stone shell, a riddle lies in wait."
+    },
+    {
+      "rookie": "And a grumpy professor wants the missing piece very much.",
+      "junior": "And a grumpy professor wants the missing piece very badly.",
+      "master": "And a bad-tempered professor seems desperate to get his hands on the missing piece."
+    },
+    {
+      "rookie": "What is waiting in Box 7?",
+      "junior": "What could be waiting in Box 7?",
+      "master": "What secret lies waiting in Box 7?"
+    },
+    {
+      "rookie": "Solve the Owl's riddle.",
+      "junior": "Solve the Owl's riddle.",
+      "master": "Crack the Owl's riddle."
+    },
+    {
+      "rookie": "Find out why the professor is a suspect.",
+      "junior": "Find out why the professor is a suspect.",
+      "master": "Discover why the professor falls under suspicion."
+    },
+    {
+      "rookie": "Open the Owl's tin and follow its route.",
+      "junior": "Open the Owl's tin and follow the route inside.",
+      "master": "Unlock the Owl's tin and follow the route it hides."
+    },
+    {
+      "rookie": "The Trevi Fountain shines in the sun.",
+      "junior": "The Trevi Fountain sparkles in the sunshine.",
+      "master": "The Trevi Fountain glitters and roars in the bright sunshine."
+    },
+    {
+      "rookie": "People throw coins over their shoulders and make a wish.",
+      "junior": "People toss coins over their shoulders and make a wish.",
+      "master": "Visitors toss coins over their shoulders, each one making a silent wish."
+    },
+    {
+      "rookie": "\"The Owl said the second shell,\" says Giulia. \"Let's count!\"",
+      "junior": "\"The Owl said the second shell,\" Giulia reminds you. \"Let's count!\"",
+      "master": "\"The Owl mentioned the second shell,\" Giulia says eagerly. \"Let's count!\""
+    },
+    {
+      "rookie": "Under the second shell, the Owl's riddle pointed to the stone map. Professor Aldo wanted the piece and became a suspect. The Owl's marble tin held a key, FIORI 7, and a route to the flower market.",
+      "junior": "Under the second shell, the Owl's riddle pointed to the stone map. Professor Aldo had wanted the piece badly, so he became a suspect. The Owl's marble tin held a key, FIORI 7, and a route to the flower market.",
+      "master": "Beneath the second shell, the Owl's riddle pointed to the stone map. Professor Aldo, who had longed for the piece, became a suspect. Inside the Owl's marble tin lay a key, FIORI 7, and a route to the flower market."
+    },
+    {
+      "rookie": "TREVI FOUNTAIN",
+      "junior": "TREVI FOUNTAIN",
+      "master": "TREVI FOUNTAIN"
+    },
+    {
+      "rookie": "I have streets, but no cars.",
+      "junior": "I have streets, but no cars.",
+      "master": "I have streets, but no cars."
+    },
+    {
+      "rookie": "I have rooms, but no doors.",
+      "junior": "I have rooms, but no doors.",
+      "master": "I have rooms, but no doors."
+    },
+    {
+      "rookie": "The Owl's Riddle",
+      "junior": "The Owl's Riddle",
+      "master": "The Owl's Riddle"
+    },
+    {
+      "rookie": "THE TREVI FOUNTAIN",
+      "junior": "THE TREVI FOUNTAIN",
+      "master": "THE TREVI FOUNTAIN"
+    },
+    {
+      "rookie": "The Trevi Fountain is loud and bright.",
+      "junior": "The Trevi Fountain is noisy and full of light.",
+      "master": "The Trevi Fountain thunders with water and dazzles with light."
+    },
+    {
+      "rookie": "Stone shells line the edge of the water.",
+      "junior": "A row of stone shells lines the edge of the water.",
+      "master": "Carved stone shells line the rim of the pool, one after another."
+    },
+    {
+      "rookie": "Coins shine at the bottom of the pool.",
+      "junior": "Coins glitter at the bottom of the pool.",
+      "master": "Countless coins shimmer at the bottom of the pool."
+    },
+    {
+      "rookie": "Under the second shell, a dry paper roll says:",
+      "junior": "Under the second shell, you find a dry paper roll. It says:",
+      "master": "Tucked beneath the second shell is a dry roll of paper. It reads:"
+    },
+    {
+      "rookie": "Well done, Detective. Here is my riddle.\nI have streets, but no cars.\nI have rooms, but no doors.\nI am made of stone, and now I am in pieces.\nWhat am I?\nMy tin waits under the third step.\n— The Owl",
+      "junior": "Well done, Detective. Here is my riddle.\nI have streets, but no cars.\nI have rooms, but no doors.\nI am made of stone, and now I am broken into pieces.\nWhat am I?\nMy tin is waiting under the third step.\n— The Owl",
+      "master": "Well done, Detective. Now, try my riddle.\nI have streets, but no cars.\nI have rooms, but no doors.\nI was carved from stone, and now I lie scattered in pieces.\nWhat am I?\nMy tin lies hidden beneath the third step.\n— The Owl"
+    },
+    {
+      "rookie": "What is the Owl's riddle about?",
+      "junior": "What is the Owl's riddle about?",
+      "master": "What is the Owl's riddle describing?"
+    },
+    {
+      "rookie": "It is a ____.",
+      "junior": "It is a ____.",
+      "master": "It is a ____."
+    },
+    {
+      "rookie": "Each line is one clue. What has streets and rooms, but they are only drawn?",
+      "junior": "Each line is a separate clue. What has streets and rooms that are only drawn?",
+      "master": "Take the riddle one line at a time. Where could streets and rooms exist only as drawings?"
+    },
+    {
+      "rookie": "Think about what is missing from the museum.",
+      "junior": "Think about what has gone missing from the museum.",
+      "master": "Recall what vanished from the museum in the first place."
+    },
+    {
+      "rookie": "You solved the Owl's riddle!",
+      "junior": "You solved the Owl's riddle!",
+      "master": "You cracked the Owl's riddle!"
+    },
+    {
+      "rookie": "A stone map! The riddle is about the missing piece.",
+      "junior": "A stone map! The riddle was about the missing piece.",
+      "master": "A stone map! The riddle was describing the missing piece all along."
+    },
+    {
+      "rookie": "The Owl's tin is under the third step.",
+      "junior": "The Owl's tin is hidden under the third step.",
+      "master": "The Owl's tin should be waiting beneath the third step."
+    },
+    {
+      "rookie": "But a man in a green hat is sitting on the steps.",
+      "junior": "But a man in a green hat is sitting right on the steps.",
+      "master": "But a man in a green hat has settled himself on those very steps."
+    },
+    {
+      "rookie": "A house has doors. This thing has rooms, but no doors.",
+      "junior": "A house has doors, but this thing has rooms and no doors.",
+      "master": "Houses have doors. The riddle's rooms have none, so think again."
+    },
+    {
+      "rookie": "A city has cars. This thing has streets, but no cars.",
+      "junior": "A city has cars, but this thing has streets and no cars.",
+      "master": "Cities are full of cars. The riddle's streets have none, so think again."
+    },
+    {
+      "rookie": "Check your spelling. It is a short word.",
+      "junior": "Check your spelling. It's a short word.",
+      "master": "Check your spelling. The word is a short one."
+    },
+    {
+      "rookie": "The riddle is about the missing map piece. The Owl's tin is under the third step.",
+      "junior": "The riddle is about the missing map piece, and the Owl's tin is under the third step.",
+      "master": "The riddle describes the missing map piece, and the Owl's tin lies beneath the third step."
+    },
+    {
+      "rookie": "Find the second shell.",
+      "junior": "Find the second shell.",
+      "master": "Locate the second shell."
+    },
+    {
+      "rookie": "Look! Shells all along the water.",
+      "junior": "Look! There are shells all along the water.",
+      "master": "Look! Shells all the way along the water's edge."
+    },
+    {
+      "rookie": "The card says the second shell.",
+      "junior": "The card says the second shell.",
+      "master": "The Owl's card mentioned the second shell."
+    },
+    {
+      "rookie": "Count from the left. One, two... there!",
+      "junior": "Let's count from the left. One, two... there!",
+      "master": "Count from the left, then. One, two... there it is!"
+    },
+    {
+      "rookie": "OPEN THE PAPER",
+      "junior": "OPEN THE PAPER",
+      "master": "OPEN THE PAPER"
+    },
+    {
+      "rookie": "A STONE MAP",
+      "junior": "A STONE MAP",
+      "master": "A STONE MAP"
+    },
+    {
+      "rookie": "Streets but no cars, rooms but no doors: the old marble map.",
+      "junior": "Streets but no cars, rooms but no doors: the old marble map.",
+      "master": "Streets without cars, rooms without doors: the old marble map."
+    },
+    {
+      "rookie": "He has white dust on his hands.",
+      "junior": "He has white dust on his hands.",
+      "master": "His hands are covered in white dust."
+    },
+    {
+      "rookie": "Look at his hands again. They are green with ink.",
+      "junior": "Look at his hands again. They're green with ink, not white.",
+      "master": "Look again at his hands. The stains on them are green ink."
+    },
+    {
+      "rookie": "He wanted the piece, and Sofia said no.",
+      "junior": "He wanted the piece, and Sofia said no.",
+      "master": "He wanted the piece, and Sofia said no."
+    },
+    {
+      "rookie": "He was in the museum at midnight.",
+      "junior": "He was in the museum at midnight.",
+      "master": "He was inside the museum at midnight."
+    },
+    {
+      "rookie": "Read his page. Where does he say he was on Friday night?",
+      "junior": "Read his page again. Where does he say he was on Friday night?",
+      "master": "Look at his page once more. What does he say about Friday night?"
+    },
+    {
+      "rookie": "I must see the piece before the show!",
+      "junior": "I must see the piece before the show!",
+      "master": "I must see the piece before the show!"
+    },
+    {
+      "rookie": "She said no two times.",
+      "junior": "She said no two times.",
+      "master": "She said no two times."
+    },
+    {
+      "rookie": "The Professor's Notebook",
+      "junior": "The Professor's Notebook",
+      "master": "The Professor's Notebook"
+    },
+    {
+      "rookie": "THE TREVI STEPS",
+      "junior": "THE TREVI STEPS",
+      "master": "THE TREVI STEPS"
+    },
+    {
+      "rookie": "The man in the green hat is drawing the fountain. His fingers are green with ink.",
+      "junior": "The man in the green hat is sketching the fountain. His fingers are stained green with ink.",
+      "master": "The man in the green hat is busily sketching the fountain, his fingers stained green with ink."
+    },
+    {
+      "rookie": "\"That piece should be in MY book!\" he mutters.",
+      "junior": "\"That piece should be in MY book!\" he grumbles under his breath.",
+      "master": "\"That piece belongs in MY book!\" he mutters crossly to himself."
+    },
+    {
+      "rookie": "\"That is Professor Aldo Rinaldi,\" Giulia whispers. \"He writes about old maps.\"",
+      "junior": "\"That's Professor Aldo Rinaldi,\" Giulia whispers. \"He writes books about old maps.\"",
+      "master": "\"That's Professor Aldo Rinaldi,\" Giulia whispers. \"He's an expert who writes about ancient maps.\""
+    },
+    {
+      "rookie": "He stands up, and a page falls out of his notebook.",
+      "junior": "When he stands up, a page slips out of his notebook.",
+      "master": "As he rises to his feet, a loose page flutters out of his notebook."
+    },
+    {
+      "rookie": "The notebook page says:",
+      "junior": "The notebook page says:",
+      "master": "The notebook page says:"
+    },
+    {
+      "rookie": "MY BOOK — CHAPTER 12: THE NEW PIECE\nI MUST see the piece before the show!\nI asked Sofia two times. She said no two times.\nFriday night: my talk at the university, 9:00 PM to 1:00 AM.\nSaturday: the show. Too late for my book!",
+      "junior": "MY BOOK — CHAPTER 12: THE NEW PIECE\nI MUST see the piece before the show!\nI asked Sofia two times. She said no two times.\nFriday night: my talk at the university, 9:00 PM to 1:00 AM.\nSaturday: the show. That is too late for my book!",
+      "master": "MY BOOK — CHAPTER 12: THE NEW PIECE\nI MUST see the piece before the show!\nI begged Sofia two times. She said no two times.\nFriday night: my talk at the university, 9:00 PM to 1:00 AM.\nSaturday: the show. Far too late for my book!"
+    },
+    {
+      "rookie": "Why could Professor Aldo be a suspect?",
+      "junior": "Why might Professor Aldo be a suspect?",
+      "master": "What makes Professor Aldo a suspect?"
+    },
+    {
+      "rookie": "A suspect is a person who may have done it. Why?",
+      "junior": "A suspect is someone who might have done it. What reason could he have?",
+      "master": "A suspect needs a reason. What did the professor long for?"
+    },
+    {
+      "rookie": "What did the professor ask for, and what did Sofia say?",
+      "junior": "What did the professor ask for, and how did Sofia answer?",
+      "master": "Reread his request, and Sofia's reply."
+    },
+    {
+      "rookie": "You see why the professor is a suspect.",
+      "junior": "Now you see why the professor is a suspect.",
+      "master": "Now you understand why the professor is under suspicion."
+    },
+    {
+      "rookie": "\"We must check his story later,\" says Giulia.",
+      "junior": "\"We'll have to check his story later,\" says Giulia.",
+      "master": "\"We'll need to check his story later,\" Giulia murmurs."
+    },
+    {
+      "rookie": "Aldo walks away, grumbling.",
+      "junior": "Aldo stomps away, grumbling.",
+      "master": "Aldo stalks off, grumbling to himself."
+    },
+    {
+      "rookie": "Now, the Owl's tin under the third step.",
+      "junior": "Now for the Owl's tin under the third step.",
+      "master": "Now, at last, the Owl's tin beneath the third step."
+    },
+    {
+      "rookie": "The Professor's Wish",
+      "junior": "The Professor's Wish",
+      "master": "The Professor's Wish"
+    },
+    {
+      "rookie": "Aldo Rinaldi wanted to see the piece for his book. Sofia said no.",
+      "junior": "Aldo Rinaldi wanted to see the piece for his book, but Sofia said no.",
+      "master": "Aldo Rinaldi longed to see the piece for his book, but Sofia refused him."
+    },
+    {
+      "rookie": "Find out why the professor wants the piece.",
+      "junior": "Find out why the professor wants the piece so much.",
+      "master": "Discover why the professor is so eager for the piece."
+    },
+    {
+      "rookie": "Give me that! That page is mine.",
+      "junior": "Give me that! That page belongs to me.",
+      "master": "Hand that over! That page is mine."
+    },
+    {
+      "rookie": "You wanted the piece very much.",
+      "junior": "You wanted the piece very badly.",
+      "master": "You were desperate to see the piece."
+    },
+    {
+      "rookie": "Of course! It belongs in my book.",
+      "junior": "Of course I did! It belongs in my book.",
+      "master": "Naturally! It belongs in my book."
+    },
+    {
+      "rookie": "On Friday night, I was at my talk. Ask anyone!",
+      "junior": "On Friday night, I was giving my talk. Ask anyone!",
+      "master": "On Friday night, I was giving my talk. Ask anyone who was there!"
+    },
+    {
+      "rookie": "A SUSPECT IN A GREEN HAT",
+      "junior": "A SUSPECT IN A GREEN HAT",
+      "master": "A SUSPECT IN A GREEN HAT"
+    },
+    {
+      "rookie": "Aldo wanted the piece, and Sofia said no. But where was he on Friday night?",
+      "junior": "Aldo wanted the piece, and Sofia said no. But where was he on Friday night?",
+      "master": "Aldo wanted the piece, and Sofia refused. Yet where was he really on Friday night?"
+    },
+    {
+      "rookie": "B",
+      "junior": "B",
+      "master": "B"
+    },
+    {
+      "rookie": "E",
+      "junior": "E",
+      "master": "E"
+    },
+    {
+      "rookie": "M",
+      "junior": "M",
+      "master": "M"
+    },
+    {
+      "rookie": "L",
+      "junior": "L",
+      "master": "L"
+    },
+    {
+      "rookie": "A",
+      "junior": "A",
+      "master": "A"
+    },
+    {
+      "rookie": "R",
+      "junior": "R",
+      "master": "R"
+    },
+    {
+      "rookie": "What is the real piece made of?",
+      "junior": "What is the real piece made of?",
+      "master": "What is the real piece made of?"
+    },
+    {
+      "rookie": "Carved in marble about 1,800 years ago.",
+      "junior": "Carved in marble about 1,800 years ago.",
+      "master": "Carved in marble about 1,800 years ago."
+    },
+    {
+      "rookie": "The Owl's Tin",
+      "junior": "The Owl's Tin",
+      "master": "The Owl's Tin"
+    },
+    {
+      "rookie": "THE THIRD STEP",
+      "junior": "THE THIRD STEP",
+      "master": "THE THIRD STEP"
+    },
+    {
+      "rookie": "Under the third step, there is a small tin box.",
+      "junior": "Under the third step, you find a small tin box.",
+      "master": "Hidden beneath the third step is a small tin box."
+    },
+    {
+      "rookie": "It has a letter lock with six tiles.",
+      "junior": "It is closed with a letter lock that has six tiles.",
+      "master": "It is sealed with a letter lock of six tiles."
+    },
+    {
+      "rookie": "A museum label is glued to the lid.",
+      "junior": "A museum label has been glued to the lid.",
+      "master": "A museum label has been carefully glued to its lid."
+    },
+    {
+      "rookie": "The tin's lid says:",
+      "junior": "The tin's lid says:",
+      "master": "The tin's lid says:"
+    },
+    {
+      "rookie": "Spell the stone the REAL piece is made of.\nNot the soft white dust!\n— The Owl\n\nMUSEUM LABEL:\nTHE OLD MAP OF ROME\nCarved in marble about 1,800 years ago.\nOnly some pieces are left.",
+      "junior": "Spell the stone the REAL piece is made of.\nNot the soft white dust!\n— The Owl\n\nMUSEUM LABEL:\nTHE OLD MAP OF ROME\nCarved in marble about 1,800 years ago.\nOnly some pieces are left.",
+      "master": "Spell the stone the REAL piece is made of.\nDo not be fooled by the soft white dust!\n— The Owl\n\nMUSEUM LABEL:\nTHE OLD MAP OF ROME\nCarved in marble about 1,800 years ago.\nOnly some pieces are left."
+    },
+    {
+      "rookie": "What is the real piece made of? Spell it to open the tin.",
+      "junior": "What is the real piece made of? Spell it to open the tin.",
+      "master": "What is the real piece made of? Spell it to open the tin."
+    },
+    {
+      "rookie": "Read the museum label. What was the map carved in?",
+      "junior": "Read the museum label. What was the map carved in?",
+      "master": "The museum label holds the answer. Look at how the map was made."
+    },
+    {
+      "rookie": "It is a kind of hard, white stone.",
+      "junior": "It's a kind of hard, white stone.",
+      "master": "Think of a hard, pale stone that sculptors love."
+    },
+    {
+      "rookie": "The tin opens!",
+      "junior": "The tin opens!",
+      "master": "The tin springs open!"
+    },
+    {
+      "rookie": "Inside, there is a little brass key.",
+      "junior": "Inside, you find a little brass key.",
+      "master": "Inside lies a little brass key."
+    },
+    {
+      "rookie": "Its tag says: FIORI · 7.",
+      "junior": "Its tag says: FIORI · 7.",
+      "master": "Its tag says: FIORI · 7."
+    },
+    {
+      "rookie": "Under the key is one more card.",
+      "junior": "Under the key, there is one more card.",
+      "master": "Beneath the key waits one more card."
+    },
+    {
+      "rookie": "All six letters fit. Read the museum label again.",
+      "junior": "All six letters belong. Read the museum label again.",
+      "master": "Every one of the six letters belongs. Study the museum label once more."
+    },
+    {
+      "rookie": "The real piece is carved in marble. The tin held a brass key: FIORI 7.",
+      "junior": "The real piece is carved in marble. The tin held a brass key: FIORI 7.",
+      "master": "The real piece is carved in marble. Inside the tin lay a brass key: FIORI 7."
+    },
+    {
+      "rookie": "THE OWL'S TIN",
+      "junior": "THE OWL'S TIN",
+      "master": "THE OWL'S TIN"
+    },
+    {
+      "rookie": "A LITTLE BRASS KEY",
+      "junior": "A LITTLE BRASS KEY",
+      "master": "A LITTLE BRASS KEY"
+    },
+    {
+      "rookie": "A key for a box. But which box, and where in Rome?",
+      "junior": "It's a key for a box. But which box, and where in Rome?",
+      "master": "A key to some box. But which box, and where in all of Rome?"
+    },
+    {
+      "rookie": "The flower stall with the red roof",
+      "junior": "The flower stall with the red roof",
+      "master": "The flower stall with the red roof"
+    },
+    {
+      "rookie": "The street with the gelato shop",
+      "junior": "The street with the gelato shop",
+      "master": "The street with the gelato shop"
+    },
+    {
+      "rookie": "The big market square",
+      "junior": "The big market square",
+      "master": "The big market square"
+    },
+    {
+      "rookie": "The big round Pantheon",
+      "junior": "The big round Pantheon",
+      "master": "The big round Pantheon"
+    },
+    {
+      "rookie": "First, walk down the street with the gelato shop.",
+      "junior": "First, walk down the street with the gelato shop.",
+      "master": "First, walk down the street with the gelato shop."
+    },
+    {
+      "rookie": "Before the flower stall, walk across the big market square.",
+      "junior": "Before the flower stall, walk across the big market square.",
+      "master": "Before the flower stall, walk across the big market square."
+    },
+    {
+      "rookie": "Finally, find Box 7.",
+      "junior": "Finally, find Box 7.",
+      "master": "Finally, find Box 7."
+    },
+    {
+      "rookie": "The Owl's Route",
+      "junior": "The Owl's Route",
+      "master": "The Owl's Route"
+    },
+    {
+      "rookie": "The last card in the tin is a route.",
+      "junior": "The last card in the tin shows a route.",
+      "master": "The final card in the tin describes a route."
+    },
+    {
+      "rookie": "But the Owl wrote it in pieces, like the broken map.",
+      "junior": "But the Owl wrote it in pieces, just like the broken map.",
+      "master": "But the Owl has scattered it in pieces, just like the broken map."
+    },
+    {
+      "rookie": "Giulia laughs. \"This Owl loves puzzles!\"",
+      "junior": "Giulia laughs. \"This Owl really loves puzzles!\"",
+      "master": "Giulia laughs. \"This Owl can't resist a puzzle!\""
+    },
+    {
+      "rookie": "The route card says:",
+      "junior": "The route card says:",
+      "master": "The route card says:"
+    },
+    {
+      "rookie": "Finally, find Box 7 at the flower stall with the red roof.\nFirst, walk down the street with the gelato shop.\nAfter the gelato shop, go past the big round Pantheon.\nBefore the flower stall, walk across the big market square.\n— The Owl",
+      "junior": "Finally, find Box 7 at the flower stall with the red roof.\nFirst, walk down the street with the gelato shop.\nAfter the gelato shop, go past the big round Pantheon.\nBefore the flower stall, walk across the big market square.\n— The Owl",
+      "master": "Finally, find Box 7 at the flower stall with the red roof.\nFirst, walk down the street with the gelato shop.\nAfter the gelato shop, stroll past the big round Pantheon.\nBefore the flower stall, walk across the big market square.\n— The Owl"
+    },
+    {
+      "rookie": "Put the Owl's route in order, from the fountain to Box 7.",
+      "junior": "Put the Owl's route in order, from the fountain to Box 7.",
+      "master": "Arrange the Owl's route in order, from the fountain to Box 7."
+    },
+    {
+      "rookie": "Find the line that says First, and the line that says Finally.",
+      "junior": "Find the line that says First and the line that says Finally.",
+      "master": "Two words on the card mark the start and the finish."
+    },
+    {
+      "rookie": "Before the flower stall means just before the last step.",
+      "junior": "Before the flower stall means the step just before the last one.",
+      "master": "Reread the line that begins with Before: which stop sits just before the last?"
+    },
+    {
+      "rookie": "You put the Owl's route together!",
+      "junior": "You pieced the Owl's route together!",
+      "master": "You pieced together the Owl's scattered route!"
+    },
+    {
+      "rookie": "You walk past the gelato shop and the great Pantheon.",
+      "junior": "You walk past the gelato shop and the great Pantheon.",
+      "master": "You wander past the gelato shop and the mighty Pantheon."
+    },
+    {
+      "rookie": "The market square is full of flowers and lemons.",
+      "junior": "The market square is crowded with flowers and lemons.",
+      "master": "The market square overflows with flowers and bright lemons."
+    },
+    {
+      "rookie": "At the far end, there is a stall with a red roof.",
+      "junior": "At the far end, you spot a stall with a red roof.",
+      "master": "At its far end stands a stall with a red roof."
+    },
+    {
+      "rookie": "Start with First and end with Finally. Then read After and Before.",
+      "junior": "Start with First and end with Finally. Then read After and Before.",
+      "master": "Begin with First and finish with Finally. Then reread After and Before."
+    },
+    {
+      "rookie": "Gelato shop, Pantheon, market square, flower stall!",
+      "junior": "Gelato shop, Pantheon, market square, flower stall!",
+      "master": "Gelato shop, Pantheon, market square, flower stall!"
+    },
+    {
+      "rookie": "And the key's tag says FIORI 7.",
+      "junior": "And the key's tag says FIORI 7.",
+      "master": "And the key's tag reads FIORI 7."
+    },
+    {
+      "rookie": "Fiori means flowers in Italian.",
+      "junior": "Fiori means flowers in Italian.",
+      "master": "\"Fiori\"... Fiori means flowers in Italian."
+    },
+    {
+      "rookie": "Box 7 must be at Campo de' Fiori!",
+      "junior": "So Box 7 must be at Campo de' Fiori!",
+      "master": "Then Box 7 must be at Campo de' Fiori!"
+    },
+    {
+      "rookie": "Behind you, the man in the green hat is watching.",
+      "junior": "Behind you, the man in the green hat is watching closely.",
+      "master": "Behind you, unnoticed, the man in the green hat is watching."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "toss": "던지다",
+      "sparkles": "반짝이다",
+      "glitter": "반짝이다",
+      "sketching": "스케치하는",
+      "stained": "얼룩진",
+      "grumbles": "투덜거리다",
+      "stomps": "쿵쿵 걷다",
+      "separate": "따로 떨어진",
+      "pieced": "짜맞췄다",
+      "crowded": "붐비는"
+    },
+    "master": {
+      "summons": "불러들이다",
+      "desperate": "몹시 원하는",
+      "suspicion": "의심",
+      "thunders": "우렁차게 울리다",
+      "shimmer": "어른거리며 빛나다",
+      "scattered": "흩어진",
+      "crack": "(암호를) 풀다",
+      "longed": "간절히 바랐다",
+      "refused": "거절했다",
+      "stalks": "성큼성큼 걷다",
+      "sculptors": "조각가들",
+      "unnoticed": "눈에 띄지 않게",
+      "rim": "가장자리",
+      "flutters": "펄럭이다"
+    }
+  }
+}

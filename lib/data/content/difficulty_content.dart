@@ -1,6 +1,7 @@
 import '../mock/season2/season2_structures.dart';
 import '../mock/season_catalog.dart';
 import '../models/clock_puzzle.dart';
+import '../models/dialogue.dart';
 import '../models/difficulty.dart';
 import '../models/discovery.dart';
 import '../models/episode.dart';
@@ -11,6 +12,7 @@ import '../models/scene_decode.dart';
 import '../models/scene_deduction.dart';
 import '../models/scene_explore.dart';
 import '../models/scene_inspect.dart';
+import '../models/season.dart';
 
 /// The words of the game at each level (Rookie, Junior, Master).
 ///
@@ -94,6 +96,23 @@ abstract final class DifficultyContent {
   }) {
     final own = patches ?? SeasonCatalog.byId(base.seasonId)?.casePatches ?? const {};
     return Episode.fromJson(apply(base.toJson(), level, own), difficulty: level);
+  }
+
+  /// The season's own lines a level may give ([SeasonContent.infoLevels]).
+  static const seasonText = {'outro', 'finale'};
+
+  /// [season] as played at [level]: its own lines ([seasonText]) at the
+  /// nearest level of [level]'s fallback chain that gives them, each only
+  /// with as many lines as its own; everything else its own.
+  static Season seasonAt(SeasonContent season, Difficulty level) {
+    if (season.infoLevels.isEmpty) return season.season;
+    final info = Map<String, dynamic>.of(season.info);
+    for (final l in level.fallbackChain.reversed) {
+      season.infoLevels[l]?.forEach((key, lines) {
+        if (seasonText.contains(key) && info[key] is List && (info[key] as List).length == lines.length) info[key] = lines;
+      });
+    }
+    return Season.fromJson(info);
   }
 
   static Object? _copy(Object? v) => switch (v) {
@@ -185,6 +204,18 @@ abstract final class DifficultyContent {
 
   static List<String> problemsOf(SeasonContent season) {
     final out = <String>[];
+    // The season's own lines: only its outro and finale, line for line.
+    season.infoLevels.forEach((level, text) {
+      text.forEach((key, lines) {
+        final at = '${season.id} ${level.storageId} season.$key';
+        final base = season.info[key];
+        if (!seasonText.contains(key)) {
+          out.add('$at: may not change with the level');
+        } else if (base is! List || base.length != lines.length) {
+          out.add('$at: ${lines.length} lines for the season\'s ${base is List ? base.length : 0}');
+        }
+      });
+    });
     final cases = {...season.episodes, ...season.awaitingArt};
     season.casePatches.forEach((level, byCase) {
       byCase.forEach((caseId, patch) {
@@ -358,6 +389,18 @@ abstract final class DifficultyContent {
         final DecodeScene s => [
             s.picture, s.pixels.width, s.pixels.height, s.areas, s.mark, s.closer, s.code, s.cleared,
             s.clearedArea, s.revealed, s.ink, s.messageTilt, s.inside,
+          ].join('|'),
+        // A talk with witnesses (the generated seasons): who is there, what
+        // can be asked, which answers are statements and what they match by,
+        // and the deduction's pair and answer — every word may differ.
+        final DialogueScene s => [
+            s.background,
+            for (final x in s.speakers)
+              '${x.id}:${x.portrait}:${x.face}:${[for (final e in x.answers.entries) '${e.key}=${e.value.statementId}'].join(',')}',
+            for (final q in s.questions) q.id,
+            for (final t in s.statements) '${t.id}:${t.speakerId}:${t.about}:${t.thing}',
+            '${s.deduction.topic}:${(s.deduction.pair.toList()..sort()).join(',')}:${s.deduction.answer}:${s.deduction.witnesses}',
+            (s.deduction.then.toList()..sort()).join(','),
           ].join('|'),
         final InvestigationScene s => [
             s.artwork?.name ?? s.picture, s.answer, s.guideAt, s.opening, s.inside,

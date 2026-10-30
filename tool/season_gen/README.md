@@ -282,6 +282,42 @@ released; drafts say so in its manifest (`approved: false`). The season
 factory (`tool/season_factory/`) runs it; `test/generated_seasons_test.dart`
 checks and plays every season it made.
 
+## The levels: Rookie, Junior, Master
+
+A case's levels are its English, never its game. The plan is written once,
+without any level; its words are Rookie's. `cases/<caseId>/levels.json`
+(`case_levels.dart`) gives each Rookie line again at Junior and Master:
+
+```sh
+dart run tool/season_gen/case_levels.dart skeleton <case.plan.json>...   # every line, Junior/Master empty
+dart run tool/season_gen/case_levels.dart check --season <season.plan.json> <case.plan.json>...
+```
+
+`check` lays each level's lines over the plan and checks that plan as the
+plan is (schema, structure, puzzle selection, clue graph, `PlayCheck`), then:
+every line written at both levels, none for a line the plan does not have,
+a typed answer a line holds still in its level's words, a mission's
+learning expressions still in its words, and nothing but the words changed
+(`CaseLevels.sameGame`: the two plans with every word taken out are equal —
+ids, answers, choices and their order, pictures, places, steps). What is a
+word: the case's title, synopsis, hook, objectives, intro, summary and
+place; a choice's label, line and alt text; a mission's learning
+expressions; every string of a mission's `play` but its ids, pictures, who
+speaks, a statement's `thing` (what two statements match by), an
+inscription, a clue's value and the evidence link's line.
+
+The season's own lines (its `outro` and `finale`) are written the same way
+in `season.levels.json` beside `season.plan.json` (`SeasonLevels`), checked
+by every `check`, given to the game as `SeasonContent.infoLevels`.
+
+`--target game` takes every case at every level (`levels_missing`
+otherwise); a sandbox, all of its cases or none. Made from them, beside
+each case: `<caseId>_levels.g.dart` (its patch for
+`SeasonContent.casePatches`, its puzzle tables at each level), and
+`<seasonId>_levels.g.dart` (`casePatches`, `variants`, `writtenLevels`),
+given to the season's `SeasonContent`. The game's `DifficultyContent`
+checks them again (`test/difficulty_content_test.dart`).
+
 ## A season of cases (STEP 3-9)
 
 | File | What |
