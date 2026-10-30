@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:world_mystery/core/constants/app_constants.dart';
 import 'package:world_mystery/core/utils/audio_service.dart';
 import 'package:world_mystery/data/repositories/profile_store.dart';
+import 'package:world_mystery/data/generated/generated_seasons.g.dart';
 import 'package:world_mystery/data/mock/season1/episode01_mock.dart';
 import 'package:world_mystery/data/models/episode.dart';
 import 'package:world_mystery/data/models/scene_place.dart' show ScenePlace;
@@ -232,3 +233,12 @@ Future<void> takeTipFromSheet(WidgetTester t) async {
   await t.pump();
   await t.pump(const Duration(milliseconds: 500));
 }
+
+/// Whether [seasonId] is a season written by hand (London, Paris): not one
+/// made from its plans (the Rome integration on, `generatedSeasons`), whose
+/// pictures are its places' files, not `Artwork` scenes, and whose content is
+/// checked and played by `generated_seasons_test.dart`.
+bool handMadeSeason(String seasonId) => !generatedSeasons.any((s) => s.id == seasonId);
+
+/// The bundled cases of the seasons written by hand ([handMadeSeason]).
+List<Episode> handMadeBundled() => [for (final e in MockEpisodeRepository.bundled()) if (handMadeSeason(e.seasonId)) e];

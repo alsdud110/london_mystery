@@ -338,7 +338,7 @@
         "skill": "vocabulary",
         "expressions": [
           "The password is the opposite of lost.",
-          "Give my parcel only to the detective."
+          "Give it only to the detective who says the password."
         ]
       },
       "play": {
@@ -566,7 +566,7 @@
       "objective": "세 가지 시험 결과(가볍다, thud, 부드러운 흰 가루)를 읽고 재료가 plaster임을 글자 타일로 맞춘다.",
       "skill": "sentenceMeaning",
       "expressions": [
-        "This piece is too light.",
+        "This piece is 4 kg. Too light!",
         "Marble rings like a bell.",
         "Plaster is soft and white."
       ]

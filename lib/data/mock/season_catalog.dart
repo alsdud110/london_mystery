@@ -28,6 +28,7 @@ import '../models/station_clocks.dart';
 import '../models/story_picture.dart';
 import '../models/tower_puzzles.dart';
 import '../models/workshop_puzzles.dart';
+import '../generated/generated_seasons.g.dart';
 import 'season1/episode01_mock.dart';
 import 'season1/season1_clocks.dart';
 import 'season1/season1_decodes.dart';
@@ -553,7 +554,9 @@ bool seasonReleased(String seasonId) =>
 /// mission's or a case's season content. A mission's content is looked up in
 /// its own season only (mission ids are never shared between seasons).
 abstract final class SeasonCatalog {
-  static final List<SeasonContent> all = [season1Content, season2Content];
+  /// London, Paris, then the seasons made from their plans (Rome on:
+  /// `generate_season.dart --target game`, listed by [generatedSeasons]).
+  static final List<SeasonContent> all = [season1Content, season2Content, ...generatedSeasons];
 
   /// The season with [seasonId], or null when there is none.
   static SeasonContent? byId(String seasonId) {

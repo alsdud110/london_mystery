@@ -2,6 +2,7 @@ import 'dart:ui' show Offset, Rect, Size;
 
 import 'package:flutter/painting.dart' show Alignment;
 
+import '../data/generated/generated_season_art.g.dart';
 import '../data/models/mission.dart';
 import '../data/models/profile.dart';
 import '../data/models/season.dart' show SeasonIds;
@@ -193,6 +194,8 @@ abstract final class ArtAssets {
       crop: Alignment(0.3, 0),
       push: Alignment(0.2, -0.2),
     ),
+    // The seasons made from plans (Rome on): their own (season plan `art.cover`).
+    ...generatedSeasonCovers,
   };
 
   /// The first scene of the Season 1 opening: a warm London night on the
@@ -599,6 +602,9 @@ abstract final class ArtAssets {
     's2_ep04_e2': '$_paris04/keeper_ledger.png',
     's2_ep04_e3': '$_paris04/delivery_label_blank.png',
     's2_ep04_e4': '$_paris04/delivery_label_blank.png',
+    // The seasons made from plans (Rome on): each picture made for an
+    // evidence of their cases (their asset manifests).
+    ...generatedEvidencePictures,
   };
 
   /// Evidence pictures too wide for the round frame's close look: shown

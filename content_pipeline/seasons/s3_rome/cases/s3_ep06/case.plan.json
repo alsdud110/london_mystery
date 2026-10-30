@@ -78,7 +78,7 @@
         "skill": "vocabulary",
         "expressions": [
           "He is small and thin.",
-          "He cannot lift heavy things."
+          "He is small and thin."
         ]
       },
       "play": {
@@ -208,9 +208,9 @@
         "objective": "PM과 AM, 자정(12:00 AM)의 순서를 이해해 금요일 밤 기록을 시간순으로 놓는다.",
         "skill": "vocabulary",
         "expressions": [
-          "The talk started at 9:00 PM.",
+          "Prof. Rinaldi started his talk.",
           "12:00 AM is midnight.",
-          "The talk ended at 1:00 AM."
+          "The talk ended."
         ]
       },
       "play": {
@@ -319,7 +319,7 @@
         "skill": "vocabulary",
         "expressions": [
           "A mirror turns words back to front.",
-          "Read it from the right end."
+          "Start at the last letter, B, and read to the left."
         ]
       },
       "play": {
@@ -439,8 +439,8 @@
       "objective": "단서(안전모, 기중기, BUILDING 상자)를 종합해 직업 이름 builder를 만든다.",
       "skill": "vocabulary",
       "expressions": [
-        "What is this man's job?",
-        "A builder builds houses."
+        "What is the man's job?",
+        "builds houses, walls and roads"
       ]
     },
     "play": {

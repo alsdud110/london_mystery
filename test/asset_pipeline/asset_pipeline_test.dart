@@ -191,6 +191,9 @@ void main() {
     Future<List<String>> refusedWith(void Function(Map json) change) async {
       final f = File('${tmp.path}/$manifest');
       final json = jsonDecode(File(manifest).readAsStringSync()) as Map; // each change on the original
+      for (final a in (json['assets'] as List).cast<Map>()) {
+        a['status'] = 'planned'; // as the copy: no picture in its assets/
+      }
       change(json);
       f.writeAsStringSync(jsonEncode(json));
       final plan = AssetPlan.load(manifest, root: tmp.path);
@@ -290,7 +293,7 @@ void main() {
       expect(s.statusOf('s3_rome.asset.guard_room'), AssetStatus.validated);
       expect(s.runs, hasLength(2));
       expect(s.runs.last['apiCalls'], 2);
-      expect(_assetFiles(tmp), _generatedFiles(), reason: 'nothing written in assets/: only the pictures copied with the season');
+      expect(_assetFiles(tmp), isEmpty, reason: 'nothing written in assets/ by a generating run');
     });
 
     test('a pose drawn from its base: the base first, then the pose through images/edits with the base\'s picture', () async {
@@ -398,8 +401,9 @@ void main() {
       final order = plan.schedule!.order;
       expect(order, hasLength(63));
       final drawn = plan.assets.where((a) => a.references.isNotEmpty).toList();
-      expect(drawn, hasLength(14));
-      expect(drawn.expand((a) => a.references), hasLength(15));
+      // 13 since the Rome integration: Livia's drawing is drawn on paper, not from the stone.
+      expect(drawn, hasLength(13));
+      expect(drawn.expand((a) => a.references), hasLength(14));
       for (final a in drawn) {
         for (final r in a.references) {
           expect(order.indexOf(r), lessThan(order.indexOf(a.assetId)), reason: '$r before ${a.assetId}');
@@ -489,9 +493,13 @@ void main() {
       final log = <String>[];
       // A work folder with no state (a dry run creates nothing): the verdict of a
       // first run, whatever the repository's own asset_work holds.
+      // And no picture in assets/: Rome's are all there since the Rome
+      // integration, and a picture in the game is never made again.
+      final empty = Directory.systemTemp.createTempSync('asset_pipeline_empty');
+      addTearDown(() => empty.deleteSync(recursive: true));
       final p = AssetPipeline(
         plan: plan,
-        studio: ImageStudio(api: api, editApi: api, findKey: () => null, log: log.add),
+        studio: ImageStudio(api: api, editApi: api, findKey: () => null, log: log.add, root: empty.path),
         work: 'build/asset_pipeline_test_no_state',
         log: log.add,
       );
@@ -537,8 +545,119 @@ void main() {
       expect(await AssetPipeline(plan: plan, studio: ImageStudio(api: api, editApi: api, findKey: () => null, log: log.add), log: log.add).run(), 0);
       expect(api.calls, 0);
       expect(_listing(Directory('content_pipeline')), before);
-      expect(log.join('\n'), contains('14 drawn from references'));
+      expect(log.join('\n'), contains('13 drawn from references'));
     });
+  });
+
+  group('into the game, and across machines (the Rome integration)', intoTheGame);
+}
+
+/// The Rome integration: pictures into the game (`--apply`), and a machine
+/// whose work folder is not the one that made them (`--doctor`).
+void intoTheGame() {
+  const seasonDir = 'content_pipeline/seasons/s3_rome';
+  const manifest = '$seasonDir/assets.manifest.json';
+  const work = 'content_pipeline/asset_work/s3_rome';
+  const cover = 's3_rome.asset.cover', map = 's3_rome.asset.city_map';
+  const coverFile = 'assets/seasons/season_03_rome/cover/season3_cover_rome.png';
+
+  late Directory tmp;
+  late _FakeApi api;
+  late List<String> log;
+  setUp(() {
+    tmp = _copySeason(seasonDir);
+    File('${tmp.path}/pubspec.yaml').writeAsStringSync('flutter:\n  assets:\n    - assets/shared/\n    - assets/seasons/season_03_rome/locations/\n    # a note\n');
+    api = _FakeApi();
+    log = [];
+  });
+  tearDown(() => tmp.deleteSync(recursive: true));
+
+  AssetPipeline pipeline() => _pipeline(AssetPlan.load(manifest, root: tmp.path), api, tmp.path, log, 'sk-test-0123456789abcdefSECRET');
+  PipelineState state() => PipelineState.load('${tmp.path}/$work/pipeline_state.json', 's3_rome');
+  Map<String, dynamic> manifestOf(String id) =>
+      ((jsonDecode(File('${tmp.path}/$manifest').readAsStringSync()) as Map)['assets'] as List).cast<Map<String, dynamic>>().singleWhere((a) => a['assetId'] == id);
+
+  test('--apply: each validated picture copied into assets/ (checked), its manifest status, its folder in pubspec.yaml; again: nothing changes', () async {
+    expect(await pipeline().run(generate: true, maxBudget: 1, maxCalls: 2, only: {cover, map}), 0);
+    expect(File('${tmp.path}/$coverFile').existsSync(), isFalse, reason: 'a generating run writes nothing in assets/');
+    expect(pipeline().apply(), 0);
+    final made = state().of(cover).game!;
+    expect(File('${tmp.path}/$coverFile').readAsBytesSync(), File('${tmp.path}/${made.path}').readAsBytesSync());
+    expect(manifestOf(cover)['status'], 'generated');
+    expect(manifestOf('s3_rome.asset.prologue')['status'], 'planned', reason: 'not made: left as it was');
+    final pubspec = File('${tmp.path}/pubspec.yaml').readAsStringSync();
+    expect(pubspec, contains('    - assets/seasons/season_03_rome/cover/\n'));
+    expect(pubspec, contains('    - assets/seasons/season_03_rome/locations/map/\n'));
+    expect(pubspec.indexOf('season_03_rome/cover/'), greaterThan(pubspec.indexOf('season_03_rome/locations/')), reason: 'after its season\'s folders');
+    expect(pubspec.indexOf('season_03_rome/cover/'), lessThan(pubspec.indexOf('# a note')));
+    expect(File('${tmp.path}/$coverFile.part').existsSync(), isFalse);
+    expect(pipeline().apply(), 0);
+    expect(File('${tmp.path}/pubspec.yaml').readAsStringSync(), pubspec, reason: 'never listed twice');
+  });
+
+  test('--apply never writes over another picture: a CONFLICT, left as it is', () async {
+    expect(await pipeline().run(generate: true, maxBudget: 1, maxCalls: 1, only: {cover}), 0);
+    File('${tmp.path}/$coverFile')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(_png(10, 10));
+    expect(pipeline().apply(), 1);
+    expect(log.join('\n'), contains('CONFLICT s3_rome.asset.cover'));
+    expect(File('${tmp.path}/$coverFile').readAsBytesSync(), _png(10, 10));
+    expect(manifestOf(cover)['status'], 'planned');
+  });
+
+  test('a picture in assets/ that this machine never made is never made again; --doctor --fix records it', () async {
+    File('${tmp.path}/$coverFile')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(_png(1024, 1536));
+    expect(await pipeline().run(generate: true, maxBudget: 1, maxCalls: 2, only: {cover, map}), 0);
+    expect(api.calls, 1, reason: 'the map only');
+    expect(log.join('\n'), contains('in game  s3_rome.asset.cover'));
+    expect(state().statusOf(cover), AssetStatus.planned);
+    log.clear();
+    expect(pipeline().doctor(), 1);
+    expect(log.join('\n'), contains('adopt    s3_rome.asset.cover'));
+    expect(pipeline().doctor(fix: true), 1, reason: 'the map still waits for --apply');
+    expect(log.join('\n'), contains('adopted  s3_rome.asset.cover'));
+    final r = state().of(cover);
+    expect(r.status, AssetStatus.validated);
+    expect(File('${tmp.path}/${r.raw!.path}').readAsBytesSync(), _png(1024, 1536), reason: 'its picture a copy of the game\'s');
+  });
+
+  test('a work folder that lost its picture: put back from the identical game copy, nothing made again', () async {
+    expect(await pipeline().run(generate: true, maxBudget: 1, maxCalls: 1, only: {cover}), 0);
+    expect(pipeline().apply(only: {cover}), 0);
+    final raw = File('${tmp.path}/${state().of(cover).raw!.path}');
+    final bytes = raw.readAsBytesSync();
+    raw.deleteSync();
+    log.clear();
+    expect(await pipeline().run(generate: true, maxBudget: 1, maxCalls: 1, only: {cover}), 0);
+    expect(api.calls, 1, reason: 'not made again');
+    expect(log.join('\n'), contains('restored s3_rome.asset.cover'));
+    expect(raw.readAsBytesSync(), bytes);
+    expect(state().statusOf(cover), AssetStatus.validated);
+  });
+
+  test('--doctor: a game copy that is another picture than this machine made, CONFLICT, never written over', () async {
+    expect(await pipeline().run(generate: true, maxBudget: 1, maxCalls: 1, only: {cover}), 0);
+    File('${tmp.path}/$coverFile')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(_png(10, 10));
+    log.clear();
+    expect(pipeline().doctor(fix: true), 1);
+    expect(log.join('\n'), contains('CONFLICT s3_rome.asset.cover'));
+    expect(File('${tmp.path}/$coverFile').readAsBytesSync(), _png(10, 10));
+    expect(state().of(cover).raw!.path, isNot(coverFile), reason: 'this machine\'s picture kept as it was');
+  });
+
+  test('a picture the manifest says is in the game, missing here: refused by the manifest\'s own check, nothing done', () async {
+    final json = jsonDecode(File('${tmp.path}/$manifest').readAsStringSync()) as Map;
+    (json['assets'] as List).cast<Map>().singleWhere((a) => a['assetId'] == map)['status'] = 'generated';
+    File('${tmp.path}/$manifest').writeAsStringSync(jsonEncode(json));
+    expect(pipeline().doctor(fix: true), 2);
+    expect(log.join('\n'), contains('asset_file_missing'));
+    expect(await pipeline().run(generate: true, maxBudget: 1, maxCalls: 1, only: {map}), 2);
+    expect(api.calls, 0);
   });
 }
 
@@ -556,26 +675,27 @@ AssetPipeline _pipeline(AssetPlan plan, _FakeApi api, String root, List<String> 
   return AssetPipeline(plan: plan, studio: studio, log: log.add, now: now);
 }
 
-/// The season's folder copied under a new temporary root, with the pictures
-/// its manifest marks `generated` (in `assets/` since STEP 3-15A).
+/// The season's folder copied under a new temporary root as a season whose
+/// pictures are still to be made: every picture of its manifest `planned`,
+/// none in `assets/`. Rome is drawn whole since the Rome integration, and a
+/// picture in `assets/` is never made again: the pipeline's own runs are
+/// tried on a season not drawn yet.
 Directory _copySeason(String seasonDir) {
   final tmp = Directory.systemTemp.createTempSync('asset_pipeline');
-  for (final rel in [
-    for (final f in Directory(seasonDir).listSync(recursive: true).whereType<File>()) f.path.replaceAll(r'\', '/'),
-    ..._generatedFiles(),
-  ]) {
+  for (final f in Directory(seasonDir).listSync(recursive: true).whereType<File>()) {
+    final rel = f.path.replaceAll(r'\', '/');
     File('${tmp.path}/$rel')
       ..createSync(recursive: true)
-      ..writeAsBytesSync(File(rel).readAsBytesSync());
+      ..writeAsBytesSync(f.readAsBytesSync());
   }
+  final manifestFile = File('${tmp.path}/$seasonDir/assets.manifest.json');
+  final json = jsonDecode(manifestFile.readAsStringSync()) as Map;
+  for (final a in (json['assets'] as List).cast<Map>()) {
+    a['status'] = 'planned';
+  }
+  manifestFile.writeAsStringSync(jsonEncode(json));
   return tmp;
 }
-
-/// The game files of the Rome manifest's `generated` pictures.
-Set<String> _generatedFiles() => {
-  for (final a in (jsonDecode(File('content_pipeline/seasons/s3_rome/assets.manifest.json').readAsStringSync()) as Map)['assets'] as List)
-    if ((a as Map)['status'] == 'generated') a['outputPath'] as String,
-};
 
 /// The files under [root]'s `assets/`, from [root].
 Set<String> _assetFiles(Directory root) {

@@ -11,6 +11,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
 import '../../../data/mock/season1/season1_sounds.dart';
 import '../../../data/models/mission.dart';
+import '../../../widgets/display_sized_image.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/ink_icon.dart';
 import '../../../widgets/art_assets.dart';
@@ -734,7 +735,7 @@ class _ImageTile extends StatelessWidget {
                   // be at their edge.
                   final file? => ColoredBox(
                       color: AppColors.ink,
-                      child: Image.asset(file, fit: BoxFit.contain, excludeFromSemantics: true),
+                      child: DisplaySizedImage(file, fit: BoxFit.contain, excludeFromSemantics: true),
                     ),
                   null => LandmarkArt(artwork, borderRadius: 2, showName: false),
                 },

@@ -51,6 +51,7 @@ import '../../widgets/place_art.dart';
 import '../../widgets/letter_card.dart';
 import '../../widgets/paper.dart';
 import '../../widgets/paper_background.dart';
+import '../../widgets/scroll_more_cue.dart';
 import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game/scoring.dart';
@@ -1668,6 +1669,8 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
               wrongPulse: _wrongPulse,
               onHint: () => _showHint(m),
               onReread: () => _rereadLetter(m),
+              // A picture choice's last pictures may be below the fold.
+              moreCue: clock == null && m.type == MissionType.imageChoice,
               child: clock == null ? _questionFor(m) : _clockFor(m, clock),
             ),
           };
@@ -2089,9 +2092,14 @@ class _PuzzleStage extends StatelessWidget {
     required this.onHint,
     required this.onReread,
     required this.child,
+    this.moreCue = false,
   });
 
   final Mission mission;
+
+  /// Whether a MORE BELOW cue says the page goes on under the fold (a
+  /// picture choice on a small phone: [ScrollMoreCue]).
+  final bool moreCue;
 
   /// The heading in place of the mission's question, when the puzzle is
   /// played another way than the question says (a clock to set, not a
@@ -2109,7 +2117,7 @@ class _PuzzleStage extends StatelessWidget {
     // From the heading to Reread Letter and the tip, one group: centred
     // under the bar when it fits (whatever the puzzle's size), scrolled from
     // the top when it does not — a small phone, large text, the keyboard up.
-    return CenteredScroll(
+    final page = CenteredScroll(
       padding: _stagePadding,
       children: [
         Text(
@@ -2149,6 +2157,7 @@ class _PuzzleStage extends StatelessWidget {
         ),
       ],
     );
+    return moreCue ? ScrollMoreCue(paper: AppColors.paper, child: page) : page;
   }
 }
 

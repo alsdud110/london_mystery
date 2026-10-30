@@ -7,6 +7,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
 import '../../../data/models/case_talk.dart';
 import '../../../data/models/mission.dart' show Evidence;
+import '../../../widgets/display_sized_image.dart';
 import '../../../widgets/evidence_card.dart' show EvidencePicture, EvidenceThumb;
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
@@ -281,9 +282,10 @@ class _Portrait extends StatelessWidget {
     return Semantics(
       image: true,
       label: label,
-      child: Image.asset(
+      // Decoded at the size it is shown (a 1024 × 1536 portrait, never all of it).
+      child: DisplaySizedImage(
         file,
-        key: const ValueKey('case-talk-portrait'),
+        imageKey: const ValueKey('case-talk-portrait'),
         fit: BoxFit.contain,
         alignment: Alignment.bottomCenter,
         errorBuilder: (_, _, _) => const SizedBox.shrink(),

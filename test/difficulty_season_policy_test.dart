@@ -479,7 +479,7 @@ void main() {
   });
 
   group('after London: READY FOR YOUR NEXT MYSTERY?', () {
-    test('25. Asked once London is complete and Paris not begun; never after Paris is begun; never after Paris (no next season)', () async {
+    test('25. Asked once London is complete and Paris not begun; never after Paris is begun; after Paris, for Rome (Season 3)', () async {
       final c = await containerWith(londonComplete(fixed: Difficulty.junior));
       expect(c.read(nextLevelQuestionProvider)?.season.id, SeasonIds.paris);
       final begun = await containerWith(parisUnderWay());
@@ -491,8 +491,8 @@ void main() {
       });
       expect(parisDone.read(selectedSeasonIdProvider), SeasonIds.paris);
       expect(parisDone.read(seasonLevelProvider(SeasonIds.paris))!.status, SeasonLevelStatus.completed);
-      expect(parisDone.read(nextLevelQuestionProvider), isNull, reason: 'no season after Paris');
-      expect(parisDone.read(levelSeasonProvider), isNull);
+      // Rome is the season after Paris since the Rome integration: asked as Paris was after London.
+      expect(parisDone.read(nextLevelQuestionProvider)?.season.id, SeasonIds.rome, reason: 'Rome follows Paris');
     });
 
     test('26, 28–29. KEEP MY LEVEL: not asked again (after a restart too); London\'s level as it was', () async {

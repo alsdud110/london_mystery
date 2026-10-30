@@ -65,7 +65,16 @@ void main() {
       // Case 08's M1 (the Hidden Sketch) and M3 (the Amendment Slip) are the
       // game's only missions played with a recall (2026-10-23).
       const recalling = {'s2_ep08_m1': 's2_ep02_e3', 's2_ep08_m3': 's2_ep07_e3'};
-      for (final e in inGame) {
+      // A season made from its plans recalls as its plans say (clueInputs):
+      // only evidence of an earlier case, or of its own, of the same season.
+      for (final e in inGame.where((e) => !handMadeSeason(e.seasonId))) {
+        for (final m in e.allMissions.where((m) => m.recall != null)) {
+          final owner = inGame.firstWhere((x) => x.allEvidence.any((v) => v.id == m.recall!.evidenceId));
+          expect(owner.seasonId, e.seasonId, reason: m.id);
+          expect(owner.number, lessThanOrEqualTo(e.number), reason: '${m.id} recalls what was found before');
+        }
+      }
+      for (final e in inGame.where((e) => handMadeSeason(e.seasonId))) {
         for (final m in e.allMissions) {
           if (recalling[m.id] case final evidence?) {
             expect(m.recall?.evidenceId, evidence, reason: m.id);

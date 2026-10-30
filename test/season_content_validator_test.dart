@@ -78,7 +78,8 @@ void main() {
     writtenLevels: writtenLevels,
   );
 
-  List<String> issues(SeasonContent s) => [for (final i in SeasonContentValidator.validateAll([...SeasonCatalog.all, s])) '$i'];
+  // The made-up season is Season 3 after London and Paris; Rome (generated) is checked whole above.
+  List<String> issues(SeasonContent s) => [for (final i in SeasonContentValidator.validateAll([...SeasonCatalog.all.where((c) => handMadeSeason(c.id)), s])) '$i'];
 
   test('a well-formed new season passes with no code of its own', () {
     expect(issues(season()), isEmpty);

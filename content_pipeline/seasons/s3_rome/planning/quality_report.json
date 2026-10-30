@@ -32,12 +32,12 @@
       "characters": 10,
       "objects": 26,
       "reusedAcrossCases": 22,
-      "planned": 16,
-      "generated": 47,
+      "planned": 3,
+      "generated": 60,
       "shownBySeasonPlaces": 18,
       "model": "gpt-image-2",
       "quality": "medium",
-      "estimatedUsd": 4.134615,
+      "estimatedUsd": 4.0722,
       "estimateNote": "List prices of 2026-10-29 (image_pricing.dart), an estimate before any call, each reference picture priced as 8000 image input tokens; nothing was sent."
     },
     "generator": {
@@ -363,7 +363,7 @@
       "code": "asset_pending",
       "where": "assets.manifest.json $.assets",
       "source": "assets",
-      "message": "16 of 63 pictures planned, not made yet (no API was called)"
+      "message": "3 of 63 pictures planned, not made yet (no API was called)"
     },
     {
       "level": "INFO",

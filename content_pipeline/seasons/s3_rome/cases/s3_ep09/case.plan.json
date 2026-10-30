@@ -216,7 +216,7 @@
         "skill": "grammarInContext",
         "expressions": [
           "Between the Forum and the market, there is a round temple.",
-          "Just before the owl square, it passes a long market."
+          "Just before the owl square, the street passes a long market."
         ]
       },
       "play": {
@@ -300,8 +300,8 @@
         "objective": "이탈리아어-영어 단어 목록을 이용해 '부엉이 광장'의 오늘 이름을 찾아 쓴다.",
         "skill": "vocabulary",
         "expressions": [
-          "Civetta means owl.",
-          "The square is still here today."
+          "CIVETTA = OWL",
+          "Find the owl square on a map of today."
         ]
       },
       "play": {

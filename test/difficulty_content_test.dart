@@ -386,7 +386,14 @@ void main() {
           final l = SeasonCatalog.learning(m);
           if (l == null) continue;
           final recalled = l.recallFrom == null ? null : missions[l.recallFrom];
-          expect(LearningCheck.unmatched(l, m, recalled: recalled), isEmpty, reason: '${m.id} at ${level.name}');
+          // Its scenes too: a season made from its plans (Rome on) says much
+          // of its English in its witnesses, talks and look rounds.
+          final scenes = LearningCheck.sceneText(
+            dialogue: SeasonCatalog.dialogue(m),
+            talk: SeasonCatalog.talkMission(m),
+            explore: SeasonCatalog.explore(m),
+          );
+          expect(LearningCheck.unmatched(l, m, recalled: recalled, scenes: scenes), isEmpty, reason: '${m.id} at ${level.name}');
         }
       }
     });

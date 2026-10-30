@@ -13,7 +13,6 @@ import 'package:world_mystery/core/router/app_router.dart';
 import 'package:world_mystery/core/utils/answer_checker.dart';
 import 'package:world_mystery/data/models/game_progress.dart';
 import 'package:world_mystery/data/models/season_progress.dart';
-import 'package:world_mystery/data/repositories/episode_repository.dart';
 import 'package:world_mystery/features/game/game_controller.dart';
 import 'package:world_mystery/widgets/art_assets.dart';
 import 'package:world_mystery/widgets/clue_card.dart';
@@ -34,7 +33,7 @@ import 'title_screen_test.dart' show capture;
 /// ([RoyalBoxPicture]) feeds all three. The locks' symbol ids, the clues'
 /// numbers and the final's answer (7924) stay as they were.
 void main() {
-  final season = MockEpisodeRepository.bundled();
+  final season = handMadeBundled(); // London and Paris: a season made from its plans has its own (generated_seasons_test.dart)
   final ep01 = season.firstWhere((e) => e.id == 'ep01');
   const order = ['clock', 'train', 'park', 'museum'];
   const names = {'clock': 'CLOCK', 'train': 'TRAIN', 'park': 'SWAN', 'museum': 'STONE'};

@@ -117,9 +117,12 @@ void main() {
 
       await reveal(t, file(SeasonIds.paris));
       expect(find.text('SEASON TWO'), findsOneWidget);
-      expect(find.text('SEALED FILE'), findsOneWidget);
-      expect(find.text('SEALED'), findsOneWidget);
+      // Its own file (Rome's, after it, is sealed too: by Paris).
+      expect(find.descendant(of: file(SeasonIds.paris), matching: find.text('SEALED FILE')), findsOneWidget);
+      expect(find.descendant(of: file(SeasonIds.paris), matching: find.text('SEALED')), findsOneWidget);
       expect(find.text('Solve Shadows over London to unseal this file.'), findsOneWidget);
+      await reveal(t, file(SeasonIds.rome));
+      expect(find.descendant(of: file(SeasonIds.rome), matching: find.text('Solve the season before it to unseal this file.')), findsOneWidget);
       final text = screenText(t);
       for (final spoiler in ['paris', 'stands still', 'stolen hour', 'eiffel']) {
         expect(text, isNot(contains(spoiler)), reason: 'Season 1 ends on PARIS: nothing tells it first');
@@ -136,7 +139,7 @@ void main() {
       expect(find.text('CURRENT FILE'), findsOneWidget);
       expect(find.text('SOLVED'), findsNothing);
       await reveal(t, file(SeasonIds.paris));
-      expect(find.text('SEALED FILE'), findsOneWidget);
+      expect(find.descendant(of: file(SeasonIds.paris), matching: find.text('SEALED FILE')), findsOneWidget);
       await wait(t, const Duration(seconds: 3));
     });
 
@@ -149,14 +152,15 @@ void main() {
       await reveal(t, file(SeasonIds.paris));
       expect(find.text('PARIS STANDS STILL'), findsOneWidget);
       expect(find.text('ONE STOLEN HOUR'), findsOneWidget);
-      expect(find.text('COMING SOON'), findsOneWidget);
-      expect(find.text('SEALED FILE'), findsNothing);
+      expect(find.descendant(of: file(SeasonIds.paris), matching: find.text('COMING SOON')), findsOneWidget);
+      expect(find.descendant(of: file(SeasonIds.paris), matching: find.text('SEALED FILE')), findsNothing);
       expect(find.text('BEGIN SEASON TWO'), findsNothing, reason: 'not released yet');
       await wait(t, const Duration(seconds: 3));
     });
 
     testWidgets('three seasons or more: the archives scroll to every file', (t) async {
-      const third = Season(id: 's3_test', number: 3, title: 'A Third City', tagline: 'ONE MORE', prologue: SeasonPrologue(), outro: [], figures: []);
+      // After Rome (Season 3 since the Rome integration): a fourth.
+      const third = Season(id: 's4_test', number: 4, title: 'A Fourth City', tagline: 'ONE MORE', prologue: SeasonPrologue(), outro: [], figures: []);
       await pumpApp(t, seasonSaves(0), extra: [
         seasonsProvider.overrideWithValue([
           for (final s in SeasonCatalog.all) s.season,
@@ -164,10 +168,12 @@ void main() {
         ]),
       ]);
       await openArchive(t);
-      expect(file('s3_test').hitTestable(), findsNothing, reason: 'below the fold');
-      await reveal(t, file('s3_test'));
+      expect(file('s4_test').hitTestable(), findsNothing, reason: 'below the fold');
+      await reveal(t, file(SeasonIds.rome));
       expect(find.text('SEASON THREE'), findsOneWidget);
-      expect(find.text('A THIRD CITY'), findsNothing, reason: 'sealed: its season before is not solved');
+      await reveal(t, file('s4_test'));
+      expect(find.text('SEASON FOUR'), findsOneWidget);
+      expect(find.text('A FOURTH CITY'), findsNothing, reason: 'sealed: its season before is not solved');
       expect(t.takeException(), isNull);
       await wait(t, const Duration(seconds: 3));
     });
@@ -411,12 +417,16 @@ void main() {
     final c = ProviderContainer(overrides: await testOverridesFor(await SharedPreferences.getInstance()));
     addTearDown(c.dispose);
     final files = c.read(seasonFilesProvider);
-    expect([for (final f in files) f.season.id], [SeasonIds.london, SeasonIds.paris]);
+    expect([for (final f in files) f.season.id], [SeasonIds.london, SeasonIds.paris, SeasonIds.rome]);
+    // Rome, two files on, never names Paris while London is under way.
+    expect(files.last.unsealNote, 'Solve the season before it to unseal this file.');
+    expect(files[1].unsealNote, 'Solve Shadows over London to unseal this file.');
     expect(files.first.state, SeasonFileState.inProgress);
     expect(files.first.availability.solvedCount, 4);
     expect(files.first.current, isTrue);
     expect(files.last.state, SeasonFileState.sealed);
-    expect(files.last.before!.id, SeasonIds.london);
+    expect(files[1].before!.id, SeasonIds.london);
+    expect(files.last.before!.id, SeasonIds.paris);
   });
 }
 

@@ -156,8 +156,18 @@ class _SeasonScreenState extends ConsumerState<SeasonScreen> with TickerProvider
     if (_leave.isAnimating || _leave.isCompleted) return;
     if (!_still) await _leave.forward();
     if (!mounted) return;
-    // Each season's own opening (Season 2's has its own page).
-    context.go(ref.read(seasonInfoProvider).id == SeasonIds.paris ? Routes.parisPrologue : Routes.prologue);
+    // Each season's own opening (Season 2's has its own page). The opening
+    // page is London's (its night, its map): a season made from its plans
+    // (Rome on) has none, and begins at its Case 01's own story intro.
+    final id = ref.read(seasonInfoProvider).id;
+    if (id == SeasonIds.london) {
+      context.go(Routes.prologue);
+    } else if (id == SeasonIds.paris) {
+      context.go(Routes.parisPrologue);
+    } else {
+      ref.read(seasonProvider.notifier).markPrologueSeen();
+      SeasonActions.investigate(context, ref, 0);
+    }
   }
 
   @override

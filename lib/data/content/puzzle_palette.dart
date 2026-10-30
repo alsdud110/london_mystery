@@ -722,7 +722,17 @@ abstract final class PuzzlePalette {
           source: '$_w/case_talk.dart',
           table: 'talkMissions',
           model: 'TalkMission',
-          missionTypes: {MissionType.examine},
+          // Around any puzzle of the mission (Paris's examine; a season made
+          // from its plans, Rome on, around its text puzzles and look rounds).
+          missionTypes: {
+            MissionType.examine,
+            MissionType.multipleChoice,
+            MissionType.imageChoice,
+            MissionType.sequence,
+            MissionType.wordInput,
+            MissionType.letterLock,
+            MissionType.finalCode,
+          },
           surfaces: _m,
           role: PuzzleBindingRole.optional,
           note: "A talk before and/or after another puzzle of the mission (the puzzle's answer is the mission's).",

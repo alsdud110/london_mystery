@@ -66,7 +66,8 @@ Future<void> main(List<String> args) async {
     exit(64);
   }
   if (target != 'sandbox') {
-    stderr.writeln('--target $target: only --target sandbox is made (a season of the game is registered by hand)');
+    stderr.writeln('--target $target: cases alone are made for the sandbox only; '
+        'a season of the game is made whole: dart run tool/season_gen/generate_season.dart --season <season.plan.json> --target game');
     exit(64);
   }
   // The season's other written cases are made with it (generate_season.dart):
@@ -164,7 +165,7 @@ class GenerateFailure implements Exception {
 
 /// What the plans make: the files by name (the manifest last), not yet written.
 class Generated {
-  const Generated(this.seasonId, this.files, this.notes, {this.slice = false});
+  const Generated(this.seasonId, this.files, this.notes, {this.slice = false, this.target = 'sandbox'});
 
   final String seasonId;
   final Map<String, String> files;
@@ -175,7 +176,11 @@ class Generated {
   /// Cases from the middle of the season, made alone (STEP 3-15A).
   final bool slice;
 
-  String get defaultDir => 'test/sandbox/generated/$seasonId${slice ? '_slice' : ''}';
+  /// `sandbox` (played by the tests only) or `game` (the season in the app,
+  /// `SeasonCatalog.all`, through [GameRegistry]).
+  final String target;
+
+  String get defaultDir => target == 'game' ? '${GameRegistry.dir}/$seasonId' : 'test/sandbox/generated/$seasonId${slice ? '_slice' : ''}';
 }
 
 abstract final class CaseGenerator {
@@ -194,12 +199,21 @@ abstract final class CaseGenerator {
   /// cases in play order, none missing between them (a case before them is
   /// opened by the test), and only the places their missions use are made
   /// and must be on disk: a first playable case before the season is drawn.
+  ///
+  /// With [target] `game` (the Rome integration), the season whole (never a
+  /// slice) as the app plays it: the same files, and beside them its
+  /// `SeasonContent` (`<seasonId>_content.g.dart`) and its art
+  /// (`<seasonId>_art.g.dart`: its map, cover, World Map city and evidence
+  /// pictures), written under `lib/data/generated/<seasonId>/` and listed by
+  /// [GameRegistry]. It needs the season's map planned and drawn (`art.map`):
+  /// a season without its map can never be entered.
   static Generated sandbox({
     required String seasonPath,
     required List<String> casePaths,
     String root = '.',
     String schemaDir = 'tool/season_gen/schema',
     bool slice = false,
+    String target = 'sandbox',
   }) {
     final schemas = SchemaSet.load(schemaDir);
     final lines = <String>[];
@@ -208,6 +222,9 @@ abstract final class CaseGenerator {
       lines.add('FAILED  $path');
       lines.addAll([for (final e in errors) '  error    $e']);
     }
+
+    if (target != 'sandbox' && target != 'game') throw GenerateFailure(['  error    [target_unknown] --target $target: sandbox or game']);
+    if (target == 'game' && slice) throw GenerateFailure(['  error    [game_slice] a season of the game is made whole, never a slice']);
 
     // 1. The plans as validate_plan checks them.
     final seasonCheck = check(seasonPath, schemas);
@@ -281,6 +298,26 @@ abstract final class CaseGenerator {
     if (lines.isNotEmpty) throw GenerateFailure(lines);
     bool onDisk(String file) => File('$root/$file').existsSync();
 
+    // 4b. The game: every case of the season, its map drawn and measured on
+    // the very file, its cover on disk when planned.
+    if (target == 'game') {
+      final art = season.art;
+      final all = season.caseIds;
+      if (plans.length != all.length) {
+        failed(seasonPath, ['[game_cases_missing] the game takes the season whole: ${all.length} cases, ${plans.length} given']);
+      }
+      final map = art?.map;
+      if (map == null) {
+        failed(seasonPath, ['[game_map_missing] \$.art.map: a season without its map can never be entered (SeasonAvailability)']);
+      } else if (!onDisk(map.file)) {
+        failed(seasonPath, ['[game_map_missing] \$.art.map.file: ${map.file} is not on disk']);
+      } else if (map.measuredOn case final hash? when hash != ContentHash.ofBytes(File('$root/${map.file}').readAsBytesSync())) {
+        failed(seasonPath, ['[map_remeasure] \$.art.map.measuredOn: ${map.file} is not the file its landmarks were measured on']);
+      }
+      if (art?.cover case final c? when !onDisk(c.file)) failed(seasonPath, ['[game_cover_missing] \$.art.cover.file: ${c.file} is not on disk']);
+      if (lines.isNotEmpty) throw GenerateFailure(lines);
+    }
+
     // 5. The approvals: a sandbox is made from drafts too, and says so.
     var approved = true;
     for (final (_, p) in plans) {
@@ -288,11 +325,12 @@ abstract final class CaseGenerator {
         final r = SeasonApprovals(seasonDir).readiness(p.caseId);
         if (!r.ready) {
           approved = false;
-          notes.add('${p.caseId} is not approved (${r.blockers.join('; ')}): sandbox content only');
+          notes.add('${p.caseId} is not approved (${r.blockers.join('; ')}): '
+              '${target == 'game' ? 'in the game as drafted (approve with tool/season_gen/approve.dart)' : 'sandbox content only'}');
         }
       } on Object catch (e) {
         approved = false;
-        notes.add('${p.caseId}: the approvals could not be read ($e): sandbox content only');
+        notes.add('${p.caseId}: the approvals could not be read ($e): ${target == 'game' ? 'in the game as drafted' : 'sandbox content only'}');
       }
     }
 
@@ -302,13 +340,22 @@ abstract final class CaseGenerator {
       '${season.seasonId}_season.g.dart': _seasonFile(season, ContentHash.ofJson(seasonJson), places),
       for (final (path, p) in plans) '${p.caseId}.g.dart': _caseFile(p, season, relative[p.caseId]!, ContentHash.ofJson(PlanFiles.readJson(path)), onDisk),
       '${season.seasonId}_cases.g.dart': _casesFile(season, [for (final (_, p) in plans) p]),
+      if (target == 'game') ...{
+        '${season.seasonId}_content.g.dart': _contentFile(season),
+        '${season.seasonId}_art.g.dart': _artFile(
+          season,
+          [for (final (_, p) in plans) p],
+          SeasonEvidencePictures.of('$seasonDir/assets.manifest.json', [for (final (_, p) in plans) p], onDisk),
+        ),
+      },
     };
     final manifest = <String, Object?>{
       'generator': 'generate_case.dart',
       'generatorVersion': generatorVersion,
-      'target': 'sandbox',
+      'target': target,
       if (slice) 'slice': true,
       'seasonId': season.seasonId,
+      if (target == 'game') 'seasonNumber': season.number,
       'cases': [for (final (_, p) in plans) p.caseId],
       'approved': approved,
       'inputs': {
@@ -318,7 +365,115 @@ abstract final class CaseGenerator {
       'outputs': {for (final MapEntry(:key, :value) in files.entries) key: ContentHash.ofBytes(utf8.encode(value))},
     };
     files[manifestName] = PlanFiles.encode(manifest);
-    return Generated(season.seasonId, files, notes, slice: slice);
+    return Generated(season.seasonId, files, notes, slice: slice, target: target);
+  }
+
+  // ── The game: the season's content and art ─────────────────────────────
+
+  /// The season as the app plays it (`SeasonCatalog.all`, by [GameRegistry]).
+  static String _contentFile(SeasonPlan s) {
+    final name = constName(s.seasonId);
+    final tables = [...sceneTables.keys, ...storyTables.keys];
+    return '$generatedHeader\n// source: season.plan.json and its cases (in play order)\n\n'
+        "import 'package:world_mystery/data/mock/season_catalog.dart' show SeasonContent;\n"
+        '\n'
+        "import '${s.seasonId}_cases.g.dart';\n"
+        "import '${s.seasonId}_season.g.dart';\n"
+        '\n'
+        '/// Season ${s.number}, ${s.title}: its content as the game plays it, released\n'
+        '/// (`SeasonCatalog.all`, listed by `generated_seasons.g.dart`).\n'
+        'final ${name}Content = SeasonContent(\n'
+        '  info: ${name}InfoJson,\n'
+        '  episodes: ${name}Episodes,\n'
+        '  places: ${name}Places,\n'
+        '  storyGreeting: ${name}StoryGreeting,\n'
+        '  learning: ${name}Learning,\n'
+        '  languageTopics: ${name}LanguageTopics,\n'
+        '  evidenceLinks: ${name}EvidenceLinks,\n'
+        '${[for (final t in tables) '  $t: $name${_suffix(t)},\n'].join()}'
+        ');\n';
+  }
+
+  /// The World Map artwork's pixel size (`ArtAssets.worldMap`): a city's
+  /// `mapAt` is planned in its pixels.
+  static const worldMapPixels = (1983, 793);
+
+  /// A landmark's group of places is pressed to this share of its height
+  /// when a full group would rise into the map's top margin (as Paris's
+  /// Montmartre): `MapWorld.topMargin` 0.15 + `MapWorld.groupRadius` 0.12.
+  static const _groupLow = 0.15 + 0.12;
+
+  /// The season's map, cover, World Map city and evidence pictures, as the
+  /// game's art tables take them (listed by `generated_season_art.g.dart`).
+  static String _artFile(SeasonPlan s, List<CasePlan> plans, Map<String, String> evidencePictures) {
+    final name = constName(s.seasonId);
+    final art = s.art!;
+    final map = art.map!;
+    String landmark(String locId) => '_${constName(locId)}';
+    final names = {for (final l in s.locations) l.locId: l.name};
+    final locOf = {for (final p in s.places) p.placeId: p.locId};
+    final b = StringBuffer()
+      ..write('$generatedHeader\n// source: season.plan.json art, assets.manifest.json\n\n')
+      ..write("import 'dart:ui' show Offset, Size;\n\n")
+      ..write("import 'package:flutter/painting.dart' show Alignment;\n")
+      ..write("import 'package:world_mystery/features/mission_map/map_world.dart' show MapLandmark, SeasonLandmark, SeasonMap;\n")
+      ..write("import 'package:world_mystery/features/world_map/world_cities.dart' show WorldCity;\n")
+      ..write("import 'package:world_mystery/widgets/art_assets.dart' show SeasonCover;\n\n")
+      ..write('// The landmarks drawn on the map, at the centre of each one\'s drawing,\n')
+      ..write('// measured on ${map.file}${map.measuredOn == null ? '' : ' (${map.measuredOn!.substring(0, 23)}…)'}.\n');
+    for (final l in map.landmarks) {
+      b.write("const ${landmark(l.locId)} = SeasonLandmark('${l.locId}', ${DartLiteral.of(names[l.locId])}, "
+          'Offset(${_n(l.at.x)} / ${map.width}, ${_n(l.at.y)} / ${map.height}));\n');
+    }
+    final low = [for (final l in map.landmarks) if (l.at.y / map.height < _groupLow) l.locId];
+    b
+      ..write('\n/// The Mission Map of season ${s.seasonId}: every mission at its place\'s landmark.\n')
+      ..write('const ${name}Map = SeasonMap(\n')
+      ..write("  artwork: '${map.file}',\n")
+      ..write('  pixels: Size(${map.width}, ${map.height}),\n')
+      ..write('  aspect: ${map.width} / ${map.height},\n')
+      ..write('  landmarks: [${[for (final l in map.landmarks) landmark(l.locId)].join(', ')}],\n')
+      ..write('  missionLandmarks: <String, MapLandmark>{\n');
+    for (final p in plans) {
+      for (final m in p.allMissions) {
+        b.write("    '${m.missionId}': ${landmark(locOf[m.placeId]!)},\n");
+      }
+    }
+    b
+      ..write('  },\n')
+      ..write(low.isEmpty ? '' : '  groupHeights: <MapLandmark, double>{${[for (final l in low) '${landmark(l)}: 0.6'].join(', ')}},\n')
+      ..write('  namesClearOfCurrent: true,\n')
+      ..write(');\n');
+    if (art.cover case final c?) {
+      String align(ScenePoint p) => 'Alignment(${_n(p.x)}, ${_n(p.y)})';
+      b
+        ..write('\n/// Its cover (portrait, no text) and how the screens frame it.\n')
+        ..write('const ${name}Cover = SeasonCover(\n')
+        ..write("  file: '${c.file}',\n")
+        ..write('  pixels: Size(${c.width}, ${c.height}),\n')
+        ..write('  archiveLook: ${align(c.archiveLook)},\n')
+        ..write('  crop: ${align(c.crop)},\n')
+        ..write('  push: ${align(c.push)},\n')
+        ..write(');\n');
+    }
+    if (art.worldCity case final w?) {
+      final (ww, wh) = worldMapPixels;
+      b
+        ..write('\n/// Its city on the World Map.\n')
+        ..write('const ${name}WorldCity = WorldCity(\n')
+        ..write("  id: '${w.cityId}',\n")
+        ..write('  name: ${DartLiteral.of(s.city)},\n')
+        ..write('  latitude: ${w.latitude},\n')
+        ..write('  longitude: ${w.longitude},\n')
+        ..write("  seasonId: '${s.seasonId}',\n")
+        ..write(w.mapAt == null ? '' : '  mapAt: Offset(${_n(w.mapAt!.x)} / $ww, ${_n(w.mapAt!.y)} / $wh),\n')
+        ..write(');\n');
+    }
+    b
+      ..write('\n/// Its evidence shown by a picture (`ArtAssets.evidencePictures`), by evidence id:\n')
+      ..write('/// each picture made for it (assets.manifest.json, on disk).\n')
+      ..write('const ${name}EvidencePictures = <String, String>${DartLiteral.of(evidencePictures)};\n');
+    return b.toString();
   }
 
   static String _slashes(String path) => path.replaceAll(r'\', '/');
@@ -862,5 +1017,107 @@ abstract final class GeneratedFiles {
       part.renameSync('$dir/$key');
     }
     return warnings;
+  }
+}
+
+/// A season's evidence shown by a picture (the Rome integration): each
+/// picture of its asset manifest made for an evidence of its cases (its
+/// `subject` an evidence id), its file on disk. One evidence, one picture.
+abstract final class SeasonEvidencePictures {
+  static Map<String, String> of(String manifestPath, List<CasePlan> plans, bool Function(String file) onDisk) {
+    final manifest = File(manifestPath);
+    if (!manifest.existsSync()) return const {};
+    final evidence = {
+      for (final p in plans)
+        for (final m in p.allMissions) m.clueOutputs.evidence,
+    };
+    final assets = ((jsonDecode(manifest.readAsStringSync()) as Map)['assets'] as List).cast<Map>();
+    final out = <String, String>{};
+    for (final a in assets) {
+      final subject = '${a['subject']}', file = '${a['outputPath']}';
+      if (evidence.contains(subject) && a['status'] == 'generated' && onDisk(file)) out.putIfAbsent(subject, () => file);
+    }
+    return Map.fromEntries(out.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+  }
+}
+
+/// The seasons of the game made from plans (the Rome integration):
+/// `lib/data/generated/<seasonId>/` each (`generate_season.dart --target
+/// game`), and in [dir] the two lists the game reads them by, made from
+/// the seasons' manifests there, in season order:
+///
+/// * `generated_seasons.g.dart`: their `SeasonContent`s (`SeasonCatalog.all`);
+/// * `generated_season_art.g.dart`: their maps (`SeasonMap.bySeason`),
+///   covers (`ArtAssets.seasonCovers`), World Map cities (`WorldCities.all`)
+///   and evidence pictures (`ArtAssets.evidencePictures`).
+///
+/// A new season of the game is these two lists made again: no line of the
+/// game written by hand.
+abstract final class GameRegistry {
+  static const dir = 'lib/data/generated';
+
+  /// The seasons whose game manifests are in [dir] (with [adding], one
+  /// being made now), as (season number, season id, its art file's names).
+  static List<(int, String, Set<String>)> seasons({String root = '.', Generated? adding}) {
+    final found = <String, (int, String, Set<String>)>{};
+    final base = Directory('$root/$dir');
+    if (base.existsSync()) {
+      for (final d in base.listSync().whereType<Directory>()) {
+        final m = File('${d.path}/$manifestName');
+        if (!m.existsSync()) continue;
+        final json = jsonDecode(m.readAsStringSync()) as Map;
+        if (json['target'] != 'game') continue;
+        final id = '${json['seasonId']}';
+        final art = File('${d.path}/${id}_art.g.dart');
+        found[id] = (json['seasonNumber'] as int, id, art.existsSync() ? _artNames(art.readAsStringSync(), id) : {});
+      }
+    }
+    if (adding != null) {
+      final json = jsonDecode(adding.files[manifestName]!) as Map;
+      found[adding.seasonId] = (json['seasonNumber'] as int, adding.seasonId, _artNames(adding.files['${adding.seasonId}_art.g.dart'] ?? '', adding.seasonId));
+    }
+    return found.values.toList()..sort((a, b) => a.$1.compareTo(b.$1));
+  }
+
+  /// Which of a season's art its art file declares (`Map`, `Cover`, `WorldCity`).
+  static Set<String> _artNames(String text, String seasonId) {
+    final name = CaseGenerator.constName(seasonId);
+    return {for (final part in ['Map', 'Cover', 'WorldCity']) if (text.contains('const $name$part = ')) part};
+  }
+
+  /// The two lists and their manifest, as [seasons] make them.
+  static Map<String, String> files(List<(int, String, Set<String>)> seasons) {
+    String imports(String suffix) => [for (final (_, id, _) in seasons) "import '$id/${id}_$suffix.g.dart';\n"].join();
+    String entries(String part, String Function(String id, String name) entry) =>
+        [for (final (_, id, art) in seasons) if (part.isEmpty || art.contains(part)) entry(id, CaseGenerator.constName(id))].join();
+    final contents = '$generatedHeader\n// source: $dir/*/generated.manifest.json (target game, in season order)\n\n'
+        "import 'package:world_mystery/data/mock/season_catalog.dart' show SeasonContent;\n\n"
+        '${imports('content')}\n'
+        '/// The seasons of the game made from their plans, in season order, after\n'
+        '/// London and Paris (`SeasonCatalog.all`).\n'
+        'final generatedSeasons = <SeasonContent>[\n${entries('', (id, n) => '  ${n}Content,\n')}];\n';
+    final art = '$generatedHeader\n// source: $dir/*/generated.manifest.json (target game, in season order)\n\n'
+        "import 'package:world_mystery/features/mission_map/map_world.dart' show SeasonMap;\n"
+        "import 'package:world_mystery/features/world_map/world_cities.dart' show WorldCity;\n"
+        "import 'package:world_mystery/widgets/art_assets.dart' show SeasonCover;\n\n"
+        '${imports('art')}\n'
+        '/// Their maps, by season id (`SeasonMap.bySeason`).\n'
+        "const generatedSeasonMaps = <String, SeasonMap>{\n${entries('Map', (id, n) => "  '$id': ${n}Map,\n")}};\n\n"
+        '/// Their covers, by season id (`ArtAssets.seasonCovers`).\n'
+        "const generatedSeasonCovers = <String, SeasonCover>{\n${entries('Cover', (id, n) => "  '$id': ${n}Cover,\n")}};\n\n"
+        '/// Their cities on the World Map (`WorldCities.all`): one already drawn\n'
+        '/// as coming soon takes its season.\n'
+        'const generatedWorldCities = <WorldCity>[\n${entries('WorldCity', (id, n) => '  ${n}WorldCity,\n')}];\n\n'
+        '/// Their evidence pictures, by evidence id (`ArtAssets.evidencePictures`).\n'
+        'const generatedEvidencePictures = <String, String>{\n${entries('', (id, n) => '  ...${n}EvidencePictures,\n')}};\n';
+    final files = {'generated_seasons.g.dart': contents, 'generated_season_art.g.dart': art};
+    final manifest = {
+      'generator': 'generate_case.dart',
+      'generatorVersion': generatorVersion,
+      'target': 'gameRegistry',
+      'seasons': [for (final (_, id, _) in seasons) id],
+      'outputs': {for (final MapEntry(:key, :value) in files.entries) key: ContentHash.ofBytes(utf8.encode(value))},
+    };
+    return {...files, manifestName: PlanFiles.encode(manifest)};
   }
 }

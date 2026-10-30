@@ -14,6 +14,9 @@ import 'package:world_mystery/widgets/ink_icon.dart';
 import 'package:world_mystery/widgets/landmark_art.dart';
 import 'package:world_mystery/widgets/place_art.dart';
 import 'package:world_mystery/widgets/symbol_icon.dart';
+import 'package:world_mystery/data/generated/generated_season_art.g.dart';
+
+import 'helpers.dart';
 
 /// The artwork replacement points: until a file is added, every picture
 /// looks exactly as it did; a file that is listed must exist; a missing
@@ -232,7 +235,7 @@ void main() {
   });
 
   test('each mission shows its own place: a room inside a landmark, else the landmark', () {
-    final m = {for (final e in MockEpisodeRepository.bundled()) for (final m in e.allMissions) m.id: m};
+    final m = {for (final e in handMadeBundled()) for (final m in e.allMissions) m.id: m};
     expect(PlaceArt.placeOf(m['ep03_m3']!), Artwork.greatCourt);
     expect(PlaceArt.placeOf(m['ep03_m2']!), Artwork.egyptRoom);
     expect(PlaceArt.sceneOf(m['ep03_m3']!), Artwork.greatCourt, reason: 'the mission page too');
@@ -276,7 +279,7 @@ void main() {
   });
 
   test('a scene picture (whose name plate shows) never names its own image-choice answer', () {
-    for (final e in MockEpisodeRepository.bundled()) {
+    for (final e in handMadeBundled()) {
       for (final m in e.allMissions.where((m) => m.type == MissionType.imageChoice)) {
         final answer = m.options.firstWhere((o) => o.id == m.answer).artwork;
         final scene = LandmarkArt.standIns[m.scene] ?? m.scene;
@@ -361,7 +364,8 @@ void main() {
   });
 
   test('evidence shows its real picture only where the picture agrees with it', () {
-    expect(ArtAssets.evidencePictures, {
+    // London's and Paris's (the seasons made from plans bring theirs: generated_seasons_test.dart).
+    expect({for (final MapEntry(:key, :value) in ArtAssets.evidencePictures.entries) if (!generatedEvidencePictures.containsKey(key)) key: value}, {
       'e01': ArtAssets.objects['letter'],
       'e02': ArtAssets.objects['key'],
       // The Pocket Watch is the Royal Box's clock picture (2026-10-19, requested).

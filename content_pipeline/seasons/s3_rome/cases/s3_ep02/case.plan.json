@@ -329,8 +329,8 @@
         "objective": "라벨의 made of 문장을 읽고 진짜 조각의 재료 marble을 글자 타일로 맞춘다.",
         "skill": "vocabulary",
         "expressions": [
-          "The real piece is made of stone.",
-          "It is carved in marble."
+          "What is the real piece made of?",
+          "Carved in marble about 1,800 years ago."
         ]
       },
       "play": {
@@ -438,7 +438,7 @@
       "skill": "grammarInContext",
       "expressions": [
         "First, walk down the street with the gelato shop.",
-        "Before the flower stall, walk across the market square.",
+        "Before the flower stall, walk across the big market square.",
         "Finally, find Box 7."
       ]
     },

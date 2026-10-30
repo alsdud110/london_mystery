@@ -37,7 +37,7 @@ void main() {
     });
 
     test('Season 1 keeps its own Discovery Moments', () {
-      for (final e in inGame.where((e) => !e.id.startsWith('s2_'))) {
+      for (final e in inGame.where((e) => e.seasonId == 's1_london')) {
         for (final m in e.missions) {
           final d = SeasonCatalog.discovery(m);
           final own = discoveryOf(m);

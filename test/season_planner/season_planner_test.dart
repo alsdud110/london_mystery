@@ -287,7 +287,7 @@ void main() {
     });
 
     test('a picture marked generated that is not on disk', () {
-      edit('assets.manifest.json', (m) => asset(m, 's3_rome.asset.cover')['status'] = 'generated');
+      edit('assets.manifest.json', (m) => asset(m, 's3_rome.asset.prologue')['status'] = 'generated');
       expect(errors(check()), contains('asset_file_missing'));
     });
   });

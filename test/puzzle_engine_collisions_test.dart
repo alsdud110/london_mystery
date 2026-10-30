@@ -12,6 +12,7 @@ import 'package:world_mystery/data/mock/season_catalog.dart';
 import 'package:world_mystery/data/models/scene_explore.dart' show ScenePixels;
 import 'package:world_mystery/data/models/scene_place.dart';
 import 'package:world_mystery/widgets/art_assets.dart';
+import 'helpers.dart';
 
 /// The puzzle engines registered for each mission and final
 /// (`PuzzleEngineCollisionCheck`): the pages' order of choice held against
@@ -665,7 +666,7 @@ List<String> _found(SeasonContent s) => [
 ];
 
 List<String> _validate(SeasonContent s) => [
-  for (final i in SeasonContentValidator.validateAll([...SeasonCatalog.all, s]))
+  for (final i in SeasonContentValidator.validateAll([...SeasonCatalog.all.where((c) => handMadeSeason(c.id)), s]))
     if (i.seasonId == 's3_test') '$i',
 ];
 

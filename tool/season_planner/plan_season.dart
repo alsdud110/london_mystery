@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../season_gen/generate_case.dart';
+import '../season_gen/generate_season.dart' show generateSeason;
 import '../season_gen/plan_files.dart';
 import '../season_gen/plan_models.dart';
-import '../season_gen/season_cases.dart';
 import 'asset_manifest.dart';
 import 'finding.dart';
 import 'season_quality.dart';
@@ -18,7 +18,7 @@ import 'season_quality.dart';
 ///     dart run tool/season_planner/plan_season.dart check <seasonDir> [--no-report] [--all]
 ///     dart run tool/season_planner/plan_season.dart assets <seasonDir>
 ///     dart run tool/season_planner/plan_season.dart format <seasonDir>
-///     dart run tool/season_planner/plan_season.dart generate <seasonDir> [--check] [--force] [--out <dir>]
+///     dart run tool/season_planner/plan_season.dart generate <seasonDir> [--target sandbox|game] [--check] [--force] [--out <dir>]
 ///
 /// * `init`: the season's folder and its brief (`planning/brief.json`), nothing
 ///   else; refused when the folder or the season's number is taken.
@@ -28,7 +28,9 @@ import 'season_quality.dart';
 /// * `format`: the season and case plans rewritten in `PlanFiles`' one
 ///   canonical form; nothing written unless every plan reads.
 /// * `generate`: the sandbox content (`generate_season.dart --target sandbox`),
-///   only once `check` finds no ERROR and every picture is on disk.
+///   only once `check` finds no ERROR and every picture is on disk. With
+///   `--target game`: the season in the app (`lib/data/generated/`, its
+///   content, art and the game's lists of generated seasons).
 ///
 /// Exit codes: 0 done; 1 an ERROR (nothing generated); 2 waiting for
 /// pictures (nothing generated); 64 usage.
@@ -50,7 +52,7 @@ Never _usage() {
       '  check <seasonDir> [--no-report] [--all]\n'
       '  assets <seasonDir>\n'
       '  format <seasonDir>\n'
-      '  generate <seasonDir> [--check] [--force] [--out <dir>]');
+      '  generate <seasonDir> [--target sandbox|game] [--check] [--force] [--out <dir>]');
   exit(64);
 }
 
@@ -151,7 +153,7 @@ int _init(List<String> args) {
 }
 
 String _dir(List<String> args) {
-  final dirs = [for (final (i, a) in args.indexed) if (!a.startsWith('--') && (i == 0 || args[i - 1] != '--out')) a];
+  final dirs = [for (final (i, a) in args.indexed) if (!a.startsWith('--') && (i == 0 || !const {'--out', '--target'}.contains(args[i - 1]))) a];
   if (dirs.length != 1) _usage();
   return dirs.single.replaceAll(r'\', '/').replaceAll(RegExp(r'/$'), '');
 }
@@ -280,10 +282,15 @@ int generateCommand(List<String> args) {
     return 2;
   }
   final seasonPath = '$dir/season.plan.json';
-  return makeAndWrite(
-    () => CaseGenerator.sandbox(seasonPath: seasonPath, casePaths: SeasonCases.of(seasonPath)),
-    out: out,
-    checkOnly: args.contains('--check'),
-    force: args.contains('--force'),
-  );
+  final i = args.indexOf('--target');
+  final target = i >= 0 && i + 1 < args.length ? args[i + 1] : 'sandbox';
+  if (target != 'sandbox' && target != 'game') {
+    stdout.writeln('--target $target: sandbox or game');
+    return 64;
+  }
+  if (target == 'game' && out != null) {
+    stdout.writeln('--out: a season of the game is written where the game reads it (${GameRegistry.dir}/<seasonId>)');
+    return 64;
+  }
+  return generateSeason(seasonPath, target: target, checkOnly: args.contains('--check'), force: args.contains('--force'), out: out);
 }

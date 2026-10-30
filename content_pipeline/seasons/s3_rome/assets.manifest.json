@@ -20,7 +20,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cover/season3_cover_rome.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "Portrait: the game's covers are portrait paintings (London 941x1672, Paris 941x1671) shown by BoxFit.cover. 1024x1536 is the API's portrait size; the game shows it as it is (no resize).",
         "Safe area on the 1024x1536 picture: the season board fills the phone (9:16 shows x 80-944; a 9:20 phone x 170-854) and pushes in up to 1.165x; the title stands over the top 30% (y 0-460) and the button over the bottom ~15% (y 1300-1536). Key subjects: x 170-854, y 460-1300. The archive strip shows one 2:1 band (1024x512, archiveLook), the World Map thumbnail nearly the whole width.",
@@ -34,16 +34,17 @@
       "subject": "s3_rome.map",
       "caseIds": [],
       "description": "The season's map of central Rome for the mission pins: the river, the hills and the season's eleven places as small drawn landmarks.",
-      "prompt": "An illustrated bird's-eye map of central Rome on warm paper: the curving river Tiber with a boat-shaped island, the Capitoline Hill, the Roman Forum and Colosseum, the round Pantheon, the Trevi Fountain, the Spanish Steps, Piazza Navona's long oval, a market square and a small quiet square with a crane. Small hand-painted landmark drawings, winding streets, no labels and no writing of any kind.",
+      "prompt": "An illustrated bird's-eye map of central Rome on warm aged parchment, like an old tourist picture map seen from high above at a slight angle, north at the top: terracotta roofs, ochre houses, umbrella pines and winding cream streets fill the whole sheet. The blue river Tiber curves down through the left third of the map, with old stone bridges across it; low on the river, left of centre, lies a small boat-shaped island with a church and two bridges. Eleven landmarks are drawn larger and clearly apart from each other, roughly where they really are: Piazza Navona's long oval square with its fountain in the left-middle, inside the river's bend; just below it, a busy market square with white umbrellas; the round domed Pantheon with its columned porch in the centre; just below the Pantheon, a sunken square of ancient temple ruins with columns; the Trevi Fountain against a palace in the upper middle; the Spanish Steps climbing to a twin-towered church in the upper right; on the right edge, a large university building with an inner courtyard; the Capitoline Hill with its museum palaces around a star-patterned piazza in the lower middle; the Roman Forum's columns and the Colosseum in the lower right; and between the Forum and the market, a small quiet square closed off by a wooden fence with a tall yellow crane. A small compass rose in the top right corner. No labels, no pins, no letters or numbers of any kind.",
       "stylePreset": "rome_scene",
       "width": 1536,
       "height": 1024,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/map/rome_map.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
-        "Pin positions in the case plans (mapX, mapY) are placeholders until this map is drawn and its landmarks measured."
+        "Pin positions in the case plans (mapX, mapY) are placeholders until this map is drawn and its landmarks measured.",
+        "Rome integration: the prompt names the eleven locations of the season plan (as the Paris map draws its ten), each drawn apart and roughly where it really is, so the app's pins and names (never drawn here) land on them; their positions are measured on the made map into season.plan.json art.map."
       ]
     },
     {
@@ -691,7 +692,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/night_log.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_owl_card",
@@ -712,7 +713,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/owl_card.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_brass_key",
@@ -731,7 +732,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/brass_key.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_dropped_pass",
@@ -750,7 +751,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/dropped_pass.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_real_piece",
@@ -794,7 +795,7 @@
       "references": [
         "s3_rome.asset.ev_real_piece"
       ],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "Its front must match the real piece without the crack: drawn from ev_real_piece once references are sent."
       ]
@@ -816,7 +817,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/order_card_318.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_aldo_photo",
@@ -838,7 +839,7 @@
       "references": [
         "s3_rome.asset.ev_real_piece"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_business_card",
@@ -880,7 +881,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/loan_book_page.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_livia_drawing",
@@ -892,16 +893,17 @@
         "s3_ep09"
       ],
       "description": "Livia's pencil drawing of the real piece: the street, the owl square, a room with shelves, marker stones.",
-      "prompt": "A careful pencil drawing on cream paper of an old map fragment: a long street with small marker stones, a round temple, a long market, a small square with an owl, and a room with lines like shelves; no letters or numbers, only shapes.",
+      "prompt": "A loose sheet of cream sketch paper lying flat on a wooden desk beside a pencil and an eraser. On the paper, a careful grey pencil drawing (only pencil lines and soft shading on paper, not a stone, not a carving) of the outline of an old broken map fragment, and inside it: a long street with small marker stones along it, a round temple, a long market hall, a small square with a tiny owl drawn in it, and a room with lines like shelves; no letters or numbers, only shapes.",
       "stylePreset": "object",
       "width": 1024,
       "height": 1024,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/livia_drawing.png",
-      "references": [
-        "s3_rome.asset.ev_real_piece"
-      ],
-      "status": "planned"
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Rome integration: the first picture, drawn from ev_real_piece, came out as a carved stone, not a pencil drawing on paper (kept in asset_work/s3_rome/superseded/livia_drawing_v1_*). The reference is dropped for correctness, not cost: what the drawing shows (the street, the temple, the market, the owl square, the shelves) is not on the real piece's picture, and the paper is named in the prompt."
+      ]
     },
     {
       "assetId": "s3_rome.asset.ev_city_plan",
@@ -921,7 +923,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/city_plan.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.ev_yellow_helmet",
@@ -964,7 +966,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/owl_mosaic.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "The Latin word SAPIENTIA is written by the game, never drawn."
       ]

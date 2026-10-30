@@ -498,7 +498,7 @@ class ProloguePlan {
 /// A season place's picture (the game's `ScenePlace`): a mission names it
 /// by its [placeId] (`Mission.sceneKey`). Its pixel size is the file's.
 class PlacePlan {
-  const PlacePlan({required this.placeId, required this.file, required this.width, required this.height});
+  const PlacePlan({required this.placeId, required this.file, required this.width, required this.height, this.locId});
 
   final String placeId;
 
@@ -507,19 +507,20 @@ class PlacePlan {
   final int width;
   final int height;
 
+  /// The season location it is in (a `locations[].locId`), for the season
+  /// map: a mission at this place is pinned at that location's landmark
+  /// (`art.map`). Null: the place is on no map yet.
+  final String? locId;
+
   factory PlacePlan.fromJson(Object? json, String path) {
     final r = _Reader(json, path);
-    final out = r.obj('pixels', (json, path) {
-      final p = _Reader(json, path);
-      final size = (p.integer('width', min: 1), p.integer('height', min: 1));
-      p.done();
-      return size;
-    });
+    final out = r.obj('pixels', _pixels);
     final place = PlacePlan(
       placeId: r.str('placeId', pattern: PlanIds.place),
       file: r.str('file', pattern: PlanIds.assetFile),
       width: out.$1,
       height: out.$2,
+      locId: r.optStr('locId', pattern: PlanIds.local),
     );
     r.done();
     return place;
@@ -529,6 +530,172 @@ class PlacePlan {
     'placeId': placeId,
     'file': file,
     'pixels': {'width': width, 'height': height},
+    'locId': ?locId,
+  };
+}
+
+/// The season's own pictures outside its cases (the Rome integration):
+/// its cover, its map and its city on the World Map. What the game
+/// registers for the season beside its content (`SeasonCover`,
+/// `SeasonMap`, `WorldCity`), made by `generate_case.dart --target game`.
+/// Each part is optional while the season is drawn; a season without its
+/// map cannot be entered (`SeasonAvailability`).
+class SeasonArtPlan {
+  const SeasonArtPlan({this.cover, this.map, this.worldCity});
+
+  final CoverPlan? cover;
+  final MapPlan? map;
+  final WorldCityPlan? worldCity;
+
+  factory SeasonArtPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = SeasonArtPlan(
+      cover: r.optObj('cover', CoverPlan.fromJson),
+      map: r.optObj('map', MapPlan.fromJson),
+      worldCity: r.optObj('worldCity', WorldCityPlan.fromJson),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {
+    if (cover case final c?) 'cover': c.toJson(),
+    if (map case final m?) 'map': m.toJson(),
+    if (worldCity case final w?) 'worldCity': w.toJson(),
+  };
+}
+
+/// The season's cover (portrait, no text) and how the screens frame it:
+/// `SeasonCover`'s fields. Alignments are `[x, y]`, each -1 to 1.
+class CoverPlan {
+  const CoverPlan({
+    required this.file,
+    required this.width,
+    required this.height,
+    this.archiveLook = const ScenePoint(0, 0),
+    this.crop = const ScenePoint(0, 0),
+    this.push = const ScenePoint(0, 0),
+  });
+
+  final String file;
+  final int width;
+  final int height;
+  final ScenePoint archiveLook;
+  final ScenePoint crop;
+  final ScenePoint push;
+
+  factory CoverPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final size = r.obj('pixels', _pixels);
+    ScenePoint align(String key) {
+      final p = r.optPoint(key) ?? const ScenePoint(0, 0);
+      if (p.x.abs() > 1 || p.y.abs() > 1) throw PlanFormatException('$path.$key', 'an alignment is -1 to 1');
+      return p;
+    }
+
+    final out = CoverPlan(
+      file: r.str('file', pattern: PlanIds.assetFile),
+      width: size.$1,
+      height: size.$2,
+      archiveLook: align('archiveLook'),
+      crop: align('crop'),
+      push: align('push'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {
+    'file': file,
+    'pixels': {'width': width, 'height': height},
+    'archiveLook': archiveLook.toJson(),
+    'crop': crop.toJson(),
+    'push': push.toJson(),
+  };
+}
+
+/// The season's Mission Map: its artwork (streets and landmarks drawn, no
+/// names, no pins) and where each location's landmark is drawn on it, in
+/// its pixels, measured on the very file ([measuredOn]).
+class MapPlan {
+  const MapPlan({required this.file, required this.width, required this.height, required this.landmarks, this.measuredOn});
+
+  final String file;
+  final int width;
+  final int height;
+
+  /// `sha256:<hex>` of the file the landmarks were measured on.
+  final String? measuredOn;
+  final List<MapLandmarkPlan> landmarks;
+
+  factory MapPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final size = r.obj('pixels', _pixels);
+    final out = MapPlan(
+      file: r.str('file', pattern: PlanIds.assetFile),
+      width: size.$1,
+      height: size.$2,
+      measuredOn: r.optStr('measuredOn', pattern: RegExp(r'^sha256:[0-9a-f]{64}$')),
+      landmarks: r.objs('landmarks', MapLandmarkPlan.fromJson, min: 1),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {
+    'file': file,
+    'pixels': {'width': width, 'height': height},
+    'measuredOn': ?measuredOn,
+    'landmarks': [for (final l in landmarks) l.toJson()],
+  };
+}
+
+/// A location's landmark on the map: the centre of its drawing, in pixels.
+class MapLandmarkPlan {
+  const MapLandmarkPlan({required this.locId, required this.at});
+
+  final String locId;
+  final ScenePoint at;
+
+  factory MapLandmarkPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = MapLandmarkPlan(locId: r.str('locId', pattern: PlanIds.local), at: r.point('at'));
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {'locId': locId, 'at': at.toJson()};
+}
+
+/// The season's city on the World Map (`WorldCity`): its id (one of
+/// `WorldCities`' when the city is already drawn there as coming soon), its
+/// latitude and longitude, and, when its landmark is on the World Map
+/// artwork, where its pin's tip goes (in that artwork's 1983 × 793 pixels).
+class WorldCityPlan {
+  const WorldCityPlan({required this.cityId, required this.latitude, required this.longitude, this.mapAt});
+
+  final String cityId;
+  final double latitude;
+  final double longitude;
+  final ScenePoint? mapAt;
+
+  factory WorldCityPlan.fromJson(Object? json, String path) {
+    final r = _Reader(json, path);
+    final out = WorldCityPlan(
+      cityId: r.str('cityId', pattern: PlanIds.local),
+      latitude: r.optNum('latitude', min: -90, max: 90) ?? (throw PlanFormatException('$path.latitude', 'missing')),
+      longitude: r.optNum('longitude', min: -180, max: 180) ?? (throw PlanFormatException('$path.longitude', 'missing')),
+      mapAt: r.optPoint('mapAt'),
+    );
+    r.done();
+    return out;
+  }
+
+  Map<String, Object?> toJson() => {
+    'cityId': cityId,
+    'latitude': latitude,
+    'longitude': longitude,
+    if (mapAt case final p?) 'mapAt': p.toJson(),
   };
 }
 
@@ -560,6 +727,7 @@ class SeasonPlan {
     this.languageArc = const [],
     this.places = const [],
     this.storyGreeting,
+    this.art,
     this.notes = const [],
   });
 
@@ -589,6 +757,9 @@ class SeasonPlan {
   /// own true).
   final bool? storyGreeting;
 
+  /// Its cover, map and World Map city, once drawn (the game target).
+  final SeasonArtPlan? art;
+
   /// Anything the writers or a reviewer should know (never content).
   final List<String> notes;
 
@@ -616,6 +787,7 @@ class SeasonPlan {
       languageArc: r.optStrings('languageArc'),
       places: r.optObjs('places', PlacePlan.fromJson),
       storyGreeting: r.optBool('storyGreeting'),
+      art: r.optObj('art', SeasonArtPlan.fromJson),
       notes: r.optStrings('notes'),
     );
     r.done();
@@ -643,6 +815,7 @@ class SeasonPlan {
     _putList(json, 'languageArc', languageArc);
     _putList(json, 'places', [for (final p in places) p.toJson()]);
     if (storyGreeting != null) json['storyGreeting'] = storyGreeting;
+    if (art case final a?) json['art'] = a.toJson();
     _putList(json, 'notes', notes);
     return json;
   }

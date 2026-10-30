@@ -4,7 +4,6 @@ import 'package:world_mystery/data/mock/season_catalog.dart';
 import 'package:world_mystery/data/models/mission.dart';
 import 'package:world_mystery/data/models/scene_explore.dart' show ScenePixels;
 import 'package:world_mystery/data/models/scene_place.dart';
-import 'package:world_mystery/data/repositories/episode_repository.dart';
 import 'package:world_mystery/features/season/widgets/season_props.dart';
 import 'package:world_mystery/widgets/art_assets.dart';
 import 'package:world_mystery/widgets/landmark_art.dart';
@@ -13,6 +12,7 @@ import 'package:world_mystery/widgets/place_scenery.dart';
 import 'package:world_mystery/widgets/scene_backdrop.dart';
 
 import 'multi_season_test.dart' show assetOf;
+import 'helpers.dart';
 
 /// A mission at a season place (`sceneKey`) shows that place's registered
 /// picture wherever the game shows a mission's place, with no [Artwork] value;
@@ -28,7 +28,8 @@ void main() {
   setUp(() => SeasonCatalog.testPlaces[id] = place);
   tearDown(SeasonCatalog.testPlaces.clear);
 
-  final bundled = [for (final e in MockEpisodeRepository.bundled()) ...e.allMissions];
+  // London and Paris (a season made from its plans shows its places' files: generated_seasons_test.dart).
+  final bundled = [for (final e in handMadeBundled()) ...e.allMissions];
 
   /// A mission of the test season, at the place [key]: a London mission's
   /// content, its scene swapped for the place.

@@ -140,11 +140,13 @@ void main() {
   }
 
   group('the cities', () {
-    test('London and Paris have their seasons; Tokyo, Rome and Seoul none yet', () {
+    test('London, Paris and Rome have their seasons; Tokyo and Seoul none yet', () {
       expect([for (final c in WorldCities.all) c.name], ['London', 'Paris', 'Rome', 'Tokyo', 'Seoul']);
       expect(WorldCities.london.seasonId, SeasonIds.london);
       expect(WorldCities.paris.seasonId, SeasonIds.paris);
-      for (final c in [WorldCities.rome, WorldCities.tokyo, WorldCities.seoul]) {
+      expect(WorldCities.ofSeason(SeasonIds.rome)!.id, 'rome', reason: "Rome's pin takes its season (generatedWorldCities)");
+      expect(WorldCities.ofSeason(SeasonIds.rome)!.mapAt, WorldCities.rome.mapAt, reason: 'where its pin always stood');
+      for (final c in [WorldCities.tokyo, WorldCities.seoul]) {
         expect(c.seasonId, isNull, reason: c.name);
       }
       expect({for (final c in WorldCities.all) c.id}.length, WorldCities.all.length);
@@ -201,7 +203,7 @@ void main() {
       expect(states, {
         'london': WorldCityStatus.playable,
         'paris': WorldCityStatus.locked,
-        'rome': WorldCityStatus.comingSoon,
+        'rome': WorldCityStatus.locked, // Season 3 since the Rome integration: sealed by Paris
         'tokyo': WorldCityStatus.comingSoon,
         'seoul': WorldCityStatus.comingSoon,
       });
@@ -243,14 +245,17 @@ void main() {
       expect(inCard('paris', 'In progress · 2 of 12 solved'), findsOneWidget);
     });
 
-    testWidgets('Paris solved, no next season out: Paris', (t) async {
+    testWidgets('Paris solved: Rome, ready to begin (the Rome integration); Paris completed', (t) async {
       await pumpApp(t, seasonSaves(12));
       await beginParis(t);
       solveParis(12);
       await openMap(t);
-      expect(appRef.read(homeCityIdProvider), WorldCities.paris.id);
-      expect(inCard('paris', 'REVISIT'), findsOneWidget);
-      expect(inCard('paris', 'Completed · 12 of 12 solved'), findsOneWidget);
+      expect(appRef.read(homeCityIdProvider), 'rome', reason: "the next season's city, open and not begun");
+      final rome = appRef.read(worldCityStatesProvider).firstWhere((c) => c.city.id == 'rome');
+      expect(rome.status, WorldCityStatus.playable);
+      expect(rome.city.seasonId, SeasonIds.rome);
+      final paris = appRef.read(worldCityStatesProvider).firstWhere((c) => c.city.id == 'paris');
+      expect(paris.status, WorldCityStatus.completed);
     });
   });
 

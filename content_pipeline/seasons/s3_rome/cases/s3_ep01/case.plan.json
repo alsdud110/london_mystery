@@ -75,7 +75,7 @@
         "expressions": [
           "When did you last see the piece?",
           "The lights went off for ten minutes.",
-          "I worked late in my lab."
+          "I worked late."
         ]
       },
       "play": {
@@ -702,7 +702,7 @@
       "objective": "세 단서(먼지 자국, 증인 진술, 부엉이 카드)를 다시 확인해 숫자 4·2·2를 순서대로 맞춘다.",
       "skill": "sentenceMeaning",
       "expressions": [
-        "How many places did my trail pass?",
+        "How many places did my dust trail pass?",
         "How many people saw the lights go off?"
       ]
     },

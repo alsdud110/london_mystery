@@ -34,7 +34,14 @@ import 'asset_wiring.dart';
 ///   reused or written over; a failed one is tried again by a later run; an
 ///   API error stops the run at once. Nothing is written in `assets/`.
 /// * `--wiring --write` writes `planning/asset_wiring.json`; `--apply-plan`
-///   shows what a later step copies into `assets/` (writes nothing).
+///   shows what `--apply` copies into `assets/` (writes nothing).
+/// * `--apply [--only <assetId>]...` (the Rome integration): each validated
+///   picture copied into `assets/` (checked, never over another file), its
+///   manifest status `generated`, its folder listed in `pubspec.yaml`.
+/// * `--doctor [--fix]`: this machine's records against the game's files
+///   (`asset_work/` is not in Git); `--fix` does only what is safe.
+/// * A picture in `assets/` that this machine has not made is never made
+///   again; a missing picture whose game copy is the same is put back.
 ///
 /// Exit codes: 0 done (or a dry run); 1 a call or a picture failed; 2
 /// refused before any call; 64 usage.
@@ -43,7 +50,7 @@ Future<void> main(List<String> args) async {
   if (a == null) {
     stderr.writeln('usage: dart run tool/asset_pipeline/asset_pipeline.dart --manifest <assets.manifest.json> '
         '[--generate --max-budget <usd> [--max-calls ${AssetBudget.defaultMaxCalls}] [--only <assetId>]...] '
-        '[--wiring [--write]] [--apply-plan] [--work <dir>] [--env .env]');
+        '[--wiring [--write]] [--apply-plan] [--apply [--only <assetId>]...] [--doctor [--fix]] [--work <dir>] [--env .env]');
     exit(64);
   }
   final plan = AssetPlan.load(a.manifest!);
@@ -55,6 +62,8 @@ Future<void> main(List<String> args) async {
   );
   if (a.wiring) exit(pipeline.wiring(write: a.write));
   if (a.applyPlan) exit(pipeline.applyPlan());
+  if (a.apply) exit(pipeline.apply(only: a.only));
+  if (a.doctor) exit(pipeline.doctor(fix: a.fix));
   exit(await pipeline.run(generate: a.generate, maxBudget: a.maxBudget, maxCalls: a.maxCalls, only: a.only));
 }
 
@@ -63,7 +72,7 @@ class _Args {
   String envPath = '.env';
   double? maxBudget;
   int maxCalls = AssetBudget.defaultMaxCalls;
-  bool generate = false, wiring = false, write = false, applyPlan = false;
+  bool generate = false, wiring = false, write = false, applyPlan = false, apply = false, doctor = false, fix = false;
   final only = <String>{};
 
   static _Args? parse(List<String> args) {
@@ -92,6 +101,12 @@ class _Args {
             a.write = true;
           case '--apply-plan':
             a.applyPlan = true;
+          case '--apply':
+            a.apply = true;
+          case '--doctor':
+            a.doctor = true;
+          case '--fix':
+            a.fix = true;
           default:
             return null;
         }
@@ -100,6 +115,7 @@ class _Args {
       }
     }
     if (a.write && !a.wiring) return null;
+    if (a.fix && !a.doctor) return null;
     return a.manifest == null ? null : a;
   }
 }
@@ -178,6 +194,9 @@ class AssetPipeline {
       return 2;
     }
 
+    for (final line in _recoverFromGame(state)) {
+      log('restored $line');
+    }
     for (final line in state.verify(root)) {
       log('state    $line');
     }
@@ -196,6 +215,11 @@ class AssetPipeline {
       if (r.status == AssetStatus.validated) continue;
       if (r.status == AssetStatus.blocked) {
         log('blocked  ${a.assetId}: ${r.error}');
+        continue;
+      }
+      if (_inGame(a, state)) {
+        log('in game  ${a.assetId}: ${a.outputPath} is in assets/ already (made on another machine or by hand): '
+            'never made again here (--doctor --fix records it)');
         continue;
       }
       if (r.status != AssetStatus.generated) {
@@ -246,7 +270,7 @@ class AssetPipeline {
     final toCall = <PipelineAsset>[];
     for (final a in queue) {
       final s = state.statusOf(a.assetId);
-      if (s == AssetStatus.validated || s == AssetStatus.blocked) continue;
+      if (s == AssetStatus.validated || s == AssetStatus.blocked || _inGame(a, state)) continue;
       if (!a.references.every(ready.contains)) continue;
       if (s != AssetStatus.generated) {
         if (toCall.length == maxCalls) break;
@@ -485,8 +509,235 @@ class AssetPipeline {
     for (final f in missing) {
       log('           - $f');
     }
-    log('ready    $ready picture(s) validated, approved and free to copy; nothing written (STEP 3-12C copies them)');
+    log('ready    $ready picture(s) validated, approved and free to copy; nothing written (--apply copies them)');
     return 0;
+  }
+
+  /// Whether [a]'s game file is in `assets/` already while this machine's
+  /// state has not made it: made on another machine (`asset_work/` is not in
+  /// Git) or by hand. Never made again here.
+  bool _inGame(PipelineAsset a, PipelineState state) =>
+      state.statusOf(a.assetId) != AssetStatus.validated && File('$root/${a.outputPath}').existsSync();
+
+  /// Each validated record whose picture is missing here but whose game copy
+  /// in `assets/` is that very picture (its recorded sha256): the picture put
+  /// back from it, so the record holds and nothing is made again (another
+  /// machine's `asset_work/`, or one restored from an old copy). Never over a
+  /// file. The lines of what was put back.
+  List<String> _recoverFromGame(PipelineState state) {
+    final out = <String>[];
+    for (final a in plan.assets) {
+      final r = state.records[a.assetId];
+      final raw = r?.raw;
+      if (r == null || raw == null || (r.status != AssetStatus.validated && r.status != AssetStatus.generated)) continue;
+      if (raw.problem(root) != 'missing') continue;
+      final game = File('$root/${a.outputPath}');
+      if (!game.existsSync() || 'sha256:${Sha256.hex(game.readAsBytesSync())}' != raw.sha256) continue;
+      File('$root/${raw.path}').parent.createSync(recursive: true);
+      game.copySync('$root/${raw.path}');
+      out.add('${a.assetId}: its picture put back from its game copy ${a.outputPath} (the same sha256)');
+    }
+    return out;
+  }
+
+  /// The pictures into the game (the Rome integration; STEP 3-12C's step,
+  /// done by hand before): each validated picture ([only]: those) copied to
+  /// its `outputPath` beside it first (`.part`), checked against its record,
+  /// then moved; one already there and the same is left; one there and
+  /// different is a CONFLICT, never written over. Then its manifest status
+  /// `generated` and its folder listed in `pubspec.yaml`. Approvals are
+  /// shown, not required (`approve.dart` stays a person's). Exit 0, or 1 on a
+  /// conflict or a picture not as recorded.
+  int apply({Set<String> only = const {}}) {
+    if (!_checked()) return 2;
+    final state = _state();
+    if (state == null) return 2;
+    for (final line in _recoverFromGame(state)) {
+      log('restored $line');
+    }
+    final approvals = SeasonApprovals('$root/${plan.seasonDir}');
+    final done = <String>[];
+    var problems = 0;
+    for (final a in plan.assets) {
+      if (only.isNotEmpty && !only.contains(a.assetId)) continue;
+      final r = state.records[a.assetId];
+      if (r?.status != AssetStatus.validated || r?.game == null) continue;
+      final source = r!.game!;
+      if (source.problem(root) case final p?) {
+        log('FAILED   ${a.assetId}: ${source.path} $p: not copied');
+        problems++;
+        continue;
+      }
+      String approval;
+      try {
+        approval = approvals.asset(a.assetId).status.name;
+      } on Object {
+        approval = 'unreadable';
+      }
+      final dest = File('$root/${a.outputPath}');
+      if (dest.existsSync()) {
+        if ('sha256:${Sha256.hex(dest.readAsBytesSync())}' == source.sha256) {
+          done.add(a.assetId);
+          continue;
+        }
+        log('CONFLICT ${a.assetId}: ${a.outputPath} is there and is another picture: never written over (move it away)');
+        problems++;
+        continue;
+      }
+      dest.parent.createSync(recursive: true);
+      final part = File('${dest.path}.part');
+      File('$root/${source.path}').copySync(part.path);
+      if ('sha256:${Sha256.hex(part.readAsBytesSync())}' != source.sha256) {
+        part.deleteSync();
+        log('FAILED   ${a.assetId}: the copy is not the picture recorded: nothing written');
+        problems++;
+        continue;
+      }
+      part.renameSync(dest.path);
+      done.add(a.assetId);
+      log('copied   ${source.path} → ${a.outputPath} (${source.sha256.substring(0, 23)}…, approval: $approval)');
+    }
+    final marked = AssetManifestFile.markGenerated('$root/${plan.manifestPath}', done.toSet());
+    if (marked.isNotEmpty) log('manifest ${marked.length} set to generated: ${marked.join(', ')}');
+    final folders = {for (final a in plan.assets) if (done.contains(a.assetId)) a.outputPath.substring(0, a.outputPath.lastIndexOf('/') + 1)};
+    final added = PubspecAssets.add('$root/pubspec.yaml', folders);
+    for (final f in added) {
+      log('pubspec  listed $f');
+    }
+    log('applied  ${done.length} picture(s) in the game; ${problems == 0 ? 'no problem' : '$problems problem(s)'}');
+    return problems == 0 ? 0 : 1;
+  }
+
+  /// This machine's records against the game's files (the work folder is not
+  /// in Git, so another machine's pictures arrive in `assets/` only). Each
+  /// picture: its state, its picture here, its game copy, its manifest
+  /// status. With [fix], only what is safe: a picture put back from its
+  /// identical game copy, and a game file made elsewhere recorded here
+  /// (`validated`, its picture a copy of it) so it is never made again;
+  /// a picture here that differs from the game's is a CONFLICT, left as it is.
+  /// A picture the manifest says is in the game but is not refuses the run
+  /// before (the manifest's own check, `asset_file_missing`): restore it from
+  /// Git or a backup. Exit 0 when nothing is left to look at, else 1.
+  int doctor({bool fix = false}) {
+    if (!_checked()) return 2;
+    final state = _state();
+    if (state == null) return 2;
+    if (fix) {
+      for (final line in _recoverFromGame(state)) {
+        log('restored $line');
+      }
+    }
+    var open = 0, changed = false;
+    for (final a in plan.assets) {
+      final r = state.records[a.assetId];
+      final game = File('$root/${a.outputPath}');
+      final gameSha = game.existsSync() ? 'sha256:${Sha256.hex(game.readAsBytesSync())}' : null;
+      final rawProblem = r?.raw?.problem(root);
+      final status = r?.status ?? AssetStatus.planned;
+      String? issue;
+      if (status == AssetStatus.validated && rawProblem == 'missing' && gameSha != null && gameSha == r!.raw!.sha256) {
+        issue = 'restore  its picture is missing here; its game copy is the same picture (--fix puts it back)';
+      } else if (status == AssetStatus.validated && rawProblem == null && gameSha != null && gameSha != (r!.game ?? r.raw)!.sha256) {
+        issue = 'CONFLICT ${a.outputPath} is another picture than this machine made: never written over';
+      } else if (status == AssetStatus.validated && rawProblem != null) {
+        issue = 'CHANGED  its picture ${r!.raw!.path} is $rawProblem';
+      } else if (status != AssetStatus.validated && gameSha != null) {
+        if (fix) {
+          final raw = plan.rawPath(a, work: work);
+          final there = File('$root/$raw');
+          if (there.existsSync() && 'sha256:${Sha256.hex(there.readAsBytesSync())}' != gameSha) {
+            issue = 'CONFLICT $raw is another picture than ${a.outputPath}: nothing recorded';
+          } else {
+            there.parent.createSync(recursive: true);
+            if (!there.existsSync()) game.copySync(there.path);
+            state.of(a.assetId)
+              ..status = AssetStatus.validated
+              ..raw = FileRecord.of(root, raw)
+              ..game = FileRecord.of(root, raw)
+              ..transformed = false
+              ..error = null
+              ..updatedAt = now().toUtc().toIso8601String();
+            changed = true;
+            log('adopted  ${a.assetId}: ${a.outputPath} made elsewhere, recorded here as made (never made again)');
+            continue;
+          }
+        } else {
+          issue = 'adopt    ${a.outputPath} is in the game, but this machine has no record of it (--fix records it; it is never made again)';
+        }
+      } else if (status == AssetStatus.validated && gameSha == null) {
+        issue = 'apply    made here, not in the game yet (--apply copies it)';
+      }
+      if (issue != null) {
+        open++;
+        log('${issue.substring(0, 9)}${a.assetId}: ${issue.substring(9)}');
+      }
+    }
+    if (changed) state.save();
+    log('doctor   ${plan.assets.length} pictures, ${open == 0 ? 'all as recorded' : '$open to look at'}'
+        '${fix ? '' : ' (--fix: only what is safe)'}');
+    return open == 0 ? 0 : 1;
+  }
+}
+
+/// The asset manifest's own statuses (`planned`, `generated`), written in
+/// its format (2-space JSON, its line endings kept).
+abstract final class AssetManifestFile {
+  /// [ids] set to `generated`; the ids changed.
+  static List<String> markGenerated(String path, Set<String> ids) {
+    final file = File(path);
+    final raw = file.readAsStringSync();
+    final crlf = raw.contains('\r\n');
+    final json = jsonDecode(raw) as Map<String, dynamic>;
+    final changed = <String>[];
+    for (final a in (json['assets'] as List).cast<Map<String, dynamic>>()) {
+      if (ids.contains(a['assetId']) && a['status'] != 'generated') {
+        a['status'] = 'generated';
+        changed.add('${a['assetId']}'.split('.').last);
+      }
+    }
+    if (changed.isEmpty) return changed;
+    final text = '${const JsonEncoder.withIndent('  ').convert(json)}\n';
+    file.writeAsStringSync(crlf ? text.replaceAll('\n', '\r\n') : text);
+    return changed;
+  }
+}
+
+/// `pubspec.yaml`'s `flutter: assets:` list: a folder added after the last
+/// one of its season (else after the last asset folder), never twice.
+abstract final class PubspecAssets {
+  /// [folders] (`assets/…/`) not listed yet, added; the folders added.
+  static List<String> add(String path, Set<String> folders) {
+    final file = File(path);
+    if (!file.existsSync() || folders.isEmpty) return const [];
+    final raw = file.readAsStringSync();
+    final crlf = raw.contains('\r\n');
+    final lines = raw.replaceAll('\r\n', '\n').split('\n');
+    final entry = RegExp(r'^(\s+)- (assets/\S+)\s*$');
+    final listed = {for (final l in lines) ?entry.firstMatch(l)?[2]};
+    final added = <String>[];
+    for (final f in folders.toList()..sort()) {
+      if (listed.contains(f)) continue;
+      final season = '${f.split('/').take(3).join('/')}/';
+      var last = -1, lastOfSeason = -1;
+      var indent = '    ';
+      for (final (i, l) in lines.indexed) {
+        final m = entry.firstMatch(l);
+        if (m == null) continue;
+        last = i;
+        indent = m[1]!;
+        if (m[2]!.startsWith(season)) lastOfSeason = i;
+      }
+      final at = lastOfSeason >= 0 ? lastOfSeason : last;
+      if (at < 0) continue;
+      lines.insert(at + 1, '$indent- $f');
+      listed.add(f);
+      added.add(f);
+    }
+    if (added.isNotEmpty) {
+      final text = lines.join('\n');
+      file.writeAsStringSync(crlf ? text.replaceAll('\n', '\r\n') : text);
+    }
+    return added;
   }
 }
 

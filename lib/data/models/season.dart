@@ -90,6 +90,9 @@ abstract final class SeasonIds {
   static const london = AppConstants.firstSeasonId;
 
   static const paris = 's2_paris';
+
+  /// Season 3, made from its plans (`content_pipeline/seasons/s3_rome`).
+  static const rome = 's3_rome';
 }
 
 /// A season: the bigger story the cases belong to. Its cases are the

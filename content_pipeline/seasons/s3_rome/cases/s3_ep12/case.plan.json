@@ -213,7 +213,7 @@
         "objective": "옛 도서관 설명(scrolls, square holes)을 읽고 벽의 구멍에 무엇을 보관했는지 고른다.",
         "skill": "vocabulary",
         "expressions": [
-          "Books were scrolls: long pages, rolled up.",
+          "They were scrolls: long pages, rolled up.",
           "Scrolls were kept in square holes in the walls."
         ]
       },
@@ -325,8 +325,8 @@
         "objective": "뜻풀이 목록에서 SAPIENTIA의 뜻(knowing a lot and making good choices)에 맞는 단어 wisdom을 쓴다.",
         "skill": "vocabulary",
         "expressions": [
-          "Wisdom is knowing a lot and making good choices.",
-          "The owl was the Roman bird of wisdom."
+          "WISDOM — knowing a lot and making good choices.",
+          "The Romans said the owl was the bird of SAPIENTIA."
         ]
       },
       "play": {

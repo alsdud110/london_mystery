@@ -84,7 +84,7 @@ void main() {
       appRef.read(routerProvider).go(Routes.seasons);
       await wait(t, const Duration(milliseconds: 1400));
       await reveal(t, parisFile());
-      expect(find.text('SEALED FILE'), findsOneWidget);
+      expect(find.descendant(of: parisFile(), matching: find.text('SEALED FILE')), findsOneWidget);
       expect(shows(t, paris), isFalse);
       expect(shows(t, london), isTrue, reason: 'Season 1\'s file keeps its cover');
       await wait(t, const Duration(seconds: 3));

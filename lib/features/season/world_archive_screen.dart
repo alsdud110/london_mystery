@@ -42,7 +42,7 @@ enum SeasonFileState {
 /// (see [SeasonAvailability]); nothing of it is saved.
 @immutable
 class SeasonFile {
-  const SeasonFile({required this.availability, required this.state, required this.current, this.before});
+  const SeasonFile({required this.availability, required this.state, required this.current, this.before, this.beforeNamed = true});
 
   final SeasonAvailability availability;
   final SeasonFileState state;
@@ -52,6 +52,18 @@ class SeasonFile {
 
   /// The season whose last case unseals this one (null: the first season).
   final Season? before;
+
+  /// Whether [before] is unsealed itself, so its name may be said: a season
+  /// two files on (Rome while London is under way) never names the one
+  /// between, whose city the season before it reveals at its end.
+  final bool beforeNamed;
+
+  /// What unseals this file, as its note and its toast say it.
+  String? get unsealNote => before == null
+      ? null
+      : beforeNamed
+      ? 'Solve ${before!.title} to unseal this file.'
+      : 'Solve the season before it to unseal this file.';
 
   Season get season => availability.season;
 
@@ -74,6 +86,7 @@ final seasonFilesProvider = Provider<List<SeasonFile>>((ref) {
           availability: a,
           current: seasons[i].id == playing,
           before: i == 0 ? null : seasons[i - 1],
+          beforeNamed: i == 0 || ref.watch(seasonAvailabilityProvider(seasons[i - 1].id))?.isUnlocked == true,
           state: switch (a.status) {
             SeasonStatus.locked => SeasonFileState.sealed,
             SeasonStatus.comingSoon => SeasonFileState.comingSoon,
@@ -142,12 +155,10 @@ class _WorldArchiveScreenState extends ConsumerState<WorldArchiveScreen> with Si
 
   /// Why a file does not open (it is sealed, or still being prepared).
   void _explain(SeasonFile file) {
-    final before = file.before;
+    final note = file.unsealNote;
     showGameToast(
       context,
-      file.state == SeasonFileState.sealed && before != null
-          ? 'Solve ${before.title} to unseal this file.'
-          : 'This file is still being prepared.',
+      file.state == SeasonFileState.sealed && note != null ? note : 'This file is still being prepared.',
       glyph: file.state == SeasonFileState.sealed ? InkGlyph.lock : InkGlyph.seal,
     );
   }
@@ -442,7 +453,7 @@ class _SealedFile extends StatelessWidget {
                 Text('SEALED FILE', style: AppText.placeTitle(size: 20, color: AppColors.locked)),
                 if (before != null) ...[
                   const SizedBox(height: AppSpace.xs),
-                  Text('Solve ${before.title} to unseal this file.', style: AppText.caption(color: AppColors.inkBrown)),
+                  Text(file.unsealNote!, style: AppText.caption(color: AppColors.inkBrown)),
                 ],
               ],
             ),

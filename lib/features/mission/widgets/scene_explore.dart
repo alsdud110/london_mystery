@@ -12,6 +12,7 @@ import '../../../core/utils/audio_service.dart';
 import '../../../data/models/investigation.dart' show InvestigationSpot;
 import '../../../data/models/mission.dart';
 import '../../../data/models/scene_explore.dart';
+import '../../../widgets/display_sized_image.dart';
 import '../../../widgets/detective_tips.dart';
 import '../../../widgets/game_button.dart';
 import '../../../widgets/glossary_text.dart';
@@ -19,6 +20,7 @@ import '../../../widgets/ink_icon.dart';
 import '../../../widgets/letter_card.dart';
 import '../../../widgets/paper.dart';
 import '../../../widgets/paper_background.dart';
+import '../../../widgets/scroll_more_cue.dart';
 import '../../game/game_providers.dart';
 import 'investigation_search.dart' show PencilSlip, SearchTapRing, TapGuide;
 import 'question_widgets.dart' show ShakeOnChange;
@@ -908,7 +910,10 @@ class _ChoicePageState extends State<_ChoicePage> {
                 ),
               ),
               Expanded(
-                child: SingleChildScrollView(
+                // On a small phone the last pictures and their names are
+                // below the fold: said, never squeezed (the Rome integration).
+                child: ScrollMoreCue(
+                  child: SingleChildScrollView(
                   key: const ValueKey('explore-choice-scroll'),
                   padding: const EdgeInsets.fromLTRB(AppSpace.screen, AppSpace.sm, AppSpace.screen, AppSpace.lg),
                   child: Column(
@@ -950,6 +955,7 @@ class _ChoicePageState extends State<_ChoicePage> {
                       DetectiveTipNotes(hints: m.hints, revealed: widget.hintsShown, compact: true),
                     ],
                   ),
+                ),
                 ),
               ),
               DecoratedBox(
@@ -1044,7 +1050,8 @@ class _PosterTile extends ConsumerWidget {
                     aspectRatio: aspect,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(2),
-                      child: Image.asset(picture.picture, fit: BoxFit.cover, excludeFromSemantics: true),
+                      // The tile has the picture's own shape: decoded at its size.
+                      child: DisplaySizedImage(picture.picture, fit: BoxFit.cover, excludeFromSemantics: true),
                     ),
                   ),
                   if (selected)

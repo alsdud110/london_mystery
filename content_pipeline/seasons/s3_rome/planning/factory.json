@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "spentUsd": 0,
+  "reviewed": [],
+  "rejected": [],
+  "runs": [],
+  "before": [
+    {
+      "step": "STEP 3-12B",
+      "calls": 3,
+      "spentUsd": 0.1381
+    },
+    {
+      "step": "STEP 3-15B B1, B2, flower_market",
+      "spentUsd": 1.1537,
+      "note": "usage at list prices, from the B1/B2 records (their ledger was lost with asset_work)"
+    },
+    {
+      "step": "STEP 3-15B B3",
+      "calls": 17,
+      "spentUsd": 0.8591
+    },
+    {
+      "step": "Rome integration (cover, map, 11 evidence, 1 redrawn)",
+      "calls": 14,
+      "spentUsd": 0.751,
+      "conservativeUsd": 1.3985,
+      "budgetUsd": 5
+    }
+  ],
+  "note": "Rome was carried by hand through the same tools before the factory existed (the steps above); the factory now finds it whole: every picture the game shows is in the game, everything measured, generated and registered.",
+  "budgetUsd": 0.0
+}

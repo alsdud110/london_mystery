@@ -119,8 +119,6 @@ void main() {
   });
 
   group('played in the real app', () {
-    setUp(registerRomeSlice);
-    tearDown(unregisterRomeSlice);
 
     Future<(ProviderContainer, SharedPreferences, Future<ProviderContainer> Function())> open(WidgetTester t, Size size, double ratio) async {
       WidgetController.hitTestWarningShouldBeFatal = true; // every tap must land
@@ -133,7 +131,10 @@ void main() {
       Future<ProviderContainer> start() async {
         final c = ProviderContainer(overrides: [...await testOverridesFor(prefs), ...romeSliceOverrides()]);
         addTearDown(c.dispose);
-        c.read(seasonPreviewSwitchProvider.notifier).set(true); // the slice opens unreleased
+        c.read(seasonPreviewSwitchProvider.notifier).set(true); // Rome opens without Paris solved
+        // Case 05 of the season in the game opens after Case 04: operator
+        // access (test builds only) opens it directly, as the slice did.
+        c.read(operatorAccessSwitchProvider.notifier).set(true);
         return c;
       }
 

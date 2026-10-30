@@ -34,8 +34,6 @@ void main() {
   final episodes = romeEpisodes();
 
   testWidgets('Rome Cases 01–12, the pictures on screen, captured', (t) async {
-    registerRome();
-    addTearDown(unregisterRome);
     final c = ProviderContainer(overrides: [...await testOverrides(), ...romeOverrides()]);
     addTearDown(c.dispose);
     final ctrl = c.read(gameControllerProvider.notifier);
@@ -175,6 +173,19 @@ void main() {
 
     final [e01, _, e03, e04, _, e06, e07, e08, e09, e10, e11, e12] = episodes;
 
+    // ── The season in the game (the Rome integration): its board with its
+    // cover, the archive, and Case 01's own Mission Map.
+    c.read(routerProvider).go(Routes.season);
+    await pause(4000);
+    await shot('00a_season_board_cover');
+    c.read(routerProvider).go(Routes.seasons);
+    await pause(3000);
+    await shot('00b_archive');
+    await openCase(e01);
+    c.read(routerProvider).go(Routes.map);
+    await pause(3500);
+    await shot('00c_rome_mission_map');
+
     // ── Case 01 M3: the map hall, its look round.
     await openCase(e01);
     answered(e01.missions[0]);
@@ -258,5 +269,15 @@ void main() {
     await openCase(e12);
     answered(e12.missions[0]);
     await toPlace(e12.missions[1], before: '24_c12_m2_place_roman_library');
+
+    // ── The notebook of a case with evidence pictures (Case 07: the business
+    // card; Case 08: Livia's drawing), after their missions.
+    await openCase(e08);
+    for (final m in e08.missions) {
+      answered(m);
+    }
+    c.read(routerProvider).go(Routes.notebook);
+    await pause(3000);
+    await shot('25_c08_notebook_evidence');
   });
 }

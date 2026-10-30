@@ -19,8 +19,8 @@ A season planned with `tool/season_planner` (STEP 3-11) also has
 story bible and quality report): see `tool/season_planner/README.md`.
 
 - `s9_sandbox`: the pipeline's trial cases (STEP 3-6 to 3-9).
-- `s3_rome`: "The Broken Map of Rome", a trial of the season planner, all
-  twelve cases planned by Claude Code. Not the decided Season 3; its pictures
-  are not made.
+- `s3_rome`: "The Broken Map of Rome", Season 3: all twelve cases planned by
+  Claude Code, drawn by the asset pipeline and in the game since the Rome
+  integration (`lib/data/generated/s3_rome/`, `tool/season_factory/`).
 
 The Paris plans the tests use are fixtures under `test/fixtures/season_gen/`.

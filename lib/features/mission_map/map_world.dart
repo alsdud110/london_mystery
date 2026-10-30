@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' show Offset, Size;
 
+import '../../data/generated/generated_season_art.g.dart';
 import '../../data/mock/season_catalog.dart';
 import '../../data/models/episode.dart';
 import '../../data/models/mission.dart';
@@ -100,8 +101,9 @@ class SeasonMap {
   /// `MapPrint.ofSeason`). A season without one is not ready:
   /// it cannot be entered (see `SeasonAvailability`), and no other season's
   /// map ever stands in for it. A map alone opens no season: it needs its
-  /// cases too.
-  static const bySeason = {SeasonIds.london: london, SeasonIds.paris: paris};
+  /// cases too. The seasons made from plans (Rome on) bring theirs
+  /// ([generatedSeasonMaps], `generate_season.dart --target game`).
+  static const bySeason = <String, SeasonMap>{SeasonIds.london: london, SeasonIds.paris: paris, ...generatedSeasonMaps};
 
   /// The map of season [seasonId], or null while it has none.
   static SeasonMap? forSeason(String seasonId) => bySeason[seasonId];
@@ -121,6 +123,29 @@ class SeasonMap {
     }
     return null;
   }
+}
+
+/// A landmark of a season made from its plans (Rome on): one of its
+/// locations, drawn on its map artwork, at the centre of its drawing
+/// (fractions of the artwork), measured on the file (season plan `art.map`).
+/// Its places show their own pictures.
+class SeasonLandmark implements MapLandmark {
+  const SeasonLandmark(this.id, this.name, this.at);
+
+  /// The location's id in its season plan (`locId`).
+  final String id;
+
+  @override
+  final String name;
+
+  @override
+  final Offset at;
+
+  @override
+  Artwork? get artwork => null;
+
+  @override
+  String toString() => 'SeasonLandmark($id)';
 }
 
 /// The landmarks drawn on the Paris map artwork (`ArtAssets.parisMap`), at

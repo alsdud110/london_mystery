@@ -121,12 +121,14 @@ void main() {
   group('season ids and content', () {
     test('Season 1 keeps its cases, ids and content; Season 2 has its Cases 01 to 03, released', () {
       final seasons = container.read(seasonsProvider);
-      expect([for (final s in seasons) s.id], [SeasonIds.london, SeasonIds.paris]);
+      expect([for (final s in seasons) s.id], [SeasonIds.london, SeasonIds.paris, SeasonIds.rome], reason: 'Rome since the Rome integration');
       expect(seasons.first.title, 'Shadows over London');
       expect(seasons.first.label, 'SEASON ONE');
-      expect(seasons.last.title, 'Paris Stands Still');
-      expect(seasons.last.tagline, 'ONE STOLEN HOUR');
-      expect(seasons.last.label, 'SEASON TWO');
+      expect(seasons[1].title, 'Paris Stands Still');
+      expect(seasons[1].tagline, 'ONE STOLEN HOUR');
+      expect(seasons[1].label, 'SEASON TWO');
+      expect(seasons.last.title, 'The Broken Map of Rome');
+      expect(seasons.last.label, 'SEASON THREE');
 
       // Season 1 is what is played; its catalog is the twelve cases as before.
       expect(container.read(selectedSeasonIdProvider), SeasonIds.london);
@@ -151,7 +153,7 @@ void main() {
 
     test('every season orders its own cases from 01, season by season', () {
       final ordered = MockEpisodeRepository.inPlayOrder([parisCase(13), ...MockEpisodeRepository.bundled()]);
-      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10', 's2_ep11', 's2_ep12', 's2_ep13']);
+      expect([for (final e in ordered) e.id], [...season1Ids, 's2_ep01', 's2_ep02', 's2_ep03', 's2_ep04', 's2_ep05', 's2_ep06', 's2_ep07', 's2_ep08', 's2_ep09', 's2_ep10', 's2_ep11', 's2_ep12', 's2_ep13', for (var n = 1; n <= 12; n++) 's3_ep${n.toString().padLeft(2, '0')}']);
     });
 
     test('mission ids are never shared between seasons, so no reward is paid twice', () {

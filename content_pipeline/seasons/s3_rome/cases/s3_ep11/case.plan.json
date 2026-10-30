@@ -461,8 +461,8 @@
         "objective": "요일과 시각이 섞인 증거 목록을 시간순으로 놓아 범행 계획 전체를 재구성한다.",
         "skill": "sentenceMeaning",
         "expressions": [
-          "On Tuesday at 2 PM, the piece left the lab.",
-          "On Thursday at 11:50 PM, the box came to the site."
+          "Tuesday, 2 PM — the real piece leaves the museum lab.",
+          "Thursday, 11:50 PM — a heavy box comes to the site."
         ]
       },
       "play": {
@@ -580,7 +580,7 @@
       "skill": "sentenceMeaning",
       "expressions": [
         "If people saw it, the city would stop my car park.",
-        "I did not want to lose my money."
+        "What did Signor Valli not want to lose?"
       ]
     },
     "play": {

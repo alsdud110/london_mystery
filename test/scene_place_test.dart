@@ -65,7 +65,7 @@ void main() {
     });
 
     test('every mission of Seasons 1 and 2 names its Artwork as before, and round-trips unchanged', () {
-      final missions = [for (final e in MockEpisodeRepository.bundled()) ...e.allMissions];
+      final missions = [for (final e in handMadeBundled()) ...e.allMissions];
       expect(missions, isNotEmpty);
       for (final m in missions) {
         final json = m.toJson();
@@ -77,7 +77,7 @@ void main() {
         expect(MissionScene.fromJson(json), ArtworkScene(art), reason: m.id);
         expect(Mission.fromJson(json, finale: m.finale).scene, art, reason: m.id);
       }
-      for (final s in SeasonCatalog.all) {
+      for (final s in SeasonCatalog.all.where((s) => handMadeSeason(s.id))) {
         for (final MapEntry(key: id, value: json) in ScenePlaceCheck.scenesOf(s).entries) {
           expect(MissionScene.fromJson(json), isA<ArtworkScene>(), reason: id);
         }
@@ -100,9 +100,13 @@ void main() {
   });
 
   group('the checks', () {
-    test("the game's seasons: no places of their own, nothing wrong, nothing to bundle", () {
+    test("the game's seasons: London and Paris no places of their own; Rome's its own; nothing wrong, nothing to bundle", () {
       for (final s in SeasonCatalog.all) {
-        expect(s.places, isEmpty, reason: s.id);
+        // A season made from its plans (Rome on) registers its places as data.
+        expect(s.places.isEmpty, handMadeSeason(s.id), reason: s.id);
+        for (final id in s.places.keys) {
+          expect(ScenePlaceIds.isOf(id, s.id), isTrue, reason: id);
+        }
       }
       expect(ScenePlaceCheck.problems(), isEmpty);
       expect(placeAssetProblems({for (final s in SeasonCatalog.all) ...s.places}), isEmpty);
@@ -184,6 +188,6 @@ void main() {
   });
 
   test('Season ids are as before', () {
-    expect([for (final s in SeasonCatalog.all) s.id], [SeasonIds.london, SeasonIds.paris]);
+    expect([for (final s in SeasonCatalog.all) s.id], [SeasonIds.london, SeasonIds.paris, SeasonIds.rome]);
   });
 }

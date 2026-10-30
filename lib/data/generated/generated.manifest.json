@@ -1,0 +1,12 @@
+{
+  "generator": "generate_case.dart",
+  "generatorVersion": 4,
+  "target": "gameRegistry",
+  "seasons": [
+    "s3_rome"
+  ],
+  "outputs": {
+    "generated_seasons.g.dart": "sha256:b720046fc56cf00ab6e146d5618764e96369a95fcb7be03e44e1ca7ff0855804",
+    "generated_season_art.g.dart": "sha256:3f83f8a6a2c057b97a26f0ebd3cd46839da50abed4c1bbd9cd402d2d27123243"
+  }
+}

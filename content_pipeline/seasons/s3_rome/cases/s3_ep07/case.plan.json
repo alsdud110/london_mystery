@@ -257,8 +257,8 @@
         "objective": "후원자의 진술을 이전 증거(출입 기록)와 비교해 거짓임을 판단한다.",
         "skill": "sentenceMeaning",
         "expressions": [
-          "I saw Professor Aldo carry a heavy box.",
-          "Is he telling the truth?"
+          "He carried a heavy box out of the museum!",
+          "Is Signor Valli telling the truth?"
         ]
       },
       "play": {
@@ -390,7 +390,7 @@
       "objective": "오늘 찾은 단서(장소 수, 요일 번호, 글자 수)로 427을 맞춘다.",
       "skill": "vocabulary",
       "expressions": [
-        "Which day of the week is in my code?",
+        "Which day is in my code?",
         "How many letters are in my code word?"
       ]
     },

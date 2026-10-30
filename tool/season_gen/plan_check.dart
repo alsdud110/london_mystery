@@ -73,6 +73,31 @@ abstract final class PlanCheck {
     for (final (i, f) in plan.figures.indexed) {
       inSeason('\$.figures[$i].after', f.after);
     }
+
+    // The season map (the Rome integration): a place's location and a
+    // landmark's are the season's own; every landmark on its artwork, one a
+    // location; every place on the map once the map is planned.
+    for (final (i, p) in plan.places.indexed) {
+      if (p.locId case final l? when !locIds.contains(l)) bad('\$.places[$i].locId', '$l is not a location of the season plan');
+    }
+    if (plan.art?.map case final map?) {
+      final drawn = <String>{};
+      for (final (i, l) in map.landmarks.indexed) {
+        final at = '\$.art.map.landmarks[$i]';
+        if (!locIds.contains(l.locId)) bad('$at.locId', '${l.locId} is not a location of the season plan');
+        if (!drawn.add(l.locId)) bad('$at.locId', '${l.locId} given twice');
+        if (l.at.x < 0 || l.at.y < 0 || l.at.x > map.width || l.at.y > map.height) {
+          bad('$at.at', '${l.at.toJson()} is off the ${map.width}x${map.height} map');
+        }
+      }
+      for (final (i, p) in plan.places.indexed) {
+        if (p.locId == null) {
+          bad('\$.places[$i].locId', 'missing: ${p.placeId} must be on the season map (art.map)');
+        } else if (!drawn.contains(p.locId)) {
+          bad('\$.places[$i].locId', '${p.locId} has no landmark on the season map (art.map.landmarks)');
+        }
+      }
+    }
     return out;
   }
 

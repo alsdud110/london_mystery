@@ -11,6 +11,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/audio_service.dart';
 import '../../../data/models/dialogue.dart';
+import '../../../widgets/display_sized_image.dart';
 import '../../../widgets/art_assets.dart';
 import '../../../widgets/detective_tips.dart';
 import '../../../widgets/game_button.dart';
@@ -574,7 +575,7 @@ class _PrintedPortrait extends StatelessWidget {
   Widget build(BuildContext context) {
     return PaperSheet(
       padding: const EdgeInsets.all(AppSpace.xs),
-      child: Image.asset(
+      child: DisplaySizedImage(
         speaker.portrait,
         fit: BoxFit.contain,
         excludeFromSemantics: true,
@@ -1453,7 +1454,7 @@ class _Face extends StatelessWidget {
             maxHeight: h,
             child: Transform.translate(
               offset: Offset(d / 2 - speaker.face.dx * w, d / 2 - speaker.face.dy * h),
-              child: Image.asset(
+              child: DisplaySizedImage(
                 speaker.portrait,
                 width: w,
                 height: h,

@@ -25,6 +25,7 @@
     "languageArc": { "$ref": "common.schema.json#/$defs/lines" },
     "places": { "type": "array", "items": { "$ref": "#/$defs/place" } },
     "storyGreeting": { "type": "boolean" },
+    "art": { "$ref": "#/$defs/art" },
     "notes": { "$ref": "common.schema.json#/$defs/lines" }
   },
   "$defs": {
@@ -43,6 +44,68 @@
           "properties": {
             "width": { "type": "integer", "minimum": 1 },
             "height": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "locId": { "description": "The season location it is in (locations[].locId): its missions are pinned at that location's landmark on the season map.", "$ref": "common.schema.json#/$defs/localId" }
+      }
+    },
+    "pixels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "point": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } },
+    "alignment": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": -1, "maximum": 1 } },
+    "art": {
+      "description": "The season's cover, map and World Map city, as the game registers them beside its content (SeasonCover, SeasonMap, WorldCity): made by generate_case.dart --target game.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cover": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "pixels"],
+          "properties": {
+            "file": { "$ref": "common.schema.json#/$defs/assetFile" },
+            "pixels": { "$ref": "#/$defs/pixels" },
+            "archiveLook": { "$ref": "#/$defs/alignment" },
+            "crop": { "$ref": "#/$defs/alignment" },
+            "push": { "$ref": "#/$defs/alignment" }
+          }
+        },
+        "map": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "pixels", "landmarks"],
+          "properties": {
+            "file": { "$ref": "common.schema.json#/$defs/assetFile" },
+            "pixels": { "$ref": "#/$defs/pixels" },
+            "measuredOn": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+            "landmarks": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["locId", "at"],
+                "properties": { "locId": { "$ref": "common.schema.json#/$defs/localId" }, "at": { "$ref": "#/$defs/point" } }
+              }
+            }
+          }
+        },
+        "worldCity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cityId", "latitude", "longitude"],
+          "properties": {
+            "cityId": { "$ref": "common.schema.json#/$defs/localId" },
+            "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+            "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+            "mapAt": { "$ref": "#/$defs/point" }
           }
         }
       }

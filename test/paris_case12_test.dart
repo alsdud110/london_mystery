@@ -19,6 +19,7 @@ import 'package:world_mystery/data/models/garden_puzzles.dart' show TowerTestSce
 import 'package:world_mystery/data/models/mission.dart';
 import 'package:world_mystery/data/models/river_puzzles.dart' show DrawnEvidenceArt;
 import 'package:world_mystery/data/models/season.dart';
+import 'package:world_mystery/features/game/game_providers.dart' show SeasonStatus, seasonAvailabilityProvider, selectedSeasonIdProvider;
 import 'package:world_mystery/data/models/season_progress.dart';
 import 'package:world_mystery/data/models/star_puzzles.dart' show HourRecordScene;
 import 'package:world_mystery/data/repositories/episode_repository.dart';
@@ -438,19 +439,29 @@ void main() {
         await play.shot('last_lines');
         await tapText(t, 'SEE MY CASE REPORT', after: const Duration(milliseconds: 4000));
 
-        // ── Case Closed: the season complete; on to the Archives ────────
-        await reveal(t, find.byKey(const ValueKey('season-complete')));
-        expect(find.text('SEASON TWO COMPLETE'), findsOneWidget);
+        // ── Case Closed: the season complete; Rome next (the Rome
+        // integration), as Paris came after London; on to the Archives ────
+        await reveal(t, find.byKey(const ValueKey('finale-next-season')));
+        expect(find.text('SEASON THREE · THE BROKEN MAP OF ROME'), findsOneWidget);
+        expect(find.byKey(const ValueKey('go-to-next-season')), findsOneWidget);
+        expect(find.text('GO TO ROME'), findsOneWidget);
         await play.shot('season_complete');
         expect(ref.read(seasonOverviewProvider).complete, isTrue);
         expect(ref.read(seasonOverviewProvider).solvedCount, 12);
+        expect(ref.read(seasonAvailabilityProvider(SeasonIds.rome))!.status, SeasonStatus.open, reason: 'Rome opened by Paris\'s Case 12');
+        await reveal(t, find.text('INVESTIGATION BOARD').first);
         await tapText(t, 'INVESTIGATION BOARD', after: const Duration(milliseconds: 3500));
-        await reveal(t, find.byKey(const ValueKey('complete-to-archives')));
+        // Paris's board, complete: on to Rome from here, as London's goes on to Paris.
+        await reveal(t, find.byKey(const ValueKey('begin-next-season')));
         expect(find.text('COMPLETED'), findsOneWidget);
+        expect(find.text('GO TO ROME'), findsOneWidget);
+        expect(find.byKey(const ValueKey('complete-to-archives')), findsNothing, reason: 'not the last season any more');
         await play.shot('board_complete');
-        await play.tapKey('complete-to-archives', after: const Duration(milliseconds: 2500));
-        expect(router.routerDelegate.currentConfiguration.uri.path, Routes.seasons);
-        await play.shot('archives');
+        await play.tapKey('begin-next-season', after: const Duration(milliseconds: 3000));
+        expect(ref.read(selectedSeasonIdProvider), SeasonIds.rome);
+        expect(router.routerDelegate.currentConfiguration.uri.path, Routes.season);
+        expect(find.text('THE BROKEN MAP OF ROME'), findsOneWidget, reason: "Rome's own board");
+        await play.shot('rome_board');
         await wait(t, const Duration(seconds: 2));
       });
     }

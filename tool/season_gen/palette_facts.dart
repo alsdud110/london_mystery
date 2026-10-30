@@ -279,7 +279,7 @@ abstract final class PaletteFacts {
       PaletteMode.requiresAssets,
       engines: [
         PaletteEngine('CaseTalk', 'talks', {'examine'}, {PlanSurface.mission, PlanSurface.finalMission}),
-        PaletteEngine('CaseTalk', 'talkMissions', {'examine'}, {PlanSurface.mission}, role: PaletteRole.optional),
+        PaletteEngine('CaseTalk', 'talkMissions', {'examine', 'multipleChoice', 'imageChoice', 'sequence', 'wordInput', 'letterLock', 'finalCode'}, {PlanSurface.mission}, role: PaletteRole.optional),
       ],
       requiredData: ['Mission.answer', 'TalkScene.id', 'TalkScene.speaker', 'TalkScene.goal', 'TalkScene.opening', 'TalkScene.questions', 'TalkScene.presents', 'TalkPresent.prompt', 'TalkPresent.choices', 'TalkPresent.accepted', 'TalkPresent.beat', 'TalkPresent.miss', 'TalkScene.finishWhen', 'TalkScene.answer'],
       requiredAssets: ['TalkSpeaker.portraits', 'TalkScene.background'],

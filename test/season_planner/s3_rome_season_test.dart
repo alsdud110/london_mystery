@@ -21,7 +21,7 @@ import '../../tool/season_planner/season_quality.dart';
 /// `tool/season_planner`, checked whole: the planner's checks, the real
 /// generator, and the game's own `SeasonContentValidator` on the cases'
 /// game JSON. Since STEP 3-15B B3 every picture a case shows is made and the
-/// season is generated whole; the 16 still planned (evidence cards, the
+/// season is in the game (the Rome integration); the 3 still planned (the
 /// cover, the map, the owl scene, the prologue, the gold tiles) are shown by
 /// no generated case yet.
 void main() {
@@ -91,8 +91,8 @@ void main() {
       // the six of Cases 01–04, B2 the five of Cases 06–08, B3 the last five
       // (Cases 09–12). Nothing stops the generator now.
       expect([for (final p in season.places) if (!File(p.file).existsSync()) p.placeId], isEmpty);
-      final made = CaseGenerator.sandbox(seasonPath: '$dir/season.plan.json', casePaths: SeasonCases.of('$dir/season.plan.json'));
-      expect(made.files, hasLength(15));
+      final made = CaseGenerator.sandbox(seasonPath: '$dir/season.plan.json', casePaths: SeasonCases.of('$dir/season.plan.json'), target: 'game');
+      expect(made.files, hasLength(17), reason: "the sandbox's 15, its SeasonContent and its art");
       final planned = {for (final a in assets) a['outputPath']};
       for (final c in cases) {
         for (final m in c.allMissions) {
@@ -103,8 +103,8 @@ void main() {
         }
       }
       // Written by plan_season.dart generate, as these plans make it now.
-      expect(GeneratedFiles.stale('test/sandbox/generated/s3_rome', made.files), isEmpty,
-          reason: 'run: dart run tool/season_planner/plan_season.dart generate $dir');
+      expect(GeneratedFiles.stale(made.defaultDir, made.files), isEmpty,
+          reason: 'run: dart run tool/season_planner/plan_season.dart generate $dir --target game');
     });
 
     test('its game JSON is read by the game, and the game\'s validator finds nothing wrong', () {
@@ -143,7 +143,7 @@ void main() {
       );
       final issues = SeasonContentValidator.validate(content);
       expect(issues, isEmpty, reason: issues.join('\n'));
-      expect(SeasonCatalog.all.any((s) => s.id == season.seasonId), isFalse, reason: 'a trial: never in the catalog');
+      expect(SeasonCatalog.all.any((s) => s.id == season.seasonId), isTrue, reason: 'Season 3 of the game since the Rome integration');
     });
   });
 
@@ -166,6 +166,9 @@ void main() {
         'char_bruno_base', 'char_bruno_site', 'char_pia_base', //
         'ev_real_piece', 'ev_business_card', 'ev_yellow_helmet', //
         'room_bath', 'room_theatre', 'helmet_white_crane', 'helmet_yellow_plain', 'stone_lion', 'stone_street',
+        // The Rome integration: the cover, the map, the evidence cards.
+        'cover', 'city_map', 'ev_night_log', 'ev_owl_card', 'ev_brass_key', 'ev_dropped_pass', 'ev_plaster_copy', //
+        'ev_order_card', 'ev_aldo_photo', 'ev_loan_page', 'ev_livia_drawing', 'ev_city_plan', 'ev_owl_mosaic',
       };
       for (final a in assets) {
         final isMade = made.contains('${a['assetId']}'.split('.').last);
@@ -189,12 +192,12 @@ void main() {
       }
     });
 
-    test('the planner calls no API, and the cost is an estimate; the 47 made by the asset pipeline are counted', () {
+    test('the planner calls no API, and the cost is an estimate; the 60 made by the asset pipeline are counted', () {
       final a = report.summary['assets'] as Map;
       expect(report.summary['apiCalls'], 0);
       expect(a['estimatedUsd'], isA<double>());
-      expect(a['generated'], 47);
-      expect(a['planned'], 16);
+      expect(a['generated'], 60);
+      expect(a['planned'], 3, reason: 'the prologue, the gold tiles and the owl scene: no screen shows them');
       expect(Directory(dir).listSync(recursive: true).whereType<File>().any((f) => f.path.endsWith('image_manifest.json')), isFalse);
     });
   });

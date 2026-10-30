@@ -176,7 +176,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "capitoline_museums"
     },
     {
       "placeId": "s3_rome.map_hall",
@@ -184,7 +185,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "capitoline_museums"
     },
     {
       "placeId": "s3_rome.trevi_fountain",
@@ -192,7 +194,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "trevi_fountain"
     },
     {
       "placeId": "s3_rome.flower_market",
@@ -200,7 +203,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "campo_de_fiori"
     },
     {
       "placeId": "s3_rome.pantheon_hall",
@@ -208,7 +212,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "pantheon"
     },
     {
       "placeId": "s3_rome.rotonda_bookshop",
@@ -216,7 +221,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "pantheon"
     },
     {
       "placeId": "s3_rome.cat_ruins",
@@ -224,7 +230,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "torre_argentina"
     },
     {
       "placeId": "s3_rome.cast_workshop",
@@ -232,7 +239,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "torre_argentina"
     },
     {
       "placeId": "s3_rome.navona_square",
@@ -240,7 +248,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "piazza_navona"
     },
     {
       "placeId": "s3_rome.lecture_hall",
@@ -248,7 +257,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "rome_university"
     },
     {
       "placeId": "s3_rome.spanish_steps",
@@ -256,7 +266,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "spanish_steps"
     },
     {
       "placeId": "s3_rome.tiber_bridge",
@@ -264,7 +275,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "tiber_island"
     },
     {
       "placeId": "s3_rome.restoration_lab",
@@ -272,7 +284,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "capitoline_museums"
     },
     {
       "placeId": "s3_rome.forum_view",
@@ -280,7 +293,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "roman_forum"
     },
     {
       "placeId": "s3_rome.map_archive",
@@ -288,7 +302,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "rome_university"
     },
     {
       "placeId": "s3_rome.civetta_square",
@@ -296,7 +311,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "piazza_della_civetta"
     },
     {
       "placeId": "s3_rome.site_office",
@@ -304,7 +320,8 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "piazza_della_civetta"
     },
     {
       "placeId": "s3_rome.roman_library",
@@ -312,13 +329,132 @@
       "pixels": {
         "width": 1536,
         "height": 1024
-      }
+      },
+      "locId": "piazza_della_civetta"
     }
   ],
+  "art": {
+    "cover": {
+      "file": "assets/seasons/season_03_rome/cover/season3_cover_rome.png",
+      "pixels": {
+        "width": 1024,
+        "height": 1536
+      },
+      "archiveLook": [
+        0,
+        0.15
+      ],
+      "crop": [
+        0.1,
+        0
+      ],
+      "push": [
+        0,
+        -0.1
+      ]
+    },
+    "map": {
+      "file": "assets/seasons/season_03_rome/locations/map/rome_map.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "measuredOn": "sha256:5bf9329343cc935e0b56cffa8d1bdf85017602fb2cb5d2f49f0591291eea1a38",
+      "landmarks": [
+        {
+          "locId": "capitoline_museums",
+          "at": [
+            860,
+            790
+          ]
+        },
+        {
+          "locId": "trevi_fountain",
+          "at": [
+            785,
+            235
+          ]
+        },
+        {
+          "locId": "campo_de_fiori",
+          "at": [
+            470,
+            485
+          ]
+        },
+        {
+          "locId": "pantheon",
+          "at": [
+            680,
+            395
+          ]
+        },
+        {
+          "locId": "torre_argentina",
+          "at": [
+            735,
+            545
+          ]
+        },
+        {
+          "locId": "piazza_navona",
+          "at": [
+            365,
+            265
+          ]
+        },
+        {
+          "locId": "rome_university",
+          "at": [
+            1340,
+            360
+          ]
+        },
+        {
+          "locId": "spanish_steps",
+          "at": [
+            1070,
+            210
+          ]
+        },
+        {
+          "locId": "tiber_island",
+          "at": [
+            235,
+            760
+          ]
+        },
+        {
+          "locId": "roman_forum",
+          "at": [
+            1150,
+            620
+          ]
+        },
+        {
+          "locId": "piazza_della_civetta",
+          "at": [
+            530,
+            640
+          ]
+        }
+      ]
+    },
+    "worldCity": {
+      "cityId": "rome",
+      "latitude": 41.9,
+      "longitude": 12.5,
+      "mapAt": [
+        1038.5,
+        330
+      ]
+    }
+  },
   "notes": [
     "STEP 3-11 trial season, planned by Claude Code with tool/season_planner (PLAYBOOK.md) from the input 'Season 3, Rome'. Not a released season: never in SeasonCatalog, not the decided Season 3.",
     "Every place's picture is planned in assets.manifest.json and not made yet: the files above are where they will be written. No London or Paris picture stands in for them.",
     "Piazza della Civetta and its Roman library are made up for the story; every other place is a real place in Rome.",
-    "STEP 3-14: the twelve cases were redesigned for production (missions on pictures, talks, Discovery Moments, endings); still a trial, not in SeasonCatalog. No place was added or moved."
+    "STEP 3-14: the twelve cases were redesigned for production (missions on pictures, talks, Discovery Moments, endings); still a trial, not in SeasonCatalog. No place was added or moved.",
+    "Rome integration: every place is in a location (locId) for the season map; art holds the cover, the map (each landmark measured at the centre of its drawing on the made rome_map.png, a 50/100px grid overlay) and Rome on the World Map (its pin where WorldCities had it)."
   ]
 }

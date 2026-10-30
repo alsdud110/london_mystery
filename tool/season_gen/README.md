@@ -264,6 +264,24 @@ and the final's `combo_dial_lock`) are made (STEP 3-13 adds four on pictures, be
 fails; a generated file changed by hand, or one without its header, is never
 written over (`--force`); line endings are LF and read back CRLF-blind.
 
+## A season in the game (the Rome integration)
+
+`generate_season.dart --season <season.plan.json> --target game` makes the
+season whole as the app plays it: the same files in
+`lib/data/generated/<seasonId>/`, with its `SeasonContent`
+(`<seasonId>_content.g.dart`) and its art (`<seasonId>_art.g.dart`: its map
+and landmarks from `art.map`, every mission at its place's `locId`; its
+cover from `art.cover`; its World Map city from `art.worldCity`; its evidence
+pictures from its asset manifest), then the game's two lists of generated
+seasons (`GameRegistry`: `generated_seasons.g.dart` read by
+`SeasonCatalog.all`, `generated_season_art.g.dart` by `SeasonMap.bySeason`,
+`ArtAssets.seasonCovers`/`evidencePictures` and `WorldCities.all`). Every
+case of the season, its map drawn and measured on the file
+(`art.map.measuredOn`), else nothing is written. A season in the game is
+released; drafts say so in its manifest (`approved: false`). The season
+factory (`tool/season_factory/`) runs it; `test/generated_seasons_test.dart`
+checks and plays every season it made.
+
 ## A season of cases (STEP 3-9)
 
 | File | What |

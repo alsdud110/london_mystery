@@ -2,6 +2,7 @@ import 'dart:ui' show Offset;
 
 import 'package:flutter/foundation.dart';
 
+import '../../data/generated/generated_season_art.g.dart';
 import '../../data/models/season.dart';
 import '../../widgets/art_assets.dart';
 
@@ -83,7 +84,16 @@ abstract final class WorldCities {
     mapAt: Offset(1633 / 1983, 325 / 793),
   );
 
-  static const all = [london, paris, rome, tokyo, seoul];
+  /// The cities drawn on the map, a season's or coming soon.
+  static const _drawn = [london, paris, rome, tokyo, seoul];
+
+  /// Every city: one whose season is made from its plans (Rome on,
+  /// [generatedWorldCities]) takes its season in its own place in the
+  /// list; a new city goes after the ones drawn.
+  static final all = [
+    for (final c in _drawn) generatedWorldCities.where((g) => g.id == c.id).firstOrNull ?? c,
+    for (final g in generatedWorldCities) if (!_drawn.any((c) => c.id == g.id)) g,
+  ];
 
   /// The city of season [seasonId], or null.
   static WorldCity? ofSeason(String seasonId) {

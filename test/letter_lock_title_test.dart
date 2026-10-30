@@ -23,8 +23,13 @@ void main() {
   ));
 
   test("every letter lock of the game's seasons", () {
-    final locks = [for (final e in MockEpisodeRepository.bundled()) for (final m in e.allMissions) if (m.type == MissionType.letterLock) m.id];
-    expect(locks, ['s2_ep01_final'], reason: 'a new one names its lock (or is plain)');
+    final all = [for (final e in MockEpisodeRepository.bundled()) for (final m in e.allMissions) if (m.type == MissionType.letterLock) (e.seasonId, m)];
+    final handMade = [for (final (s, m) in all) if (s == 's2_paris' || s == 's1_london') m.id];
+    expect(handMade, ['s2_ep01_final'], reason: 'London and Paris: the one lock');
+    // The seasons made from their plans (Rome on): plain, or named by their own story.
+    for (final (s, m) in all.where((x) => x.$1 != 's2_paris' && x.$1 != 's1_london')) {
+      expect(m.lockTitle == null || !m.lockTitle!.contains('CLOCKMAKER'), isTrue, reason: '$s ${m.id}');
+    }
     expect(paris.lockTitle, "THE CLOCKMAKER'S LOCK");
   });
 

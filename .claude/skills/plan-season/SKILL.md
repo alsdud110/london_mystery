@@ -1,6 +1,6 @@
 ---
 name: plan-season
-description: Plan a whole new World Mystery season (12 cases, 3 acts) from just a season number and a city — story bible, SeasonPlan, 12 CasePlans, asset manifest, checks and report. Use when the user says things like "시즌 3 로마 제작해", "시즌 4 뉴욕 만들어", "plan season 5 in Tokyo", or asks to plan/write a new season's cases.
+description: Plan a whole new World Mystery season (12 cases, 3 acts) from just a season number and a city — story bible, SeasonPlan, 12 CasePlans, asset manifest, checks and report, no picture made. Use when the user asks only to plan or write a season's cases ("시즌 5 도쿄 기획만 해", "plan season 5 in Tokyo"). When they ask to make a season ("시즌 4 뉴욕 제작해", "이미지 예산 $10"), use create-season, which runs this planning first and then carries the season into the game.
 ---
 
 # Plan a season

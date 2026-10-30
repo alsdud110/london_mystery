@@ -345,8 +345,8 @@
         "objective": "요일 순서(Tuesday → Thursday → Friday)와 하루 안의 순서(morning → midnight)로 일기를 정리한다.",
         "skill": "vocabulary",
         "expressions": [
-          "On Tuesday, Signor Valli took the piece.",
-          "On Thursday night, he came to check the lights."
+          "Signor Valli took the piece out of the lab for poster photos.",
+          "Signor Valli came at 11 PM to \"check the lights\"."
         ]
       },
       "play": {
@@ -455,8 +455,8 @@
       "objective": "진짜와 복제품의 비교표에서 눈으로 볼 수 있는 차이(crack)를 찾아 글자 타일로 맞춘다.",
       "skill": "sentenceMeaning",
       "expressions": [
-        "The real piece has a crack shaped like a Y.",
-        "The copy has no crack."
+        "A crack shaped like a Y.",
+        "THE COPY: plaster, 4 kg, a street, an owl, no crack."
       ]
     },
     "play": {

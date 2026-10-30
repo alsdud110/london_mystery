@@ -426,8 +426,8 @@
         "objective": "찢어진 이름표 두 조각(VAL, LI)을 맞추고 명함과 비교해 주인의 성을 쓴다.",
         "skill": "vocabulary",
         "expressions": [
-          "The name strip is torn in two.",
-          "Put the pieces back together."
+          "Inside the helmet is a name strip, torn in two.",
+          "Put the torn name back together."
         ]
       },
       "play": {
@@ -541,7 +541,7 @@
         "skill": "sentenceMeaning",
         "expressions": [
           "Nobody may open it.",
-          "Thursday, 11:50 PM: one heavy box."
+          "THURSDAY, 11:50 PM — B. Valli. One heavy box."
         ]
       },
       "play": {
@@ -657,7 +657,7 @@
       "skill": "sentenceMeaning",
       "expressions": [
         "What is under the square?",
-        "Under the square, there is an old Roman library."
+        "What is under the square?"
       ]
     },
     "play": {
