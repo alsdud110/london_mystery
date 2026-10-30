@@ -5,6 +5,7 @@ import 'json_schema_lite.dart' show SchemaSet;
 import 'plan_files.dart';
 import 'plan_models.dart';
 import 'play_check.dart';
+import 'season_cases.dart';
 import 'validate_plan.dart' show checkJson;
 
 /// A case's words at each level (Rookie, Junior, Master): its
@@ -36,8 +37,12 @@ import 'validate_plan.dart' show checkJson;
 /// (`generate_case.dart`, `<caseId>_levels.g.dart`).
 ///
 ///     dart run tool/season_gen/case_levels.dart skeleton (<case.plan.json> | <season.plan.json>)...
-///     dart run tool/season_gen/case_levels.dart check --season <season.plan.json> <case.plan.json>...
-///     dart run tool/season_gen/case_levels.dart review <case.plan.json>...
+///     dart run tool/season_gen/case_levels.dart check --season <season.plan.json> [<case.plan.json>...]
+///     dart run tool/season_gen/case_levels.dart review (<case.plan.json> | <season.plan.json>)...
+///
+/// No case given to `check`, or a season plan given to `review`: every
+/// case of the season ([SeasonCases.of]), found by the tool itself, so no
+/// shell has to spread a `cases/*/` pattern (PowerShell does not).
 ///
 /// The season's own lines (its outro and finale): `season.levels.json`
 /// beside its plan ([SeasonLevels]), checked with every `check`.
@@ -74,7 +79,8 @@ void main(List<String> args) {
       for (final f in own) {
         stdout.writeln('  error    $f');
       }
-      for (final path in [for (final (j, a) in args.indexed) if (j > 0 && j != i && j != i + 1) a]) {
+      final given = [for (final (j, a) in args.indexed) if (j > 0 && j != i && j != i + 1) a];
+      for (final path in given.isEmpty ? SeasonCases.of(args[i + 1]) : given) {
         final found = CaseLevels.checkWritten(path, season, schemas);
         failed |= found.isNotEmpty;
         stdout.writeln(found.isEmpty ? 'ok       $path: every level written, the same game' : 'FAILED  $path');
@@ -84,7 +90,7 @@ void main(List<String> args) {
       }
       if (failed) exitCode = 1;
     case 'review':
-      for (final path in args.skip(1)) {
+      for (final path in [for (final a in args.skip(1)) ...a.endsWith('season.plan.json') ? SeasonCases.of(a) : [a]]) {
         final levels = CaseLevels.load(path);
         stdout.writeln('review   $path');
         for (final (at, rookie) in CaseLevels.keyLines(PlanFiles.readJson(path))) {
@@ -102,7 +108,7 @@ void main(List<String> args) {
 
 void _usage() {
   stderr.writeln('usage: dart run tool/season_gen/case_levels.dart (skeleton <case.plan.json>... | '
-      'check --season <season.plan.json> <case.plan.json>... | review <case.plan.json>...)');
+      'check --season <season.plan.json> [<case.plan.json>...] | review (<case.plan.json> | <season.plan.json>)...)');
   exitCode = 64;
 }
 

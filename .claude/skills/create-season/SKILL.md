@@ -100,9 +100,13 @@ At exit 35 do this yourself, without asking (writing is not approving:
 4. Check every case until it prints `ok` (the plan's own checks run on each
    level, every line written, answers and expressions kept, nothing but the
    words changed, not copied):
-   `dart run tool/season_gen/case_levels.dart check --season <seasonDir>/season.plan.json <seasonDir>/cases/*/case.plan.json`
+   `dart run tool/season_gen/case_levels.dart check --season <seasonDir>/season.plan.json`
+   (no case given: every case of the season, found by the tool — no
+   `cases/*` pattern, which PowerShell does not spread; one case: add its
+   `case.plan.json` after it)
 5. The checks hold an answer's words, not its meaning. Read
-   `dart run tool/season_gen/case_levels.dart review <case.plan.json>...`
+   `dart run tool/season_gen/case_levels.dart review <seasonDir>/season.plan.json`
+   (every case; or one `case.plan.json`)
    (each mission's question, choices with the answer ✓, hints, clue,
    evidence, a line holding a typed answer — R / J / M one under another)
    for every case, and fix any line where Junior or Master would lead to
