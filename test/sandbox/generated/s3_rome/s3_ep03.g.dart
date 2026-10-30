@@ -366,6 +366,9 @@ final s3Ep03TalkMissions = <String, TalkMission>{
       speaker: const TalkSpeaker(
         id: 'pia_ricci',
         name: 'PIA RICCI',
+        portraits: {
+          'base': 'assets/seasons/season_03_rome/characters/pia_base.png',
+        },
       ),
       goal: 'Find out who left something in Box 7.',
       opening: const [
@@ -394,6 +397,9 @@ final s3Ep03TalkMissions = <String, TalkMission>{
       speaker: const TalkSpeaker(
         id: 'pia_ricci',
         name: 'PIA RICCI',
+        portraits: {
+          'base': 'assets/seasons/season_03_rome/characters/pia_base.png',
+        },
       ),
       goal: 'Find out what Pia saw on Thursday night.',
       opening: const [
@@ -443,6 +449,7 @@ const s3Ep03Endings = <String, List<EndingLine>>{
       'Two, four, seven! My cash box is open!',
       voice: TalkVoice.speaker,
       name: 'PIA RICCI',
+      portrait: 'assets/seasons/season_03_rome/characters/pia_base.png',
       background: 'assets/seasons/season_03_rome/locations/flower_market.png',
     ),
     EndingLine(
@@ -466,6 +473,7 @@ const s3Ep03Endings = <String, List<EndingLine>>{
       'Find him, Detective. And find that young woman, too!',
       voice: TalkVoice.speaker,
       name: 'PIA RICCI',
+      portrait: 'assets/seasons/season_03_rome/characters/pia_base.png',
       background: 'assets/seasons/season_03_rome/locations/flower_market.png',
     ),
   ],

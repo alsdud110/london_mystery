@@ -87,6 +87,7 @@
       "subject": "s3_rome.map_hall",
       "caseIds": [
         "s3_ep01",
+        "s3_ep08",
         "s3_ep12"
       ],
       "description": "The Capitoline map hall: the glass case, a big statue, stairs and a back door; reused for the season's last scene.",
@@ -336,7 +337,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/forum_view.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.map_archive",
@@ -354,7 +355,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_09/map_archive.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.civetta_square",
@@ -373,7 +374,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/civetta_square.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: Case 10 M1 is a look round this picture (the notice board on the left, the crane, the office window, the three helmets right of the gate). The helmets match the three choice pictures."
       ]
@@ -394,7 +395,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/site_office.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: the background of Case 11 M2's talk with Valli, Pia and Sofia; the three stones are chosen in close-up pictures (Case 11 M1)."
       ]
@@ -415,7 +416,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/locations/roman_library.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: also the right picture of Case 09 M1 (the room with square holes for scrolls). Its caseIds stay the cases played there (Case 12)."
       ]
@@ -571,7 +572,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/bruno_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -595,7 +596,7 @@
       "references": [
         "s3_rome.asset.char_bruno_base"
       ],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
@@ -637,15 +638,16 @@
         "s3_ep12"
       ],
       "description": "Pia Ricci, flower seller.",
-      "prompt": "Pia Ricci, a cheerful round flower seller in her sixties, rosy cheeks, a flowered apron and a red scarf over her hair, holding a bunch of red roses, talking with her hands.",
+      "prompt": "Pia Ricci, a cheerful round-faced flower seller in her sixties, rosy cheeks, curly grey hair showing under a red headscarf with small white dots tied over her hair, a dark navy blouse with the sleeves pushed up, a cream apron printed with small red flowers, holding a bunch of red roses, talking with her hands.",
       "stylePreset": "character",
       "width": 1024,
       "height": 1536,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/characters/pia_base.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
+        "STEP 3-15B B3: her look written out as flower_market draws her (round face, curly grey hair, red headscarf with white dots, navy blouse, cream apron with red flowers), so her portrait matches the stall she talks from.",
         "STEP 3-14: shown by the generated content: a witness of a talk (DialogueScene) or the face of a talk or an ending around a puzzle (STEP 3-13B)."
       ]
     },
@@ -767,7 +769,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/real_map_piece.png",
       "references": [],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "STEP 3-14: Stone C among the choice pictures of Case 11 M1; stones A and B are drawn from it."
       ]
@@ -848,14 +850,17 @@
         "s3_ep10"
       ],
       "description": "Bruno Valli's business card with a small crane logo.",
-      "prompt": "A thick glossy business card with a small simple crane logo in gold, and blank areas where the writing would be, on a stone step.",
+      "prompt": "A thick glossy business card of a building company, with a small simple gold logo of a construction tower crane (the building-site machine: a tall lattice mast and a long horizontal arm with a hook hanging from it; not a bird), and blank areas where the writing would be, on a stone step.",
       "stylePreset": "object",
       "width": 1024,
       "height": 1024,
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/objects/business_card.png",
       "references": [],
-      "status": "planned"
+      "status": "generated",
+      "notes": [
+        "STEP 3-15B B3: the first picture drew the crane as a bird (kept in asset_work/s3_rome/superseded/business_card_v1_*); the prompt now names the construction tower crane, as the helmets, the site and Case 03's word CRANE (the machine that lifts heavy things) mean it. Made again once, approved."
+      ]
     },
     {
       "assetId": "s3_rome.asset.ev_loan_page",
@@ -927,7 +932,7 @@
         "s3_ep10"
       ],
       "description": "Valli's yellow helmet with the crane sticker, the name strip inside torn in two.",
-      "prompt": "A yellow construction safety helmet with a small crane sticker on the front, tilted to show a torn white strip inside it, hanging from a metal hook.",
+      "prompt": "A yellow construction safety helmet with a small crane sticker on the front, hanging from a metal hook by its chin strap, seen from the front and a little above. Its inside is not seen.",
       "stylePreset": "object",
       "width": 1024,
       "height": 1024,
@@ -936,10 +941,11 @@
       "references": [
         "s3_rome.asset.ev_business_card"
       ],
-      "status": "planned",
+      "status": "generated",
       "notes": [
         "Same crane logo as the business card.",
-        "STEP 3-14: the boss's helmet among the choice pictures of Case 10 M1; the white and plain helmets are drawn from it."
+        "STEP 3-14: the boss's helmet among the choice pictures of Case 10 M1; the white and plain helmets are drawn from it.",
+        "STEP 3-15B B3: the torn strip is no longer drawn. It is found only after M1 (its transition, M2's lock), so showing it on the right picture alone would tell it apart from the two wrong ones by something the rules never mention. All three helmets now differ only in colour and sticker."
       ]
     },
     {
@@ -1192,7 +1198,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_09/room_bath.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.room_theatre",
@@ -1210,7 +1216,7 @@
       "transparent": false,
       "outputPath": "assets/seasons/season_03_rome/cases/case_09/room_theatre.png",
       "references": [],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.helmet_white_crane",
@@ -1221,7 +1227,7 @@
         "s3_ep10"
       ],
       "description": "A choice picture of Case 10 M1: a worker's white helmet with the crane sticker (a wrong answer).",
-      "prompt": "The same hook, view and light as the reference helmet, but the safety helmet is white, with the same small crane sticker on the front. No strip is seen inside.",
+      "prompt": "The same hook, view and light as the reference helmet, but the safety helmet is white, with the same small crane sticker on the front. Its inside is not seen.",
       "stylePreset": "object",
       "width": 1024,
       "height": 1024,
@@ -1230,7 +1236,7 @@
       "references": [
         "s3_rome.asset.ev_yellow_helmet"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.helmet_yellow_plain",
@@ -1241,7 +1247,7 @@
         "s3_ep10"
       ],
       "description": "A choice picture of Case 10 M1: a visitor's plain yellow helmet (a wrong answer).",
-      "prompt": "The same hook, view and light as the reference helmet, the same yellow colour, but with no sticker or picture of any kind on it. No strip is seen inside.",
+      "prompt": "The same hook, view and light as the reference helmet, the same yellow colour, but with no sticker or picture of any kind on it. Its inside is not seen.",
       "stylePreset": "object",
       "width": 1024,
       "height": 1024,
@@ -1250,7 +1256,7 @@
       "references": [
         "s3_rome.asset.ev_yellow_helmet"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.stone_lion",
@@ -1270,7 +1276,7 @@
       "references": [
         "s3_rome.asset.ev_real_piece"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.stone_street",
@@ -1290,7 +1296,7 @@
       "references": [
         "s3_rome.asset.ev_real_piece"
       ],
-      "status": "planned"
+      "status": "generated"
     },
     {
       "assetId": "s3_rome.asset.scene_owl_reveal",

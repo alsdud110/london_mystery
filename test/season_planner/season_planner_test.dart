@@ -378,7 +378,19 @@ void main() {
 
     test('generate writes nothing with an ERROR, nor while pictures are missing', () {
       final out = '${tmp.path.replaceAll(r'\', '/')}/out';
-      expect(generateCommand([dir, '--out', out]), 2, reason: 'the 18 place pictures are not made');
+      // Every Rome place is drawn since STEP 3-15B B3: the copy's map archive
+      // is planned at a file not made, as a season still being drawn is.
+      const drawn = 'cases/case_09/map_archive.png', notMade = 'cases/case_09/map_archive_not_made.png';
+      final plan = File('$dir/season.plan.json');
+      expect(plan.readAsStringSync(), contains(drawn));
+      plan.writeAsStringSync(plan.readAsStringSync().replaceAll(drawn, notMade));
+      final manifestFile = File('$dir/assets.manifest.json');
+      final manifest = jsonDecode(manifestFile.readAsStringSync()) as Map<String, dynamic>;
+      final archive = (manifest['assets'] as List).cast<Map<String, dynamic>>().firstWhere((a) => (a['outputPath'] as String).endsWith(drawn));
+      archive['outputPath'] = (archive['outputPath'] as String).replaceAll(drawn, notMade);
+      archive['status'] = 'planned';
+      manifestFile.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(manifest));
+      expect(generateCommand([dir, '--out', out]), 2, reason: 'a place picture is not made');
       expect(Directory(out).existsSync(), isFalse);
 
       Directory('$dir/cases/s3_ep12').deleteSync(recursive: true);

@@ -59,7 +59,7 @@
         "notes": [
           "Played as a look round (ExploreScene) of the site fence: the site rules are read, then the three helmets by the gate. Each wrong helmet shares one thing with Pia's (the crane, or the yellow): colour and picture together decide.",
           "Replaces the work-plan order: the concrete date is already the city plan's (Case 09 final).",
-          "COORDINATES UNMEASURED (STEP 3-14): every area and point is where the civetta_square prompt places the thing, not a measurement. Measure each on the made picture in STEP 3-15 and correct this plan before generate."
+          "Coordinates measured on the made civetta_square.png (1536x1024, sha256 baed25cdbb5a5310…) with a 50/100px grid overlay, STEP 3-15B B3: the notice board [197-400, 595-780], the crane (jib and tower), the site office cabin, the three helmets [970-1265, 590-750] (white with a crane, plain yellow, yellow with a crane, left to right), the chained gate. No two areas overlap; the fence is the rest of the boards."
         ]
       },
       "clueInputs": [
@@ -135,15 +135,16 @@
             "pixels": {
               "width": 1536,
               "height": 1024
-            }
+            },
+            "measuredOn": "sha256:baed25cdbb5a5310668f1ba394574bc834a06a185167f96cea70dcd962bb8de3"
           },
           "place": "The site fence at Piazza della Civetta",
           "task": "Look around the site. What are the rules here?",
           "nextTask": "Which helmet did Pia see? Look at the helmets.",
           "missLine": "Nothing here. Look for the site rules.",
           "guideAt": [
-            600,
-            780
+            300,
+            690
           ],
           "spots": [
             {
@@ -153,15 +154,15 @@
               "label": "A notice board on the fence",
               "areas": [
                 [
-                  120,
-                  380,
-                  400,
-                  680
+                  185,
+                  585,
+                  410,
+                  790
                 ]
               ],
               "mark": [
-                380,
-                390
+                395,
+                600
               ]
             },
             {
@@ -171,15 +172,21 @@
               "label": "A tall yellow crane",
               "areas": [
                 [
-                  460,
-                  20,
-                  800,
-                  480
+                  265,
+                  15,
+                  610,
+                  200
+                ],
+                [
+                  395,
+                  200,
+                  470,
+                  535
                 ]
               ],
               "mark": [
-                780,
-                40
+                595,
+                25
               ],
               "line": "A tall crane. On it is the little crane from Valli's card."
             },
@@ -190,15 +197,15 @@
               "label": "A site office with a lit window",
               "areas": [
                 [
-                  1120,
-                  170,
-                  1480,
-                  420
+                  980,
+                  395,
+                  1315,
+                  550
                 ]
               ],
               "mark": [
-                1460,
-                180
+                1300,
+                405
               ],
               "line": "A light is on in the office. Somebody is inside."
             },
@@ -209,15 +216,15 @@
               "label": "Three helmets hanging by the gate",
               "areas": [
                 [
-                  1100,
-                  440,
-                  1400,
-                  640
+                  965,
+                  585,
+                  1270,
+                  755
                 ]
               ],
               "mark": [
-                1380,
-                450
+                1255,
+                595
               ],
               "requires": "notice",
               "lockedLine": "Three helmets on hooks. Which one matters? Read something first.",
@@ -229,10 +236,10 @@
               "label": "The gate",
               "areas": [
                 [
-                  820,
-                  400,
-                  1080,
-                  860
+                  520,
+                  560,
+                  910,
+                  940
                 ]
               ],
               "line": "The gate is locked with a heavy chain."
@@ -241,10 +248,40 @@
               "label": "The tall fence",
               "areas": [
                 [
-                  420,
+                  410,
+                  555,
                   520,
-                  800,
                   900
+                ],
+                [
+                  0,
+                  555,
+                  185,
+                  900
+                ],
+                [
+                  185,
+                  790,
+                  410,
+                  900
+                ],
+                [
+                  910,
+                  555,
+                  965,
+                  920
+                ],
+                [
+                  965,
+                  760,
+                  1536,
+                  920
+                ],
+                [
+                  1270,
+                  550,
+                  1536,
+                  760
                 ]
               ],
               "line": "The fence is too tall to climb."
@@ -254,9 +291,15 @@
               "areas": [
                 [
                   0,
-                  60,
-                  440,
-                  360
+                  0,
+                  200,
+                  550
+                ],
+                [
+                  1320,
+                  0,
+                  1536,
+                  550
                 ]
               ],
               "line": "Old ochre houses. Their windows are shut."
@@ -286,10 +329,10 @@
             }
           ],
           "opening": [
-            40,
+            150,
             0,
-            1500,
-            1000
+            1350,
+            1010
           ]
         },
         "talk": {

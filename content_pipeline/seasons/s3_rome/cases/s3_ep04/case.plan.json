@@ -61,7 +61,8 @@
         "status": "awaitingAssets",
         "notes": [
           "Played as a look round (ExploreScene) inside the Pantheon: the Owl's card and the guide sign lie on the bench by the door; the floor stones open once it is read. The four stones are told apart by their carvings (ship, lion, book, key).",
-          "Coordinates measured on the made pantheon_hall.png (1536x1024, sha256 d960679b186dda4b…) with a 100px grid overlay, STEP 3-15B B1. The bench area stops at y 880 and the stones start below it at x 1095+, so the two never overlap."
+          "Coordinates measured on the made pantheon_hall.png (1536x1024, sha256 d960679b186dda4b…) with a 100px grid overlay, STEP 3-15B B1. The bench area stops at y 880 and the stones start below it at x 1095+, so the two never overlap.",
+          "STEP 3-15B B3: the opening narrowed to x 300-1350 (the plain columns on the left and the bronze door on the right left outside, reached by a drag), so a phone opens the hall about 1.46 times larger; the full height is kept so the eye, the light, the card and the stones are all on screen as it opens. Coordinates and measuredOn unchanged."
         ]
       },
       "clueInputs": [
@@ -283,9 +284,9 @@
             }
           ],
           "opening": [
-            20,
+            300,
             0,
-            1516,
+            1350,
             1020
           ]
         },

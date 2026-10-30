@@ -113,6 +113,10 @@ flutter:
     - assets/seasons/season_03_rome/cases/case_05/
     - assets/seasons/season_03_rome/cases/case_06/
     - assets/seasons/season_03_rome/cases/case_08/
+    - assets/seasons/season_03_rome/cases/case_09/
+    - assets/seasons/season_03_rome/cases/case_10/
+    - assets/seasons/season_03_rome/cases/case_11/
+    - assets/seasons/season_03_rome/objects/
     # The title screen (the detective's office).
     - assets/shared/title/
     # The World Map (the cities on it are placed by the app).

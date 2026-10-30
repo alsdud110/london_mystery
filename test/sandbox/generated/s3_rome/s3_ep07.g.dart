@@ -360,6 +360,9 @@ final s3Ep07TalkMissions = <String, TalkMission>{
       speaker: const TalkSpeaker(
         id: 'bruno_valli',
         name: 'BRUNO VALLI',
+        portraits: {
+          'base': 'assets/seasons/season_03_rome/characters/bruno_base.png',
+        },
       ),
       goal: 'Listen to the sponsor\'s story.',
       opening: const [
@@ -383,6 +386,9 @@ final s3Ep07TalkMissions = <String, TalkMission>{
       speaker: const TalkSpeaker(
         id: 'bruno_valli',
         name: 'BRUNO VALLI',
+        portraits: {
+          'base': 'assets/seasons/season_03_rome/characters/bruno_base.png',
+        },
       ),
       goal: 'Listen to the sponsor\'s story.',
       opening: const [

@@ -12,36 +12,37 @@ import 'package:world_mystery/features/game/game_controller.dart';
 import 'package:world_mystery/features/game/game_providers.dart';
 
 import '../test/helpers.dart' show testOverrides;
-import '../test/sandbox/rome_c01_08_season.dart';
+import '../test/sandbox/rome_season.dart';
 
-/// STEP 3-15B B1, B2: Rome's Cases 01–08 (test-only, never in
+/// STEP 3-15B B1–B3: Rome, the whole season (test-only, never in
 /// `SeasonCatalog`) on a device or emulator, the screens the asset
 /// pipeline's pictures are shown on captured by the app itself
 /// (`takeScreenshot`), written on the host by `test_driver/rome_qa_driver.dart`
-/// under `qa/screenshots/rome/<width>x<height>/`: the two measured look rounds
-/// (opening view, a note, a hint opened, the document, the choice, a wrong
-/// answer), the talks over the new places (Pia, Aldo, Livia), the places of
-/// Cases 06–08 and Case 08's three bridges. Missions before a captured screen
+/// under `qa/screenshots/rome/<width>x<height>/`: the three measured look
+/// rounds of Cases 01, 04 and 10 (opening view, a note, a hint opened, the
+/// document, the choice, a wrong answer), the talks over the new places (Pia,
+/// Aldo, Livia, Bruno), the places of Cases 06–12 and the picture choices of
+/// Cases 08, 09 and 11. Missions before a captured screen
 /// are answered through the controller, not played: the play itself is
-/// `test/sandbox/s3_rome_c01_08_test.dart`.
+/// `test/sandbox/s3_rome_season_test.dart`.
 ///
 /// The game runs on in-memory storage only (`testOverrides`).
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
 
-  final episodes = romeC0108Episodes();
+  final episodes = romeEpisodes();
 
-  testWidgets('Rome Cases 01–08, the pictures on screen, captured', (t) async {
-    registerRomeC0108();
-    addTearDown(unregisterRomeC0108);
-    final c = ProviderContainer(overrides: [...await testOverrides(), ...romeC0108Overrides()]);
+  testWidgets('Rome Cases 01–12, the pictures on screen, captured', (t) async {
+    registerRome();
+    addTearDown(unregisterRome);
+    final c = ProviderContainer(overrides: [...await testOverrides(), ...romeOverrides()]);
     addTearDown(c.dispose);
     final ctrl = c.read(gameControllerProvider.notifier);
     ctrl.createDetective('Minyoung', DetectiveAvatar.girl);
     c.read(seasonPreviewSwitchProvider.notifier).set(true);
     c.read(operatorAccessSwitchProvider.notifier).set(true); // later cases opened directly
-    expect(ctrl.openSeason(romeC0108SeasonId), isTrue);
+    expect(ctrl.openSeason(romeSeasonId), isTrue);
     expect(ctrl.openEpisode('s3_ep01'), isTrue);
     await t.pumpWidget(UncontrolledProviderScope(container: c, child: const WorldMysteryApp()));
 
@@ -121,7 +122,7 @@ void main() {
     /// (its way back on screen), the view after it with the hint still
     /// open, the choice, a wrong answer.
     Future<void> lookRound(String prefix, Mission m, String note) async {
-      final explore = romeC0108Content.explores[m.id]!;
+      final explore = romeContent.explores[m.id]!;
       await until(find.byKey(const ValueKey('explore-picture')));
       await pause(1500);
       await shot('${prefix}a_opening');
@@ -155,7 +156,24 @@ void main() {
       await tapText('TRY AGAIN', after: 900);
     }
 
-    final [e01, _, e03, e04, _, e06, e07, e08] = episodes;
+    /// A talk's lines read through to its finish.
+    Future<void> throughTalk(String finish) async {
+      for (var i = 0; i < 12 && find.text(finish).evaluate().isEmpty; i++) {
+        if (find.text('READ ALL').evaluate().isNotEmpty) await tapText('READ ALL', after: 400);
+        if (find.text('NEXT').evaluate().isNotEmpty) await tapText('NEXT', after: 400);
+      }
+      await tapText(finish, after: 1500);
+    }
+
+    /// From the place's letter to a picture choice, captured.
+    Future<void> toChoice(Mission m, String name) async {
+      await tapText('TAP TO OPEN', after: 2000);
+      await tapText('SOLVE THE PUZZLE', after: 1500);
+      await pause(2500);
+      await shot(name);
+    }
+
+    final [e01, _, e03, e04, _, e06, e07, e08, e09, e10, e11, e12] = episodes;
 
     // ── Case 01 M3: the map hall, its look round.
     await openCase(e01);
@@ -192,11 +210,8 @@ void main() {
     // ── Case 08: the three bridges, the Owl's talk, the lab.
     await openCase(e08);
     final bridges = e08.missions[0];
-    await toPlace(bridges, before: '10_c08_m1_place_tiber_bridge');
-    await tapText('TAP TO OPEN', after: 2000);
-    await tapText('SOLVE THE PUZZLE', after: 1500);
-    await pause(2500);
-    await shot('11_c08_m1_three_bridges');
+    await toPlace(bridges, before: '10_c08_m1_place_map_hall');
+    await toChoice(bridges, '11_c08_m1_three_bridges');
     final wrong = bridges.options.indexWhere((o) => o.id != bridges.answer);
     final o = bridges.options[wrong];
     await tapF(find.bySemanticsLabel('Picture ${String.fromCharCode(65 + wrong)}${o.altText == null ? '' : ': ${o.altText}'}'));
@@ -209,5 +224,39 @@ void main() {
     await shot('13_c08_m2_talk_livia_hood');
     answered(e08.missions[1]);
     await toPlace(e08.missions[2], before: '14_c08_m3_place_restoration_lab');
+
+    // ── Case 09: the Forum, the three rooms, the map archive.
+    await openCase(e09);
+    await toPlace(e09.missions[0], before: '15_c09_m1_place_forum');
+    await toChoice(e09.missions[0], '16_c09_m1_three_rooms');
+    answered(e09.missions[0]);
+    answered(e09.missions[1]);
+    answered(e09.missions[2]);
+    c.read(routerProvider).go(Routes.finalMission);
+    await pause(3000);
+    await shot('17_c09_final_map_archive');
+
+    // ── Case 10 M1: Livia at the site fence, then its look round.
+    await openCase(e10);
+    await toPlace(e10.missions[0], before: '18_c10_m1_place_civetta');
+    await pause(1500);
+    await shot('19_c10_m1_talk_livia');
+    await throughTalk('LOOK AROUND');
+    await lookRound('20_c10_m1_', e10.missions[0], 'crane');
+
+    // ── Case 11: the three stones, Bruno at his site, the witnesses.
+    await openCase(e11);
+    final stones = e11.missions[0];
+    await toPlace(stones, before: '21_c11_m1_place_site_office');
+    await toChoice(stones, '22_c11_m1_three_stones');
+    answered(stones);
+    await toPlace(e11.missions[1]);
+    await pause(2000);
+    await shot('23_c11_m2_witnesses');
+
+    // ── Case 12 M2: the Roman library under the square.
+    await openCase(e12);
+    answered(e12.missions[0]);
+    await toPlace(e12.missions[1], before: '24_c12_m2_place_roman_library');
   });
 }

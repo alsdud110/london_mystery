@@ -57,7 +57,9 @@ void main() {
       expect(manifest['slice'], isTrue);
       expect(manifest['cases'], ['s3_ep05']);
       expect(romeSliceContent.places.keys, {'s3_rome.cat_ruins', 's3_rome.cast_workshop'}, reason: 'the places Case 05 uses, no other');
-      expect(Directory('test/sandbox/generated/s3_rome').existsSync(), isFalse, reason: 'the season itself is not made');
+      // The season itself is made apart (STEP 3-15B B3, s3_rome_season_test.dart):
+      // the slice never writes there, nor the season here.
+      expect(made.defaultDir, isNot('test/sandbox/generated/s3_rome'));
     });
 
     test('M1 is a look round on the drawn cat ruins, its places measured on that very file', () {

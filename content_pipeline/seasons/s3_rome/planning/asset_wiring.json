@@ -4,8 +4,8 @@
   "tool": "tool/asset_pipeline/asset_pipeline.dart --wiring --write",
   "checkedAgainst": "lib/ as of 2026-10-30 (SeasonContent.places, explores, investigations, dialogues, talkMissions, endings, ChoiceOption.picture, ArtAssets.seasonCovers, SeasonMap.bySeason, ArtAssets.evidencePictures, SeasonContent.storyScenes); wired: in assets/ now",
   "counts": {
-    "wired": 30,
-    "wired_when_made": 16,
+    "wired": 46,
+    "wired_when_made": 0,
     "ready_to_wire": 15,
     "blocked": 0,
     "not_supported": 2
@@ -71,6 +71,7 @@
       "subject": "s3_rome.map_hall",
       "caseIds": [
         "s3_ep01",
+        "s3_ep08",
         "s3_ep12"
       ],
       "outputPath": "assets/seasons/season_03_rome/locations/map_hall.png",
@@ -81,6 +82,7 @@
       "missions": [
         "s3_ep01_m2",
         "s3_ep01_m3",
+        "s3_ep08_m1",
         "s3_ep12_final"
       ],
       "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
@@ -266,7 +268,6 @@
       "field": "season.plan.json places[s3_rome.tiber_bridge].file → SeasonContent.places['s3_rome.tiber_bridge'] (ScenePlace); missions name it by sceneKey",
       "via": "generator",
       "missions": [
-        "s3_ep08_m1",
         "s3_ep08_m2"
       ],
       "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
@@ -297,7 +298,7 @@
         "s3_ep09"
       ],
       "outputPath": "assets/seasons/season_03_rome/locations/forum_view.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
       "field": "season.plan.json places[s3_rome.forum_view].file → SeasonContent.places['s3_rome.forum_view'] (ScenePlace); missions name it by sceneKey",
       "via": "generator",
@@ -316,7 +317,7 @@
         "s3_ep09"
       ],
       "outputPath": "assets/seasons/season_03_rome/cases/case_09/map_archive.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
       "field": "season.plan.json places[s3_rome.map_archive].file → SeasonContent.places['s3_rome.map_archive'] (ScenePlace); missions name it by sceneKey",
       "via": "generator",
@@ -334,7 +335,7 @@
         "s3_ep12"
       ],
       "outputPath": "assets/seasons/season_03_rome/locations/civetta_square.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
       "field": "season.plan.json places[s3_rome.civetta_square].file → SeasonContent.places['s3_rome.civetta_square'] (ScenePlace); missions name it by sceneKey",
       "via": "generator",
@@ -355,7 +356,7 @@
         "s3_ep11"
       ],
       "outputPath": "assets/seasons/season_03_rome/locations/site_office.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
       "field": "season.plan.json places[s3_rome.site_office].file → SeasonContent.places['s3_rome.site_office'] (ScenePlace); missions name it by sceneKey",
       "via": "generator",
@@ -375,7 +376,7 @@
         "s3_ep12"
       ],
       "outputPath": "assets/seasons/season_03_rome/locations/roman_library.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
       "field": "season.plan.json places[s3_rome.roman_library].file → SeasonContent.places['s3_rome.roman_library'] (ScenePlace); missions name it by sceneKey",
       "via": "generator",
@@ -525,14 +526,14 @@
         "s3_ep07"
       ],
       "outputPath": "assets/seasons/season_03_rome/characters/bruno_base.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Talk before or after a mission (CaseTalk, case_talk.dart)",
       "field": "SeasonContent.talkMissions → TalkSpeaker.portraits",
       "via": "generator",
       "missions": [
         "s3_ep07_m3"
       ],
-      "note": "A face of the story (talk, ending): the mission plays without it, the line shows no face until it is made. Not in assets/ yet."
+      "note": "A face of the story (talk, ending): the mission plays without it, the line shows no face until it is made."
     },
     {
       "assetId": "s3_rome.asset.char_bruno_site",
@@ -542,7 +543,7 @@
         "s3_ep11"
       ],
       "outputPath": "assets/seasons/season_03_rome/characters/bruno_site.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Talk before or after a mission (CaseTalk, case_talk.dart); Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart); Final ending (CaseTalk, case_talk.dart)",
       "field": "SeasonContent.talkMissions → TalkSpeaker.portraits; SeasonContent.dialogues → DialogueSpeaker.portrait; SeasonContent.endings → EndingLine.portrait",
       "via": "generator",
@@ -551,7 +552,7 @@
         "s3_ep11_m2",
         "s3_ep11_final"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.char_aldo_base",
@@ -589,7 +590,7 @@
         "s3_ep12"
       ],
       "outputPath": "assets/seasons/season_03_rome/characters/pia_base.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Talk before or after a mission (CaseTalk, case_talk.dart); Final ending (CaseTalk, case_talk.dart); Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart)",
       "field": "SeasonContent.talkMissions → TalkSpeaker.portraits; SeasonContent.endings → EndingLine.portrait; SeasonContent.dialogues → DialogueSpeaker.portrait",
       "via": "generator",
@@ -599,7 +600,7 @@
         "s3_ep03_final",
         "s3_ep11_m2"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.char_carla_base",
@@ -703,14 +704,14 @@
         "s3_ep12"
       ],
       "outputPath": "assets/seasons/season_03_rome/objects/real_map_piece.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Picture choice (question_widgets.dart)",
       "field": "case JSON → ChoiceOption.picture",
       "via": "generator",
       "missions": [
         "s3_ep11_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet. As evidence s3_ep11_e1, its notebook card still needs one lib/ line (ArtAssets.evidencePictures)."
+      "note": "Needed to play: the generator stops without it (asset_file_missing). As evidence s3_ep11_e1, its notebook card still needs one lib/ line (ArtAssets.evidencePictures)."
     },
     {
       "assetId": "s3_rome.asset.ev_plaster_copy",
@@ -850,14 +851,14 @@
         "s3_ep10"
       ],
       "outputPath": "assets/seasons/season_03_rome/objects/yellow_helmet.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Look round, its choice page (SceneExplore)",
       "field": "SeasonContent.explores → ExplorePicture.picture",
       "via": "generator",
       "missions": [
         "s3_ep10_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet. As evidence s3_ep10_e2, its notebook card still needs one lib/ line (ArtAssets.evidencePictures)."
+      "note": "Needed to play: the generator stops without it (asset_file_missing). As evidence s3_ep10_e2, its notebook card still needs one lib/ line (ArtAssets.evidencePictures)."
     },
     {
       "assetId": "s3_rome.asset.ev_owl_mosaic",
@@ -1068,14 +1069,14 @@
         "s3_ep09"
       ],
       "outputPath": "assets/seasons/season_03_rome/cases/case_09/room_bath.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Picture choice (question_widgets.dart)",
       "field": "case JSON → ChoiceOption.picture",
       "via": "generator",
       "missions": [
         "s3_ep09_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.room_theatre",
@@ -1085,14 +1086,14 @@
         "s3_ep09"
       ],
       "outputPath": "assets/seasons/season_03_rome/cases/case_09/room_theatre.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Picture choice (question_widgets.dart)",
       "field": "case JSON → ChoiceOption.picture",
       "via": "generator",
       "missions": [
         "s3_ep09_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.helmet_white_crane",
@@ -1102,14 +1103,14 @@
         "s3_ep10"
       ],
       "outputPath": "assets/seasons/season_03_rome/cases/case_10/helmet_white_crane.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Look round, its choice page (SceneExplore)",
       "field": "SeasonContent.explores → ExplorePicture.picture",
       "via": "generator",
       "missions": [
         "s3_ep10_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.helmet_yellow_plain",
@@ -1119,14 +1120,14 @@
         "s3_ep10"
       ],
       "outputPath": "assets/seasons/season_03_rome/cases/case_10/helmet_yellow_plain.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Look round, its choice page (SceneExplore)",
       "field": "SeasonContent.explores → ExplorePicture.picture",
       "via": "generator",
       "missions": [
         "s3_ep10_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.stone_lion",
@@ -1136,14 +1137,14 @@
         "s3_ep11"
       ],
       "outputPath": "assets/seasons/season_03_rome/cases/case_11/stone_lion.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Picture choice (question_widgets.dart)",
       "field": "case JSON → ChoiceOption.picture",
       "via": "generator",
       "missions": [
         "s3_ep11_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.stone_street",
@@ -1153,14 +1154,14 @@
         "s3_ep11"
       ],
       "outputPath": "assets/seasons/season_03_rome/cases/case_11/stone_street.png",
-      "status": "wired_when_made",
+      "status": "wired",
       "screen": "Picture choice (question_widgets.dart)",
       "field": "case JSON → ChoiceOption.picture",
       "via": "generator",
       "missions": [
         "s3_ep11_m1"
       ],
-      "note": "Needed to play: the generator stops without it (asset_file_missing). Not in assets/ yet."
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
     },
     {
       "assetId": "s3_rome.asset.scene_owl_reveal",

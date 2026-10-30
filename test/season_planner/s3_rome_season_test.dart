@@ -19,9 +19,11 @@ import '../../tool/season_planner/season_quality.dart';
 
 /// STEP 3-11: the Rome trial season, planned by Claude Code with
 /// `tool/season_planner`, checked whole: the planner's checks, the real
-/// generator (which waits only for the pictures), and the game's own
-/// `SeasonContentValidator` on the cases' game JSON. The pictures are not
-/// made: nothing here pretends they are.
+/// generator, and the game's own `SeasonContentValidator` on the cases'
+/// game JSON. Since STEP 3-15B B3 every picture a case shows is made and the
+/// season is generated whole; the 16 still planned (evidence cards, the
+/// cover, the map, the owl scene, the prologue, the gold tiles) are shown by
+/// no generated case yet.
 void main() {
   const dir = 'content_pipeline/seasons/s3_rome';
   final season = PlanFiles.loadSeasonPlan('$dir/season.plan.json');
@@ -79,37 +81,30 @@ void main() {
   });
 
   group('the generator', () {
-    test('passes every check but the pictures not made yet', () {
+    test('passes every check, every picture it waits for made: the season generated whole (STEP 3-15B B3)', () {
       final g = report.summary['generator'] as Map;
       expect(g['run'], isTrue);
       expect(g['compatible'], isTrue);
-      expect(g['otherFailures'], 0);
-      try {
-        CaseGenerator.sandbox(seasonPath: '$dir/season.plan.json', casePaths: SeasonCases.of('$dir/season.plan.json'));
-        fail('made without its pictures');
-      } on GenerateFailure catch (e) {
-        // STEP 3-14: the places' pictures, and the pictures the missions on
-        // pictures and the talks show (choices, witnesses, faces), are all
-        // that is missing; nothing else stops the generator.
-        final errors = [for (final l in e.lines) if (l.trim().startsWith('error')) l];
-        expect(g['blockedByPictures'], errors.length);
-        // STEP 3-15A: Case 05's two places are in assets/; STEP 3-15B B1
-        // added the six of Cases 01–04, B2 the five of Cases 06–08; the 5
-        // others wait.
-        final waiting = [for (final p in season.places) if (!File(p.file).existsSync()) p];
-        expect(waiting, hasLength(season.places.length - 13));
-        expect(errors.where((l) => l.contains('[place_file_missing]')), hasLength(waiting.length));
-        expect(errors.every((l) => l.contains('[place_file_missing]') || l.contains('[asset_file_missing]')), isTrue, reason: errors.join('\n'));
-        final planned = {for (final a in assets) a['outputPath']};
-        for (final c in cases) {
-          for (final m in c.allMissions) {
-            for (final (_, f) in PlayCheck.pictureFiles(m)) {
-              expect(planned, contains(f), reason: '${m.missionId} shows $f: planned in the manifest');
-            }
+      expect(g['blockedByPictures'], 0);
+      expect(g['files'], 15);
+      // STEP 3-15A: Case 05's two places are in assets/; STEP 3-15B B1 added
+      // the six of Cases 01–04, B2 the five of Cases 06–08, B3 the last five
+      // (Cases 09–12). Nothing stops the generator now.
+      expect([for (final p in season.places) if (!File(p.file).existsSync()) p.placeId], isEmpty);
+      final made = CaseGenerator.sandbox(seasonPath: '$dir/season.plan.json', casePaths: SeasonCases.of('$dir/season.plan.json'));
+      expect(made.files, hasLength(15));
+      final planned = {for (final a in assets) a['outputPath']};
+      for (final c in cases) {
+        for (final m in c.allMissions) {
+          for (final (_, f) in PlayCheck.pictureFiles(m)) {
+            expect(planned, contains(f), reason: '${m.missionId} shows $f: planned in the manifest');
+            expect(File(f).existsSync(), isTrue, reason: '${m.missionId} shows $f: made');
           }
         }
       }
-      expect(Directory('test/sandbox/generated/s3_rome').existsSync(), isFalse, reason: 'nothing was written');
+      // Written by plan_season.dart generate, as these plans make it now.
+      expect(GeneratedFiles.stale('test/sandbox/generated/s3_rome', made.files), isEmpty,
+          reason: 'run: dart run tool/season_planner/plan_season.dart generate $dir');
     });
 
     test('its game JSON is read by the game, and the game\'s validator finds nothing wrong', () {
@@ -153,7 +148,7 @@ void main() {
   });
 
   group('the pictures', () {
-    test('each place\'s picture is planned at the file the season plan shows; only Cases 01–08\'s are made (STEP 3-15A, 3-15B B1, B2)', () {
+    test('each place\'s picture is planned at the file the season plan shows; every one a case shows is made (STEP 3-15A, 3-15B B1–B3)', () {
       for (final p in season.places) {
         final a = assets.singleWhere((a) => a['subject'] == p.placeId);
         expect(a['outputPath'], p.file);
@@ -166,6 +161,11 @@ void main() {
         'char_giulia_base', 'char_sofia_base', 'char_enzo_base', 'char_aldo_base', 'char_carla_base', 'char_livia_base',
         'navona_square', 'lecture_hall', 'spanish_steps', 'tiber_bridge', 'restoration_lab', 'bridge_angels', 'bridge_hole',
         'char_livia_hood',
+        // STEP 3-15B B3: Cases 09–12 (forum_view drawn in 3-12B, copied now).
+        'forum_view', 'map_archive', 'civetta_square', 'site_office', 'roman_library', //
+        'char_bruno_base', 'char_bruno_site', 'char_pia_base', //
+        'ev_real_piece', 'ev_business_card', 'ev_yellow_helmet', //
+        'room_bath', 'room_theatre', 'helmet_white_crane', 'helmet_yellow_plain', 'stone_lion', 'stone_street',
       };
       for (final a in assets) {
         final isMade = made.contains('${a['assetId']}'.split('.').last);
@@ -175,8 +175,8 @@ void main() {
       }
       final pending = report.findings.where((f) => f.code == 'image_pending').toList();
       expect(report.picturesPending, pending.length);
-      expect(pending.where((f) => f.where.startsWith('season.plan.json')), hasLength(season.places.length - 13));
-      expect(pending.every((f) => f.level == Level.info), isTrue);
+      expect(pending, isEmpty, reason: 'no picture a case shows waits');
+      expect(report.findings.where((f) => f.code == 'asset_pending').single.level, Level.info, reason: 'the 16 not shown yet: an INFO');
     });
 
     test('every character has a base portrait, and every other pose is drawn from it', () {
@@ -189,11 +189,12 @@ void main() {
       }
     });
 
-    test('the planner calls no API, and the cost is an estimate; the 30 made by the asset pipeline are counted', () {
+    test('the planner calls no API, and the cost is an estimate; the 47 made by the asset pipeline are counted', () {
       final a = report.summary['assets'] as Map;
       expect(report.summary['apiCalls'], 0);
       expect(a['estimatedUsd'], isA<double>());
-      expect(a['generated'], 30);
+      expect(a['generated'], 47);
+      expect(a['planned'], 16);
       expect(Directory(dir).listSync(recursive: true).whereType<File>().any((f) => f.path.endsWith('image_manifest.json')), isFalse);
     });
   });

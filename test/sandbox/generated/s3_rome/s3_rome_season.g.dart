@@ -116,6 +116,41 @@ const s3RomePlaces = <String, ScenePlace>{
       1024.0,
     ),
   ),
+  's3_rome.forum_view': ScenePlace(
+    file: 'assets/seasons/season_03_rome/locations/forum_view.png',
+    pixels: ScenePixels(
+      1536.0,
+      1024.0,
+    ),
+  ),
+  's3_rome.map_archive': ScenePlace(
+    file: 'assets/seasons/season_03_rome/cases/case_09/map_archive.png',
+    pixels: ScenePixels(
+      1536.0,
+      1024.0,
+    ),
+  ),
+  's3_rome.civetta_square': ScenePlace(
+    file: 'assets/seasons/season_03_rome/locations/civetta_square.png',
+    pixels: ScenePixels(
+      1536.0,
+      1024.0,
+    ),
+  ),
+  's3_rome.site_office': ScenePlace(
+    file: 'assets/seasons/season_03_rome/locations/site_office.png',
+    pixels: ScenePixels(
+      1536.0,
+      1024.0,
+    ),
+  ),
+  's3_rome.roman_library': ScenePlace(
+    file: 'assets/seasons/season_03_rome/locations/roman_library.png',
+    pixels: ScenePixels(
+      1536.0,
+      1024.0,
+    ),
+  ),
 };
 
 /// `SeasonContent.storyGreeting`.

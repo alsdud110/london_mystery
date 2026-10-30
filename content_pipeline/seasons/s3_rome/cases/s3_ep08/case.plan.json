@@ -23,7 +23,7 @@
     {
       "missionId": "s3_ep08_m1",
       "slot": "m1",
-      "placeId": "s3_rome.tiber_bridge",
+      "placeId": "s3_rome.map_hall",
       "puzzle": {
         "paletteId": "picture_choice",
         "surface": "mission",
@@ -62,7 +62,7 @@
         "status": "awaitingAssets",
         "notes": [
           "A picture choice with the names hidden: the card's words (two stone posts, four faces each, to the island) are matched to what each bridge shows. Real bridges of Rome: Ponte Sant'Angelo (angels), Ponte Sisto (the round hole), Ponte Fabricio (the four-faced posts).",
-          "The right picture is the place picture of the mission (tiber_bridge), drawn with nobody on the bridge so it gives nothing away."
+          "STEP 3-15B B3: played in the map hall, where the card came, not on the bridge: the mission's place picture is shown on its first page, so the right bridge (tiber_bridge) is now first seen among the choices. The bridge is the place of M2, reached after the answer."
         ]
       },
       "clueInputs": [
@@ -88,7 +88,7 @@
       },
       "play": {
         "title": "The Bridge of Four Heads",
-        "location": "TIBER ISLAND",
+        "location": "THE MAP HALL",
         "story": [
           "Rome has many old bridges over the river Tiber.",
           "The Owl's card names only one.",
@@ -107,8 +107,8 @@
           "On the bridge, a woman in a grey hood is waiting.",
           "She takes off her hood. It is Livia Conti, the restorer!"
         ],
-        "mapX": 0.4,
-        "mapY": 0.75,
+        "mapX": 0.25,
+        "mapY": 0.34,
         "clue": {
           "title": "The Owl's Bridge",
           "value": "TWO POSTS · FOUR FACES EACH",
