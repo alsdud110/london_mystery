@@ -14,6 +14,7 @@ import 'package:world_mystery/data/models/mission.dart';
 import 'package:world_mystery/data/models/profile.dart';
 import 'package:world_mystery/data/models/season.dart';
 import 'package:world_mystery/data/models/season_progress.dart';
+import 'package:world_mystery/data/mock/season_catalog.dart';
 import 'package:world_mystery/data/models/wallet.dart';
 import 'package:world_mystery/data/repositories/episode_repository.dart';
 import 'package:world_mystery/data/repositories/memory_preferences.dart';
@@ -245,6 +246,42 @@ void main() {
     await exitDeveloperMode(t);
     expect(snapshot(prefs), before);
     await wait(t, const Duration(seconds: 3));
+  });
+
+  testWidgets('Developer shortcuts follow the season catalog and open Rome at each test level', (t) async {
+    final prefs = await pumpGame(t, player());
+    final before = snapshot(prefs);
+    await enterDeveloperMode(t);
+    final c = session(t);
+    final catalogSeasons = SeasonCatalog.all.map((s) => s.id).toList();
+    expect(c.read(seasonsProvider).map((s) => s.id).toList(), catalogSeasons);
+
+    for (final season in c.read(seasonsProvider)) {
+      await tapKey(t, 'shortcut-season-${season.id}');
+    }
+
+    final romeCases = SeasonAvailability.casesOf(SeasonIds.rome, c.read(allEpisodesProvider));
+    expect(romeCases, hasLength(12));
+    expect(romeCases.first.number, 1);
+    expect(romeCases.last.number, 12);
+    await jumpTo(t, SeasonIds.rome, romeCases.first.id);
+    expect(path(t), Routes.caseFile(romeCases.first.id));
+    await jumpTo(t, SeasonIds.rome, romeCases.last.id);
+    expect(path(t), Routes.caseFile(romeCases.last.id));
+    expect(c.read(selectedSeasonIdProvider), SeasonIds.rome);
+
+    for (final level in Difficulty.values) {
+      c.read(routerProvider).go(Routes.gameMaster);
+      await wait(t, const Duration(milliseconds: 600));
+      await tapKey(t, 'difficulty-${level.storageId}');
+      expect(c.read(detectiveProfileProvider).difficulty, level);
+      expect(c.read(currentDifficultyProvider), level);
+      expect(selected(t, find.byKey(ValueKey('difficulty-${level.storageId}'))), isTrue);
+    }
+
+    await exitDeveloperMode(t);
+    expect(snapshot(prefs), before);
+    await wait(t, const Duration(seconds: 1));
   });
 
   testWidgets('20. A test session is never kept: the app started again is the player\'s game', (t) async {

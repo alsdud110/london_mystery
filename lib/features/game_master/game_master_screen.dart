@@ -363,21 +363,32 @@ class _CaseShortcutsState extends ConsumerState<CaseShortcuts> {
         const SizedBox(height: 12),
         Text('SELECT SEASON', style: AppText.eyebrow()),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            for (final (i, s) in seasons.indexed) ...[
-              if (i > 0) const SizedBox(width: 8),
-              Expanded(
-                child: _SeasonChoice(
-                  key: ValueKey('shortcut-season-${s.id}'),
-                  season: s,
-                  cases: SeasonAvailability.casesOf(s.id, all).length,
-                  selected: s.id == picked.id,
-                  onTap: () => setState(() => _seasonId = s.id),
-                ),
-              ),
-            ],
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            const spacing = 8.0;
+            final columns = math.max(
+              1,
+              math.min(seasons.length, (constraints.maxWidth + spacing) ~/ 120),
+            ).toInt();
+            final width = (constraints.maxWidth - spacing * (columns - 1)) / columns;
+            return Wrap(
+              spacing: spacing,
+              runSpacing: spacing,
+              children: [
+                for (final s in seasons)
+                  SizedBox(
+                    width: width,
+                    child: _SeasonChoice(
+                      key: ValueKey('shortcut-season-${s.id}'),
+                      season: s,
+                      cases: SeasonAvailability.casesOf(s.id, all).length,
+                      selected: s.id == picked.id,
+                      onTap: () => setState(() => _seasonId = s.id),
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 16),
         Text('${picked.city.toUpperCase()} — CASE SELECT', style: AppText.eyebrow()),
