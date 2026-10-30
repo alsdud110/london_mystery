@@ -37,6 +37,7 @@ import 'validate_plan.dart' show checkJson;
 ///
 ///     dart run tool/season_gen/case_levels.dart skeleton (<case.plan.json> | <season.plan.json>)...
 ///     dart run tool/season_gen/case_levels.dart check --season <season.plan.json> <case.plan.json>...
+///     dart run tool/season_gen/case_levels.dart review <case.plan.json>...
 ///
 /// The season's own lines (its outro and finale): `season.levels.json`
 /// beside its plan ([SeasonLevels]), checked with every `check`.
@@ -44,7 +45,15 @@ import 'validate_plan.dart' show checkJson;
 /// `skeleton`: writes `levels.json` with a line for every Rookie line the
 /// plan has (the lines already written kept; lines the plan no longer has
 /// dropped), Junior's and Master's empty where not written yet.
-/// `check`: every finding, a line each; exit 1 when there is one.
+/// `check`: every finding, a line each; exit 1 when there is one. Besides
+/// what the generator holds a level to ([checkCase]), a level that gives
+/// most of its sentences back as Rookie's is copied, not written
+/// ([copied]).
+/// `review`: each mission's lines a player reads to solve it (question,
+/// choices with the answer marked, hints, clue, evidence, a line holding a
+/// typed answer) at Rookie, Junior and Master, one under another, for a
+/// person (or Claude) to read: the checks hold the answers' words, not
+/// their meaning.
 void main(List<String> args) {
   if (args.isEmpty) return _usage();
   switch (args.first) {
@@ -59,14 +68,14 @@ void main(List<String> args) {
       if (i < 0 || i + 1 >= args.length) return _usage();
       final season = PlanFiles.loadSeasonPlan(args[i + 1]);
       final schemas = SchemaSet.load('${File.fromUri(Platform.script).parent.path}/schema');
-      final own = SeasonLevels.check(args[i + 1]);
+      final own = SeasonLevels.checkWritten(args[i + 1]);
       var failed = own.isNotEmpty;
       stdout.writeln(own.isEmpty ? 'ok       ${args[i + 1]}: the season\'s own lines at every level' : 'FAILED  ${args[i + 1]}');
       for (final f in own) {
         stdout.writeln('  error    $f');
       }
       for (final path in [for (final (j, a) in args.indexed) if (j > 0 && j != i && j != i + 1) a]) {
-        final found = CaseLevels.checkCase(path, season, schemas);
+        final found = CaseLevels.checkWritten(path, season, schemas);
         failed |= found.isNotEmpty;
         stdout.writeln(found.isEmpty ? 'ok       $path: every level written, the same game' : 'FAILED  $path');
         for (final f in found) {
@@ -74,6 +83,18 @@ void main(List<String> args) {
         }
       }
       if (failed) exitCode = 1;
+    case 'review':
+      for (final path in args.skip(1)) {
+        final levels = CaseLevels.load(path);
+        stdout.writeln('review   $path');
+        for (final (at, rookie) in CaseLevels.keyLines(PlanFiles.readJson(path))) {
+          stdout
+            ..writeln('  $at')
+            ..writeln('    R  $rookie')
+            ..writeln('    J  ${levels?.lines[rookie]?[PlanLevel.junior] ?? ''}')
+            ..writeln('    M  ${levels?.lines[rookie]?[PlanLevel.master] ?? ''}');
+        }
+      }
     default:
       _usage();
   }
@@ -81,7 +102,7 @@ void main(List<String> args) {
 
 void _usage() {
   stderr.writeln('usage: dart run tool/season_gen/case_levels.dart (skeleton <case.plan.json>... | '
-      'check --season <season.plan.json> <case.plan.json>...)');
+      'check --season <season.plan.json> <case.plan.json>... | review <case.plan.json>...)');
   exitCode = 64;
 }
 
@@ -160,6 +181,16 @@ class SeasonLevels {
       return rookieLines(json).isEmpty ? const [] : ['[levels_missing] ${pathFor(seasonPlanPath)}: not written (run case_levels.dart skeleton)'];
     }
     return levels.problems(json);
+  }
+
+  /// [check]'s findings and, the lines all there, those a level copied
+  /// from Rookie ([CaseLevels.copied]): what a season's own lines must pass
+  /// to count as written (the factory's levels step, `case_levels.dart check`).
+  static List<String> checkWritten(String seasonPlanPath) {
+    final found = check(seasonPlanPath);
+    if (found.isNotEmpty) return found;
+    final levels = load(seasonPlanPath);
+    return levels == null ? const [] : CaseLevels.copied(levels.lines, rookieLines(PlanFiles.readJson(seasonPlanPath)));
   }
 
   /// Writes the season's levels file: its lines written kept, the others empty.
@@ -423,6 +454,78 @@ class CaseLevels {
       RegExp('(^|[^A-Za-z0-9])${RegExp.escape(answer)}(\$|[^A-Za-z0-9])', caseSensitive: false).hasMatch(line);
 
   static String _short(String s) => s.length > 60 ? '${s.substring(0, 57)}…' : s;
+
+  /// A sentence: a line of [_sentenceWords] words or more. Names, titles,
+  /// labels, choices and the in-world writing a puzzle reads are shorter,
+  /// and rightly the same at every level; a sentence is written again.
+  static const _sentenceWords = 6;
+
+  /// A level that gives more than half its sentences back word for word as
+  /// Rookie's was copied, not written (Rome, written by hand, gives back at
+  /// most about a third at Junior and a fifth at Master). [lines]: each
+  /// Rookie line's words at each level; [rookie]: the plan's lines.
+  static List<String> copied(Map<String, Map<PlanLevel, String>> lines, Iterable<String> rookie) {
+    final sentences = [for (final s in rookie) if (s.trim().split(RegExp(r'\s+')).length >= _sentenceWords) s];
+    return [
+      for (final level in PlanLevel.values)
+        if (sentences.where((s) => lines[s]?[level] == s).length case final n when n * 2 > sentences.length)
+          '[level_copied] ${level.name}: $n of ${sentences.length} sentences are Rookie\'s own words: '
+              'write them again at ${level.name} (the same meaning), never copy them',
+    ];
+  }
+
+  /// [checkCase]'s findings and, the case otherwise right, those a level
+  /// copied from Rookie ([copied]): what a case's levels must pass to count
+  /// as written (the factory's levels step, `case_levels.dart check`). The
+  /// generator holds a level only to [checkCase].
+  static List<String> checkWritten(String path, SeasonPlan season, SchemaSet schemas, {String root = '.'}) {
+    final found = checkCase(path, season, schemas, root: root);
+    if (found.isNotEmpty) return found;
+    return copied(load(path)!.lines, rookieLines(PlanFiles.readJson(path)));
+  }
+
+  /// Each mission's lines a player reads to solve it, in order, with where
+  /// each is (`<missionId> <what>`): the question, every choice (the
+  /// answer marked), the hints, the clue and evidence it gives, and any
+  /// other line holding a typed answer. What `review` shows at each level.
+  static List<(String, String)> keyLines(Object? plan) {
+    final out = <(String, String)>[];
+    if (plan is! Map) return out;
+    final answerLines = {for (final (s, _) in _answerLines(plan)) s};
+    for (final m in [...plan['missions'] as List? ?? const [], plan['final']]) {
+      if (m is! Map) continue;
+      final id = m['missionId'];
+      final shown = <String>{};
+      void add(String what, Object? v) {
+        if (v is String && v.trim().isNotEmpty && shown.add(v)) out.add(('$id $what', v));
+      }
+
+      final play = m['play'] is Map ? m['play'] as Map : const {};
+      add('question', play['question']);
+      final spec = (m['puzzle'] as Map?)?['answerSpec'] as Map? ?? const {};
+      for (final o in spec['options'] as List? ?? const []) {
+        if (o is! Map) continue;
+        final right = o['id'] == spec['answer'] || (spec['answers'] is List && (spec['answers'] as List).contains(o['id']));
+        add(right ? 'choice ✓' : 'choice', o['label']);
+        add('choice feedback', o['feedback']);
+      }
+      for (final h in play['hints'] as List? ?? const []) {
+        add('hint', h);
+      }
+      for (final key in ['clue', 'evidence']) {
+        final c = play[key];
+        if (c is Map) {
+          for (final e in c.entries) {
+            if (!_playNotText.contains(e.key)) add('$key ${e.key}', e.value);
+          }
+        }
+      }
+      for (final s in rookieLines({'missions': [m], 'final': null})) {
+        if (answerLines.contains(s)) add('holds the answer', s);
+      }
+    }
+    return out;
+  }
 
   /// Every finding of the levels of the case plan at [path]: the levels
   /// file itself ([problems]), then each level's plan checked as the plan

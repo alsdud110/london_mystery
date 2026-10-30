@@ -51,7 +51,7 @@ dart run tool/season_factory/season_factory.dart run <seasonDir> --budget <usd>
 | 10 | fix the plans (`plan_season.dart check <seasonDir>`) |
 | 20 | **open the review sheet PNG with the Read tool and look at every picture**: style like the season's others, faces as the character's other portraits, every clue the plans name visible, no text, choices fair, nothing giving an answer away. Then `season_factory.dart reviewed <seasonDir> <assetId>...` for the good ones, and for a bad one fix its prompt in `assets.manifest.json` and `season_factory.dart reject <seasonDir> <assetId> --why "<what was wrong>"`. Never mark a picture reviewed without looking at it. |
 | 30 | open each grid sheet it names (Read tool), read the pixel positions off the grid and write them into the plans: the map's `art.map.landmarks` (each drawing's centre) with `measuredOn` = the sha256 it printed; a look round's `areas`, `mark`, `guideAt`, `opening` (every place's centre inside it), `picture.measuredOn`, and replace its `UNMEASURED` note with how it was measured. No two areas may overlap. If you cannot see a thing on the picture, do not guess: fix the prompt and reject the picture. |
-| 35 | write each case's English at Junior and Master (§ Levels below), then run again |
+| 35 | not a stop for the user: write the Junior and Master English yourself right away (§ Levels below, its steps), then run again |
 | 40 | the budget is spent: stop and report how much more the remaining pictures need (`asset_pipeline.dart --manifest … --only …` dry run shows it) |
 | 50 | read the generator's errors, fix the plans, run again |
 | 60 | read the failing test, fix the cause (never weaken the test), run again |
@@ -83,12 +83,34 @@ never a choice more or less.
   `season.levels.json` beside `season.plan.json`, line for line.
 - Harder words a level brings: `glossary.junior` / `glossary.master` (one
   lower-case word → Korean).
-- Check each case until it prints `ok` (the plan's own checks run on each
-  level, every line written, answers and expressions kept, nothing but the
-  words changed):
-  `dart run tool/season_gen/case_levels.dart check --season <seasonDir>/season.plan.json <seasonDir>/cases/<caseId>/case.plan.json`
-- Twelve cases are a lot of English: write them in parallel (a subagent for
-  a few cases each, with these rules), then read a sample of each level.
+At exit 35 do this yourself, without asking (writing is not approving:
+`approve.dart` and every other approval stay the user's):
+
+1. The run printed each levels file still to write; the factory wrote its
+   skeleton (every Rookie line; the lines already written kept). Write only
+   the empty `junior` / `master` fields; never rewrite a line already
+   written, a `rookie` line, or the plans. Read the case plan beside it for
+   what each line is (a question, a choice, a hint, a clue, a letter).
+2. Write each sentence again at its level — never copy Rookie's into it.
+   Only a name, title, label, a short choice or the in-world writing a
+   puzzle reads stays as it is. The check refuses a level that gives back
+   more than half its sentences (six words or more) as Rookie's.
+3. Twelve cases are a lot of English: a subagent for a few cases each, with
+   these rules and the file paths; each writes and checks its own cases.
+4. Check every case until it prints `ok` (the plan's own checks run on each
+   level, every line written, answers and expressions kept, nothing but the
+   words changed, not copied):
+   `dart run tool/season_gen/case_levels.dart check --season <seasonDir>/season.plan.json <seasonDir>/cases/*/case.plan.json`
+5. The checks hold an answer's words, not its meaning. Read
+   `dart run tool/season_gen/case_levels.dart review <case.plan.json>...`
+   (each mission's question, choices with the answer ✓, hints, clue,
+   evidence, a line holding a typed answer — R / J / M one under another)
+   for every case, and fix any line where Junior or Master would lead to
+   another answer, leaves out what the answer needs, makes a wrong choice
+   right, or gives the answer away more than Rookie does.
+6. Run the factory again: it goes on from the levels step to generate.
+   Stopped half way (a session ended)? `season_factory.dart status` lists
+   the files still to write; the lines written are kept.
 
 The generator makes `<caseId>_levels.g.dart` and `<seasonId>_levels.g.dart`
 from them (`SeasonContent.casePatches`, `variants`, `writtenLevels`), and

@@ -51,8 +51,10 @@ import 'sheets.dart';
 ///     file) gets a grid sheet and stops the run (exit 30).
 ///  6b. levels: every case's `levels.json` (Rookie / Junior / Master: the
 ///     same game, only its English) written and checked
-///     (`case_levels.dart check`); missing lines get a skeleton and stop the
-///     run (exit 35).
+///     (`case_levels.dart check`, a level copied from Rookie refused);
+///     missing lines get a skeleton (the lines written kept) and stop the
+///     run (exit 35): Claude writes them (the create-season skill), then
+///     runs again.
 ///  7. generated: `generate_season.dart --target game`: the season in
 ///     `lib/data/generated/`, registered (catalog, map, cover, World Map
 ///     city, evidence pictures); a failure stops (exit 50).
@@ -199,6 +201,37 @@ abstract final class SeasonFactory {
       if ((a as Map)['type'] == type) '${a['outputPath']}',
   ];
 
+  // ── levels ───────────────────────────────────────────────────────────
+
+  /// Each levels file of the season at [dir] not yet written (by its path),
+  /// with what is wrong with it: a case's `levels.json` or the season's
+  /// `season.levels.json`, held to `case_levels.dart check` (every line at
+  /// Junior and Master, the same game, not copied from Rookie). The common
+  /// plan is written first and is Rookie's; each levels file gives each of
+  /// its lines again at each level. [skeleton]: a file missing lines (or
+  /// with lines the plan no longer has) is written again with every line,
+  /// the lines written kept, so a stopped writing goes on where it stopped.
+  static Map<String, List<String>> levelsToWrite(String dir, {bool skeleton = false}) {
+    final schemas = SchemaSet.load('tool/season_gen/schema');
+    final season = PlanFiles.loadSeasonPlan('$dir/season.plan.json');
+    bool unfinished(List<String> found) =>
+        found.any((f) => f.startsWith('[levels_missing]') || f.startsWith('[level_stale]') || f.startsWith('[level_missing]'));
+    final out = <String, List<String>>{};
+    for (final path in SeasonCases.of('$dir/season.plan.json')) {
+      final found = CaseLevels.checkWritten(path, season, schemas);
+      if (found.isEmpty) continue;
+      if (skeleton && unfinished(found)) CaseLevels.writeSkeleton(path);
+      out[CaseLevels.pathFor(path)] = found;
+    }
+    // The season's own lines (its outro and finale), the same way.
+    final own = SeasonLevels.checkWritten('$dir/season.plan.json');
+    if (own.isNotEmpty) {
+      if (skeleton && unfinished(own)) SeasonLevels.writeSkeleton('$dir/season.plan.json');
+      out[SeasonLevels.pathFor('$dir/season.plan.json')] = own;
+    }
+    return out;
+  }
+
   // ── status ───────────────────────────────────────────────────────────
 
   static int status(String dir) {
@@ -222,6 +255,8 @@ abstract final class SeasonFactory {
     stdout.writeln('budget   ${(record['spentUsd'] as num).toStringAsFixed(4)} spent by the factory (budget given last: ${record['budgetUsd'] ?? '-'})');
     final measure = unmeasured(dir);
     stdout.writeln('measured ${measure.isEmpty ? 'everything made' : '${measure.length} to measure'}');
+    final levels = report.hasErrors ? const <String, List<String>>{} : levelsToWrite(dir);
+    stdout.writeln('levels   ${levels.isEmpty ? 'every case at Rookie, Junior and Master' : '${levels.length} files to write: ${levels.keys.join(', ')}'}');
     final seasonId = report.seasonId;
     final gameDir = '${GameRegistry.dir}/$seasonId';
     final inLib = File('$gameDir/$manifestName').existsSync();
@@ -234,6 +269,8 @@ abstract final class SeasonFactory {
         ? 'season_factory.dart run $dir --budget <usd>'
         : measure.isNotEmpty
         ? 'measure (season_factory.dart run writes the grid sheets)'
+        : levels.isNotEmpty
+        ? 'write Junior and Master in each levels file (create-season § Levels), then season_factory.dart run $dir --budget 0'
         : 'season_factory.dart run $dir --budget 0 (generate, register, test)';
     stdout.writeln('next     $next');
     return 0;
@@ -393,34 +430,16 @@ abstract final class SeasonFactory {
     }
 
     // 6b. Every case at Junior and Master: the same game, other English.
-    // The common plan is written first; then each case's levels.json
-    // (its skeleton made here) gives each Rookie line again at each level.
-    final schemas = SchemaSet.load('tool/season_gen/schema');
-    final season = PlanFiles.loadSeasonPlan('$dir/season.plan.json');
-    final unwritten = <String, List<String>>{};
-    for (final path in SeasonCases.of('$dir/season.plan.json')) {
-      final found = CaseLevels.checkCase(path, season, schemas);
-      if (found.isEmpty) continue;
-      if (found.any((f) => f.startsWith('[levels_missing]') || f.startsWith('[level_stale]') || f.startsWith('[level_missing]'))) {
-        CaseLevels.writeSkeleton(path);
-      }
-      unwritten[path] = found;
-    }
-    // The season's own lines (its outro and finale), the same way.
-    final own = SeasonLevels.check('$dir/season.plan.json');
-    if (own.isNotEmpty) {
-      SeasonLevels.writeSkeleton('$dir/season.plan.json');
-      unwritten['$dir/season.plan.json'] = own;
-    }
+    final unwritten = levelsToWrite(dir, skeleton: true);
     if (unwritten.isNotEmpty) {
-      unwritten.forEach((path, found) {
-        say('levels', '${path.endsWith('season.plan.json') ? SeasonLevels.pathFor(path) : CaseLevels.pathFor(path)}: ${found.length} to fix');
+      unwritten.forEach((file, found) {
+        say('levels', '$file: ${found.length} to fix');
         for (final f in found.take(5)) {
           stdout.writeln('  $f');
         }
       });
-      say('levels', 'write Junior and Master for every line (the same meaning, answers and names; only the English), '
-          'check with case_levels.dart check, then run again');
+      say('levels', 'write Junior and Master for every empty line (the same meaning, answers and names; only the English; '
+          'the lines written are kept), check with case_levels.dart check, read case_levels.dart review, then run again');
       return exitLevels;
     }
     say('levels', 'every case written at Rookie, Junior and Master');

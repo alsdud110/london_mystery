@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -64,11 +65,59 @@ void main() {
         throwsA(isA<PlanFormatException>()), reason: 'an alignment is -1 to 1');
   });
 
+  test('the levels step (exit 35): a skeleton for each file, a level copied from Rookie refused, the lines written kept, then on', () {
+    const sandbox = 'content_pipeline/seasons/s9_sandbox';
+    final tmp = Directory.systemTemp.createTempSync('factory_levels');
+    addTearDown(() => tmp.deleteSync(recursive: true));
+    final s = '${tmp.path.replaceAll(r'\', '/')}/s9_sandbox';
+    for (final f in ['season.plan.json', 'cases/s9_ep01/case.plan.json', 'cases/s9_ep02/case.plan.json']) {
+      File('$sandbox/$f').copySync((File('$s/$f')..createSync(recursive: true)).path);
+    }
+    final first = SeasonFactory.levelsToWrite(s, skeleton: true);
+    final files = first.keys.toList();
+    expect(files, containsAll(['$s/cases/s9_ep01/levels.json', '$s/cases/s9_ep02/levels.json']));
+    expect(first.values.expand((f) => f), everyElement(startsWith('[levels_missing]')));
+    for (final f in files) {
+      expect(File(f).existsSync(), isTrue, reason: '$f: its skeleton, every line to write');
+    }
+    void write(String Function(String rookie, String level) words, {String? only}) {
+      for (final f in files.where((f) => only == null || f == only)) {
+        final json = jsonDecode(File(f).readAsStringSync()) as Map;
+        for (final l in json['lines'] as List) {
+          for (final level in ['junior', 'master']) {
+            (l as Map)[level] = words(l['rookie'] as String, level);
+          }
+        }
+        File(f).writeAsStringSync(jsonEncode(json));
+      }
+    }
+
+    write((rookie, _) => rookie);
+    final copied = SeasonFactory.levelsToWrite(s, skeleton: true);
+    expect(copied['$s/cases/s9_ep01/levels.json'], [startsWith('[level_copied] junior'), startsWith('[level_copied] master')]);
+
+    // Written: each sentence another (a one-word line, as a tile letter a puzzle spells, kept).
+    String at(String rookie, String level) => rookie.contains(' ') ? '$rookie ($level)' : rookie;
+    write(at);
+    final ep02 = '$s/cases/s9_ep02/levels.json';
+    final firstLine = ((jsonDecode(File(ep02).readAsStringSync()) as Map)['lines'] as List).first as Map;
+    write((rookie, level) => rookie == firstLine['rookie'] && level == 'master' ? '' : at(rookie, level), only: ep02);
+    final written = {for (final f in files) f: File(f).readAsStringSync()};
+    expect(SeasonFactory.levelsToWrite(s, skeleton: true).map((f, found) => MapEntry(f, found.length)), {ep02: 1}, reason: 'the one line left');
+    expect(File('$s/cases/s9_ep01/levels.json').readAsStringSync(), written['$s/cases/s9_ep01/levels.json'], reason: 'a file written is never written again');
+    expect(((jsonDecode(File(ep02).readAsStringSync()) as Map)['lines'] as List).skip(1).map((l) => (l as Map)['junior']), everyElement(endsWith('(junior)')),
+        reason: 'its skeleton again keeps the lines written');
+
+    write(at, only: ep02);
+    expect(SeasonFactory.levelsToWrite(s, skeleton: true), isEmpty, reason: 'every file written: the run goes on to generate');
+  });
+
   test('status reads Rome as done: nothing to make, review or measure', () async {
     final out = await Process.run('dart', ['run', 'tool/season_factory/season_factory.dart', 'status', dir], runInShell: true);
     expect(out.exitCode, 0, reason: '${out.stdout}${out.stderr}');
     expect('${out.stdout}', contains('0 to make, 0 to review'));
     expect('${out.stdout}', contains('measured everything made'));
+    expect('${out.stdout}', contains('levels   every case at Rookie, Junior and Master'));
     expect('${out.stdout}', contains('generated into lib/data/generated/s3_rome'));
   }, timeout: const Timeout(Duration(minutes: 3)));
 }

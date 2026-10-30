@@ -40,7 +40,7 @@ Each is done only when it is not done yet: run it again after any stop.
 | 4 | The next `--batch` pictures the game shows, within the budget | 20 (review), 40 (budget), 1 (API error) |
 | 5 | `--apply`: validated pictures into `assets/`, manifest, `pubspec.yaml` | 1: a conflict |
 | 6 | Anything not measured on the made pictures: a grid sheet | 30: measure, write into the plans |
-| 6b | Every case's `levels.json` (Junior and Master English of each Rookie line; the same game) written and checked (`case_levels.dart check`); a skeleton written for missing lines | 35: write the levels |
+| 6b | Every case's `levels.json` (Junior and Master English of each Rookie line; the same game) written and checked (`case_levels.dart check`, a level copied from Rookie refused); a skeleton written for missing lines, the lines written kept | 35: Claude writes the levels (create-season § Levels), reads `case_levels.dart review`, runs again |
 | 7 | `generate_season.dart --target game` (content, art, the game's lists) | 50: generator errors |
 | 8 | `flutter analyze`, `flutter test test/generated_seasons_test.dart` (`--full-tests`: all) | 60: a failure |
 
