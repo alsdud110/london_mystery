@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "spentUsd": 2.985816,
+  "reviewed": [
+    "s4_newyork.asset.bakery_lanterns",
+    "s4_newyork.asset.belvedere_castle",
+    "s4_newyork.asset.bethesda_terrace",
+    "s4_newyork.asset.bird_feet_down",
+    "s4_newyork.asset.bird_wings_closed",
+    "s4_newyork.asset.bridge_walkway",
+    "s4_newyork.asset.building_clock",
+    "s4_newyork.asset.building_spire",
+    "s4_newyork.asset.building_star",
+    "s4_newyork.asset.car_dome",
+    "s4_newyork.asset.car_rail",
+    "s4_newyork.asset.car_still",
+    "s4_newyork.asset.char_dexter_base",
+    "s4_newyork.asset.char_frank_base",
+    "s4_newyork.asset.char_grace_base",
+    "s4_newyork.asset.char_harold_base",
+    "s4_newyork.asset.char_maya_base",
+    "s4_newyork.asset.char_nora_base",
+    "s4_newyork.asset.char_otto_base",
+    "s4_newyork.asset.char_rosa_base",
+    "s4_newyork.asset.char_sam_base",
+    "s4_newyork.asset.city_map",
+    "s4_newyork.asset.clock_shop",
+    "s4_newyork.asset.coney_boardwalk",
+    "s4_newyork.asset.cover",
+    "s4_newyork.asset.dragon_awning",
+    "s4_newyork.asset.ellis_island",
+    "s4_newyork.asset.ev_brass_bird",
+    "s4_newyork.asset.ev_brass_egg",
+    "s4_newyork.asset.ev_music_box",
+    "s4_newyork.asset.ev_newspaper",
+    "s4_newyork.asset.ev_red_tin",
+    "s4_newyork.asset.ev_rubbing",
+    "s4_newyork.asset.ev_silver_lark",
+    "s4_newyork.asset.ev_star_sole",
+    "s4_newyork.asset.ev_torn_page",
+    "s4_newyork.asset.exhibit_hall",
+    "s4_newyork.asset.glass_station",
+    "s4_newyork.asset.island_fort",
+    "s4_newyork.asset.liberty_island",
+    "s4_newyork.asset.library_steps",
+    "s4_newyork.asset.main_concourse",
+    "s4_newyork.asset.musician_cello",
+    "s4_newyork.asset.musician_guitar",
+    "s4_newyork.asset.musician_violin",
+    "s4_newyork.asset.planetarium",
+    "s4_newyork.asset.river_carousel",
+    "s4_newyork.asset.sole_circles",
+    "s4_newyork.asset.sole_no_line",
+    "s4_newyork.asset.square_arch",
+    "s4_newyork.asset.stone_lark_nest",
+    "s4_newyork.asset.stone_lark_plain",
+    "s4_newyork.asset.stone_owl_nest",
+    "s4_newyork.asset.tea_house",
+    "s4_newyork.asset.tea_room",
+    "s4_newyork.asset.times_square",
+    "s4_newyork.asset.tin_moon_fish",
+    "s4_newyork.asset.tin_sun_rabbit",
+    "s4_newyork.asset.tv_studio"
+  ],
+  "rejected": [
+    {
+      "assetId": "s4_newyork.asset.belvedere_castle",
+      "sha256": "sha256:61dc24141e303973fd95591476bcfda5be4028868f8151d34e9449167a7c7495",
+      "why": "the three carvings on the east wall came out as big hawk statues standing on top of the wall; the plate and the choices speak of a lark (and an owl), so the place picture contradicted them"
+    },
+    {
+      "assetId": "s4_newyork.asset.char_dexter_base",
+      "sha256": "sha256:21f4441cd7716d36bb3d88c49b03c63c1506cc17101b35d6890770f86b99077d",
+      "why": "no sunglasses on his head; Cases 02, 07 and 11 describe him by the sunglasses on his head"
+    },
+    {
+      "assetId": "s4_newyork.asset.car_dome",
+      "sha256": "sha256:0281dea21c0247a99aac112484471533bc4789df4352241f5701dfcad081f3b5",
+      "why": "its dome roof was low and close to the right car's flat roof; too hard to tell apart on a phone"
+    }
+  ],
+  "runs": [
+    {
+      "at": "2026-10-30T08:47:08.750292Z",
+      "calls": 4,
+      "spentUsd": 0.170525
+    },
+    {
+      "at": "2026-10-30T08:52:14.451727Z",
+      "calls": 8,
+      "spentUsd": 0.33719
+    },
+    {
+      "at": "2026-10-30T08:56:50.085953Z",
+      "calls": 8,
+      "spentUsd": 0.33603
+    },
+    {
+      "at": "2026-10-30T09:02:31.884904Z",
+      "calls": 9,
+      "spentUsd": 0.390623
+    },
+    {
+      "at": "2026-10-30T09:08:39.687939Z",
+      "calls": 10,
+      "spentUsd": 0.432043
+    },
+    {
+      "at": "2026-10-30T09:15:05.835658Z",
+      "calls": 10,
+      "spentUsd": 0.584495
+    },
+    {
+      "at": "2026-10-30T09:22:45.533982Z",
+      "calls": 12,
+      "spentUsd": 0.673083
+    },
+    {
+      "at": "2026-10-30T09:24:25.056263Z",
+      "calls": 1,
+      "spentUsd": 0.061827
+    }
+  ],
+  "budgetUsd": 6.84
+}

@@ -1,0 +1,624 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep04",
+  "lines": [
+    {
+      "rookie": "The Empty Bench",
+      "junior": "The Empty Bench",
+      "master": "The Empty Bench"
+    },
+    {
+      "rookie": "On the Brooklyn Bridge, Eleanor's bench waits under the first stone tower.",
+      "junior": "On the Brooklyn Bridge, Eleanor's bench is waiting under the first stone tower.",
+      "master": "On the Brooklyn Bridge, Eleanor's bench sits patiently beneath the first stone tower."
+    },
+    {
+      "rookie": "But the brass bird is gone.",
+      "junior": "But the brass bird has disappeared.",
+      "master": "Yet the brass bird has vanished."
+    },
+    {
+      "rookie": "Someone is following Eleanor's trail, one step ahead of you.",
+      "junior": "Someone is following Eleanor's trail and staying one step ahead of you.",
+      "master": "Someone is tracing Eleanor's trail, always managing to stay one step ahead of you."
+    },
+    {
+      "rookie": "Someone is one step ahead on Eleanor's trail. Is it Otto the clockmaker?",
+      "junior": "Someone is staying one step ahead on Eleanor's trail. Could it be Otto the clockmaker?",
+      "master": "Someone keeps one step ahead on Eleanor's trail. Might it be Otto the clockmaker?"
+    },
+    {
+      "rookie": "Find out when the bird was taken.",
+      "junior": "Work out when the bird was taken.",
+      "master": "Determine when the bird was taken."
+    },
+    {
+      "rookie": "Find out what the bird looks like.",
+      "junior": "Learn what the bird looks like.",
+      "master": "Establish exactly what the bird looks like."
+    },
+    {
+      "rookie": "Open Eleanor's spare box.",
+      "junior": "Unlock Eleanor's spare box.",
+      "master": "Unlock Eleanor's hidden spare box."
+    },
+    {
+      "rookie": "The Brooklyn Bridge. Stone towers, steel wires and the wind.",
+      "junior": "The Brooklyn Bridge. Stone towers, steel wires and a strong wind.",
+      "master": "The Brooklyn Bridge. Stone towers, steel cables and a restless wind."
+    },
+    {
+      "rookie": "Below, boats sail on the East River.",
+      "junior": "Far below, boats sail along the East River.",
+      "master": "Far beneath you, boats glide along the East River."
+    },
+    {
+      "rookie": "Eleanor's brass bird should be on a bench here.",
+      "junior": "Eleanor's brass bird is supposed to be on a bench here.",
+      "master": "Eleanor's brass bird ought to be perched on a bench here."
+    },
+    {
+      "rookie": "The brass bird is gone. Star prints in wet paint show when: between 9:30 and 11:30. Eleanor's tag tells what the bird looks like. A clockmaker sat on the bench at nine. Eleanor's spare box opened with STARS. Her family plays her song on strings.",
+      "junior": "The brass bird is missing. Star prints in wet paint show when it was taken: between 9:30 and 11:30. Eleanor's tag describes the bird. A clockmaker sat on the bench at nine. Eleanor's spare box opened with STARS. Her family plays her song on strings.",
+      "master": "The brass bird has vanished. Star prints in wet paint reveal the window: between 9:30 and 11:30. Eleanor's tag describes the bird precisely. A clockmaker sat on the bench at nine. Eleanor's spare box yielded to STARS. Her family plays her song on strings."
+    },
+    {
+      "rookie": "BROOKLYN BRIDGE",
+      "junior": "BROOKLYN BRIDGE",
+      "master": "BROOKLYN BRIDGE"
+    },
+    {
+      "rookie": "Before 9:30 AM",
+      "junior": "Before 9:30 AM",
+      "master": "Before 9:30 AM"
+    },
+    {
+      "rookie": "The prints are in the paint. Was there paint before 9:30?",
+      "junior": "The prints are inside the paint. Was any paint there before 9:30?",
+      "master": "The prints are set into the paint itself. Had any paint been applied before 9:30?"
+    },
+    {
+      "rookie": "Between 9:30 and 11:30 AM",
+      "junior": "Between 9:30 and 11:30 AM",
+      "master": "Between 9:30 and 11:30 AM"
+    },
+    {
+      "rookie": "After 11:30 AM",
+      "junior": "After 11:30 AM",
+      "master": "After 11:30 AM"
+    },
+    {
+      "rookie": "After 11:30 the paint was dry. Can a boot print stay in dry paint?",
+      "junior": "After 11:30 the paint was already dry. Could a boot leave a print in dry paint?",
+      "master": "By 11:30 the paint had dried. Could a boot possibly leave a print in dry paint?"
+    },
+    {
+      "rookie": "This bench was painted at 9:30 AM.",
+      "junior": "This bench was painted at 9:30 AM.",
+      "master": "This bench was painted at 9:30 AM."
+    },
+    {
+      "rookie": "The paint takes two hours to dry.",
+      "junior": "The paint takes two hours to dry.",
+      "master": "The paint takes two hours to dry."
+    },
+    {
+      "rookie": "Wet Paint",
+      "junior": "Wet Paint",
+      "master": "Wet Paint"
+    },
+    {
+      "rookie": "THE BROOKLYN BRIDGE",
+      "junior": "THE BROOKLYN BRIDGE",
+      "master": "THE BROOKLYN BRIDGE"
+    },
+    {
+      "rookie": "You walk the bridge to the first stone tower.",
+      "junior": "You walk across the bridge to the first stone tower.",
+      "master": "You make your way along the bridge to the first stone tower."
+    },
+    {
+      "rookie": "There is the bench. But the brass bird is gone!",
+      "junior": "There is the bench. But the brass bird has gone!",
+      "master": "There stands the bench. Yet the brass bird has disappeared!"
+    },
+    {
+      "rookie": "Only four screw holes, and star prints pressed into green paint.",
+      "junior": "Only four screw holes are left, and star prints are pressed into green paint.",
+      "master": "All that remains are four screw holes and star prints pressed into the green paint."
+    },
+    {
+      "rookie": "A sign on the bench says:",
+      "junior": "There is a sign on the bench. It says:",
+      "master": "A notice fixed to the bench reads:"
+    },
+    {
+      "rookie": "WET PAINT\nThis bench was painted at 9:30 AM.\nThe paint takes two hours to dry.\nPlease do not touch it until 11:30 AM.\nPainter's note: I painted around the little brass bird.",
+      "junior": "WET PAINT\nThis bench was painted at 9:30 AM.\nThe paint takes two hours to dry.\nPlease do not touch it until 11:30 AM.\nPainter's note: I painted around the little brass bird.",
+      "master": "WET PAINT\nThis bench was painted at 9:30 AM.\nThe paint takes two hours to dry.\nPlease do not touch it until 11:30 AM.\nPainter's note: I painted around the little brass bird."
+    },
+    {
+      "rookie": "The star prints are pressed into the wet paint. When was the bird taken?",
+      "junior": "The star prints are pressed into the wet paint. So when was the bird taken?",
+      "master": "The star prints are pressed into the wet paint. At what point, then, was the bird taken?"
+    },
+    {
+      "rookie": "When did the paint go on? When was it dry?",
+      "junior": "When was the paint put on? And when was it dry?",
+      "master": "Consider when the paint was applied, and when it would have dried."
+    },
+    {
+      "rookie": "A boot can only leave a print while the paint is wet.",
+      "junior": "A boot can leave a print only while the paint is still wet.",
+      "master": "A boot leaves an impression only for as long as the paint remains wet."
+    },
+    {
+      "rookie": "You found when the bird was taken!",
+      "junior": "You worked out when the bird was taken!",
+      "master": "You have pinned down when the bird was taken!"
+    },
+    {
+      "rookie": "The bird was still there at 9:30. The painter painted around it.",
+      "junior": "At 9:30 the bird was still there. The painter painted around it.",
+      "master": "At 9:30 the bird was still in place, for the painter worked carefully around it."
+    },
+    {
+      "rookie": "Someone in star boots took it before 11:30.",
+      "junior": "Someone wearing star boots took it before 11:30.",
+      "master": "Someone in star-soled boots removed it before 11:30."
+    },
+    {
+      "rookie": "\"The same stars as at Grand Central!\" Maya says.",
+      "junior": "\"They're the same stars as at Grand Central!\" Maya says.",
+      "master": "\"Those are the very same stars we saw at Grand Central!\" Maya exclaims."
+    },
+    {
+      "rookie": "Prints in Wet Paint",
+      "junior": "Prints in Wet Paint",
+      "master": "Prints in Wet Paint"
+    },
+    {
+      "rookie": "The bird was taken while the paint was wet, between 9:30 and 11:30 on Sunday morning.",
+      "junior": "The bird was taken while the paint was still wet, between 9:30 and 11:30 on Sunday morning.",
+      "master": "The bird was removed while the paint was still wet, between 9:30 and 11:30 on Sunday morning."
+    },
+    {
+      "rookie": "ONE STEP AHEAD",
+      "junior": "ONE STEP AHEAD",
+      "master": "ONE STEP AHEAD"
+    },
+    {
+      "rookie": "Someone heard the tin note and came here first. Their boots have stars.",
+      "junior": "Someone heard the tin note and got here first. Their boots have stars on them.",
+      "master": "Someone heard the tin note and arrived ahead of you. Their boots bear stars."
+    },
+    {
+      "rookie": "The bird standing on both feet",
+      "junior": "The bird that stands on both feet",
+      "master": "The bird balanced on both feet"
+    },
+    {
+      "rookie": "Its wings are open. But the tag says one foot is up.",
+      "junior": "Its wings are open, but the tag says one foot is lifted.",
+      "master": "Its wings are spread, yet the tag insists one foot is raised."
+    },
+    {
+      "rookie": "a small brass songbird with its wings wide open, standing on both feet, its beak open",
+      "junior": "a small brass songbird with its wings wide open, standing on both feet, its beak open",
+      "master": "a small brass songbird with its wings wide open, standing on both feet, its beak open"
+    },
+    {
+      "rookie": "The bird with one foot up",
+      "junior": "The bird that has one foot up",
+      "master": "The bird with one foot raised"
+    },
+    {
+      "rookie": "a small brass songbird with its wings wide open, one foot lifted and its beak open",
+      "junior": "a small brass songbird with its wings wide open, one foot lifted and its beak open",
+      "master": "a small brass songbird with its wings wide open, one foot lifted and its beak open"
+    },
+    {
+      "rookie": "The bird with folded wings",
+      "junior": "The bird whose wings are folded",
+      "master": "The bird with its wings tucked in"
+    },
+    {
+      "rookie": "One foot is up. But the tag says its wings are wide open.",
+      "junior": "One foot is lifted, but the tag says its wings are wide open.",
+      "master": "One foot is raised, yet the tag states its wings are wide open."
+    },
+    {
+      "rookie": "a small brass songbird with its wings folded, one foot lifted, its beak open",
+      "junior": "a small brass songbird with its wings folded, one foot lifted, its beak open",
+      "master": "a small brass songbird with its wings folded, one foot lifted, its beak open"
+    },
+    {
+      "rookie": "Its wings are wide open.",
+      "junior": "Its wings are wide open.",
+      "master": "Its wings are wide open."
+    },
+    {
+      "rookie": "One foot is up, as if it dances.",
+      "junior": "One foot is up, as if it dances.",
+      "master": "One foot is up, as if it dances."
+    },
+    {
+      "rookie": "The Missing Bird",
+      "junior": "The Missing Bird",
+      "master": "The Missing Bird"
+    },
+    {
+      "rookie": "Under the bench, a small brass tag is still screwed on.",
+      "junior": "Under the bench, a small brass tag is still screwed in place.",
+      "master": "Beneath the bench, a small brass tag remains firmly screwed in place."
+    },
+    {
+      "rookie": "The thief did not see it.",
+      "junior": "The thief never noticed it.",
+      "master": "The thief overlooked it entirely."
+    },
+    {
+      "rookie": "\"Now we know what the bird looks like,\" Maya says.",
+      "junior": "\"Now we know what the bird looks like,\" says Maya.",
+      "master": "\"At last we know what the bird looks like,\" Maya remarks."
+    },
+    {
+      "rookie": "Eleanor's brass tag says:",
+      "junior": "Eleanor's brass tag reads:",
+      "master": "Eleanor's brass tag is engraved:"
+    },
+    {
+      "rookie": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song.",
+      "junior": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song.",
+      "master": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song."
+    },
+    {
+      "rookie": "Which one is Eleanor's brass bird?",
+      "junior": "Which of these is Eleanor's brass bird?",
+      "master": "Which of these is truly Eleanor's brass bird?"
+    },
+    {
+      "rookie": "The tag gives three things: the wings, the feet and the beak.",
+      "junior": "The tag describes three things: the wings, the feet and the beak.",
+      "master": "The tag mentions three features: the wings, the feet and the beak."
+    },
+    {
+      "rookie": "Check all three on each bird.",
+      "junior": "Check all three things on every bird.",
+      "master": "Compare all three features against each bird."
+    },
+    {
+      "rookie": "Now you know Eleanor's brass bird!",
+      "junior": "Now you can recognize Eleanor's brass bird!",
+      "master": "Now you can identify Eleanor's brass bird!"
+    },
+    {
+      "rookie": "Wings open, one foot up, beak open to sing.",
+      "junior": "Wings open, one foot up and the beak open to sing.",
+      "master": "Wings spread, one foot raised, its beak parted to sing."
+    },
+    {
+      "rookie": "If you ever see this bird again, you will know it.",
+      "junior": "If you ever see this bird again, you will recognize it.",
+      "master": "Should this bird ever cross your path again, you will know it at once."
+    },
+    {
+      "rookie": "A painter waves from the railing. \"I saw someone this morning!\"",
+      "junior": "A painter waves from the railing. \"I saw somebody here this morning!\"",
+      "master": "A painter beckons from the railing. \"I noticed someone here this morning!\""
+    },
+    {
+      "rookie": "The Dancing Bird",
+      "junior": "The Dancing Bird",
+      "master": "The Dancing Bird"
+    },
+    {
+      "rookie": "Eleanor's brass bird dances on one foot, its wings wide open.",
+      "junior": "Eleanor's brass bird dances on one foot, and its wings are wide open.",
+      "master": "Eleanor's brass bird dances on one foot, its wings spread wide open."
+    },
+    {
+      "rookie": "THE DANCING BIRD",
+      "junior": "THE DANCING BIRD",
+      "master": "THE DANCING BIRD"
+    },
+    {
+      "rookie": "The thief has the first half of the song now. Remember this bird.",
+      "junior": "Now the thief has the first half of the song. Remember this bird.",
+      "master": "The thief now holds the first half of the song. Commit this bird to memory."
+    },
+    {
+      "rookie": "He said he fixes clocks.",
+      "junior": "He said he fixes clocks.",
+      "master": "He said he fixes clocks."
+    },
+    {
+      "rookie": "A person who makes and fixes clocks",
+      "junior": "A person who makes and fixes clocks",
+      "master": "A person who makes and fixes clocks"
+    },
+    {
+      "rookie": "The Man with the Toolbox",
+      "junior": "The Man with the Toolbox",
+      "master": "The Man with the Toolbox"
+    },
+    {
+      "rookie": "The painter hands you a note.",
+      "junior": "The painter gives you a note.",
+      "master": "The painter passes you a scribbled note."
+    },
+    {
+      "rookie": "\"I wrote it down,\" he says. \"He was a strange old man.\"",
+      "junior": "\"I wrote it all down,\" he says. \"He was an odd old man.\"",
+      "master": "\"I jotted it down,\" he explains. \"A peculiar old fellow, he was.\""
+    },
+    {
+      "rookie": "Maya reads it with you.",
+      "junior": "Maya reads it together with you.",
+      "master": "Maya leans in to read it alongside you."
+    },
+    {
+      "rookie": "The painter's note says:",
+      "junior": "The painter's note reads:",
+      "master": "The painter's note is scrawled:"
+    },
+    {
+      "rookie": "At nine, an old man sat on this bench.\nHe wore a leather apron and carried a toolbox.\nA little magnifying glass sat on his forehead.\nHe looked at the brass bird. He said he fixes clocks.\nA person who makes and fixes clocks has one job name.",
+      "junior": "At nine, an old man sat on this bench.\nHe wore a leather apron and carried a toolbox.\nA little magnifying glass sat on his forehead.\nHe looked at the brass bird. He said he fixes clocks.\nA person who makes and fixes clocks has one job name.",
+      "master": "At nine, an old man sat on this bench.\nHe wore a leather apron and carried a toolbox.\nA little magnifying glass sat on his forehead.\nHe looked at the brass bird. He said he fixes clocks.\nA person who makes and fixes clocks has one job name."
+    },
+    {
+      "rookie": "What is the old man's job?",
+      "junior": "What job does the old man do?",
+      "master": "What is the old man's trade?"
+    },
+    {
+      "rookie": "He is a ____.",
+      "junior": "He is a ____.",
+      "master": "He is a ____."
+    },
+    {
+      "rookie": "What does the old man fix?",
+      "junior": "What does the old man repair?",
+      "master": "What is it that the old man repairs?"
+    },
+    {
+      "rookie": "Put two words together: what he fixes, and a person who makes things.",
+      "junior": "Join two words: the thing he fixes, and a person who makes things.",
+      "master": "Combine two words: the object he fixes, and a person who makes things."
+    },
+    {
+      "rookie": "You know the old man's job!",
+      "junior": "Now you know the old man's job!",
+      "master": "You have uncovered the old man's trade!"
+    },
+    {
+      "rookie": "A clockmaker with a toolbox and bushy eyebrows.",
+      "junior": "A clockmaker with a toolbox and thick, bushy eyebrows.",
+      "master": "A clockmaker carrying a toolbox, beneath a pair of bushy eyebrows."
+    },
+    {
+      "rookie": "\"Otto Brandt!\" Maya says. \"He was at Grand Central too.\"",
+      "junior": "\"Otto Brandt!\" says Maya. \"He was at Grand Central as well.\"",
+      "master": "\"Otto Brandt!\" Maya gasps. \"He was at Grand Central too, remember.\""
+    },
+    {
+      "rookie": "But Otto came at nine. The paint went on at 9:30.",
+      "junior": "But Otto came at nine, and the paint went on at 9:30.",
+      "master": "Yet Otto came at nine, whereas the paint was applied at 9:30."
+    },
+    {
+      "rookie": "The painter wrote this note. What does the old man fix?",
+      "junior": "This note is from the painter. What does the old man fix?",
+      "master": "The painter wrote this note. What exactly does the old man fix?"
+    },
+    {
+      "rookie": "Close! But the note says he fixes clocks.",
+      "junior": "Nearly! But the note says he fixes clocks.",
+      "master": "Almost! Yet the note states he fixes clocks."
+    },
+    {
+      "rookie": "Check your spelling: clock + maker.",
+      "junior": "Check your spelling again: clock + maker.",
+      "master": "Look over your spelling: clock + maker."
+    },
+    {
+      "rookie": "An old clockmaker looked at the bird at nine, before the paint. Was it Otto?",
+      "junior": "An old clockmaker looked at the bird at nine, before the paint went on. Was it Otto?",
+      "master": "An elderly clockmaker examined the bird at nine, before any paint was applied. Could it have been Otto?"
+    },
+    {
+      "rookie": "Read the painter's note.",
+      "junior": "Read the note from the painter.",
+      "master": "Study the painter's note closely."
+    },
+    {
+      "rookie": "Otto said Eleanor taught his grandfather.",
+      "junior": "Otto said that Eleanor taught his grandfather.",
+      "master": "Otto claimed that Eleanor had taught his grandfather."
+    },
+    {
+      "rookie": "So he knows about the bird.",
+      "junior": "So he knows all about the bird.",
+      "master": "So he is clearly familiar with the bird."
+    },
+    {
+      "rookie": "But does he have star boots?",
+      "junior": "But does he own star boots?",
+      "master": "Yet does he own a pair of star boots?"
+    },
+    {
+      "rookie": "THE CLOCKMAKER",
+      "junior": "THE CLOCKMAKER",
+      "master": "THE CLOCKMAKER"
+    },
+    {
+      "rookie": "Otto Brandt was here at nine. Where was he after 9:30?",
+      "junior": "Otto Brandt was here at nine. But where was he after 9:30?",
+      "master": "Otto Brandt was here at nine. Yet where did he go after 9:30?"
+    },
+    {
+      "rookie": "R",
+      "junior": "R",
+      "master": "R"
+    },
+    {
+      "rookie": "S",
+      "junior": "S",
+      "master": "S"
+    },
+    {
+      "rookie": "A",
+      "junior": "A",
+      "master": "A"
+    },
+    {
+      "rookie": "T",
+      "junior": "T",
+      "master": "T"
+    },
+    {
+      "rookie": "what shines on the ceiling of the great hall of trains",
+      "junior": "what shines on the ceiling of the great hall of trains",
+      "master": "what shines on the ceiling of the great hall of trains"
+    },
+    {
+      "rookie": "Eleanor's Spare Box",
+      "junior": "Eleanor's Spare Box",
+      "master": "Eleanor's Spare Box"
+    },
+    {
+      "rookie": "Behind the brass tag is a tiny box with five letter rings.",
+      "junior": "Behind the brass tag there is a tiny box with five letter rings.",
+      "master": "Concealed behind the brass tag is a tiny box fitted with five letter rings."
+    },
+    {
+      "rookie": "Eleanor thought of everything.",
+      "junior": "Eleanor planned for everything.",
+      "master": "Eleanor anticipated everything."
+    },
+    {
+      "rookie": "A line is written on the lid.",
+      "junior": "Someone wrote a line on the lid.",
+      "master": "A single line is inscribed on the lid."
+    },
+    {
+      "rookie": "The lid says:",
+      "junior": "The lid reads:",
+      "master": "The inscription on the lid reads:"
+    },
+    {
+      "rookie": "Clever reader!\nMy little box opens with a word:\nwhat shines on the ceiling of the great hall of trains.",
+      "junior": "Clever reader!\nMy little box opens with a word:\nwhat shines on the ceiling of the great hall of trains.",
+      "master": "Clever reader!\nMy little box opens with a word:\nwhat shines on the ceiling of the great hall of trains."
+    },
+    {
+      "rookie": "Spell the word that opens Eleanor's spare box.",
+      "junior": "Spell the word that will open Eleanor's spare box.",
+      "master": "Spell out the word that unlocks Eleanor's spare box."
+    },
+    {
+      "rookie": "Think of your first clue: the great hall of trains.",
+      "junior": "Remember your first clue: the great hall of trains.",
+      "master": "Cast your mind back to your first clue: the great hall of trains."
+    },
+    {
+      "rookie": "What is painted on its green ceiling? More than one!",
+      "junior": "What is painted on its green ceiling? There is more than one!",
+      "master": "What is painted across its green ceiling? There is more than one!"
+    },
+    {
+      "rookie": "Eleanor's spare box opens!",
+      "junior": "Eleanor's spare box is open!",
+      "master": "Eleanor's spare box springs open!"
+    },
+    {
+      "rookie": "Inside is a folded note from 1926.",
+      "junior": "Inside there is a folded note from 1926.",
+      "master": "Inside lies a folded note dating from 1926."
+    },
+    {
+      "rookie": "\"If my bird is lost, my song still lives,\" Maya reads.",
+      "junior": "\"If my bird is lost, my song still lives,\" Maya reads aloud.",
+      "master": "\"If my bird is lost, my song still lives,\" Maya reads softly."
+    },
+    {
+      "rookie": "\"My family plays it on strings, with a bow.\"",
+      "junior": "\"My family plays it on strings, using a bow.\"",
+      "master": "\"My family plays it on strings, drawing a bow.\""
+    },
+    {
+      "rookie": "The five tiles fit. What is painted on the ceiling? More than one.",
+      "junior": "All five tiles fit. What is painted on the ceiling? More than one.",
+      "master": "The five tiles fit. What adorns the ceiling? More than one."
+    },
+    {
+      "rookie": "THE SPARE BOX",
+      "junior": "THE SPARE BOX",
+      "master": "THE SPARE BOX"
+    },
+    {
+      "rookie": "Someone heard the tin note and came first.",
+      "junior": "Somebody heard the tin note and got here first.",
+      "master": "Someone heard the tin note and arrived before you."
+    },
+    {
+      "rookie": "Someone in star boots, while the paint was wet.",
+      "junior": "Someone wearing star boots, while the paint was still wet.",
+      "master": "Someone in star boots, while the paint was still wet."
+    },
+    {
+      "rookie": "And Otto Brandt was here at nine.",
+      "junior": "And Otto Brandt was here at nine o'clock.",
+      "master": "And Otto Brandt was here at nine, as well."
+    },
+    {
+      "rookie": "Far below, a ferry sails toward the Statue of Liberty.",
+      "junior": "Far below, a ferry is sailing toward the Statue of Liberty.",
+      "master": "Far below, a ferry glides toward the Statue of Liberty."
+    },
+    {
+      "rookie": "Who is racing you to the Lark?",
+      "junior": "Who is racing against you to the Lark?",
+      "master": "Who is racing you to the Lark?"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "disappeared": "사라졌다",
+      "following": "따라가는",
+      "supposed": "~하기로 되어 있는",
+      "describes": "묘사하다",
+      "pressed": "눌린",
+      "lifted": "들어 올린",
+      "noticed": "알아차렸다",
+      "recognize": "알아보다",
+      "railing": "난간",
+      "odd": "이상한",
+      "repair": "수리하다",
+      "join": "합치다",
+      "bushy": "숱이 많은",
+      "grandfather": "할아버지",
+      "planned": "계획했다"
+    },
+    "master": {
+      "vanished": "사라졌다",
+      "patiently": "참을성 있게",
+      "determine": "알아내다",
+      "establish": "확인하다",
+      "restless": "쉬지 않는",
+      "perched": "앉아 있는",
+      "applied": "바른",
+      "impression": "자국",
+      "overlooked": "간과했다",
+      "beckons": "손짓하다",
+      "peculiar": "기묘한",
+      "trade": "직업",
+      "concealed": "숨겨진",
+      "anticipated": "예상했다",
+      "inscribed": "새겨진",
+      "adorns": "장식하다",
+      "elderly": "나이 든"
+    }
+  }
+}

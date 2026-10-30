@@ -1,0 +1,1225 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s4_newyork",
+  "assetRoot": "assets/seasons/season_04_newyork",
+  "model": "gpt-image-2",
+  "quality": "medium",
+  "seasonStyles": [
+    {
+      "id": "newyork_scene",
+      "kind": "scene",
+      "size": "1536x1024",
+      "background": "opaque",
+      "text": "Storybook illustration for a children's detective mystery game (ages 8-12): warm, inviting and gently mysterious, never scary. No text, letters, numbers, signatures, watermarks or logos anywhere in the image. Style: gouache illustration with clean ink outlines, lightly stylised like a 1920s art-deco travel poster, soft paper grain; New York colours of brick red, brass gold, deep teal, warm cream and evening blue; warm golden light with gentle shadows; clear architectural perspective; full-bleed composition with no border."
+    }
+  ],
+  "assets": [
+    {
+      "assetId": "s4_newyork.asset.cover",
+      "type": "cover",
+      "use": "notWired",
+      "subject": "s4_newyork.cover",
+      "caseIds": [],
+      "description": "Season cover (portrait): New York at golden hour from Central Park, the little castle on its rock, a small silver bird on the stone parapet.",
+      "prompt": "A tall portrait view of New York at golden hour, seen from the top of a small grey stone castle on a rock in Central Park: green treetops and a calm pond below, and beyond the park the city's towers glowing in low warm sunlight, an art-deco spire among them. In front, on the castle's stone parapet, a small silver songbird with open wings sits as if about to sing, a little right of centre. Calm, mysterious, inviting. Composition for a phone screen: the upper third is open evening sky with no important detail; the towers fill the middle; the parapet and the silver bird sit in the lower middle, above a plain strip of stone along the bottom edge; keep everything important within the central two-thirds of the width, with only sky, trees and soft rooftops near the left and right edges.",
+      "stylePreset": "newyork_scene",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cover/season4_cover_newyork.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Portrait, as the other seasons' covers (BoxFit.cover): key subjects inside x 170-854, y 460-1300 of 1024x1536.",
+        "Its archiveLook, crop and push are chosen on the made picture (season.plan.json art.cover)."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.city_map",
+      "type": "map",
+      "use": "notWired",
+      "subject": "s4_newyork.map",
+      "caseIds": [],
+      "description": "The season map of New York for the mission pins: Manhattan, the harbor and Brooklyn, the season's ten places as small drawn landmarks.",
+      "prompt": "An illustrated bird's-eye picture map of New York on warm cream paper, like an old travel poster map seen from high above, north at the top: the long island of Manhattan runs from the top centre down to the lower left, with blue rivers on both sides; Brooklyn spreads to the right, and the harbor's blue water fills the lower left. Ten landmarks are drawn larger and clearly apart from each other, roughly where they really are: at the top, the green rectangle of Central Park with a small grey stone castle on a rock by a pond and, below it, an angel fountain by a lake; below the park, a bright square of glowing giant screens; just right of it, a grand white library with two stone lions on its steps; right of the library, a great train station with tall arched windows; lower down, a park with a big white stone arch; left of that arch, a small old red-brick building with an iron bird over its door among little streets; below the arch, a corner of narrow streets hung with red lanterns; on the right, a long bridge with two stone gothic towers crossing the river to Brooklyn; in the harbor at the lower left, a small island with the tall green Statue of Liberty holding up her torch; and in the lower right corner, by the sea, a beach with a boardwalk and a giant Ferris wheel. Small boats on the water, a compass rose in the top right corner. No labels, no pins, no letters or numbers of any kind.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/map/newyork_map.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Its landmarks are measured on the made picture (season.plan.json art.map), each location at the centre of its drawing."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.exhibit_hall",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.exhibit_hall",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "description": "The library's exhibit hall: a glass case with an open notebook, a city guide on a stand, a side door, a bench.",
+      "prompt": "A grand marble exhibit hall in the New York Public Library on a quiet morning. Along the top, tall arched windows (the top quarter of the picture, from about a fifth to four fifths of the width). At the far left edge, dark wooden bookshelves full of old books, from top to two thirds down. A little left of centre, a waist-high glass display case on a wooden stand, about a quarter of the width wide, an old notebook lying open inside it. Right of centre, a big open city guidebook on a wooden lectern. On the right wall, a heavy tall wooden side door, slightly ajar. In the lower left foreground, a long wooden bench. Warm light, polished floor, nobody in the hall.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/exhibit_hall.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Laid out for a look round: the areas in the case plan are where this prompt puts each thing, to be measured on the made picture.",
+        "Also the background of Case 01 M1's talk."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.library_steps",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.library_steps",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "description": "The library's front steps between its two stone lions, a pretzel cart at the side.",
+      "prompt": "The wide front steps of the New York Public Library on Fifth Avenue on a bright morning: the white stone building with tall columns, two big calm stone lions lying on pedestals on either side of the steps, a pretzel cart with a red-and-white umbrella at the foot of the steps, yellow taxis passing in the street.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/library_steps.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.main_concourse",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.main_concourse",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "description": "Grand Central's main concourse: the green ceiling with gold stars, the round booth with its four-faced clock.",
+      "prompt": "The main concourse of Grand Central Terminal in the morning: a vast hall with huge arched windows letting in beams of light, a high green-blue ceiling painted with gold stars and constellation lines, in the middle of the hall a round information booth with a brass clock on top that has four round faces, travellers crossing the marble floor, a small Lost and Found window in one wall. The ceiling and its gold stars must be clearly visible.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/main_concourse.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Also a choice picture of Case 01 M3 (the great hall of trains with stars on its ceiling) and the background of Case 02 M1's talk."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.tea_house",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.tea_house",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "description": "The Golden Lantern Tea House from the street: two red lanterns over the door, a gold dragon in the window.",
+      "prompt": "An old tea house shopfront on a narrow street in Chinatown that bends sharply like an elbow: a green wooden door with exactly two round red lanterns hanging over it, a big window with a shining gold dragon figure sitting in it, old brick walls and fire escapes above, a few people passing. Blank signboard with no writing.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/tea_house.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Also the right choice picture of Case 02's final: it must show both the two red lanterns over the door and the gold dragon in the window."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.tea_room",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.tea_room",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "description": "Inside the tea house: a framed card, a red lantern, a counter of teapots, a tall shelf of tea tins.",
+      "prompt": "Inside a cosy old Chinatown tea house: at the far left edge, a window looking onto the street. Left of centre on the wall, a small framed old card. Hanging from the ceiling in the top middle, one big red paper lantern. In the middle, a long wooden counter with teapots and little cups. On the right, a tall wooden shelf full of round tea tins of many colours, from near the top to two thirds down. Small tables and chairs in the lower left foreground. Warm lamplight, wood and jade green.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/tea_room.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Laid out for a look round: the areas in the case plan are where this prompt puts each thing, to be measured on the made picture."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.bridge_walkway",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.bridge_walkway",
+      "caseIds": [
+        "s4_ep04"
+      ],
+      "description": "The Brooklyn Bridge walkway by the first stone tower, a freshly painted green bench.",
+      "prompt": "The wooden walkway of the Brooklyn Bridge on a bright morning: the first great stone tower with its two pointed gothic arches rising ahead, steel cables fanning down from it, a freshly painted green park bench beside the tower, the East River and the Manhattan skyline behind, a few walkers far away.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/bridge_walkway.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.clock_shop",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.clock_shop",
+      "caseIds": [
+        "s4_ep05"
+      ],
+      "description": "Otto's clock shop: clocks on the wall, a desk with an open diary, a workbench, boots by the door, a photo wall.",
+      "prompt": "Inside an old clockmaker's shop in a brick building: the back wall covered with many wooden and brass clocks in the upper half, from a fifth of the width to five sixths. Left of centre, a small wooden desk with an open diary on it. Right of centre, a cluttered workbench with tiny brass gears and screws and a magnifying lamp. At the lower left, by the door, a pair of old brown work boots on the floor. On the right wall, three small framed photos hung one above another. Warm, dusty light, ticking clocks.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/clock_shop.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Laid out for a look round: the areas in the case plan are where this prompt puts each thing, to be measured on the made picture."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.liberty_island",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.liberty_island",
+      "caseIds": [
+        "s4_ep06"
+      ],
+      "description": "Liberty Island: the tall green Statue of Liberty holding up her torch, a postcard stand by the path.",
+      "prompt": "Liberty Island on a sunny windy morning: the tall green Statue of Liberty on her stone base holding up her torch, the harbor water and the city skyline far behind, a path with a small postcard stand under a striped canopy, seagulls in the air.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/liberty_island.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Also the right choice picture of Case 05 M2 (the island with the tall green lady with a torch)."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.times_square",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.times_square",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "description": "Times Square by day: giant screens, a TV truck with its door open, a pretzel cart, red steps, a map kiosk.",
+      "prompt": "Times Square in the late afternoon: giant glowing screens and billboards fill the whole top third, all showing only colours and shapes. At the left, a white TV truck parked with its side door open. A little left of centre, a pretzel cart with a striped umbrella. Right of centre, wide red glass steps with people sitting on them. At the right, a glass kiosk with a city map inside. Yellow taxis and crowds. No readable words anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/times_square.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Laid out for a look round: the areas in the case plan are where this prompt puts each thing, to be measured on the made picture.",
+        "Also the background of Case 07 M2's talk."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.square_arch",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.square_arch",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "description": "Washington Square Park: the big white stone arch standing alone, a round fountain in front.",
+      "prompt": "Washington Square Park on a sunny afternoon: a big white marble arch standing alone like a giant doorway at the end of the avenue, a wide round fountain in front of it with splashing water, trees, benches and a few people listening to street music.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/square_arch.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Also the right choice picture of Case 07 M3 (a big white stone arch, a round fountain in front)."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.coney_boardwalk",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.coney_boardwalk",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "description": "Coney Island's boardwalk: the Wonder Wheel, a ticket booth, a hot dog stand, the railing by the beach.",
+      "prompt": "The Coney Island boardwalk on a breezy day: in the middle, filling the upper two thirds, a giant old Ferris wheel with white cars, some hanging on its outside edge and some on curved rails inside it. At the left, a small striped ticket booth. At the right, a hot dog stand with a yellow roof. Along the bottom middle, the boardwalk railing with the sandy beach and the sea beyond. Seagulls, blue sky.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/coney_boardwalk.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Laid out for a look round: the areas in the case plan are where this prompt puts each thing, to be measured on the made picture."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.bethesda_terrace",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.bethesda_terrace",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "description": "Bethesda Terrace in Central Park: the angel fountain, wide stone steps, a covered walkway.",
+      "prompt": "Bethesda Terrace in Central Park on a bright afternoon: a round fountain with a bronze angel statue standing on top, wide stone steps coming down, a covered arcade walkway of stone arches behind, the lake with rowing boats beyond, people listening to a violinist.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/bethesda_terrace.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Also a wrong choice picture of Case 07 M3 (a fountain, but no big stone arch standing alone)."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.tv_studio",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.tv_studio",
+      "caseIds": [
+        "s4_ep11"
+      ],
+      "description": "Dexter's TV studio: lights, cameras, a shelf of fake treasure, a desk and a metal safe.",
+      "prompt": "Inside a TV studio near Times Square: bright studio lights on rigs, two big cameras on stands, a long shelf full of fake treasure (plastic gold coins, toy chests, shiny props), a desk with drawers, a big grey metal safe in the corner, a jungle-themed set with fake palm trees. No writing anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/tv_studio.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Also the background of Case 11 M1's talk."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.belvedere_castle",
+      "type": "place",
+      "use": "seasonPlace",
+      "subject": "s4_newyork.belvedere_castle",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "description": "The top terrace of Belvedere Castle: a weather pole, the west wall, the view over the pond, the east wall with carved birds, a brass plate in the floor.",
+      "prompt": "On the stone top terrace of Belvedere Castle, a small grey castle on a rock in Central Park, in early morning light. At the left, a pole with little weather instruments (a wind cup and a vane), from the top to the middle. Along the lower left, a low stone wall. In the middle, over the wall, a view of a calm pond, green trees and the city's towers far away. At the right, a taller stone wall with three small, weathered songbird shapes carved flat into its face in a row, at chest height (relief carvings in the wall, not statues standing on top of it), too small and worn to tell apart from here. No hawks, eagles or other birds of prey. In the stone floor at the bottom middle, a small square brass plate. No writing anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/locations/belvedere_castle.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Laid out for a look round: the areas in the case plan are where this prompt puts each thing, to be measured on the made picture."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_maya_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "maya_chen",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep02",
+        "s4_ep03",
+        "s4_ep04",
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep07",
+        "s4_ep08",
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ],
+      "description": "Maya Chen, librarian and partner.",
+      "prompt": "Maya Chen, a friendly young Chinese-American librarian in her mid-twenties, black hair in a high ponytail, red-framed glasses, a denim jacket over a striped shirt, a lanyard with a blank card, a canvas tote bag with a notebook and pencils, smiling eagerly.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/maya_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_harold_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "harold_brooks",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep05",
+        "s4_ep11",
+        "s4_ep12"
+      ],
+      "description": "Harold Brooks, keeper of rare books.",
+      "prompt": "Harold Brooks, a dignified older Black man of about sixty-five, short grey beard, round glasses, a tweed jacket and a burgundy bow tie, white cotton gloves in one hand, a worried but kind look.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/harold_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_frank_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "frank_russo",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep11"
+      ],
+      "description": "Frank Russo, the library's night guard.",
+      "prompt": "Frank Russo, a big friendly night guard of about fifty, a thick dark moustache, a blue guard uniform and cap, a torch on his belt, arms folded, honest face.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/frank_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_sam_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "sam_okafor",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep07"
+      ],
+      "description": "Sam Okafor, the pretzel seller.",
+      "prompt": "Sam Okafor, a cheerful Nigerian-American man in his fifties, a white apron, a red cap, holding up a big soft pretzel, a wide warm smile.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/sam_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_dexter_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "dexter_vance",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep03",
+        "s4_ep07",
+        "s4_ep10",
+        "s4_ep11"
+      ],
+      "description": "Dexter Vance, TV treasure hunter (the culprit, charming on the surface).",
+      "prompt": "Dexter Vance, a tall TV treasure hunter of about forty-five, slick dark hair with a silver streak, a very big white smile, a khaki safari vest with many pockets, a pair of dark aviator sunglasses pushed up and resting on top of his head in his hair, clearly visible (not on his eyes, not in a pocket), a small camera on a strap, brown boots; charming but a little too polished.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/dexter_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_grace_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "grace_kim",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "description": "Grace Kim, keeper of Grand Central's Lost and Found.",
+      "prompt": "Grace Kim, a neat Korean-American woman of about forty, a short black bob, a navy station uniform with brass buttons, a ring of old keys on her belt, a calm, kind, careful look.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/grace_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_rosa_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "rosa_diaz",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep02",
+        "s4_ep08",
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ],
+      "description": "Rosa Diaz, street violinist (Eleanor's great-granddaughter), shown playing.",
+      "prompt": "Rosa Diaz, a young Latina violinist of about twenty-two, curly red-brown hair under a green beret, a cream knitted sweater, playing a violin held under her chin with a bow, eyes half closed, gentle and a little secretive.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/rosa_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending.",
+        "The reference for musician_violin (Case 08 M1)."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_otto_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "otto_brandt",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep02",
+        "s4_ep04",
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep08",
+        "s4_ep12"
+      ],
+      "description": "Otto Brandt, the grumpy clockmaker.",
+      "prompt": "Otto Brandt, an old clockmaker of about seventy-five, bushy white eyebrows, round cheeks, a small jeweller's magnifying loupe pushed up on his forehead, a leather apron over a checked shirt, a wooden toolbox in one hand, a grumpy frown.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/otto_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.char_nora_base",
+      "type": "character",
+      "use": "puzzle",
+      "subject": "nora_bell",
+      "pose": "base",
+      "caseIds": [
+        "s4_ep03",
+        "s4_ep07",
+        "s4_ep10",
+        "s4_ep11"
+      ],
+      "description": "Nora Bell, Dexter's camera operator.",
+      "prompt": "Nora Bell, a young camera operator of about twenty-four, short blond hair under a black cap, headphones round her neck, a black jacket, a TV camera resting on her shoulder, a worried look.",
+      "stylePreset": "character",
+      "width": 1024,
+      "height": 1536,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/characters/nora_base.png",
+      "references": [],
+      "status": "generated",
+      "notes": [
+        "Shown by the generated content: a witness of a talk or the face of a talk or an ending."
+      ]
+    },
+    {
+      "assetId": "s4_newyork.asset.musician_violin",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.musician_violin",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "description": "The right picture of Case 08 M1: Rosa playing the violin under her chin with a bow.",
+      "prompt": "By the big white stone arch of Washington Square Park on a sunny afternoon, one street musician plays alone near the round fountain, a few people listening: a young woman with curly red-brown hair under a green beret and a cream sweater, playing a violin held under her chin with a bow.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_08/musician_violin.png",
+      "references": [
+        "s4_newyork.asset.char_rosa_base"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.musician_guitar",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.musician_guitar",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "description": "A wrong picture of Case 08 M1: a guitar player (strings, but no bow).",
+      "prompt": "By the big white stone arch of Washington Square Park on a sunny afternoon, one street musician plays alone near the round fountain, a few people listening: a young man with dreadlocks and a yellow T-shirt, playing an acoustic guitar across his body with his fingers. No bow anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_08/musician_guitar.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.musician_cello",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.musician_cello",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "description": "A wrong picture of Case 08 M1: a cello player (strings and a bow, but the cello stands on the floor).",
+      "prompt": "By the big white stone arch of Washington Square Park on a sunny afternoon, one street musician plays alone near the round fountain, a few people listening: an old man with a grey ponytail and a brown waistcoat, sitting on a stool playing a big cello with a bow, the cello standing upright on the ground between his knees, nothing under his chin.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_08/musician_cello.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.planetarium",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.planetarium",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "description": "A wrong choice of Case 01 M3: a star dome, but no trains.",
+      "prompt": "Inside a dark round planetarium: a big dome overhead full of projected stars, a large star projector machine in the middle, rows of curved seats. No trains, no railway, no windows.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_01/planetarium.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.glass_station",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.glass_station",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "description": "A wrong choice of Case 01 M3: a train hall, but no stars on its ceiling.",
+      "prompt": "A busy modern train hall under a plain glass-and-steel roof in daylight: trains waiting at platforms, travellers with suitcases. The ceiling is plain glass with no stars and no paintings.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_01/glass_station.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.bakery_lanterns",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.bakery_lanterns",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "description": "A wrong choice of Case 02's final: two red lanterns over the door, but a cake in the window and no dragon.",
+      "prompt": "A small bakery shopfront on a narrow Chinatown street: exactly two round red lanterns hanging over its door, a big round layered cake in its window. No dragon anywhere. Blank signboard with no writing.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_02/bakery_lanterns.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.dragon_awning",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.dragon_awning",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "description": "A wrong choice of Case 02's final: a gold dragon in the window, but a striped awning and no lanterns.",
+      "prompt": "A small shopfront on a narrow Chinatown street: a green-and-white striped cloth awning over its door and no lanterns at all, a shining gold dragon figure in its window. Blank signboard with no writing.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_02/dragon_awning.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ellis_island",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.ellis_island",
+      "caseIds": [
+        "s4_ep05"
+      ],
+      "description": "A wrong choice of Case 05 M2: an island with a red-brick hall with four towers, no statue.",
+      "prompt": "An island in New York Harbor seen from the water: a big red-brick hall with four domed towers, a ferry dock, trees. No statue anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_05/ellis_island.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.island_fort",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.island_fort",
+      "caseIds": [
+        "s4_ep05"
+      ],
+      "description": "A wrong choice of Case 05 M2: an island with a round stone fort, no statue.",
+      "prompt": "A green island in New York Harbor seen from the water: a round old stone fort among trees and lawns, a ferry dock. No statue anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_05/island_fort.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.river_carousel",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.river_carousel",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "description": "A wrong choice of Case 07 M3: a carousel in a glass box by the river, no stone arch.",
+      "prompt": "An old painted carousel with wooden horses inside a glass pavilion on a riverside park in Brooklyn, a big bridge behind it over the water. No stone arch anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_07/river_carousel.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.building_star",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.building_star",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "description": "The right choice of Case 10 M2: Dexter's studio building, a big glass star on its roof.",
+      "prompt": "A tall cream-stone art-deco office building near Times Square at dusk, seen from the street, bright screens at its foot, lit windows, and on its flat roof a big shining glass star. Nothing else on the roof.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_10/building_star.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.building_clock",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.building_clock",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "description": "A wrong choice of Case 10 M2: the same kind of building with a big round clock on its roof.",
+      "prompt": "A tall cream-stone art-deco office building near Times Square at dusk, seen from the street, bright screens at its foot, lit windows, and on its flat roof a big round clock face with hands and no numbers. No star anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_10/building_clock.png",
+      "references": [
+        "s4_newyork.asset.building_star"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.building_spire",
+      "type": "scene",
+      "use": "puzzle",
+      "subject": "s4_newyork.building_spire",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "description": "A wrong choice of Case 10 M2: the same kind of building with a tall needle on its roof.",
+      "prompt": "A tall cream-stone art-deco office building near Times Square at dusk, seen from the street, bright screens at its foot, lit windows, and on its flat roof a tall thin metal needle pointing at the sky. No star anywhere.",
+      "stylePreset": "newyork_scene",
+      "width": 1536,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_10/building_spire.png",
+      "references": [
+        "s4_newyork.asset.building_star"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_red_tin",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_ep03_e1",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "description": "Eleanor's red tin: a white rabbit under a full moon on its lid (the right choice of Case 03 M1).",
+      "prompt": "A round red metal tea tin from the 1920s with a lid, three small brass dials on its side with no numbers, its lid painted with a white rabbit sitting under a big round full moon.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/red_tin.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.tin_sun_rabbit",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.tin_sun_rabbit",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "description": "A wrong tin of Case 03 M1: a rabbit under a sun.",
+      "prompt": "A round red metal tea tin from the 1920s with a lid, three small brass dials on its side with no numbers, its lid painted with a white rabbit sitting under a round yellow sun with rays. No moon.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_03/tin_sun_rabbit.png",
+      "references": [
+        "s4_newyork.asset.ev_red_tin"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.tin_moon_fish",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.tin_moon_fish",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "description": "A wrong tin of Case 03 M1: a fish under a full moon.",
+      "prompt": "A round red metal tea tin from the 1920s with a lid, three small brass dials on its side with no numbers, its lid painted with a white fish under a big round full moon. No rabbit.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_03/tin_moon_fish.png",
+      "references": [
+        "s4_newyork.asset.ev_red_tin"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_brass_bird",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_ep04_e2",
+      "caseIds": [
+        "s4_ep04",
+        "s4_ep11"
+      ],
+      "description": "Eleanor's brass bird: wings wide open, one foot up, beak open (the right choice of Case 04 M2 and Case 11 M2).",
+      "prompt": "A small brass songbird figure on a little brass base with four screw holes, three small music notes engraved on one wing, its wings wide open, one foot lifted as if dancing, its beak open to sing.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/brass_bird.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.bird_feet_down",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.bird_feet_down",
+      "caseIds": [
+        "s4_ep04",
+        "s4_ep11"
+      ],
+      "description": "A wrong bird of Case 04 M2 and Case 11 M2: wings open, beak open, but both feet down.",
+      "prompt": "A small brass songbird figure on a little brass base with four screw holes, three small music notes engraved on one wing, its wings wide open, its beak open, standing flat on both feet. No foot is lifted.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_04/bird_feet_down.png",
+      "references": [
+        "s4_newyork.asset.ev_brass_bird"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.bird_wings_closed",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.bird_wings_closed",
+      "caseIds": [
+        "s4_ep04",
+        "s4_ep11"
+      ],
+      "description": "A wrong bird of Case 04 M2 and Case 11 M2: one foot up, beak open, but wings folded.",
+      "prompt": "A small brass songbird figure on a little brass base with four screw holes, three small music notes engraved on one wing, its wings folded close to its body, one foot lifted as if dancing, its beak open.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_04/bird_wings_closed.png",
+      "references": [
+        "s4_newyork.asset.ev_brass_bird"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_star_sole",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_ep07_e1",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "description": "The star boot sole: five little stars in a ring and a line across the heel (the right choice of Case 07 M1).",
+      "prompt": "The underside of a brown leather boot, seen straight from below, its rubber sole filling the picture, five small stars arranged in a ring at the front of the sole and one straight raised line across the heel.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/star_sole.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.sole_circles",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.sole_circles",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "description": "A wrong sole of Case 07 M1: circles instead of stars.",
+      "prompt": "The underside of a brown leather boot, seen straight from below, its rubber sole filling the picture, five small plain circles arranged in a ring at the front of the sole and one straight raised line across the heel. No stars.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_07/sole_circles.png",
+      "references": [
+        "s4_newyork.asset.ev_star_sole"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.sole_no_line",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.sole_no_line",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "description": "A wrong sole of Case 07 M1: no line across the heel.",
+      "prompt": "The underside of a brown leather boot, seen straight from below, its rubber sole filling the picture, five small stars arranged in a ring at the front of the sole, and a smooth plain heel with no line across it.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_07/sole_no_line.png",
+      "references": [
+        "s4_newyork.asset.ev_star_sole"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.car_still",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.car_still",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "description": "The right car of Case 09 M2: flat roof, hanging from the outside edge.",
+      "prompt": "One white Ferris wheel car with windows and a small door, shown on its own with a short piece of the wheel's steel, the car has a flat roof and hangs from a fixed arm on the outside edge (the outer rim) of the wheel.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_09/car_still.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.car_rail",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.car_rail",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "description": "A wrong car of Case 09 M2: flat roof, but riding on a curved rail inside the wheel.",
+      "prompt": "One white Ferris wheel car with windows and a small door, shown on its own with a short piece of the wheel's steel, the car has a flat roof and rides on a curved steel rail inside the wheel, tilted as if swinging.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_09/car_rail.png",
+      "references": [
+        "s4_newyork.asset.car_still"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.car_dome",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.car_dome",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "description": "A wrong car of Case 09 M2: hanging from the outside edge, but with a round dome roof.",
+      "prompt": "One white Ferris wheel car with windows and a small door, shown on its own with a short piece of the wheel's steel, the car has a tall, round, half-ball dome roof that rises high above its windows like the top of an onion, plainly not flat and hangs from a fixed arm on the outside edge (the outer rim) of the wheel.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_09/car_dome.png",
+      "references": [
+        "s4_newyork.asset.car_still"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.stone_lark_nest",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.stone_lark_nest",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "description": "The right stone bird of Case 12 M1: a lark with open wings, a round nest below.",
+      "prompt": "A grey stone carving on an old castle wall, a small songbird (a lark) with its wings open, and just below it a round hollow stone nest about the size of an egg.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_12/stone_lark_nest.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.stone_owl_nest",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.stone_owl_nest",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "description": "A wrong stone bird of Case 12 M1: an owl, with a nest below.",
+      "prompt": "A grey stone carving on an old castle wall, an owl with folded wings and big round eyes, and just below it a round hollow stone nest about the size of an egg.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_12/stone_owl_nest.png",
+      "references": [
+        "s4_newyork.asset.stone_lark_nest"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.stone_lark_plain",
+      "type": "object",
+      "use": "puzzle",
+      "subject": "s4_newyork.stone_lark_plain",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "description": "A wrong stone bird of Case 12 M1: a lark with open wings, but no nest.",
+      "prompt": "A grey stone carving on an old castle wall, a small songbird (a lark) with its wings open, and below it only flat plain stone with no hollow.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_12/stone_lark_plain.png",
+      "references": [
+        "s4_newyork.asset.stone_lark_nest"
+      ],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_newspaper",
+      "type": "document",
+      "use": "notWired",
+      "subject": "s4_ep01_e2",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "description": "The 1926 newspaper page about Eleanor and her Silver Lark.",
+      "prompt": "An old yellowed newspaper page, folded once, with columns of tiny unreadable grey lines and a small printed drawing of a silver songbird. No readable letters or numbers.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/newspaper.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_rubbing",
+      "type": "document",
+      "use": "notWired",
+      "subject": "s4_ep01_e3",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "description": "Maya's pencil rubbing of the notebook's next page.",
+      "prompt": "An old notebook page shaded all over with soft grey pencil, pale lines of handwriting showing through as faint unreadable squiggles, a short pencil lying beside it.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/rubbing.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_brass_egg",
+      "type": "object",
+      "use": "notWired",
+      "subject": "s4_ep02_e2",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "description": "Eleanor's brass egg with four letter rings.",
+      "prompt": "A small polished brass egg with four thin rings around its middle that can turn, the rings blank with no letters, a tiny hinge line, a small blank paper tag tied with string.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/brass_egg.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_music_box",
+      "type": "object",
+      "use": "notWired",
+      "subject": "s4_ep08_e4",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "description": "Rosa's 1926 music box; inside the lid, a big wheel by the sea.",
+      "prompt": "A small old wooden music box from the 1920s with its lid open, a brass comb and cylinder inside, a tiny painting inside the lid of a big Ferris wheel by the sea, four small blank letter rings on its front.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/music_box.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_torn_page",
+      "type": "document",
+      "use": "notWired",
+      "subject": "s4_ep11_e3",
+      "caseIds": [
+        "s4_ep11"
+      ],
+      "description": "Eleanor's last page, its edge a zigzag with three points.",
+      "prompt": "An old notebook page with faint unreadable handwriting squiggles, its left edge torn in a sharp zigzag with exactly three points, inside a clear plastic sleeve.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/torn_page.png",
+      "references": [],
+      "status": "generated"
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_silver_lark",
+      "type": "object",
+      "use": "notWired",
+      "subject": "s4_ep12_e4",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "description": "The Silver Lark: Eleanor's clockwork bird, singing.",
+      "prompt": "A small silver clockwork songbird with its wings spread open and its beak open as if singing, tiny gears showing at its side, standing on a little silver perch beside the open door of a small silver birdcage.",
+      "stylePreset": "object",
+      "width": 1024,
+      "height": 1024,
+      "transparent": false,
+      "outputPath": "assets/seasons/season_04_newyork/objects/silver_lark.png",
+      "references": [],
+      "status": "generated"
+    }
+  ],
+  "notes": [
+    "Season 4 (New York), STEP 1 of create-season: every picture planned, none made. No OpenAI call was made.",
+    "newyork_scene is the season's own scene style (gouache and ink, art-deco travel poster), so it never reads as London's postcards, Paris's oil or Rome's sketchbook. Characters and objects use the shared character and object styles.",
+    "Wrong choices drawn from the right one (tins, birds, soles, wheel cars, stone birds, buildings) reference it, so they differ only by what the clue names."
+  ]
+}

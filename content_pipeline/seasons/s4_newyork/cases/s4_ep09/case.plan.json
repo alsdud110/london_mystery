@@ -1,0 +1,638 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep09",
+  "seasonId": "s4_newyork",
+  "number": 9,
+  "actId": "act3",
+  "title": "The Wonder Wheel",
+  "synopsis": [
+    "Rosa's music box points to a big wheel by the sea.",
+    "At Coney Island, the Wonder Wheel has turned since 1920.",
+    "Eleanor's last friend keeps the last clue."
+  ],
+  "goal": "Answer the last friend's question, find Eleanor's box and learn her last steps.",
+  "characters": [
+    "maya_chen",
+    "rosa_diaz"
+  ],
+  "locations": [
+    "coney_island"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep09_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.coney_boardwalk",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "CASTLE",
+          "acceptedAnswers": [
+            "A CASTLE",
+            "THE CASTLE",
+            "SMALL CASTLE",
+            "A SMALL CASTLE"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Eleanor's question for the wheel keeper. The answer is the Lark's hiding place, Belvedere Castle in Central Park (small, on a rock above a pond, with a weather station: real). The man in star boots answered 'palace' the day before."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep08_e4",
+          "use": "textMention",
+          "note": "The music box lid shows a big wheel by the sea."
+        },
+        {
+          "ref": "s4_ep01_c2",
+          "use": "textMention",
+          "note": "Each friend asks one question."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep09_c1",
+        "evidence": "s4_ep09_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "수수께끼의 not ~, but ~ 문장(not a palace, but I have a tower)을 읽고 무엇인지 단어로 쓴다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "I am not a palace, but I have a tower.",
+          "I sit on a rock above a pond."
+        ]
+      },
+      "play": {
+        "title": "The Keeper's Question",
+        "location": "CONEY ISLAND",
+        "story": [
+          "The sea wind smells of salt and hot dogs.",
+          "The Wonder Wheel turns slowly against the sky.",
+          "An old keeper sits in the ticket booth. \"Eleanor's friends? I have a question for you.\""
+        ],
+        "letterIntro": "Eleanor's question card says:",
+        "letter": "I am not a palace, but I have a tower.\nI sit on a rock above a pond,\nin the biggest park of the city.\nI am small, and I watch the weather.\nWhat am I?\n— E. H.",
+        "question": "What is the answer to Eleanor's last question?",
+        "prompt": "It is a ____.",
+        "hints": [
+          "It is not a palace. What else has a tower?",
+          "Think of a small one, on a rock, in Central Park."
+        ],
+        "successMessage": "The keeper nods. \"Right!\"",
+        "transition": [
+          "A small castle on a rock, in Central Park: Belvedere Castle!",
+          "\"Yesterday a man in star boots said 'palace',\" the keeper laughs.",
+          "\"Wrong! I told him nothing. Your box is in the wheel.\""
+        ],
+        "feedback": {
+          "PALACE": "The card says it is NOT a palace. What else has a tower?",
+          "TOWER": "It has a tower. But what is the whole place?"
+        },
+        "orderFeedback": "Check your spelling. Six letters.",
+        "mapX": 0.88,
+        "mapY": 0.88,
+        "clue": {
+          "title": "The Last Place",
+          "value": "A SMALL CASTLE ON A ROCK, IN THE BIG PARK",
+          "note": "Eleanor's last question points to Belvedere Castle in Central Park.",
+          "symbol": "park"
+        },
+        "evidence": {
+          "name": "The Keeper's Card",
+          "icon": "letter",
+          "description": "Eleanor's question card, kept by the Wonder Wheel's keeper.",
+          "inscription": "I am not a palace, but I have a tower."
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE CASTLE IN THE PARK",
+          "detail": "The man in star boots said 'palace'. He does not know where the Lark is."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep09_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.coney_boardwalk",
+      "puzzle": {
+        "paletteId": "scene_explore_choose",
+        "surface": "mission",
+        "engineTable": "explores",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "still",
+          "options": [
+            {
+              "id": "rail",
+              "label": "The car with a flat roof on the rails",
+              "feedback": "A flat roof, yes. But this car rides on rails inside the wheel. It swings."
+            },
+            {
+              "id": "dome",
+              "label": "The car with a round roof on the edge",
+              "feedback": "It hangs on the outside edge. But look at its roof."
+            },
+            {
+              "id": "still",
+              "label": "The car with a flat roof on the edge"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.coney_boardwalk",
+          "s4_newyork.asset.car_rail",
+          "s4_newyork.asset.car_dome",
+          "s4_newyork.asset.car_still"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a look round (ExploreScene) on the boardwalk: the keeper's note is at the ticket booth; the wheel opens once it is read. The Wonder Wheel really has cars that stay still on its outside edge and cars that swing on curved rails inside it. The three white cars are told apart by where they hang and by their roof shape, never by colour.",
+          "Coordinates measured on the made coney_boardwalk.png (1536x1024, sha256 98eb6975…) with a 50px grid sheet (season_factory). The wheel's area is its rim and cars down to the beach line; its legs below that belong to the railing's area, which runs between the booth and the hot dog stand."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep09_c1",
+          "use": "textMention",
+          "note": "The keeper: your box is in the wheel."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep09_c2",
+        "evidence": "s4_ep09_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "'on the outside edge', 'a flat roof', 'never swings'를 읽고 세 관람차 칸 중 맞는 것을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "a car that never swings",
+          "It hangs on the outside edge of the wheel.",
+          "It has a flat roof."
+        ]
+      },
+      "play": {
+        "title": "The Car That Never Swings",
+        "location": "THE BOARDWALK",
+        "story": [
+          "Some cars on the wheel stay still.",
+          "Others slide and swing on curved rails.",
+          "\"Which one?\" Rosa asks. The keeper points at his booth."
+        ],
+        "letterIntro": "The keeper's note at the booth says:",
+        "letter": "Eleanor's box waits in a car that never swings.\nIt hangs on the outside edge of the wheel.\nIt has a flat roof.\nThe swinging cars ride on rails inside the wheel.",
+        "question": "Which car holds Eleanor's box?",
+        "hints": [
+          "Find the keeper's note at the ticket booth and read it first.",
+          "Check two things on each car: where it hangs, and its roof."
+        ],
+        "successMessage": "You found the car that never swings!",
+        "transition": [
+          "The wheel stops. You climb into the still car.",
+          "Under the seat is a small iron box with letter rings.",
+          "The sea is far below."
+        ],
+        "mapX": 0.88,
+        "mapY": 0.88,
+        "clue": {
+          "title": "The Still Car",
+          "value": "OUTSIDE EDGE · FLAT ROOF",
+          "note": "Eleanor's box was under the seat of a car that never swings.",
+          "symbol": "key"
+        },
+        "evidence": {
+          "name": "Eleanor's Wheel Box",
+          "icon": "key",
+          "description": "A small iron box from under the seat of the still car. Four letter rings lock it.",
+          "inscription": "What a bird sings, and what my family keeps."
+        },
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_04_newyork/locations/coney_boardwalk.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            },
+            "measuredOn": "sha256:98eb6975528fbb70945e6831b47855cdc2f57d090ccce89a1ffb0818f94fd428"
+          },
+          "place": "The boardwalk",
+          "task": "Look around the boardwalk. Where is the keeper's note?",
+          "nextTask": "Which car holds the box? Look at the Wonder Wheel.",
+          "missLine": "Nothing here. Find the keeper's note at the ticket booth.",
+          "guideAt": [
+            200,
+            700
+          ],
+          "spots": [
+            {
+              "id": "booth",
+              "kind": "document",
+              "title": "THE TICKET BOOTH",
+              "label": "A small striped ticket booth",
+              "areas": [
+                [
+                  0,
+                  355,
+                  330,
+                  970
+                ]
+              ],
+              "mark": [
+                315,
+                367
+              ]
+            },
+            {
+              "id": "stand",
+              "kind": "note",
+              "title": "THE HOT DOG STAND",
+              "label": "A hot dog stand with a yellow roof",
+              "areas": [
+                [
+                  1125,
+                  400,
+                  1536,
+                  1024
+                ]
+              ],
+              "mark": [
+                1521,
+                412
+              ],
+              "line": "Hot dogs and lemonade. No box here."
+            },
+            {
+              "id": "railing",
+              "kind": "note",
+              "title": "THE RAILING",
+              "label": "The boardwalk railing by the beach",
+              "areas": [
+                [
+                  335,
+                  800,
+                  1120,
+                  950
+                ]
+              ],
+              "mark": [
+                1105,
+                812
+              ],
+              "line": "Sand and sea. The box is not on the beach."
+            },
+            {
+              "id": "wheel",
+              "kind": "choice",
+              "title": "THE WONDER WHEEL",
+              "label": "The giant Wonder Wheel",
+              "areas": [
+                [
+                  335,
+                  30,
+                  1125,
+                  795
+                ]
+              ],
+              "mark": [
+                1110,
+                42
+              ],
+              "requires": "booth",
+              "lockedLine": "So many cars! Which one? Read the keeper's note first.",
+              "unreadLine": "Read the keeper's note first."
+            }
+          ],
+          "others": [
+            {
+              "label": "The sky",
+              "areas": [
+                [
+                  0,
+                  0,
+                  335,
+                  350
+                ],
+                [
+                  1125,
+                  0,
+                  1536,
+                  395
+                ]
+              ],
+              "line": "Seagulls and a few white clouds."
+            }
+          ],
+          "choiceTitle": "THE WONDER WHEEL",
+          "choiceHow": "Which car hangs on the outside edge and has a flat roof? Tap one car.",
+          "choicePixels": {
+            "width": 1024,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "rail",
+              "picture": "assets/seasons/season_04_newyork/cases/case_09/car_rail.png",
+              "description": "a white wheel car with a flat roof, riding on a curved rail inside the wheel"
+            },
+            {
+              "optionId": "dome",
+              "picture": "assets/seasons/season_04_newyork/cases/case_09/car_dome.png",
+              "description": "a white wheel car with a round dome roof, hanging from the outside edge"
+            },
+            {
+              "optionId": "still",
+              "picture": "assets/seasons/season_04_newyork/cases/case_09/car_still.png",
+              "description": "a white wheel car with a flat roof, hanging from the outside edge"
+            }
+          ],
+          "opening": [
+            20,
+            20,
+            1516,
+            1004
+          ]
+        },
+        "discovery": {
+          "type": "evidenceFound",
+          "title": "THE BOX IN THE WHEEL",
+          "detail": "Eleanor's last box waited under a seat for a hundred years.",
+          "showEvidence": true
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep09_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.coney_boardwalk",
+      "puzzle": {
+        "paletteId": "letter_tile_lock",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "letterLock",
+        "answerSpec": {
+          "answer": "SONG",
+          "options": [
+            {
+              "id": "g",
+              "label": "G"
+            },
+            {
+              "id": "n",
+              "label": "N"
+            },
+            {
+              "id": "o",
+              "label": "O"
+            },
+            {
+              "id": "s",
+              "label": "S"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "The box's word: what a bird sings and what Eleanor's family keeps (Grandma Ana's note, Case 08)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep08_c2",
+          "use": "answerDerivation",
+          "note": "The family keeps the end of Eleanor's song."
+        },
+        {
+          "ref": "s4_ep09_e2",
+          "use": "textMention",
+          "note": "The box has four letter rings."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep09_c3",
+        "evidence": "s4_ep09_e3"
+      },
+      "learning": {
+        "dependency": "helpful",
+        "level": "application",
+        "objective": "'what a bird sings, and what my family keeps'를 읽고 네 글자 단어(SONG)를 맞춘다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "what a bird sings",
+          "what my family keeps"
+        ]
+      },
+      "play": {
+        "title": "The Iron Box",
+        "location": "THE WONDER WHEEL",
+        "story": [
+          "The car rocks gently in the wind.",
+          "Rosa holds the iron box on her knees.",
+          "A line is carved on its lid."
+        ],
+        "letterIntro": "The lid says:",
+        "letter": "My last box opens with one word:\nwhat a bird sings, and what my family keeps.",
+        "question": "Spell the word that opens the iron box.",
+        "hints": [
+          "What does a lark do in the morning?",
+          "What did Grandma Ana's note say the family keeps?"
+        ],
+        "successMessage": "The iron box opens!",
+        "transition": [
+          "Inside is Eleanor's last letter, folded small.",
+          "Rosa's hands shake as she opens it.",
+          "\"It tells us what to do at the castle.\""
+        ],
+        "orderFeedback": "The four tiles fit. What does a bird sing?",
+        "mapX": 0.88,
+        "mapY": 0.88,
+        "clue": {
+          "title": "The Box's Word",
+          "value": "SONG",
+          "note": "Eleanor's last box opened with SONG. Inside: her last letter.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Eleanor's Last Letter",
+          "icon": "letter",
+          "description": "Eleanor's last letter, from the iron box in the Wonder Wheel.",
+          "inscription": "When you stand in my tower, play my whole song."
+        },
+        "lockTitle": "THE IRON BOX",
+        "discovery": {
+          "type": "clueFound",
+          "title": "ELEANOR'S LAST LETTER",
+          "detail": "Her last letter says what to do at the castle. But its lines are mixed up."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep09_final",
+    "slot": "final",
+    "placeId": "s4_newyork.coney_boardwalk",
+    "puzzle": {
+      "paletteId": "order_sequence",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "sequence",
+      "answerSpec": {
+        "answer": "climb,face,egg,song",
+        "options": [
+          {
+            "id": "song",
+            "label": "Play the whole song"
+          },
+          {
+            "id": "bell",
+            "label": "Ring the castle bell"
+          },
+          {
+            "id": "egg",
+            "label": "Put the egg in the stone nest"
+          },
+          {
+            "id": "climb",
+            "label": "Climb the castle tower"
+          },
+          {
+            "id": "face",
+            "label": "Face the wall the egg named"
+          }
+        ],
+        "codeLength": 4
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: Eleanor's last letter, its steps told out of order with first, then, before and when. 'Ring the castle bell' is a decoy. The wall the egg named is EAST (Case 02); the steps are followed in Case 12."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep09_e3",
+        "use": "textMention",
+        "note": "Eleanor's last letter."
+      },
+      {
+        "ref": "s4_ep02_c3",
+        "use": "textMention",
+        "note": "The egg's word was a direction: EAST."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep09_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "comprehension",
+      "objective": "first, then, before, when으로 섞인 엘리너의 마지막 지시를 순서대로 놓는다.",
+      "skill": "grammarInContext",
+      "expressions": [
+        "First, climb to the top of my castle tower.",
+        "But before the song, put my brass egg in the stone bird's nest."
+      ]
+    },
+    "play": {
+      "title": "Eleanor's Last Steps",
+      "location": "CONEY ISLAND",
+      "story": [
+        "Back on the boardwalk, you read the letter together.",
+        "Eleanor wrote it like a puzzle, of course.",
+        "Maya gets out her pencil."
+      ],
+      "letterIntro": "Eleanor's last letter says:",
+      "letter": "When you stand by the stone bird, play my whole song.\nBut before the song, put my brass egg in the stone bird's nest.\nFirst, climb to the top of my castle tower.\nThen face the wall that my egg named, and find the stone bird there.\nMy Lark will wake.\n— E. H.",
+      "question": "Put Eleanor's last steps in order.",
+      "hints": [
+        "One line starts with 'First'.",
+        "The song comes last. What comes just before it?"
+      ],
+      "successMessage": "You know Eleanor's last steps!",
+      "transition": [
+        "Climb, face the east wall, the egg, then the song.",
+        "\"You have the egg. I have the song,\" Rosa says.",
+        "\"I play at Bethesda Terrace tomorrow. Then we go to the castle.\""
+      ],
+      "orderFeedback": "Start with 'First'. Then read 'Then' and 'before'.",
+      "mapX": 0.88,
+      "mapY": 0.88,
+      "evidence": {
+        "name": "Eleanor's Last Steps",
+        "icon": "map",
+        "description": "Eleanor's steps for the castle tower, in order.",
+        "inscription": "Climb the tower. Face the east wall. The egg in the nest. Then the song."
+      },
+      "ending": [
+        {
+          "by": "detective",
+          "text": "The wall my egg named is the east wall.",
+          "evidence": "s4_ep02_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "And the man in star boots said 'palace'!",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "He does not know the place. Or the whole song.",
+          "speaker": "rosa_diaz",
+          "portrait": "assets/seasons/season_04_newyork/characters/rosa_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Far down the boardwalk, someone in a safari vest walks away."
+        }
+      ]
+    }
+  },
+  "hook": "The man in star boots does not know the castle or the song. What will he try next?",
+  "learningGoal": {
+    "title": "Not this, but that: and steps in order",
+    "titleKo": "not ~ but ~ 수수께끼와 순서 지시"
+  },
+  "play": {
+    "objectives": [
+      "Answer the keeper's question.",
+      "Find the car that never swings.",
+      "Read Eleanor's last steps."
+    ],
+    "intro": [
+      "Coney Island, at the edge of the sea.",
+      "Roller coasters, a long wooden boardwalk and the Wonder Wheel.",
+      "The wheel was here when Eleanor was."
+    ],
+    "caseSummary": "Eleanor's last question pointed to a small castle in Central Park. The man in star boots had said 'palace'. Her box was in a car that never swings. It opened with SONG. Her last letter gave the castle steps: climb, face east, the egg, then the song.",
+    "place": "CONEY ISLAND",
+    "keyWords": [
+      "castle",
+      "tower",
+      "swing",
+      "edge",
+      "before"
+    ],
+    "glossary": {
+      "boardwalk": "해변의 나무 산책로",
+      "palace": "궁전",
+      "pond": "연못",
+      "swing": "흔들리다",
+      "edge": "가장자리",
+      "roof": "지붕",
+      "nest": "둥지"
+    }
+  },
+  "notes": [
+    "Act 3 opens: the trail's last friend. Eleanor's rule (one question each) stops the man in star boots a second time.",
+    "Eleanor's last steps (s4_ep09_e4) are followed in Case 12; the whole song needs Rosa's box or Rosa herself (Case 10)."
+  ]
+}

@@ -160,6 +160,21 @@ flutter:
     # (`ArtAssets.detective`, `DetectiveExpression`).
     - assets/shared/detectives/expressions/boy/
     - assets/shared/detectives/expressions/girl/
+    - assets/seasons/season_04_newyork/cases/case_01/
+    - assets/seasons/season_04_newyork/cases/case_02/
+    - assets/seasons/season_04_newyork/cases/case_03/
+    - assets/seasons/season_04_newyork/cases/case_04/
+    - assets/seasons/season_04_newyork/cases/case_05/
+    - assets/seasons/season_04_newyork/cases/case_07/
+    - assets/seasons/season_04_newyork/cases/case_08/
+    - assets/seasons/season_04_newyork/cases/case_09/
+    - assets/seasons/season_04_newyork/cases/case_10/
+    - assets/seasons/season_04_newyork/cases/case_12/
+    - assets/seasons/season_04_newyork/characters/
+    - assets/seasons/season_04_newyork/cover/
+    - assets/seasons/season_04_newyork/locations/
+    - assets/seasons/season_04_newyork/locations/map/
+    - assets/seasons/season_04_newyork/objects/
 
   # Bundled locally (SIL Open Font License) so the game works fully offline.
   fonts:

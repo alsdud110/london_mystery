@@ -1,0 +1,599 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep10",
+  "lines": [
+    {
+      "rookie": "The Stolen Song",
+      "junior": "The Stolen Song",
+      "master": "The Stolen Song"
+    },
+    {
+      "rookie": "Rosa plays at Bethesda Terrace in Central Park.",
+      "junior": "Rosa is playing her violin at Bethesda Terrace in Central Park.",
+      "master": "Rosa is performing on her violin at Bethesda Terrace, in the heart of Central Park."
+    },
+    {
+      "rookie": "The TV crew films her. Ten minutes later, her music box is gone.",
+      "junior": "A TV crew films her. Just ten minutes later, her music box has disappeared.",
+      "master": "A TV crew captures her performance. A mere ten minutes later, her music box has vanished."
+    },
+    {
+      "rookie": "Who took the song, and where did they go?",
+      "junior": "Who stole the song, and where did they go next?",
+      "master": "Who made off with the song, and where have they fled?"
+    },
+    {
+      "rookie": "Dexter has the bird and the box. Can you prove he took the page, too?",
+      "junior": "Dexter has both the bird and the box. Can you also prove that he took the page?",
+      "master": "Dexter now holds both the bird and the box. Can you prove that the page was his doing as well?"
+    },
+    {
+      "rookie": "Find who was next to the music box.",
+      "junior": "Find out who stood next to the music box.",
+      "master": "Determine who stood next to the music box."
+    },
+    {
+      "rookie": "Find Dexter's studio.",
+      "junior": "Locate Dexter's studio.",
+      "master": "Track down Dexter's studio."
+    },
+    {
+      "rookie": "Read the dropped page.",
+      "junior": "Read the page that was dropped.",
+      "master": "Examine the dropped page."
+    },
+    {
+      "rookie": "Central Park. Green trees, a lake and an angel on a fountain.",
+      "junior": "Central Park. Green trees, a quiet lake and a stone angel on a fountain.",
+      "master": "Central Park. Leafy trees, a still lake and a stone angel presiding over a fountain."
+    },
+    {
+      "rookie": "Rosa plays here on Wednesdays.",
+      "junior": "Every Wednesday, Rosa plays her violin here.",
+      "master": "Rosa performs here every Wednesday without fail."
+    },
+    {
+      "rookie": "Today, Dexter's crew has come to film her.",
+      "junior": "Today, Dexter's TV crew has arrived to film her.",
+      "master": "Today, Dexter's crew has turned up to film her performance."
+    },
+    {
+      "rookie": "Rosa's music box vanished while Dexter stood next to it. Nora sent you to his studio. His dropped page is in the same writing as the truck note. He has the bird and the box, but not the castle. Rosa still has a copy of the song.",
+      "junior": "Rosa's music box disappeared while Dexter stood next to it. Nora sent you to his studio. The page he dropped is in the same writing as the note in the truck. He has the bird and the box, but he doesn't know the castle. Luckily, Rosa still has a copy of the song.",
+      "master": "Rosa's music box vanished while Dexter stood right beside it. Nora directed you to his studio. The page he let fall matches the handwriting of the truck note. He possesses the bird and the box, yet the castle still eludes him. Fortunately, Rosa has kept a copy of the song."
+    },
+    {
+      "rookie": "CENTRAL PARK",
+      "junior": "CENTRAL PARK",
+      "master": "CENTRAL PARK"
+    },
+    {
+      "rookie": "Maya, by the fountain",
+      "junior": "Maya, by the fountain",
+      "master": "Maya, by the fountain"
+    },
+    {
+      "rookie": "Maya stood by the fountain, far from the case. Who stood right next to it?",
+      "junior": "Maya was by the fountain, far from the case. Who was standing right next to it?",
+      "master": "Maya lingered by the fountain, far from the case. Who was standing right beside it?"
+    },
+    {
+      "rookie": "Nora, on the steps",
+      "junior": "Nora, on the steps",
+      "master": "Nora, on the steps"
+    },
+    {
+      "rookie": "Nora was up on the steps with her camera, far away. Read again.",
+      "junior": "Nora was high up on the steps with her camera, far away. Read the notes again.",
+      "master": "Nora was perched up on the steps with her camera, far away. Read the notes once more."
+    },
+    {
+      "rookie": "Dexter, behind the case",
+      "junior": "Dexter, behind the case",
+      "master": "Dexter, behind the case"
+    },
+    {
+      "rookie": "Dexter stood behind my violin case, right next to it.",
+      "junior": "Dexter stood behind my violin case, right next to it.",
+      "master": "Dexter stood behind my violin case, right next to it."
+    },
+    {
+      "rookie": "Nora was up on the steps with her camera, far away.",
+      "junior": "Nora was up on the steps with her camera, far away.",
+      "master": "Nora was up on the steps with her camera, far away."
+    },
+    {
+      "rookie": "The Empty Violin Case",
+      "junior": "The Empty Violin Case",
+      "master": "The Empty Violin Case"
+    },
+    {
+      "rookie": "BETHESDA TERRACE",
+      "junior": "BETHESDA TERRACE",
+      "master": "BETHESDA TERRACE"
+    },
+    {
+      "rookie": "Rosa plays by the angel fountain. A crowd listens.",
+      "junior": "Rosa plays beside the angel fountain while a crowd listens.",
+      "master": "Rosa plays beside the angel fountain as a crowd gathers, spellbound."
+    },
+    {
+      "rookie": "Dexter's crew films her, smiling and clapping.",
+      "junior": "Dexter's crew films her while he smiles and claps.",
+      "master": "Dexter's crew films her while he beams and applauds."
+    },
+    {
+      "rookie": "Then Rosa cries out. \"My music box! It's gone!\"",
+      "junior": "Suddenly Rosa cries out. \"My music box! It's gone!\"",
+      "master": "All at once, Rosa gasps. \"My music box! It's gone!\""
+    },
+    {
+      "rookie": "Rosa's notes say:",
+      "junior": "Rosa wrote in her notes:",
+      "master": "Rosa's notes read:"
+    },
+    {
+      "rookie": "At 2:00, I put my music box in my open violin case.\nMaya stood by the fountain, far from my case.\nNora was up on the steps with her camera, far away.\nDexter stood behind my violin case, right next to it.\nAt 2:10, the box was gone.",
+      "junior": "At 2:00, I put my music box inside my open violin case.\nMaya stood by the fountain, far from my case.\nNora was up on the steps with her camera, far away.\nDexter stood behind my violin case, right next to it.\nAt 2:10, the box had disappeared.",
+      "master": "At 2:00, I set my music box down in my open violin case.\nMaya stood by the fountain, far from my case.\nNora was up on the steps with her camera, far away.\nDexter stood behind my violin case, right next to it.\nBy 2:10, the box had vanished."
+    },
+    {
+      "rookie": "Who was close enough to take the box?",
+      "junior": "Who was near enough to take the box?",
+      "master": "Who stood close enough to snatch the box?"
+    },
+    {
+      "rookie": "Find the words 'far' in the notes. Those people were not close.",
+      "junior": "Look for the word 'far' in the notes. Those people were not close.",
+      "master": "Watch for the word 'far' in the notes; anyone described that way was not close."
+    },
+    {
+      "rookie": "Who stood right next to the case?",
+      "junior": "Who was standing right next to the case?",
+      "master": "Which person stood right beside the case?"
+    },
+    {
+      "rookie": "You found who was close to the box!",
+      "junior": "You found out who was close to the box!",
+      "master": "You've pinpointed who was close to the box!"
+    },
+    {
+      "rookie": "Only Dexter stood right next to the case.",
+      "junior": "Dexter was the only one right next to the case.",
+      "master": "Dexter alone stood right beside the case."
+    },
+    {
+      "rookie": "And now Dexter is gone. So is his black bag.",
+      "junior": "And now Dexter has disappeared. His black bag is gone, too.",
+      "master": "And now Dexter has slipped away, along with his black bag."
+    },
+    {
+      "rookie": "Wet star prints run up the terrace steps.",
+      "junior": "Wet star-shaped prints lead up the terrace steps.",
+      "master": "A trail of wet, star-shaped prints climbs the terrace steps."
+    },
+    {
+      "rookie": "Behind the Case",
+      "junior": "Behind the Case",
+      "master": "Behind the Case"
+    },
+    {
+      "rookie": "Dexter stood right next to Rosa's violin case when her music box went missing.",
+      "junior": "Dexter was standing right next to Rosa's violin case when her music box disappeared.",
+      "master": "Dexter stood right beside Rosa's violin case at the very moment her music box vanished."
+    },
+    {
+      "rookie": "THE SONG IS STOLEN",
+      "junior": "THE SONG IS STOLEN",
+      "master": "THE SONG IS STOLEN"
+    },
+    {
+      "rookie": "Dexter was next to the case, and now he is gone. Where did he go?",
+      "junior": "Dexter was next to the case, and now he has disappeared. Where did he go?",
+      "master": "Dexter stood beside the case, and now he has vanished. Where has he gone?"
+    },
+    {
+      "rookie": "The building with a clock on top",
+      "junior": "The building with a clock on top",
+      "master": "The building with a clock on top"
+    },
+    {
+      "rookie": "This roof has a big round clock. Nora says a glass star.",
+      "junior": "This roof has a big round clock. But Nora wrote about a glass star.",
+      "master": "A large round clock crowns this roof, yet Nora mentioned a glass star."
+    },
+    {
+      "rookie": "a tall building near Times Square with a big round clock on its roof",
+      "junior": "a tall building near Times Square with a large round clock on top of its roof",
+      "master": "a towering building near Times Square crowned with a large round clock on its roof"
+    },
+    {
+      "rookie": "The building with a star on top",
+      "junior": "The building with a star on top",
+      "master": "The building with a star on top"
+    },
+    {
+      "rookie": "a tall building near Times Square with a big glass star on its roof",
+      "junior": "a tall building near Times Square with a large glass star on top of its roof",
+      "master": "a towering building near Times Square crowned with a large glass star on its roof"
+    },
+    {
+      "rookie": "The building with a needle on top",
+      "junior": "The building with a needle on top",
+      "master": "The building with a needle on top"
+    },
+    {
+      "rookie": "This roof has a tall needle. Nora says a glass star.",
+      "junior": "This roof has a tall needle. But Nora wrote about a glass star.",
+      "master": "A tall, slender needle tops this roof, yet Nora mentioned a glass star."
+    },
+    {
+      "rookie": "a tall building near Times Square with a tall thin needle on its roof",
+      "junior": "a tall building near Times Square with a tall, thin needle on top of its roof",
+      "master": "a towering building near Times Square crowned with a tall, slender needle on its roof"
+    },
+    {
+      "rookie": "Dexter took a taxi to our studio.",
+      "junior": "Dexter took a taxi to our studio.",
+      "master": "Dexter took a taxi to our studio."
+    },
+    {
+      "rookie": "the building with a big glass star on its roof",
+      "junior": "the building with a big glass star on its roof",
+      "master": "the building with a big glass star on its roof"
+    },
+    {
+      "rookie": "Nora's Message",
+      "junior": "Nora's Message",
+      "master": "Nora's Message"
+    },
+    {
+      "rookie": "Nora runs down the steps, her camera bumping.",
+      "junior": "Nora hurries down the steps, her camera bouncing.",
+      "master": "Nora hurries down the steps, her camera jolting against her side."
+    },
+    {
+      "rookie": "\"I can't stay. He will see me,\" she whispers.",
+      "junior": "\"I can't stay here. He'll see me,\" she whispers.",
+      "master": "\"I mustn't linger. He'll spot me,\" she murmurs."
+    },
+    {
+      "rookie": "A minute later, a message comes to Maya's phone.",
+      "junior": "One minute later, a message arrives on Maya's phone.",
+      "master": "Barely a minute later, a message lights up Maya's phone."
+    },
+    {
+      "rookie": "Nora's message says:",
+      "junior": "Nora's message reads:",
+      "master": "Nora's message reads:"
+    },
+    {
+      "rookie": "I'm sorry. I should have told you before.\nDexter took a taxi to our studio.\nIt is near Times Square,\nin the building with a big glass star on its roof.\nPlease come. — Nora",
+      "junior": "I'm sorry. I should have told you earlier.\nDexter took a taxi to our studio.\nIt is close to Times Square,\nin the building with a big glass star on its roof.\nPlease hurry. — Nora",
+      "master": "I'm so sorry. I ought to have told you sooner.\nDexter took a taxi to our studio.\nIt is just off Times Square,\nin the building with a big glass star on its roof.\nPlease come quickly. — Nora"
+    },
+    {
+      "rookie": "Which building is Dexter's studio?",
+      "junior": "Which of these buildings is Dexter's studio?",
+      "master": "Which of these buildings houses Dexter's studio?"
+    },
+    {
+      "rookie": "Read what is on the studio's roof.",
+      "junior": "Read what stands on top of the studio's roof.",
+      "master": "Read what Nora says sits on the studio's roof."
+    },
+    {
+      "rookie": "Look at the top of each building.",
+      "junior": "Check the top of every building.",
+      "master": "Compare what crowns the top of each building."
+    },
+    {
+      "rookie": "You found Dexter's studio!",
+      "junior": "You've found Dexter's studio!",
+      "master": "You've located Dexter's studio!"
+    },
+    {
+      "rookie": "A tall building with a big glass star on its roof.",
+      "junior": "A tall building with a large glass star on top.",
+      "master": "A towering building, crowned by a large glass star."
+    },
+    {
+      "rookie": "\"Nora wants to help us,\" Maya says.",
+      "junior": "\"Nora wants to help us now,\" Maya says.",
+      "master": "\"Nora is on our side now,\" Maya remarks."
+    },
+    {
+      "rookie": "By the steps, Rosa picks up a page that someone dropped.",
+      "junior": "Near the steps, Rosa picks up a page that someone has dropped.",
+      "master": "At the foot of the steps, Rosa retrieves a page someone has let fall."
+    },
+    {
+      "rookie": "The Glass Star",
+      "junior": "The Glass Star",
+      "master": "The Glass Star"
+    },
+    {
+      "rookie": "Dexter took a taxi to his studio, near Times Square, under a big glass star.",
+      "junior": "Dexter took a taxi to his studio near Times Square, under a large glass star.",
+      "master": "Dexter fled by taxi to his studio near Times Square, beneath a large glass star."
+    },
+    {
+      "rookie": "NORA'S CHOICE",
+      "junior": "NORA'S CHOICE",
+      "master": "NORA'S CHOICE"
+    },
+    {
+      "rookie": "Nora is on your side now. Dexter is at the studio with the glass star.",
+      "junior": "Nora is on your side now. Dexter is at the studio under the glass star.",
+      "master": "Nora has switched sides. Dexter has retreated to the studio beneath the glass star."
+    },
+    {
+      "rookie": "The keeper would not tell me.",
+      "junior": "The keeper would not tell me.",
+      "master": "The keeper would not tell me."
+    },
+    {
+      "rookie": "I still need the last place.",
+      "junior": "I still need the last place.",
+      "master": "I still need the last place."
+    },
+    {
+      "rookie": "The Dropped Page",
+      "junior": "The Dropped Page",
+      "master": "The Dropped Page"
+    },
+    {
+      "rookie": "The page is torn from a small pocket notebook.",
+      "junior": "The page has been torn out of a small pocket notebook.",
+      "master": "The page has been ripped from a small pocket notebook."
+    },
+    {
+      "rookie": "The writing is fast and messy.",
+      "junior": "The handwriting is quick and messy.",
+      "master": "The handwriting is hurried and untidy."
+    },
+    {
+      "rookie": "\"I have seen this writing before,\" Maya says.",
+      "junior": "\"I've seen this handwriting before,\" Maya says.",
+      "master": "\"I've come across this handwriting before,\" Maya muses."
+    },
+    {
+      "rookie": "The dropped page says:",
+      "junior": "The dropped page reads:",
+      "master": "The dropped page reads:"
+    },
+    {
+      "rookie": "The bird: E, G, G. Got it.\nThe girl's box: the end of the song. Got it today!\nThe last place: ??? The keeper would not tell me.\nI said 'palace'. Wrong!\nI still need the last place.",
+      "junior": "The bird: E, G, G. Got it.\nThe girl's box: the end of the song. Got it today!\nThe last place: ??? The keeper would not tell me.\nI said 'palace'. Wrong!\nI still need the last place.",
+      "master": "The bird: E, G, G. Got it.\nThe girl's box: the end of the song. Got it today!\nThe last place: ??? The keeper would not tell me.\nI said 'palace'. Wrong!\nI still need the last place."
+    },
+    {
+      "rookie": "What does the writer still not know?",
+      "junior": "What is the writer still missing?",
+      "master": "What piece of knowledge still escapes the writer?"
+    },
+    {
+      "rookie": "He does not know the last ____.",
+      "junior": "He does not know the last ____.",
+      "master": "He does not know the last ____."
+    },
+    {
+      "rookie": "Which line has question marks?",
+      "junior": "Which line has question marks in it?",
+      "master": "Which line contains the question marks?"
+    },
+    {
+      "rookie": "Read the last line of the page.",
+      "junior": "Read the final line of the page.",
+      "master": "Look closely at the page's final line."
+    },
+    {
+      "rookie": "You know what he is missing!",
+      "junior": "You know what he's missing!",
+      "master": "You've worked out exactly what he lacks!"
+    },
+    {
+      "rookie": "He has the bird and the box, but not the castle.",
+      "junior": "He has the bird and the box, but he doesn't have the castle.",
+      "master": "He holds the bird and the box, but the castle still eludes him."
+    },
+    {
+      "rookie": "The writing is the same as the note in the TV truck.",
+      "junior": "This handwriting matches the note in the TV truck.",
+      "master": "The handwriting matches that of the note in the TV truck."
+    },
+    {
+      "rookie": "Dexter wrote both.",
+      "junior": "Dexter wrote both of them.",
+      "master": "Both were written by Dexter."
+    },
+    {
+      "rookie": "He says he got the song's end today. Read the third line.",
+      "junior": "He says he got the end of the song today. Read the third line.",
+      "master": "He claims he obtained the song's end today. Read the third line."
+    },
+    {
+      "rookie": "He says 'Got it' for the bird. What has question marks?",
+      "junior": "He writes 'Got it' for the bird. Which line has question marks?",
+      "master": "Beside the bird he wrote 'Got it'. Where do the question marks appear?"
+    },
+    {
+      "rookie": "Check your spelling. It is the word in the last line.",
+      "junior": "Check how you spelled it. It's the word in the last line.",
+      "master": "Check your spelling: the word sits in the final line."
+    },
+    {
+      "rookie": "Dexter's Page",
+      "junior": "Dexter's Page",
+      "master": "Dexter's Page"
+    },
+    {
+      "rookie": "Dexter has the bird and Rosa's box. But he does not know the castle.",
+      "junior": "Dexter has the bird and Rosa's box. But he doesn't know where the castle is.",
+      "master": "Dexter holds the bird and Rosa's box, yet the castle remains unknown to him."
+    },
+    {
+      "rookie": "THE SAME WRITING",
+      "junior": "THE SAME WRITING",
+      "master": "THE SAME WRITING"
+    },
+    {
+      "rookie": "Dexter wrote the truck note too. He has the bird. But he cannot find the Lark.",
+      "junior": "Dexter wrote the note in the truck as well. He has the bird, but he can't find the Lark.",
+      "master": "Dexter penned the truck note as well. He possesses the bird, yet the Lark still eludes him."
+    },
+    {
+      "rookie": "A",
+      "junior": "A",
+      "master": "A"
+    },
+    {
+      "rookie": "D",
+      "junior": "D",
+      "master": "D"
+    },
+    {
+      "rookie": "I know the end of the song by heart.",
+      "junior": "I know the end of the song by heart.",
+      "master": "I know the end of the song by heart."
+    },
+    {
+      "rookie": "My case opens with those three notes.",
+      "junior": "My case opens with those three notes.",
+      "master": "My case opens with those three notes."
+    },
+    {
+      "rookie": "Rosa Remembers",
+      "junior": "Rosa Remembers",
+      "master": "Rosa Remembers"
+    },
+    {
+      "rookie": "Rosa wipes her eyes. Then she smiles a little.",
+      "junior": "Rosa dries her eyes. Then she gives a small smile.",
+      "master": "Rosa dabs at her eyes, then manages a faint smile."
+    },
+    {
+      "rookie": "\"He thinks he has the only copy,\" she says.",
+      "junior": "\"He believes he has the only copy,\" she says.",
+      "master": "\"He imagines his is the only copy,\" she remarks."
+    },
+    {
+      "rookie": "She opens a small pocket inside her violin case. It has a letter lock.",
+      "junior": "She opens a small pocket inside her violin case. It is closed with a letter lock.",
+      "master": "She unzips a small pocket inside her violin case, secured with a letter lock."
+    },
+    {
+      "rookie": "Rosa says:",
+      "junior": "Rosa says:",
+      "master": "Rosa says:"
+    },
+    {
+      "rookie": "I know the end of the song by heart.\nGrandma Ana wrote it in her note: three notes.\nMy case opens with those three notes.\nInside, I keep a copy of the whole song.",
+      "junior": "I know the end of the song by heart.\nGrandma Ana wrote it in her note: three notes.\nMy case opens with those three notes.\nInside, I keep a copy of the entire song.",
+      "master": "I know the end of the song by heart.\nGrandma Ana recorded it in her note: three notes.\nMy case opens with those three notes.\nInside, I keep a copy of the complete song."
+    },
+    {
+      "rookie": "Spell the three notes that open Rosa's violin case.",
+      "junior": "Spell the three notes that unlock Rosa's violin case.",
+      "master": "Spell out the three notes that unlock Rosa's violin case."
+    },
+    {
+      "rookie": "Open Grandma Ana's note in your Notebook.",
+      "junior": "Look at Grandma Ana's note in your Notebook.",
+      "master": "Consult Grandma Ana's note in your Notebook."
+    },
+    {
+      "rookie": "The end of Eleanor's song: three letters.",
+      "junior": "The end of Eleanor's song is three letters.",
+      "master": "Eleanor's song ends with three letters."
+    },
+    {
+      "rookie": "Rosa's case opens!",
+      "junior": "Rosa's case is open!",
+      "master": "Rosa's case clicks open!"
+    },
+    {
+      "rookie": "Inside is a folded page: E, G, G, D, A, D.",
+      "junior": "Inside is a folded page that says: E, G, G, D, A, D.",
+      "master": "Inside lies a folded page: E, G, G, D, A, D."
+    },
+    {
+      "rookie": "\"We still have the whole song,\" Rosa says.",
+      "junior": "\"We still have the entire song,\" Rosa says.",
+      "master": "\"The whole song is still ours,\" Rosa declares."
+    },
+    {
+      "rookie": "\"Now let's get my box back.\"",
+      "junior": "\"Now let's go and get my box back.\"",
+      "master": "\"Now let's reclaim my box.\""
+    },
+    {
+      "rookie": "The three tiles fit. What did Grandma Ana's note say?",
+      "junior": "All three tiles fit. What did Grandma Ana's note say?",
+      "master": "All three tiles fit. Recall what Grandma Ana's note said."
+    },
+    {
+      "rookie": "ROSA'S VIOLIN CASE",
+      "junior": "ROSA'S VIOLIN CASE",
+      "master": "ROSA'S VIOLIN CASE"
+    },
+    {
+      "rookie": "The song is safe. But my great-grandmother's box!",
+      "junior": "The song is safe. But what about my great-grandmother's box!",
+      "master": "The song is safe. But my great-grandmother's box is still gone!"
+    },
+    {
+      "rookie": "Dexter was right next to your case.",
+      "junior": "Dexter was standing right next to your case.",
+      "master": "Dexter stood right beside your case."
+    },
+    {
+      "rookie": "And Nora told us where he went.",
+      "junior": "And Nora told us where he ran to.",
+      "master": "And Nora revealed where he fled."
+    },
+    {
+      "rookie": "I will open the studio door for you. Hurry!",
+      "junior": "I'll open the studio door for you. Be quick!",
+      "master": "I'll let you in through the studio door. Make haste!"
+    },
+    {
+      "rookie": "Above Times Square, a glass star shines.",
+      "junior": "High above Times Square, a glass star shines.",
+      "master": "High above Times Square, a glass star glimmers."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "disappeared": "사라졌다",
+      "locate": "찾아내다",
+      "hurries": "서두르다",
+      "bouncing": "흔들리는",
+      "arrives": "도착하다",
+      "earlier": "더 일찍",
+      "handwriting": "손글씨",
+      "matches": "일치하다",
+      "entire": "전체의",
+      "unlock": "자물쇠를 열다",
+      "dries": "닦다, 말리다",
+      "believes": "믿다"
+    },
+    "master": {
+      "vanished": "사라졌다",
+      "spellbound": "넋을 잃은",
+      "beams": "활짝 웃다",
+      "applauds": "박수 치다",
+      "perched": "높이 자리 잡은",
+      "towering": "우뚝 솟은",
+      "crowned": "꼭대기를 장식한",
+      "slender": "가느다란",
+      "linger": "머무르다",
+      "murmurs": "속삭이다",
+      "eludes": "(이해·발견을) 피하다",
+      "retrieves": "되찾다, 집어 올리다",
+      "untidy": "단정치 못한",
+      "reclaim": "되찾다",
+      "haste": "서두름"
+    }
+  }
+}

@@ -1,0 +1,712 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep09",
+  "lines": [
+    {
+      "rookie": "The Wonder Wheel",
+      "junior": "The Wonder Wheel",
+      "master": "The Wonder Wheel"
+    },
+    {
+      "rookie": "Rosa's music box points to a big wheel by the sea.",
+      "junior": "Rosa's music box shows a big wheel beside the sea.",
+      "master": "The lid of Rosa's music box points toward a great wheel beside the sea."
+    },
+    {
+      "rookie": "At Coney Island, the Wonder Wheel has turned since 1920.",
+      "junior": "The Wonder Wheel at Coney Island has been turning since 1920.",
+      "master": "At Coney Island, the Wonder Wheel has been turning ever since 1920."
+    },
+    {
+      "rookie": "Eleanor's last friend keeps the last clue.",
+      "junior": "The last clue is with Eleanor's last friend.",
+      "master": "The final clue rests with the last of Eleanor's old friends."
+    },
+    {
+      "rookie": "The man in star boots does not know the castle or the song. What will he try next?",
+      "junior": "The man in star boots knows nothing about the castle or the song. What will he do next?",
+      "master": "The man in star boots knows neither the castle nor the song. What will he attempt next?"
+    },
+    {
+      "rookie": "Answer the keeper's question.",
+      "junior": "Answer the question the keeper asks.",
+      "master": "Answer the keeper's riddle."
+    },
+    {
+      "rookie": "Find the car that never swings.",
+      "junior": "Find the wheel car that never swings.",
+      "master": "Locate the one car that never swings."
+    },
+    {
+      "rookie": "Read Eleanor's last steps.",
+      "junior": "Read the last steps Eleanor wrote.",
+      "master": "Work out Eleanor's final steps."
+    },
+    {
+      "rookie": "Coney Island, at the edge of the sea.",
+      "junior": "Coney Island, right where the land meets the sea.",
+      "master": "Coney Island, perched on the very edge of the sea."
+    },
+    {
+      "rookie": "Roller coasters, a long wooden boardwalk and the Wonder Wheel.",
+      "junior": "Roller coasters, a long boardwalk made of wood, and the Wonder Wheel.",
+      "master": "Roller coasters, a sprawling wooden boardwalk and, towering above them all, the Wonder Wheel."
+    },
+    {
+      "rookie": "The wheel was here when Eleanor was.",
+      "junior": "The wheel was already here in Eleanor's time.",
+      "master": "The wheel stood here in Eleanor's day, too."
+    },
+    {
+      "rookie": "Eleanor's last question pointed to a small castle in Central Park. The man in star boots had said 'palace'. Her box was in a car that never swings. It opened with SONG. Her last letter gave the castle steps: climb, face east, the egg, then the song.",
+      "junior": "Eleanor's last question led to a small castle in Central Park. The man in star boots had answered 'palace'. Her box was hidden in a car that never swings, and it opened with SONG. Her last letter listed the castle steps: climb, face east, the egg, then the song.",
+      "master": "Eleanor's final riddle pointed to a small castle in Central Park, although the man in star boots had guessed 'palace'. Her box lay hidden in a car that never swings and yielded to the word SONG. Inside, her last letter set out the castle steps: climb, face east, the egg, then the song."
+    },
+    {
+      "rookie": "CONEY ISLAND",
+      "junior": "CONEY ISLAND",
+      "master": "CONEY ISLAND"
+    },
+    {
+      "rookie": "I am not a palace, but I have a tower.",
+      "junior": "I am not a palace, but I have a tower.",
+      "master": "I am not a palace, but I have a tower."
+    },
+    {
+      "rookie": "I sit on a rock above a pond.",
+      "junior": "I sit on a rock above a pond.",
+      "master": "I sit on a rock above a pond."
+    },
+    {
+      "rookie": "The Keeper's Question",
+      "junior": "The Keeper's Question",
+      "master": "The Keeper's Question"
+    },
+    {
+      "rookie": "The sea wind smells of salt and hot dogs.",
+      "junior": "The wind from the sea smells of salt and hot dogs.",
+      "master": "The sea breeze carries the scent of salt and hot dogs."
+    },
+    {
+      "rookie": "The Wonder Wheel turns slowly against the sky.",
+      "junior": "Against the sky, the Wonder Wheel slowly goes round.",
+      "master": "Against the sky, the Wonder Wheel revolves at a leisurely pace."
+    },
+    {
+      "rookie": "An old keeper sits in the ticket booth. \"Eleanor's friends? I have a question for you.\"",
+      "junior": "An old keeper is sitting in the ticket booth. \"You're Eleanor's friends? Then I have a question for you.\"",
+      "master": "An elderly keeper is seated in the ticket booth. \"Friends of Eleanor's? Then I have a question for you.\""
+    },
+    {
+      "rookie": "Eleanor's question card says:",
+      "junior": "Eleanor's question card reads:",
+      "master": "Eleanor's question card, written in her own hand, reads:"
+    },
+    {
+      "rookie": "I am not a palace, but I have a tower.\nI sit on a rock above a pond,\nin the biggest park of the city.\nI am small, and I watch the weather.\nWhat am I?\n— E. H.",
+      "junior": "I am not a palace, but I have a tower.\nI sit on a rock above a pond,\nin the largest park in the city.\nI am small, and I keep watch on the weather.\nWhat am I?\n— E. H.",
+      "master": "I am not a palace, but I have a tower.\nI sit on a rock above a pond,\nwithin the greatest park the city possesses.\nI am modest in size, and I keep an eye on the weather.\nWhat am I?\n— E. H."
+    },
+    {
+      "rookie": "What is the answer to Eleanor's last question?",
+      "junior": "What is the answer to Eleanor's final question?",
+      "master": "What answers Eleanor's final riddle?"
+    },
+    {
+      "rookie": "It is a ____.",
+      "junior": "It is a ____.",
+      "master": "It is a ____."
+    },
+    {
+      "rookie": "It is not a palace. What else has a tower?",
+      "junior": "It isn't a palace. What other building has a tower?",
+      "master": "It is no palace. What other kind of building boasts a tower?"
+    },
+    {
+      "rookie": "Think of a small one, on a rock, in Central Park.",
+      "junior": "Think of a small one that sits on a rock in Central Park.",
+      "master": "Picture a modest one, perched on a rock in Central Park."
+    },
+    {
+      "rookie": "The keeper nods. \"Right!\"",
+      "junior": "The keeper nods. \"That's right!\"",
+      "master": "The keeper gives an approving nod. \"Right!\""
+    },
+    {
+      "rookie": "A small castle on a rock, in Central Park: Belvedere Castle!",
+      "junior": "A small castle on a rock in Central Park: it's Belvedere Castle!",
+      "master": "A small castle perched on a rock in Central Park: none other than Belvedere Castle!"
+    },
+    {
+      "rookie": "\"Yesterday a man in star boots said 'palace',\" the keeper laughs.",
+      "junior": "\"Yesterday a man in star boots answered 'palace',\" the keeper says with a laugh.",
+      "master": "\"Only yesterday a man in star boots declared 'palace',\" the keeper chuckles."
+    },
+    {
+      "rookie": "\"Wrong! I told him nothing. Your box is in the wheel.\"",
+      "junior": "\"Wrong! I didn't tell him a thing. Your box is in the wheel.\"",
+      "master": "\"Wrong! I revealed nothing to him. Your box lies in the wheel.\""
+    },
+    {
+      "rookie": "The card says it is NOT a palace. What else has a tower?",
+      "junior": "The card clearly says NOT a palace. What else could have a tower?",
+      "master": "The card plainly states it is NOT a palace. What else might possess a tower?"
+    },
+    {
+      "rookie": "It has a tower. But what is the whole place?",
+      "junior": "Yes, it has a tower. But what is the whole building?",
+      "master": "It does have a tower. But what is the place as a whole?"
+    },
+    {
+      "rookie": "Check your spelling. Six letters.",
+      "junior": "Check how you spelled it. Six letters.",
+      "master": "Double-check your spelling. Six letters."
+    },
+    {
+      "rookie": "The Last Place",
+      "junior": "The Last Place",
+      "master": "The Last Place"
+    },
+    {
+      "rookie": "Eleanor's last question points to Belvedere Castle in Central Park.",
+      "junior": "Eleanor's last question leads to Belvedere Castle in Central Park.",
+      "master": "Eleanor's final riddle directs you to Belvedere Castle in Central Park."
+    },
+    {
+      "rookie": "THE CASTLE IN THE PARK",
+      "junior": "THE CASTLE IN THE PARK",
+      "master": "THE CASTLE IN THE PARK"
+    },
+    {
+      "rookie": "The man in star boots said 'palace'. He does not know where the Lark is.",
+      "junior": "The man in star boots answered 'palace'. He doesn't know where the Lark is.",
+      "master": "The man in star boots guessed 'palace'. The Lark's whereabouts remain unknown to him."
+    },
+    {
+      "rookie": "The car with a flat roof on the rails",
+      "junior": "The car with a flat roof on the rails",
+      "master": "The car with a flat roof on the rails"
+    },
+    {
+      "rookie": "A flat roof, yes. But this car rides on rails inside the wheel. It swings.",
+      "junior": "Yes, the roof is flat. But this car runs on rails inside the wheel, so it swings.",
+      "master": "The roof is flat, certainly. But this car travels on rails inside the wheel, so it swings."
+    },
+    {
+      "rookie": "The car with a round roof on the edge",
+      "junior": "The car with a round roof on the edge",
+      "master": "The car with a round roof on the edge"
+    },
+    {
+      "rookie": "It hangs on the outside edge. But look at its roof.",
+      "junior": "It hangs from the outside edge. But check its roof.",
+      "master": "It does hang on the outside edge. Now examine its roof."
+    },
+    {
+      "rookie": "The car with a flat roof on the edge",
+      "junior": "The car with a flat roof on the edge",
+      "master": "The car with a flat roof on the edge"
+    },
+    {
+      "rookie": "a car that never swings",
+      "junior": "a car that never swings",
+      "master": "a car that never swings"
+    },
+    {
+      "rookie": "It hangs on the outside edge of the wheel.",
+      "junior": "It hangs on the outside edge of the wheel.",
+      "master": "It hangs on the outside edge of the wheel."
+    },
+    {
+      "rookie": "It has a flat roof.",
+      "junior": "It has a flat roof.",
+      "master": "It has a flat roof."
+    },
+    {
+      "rookie": "The Car That Never Swings",
+      "junior": "The Car That Never Swings",
+      "master": "The Car That Never Swings"
+    },
+    {
+      "rookie": "THE BOARDWALK",
+      "junior": "THE BOARDWALK",
+      "master": "THE BOARDWALK"
+    },
+    {
+      "rookie": "Some cars on the wheel stay still.",
+      "junior": "Some of the cars on the wheel stay still.",
+      "master": "Some of the wheel's cars remain perfectly still."
+    },
+    {
+      "rookie": "Others slide and swing on curved rails.",
+      "junior": "The other cars slide and swing along curved rails.",
+      "master": "The rest glide and swing along curved rails."
+    },
+    {
+      "rookie": "\"Which one?\" Rosa asks. The keeper points at his booth.",
+      "junior": "\"Which one is it?\" Rosa asks. The keeper points to his booth.",
+      "master": "\"But which one?\" Rosa wonders aloud. The keeper gestures toward his booth."
+    },
+    {
+      "rookie": "The keeper's note at the booth says:",
+      "junior": "The note the keeper left at the booth says:",
+      "master": "The keeper's note, pinned up at the booth, reads:"
+    },
+    {
+      "rookie": "Eleanor's box waits in a car that never swings.\nIt hangs on the outside edge of the wheel.\nIt has a flat roof.\nThe swinging cars ride on rails inside the wheel.",
+      "junior": "Eleanor's box is waiting in a car that never swings.\nIt hangs on the outside edge of the wheel.\nIt has a flat roof.\nThe cars that swing ride on rails inside the wheel.",
+      "master": "Eleanor's box lies in a car that never swings.\nIt hangs on the outside edge of the wheel.\nIt has a flat roof.\nThe swinging cars travel on rails within the wheel."
+    },
+    {
+      "rookie": "Which car holds Eleanor's box?",
+      "junior": "Which car has Eleanor's box?",
+      "master": "In which car is Eleanor's box concealed?"
+    },
+    {
+      "rookie": "Find the keeper's note at the ticket booth and read it first.",
+      "junior": "First find the keeper's note at the ticket booth and read it.",
+      "master": "Begin with the keeper's note at the ticket booth, and read it before anything else."
+    },
+    {
+      "rookie": "Check two things on each car: where it hangs, and its roof.",
+      "junior": "Check two things on every car: where it hangs and what its roof looks like.",
+      "master": "Examine two features of every car: where it hangs, and the shape of its roof."
+    },
+    {
+      "rookie": "You found the car that never swings!",
+      "junior": "You found the car that doesn't swing!",
+      "master": "You've located the car that never swings!"
+    },
+    {
+      "rookie": "The wheel stops. You climb into the still car.",
+      "junior": "The wheel stops, and you climb into the still car.",
+      "master": "The wheel grinds to a halt, and you clamber into the still car."
+    },
+    {
+      "rookie": "Under the seat is a small iron box with letter rings.",
+      "junior": "Under the seat there is a small iron box with letter rings.",
+      "master": "Beneath the seat lies a small iron box fitted with letter rings."
+    },
+    {
+      "rookie": "The sea is far below.",
+      "junior": "Far below you is the sea.",
+      "master": "The sea glitters far beneath you."
+    },
+    {
+      "rookie": "The Still Car",
+      "junior": "The Still Car",
+      "master": "The Still Car"
+    },
+    {
+      "rookie": "Eleanor's box was under the seat of a car that never swings.",
+      "junior": "Eleanor's box was hidden under the seat of a car that never swings.",
+      "master": "Eleanor's box had been tucked beneath the seat of a car that never swings."
+    },
+    {
+      "rookie": "The boardwalk",
+      "junior": "The boardwalk",
+      "master": "The boardwalk"
+    },
+    {
+      "rookie": "Look around the boardwalk. Where is the keeper's note?",
+      "junior": "Search the boardwalk. Where is the keeper's note?",
+      "master": "Survey the boardwalk. Where has the keeper left his note?"
+    },
+    {
+      "rookie": "Which car holds the box? Look at the Wonder Wheel.",
+      "junior": "Which car has the box? Check the Wonder Wheel.",
+      "master": "Which car conceals the box? Turn to the Wonder Wheel."
+    },
+    {
+      "rookie": "Nothing here. Find the keeper's note at the ticket booth.",
+      "junior": "There's nothing here. Look for the keeper's note at the ticket booth.",
+      "master": "Nothing of interest here. Seek out the keeper's note at the ticket booth."
+    },
+    {
+      "rookie": "THE TICKET BOOTH",
+      "junior": "THE TICKET BOOTH",
+      "master": "THE TICKET BOOTH"
+    },
+    {
+      "rookie": "A small striped ticket booth",
+      "junior": "A little striped ticket booth",
+      "master": "A small ticket booth painted in stripes"
+    },
+    {
+      "rookie": "THE HOT DOG STAND",
+      "junior": "THE HOT DOG STAND",
+      "master": "THE HOT DOG STAND"
+    },
+    {
+      "rookie": "A hot dog stand with a yellow roof",
+      "junior": "A hot dog stand under a yellow roof",
+      "master": "A hot dog stand topped with a yellow roof"
+    },
+    {
+      "rookie": "Hot dogs and lemonade. No box here.",
+      "junior": "Hot dogs and lemonade, but no box.",
+      "master": "Hot dogs and lemonade, but no sign of the box."
+    },
+    {
+      "rookie": "THE RAILING",
+      "junior": "THE RAILING",
+      "master": "THE RAILING"
+    },
+    {
+      "rookie": "The boardwalk railing by the beach",
+      "junior": "The boardwalk railing next to the beach",
+      "master": "The boardwalk railing overlooking the beach"
+    },
+    {
+      "rookie": "Sand and sea. The box is not on the beach.",
+      "junior": "Just sand and sea. The box isn't on the beach.",
+      "master": "Only sand and surf. The box is not hidden on the beach."
+    },
+    {
+      "rookie": "THE WONDER WHEEL",
+      "junior": "THE WONDER WHEEL",
+      "master": "THE WONDER WHEEL"
+    },
+    {
+      "rookie": "The giant Wonder Wheel",
+      "junior": "The huge Wonder Wheel",
+      "master": "The towering Wonder Wheel"
+    },
+    {
+      "rookie": "So many cars! Which one? Read the keeper's note first.",
+      "junior": "So many cars! Which one is it? Read the keeper's note first.",
+      "master": "Countless cars! Which one? Read the keeper's note before choosing."
+    },
+    {
+      "rookie": "Read the keeper's note first.",
+      "junior": "First, read the keeper's note.",
+      "master": "Read the keeper's note before anything else."
+    },
+    {
+      "rookie": "The sky",
+      "junior": "The sky",
+      "master": "The sky"
+    },
+    {
+      "rookie": "Seagulls and a few white clouds.",
+      "junior": "Seagulls and a couple of white clouds.",
+      "master": "Wheeling seagulls and a scattering of white clouds."
+    },
+    {
+      "rookie": "Which car hangs on the outside edge and has a flat roof? Tap one car.",
+      "junior": "Which car both hangs on the outside edge and has a flat roof? Tap one car.",
+      "master": "Find the car that hangs on the outside edge and has a flat roof, then tap it."
+    },
+    {
+      "rookie": "a white wheel car with a flat roof, riding on a curved rail inside the wheel",
+      "junior": "a white wheel car with a flat roof, running on a curved rail inside the wheel",
+      "master": "a white wheel car with a flat roof, travelling along a curved rail inside the wheel"
+    },
+    {
+      "rookie": "a white wheel car with a round dome roof, hanging from the outside edge",
+      "junior": "a white wheel car with a round dome roof, hanging on the outside edge",
+      "master": "a white wheel car crowned with a round dome roof, suspended from the outside edge"
+    },
+    {
+      "rookie": "a white wheel car with a flat roof, hanging from the outside edge",
+      "junior": "a white wheel car with a flat roof, hanging on the outside edge",
+      "master": "a white wheel car with a flat roof, suspended from the outside edge"
+    },
+    {
+      "rookie": "THE BOX IN THE WHEEL",
+      "junior": "THE BOX IN THE WHEEL",
+      "master": "THE BOX IN THE WHEEL"
+    },
+    {
+      "rookie": "Eleanor's last box waited under a seat for a hundred years.",
+      "junior": "Eleanor's last box sat under a seat for a hundred years.",
+      "master": "For a century, Eleanor's last box lay waiting beneath a seat."
+    },
+    {
+      "rookie": "G",
+      "junior": "G",
+      "master": "G"
+    },
+    {
+      "rookie": "N",
+      "junior": "N",
+      "master": "N"
+    },
+    {
+      "rookie": "O",
+      "junior": "O",
+      "master": "O"
+    },
+    {
+      "rookie": "S",
+      "junior": "S",
+      "master": "S"
+    },
+    {
+      "rookie": "what a bird sings",
+      "junior": "what a bird sings",
+      "master": "what a bird sings"
+    },
+    {
+      "rookie": "what my family keeps",
+      "junior": "what my family keeps",
+      "master": "what my family keeps"
+    },
+    {
+      "rookie": "The Iron Box",
+      "junior": "The Iron Box",
+      "master": "The Iron Box"
+    },
+    {
+      "rookie": "The car rocks gently in the wind.",
+      "junior": "The car rocks softly in the wind.",
+      "master": "The car rocks faintly in the breeze."
+    },
+    {
+      "rookie": "Rosa holds the iron box on her knees.",
+      "junior": "Rosa rests the iron box on her knees.",
+      "master": "Rosa cradles the iron box on her knees."
+    },
+    {
+      "rookie": "A line is carved on its lid.",
+      "junior": "There is a line carved into its lid.",
+      "master": "A single line has been carved into its lid."
+    },
+    {
+      "rookie": "The lid says:",
+      "junior": "The lid reads:",
+      "master": "The inscription on the lid reads:"
+    },
+    {
+      "rookie": "My last box opens with one word:\nwhat a bird sings, and what my family keeps.",
+      "junior": "My last box opens with a single word:\nwhat a bird sings, and what my family keeps.",
+      "master": "My final box yields to one word alone:\nwhat a bird sings, and what my family keeps."
+    },
+    {
+      "rookie": "Spell the word that opens the iron box.",
+      "junior": "Spell the word that will open the iron box.",
+      "master": "Spell out the word that unlocks the iron box."
+    },
+    {
+      "rookie": "What does a lark do in the morning?",
+      "junior": "What does a lark do every morning?",
+      "master": "What does a lark do at dawn?"
+    },
+    {
+      "rookie": "What did Grandma Ana's note say the family keeps?",
+      "junior": "In Grandma Ana's note, what does the family keep?",
+      "master": "According to Grandma Ana's note, what does the family keep?"
+    },
+    {
+      "rookie": "The iron box opens!",
+      "junior": "The iron box is open!",
+      "master": "The iron box springs open!"
+    },
+    {
+      "rookie": "Inside is Eleanor's last letter, folded small.",
+      "junior": "Eleanor's last letter is inside, folded into a small square.",
+      "master": "Inside lies Eleanor's last letter, folded tightly."
+    },
+    {
+      "rookie": "Rosa's hands shake as she opens it.",
+      "junior": "Rosa's hands are shaking as she unfolds it.",
+      "master": "Rosa's hands tremble as she unfolds it."
+    },
+    {
+      "rookie": "\"It tells us what to do at the castle.\"",
+      "junior": "\"It tells us what we need to do at the castle.\"",
+      "master": "\"It explains exactly what we must do at the castle.\""
+    },
+    {
+      "rookie": "The four tiles fit. What does a bird sing?",
+      "junior": "All four tiles fit. What does a bird sing?",
+      "master": "All four tiles belong here. What does a bird sing?"
+    },
+    {
+      "rookie": "The Box's Word",
+      "junior": "The Box's Word",
+      "master": "The Box's Word"
+    },
+    {
+      "rookie": "Eleanor's last box opened with SONG. Inside: her last letter.",
+      "junior": "Eleanor's last box opened with SONG. Her last letter was inside.",
+      "master": "Eleanor's last box yielded to SONG. Within lay her final letter."
+    },
+    {
+      "rookie": "THE IRON BOX",
+      "junior": "THE IRON BOX",
+      "master": "THE IRON BOX"
+    },
+    {
+      "rookie": "ELEANOR'S LAST LETTER",
+      "junior": "ELEANOR'S LAST LETTER",
+      "master": "ELEANOR'S LAST LETTER"
+    },
+    {
+      "rookie": "Her last letter says what to do at the castle. But its lines are mixed up.",
+      "junior": "Her last letter tells what to do at the castle. But the lines are all mixed up.",
+      "master": "Her final letter sets out what to do at the castle. Its lines, however, are jumbled."
+    },
+    {
+      "rookie": "Play the whole song",
+      "junior": "Play the whole song",
+      "master": "Play the whole song"
+    },
+    {
+      "rookie": "Ring the castle bell",
+      "junior": "Ring the castle bell",
+      "master": "Ring the castle bell"
+    },
+    {
+      "rookie": "Put the egg in the stone nest",
+      "junior": "Put the egg in the stone nest",
+      "master": "Put the egg in the stone nest"
+    },
+    {
+      "rookie": "Climb the castle tower",
+      "junior": "Climb the castle tower",
+      "master": "Climb the castle tower"
+    },
+    {
+      "rookie": "Face the wall the egg named",
+      "junior": "Face the wall the egg named",
+      "master": "Face the wall the egg named"
+    },
+    {
+      "rookie": "First, climb to the top of my castle tower.",
+      "junior": "First, climb to the top of my castle tower.",
+      "master": "First, climb to the top of my castle tower."
+    },
+    {
+      "rookie": "But before the song, put my brass egg in the stone bird's nest.",
+      "junior": "But before the song, put my brass egg in the stone bird's nest.",
+      "master": "But before the song, put my brass egg in the stone bird's nest."
+    },
+    {
+      "rookie": "Eleanor's Last Steps",
+      "junior": "Eleanor's Last Steps",
+      "master": "Eleanor's Last Steps"
+    },
+    {
+      "rookie": "Back on the boardwalk, you read the letter together.",
+      "junior": "Back on the boardwalk, you all read the letter together.",
+      "master": "Back on the boardwalk, you pore over the letter together."
+    },
+    {
+      "rookie": "Eleanor wrote it like a puzzle, of course.",
+      "junior": "Of course, Eleanor wrote it like a puzzle.",
+      "master": "Naturally, Eleanor composed it as a puzzle."
+    },
+    {
+      "rookie": "Maya gets out her pencil.",
+      "junior": "Maya takes out her pencil.",
+      "master": "Maya produces her pencil."
+    },
+    {
+      "rookie": "Eleanor's last letter says:",
+      "junior": "Eleanor's last letter reads:",
+      "master": "Eleanor's final letter runs:"
+    },
+    {
+      "rookie": "When you stand by the stone bird, play my whole song.\nBut before the song, put my brass egg in the stone bird's nest.\nFirst, climb to the top of my castle tower.\nThen face the wall that my egg named, and find the stone bird there.\nMy Lark will wake.\n— E. H.",
+      "junior": "When you are standing by the stone bird, play my whole song.\nBut before the song, put my brass egg in the stone bird's nest.\nFirst, climb to the top of my castle tower.\nThen turn to face the wall that my egg named, and find the stone bird there.\nMy Lark will wake.\n— E. H.",
+      "master": "When at last you stand beside the stone bird, play my whole song.\nBut before the song, put my brass egg in the stone bird's nest.\nFirst, climb to the top of my castle tower.\nThen face the wall my egg once named, and seek out the stone bird there.\nMy Lark will awaken.\n— E. H."
+    },
+    {
+      "rookie": "Put Eleanor's last steps in order.",
+      "junior": "Put the last steps Eleanor wrote in order.",
+      "master": "Arrange Eleanor's final steps in their proper order."
+    },
+    {
+      "rookie": "One line starts with 'First'.",
+      "junior": "One of the lines begins with 'First'.",
+      "master": "A single line opens with 'First'."
+    },
+    {
+      "rookie": "The song comes last. What comes just before it?",
+      "junior": "The song is the last step. What comes right before it?",
+      "master": "The song comes at the very end. Which step directly precedes it?"
+    },
+    {
+      "rookie": "You know Eleanor's last steps!",
+      "junior": "Now you know Eleanor's last steps!",
+      "master": "You've uncovered Eleanor's final steps!"
+    },
+    {
+      "rookie": "Climb, face the east wall, the egg, then the song.",
+      "junior": "Climb, face the east wall, the egg, and then the song.",
+      "master": "Climb, face the east wall, the egg, and finally the song."
+    },
+    {
+      "rookie": "\"You have the egg. I have the song,\" Rosa says.",
+      "junior": "\"You've got the egg, and I've got the song,\" Rosa says.",
+      "master": "\"You hold the egg, and I hold the song,\" Rosa observes."
+    },
+    {
+      "rookie": "\"I play at Bethesda Terrace tomorrow. Then we go to the castle.\"",
+      "junior": "\"Tomorrow I'm playing at Bethesda Terrace. After that we go to the castle.\"",
+      "master": "\"Tomorrow I perform at Bethesda Terrace. Afterwards, we head for the castle.\""
+    },
+    {
+      "rookie": "Start with 'First'. Then read 'Then' and 'before'.",
+      "junior": "Begin with 'First'. Then look at 'Then' and 'before'.",
+      "master": "Start from 'First', then weigh the words 'Then' and 'before'."
+    },
+    {
+      "rookie": "The wall my egg named is the east wall.",
+      "junior": "The wall my egg named is the east one.",
+      "master": "The wall named by my egg is the east wall."
+    },
+    {
+      "rookie": "And the man in star boots said 'palace'!",
+      "junior": "And the man in star boots answered 'palace'!",
+      "master": "And the man in star boots guessed 'palace'!"
+    },
+    {
+      "rookie": "He does not know the place. Or the whole song.",
+      "junior": "He doesn't know the place, or the whole song.",
+      "master": "He knows neither the place nor the whole song."
+    },
+    {
+      "rookie": "Far down the boardwalk, someone in a safari vest walks away.",
+      "junior": "Far along the boardwalk, someone in a safari vest is walking away.",
+      "master": "Far down the boardwalk, a figure in a safari vest slips away."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "beside": "~옆에",
+      "largest": "가장 큰",
+      "building": "건물",
+      "spelled": "철자를 썼다",
+      "listed": "나열했다",
+      "hidden": "숨겨진",
+      "search": "살펴보다",
+      "couple": "두어 개",
+      "rests": "올려놓다",
+      "softly": "부드럽게",
+      "shaking": "떨리는",
+      "unfolds": "펼치다",
+      "square": "정사각형"
+    },
+    "master": {
+      "sprawling": "넓게 뻗은",
+      "revolves": "회전하다",
+      "leisurely": "느긋한",
+      "elderly": "연로한",
+      "possesses": "가지고 있다",
+      "modest": "아담한",
+      "boasts": "(자랑스럽게) 갖추다",
+      "perched": "(높은 곳에) 자리 잡은",
+      "chuckles": "킬킬 웃다",
+      "whereabouts": "행방",
+      "concealed": "숨겨진",
+      "clamber": "기어오르다",
+      "tucked": "밀어 넣은",
+      "cradles": "감싸 안다",
+      "yielded": "(열리며) 굴복했다",
+      "jumbled": "뒤죽박죽인",
+      "precedes": "앞서다"
+    }
+  }
+}

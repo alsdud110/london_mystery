@@ -54,7 +54,7 @@ void main() {
 
   group('in the game', () {
     test('Rome is Season 3 of the catalog: 12 cases, released, after London and Paris', () {
-      expect([for (final s in container.read(seasonsProvider)) s.id], [SeasonIds.london, SeasonIds.paris, SeasonIds.rome]);
+      expect([for (final s in container.read(seasonsProvider)) s.id], [SeasonIds.london, SeasonIds.paris, SeasonIds.rome, SeasonIds.newyork]);
       final rome = SeasonCatalog.byId(SeasonIds.rome)!;
       expect(rome.released, isTrue);
       expect(rome.season.number, 3);
@@ -110,7 +110,7 @@ void main() {
       final city = WorldCities.ofSeason(SeasonIds.rome)!;
       expect(city.id, 'rome');
       expect(city.mapAt, const Offset(1038.5 / 1983, 330 / 793), reason: 'where the coming-soon pin always stood');
-      expect([for (final c in WorldCities.all) c.name], ['London', 'Paris', 'Rome', 'Tokyo', 'Seoul']);
+      expect([for (final c in WorldCities.all) c.name], ['London', 'Paris', 'Rome', 'Tokyo', 'Seoul', 'New York']);
       expect(WorldCities.all.where((c) => c.id == 'rome'), hasLength(1));
 
       final evidence = {for (final e in MockEpisodeRepository.bundled().where((e) => e.seasonId == SeasonIds.rome)) for (final v in e.allEvidence) v.id};

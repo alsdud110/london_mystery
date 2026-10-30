@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s4_newyork",
+  "lines": [
+    {
+      "rookie": "The Silver Lark sings again in the library's great hall.",
+      "junior": "The Silver Lark sings once more in the library's great hall.",
+      "master": "Once again, the Silver Lark's voice rings out through the library's great hall."
+    },
+    {
+      "rookie": "Every Saturday, the children of New York come to hear its song.",
+      "junior": "Every Saturday, the children of New York gather to listen to its song.",
+      "master": "Each Saturday, the children of New York crowd in to hear its long-silent song."
+    },
+    {
+      "rookie": "New York is loud, fast and full of songs.",
+      "junior": "New York is loud and fast, and it is full of songs.",
+      "master": "New York is a loud, restless city, brimming with songs of every kind."
+    },
+    {
+      "rookie": "This time, you heard the oldest one.",
+      "junior": "This time, you were the one who heard the oldest of them.",
+      "master": "This time, it was you who heard the oldest of them all."
+    }
+  ]
+}

@@ -1,0 +1,769 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep07",
+  "seasonId": "s4_newyork",
+  "number": 7,
+  "actId": "act2",
+  "title": "Lights of Times Square",
+  "synopsis": [
+    "Dexter Vance's TV truck is parked in Times Square.",
+    "His crew heard the tin note, and his boots are famous.",
+    "Where was Dexter on Sunday morning?"
+  ],
+  "goal": "Match the star prints, check Dexter's story and find out what the TV crew plans next.",
+  "characters": [
+    "maya_chen",
+    "dexter_vance",
+    "nora_bell",
+    "sam_okafor"
+  ],
+  "locations": [
+    "times_square"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep07_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.times_square",
+      "puzzle": {
+        "paletteId": "picture_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "imageChoice",
+        "answerSpec": {
+          "answer": "stars",
+          "options": [
+            {
+              "id": "circles",
+              "label": "The sole with circles",
+              "feedback": "A ring of five and a line on the heel. But are they stars?",
+              "altText": "a brown boot sole with five little circles in a ring and a line across the heel",
+              "picture": "assets/seasons/season_04_newyork/cases/case_07/sole_circles.png"
+            },
+            {
+              "id": "no_line",
+              "label": "The sole with no heel line",
+              "feedback": "Five stars in a ring, yes. But look at the heel.",
+              "altText": "a brown boot sole with five little stars in a ring and a plain heel",
+              "picture": "assets/seasons/season_04_newyork/cases/case_07/sole_no_line.png"
+            },
+            {
+              "id": "stars",
+              "label": "The sole with stars and a heel line",
+              "altText": "a brown boot sole with five little stars in a ring and a line across the heel",
+              "picture": "assets/seasons/season_04_newyork/objects/star_sole.png"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.sole_circles",
+          "s4_newyork.asset.sole_no_line",
+          "s4_newyork.asset.ev_star_sole"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "A picture choice with the names hidden: the star print (Case 02) has three things (five, stars, a ring) and a line across the heel; each wrong sole misses one. The right sole is the evidence picture ev_star_sole; the wrong ones are drawn from it.",
+          "The boots are sold in the shop window of Dexter's TV show: anyone could buy them, so this is a lead, not proof."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep02_e1",
+          "use": "answerDerivation",
+          "note": "The star print: five stars in a ring, a line across the heel."
+        },
+        {
+          "ref": "s4_ep06_c3",
+          "use": "textMention",
+          "note": "The TV crew heard the tin note."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep07_c1",
+        "evidence": "s4_ep07_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "별 발자국 묘사(five little stars in a ring, a line across the heel)를 읽고 세 신발 밑창 중 맞는 것을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Five little stars in a ring.",
+          "A line across the heel."
+        ]
+      },
+      "play": {
+        "title": "The Star Boots",
+        "location": "TIMES SQUARE",
+        "story": [
+          "Times Square is bright, even in the day.",
+          "Giant screens flash. Yellow taxis honk.",
+          "In a shop window, three boots stand upside down."
+        ],
+        "letterIntro": "Your Notebook says about the star print:",
+        "letter": "Five little stars in a ring.\nA line across the heel.\nThe same print was at Grand Central and in the bench's wet paint.",
+        "question": "Which boot made the star prints?",
+        "hints": [
+          "Count the shapes on each sole. Are they stars?",
+          "Now look at each heel. Is there a line across it?"
+        ],
+        "successMessage": "You found the star boots!",
+        "transition": [
+          "Over the window, a giant screen shows Dexter Vance.",
+          "He holds up the same boot. \"Wear what Dexter wears!\"",
+          "His TV truck is parked right across the square."
+        ],
+        "mapX": 0.4,
+        "mapY": 0.33,
+        "clue": {
+          "title": "The Star Boots",
+          "value": "DEXTER'S TV SHOW BOOTS",
+          "note": "The star prints come from the boots of Dexter Vance's TV show. Dexter wears them every day.",
+          "symbol": "footprint"
+        },
+        "evidence": {
+          "name": "The Star Boot Sole",
+          "icon": "footprint",
+          "description": "The sole of the boots sold by Dexter Vance's TV show.",
+          "inscription": "Five little stars in a ring. A line across the heel."
+        },
+        "hideOptionNames": true,
+        "discovery": {
+          "type": "clueConfirmed",
+          "title": "DEXTER'S BOOTS",
+          "detail": "The star prints match the boots of Dexter's show. But many people buy them."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep07_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.times_square",
+      "puzzle": {
+        "paletteId": "witness_compare",
+        "surface": "mission",
+        "engineTable": "dialogues",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "alone",
+          "options": [
+            {
+              "id": "filming",
+              "label": "Dexter filmed the Statue of Liberty all morning.",
+              "feedback": "That is what Dexter says. Do two other people agree with him?"
+            },
+            {
+              "id": "alone",
+              "label": "Dexter was alone, and not filming."
+            },
+            {
+              "id": "nora",
+              "label": "Nora filmed the bridge at ten.",
+              "feedback": "Nora says the crew filmed at noon. Compare Nora and Sam."
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.times_square",
+          "s4_newyork.asset.char_dexter_base",
+          "s4_newyork.asset.char_nora_base",
+          "s4_newyork.asset.char_sam_base"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a talk (DialogueScene) in Times Square: Nora (Dexter went off alone at nine) and Sam (Dexter walked onto the bridge alone at ten) agree; Dexter's own answer is the lie.",
+          "Sam's answer about the black bag (like the man at the library, Case 01) is heard after the deduction (then): paid off in Case 11."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep04_c1",
+          "use": "textMention",
+          "note": "The bird was taken between 9:30 and 11:30 on Sunday."
+        },
+        {
+          "ref": "s4_ep01_c1",
+          "use": "textMention",
+          "note": "Sam saw a man with a black bag at the library."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep07_c2",
+        "evidence": "s4_ep07_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "덱스터의 말과 다른 두 사람의 말을 비교해, 두 사람이 같은 것(alone, not filming)을 말한 진술을 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Where was Dexter on Sunday morning?",
+          "He went off alone at nine.",
+          "We only started filming at noon."
+        ]
+      },
+      "play": {
+        "title": "Dexter's Sunday",
+        "location": "TIMES SQUARE",
+        "story": [
+          "Dexter jumps out of his truck with a big smile.",
+          "Nora stands behind him with her camera.",
+          "Sam's pretzel cart is on the corner today."
+        ],
+        "letterIntro": "Your notes say:",
+        "letter": "The bird was taken on Sunday, between 9:30 and 11:30.\nAsk each person where Dexter was on Sunday morning.\nFind two people who say the same thing.",
+        "question": "Where was Dexter on Sunday morning?",
+        "hints": [
+          "Ask everyone the same question about Sunday morning.",
+          "Dexter tells his own story. Do Nora and Sam tell the same one?"
+        ],
+        "successMessage": "Two people say the same thing about Dexter!",
+        "transition": [
+          "Dexter said he was filming. Nora and Sam say he was alone.",
+          "\"Hey, I'm a busy man!\" Dexter laughs. He walks away fast.",
+          "Nora looks at the ground."
+        ],
+        "mapX": 0.4,
+        "mapY": 0.33,
+        "clue": {
+          "title": "Dexter's Lie",
+          "value": "ALONE ON SUNDAY · NOT FILMING",
+          "note": "Dexter says he filmed all morning. Nora and Sam say he was alone; Sam saw him on the bridge at ten.",
+          "symbol": "mask"
+        },
+        "evidence": {
+          "name": "Sam's Sunday Story",
+          "icon": "mask",
+          "description": "What Sam saw from his pretzel cart by the bridge on Sunday.",
+          "inscription": "At ten, Dexter walked onto the bridge, alone."
+        },
+        "dialogue": {
+          "place": "TIMES SQUARE",
+          "background": "assets/seasons/season_04_newyork/locations/times_square.png",
+          "goal": "Find out where Dexter was on Sunday morning.",
+          "how": "Ask each person. Write down what they say.",
+          "guide": "Talk to a witness.",
+          "questions": [
+            {
+              "id": "sunday",
+              "text": "Where was Dexter on Sunday morning?"
+            },
+            {
+              "id": "boots",
+              "text": "Does Dexter wear the star boots?"
+            },
+            {
+              "id": "bag",
+              "text": "What does Dexter carry?"
+            }
+          ],
+          "witnesses": [
+            {
+              "id": "dexter",
+              "name": "Dexter Vance",
+              "title": "THE TREASURE HUNTER",
+              "portrait": "assets/seasons/season_04_newyork/characters/dexter_base.png",
+              "description": "a tall man with a big smile, a safari vest and sunglasses on his head",
+              "greeting": "Ask away! I have nothing to hide!",
+              "answers": {
+                "sunday": {
+                  "line": "With my crew, filming the statue. All morning!",
+                  "thing": "filming the statue"
+                },
+                "boots": {
+                  "line": "Star boots? Everyone has them now!",
+                  "thing": "everyone has them"
+                },
+                "bag": {
+                  "line": "Just my camera bag, my friend.",
+                  "thing": "a camera bag"
+                }
+              }
+            },
+            {
+              "id": "nora",
+              "name": "Nora Bell",
+              "title": "THE CAMERA OPERATOR",
+              "portrait": "assets/seasons/season_04_newyork/characters/nora_base.png",
+              "description": "a young woman in a black cap, headphones round her neck",
+              "greeting": "Um... okay. Quickly, please.",
+              "answers": {
+                "sunday": {
+                  "line": "He went off alone at nine. We only started filming at noon.",
+                  "thing": "Dexter alone, not filming"
+                },
+                "boots": {
+                  "line": "He wears them every single day.",
+                  "thing": "every day"
+                },
+                "bag": {
+                  "line": "His black bag was very heavy that day.",
+                  "thing": "a heavy black bag"
+                }
+              }
+            },
+            {
+              "id": "sam",
+              "name": "Sam Okafor",
+              "title": "THE PRETZEL SELLER",
+              "portrait": "assets/seasons/season_04_newyork/characters/sam_base.png",
+              "description": "a cheerful man in a white apron and a red cap",
+              "greeting": "On Sundays, my cart stands by the bridge!",
+              "answers": {
+                "sunday": {
+                  "line": "At ten, he walked onto the bridge, alone.",
+                  "thing": "Dexter alone, not filming"
+                },
+                "boots": {
+                  "line": "I look at faces, not feet!",
+                  "thing": "faces, not feet"
+                },
+                "bag": {
+                  "line": "A big black bag. Like the man at the library!",
+                  "thing": "like the library bag"
+                }
+              }
+            }
+          ],
+          "deduction": {
+            "topic": "sunday",
+            "pair": [
+              "nora.sunday",
+              "sam.sunday"
+            ],
+            "then": [
+              "sam.bag"
+            ],
+            "askLine": "Ask a question.",
+            "anotherLine": "Ask another person.",
+            "readyLine": "Compare two answers.",
+            "compareGoal": "Find two people who say the same thing about Sunday morning.",
+            "compareHow": "Tap two answers to compare them.",
+            "matchLine": "Both say Dexter was alone, not filming.",
+            "offTopicLine": "These answers are not about Sunday morning.",
+            "checkLine": "Look for where Dexter was on Sunday morning.",
+            "differentLine": "These two say different things.",
+            "retryLine": "Try another pair.",
+            "thenGoal": "Find out about Dexter's bag.",
+            "thenHow": "Ask Sam what Dexter carries.",
+            "doneLine": "A big black bag, like the man at the library.",
+            "notesLine": "Your witness notes are ready."
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "DEXTER LIED",
+          "detail": "Dexter was alone on Sunday morning, near the bridge, with a black bag."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep07_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.times_square",
+      "puzzle": {
+        "paletteId": "scene_explore_choose",
+        "surface": "mission",
+        "engineTable": "explores",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "arch",
+          "options": [
+            {
+              "id": "terrace",
+              "label": "The fountain with the angel",
+              "feedback": "A fountain, yes. But is there a big stone arch standing alone?"
+            },
+            {
+              "id": "arch",
+              "label": "The park with the white arch"
+            },
+            {
+              "id": "carousel",
+              "label": "The carousel by the river",
+              "feedback": "There is no stone arch here. Read the schedule again."
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.times_square",
+          "s4_newyork.asset.bethesda_terrace",
+          "s4_newyork.asset.square_arch",
+          "s4_newyork.asset.river_carousel"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a look round (ExploreScene) in Times Square: the crew's schedule is taped inside the truck's open door; the city map on a kiosk opens once it is read. The three parks are told apart by the schedule's words (a big white stone arch standing alone, a round fountain in front).",
+          "The choice pictures reuse two place pictures (square_arch, Case 08; bethesda_terrace, Case 10) and add one (river_carousel), all 1536x1024.",
+          "Coordinates measured on the made times_square.png (1536x1024, sha256 123c78db…) with a 50px grid sheet (season_factory). The truck's area takes in its dish and open side door; the screens are the whole top band and, right of the truck, down to the umbrella, the steps and the kiosk roof."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep07_c2",
+          "use": "textMention",
+          "note": "Dexter walked away fast; his truck is open."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep07_c3",
+        "evidence": "s4_ep07_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "촬영 일정표의 'a big white stone arch, a round fountain in front'를 읽고 세 공원 그림 중 맞는 곳을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "by the big white stone arch",
+          "There is a round fountain in front of the arch."
+        ]
+      },
+      "play": {
+        "title": "The TV Truck",
+        "location": "TIMES SQUARE",
+        "story": [
+          "Dexter has gone. His truck door is open.",
+          "\"We are only looking,\" Maya whispers.",
+          "Lights from the screens flash red, blue and gold."
+        ],
+        "letterIntro": "A schedule is taped inside the truck door:",
+        "letter": "MONDAY\n4 PM — Film the violin girl.\nShe plays an old song every afternoon,\nby the big white stone arch at the end of Fifth Avenue.\nThere is a round fountain in front of the arch.",
+        "question": "Where will the TV crew film the violin girl?",
+        "hints": [
+          "Find the paper inside the truck door and read it first.",
+          "Look at each park on the city map. Which one has a big stone arch standing alone?"
+        ],
+        "successMessage": "You know where the crew is going!",
+        "transition": [
+          "The white arch is in Washington Square Park.",
+          "\"A violin girl with an old song,\" Maya says slowly.",
+          "Under the schedule, a short note is scribbled."
+        ],
+        "mapX": 0.4,
+        "mapY": 0.33,
+        "clue": {
+          "title": "The Violin Girl",
+          "value": "MONDAY 4 PM · THE WHITE ARCH",
+          "note": "The TV crew will film a violin girl by the white arch.",
+          "symbol": "park"
+        },
+        "evidence": {
+          "name": "The Crew's Schedule",
+          "icon": "letter",
+          "description": "The TV crew's schedule, taped inside the truck door.",
+          "inscription": "Monday, 4 PM — Film the violin girl."
+        },
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_04_newyork/locations/times_square.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            },
+            "measuredOn": "sha256:123c78db8a9927f0a9a7494addc5f8733ab99ba6b9572a5da66a9adfe3cda242"
+          },
+          "place": "Times Square",
+          "task": "Look around Times Square. What is in the TV truck?",
+          "nextTask": "Where will the crew go? Check the city map.",
+          "missLine": "Nothing here. Look inside the TV truck's open door.",
+          "guideAt": [
+            230,
+            600
+          ],
+          "spots": [
+            {
+              "id": "truck",
+              "kind": "document",
+              "title": "THE TV TRUCK",
+              "label": "A white TV truck with its side door open",
+              "areas": [
+                [
+                  0,
+                  260,
+                  450,
+                  870
+                ]
+              ],
+              "mark": [
+                435,
+                272
+              ]
+            },
+            {
+              "id": "cart",
+              "kind": "note",
+              "title": "SAM'S CART",
+              "label": "A pretzel cart with a striped umbrella",
+              "areas": [
+                [
+                  455,
+                  400,
+                  785,
+                  830
+                ]
+              ],
+              "mark": [
+                770,
+                412
+              ],
+              "line": "Sam waves a pretzel at you. \"Good luck!\""
+            },
+            {
+              "id": "steps",
+              "kind": "note",
+              "title": "THE RED STEPS",
+              "label": "Wide red steps full of people",
+              "areas": [
+                [
+                  965,
+                  400,
+                  1260,
+                  790
+                ]
+              ],
+              "mark": [
+                1245,
+                412
+              ],
+              "line": "People sit and watch the lights. No Dexter."
+            },
+            {
+              "id": "kiosk",
+              "kind": "choice",
+              "title": "THE CITY MAP",
+              "label": "A city map in a glass kiosk",
+              "areas": [
+                [
+                  1265,
+                  380,
+                  1536,
+                  1000
+                ]
+              ],
+              "mark": [
+                1521,
+                392
+              ],
+              "requires": "truck",
+              "lockedLine": "A map of New York's parks. But which park? Find a clue first.",
+              "unreadLine": "Look inside the TV truck first."
+            }
+          ],
+          "others": [
+            {
+              "label": "Giant screens",
+              "areas": [
+                [
+                  0,
+                  0,
+                  1536,
+                  255
+                ],
+                [
+                  455,
+                  255,
+                  1536,
+                  375
+                ]
+              ],
+              "line": "Giant screens flash. One shows Dexter's big smile."
+            }
+          ],
+          "choiceTitle": "THE CITY MAP",
+          "choiceHow": "Which park has a big white stone arch with a round fountain in front? Tap one picture.",
+          "choicePixels": {
+            "width": 1536,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "terrace",
+              "picture": "assets/seasons/season_04_newyork/locations/bethesda_terrace.png",
+              "description": "a fountain with an angel statue, wide stone steps and a covered walkway"
+            },
+            {
+              "optionId": "arch",
+              "picture": "assets/seasons/season_04_newyork/locations/square_arch.png",
+              "description": "a big white stone arch standing alone, a round fountain in front of it"
+            },
+            {
+              "optionId": "carousel",
+              "picture": "assets/seasons/season_04_newyork/cases/case_07/river_carousel.png",
+              "description": "an old carousel inside a glass box by a river, a bridge behind it"
+            }
+          ],
+          "opening": [
+            20,
+            20,
+            1516,
+            1004
+          ]
+        },
+        "discovery": {
+          "type": "newLead",
+          "title": "THE VIOLIN GIRL",
+          "detail": "The TV crew wants a violin girl who plays an old song. Why?"
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep07_final",
+    "slot": "final",
+    "placeId": "s4_newyork.times_square",
+    "puzzle": {
+      "paletteId": "text_choice",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "multipleChoice",
+      "answerSpec": {
+        "answer": "song",
+        "options": [
+          {
+            "id": "music_show",
+            "label": "They want her for a music show.",
+            "feedback": "The note is not about a music show. What do they ask about her song?"
+          },
+          {
+            "id": "song",
+            "label": "They think her song is the Lark's song."
+          },
+          {
+            "id": "bird",
+            "label": "She has the brass bird.",
+            "feedback": "The note never says she has the bird. What does it say about her song?"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: the scribbled note under the schedule. With Eleanor's spare note (family, strings, a bow; Case 04) and Karl's photo (a violin; Case 05), the violin girl may be Eleanor's family."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep07_c3",
+        "use": "textMention",
+        "note": "The crew's schedule: the violin girl."
+      },
+      {
+        "ref": "s4_ep04_e4",
+        "use": "textMention",
+        "note": "Eleanor's family plays her song on strings, with a bow."
+      },
+      {
+        "ref": "s4_ep05_e4",
+        "use": "evidenceLink",
+        "note": "Karl's photo: a violin beside Eleanor and her baby."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep07_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "comprehension",
+      "objective": "일정표 밑 메모의 'Is it the Lark's song?'을 읽고 촬영팀이 바이올린 소녀를 찾는 이유를 고른다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "Find out where she learned her song.",
+        "Is it the Lark's song?"
+      ]
+    },
+    "play": {
+      "title": "The Scribbled Note",
+      "location": "TIMES SQUARE",
+      "story": [
+        "The note under the schedule is written fast.",
+        "Some words are crossed out.",
+        "Maya holds it up to the light of a screen."
+      ],
+      "letterIntro": "The scribbled note says:",
+      "letter": "The violin girl plays the same old song every day.\nWe only have the first half: E, G, G.\nFind out where she learned her song.\nIs it the Lark's song?\nGet the rest of it. Then the Lark is ours.",
+      "question": "Why does the TV crew want the violin girl?",
+      "hints": [
+        "Read the question in the note.",
+        "Which half of the song do they still need?"
+      ],
+      "successMessage": "You know what the crew wants!",
+      "transition": [
+        "The crew has the song's first half: E, G, G. From the brass bird!",
+        "They want the rest of it from the violin girl.",
+        "\"Eleanor's family plays it on strings, with a bow,\" Maya says."
+      ],
+      "mapX": 0.4,
+      "mapY": 0.33,
+      "evidence": {
+        "name": "The Scribbled Note",
+        "icon": "letter",
+        "description": "A note scribbled under the crew's schedule.",
+        "inscription": "We only have the first half: E, G, G."
+      },
+      "evidenceLinkLine": "Karl's photo: a violin on the table beside Eleanor's baby.",
+      "ending": [
+        {
+          "by": "detective",
+          "text": "Whoever wrote this has the brass bird.",
+          "evidence": "s4_ep04_e2"
+        },
+        {
+          "by": "speaker",
+          "text": "And the violin girl... is it Rosa?",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "Rosa plays an old song every day. Just like Otto hummed!",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "The crew comes on Monday at 4 PM. You must get there first."
+        }
+      ]
+    }
+  },
+  "hook": "Who is the violin girl, and is her old song the Lark's song?",
+  "learningGoal": {
+    "title": "Who said what: comparing stories",
+    "titleKo": "누가 무엇을 말했나: 진술 비교하기"
+  },
+  "play": {
+    "objectives": [
+      "Match the star prints.",
+      "Find out where Dexter was on Sunday.",
+      "Look inside the TV truck."
+    ],
+    "intro": [
+      "Times Square. Giant screens, bright lights and crowds.",
+      "Dexter Vance's face is on a screen ten floors high.",
+      "His TV truck is parked in the middle of it all."
+    ],
+    "caseSummary": "The star prints match the boots of Dexter's show. Dexter says he filmed all morning. Nora and Sam say he was alone. Sam saw him on the bridge at ten. The crew has the song's start, E, G, G. Now they want the violin girl's song.",
+    "place": "TIMES SQUARE",
+    "keyWords": [
+      "sole",
+      "heel",
+      "alone",
+      "schedule",
+      "half"
+    ],
+    "glossary": {
+      "sole": "신발 밑창",
+      "heel": "뒤꿈치",
+      "alone": "혼자",
+      "schedule": "일정표",
+      "scribbled": "급하게 휘갈겨 쓴",
+      "kiosk": "작은 안내 부스",
+      "carousel": "회전목마"
+    }
+  },
+  "notes": [
+    "Act 2 points at the TV crew: the boots, the lie and the note. Nobody is caught yet; the proof (the page and the bird) comes in Case 11.",
+    "The scribbled note (s4_ep07_e4) is in Dexter's writing, matched in Case 11."
+  ]
+}

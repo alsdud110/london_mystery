@@ -1,0 +1,678 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep03",
+  "seasonId": "s4_newyork",
+  "number": 3,
+  "actId": "act1",
+  "title": "The Tea of 1926",
+  "synopsis": [
+    "In Chinatown, a tea house has kept Eleanor's red tin for a hundred years.",
+    "Mrs. Lee will give it only to a careful reader.",
+    "And a TV crew wants to film everything."
+  ],
+  "goal": "Find Eleanor's tin, earn it, and open it.",
+  "characters": [
+    "maya_chen",
+    "dexter_vance",
+    "nora_bell"
+  ],
+  "locations": [
+    "chinatown"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep03_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.tea_room",
+      "puzzle": {
+        "paletteId": "scene_explore_choose",
+        "surface": "mission",
+        "engineTable": "explores",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "moon_rabbit",
+          "options": [
+            {
+              "id": "sun_rabbit",
+              "label": "The tin with a rabbit and a sun",
+              "feedback": "A rabbit, yes. But the card says under a full moon, not a sun."
+            },
+            {
+              "id": "moon_fish",
+              "label": "The tin with a fish and a moon",
+              "feedback": "A full moon, yes. But what animal sits under it?"
+            },
+            {
+              "id": "moon_rabbit",
+              "label": "The tin with a rabbit and a moon"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.tea_room",
+          "s4_newyork.asset.tin_sun_rabbit",
+          "s4_newyork.asset.tin_moon_fish",
+          "s4_newyork.asset.ev_red_tin"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a look round (ExploreScene) in the tea room: the framed card on the wall describes the tin's lid; the tin shelf opens once it is read. The three tins are the same red tin; only the lid picture changes (a rabbit or a fish, a full moon or a sun).",
+          "The right tin is also the case's evidence picture (ev_red_tin, 1024x1024); the two wrong tins are drawn from it.",
+          "Coordinates measured on the made tea_room.png (1536x1024, sha256 1b2ee811…) with a 50px grid sheet (season_factory). The framed card hangs left of centre; the shelf's area starts right of the lantern (the tins under the lantern belong to no spot), and the counter's starts above the teapots, below the shelf; the lantern is its body and its tassel."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep02_e4",
+          "use": "textMention",
+          "note": "The tea house in Chinatown."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep03_c1",
+        "evidence": "s4_ep03_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "액자 카드의 'a white rabbit under a full moon'을 읽고 세 깡통 중 뚜껑 그림이 맞는 것을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "a white rabbit under a full moon",
+          "Not a sun. Not a fish."
+        ]
+      },
+      "play": {
+        "title": "The Red Tin",
+        "location": "THE GOLDEN LANTERN TEA HOUSE",
+        "story": [
+          "The tea house smells of jasmine and old wood.",
+          "Mrs. Lee, the owner, bows. \"My grandmother knew Eleanor.\"",
+          "Outside, a TV van parks. Dexter Vance waves at the window."
+        ],
+        "letterIntro": "A framed card on the wall says:",
+        "letter": "Eleanor's tea is kept in a red tin.\nOn its lid: a white rabbit under a full moon.\nNot a sun. Not a fish.\n— Mei Lee, 1926",
+        "question": "Which tin is Eleanor's?",
+        "hints": [
+          "Find the framed card on the wall and read it first.",
+          "Look at each lid. You need a rabbit AND a full moon."
+        ],
+        "successMessage": "You found Eleanor's red tin!",
+        "transition": [
+          "Mrs. Lee takes down the tin with the moon and the rabbit.",
+          "\"Not so fast,\" she smiles. \"First, my grandmother's question.\"",
+          "Dexter and his camera operator, Nora, come inside."
+        ],
+        "mapX": 0.5,
+        "mapY": 0.68,
+        "clue": {
+          "title": "The Moon Tin",
+          "value": "A WHITE RABBIT UNDER A FULL MOON",
+          "note": "Eleanor's red tin has a rabbit under a full moon on its lid.",
+          "symbol": "gem"
+        },
+        "evidence": {
+          "name": "The Red Tin",
+          "icon": "gem",
+          "description": "Eleanor's red tea tin, kept by the Lee family since 1926. Three small dials lock it.",
+          "inscription": "A white rabbit under a full moon."
+        },
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_04_newyork/locations/tea_room.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            },
+            "measuredOn": "sha256:1b2ee8116b7924f45fc6f74d2cec17febc4869ccdd834d9b9e1d6ffcbc3bb3ac"
+          },
+          "place": "The tea room",
+          "task": "Look around the tea room. What does the old card say?",
+          "nextTask": "Which tin is Eleanor's? Look at the shelf of tins.",
+          "missLine": "Nothing here. Find the framed card on the wall.",
+          "guideAt": [
+            470,
+            375
+          ],
+          "spots": [
+            {
+              "id": "card",
+              "kind": "document",
+              "title": "THE FRAMED CARD",
+              "label": "An old card in a frame on the wall",
+              "areas": [
+                [
+                  395,
+                  275,
+                  550,
+                  470
+                ]
+              ],
+              "mark": [
+                535,
+                287
+              ]
+            },
+            {
+              "id": "counter",
+              "kind": "note",
+              "title": "THE COUNTER",
+              "label": "A wooden counter with teapots",
+              "areas": [
+                [
+                  560,
+                  525,
+                  1536,
+                  1000
+                ]
+              ],
+              "mark": [
+                1521,
+                537
+              ],
+              "line": "Teapots and cups. Mrs. Lee's tea smells of flowers."
+            },
+            {
+              "id": "lantern",
+              "kind": "note",
+              "title": "THE LANTERN",
+              "label": "A red paper lantern",
+              "areas": [
+                [
+                  515,
+                  0,
+                  845,
+                  265
+                ],
+                [
+                  655,
+                  265,
+                  710,
+                  345
+                ]
+              ],
+              "mark": [
+                830,
+                12
+              ],
+              "line": "A red lantern. Nothing is hidden inside."
+            },
+            {
+              "id": "shelf",
+              "kind": "choice",
+              "title": "THE TIN SHELF",
+              "label": "A tall shelf full of tea tins",
+              "areas": [
+                [
+                  850,
+                  30,
+                  1510,
+                  520
+                ]
+              ],
+              "mark": [
+                1495,
+                42
+              ],
+              "requires": "card",
+              "lockedLine": "So many tins! Which one? Read something first.",
+              "unreadLine": "Read the framed card first."
+            }
+          ],
+          "others": [
+            {
+              "label": "Tables and chairs",
+              "areas": [
+                [
+                  0,
+                  620,
+                  555,
+                  1024
+                ]
+              ],
+              "line": "Empty tables. It is still early."
+            },
+            {
+              "label": "The window",
+              "areas": [
+                [
+                  0,
+                  40,
+                  320,
+                  610
+                ]
+              ],
+              "line": "The TV van is parked outside."
+            }
+          ],
+          "choiceTitle": "THE TIN SHELF",
+          "choiceHow": "Which lid has a white rabbit under a full moon? Tap one tin.",
+          "choicePixels": {
+            "width": 1024,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "sun_rabbit",
+              "picture": "assets/seasons/season_04_newyork/cases/case_03/tin_sun_rabbit.png",
+              "description": "a red tea tin, its lid painted with a white rabbit under a round yellow sun with rays"
+            },
+            {
+              "optionId": "moon_fish",
+              "picture": "assets/seasons/season_04_newyork/cases/case_03/tin_moon_fish.png",
+              "description": "a red tea tin, its lid painted with a white fish under a full moon"
+            },
+            {
+              "optionId": "moon_rabbit",
+              "picture": "assets/seasons/season_04_newyork/objects/red_tin.png",
+              "description": "a red tea tin, its lid painted with a white rabbit under a full moon"
+            }
+          ],
+          "opening": [
+            20,
+            20,
+            1516,
+            1004
+          ]
+        },
+        "talk": {
+          "speaker": "dexter_vance",
+          "portrait": "assets/seasons/season_04_newyork/characters/dexter_base.png",
+          "goal": "Find Eleanor's tin.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Hello again! Mind if we film? It's for the children!"
+              },
+              {
+                "by": "detective",
+                "text": "How did you know we were here?"
+              },
+              {
+                "by": "speaker",
+                "text": "A good treasure hunter always knows! Go on, look around."
+              }
+            ],
+            "finishLabel": "LOOK AROUND"
+          }
+        },
+        "discovery": {
+          "type": "evidenceFound",
+          "title": "THE MOON AND THE RABBIT",
+          "detail": "Eleanor's tin has waited here for a hundred years. Three dials keep it shut.",
+          "showEvidence": true
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep03_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.tea_room",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "warm,leaves,water,cups",
+          "options": [
+            {
+              "id": "cups",
+              "label": "Pour the tea into cups"
+            },
+            {
+              "id": "milk",
+              "label": "Add milk"
+            },
+            {
+              "id": "water",
+              "label": "Pour in hot water"
+            },
+            {
+              "id": "warm",
+              "label": "Warm the pot"
+            },
+            {
+              "id": "leaves",
+              "label": "Put in the tea leaves"
+            }
+          ],
+          "codeLength": 4
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Mei Lee's 1926 recipe, written out of order with first, after, once and last. 'Add milk' is a decoy: the recipe says never."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_c2",
+          "use": "textMention",
+          "note": "Each friend asks one question: this is Mrs. Lee's."
+        },
+        {
+          "ref": "s4_ep03_c1",
+          "use": "textMention",
+          "note": "The tin is found; now it must be earned."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep03_c2",
+        "evidence": "s4_ep03_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "first of all, after, once, last를 읽고 1926년 방식의 차 만드는 순서를 맞춘다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "But first of all, warm the pot.",
+          "Hot water goes in only after the leaves."
+        ]
+      },
+      "play": {
+        "title": "Eleanor's Tea",
+        "location": "THE GOLDEN LANTERN TEA HOUSE",
+        "story": [
+          "Mrs. Lee puts a teapot in front of you.",
+          "\"My grandmother's question: make Eleanor's tea the 1926 way.\"",
+          "Nora films your hands. Dexter watches the tin."
+        ],
+        "letterIntro": "Mei Lee's old recipe says:",
+        "letter": "Never add milk to Eleanor's tea!\nPour the tea into cups last, after three minutes.\nHot water goes in only after the leaves.\nBut first of all, warm the pot.\nThe leaves go into the pot once it is warm.",
+        "question": "Make Eleanor's tea. Put the steps in order.",
+        "hints": [
+          "One line says what you do first of all.",
+          "Read 'after' and 'last'. Do you need every card?"
+        ],
+        "successMessage": "Mrs. Lee smiles. \"A careful reader!\"",
+        "transition": [
+          "The tea is perfect. Mrs. Lee gives you the red tin.",
+          "Then she opens a small drawer.",
+          "\"My grandmother wrote about Eleanor's secret, too.\""
+        ],
+        "orderFeedback": "Find what you do first of all. Then read 'once' and 'after'.",
+        "mapX": 0.5,
+        "mapY": 0.68,
+        "clue": {
+          "title": "Mrs. Lee's Question",
+          "value": "WARM · LEAVES · WATER · CUPS",
+          "note": "You made Eleanor's tea the 1926 way. Mrs. Lee gave you the tin.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "Mei Lee's Recipe",
+          "icon": "letter",
+          "description": "Mei Lee's tea recipe from 1926. It was her question for Eleanor's finder.",
+          "inscription": "Never add milk to Eleanor's tea!"
+        },
+        "discovery": {
+          "type": "clueConfirmed",
+          "title": "A CAREFUL READER",
+          "detail": "Each of Eleanor's friends asks a question. This one was about tea."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep03_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.tea_room",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "family",
+          "options": [
+            {
+              "id": "bird",
+              "label": "On the brass bird",
+              "feedback": "The brass bird has the first three notes. Where are the last three?"
+            },
+            {
+              "id": "family",
+              "label": "With Eleanor's own family"
+            },
+            {
+              "id": "tin",
+              "label": "Inside the red tin",
+              "feedback": "Mei Lee does not say the notes are in the tin. Read the fifth line."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: a page of Mei Lee's 1926 diary. The six-note song (first half on the brass bird, last half in Eleanor's family) is the key of Act 3: Otto remembers the first half (Case 06), Rosa keeps the last (Case 08)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep03_c2",
+          "use": "textMention",
+          "note": "Mrs. Lee trusts you now."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep03_c3",
+        "evidence": "s4_ep03_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "일기의 'the first three notes'와 'the last three notes'를 구별해 읽고, 노래의 뒤쪽 세 음이 어디 있는지 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "She put the first three notes on a brass bird.",
+          "The last three notes stay with her own family."
+        ]
+      },
+      "play": {
+        "title": "Mei Lee's Diary",
+        "location": "THE GOLDEN LANTERN TEA HOUSE",
+        "story": [
+          "The diary page is thin and brown.",
+          "Mrs. Lee reads it out in a soft voice.",
+          "Nora moves her camera closer."
+        ],
+        "letterIntro": "Mei Lee's diary, 1926, says:",
+        "letter": "Today my friend Eleanor left her red tin with me.\nShe told me a secret about her Lark.\nIt sings a song of six notes.\nShe put the first three notes on a brass bird.\nThe last three notes stay with her own family.\n\"Only my whole song wakes my Lark,\" she said.",
+        "question": "Where are the last three notes of the Lark's song?",
+        "hints": [
+          "Find the line about the first three notes. The next line is the answer.",
+          "Who keeps the last three notes?"
+        ],
+        "successMessage": "You know Eleanor's secret!",
+        "transition": [
+          "The Lark needs its whole song: six notes.",
+          "Three are on a brass bird. Three are with Eleanor's family.",
+          "\"Does Eleanor still have a family?\" Maya wonders."
+        ],
+        "mapX": 0.5,
+        "mapY": 0.68,
+        "clue": {
+          "title": "The Six-Note Song",
+          "value": "3 NOTES ON THE BIRD · 3 WITH THE FAMILY",
+          "note": "The Lark wakes only to its whole song. Half is on a brass bird; half is with Eleanor's family.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Mei Lee's Diary",
+          "icon": "letter",
+          "description": "A page from Mei Lee's diary of 1926.",
+          "inscription": "Only my whole song wakes my Lark."
+        },
+        "discovery": {
+          "type": "storyDiscovery",
+          "title": "A SONG IN TWO HALVES",
+          "detail": "To wake the Lark, you need both halves of its song."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep03_final",
+    "slot": "final",
+    "placeId": "s4_newyork.tea_house",
+    "puzzle": {
+      "paletteId": "combo_dial_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "finalCode",
+      "answerSpec": {
+        "answer": "424",
+        "codeLength": 3,
+        "dialSymbols": [
+          "clock",
+          "map",
+          "gem"
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Eleanor's lid card asks for three numbers from the trail so far: the clock's four faces (Case 02 M2), the two red lanterns (Case 02's egg note), the four letters of EAST (Case 02 M3)."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep02_c2",
+        "use": "answerDerivation",
+        "note": "First number: the clock has four faces."
+      },
+      {
+        "ref": "s4_ep02_e3",
+        "use": "answerDerivation",
+        "note": "Second number: two red lanterns over the door."
+      },
+      {
+        "ref": "s4_ep02_c3",
+        "use": "answerDerivation",
+        "note": "Third number: EAST has four letters."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep03_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "지난 단서(시계의 얼굴, 등불, 달걀의 단어)를 다시 읽고 how many 질문에 답해 숫자 4·2·4를 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "How many faces has the clock in the great hall?",
+        "How many letters open my egg?"
+      ]
+    },
+    "play": {
+      "title": "The Three Dials",
+      "location": "OUTSIDE THE TEA HOUSE",
+      "story": [
+        "You sit on the step under the red lanterns.",
+        "The tin has three small dials.",
+        "A card is tied to the lid."
+      ],
+      "letterIntro": "Eleanor's lid card says:",
+      "letter": "My tin opens with three numbers.\nFirst: How many faces has the clock in the great hall?\nSecond: How many red lanterns hang over my friend's door?\nThird: How many letters open my egg?\n— E. H.",
+      "question": "Turn the dials to Eleanor's three numbers. Then open the tin.",
+      "hints": [
+        "Your Notebook has Eleanor's question about the clock, and her egg note.",
+        "Count the letters of the word that opened the brass egg."
+      ],
+      "successMessage": "The red tin opens!",
+      "transition": [
+        "Inside the tin is Eleanor's next note.",
+        "Nora films it very close. Dexter reads it over your shoulder.",
+        "The next stop is the Brooklyn Bridge."
+      ],
+      "feedback": {
+        "324": "Count the clock's faces again. Read Eleanor's question in your Notebook.",
+        "414": "Look over the door again. How many lanterns does the egg note say?",
+        "434": "How many red lanterns? Read the egg note again.",
+        "423": "Count the letters of the egg's word again."
+      },
+      "orderFeedback": "These numbers fit, but not in this order. Clock, lanterns, then the egg.",
+      "mapX": 0.5,
+      "mapY": 0.68,
+      "evidence": {
+        "name": "The Tin Note",
+        "icon": "letter",
+        "description": "Eleanor's note from inside the red tin.",
+        "inscription": "Stop under the first stone tower. My brass bird sits on the bench there."
+      },
+      "ending": [
+        {
+          "by": "narrator",
+          "text": "The note says: walk the great bridge to Brooklyn."
+        },
+        {
+          "by": "narrator",
+          "text": "Under the first stone tower, a brass bird sits on a bench."
+        },
+        {
+          "by": "speaker",
+          "text": "Wonderful! We'll film there tomorrow!",
+          "speaker": "dexter_vance",
+          "portrait": "assets/seasons/season_04_newyork/characters/dexter_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "The bird holds the song's first three notes.",
+          "evidence": "s4_ep03_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "Sorry... I have to go now.",
+          "speaker": "nora_bell",
+          "portrait": "assets/seasons/season_04_newyork/characters/nora_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Why does Nora look so worried?"
+        }
+      ]
+    }
+  },
+  "hook": "Everyone in the tea house heard the tin note. Who will reach the brass bird first?",
+  "learningGoal": {
+    "title": "Reading a description and steps in order",
+    "titleKo": "묘사 읽기와 순서: first of all, after, last"
+  },
+  "play": {
+    "objectives": [
+      "Find Eleanor's red tin.",
+      "Make Eleanor's tea.",
+      "Open the tin."
+    ],
+    "intro": [
+      "Chinatown. Narrow streets, red lanterns and the smell of dumplings.",
+      "Doyers Street bends like an elbow.",
+      "There stands the Golden Lantern Tea House."
+    ],
+    "caseSummary": "Mrs. Lee's tea house kept Eleanor's red tin, with a rabbit under a full moon. You made Eleanor's tea the 1926 way and earned it. Mei Lee's diary told the Lark's secret: its six-note song is in two halves. The tin opened with 4, 2, 4 and sent you to a brass bird on the Brooklyn Bridge. Dexter and Nora heard it all.",
+    "place": "CHINATOWN",
+    "keyWords": [
+      "first",
+      "after",
+      "last",
+      "note",
+      "song"
+    ],
+    "glossary": {
+      "tin": "깡통, 통",
+      "lid": "뚜껑",
+      "jasmine": "재스민 (꽃)",
+      "recipe": "요리법",
+      "diary": "일기",
+      "note": "음 (노래의 음표); 쪽지",
+      "whole": "전부의"
+    }
+  },
+  "notes": [
+    "Dexter and Nora film the tin note: that is how the thief knows the bench (Case 04), the question the detective asks in Case 06's final.",
+    "The six-note song (s4_ep03_c3) is paid off in Case 06 (the first half, remembered by Otto), Case 08 (the last half, Rosa's family) and Case 12."
+  ]
+}

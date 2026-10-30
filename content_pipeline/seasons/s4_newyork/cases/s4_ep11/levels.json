@@ -1,0 +1,820 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep11",
+  "lines": [
+    {
+      "rookie": "The Studio with the Glass Star",
+      "junior": "The Studio with the Glass Star",
+      "master": "The Studio with the Glass Star"
+    },
+    {
+      "rookie": "Nora opens the studio door for you.",
+      "junior": "Nora unlocks the studio door for you.",
+      "master": "Nora lets you in through the studio door."
+    },
+    {
+      "rookie": "Dexter smiles for his cameras. \"I found everything fair and square!\"",
+      "junior": "Dexter smiles at his cameras. \"I found everything fair and square!\"",
+      "master": "Dexter flashes a grin for his cameras. \"I found everything fair and square!\""
+    },
+    {
+      "rookie": "Now you need proof.",
+      "junior": "Now you need to find proof.",
+      "master": "Now you must produce proof."
+    },
+    {
+      "rookie": "Dexter is caught. Now, at last: the castle, the egg and the whole song.",
+      "junior": "Dexter has been caught. And now, at last: the castle, the egg and the whole song.",
+      "master": "Dexter is in custody. And now, at long last: the castle, the egg and the complete song."
+    },
+    {
+      "rookie": "Find out where Dexter was on Friday night.",
+      "junior": "Find out where Dexter was on Friday night.",
+      "master": "Establish Dexter's whereabouts on Friday night."
+    },
+    {
+      "rookie": "Find Eleanor's brass bird.",
+      "junior": "Look for Eleanor's brass bird.",
+      "master": "Track down Eleanor's brass bird."
+    },
+    {
+      "rookie": "Open Dexter's safe.",
+      "junior": "Unlock Dexter's safe.",
+      "master": "Crack open Dexter's safe."
+    },
+    {
+      "rookie": "Near Times Square, a glass star shines on a roof.",
+      "junior": "Near Times Square, a glass star shines on top of a roof.",
+      "master": "Near Times Square, a glass star gleams atop a roof."
+    },
+    {
+      "rookie": "Under it is Dexter Vance's TV studio.",
+      "junior": "Beneath it is Dexter Vance's TV studio.",
+      "master": "Beneath it lies Dexter Vance's TV studio."
+    },
+    {
+      "rookie": "Nora is waiting at the back door.",
+      "junior": "Nora is waiting for you at the back door.",
+      "master": "Nora stands waiting by the back door."
+    },
+    {
+      "rookie": "Nora and Frank put Dexter in the library at ten on Friday. Eleanor's bird was on his prop shelf. The page in his desk fits the notebook's stub. His safe opened with KEEPERS and held Rosa's music box. Dexter Vance is caught.",
+      "junior": "Nora and Frank showed that Dexter was in the library at ten on Friday. Eleanor's bird was sitting on his prop shelf. The page in his desk fits the stub in the notebook. His safe opened with KEEPERS, and Rosa's music box was inside. Dexter Vance has been caught.",
+      "master": "Nora and Frank placed Dexter in the library at ten on Friday. Eleanor's bird was concealed on his prop shelf. The page in his desk fits the notebook's stub precisely. His safe yielded to KEEPERS and held Rosa's music box. Dexter Vance has been apprehended."
+    },
+    {
+      "rookie": "TIMES SQUARE",
+      "junior": "TIMES SQUARE",
+      "master": "TIMES SQUARE"
+    },
+    {
+      "rookie": "Dexter was at home, asleep.",
+      "junior": "Dexter was at home, asleep.",
+      "master": "Dexter was at home, asleep."
+    },
+    {
+      "rookie": "That is Dexter's own story. What do Nora and Frank say?",
+      "junior": "That's only Dexter's own story. What do Nora and Frank tell you?",
+      "master": "That is merely Dexter's own account. What do Nora and Frank report?"
+    },
+    {
+      "rookie": "Dexter was still in the library at ten.",
+      "junior": "Dexter was still in the library at ten.",
+      "master": "Dexter was still in the library at ten."
+    },
+    {
+      "rookie": "Dexter was in his studio.",
+      "junior": "Dexter was in his studio.",
+      "master": "Dexter was in his studio."
+    },
+    {
+      "rookie": "Nobody says the studio. Compare Nora and Frank.",
+      "junior": "No one mentions the studio. Compare what Nora and Frank say.",
+      "master": "Not a single witness mentions the studio. Compare Nora's and Frank's accounts."
+    },
+    {
+      "rookie": "Where was Dexter on Friday at ten?",
+      "junior": "Where was Dexter on Friday at ten?",
+      "master": "Where was Dexter on Friday at ten?"
+    },
+    {
+      "rookie": "He sent me home at nine. He stayed alone.",
+      "junior": "He sent me home at nine. He stayed alone.",
+      "master": "He sent me home at nine. He stayed alone."
+    },
+    {
+      "rookie": "His pass shows he left the library at 10:05.",
+      "junior": "His pass shows he left the library at 10:05.",
+      "master": "His pass shows he left the library at 10:05."
+    },
+    {
+      "rookie": "Friday Night",
+      "junior": "Friday Night",
+      "master": "Friday Night"
+    },
+    {
+      "rookie": "THE TV STUDIO",
+      "junior": "THE TV STUDIO",
+      "master": "THE TV STUDIO"
+    },
+    {
+      "rookie": "The studio is full of lights, cameras and fake treasure.",
+      "junior": "The studio is packed with lights, cameras and fake treasure.",
+      "master": "The studio is crammed with lights, cameras and counterfeit treasure."
+    },
+    {
+      "rookie": "Dr. Brooks and Frank, the night guard, come in behind you.",
+      "junior": "Dr. Brooks and Frank, the night guard, follow you inside.",
+      "master": "Dr. Brooks and Frank, the night guard, step in close behind you."
+    },
+    {
+      "rookie": "Dexter spreads his arms. \"Welcome to my show!\"",
+      "junior": "Dexter opens his arms wide. \"Welcome to my show!\"",
+      "master": "Dexter flings his arms wide. \"Welcome to my show!\""
+    },
+    {
+      "rookie": "Your notes say:",
+      "junior": "Your notes read:",
+      "master": "Your notes read:"
+    },
+    {
+      "rookie": "The page was cut out on Friday, between nine and 10:05 PM.\nAsk each person where Dexter was on Friday at ten.\nFind two people who say the same thing.",
+      "junior": "The page was cut out on Friday, sometime between nine and 10:05 PM.\nAsk each person where Dexter was on Friday at ten.\nFind two people whose answers match.",
+      "master": "The page was removed on Friday, at some point between nine and 10:05 PM.\nAsk each person where Dexter was on Friday at ten.\nFind two people whose accounts agree."
+    },
+    {
+      "rookie": "Where was Dexter on Friday night at ten?",
+      "junior": "Where was Dexter at ten o'clock on Friday night?",
+      "master": "Where exactly was Dexter at ten on Friday night?"
+    },
+    {
+      "rookie": "Ask everyone the same question about Friday at ten.",
+      "junior": "Ask every person the same question about Friday at ten.",
+      "master": "Put the same question about Friday at ten to every witness."
+    },
+    {
+      "rookie": "Dexter tells his own story. Do Nora and Frank tell the same one?",
+      "junior": "Dexter has his own story. Do Nora and Frank agree with it?",
+      "master": "Dexter offers his own version. Do Nora and Frank back it up?"
+    },
+    {
+      "rookie": "Two people say the same thing about Friday!",
+      "junior": "Two people give the same answer about Friday!",
+      "master": "Two accounts of Friday agree!"
+    },
+    {
+      "rookie": "He left at 10:05, with his black bag. Just as Sam saw.",
+      "junior": "He left at 10:05, carrying his black bag. Exactly what Sam saw.",
+      "master": "He left at 10:05, clutching his black bag, precisely as Sam witnessed."
+    },
+    {
+      "rookie": "Dexter's smile gets smaller.",
+      "junior": "Dexter's smile starts to fade.",
+      "master": "Dexter's grin begins to falter."
+    },
+    {
+      "rookie": "Dexter on Friday",
+      "junior": "Dexter on Friday",
+      "master": "Dexter on Friday"
+    },
+    {
+      "rookie": "Nora and Frank show Dexter stayed in the library after nine and left at 10:05.",
+      "junior": "Nora and Frank show that Dexter stayed in the library after nine and left at 10:05.",
+      "master": "Nora and Frank confirm that Dexter remained in the library after nine and departed at 10:05."
+    },
+    {
+      "rookie": "TV STUDIO",
+      "junior": "TV STUDIO",
+      "master": "TV STUDIO"
+    },
+    {
+      "rookie": "Find out where Dexter was on Friday at ten.",
+      "junior": "Find out where Dexter was on Friday at ten.",
+      "master": "Find out where Dexter was on Friday at ten."
+    },
+    {
+      "rookie": "Ask each person. Write down what they say.",
+      "junior": "Ask each person, and write down their answers.",
+      "master": "Question each person and record what they tell you."
+    },
+    {
+      "rookie": "Talk to a witness.",
+      "junior": "Speak to a witness.",
+      "master": "Approach a witness."
+    },
+    {
+      "rookie": "What was in Dexter's black bag?",
+      "junior": "What was in Dexter's black bag?",
+      "master": "What was in Dexter's black bag?"
+    },
+    {
+      "rookie": "What does Dexter always say?",
+      "junior": "What does Dexter always say?",
+      "master": "What does Dexter always say?"
+    },
+    {
+      "rookie": "Dexter Vance",
+      "junior": "Dexter Vance",
+      "master": "Dexter Vance"
+    },
+    {
+      "rookie": "THE TREASURE HUNTER",
+      "junior": "THE TREASURE HUNTER",
+      "master": "THE TREASURE HUNTER"
+    },
+    {
+      "rookie": "a tall man with a big smile, a safari vest and sunglasses on his head",
+      "junior": "a tall man with a wide smile, a safari vest and sunglasses pushed up on his head",
+      "master": "a tall man with a dazzling smile, a safari vest and sunglasses perched on his head"
+    },
+    {
+      "rookie": "Ask me anything. The cameras love me!",
+      "junior": "Ask me whatever you like. The cameras love me!",
+      "master": "Ask me anything at all. The cameras adore me!"
+    },
+    {
+      "rookie": "At home, asleep. Ask anyone!",
+      "junior": "At home, asleep. Ask anyone!",
+      "master": "At home, asleep. Ask anyone!"
+    },
+    {
+      "rookie": "Just my camera. Nothing else!",
+      "junior": "Just my camera. Nothing else!",
+      "master": "Just my camera. Nothing else!"
+    },
+    {
+      "rookie": "Treasure is for the brave!",
+      "junior": "Treasure is for the brave!",
+      "master": "Treasure is for the brave!"
+    },
+    {
+      "rookie": "Nora Bell",
+      "junior": "Nora Bell",
+      "master": "Nora Bell"
+    },
+    {
+      "rookie": "THE CAMERA OPERATOR",
+      "junior": "THE CAMERA OPERATOR",
+      "master": "THE CAMERA OPERATOR"
+    },
+    {
+      "rookie": "a young woman in a black cap, headphones round her neck",
+      "junior": "a young woman in a black cap, with headphones around her neck",
+      "master": "a young woman in a black cap, headphones slung around her neck"
+    },
+    {
+      "rookie": "I'm done keeping his secrets. Ask me.",
+      "junior": "I'm finished keeping his secrets. Ask me.",
+      "master": "I'm through keeping his secrets. Ask away."
+    },
+    {
+      "rookie": "A small knife for cutting tape. And papers.",
+      "junior": "A small knife for cutting tape. And papers.",
+      "master": "A small knife for cutting tape. And papers."
+    },
+    {
+      "rookie": "'Finders keepers!' He shouts it on every show.",
+      "junior": "'Finders keepers!' He shouts it on every show.",
+      "master": "'Finders keepers!' He shouts it on every show."
+    },
+    {
+      "rookie": "Frank Russo",
+      "junior": "Frank Russo",
+      "master": "Frank Russo"
+    },
+    {
+      "rookie": "THE NIGHT GUARD",
+      "junior": "THE NIGHT GUARD",
+      "master": "THE NIGHT GUARD"
+    },
+    {
+      "rookie": "a big, friendly guard in a blue uniform, with a torch on his belt",
+      "junior": "a big, friendly guard in a blue uniform, with a flashlight on his belt",
+      "master": "a burly, good-natured guard in a blue uniform, a torch hanging from his belt"
+    },
+    {
+      "rookie": "I brought the library's pass list.",
+      "junior": "I've brought the library's pass list.",
+      "master": "I've brought along the library's pass list."
+    },
+    {
+      "rookie": "I never looked inside it. I should have!",
+      "junior": "I never looked inside it. I should have!",
+      "master": "I never looked inside it. I should have!"
+    },
+    {
+      "rookie": "At ten, a voice in the dark said 'Finders keepers!'",
+      "junior": "At ten, a voice in the dark said 'Finders keepers!'",
+      "master": "At ten, a voice in the dark said 'Finders keepers!'"
+    },
+    {
+      "rookie": "Ask a question.",
+      "junior": "Ask a question.",
+      "master": "Ask a question."
+    },
+    {
+      "rookie": "Ask another person.",
+      "junior": "Ask another person.",
+      "master": "Ask another person."
+    },
+    {
+      "rookie": "Compare two answers.",
+      "junior": "Compare two answers.",
+      "master": "Compare two answers."
+    },
+    {
+      "rookie": "Find two people who say the same thing about Friday at ten.",
+      "junior": "Find two people who give the same answer about Friday at ten.",
+      "master": "Find two witnesses whose accounts of Friday at ten agree."
+    },
+    {
+      "rookie": "Tap two answers to compare them.",
+      "junior": "Tap two answers to compare them.",
+      "master": "Tap two answers to set them side by side."
+    },
+    {
+      "rookie": "Both say Dexter was still in the library at ten.",
+      "junior": "Both of them say Dexter was still in the library at ten.",
+      "master": "Both confirm that Dexter was still in the library at ten."
+    },
+    {
+      "rookie": "These answers are not about Friday at ten.",
+      "junior": "These answers aren't about Friday at ten.",
+      "master": "These answers have nothing to do with Friday at ten."
+    },
+    {
+      "rookie": "Look for where Dexter was on Friday at ten.",
+      "junior": "Look for where Dexter was at ten on Friday.",
+      "master": "Focus on Dexter's whereabouts at ten on Friday."
+    },
+    {
+      "rookie": "These two say different things.",
+      "junior": "These two say different things.",
+      "master": "These two say different things."
+    },
+    {
+      "rookie": "Try another pair.",
+      "junior": "Try another pair.",
+      "master": "Try another pair."
+    },
+    {
+      "rookie": "Find out what was in the black bag.",
+      "junior": "Find out what Dexter carried in the black bag.",
+      "master": "Discover what the black bag contained."
+    },
+    {
+      "rookie": "Ask Nora what Dexter's bag held.",
+      "junior": "Ask Nora what was in Dexter's bag.",
+      "master": "Ask Nora what Dexter's bag contained."
+    },
+    {
+      "rookie": "Your witness notes are ready.",
+      "junior": "Your witness notes are complete.",
+      "master": "Your witness notes are in order."
+    },
+    {
+      "rookie": "THE MAN WITH THE BLACK BAG",
+      "junior": "THE MAN WITH THE BLACK BAG",
+      "master": "THE MAN WITH THE BLACK BAG"
+    },
+    {
+      "rookie": "Dexter was the man Sam saw at 10:05. His bag held a small knife.",
+      "junior": "Dexter was the man Sam saw at 10:05. There was a small knife in his bag.",
+      "master": "Dexter was the very man Sam glimpsed at 10:05, and his bag concealed a small knife."
+    },
+    {
+      "rookie": "The bird with folded wings",
+      "junior": "The bird with folded wings",
+      "master": "The bird with folded wings"
+    },
+    {
+      "rookie": "Eleanor's bird has its wings wide open. Look at your Notebook.",
+      "junior": "Eleanor's bird has wings that are wide open. Check your Notebook.",
+      "master": "Eleanor's bird spreads its wings wide open. Consult your Notebook."
+    },
+    {
+      "rookie": "a small brass songbird with its wings folded, one foot lifted, its beak open",
+      "junior": "a small brass songbird with folded wings, one foot raised and its beak open",
+      "master": "a small brass songbird, wings folded, one foot raised and its beak parted"
+    },
+    {
+      "rookie": "The bird standing on both feet",
+      "junior": "The bird standing on both feet",
+      "master": "The bird standing on both feet"
+    },
+    {
+      "rookie": "Eleanor's bird dances on one foot. Look again.",
+      "junior": "Eleanor's bird dances on one foot. Look once more.",
+      "master": "Eleanor's bird dances on one foot. Take another look."
+    },
+    {
+      "rookie": "a small brass songbird with its wings wide open, standing on both feet, its beak open",
+      "junior": "a small brass songbird with wings wide open, standing on both feet, with its beak open",
+      "master": "a small brass songbird, wings wide open, planted on both feet, its beak parted"
+    },
+    {
+      "rookie": "The bird with one foot up",
+      "junior": "The bird with one foot up",
+      "master": "The bird with one foot up"
+    },
+    {
+      "rookie": "a small brass songbird with its wings wide open, one foot lifted and its beak open",
+      "junior": "a small brass songbird with wings wide open, one foot raised and its beak open",
+      "master": "a small brass songbird, wings wide open, one foot raised and its beak parted"
+    },
+    {
+      "rookie": "Its wings are wide open.",
+      "junior": "Its wings are wide open.",
+      "master": "Its wings are wide open."
+    },
+    {
+      "rookie": "One foot is up, as if it dances.",
+      "junior": "One foot is up, as if it dances.",
+      "master": "One foot is up, as if it dances."
+    },
+    {
+      "rookie": "The Prop Shelf",
+      "junior": "The Prop Shelf",
+      "master": "The Prop Shelf"
+    },
+    {
+      "rookie": "A long shelf is full of fake treasure for the show.",
+      "junior": "A long shelf holds fake treasure for the show.",
+      "master": "A long shelf groans under counterfeit treasure for the show."
+    },
+    {
+      "rookie": "Three brass birds stand among plastic gold.",
+      "junior": "Three brass birds stand among the plastic gold.",
+      "master": "Three brass birds stand amid heaps of plastic gold."
+    },
+    {
+      "rookie": "\"Props!\" Dexter says. \"All fake!\"",
+      "junior": "\"Just props!\" Dexter says. \"All fake!\"",
+      "master": "\"Mere props!\" Dexter insists. \"All fake!\""
+    },
+    {
+      "rookie": "Eleanor's brass tag said:",
+      "junior": "Eleanor's brass tag read:",
+      "master": "Eleanor's brass tag read:"
+    },
+    {
+      "rookie": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song.",
+      "junior": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song.",
+      "master": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song."
+    },
+    {
+      "rookie": "Which bird on the shelf is Eleanor's?",
+      "junior": "Which of the birds on the shelf is Eleanor's?",
+      "master": "Which bird on the shelf truly belongs to Eleanor?"
+    },
+    {
+      "rookie": "Check the wings, the feet and the beak.",
+      "junior": "Look at the wings, the feet and the beak.",
+      "master": "Examine the wings, the feet and the beak."
+    },
+    {
+      "rookie": "Eleanor's bird looks as if it dances.",
+      "junior": "Eleanor's bird looks like it is dancing.",
+      "master": "Eleanor's bird is poised as though dancing."
+    },
+    {
+      "rookie": "You found Eleanor's brass bird!",
+      "junior": "You've found Eleanor's brass bird!",
+      "master": "You've identified Eleanor's brass bird!"
+    },
+    {
+      "rookie": "On its wing, three notes are carved: E, G, G.",
+      "junior": "Three notes are carved on its wing: E, G, G.",
+      "master": "Carved into its wing are three notes: E, G, G."
+    },
+    {
+      "rookie": "Four screw holes in its feet, as wide as a finger.",
+      "junior": "There are four screw holes in its feet, each as wide as a finger.",
+      "master": "Its feet bear four screw holes, each the width of a finger."
+    },
+    {
+      "rookie": "\"That's no prop,\" says Dr. Brooks. \"That's Eleanor's.\"",
+      "junior": "\"That isn't a prop,\" says Dr. Brooks. \"That's Eleanor's.\"",
+      "master": "\"That is no mere prop,\" Dr. Brooks declares. \"That's Eleanor's.\""
+    },
+    {
+      "rookie": "The Bird on the Shelf",
+      "junior": "The Bird on the Shelf",
+      "master": "The Bird on the Shelf"
+    },
+    {
+      "rookie": "Eleanor's brass bird from the bridge was on Dexter's prop shelf.",
+      "junior": "Eleanor's brass bird from the bridge was sitting on Dexter's prop shelf.",
+      "master": "Eleanor's brass bird from the bridge had been placed on Dexter's prop shelf."
+    },
+    {
+      "rookie": "Eleanor's Bird",
+      "junior": "Eleanor's Bird",
+      "master": "Eleanor's Bird"
+    },
+    {
+      "rookie": "Which thing in your Notebook tells you what Eleanor's bird looks like?",
+      "junior": "What in your Notebook tells you how Eleanor's bird looks?",
+      "master": "Which entry in your Notebook describes the appearance of Eleanor's bird?"
+    },
+    {
+      "rookie": "That is not about the bird. Find what you learned on the bridge.",
+      "junior": "That isn't about the bird. Find what you learned on the bridge.",
+      "master": "That has nothing to do with the bird. Recall what you learned on the bridge."
+    },
+    {
+      "rookie": "NO PROP",
+      "junior": "NO PROP",
+      "master": "NO PROP"
+    },
+    {
+      "rookie": "The bird from the Brooklyn Bridge was hidden among fake treasure.",
+      "junior": "The bird from the Brooklyn Bridge was hiding among fake treasure.",
+      "master": "The bird from the Brooklyn Bridge had been concealed among counterfeit treasure."
+    },
+    {
+      "rookie": "It is a copy Dexter wrote himself.",
+      "junior": "It is a copy Dexter wrote himself.",
+      "master": "It is a copy Dexter wrote himself."
+    },
+    {
+      "rookie": "A copy would not fit the stub. Compare the zigzag edges.",
+      "junior": "A copy wouldn't fit the stub. Compare the zigzag edges.",
+      "master": "A copy could never fit the stub. Compare the zigzag edges."
+    },
+    {
+      "rookie": "It is the page cut from Eleanor's notebook.",
+      "junior": "It is the page cut from Eleanor's notebook.",
+      "master": "It is the page cut from Eleanor's notebook."
+    },
+    {
+      "rookie": "It is from another old notebook.",
+      "junior": "It is from another old notebook.",
+      "master": "It is from another old notebook."
+    },
+    {
+      "rookie": "Then its edge would not match the stub. Read Maya's notes again.",
+      "junior": "Then its edge wouldn't match the stub. Read Maya's notes once more.",
+      "master": "In that case its edge would not match the stub. Reread Maya's notes."
+    },
+    {
+      "rookie": "Its edge is a zigzag with three points.",
+      "junior": "Its edge is a zigzag with three points.",
+      "master": "Its edge is a zigzag with three points."
+    },
+    {
+      "rookie": "The two edges fit together like a puzzle.",
+      "junior": "The two edges fit together like a puzzle.",
+      "master": "The two edges fit together like a puzzle."
+    },
+    {
+      "rookie": "The Page in the Drawer",
+      "junior": "The Page in the Drawer",
+      "master": "The Page in the Drawer"
+    },
+    {
+      "rookie": "Nora points at Dexter's desk. \"Second drawer.\"",
+      "junior": "Nora points to Dexter's desk. \"The second drawer.\"",
+      "master": "Nora gestures at Dexter's desk. \"Second drawer down.\""
+    },
+    {
+      "rookie": "Inside is an old page in a plastic sleeve.",
+      "junior": "Inside, there is an old page in a plastic sleeve.",
+      "master": "Inside lies an old page tucked in a plastic sleeve."
+    },
+    {
+      "rookie": "Maya puts it next to a photo of the notebook's stub.",
+      "junior": "Maya places it beside a photo of the notebook's stub.",
+      "master": "Maya lays it alongside a photograph of the notebook's stub."
+    },
+    {
+      "rookie": "Maya's notes say:",
+      "junior": "Maya's notes read:",
+      "master": "Maya's notes read:"
+    },
+    {
+      "rookie": "The page in the drawer is in Eleanor's writing.\nIts edge is a zigzag with three points.\nThe stub left in the notebook has a zigzag with three points.\nThe two edges fit together like a puzzle.\nThe words are the same as on my pencil rubbing.",
+      "junior": "The page in the drawer is in Eleanor's handwriting.\nIts edge is a zigzag with three points.\nThe stub left in the notebook has a zigzag with three points.\nThe two edges fit together like a puzzle.\nThe words match the ones on my pencil rubbing.",
+      "master": "The page in the drawer bears Eleanor's handwriting.\nIts edge is a zigzag with three points.\nThe stub left in the notebook has a zigzag with three points.\nThe two edges fit together like a puzzle.\nThe words are identical to those on my pencil rubbing."
+    },
+    {
+      "rookie": "What does the page in the drawer prove?",
+      "junior": "What does the page in the drawer show?",
+      "master": "What does the page in the drawer establish?"
+    },
+    {
+      "rookie": "Compare the edge of the page and the edge of the stub.",
+      "junior": "Compare the page's edge with the stub's edge.",
+      "master": "Set the edge of the page against the edge of the stub."
+    },
+    {
+      "rookie": "Do they fit together? Then where did the page come from?",
+      "junior": "Do they fit together? If so, where did the page come from?",
+      "master": "Do the edges fit? If so, where must the page have come from?"
+    },
+    {
+      "rookie": "The page fits the notebook!",
+      "junior": "The page matches the notebook!",
+      "master": "The page belongs to the notebook!"
+    },
+    {
+      "rookie": "It is Eleanor's last page, cut out on Friday night.",
+      "junior": "It's Eleanor's last page, cut out on Friday night.",
+      "master": "It is Eleanor's final page, removed on Friday night."
+    },
+    {
+      "rookie": "Dexter's face goes red under the studio lights.",
+      "junior": "Dexter's face turns red under the studio lights.",
+      "master": "Dexter flushes crimson under the studio lights."
+    },
+    {
+      "rookie": "He backs away toward a big metal safe.",
+      "junior": "He moves back toward a big metal safe.",
+      "master": "He edges backward toward a hulking metal safe."
+    },
+    {
+      "rookie": "The Torn Page",
+      "junior": "The Torn Page",
+      "master": "The Torn Page"
+    },
+    {
+      "rookie": "The page in Dexter's drawer is the page cut from Eleanor's notebook.",
+      "junior": "The page in Dexter's drawer was cut out of Eleanor's notebook.",
+      "master": "The page in Dexter's drawer is the very one removed from Eleanor's notebook."
+    },
+    {
+      "rookie": "THE PROOF",
+      "junior": "THE PROOF",
+      "master": "THE PROOF"
+    },
+    {
+      "rookie": "The page fits the stub. Dexter cut it out on Friday night.",
+      "junior": "The page fits the stub. Dexter cut it out on Friday night.",
+      "master": "The page fits the stub exactly. Dexter removed it on Friday night."
+    },
+    {
+      "rookie": "P",
+      "junior": "P",
+      "master": "P"
+    },
+    {
+      "rookie": "E",
+      "junior": "E",
+      "master": "E"
+    },
+    {
+      "rookie": "S",
+      "junior": "S",
+      "master": "S"
+    },
+    {
+      "rookie": "K",
+      "junior": "K",
+      "master": "K"
+    },
+    {
+      "rookie": "R",
+      "junior": "R",
+      "master": "R"
+    },
+    {
+      "rookie": "The one who finds a thing can keep it.",
+      "junior": "The one who finds a thing can keep it.",
+      "master": "The one who finds a thing can keep it."
+    },
+    {
+      "rookie": "Finders Keepers",
+      "junior": "Finders Keepers",
+      "master": "Finders Keepers"
+    },
+    {
+      "rookie": "Dexter stands in front of his safe.",
+      "junior": "Dexter is standing in front of his safe.",
+      "master": "Dexter plants himself in front of his safe."
+    },
+    {
+      "rookie": "\"You'll never open it!\" he laughs.",
+      "junior": "\"You'll never get it open!\" he laughs.",
+      "master": "\"You'll never crack it!\" he scoffs."
+    },
+    {
+      "rookie": "Nora steps forward. \"I think we can.\"",
+      "junior": "Nora takes a step forward. \"I think we can.\"",
+      "master": "Nora steps forward calmly. \"I believe we can.\""
+    },
+    {
+      "rookie": "Nora says:",
+      "junior": "Nora says:",
+      "master": "Nora says:"
+    },
+    {
+      "rookie": "His safe opens with one word.\nOn every show, Dexter shouts the same two words: \"Finders ...!\"\nThe second word opens the safe.\nThe saying means: the one who finds a thing can keep it.",
+      "junior": "His safe opens with a single word.\nOn every show, Dexter shouts the same two words: \"Finders ...!\"\nThe second word opens the safe.\nThe saying means: the one who finds a thing can keep it.",
+      "master": "His safe opens with a single word.\nOn every episode, Dexter bellows the same two words: \"Finders ...!\"\nThe second word opens the safe.\nThe saying means: the one who finds a thing can keep it."
+    },
+    {
+      "rookie": "Spell the word that opens Dexter's safe.",
+      "junior": "Spell the word that unlocks Dexter's safe.",
+      "master": "Spell out the word that unlocks Dexter's safe."
+    },
+    {
+      "rookie": "What did Nora and Frank say Dexter always shouts?",
+      "junior": "What did Nora and Frank say Dexter always shouts?",
+      "master": "According to Nora and Frank, what does Dexter always shout?"
+    },
+    {
+      "rookie": "Finders... what? The one who finds it, keeps it.",
+      "junior": "Finders... what? Whoever finds it gets to keep it.",
+      "master": "Finders... what? Whoever finds it may keep it."
+    },
+    {
+      "rookie": "The safe swings open!",
+      "junior": "The safe door swings open!",
+      "master": "The heavy door swings open!"
+    },
+    {
+      "rookie": "Inside is Rosa's music box, safe and sound.",
+      "junior": "Rosa's music box is inside, safe and sound.",
+      "master": "Inside rests Rosa's music box, safe and sound."
+    },
+    {
+      "rookie": "Rosa holds it to her heart.",
+      "junior": "Rosa holds it close to her heart.",
+      "master": "Rosa clasps it to her heart."
+    },
+    {
+      "rookie": "Two police officers come in with Dr. Brooks.",
+      "junior": "Two police officers arrive with Dr. Brooks.",
+      "master": "Two police officers enter alongside Dr. Brooks."
+    },
+    {
+      "rookie": "The seven tiles fit. Finders... who keeps it?",
+      "junior": "All seven tiles fit. Finders... who keeps it?",
+      "master": "All seven tiles fit. Finders... who gets to keep it?"
+    },
+    {
+      "rookie": "DEXTER'S SAFE",
+      "junior": "DEXTER'S SAFE",
+      "master": "DEXTER'S SAFE"
+    },
+    {
+      "rookie": "I found them first! Finders keepers!",
+      "junior": "I found them first! Finders keepers!",
+      "master": "I discovered them first! Finders keepers!"
+    },
+    {
+      "rookie": "The Lark is for a child of the city. Not for you.",
+      "junior": "The Lark is meant for a child of the city. Not for you.",
+      "master": "The Lark was meant for a child of the city. Never for you."
+    },
+    {
+      "rookie": "And you cut a page from a treasure of this library.",
+      "junior": "And you cut a page out of one of this library's treasures.",
+      "master": "And you sliced a page from one of this library's treasures."
+    },
+    {
+      "rookie": "I'm sorry I kept quiet so long.",
+      "junior": "I'm sorry I stayed quiet for so long.",
+      "master": "Forgive me for keeping silent so long."
+    },
+    {
+      "rookie": "The police lead Dexter out. The Lark still sleeps in its castle.",
+      "junior": "The police take Dexter away. The Lark is still sleeping in its castle.",
+      "master": "The police escort Dexter out. The Lark still slumbers in its castle."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "unlocks": "열다",
+      "caught": "잡힌",
+      "packed": "가득 찬",
+      "fade": "사라지다, 희미해지다",
+      "complete": "완성된",
+      "flashlight": "손전등",
+      "raised": "들어 올린",
+      "handwriting": "손글씨",
+      "sleeve": "(비닐) 커버",
+      "matches": "일치하다",
+      "single": "단 하나의",
+      "carrying": "들고 가는"
+    },
+    "master": {
+      "whereabouts": "행방",
+      "apprehended": "체포된",
+      "custody": "구금",
+      "counterfeit": "가짜의",
+      "crammed": "꽉 찬",
+      "falter": "흔들리다",
+      "clutching": "꽉 쥔",
+      "account": "진술",
+      "burly": "건장한",
+      "poised": "자세를 취한",
+      "concealed": "숨겨진",
+      "crimson": "진홍색",
+      "hulking": "거대한",
+      "scoffs": "비웃다",
+      "slumbers": "잠자다",
+      "bellows": "고함치다"
+    }
+  }
+}

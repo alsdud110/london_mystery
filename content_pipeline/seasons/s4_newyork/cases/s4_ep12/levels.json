@@ -1,0 +1,746 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep12",
+  "lines": [
+    {
+      "rookie": "The Lark's Song",
+      "junior": "The Lark's Song",
+      "master": "The Lark's Song"
+    },
+    {
+      "rookie": "Belvedere Castle stands on its rock above the pond.",
+      "junior": "Belvedere Castle sits on its rock high above the pond.",
+      "master": "Belvedere Castle perches on its rocky outcrop, high above the pond."
+    },
+    {
+      "rookie": "You have Eleanor's egg. Rosa has Eleanor's song.",
+      "junior": "You have Eleanor's egg, and Rosa has Eleanor's song.",
+      "master": "You carry Eleanor's egg; Rosa carries Eleanor's song."
+    },
+    {
+      "rookie": "After a hundred years, the Silver Lark is waiting.",
+      "junior": "After a hundred years of waiting, the Silver Lark is ready.",
+      "master": "A full century on, the Silver Lark still awaits its finder."
+    },
+    {
+      "rookie": "The Silver Lark sings again. What other songs is New York keeping?",
+      "junior": "The Silver Lark is singing again. What other songs is New York hiding?",
+      "master": "The Silver Lark sings once more. What other songs might New York be guarding?"
+    },
+    {
+      "rookie": "Find the stone lark on the east wall.",
+      "junior": "Find the stone lark on the east wall.",
+      "master": "Locate the stone lark on the east wall."
+    },
+    {
+      "rookie": "Play the whole song.",
+      "junior": "Play the entire song.",
+      "master": "Perform the complete song."
+    },
+    {
+      "rookie": "Open the silver cage.",
+      "junior": "Unlock the silver cage.",
+      "master": "Open the silver cage at last."
+    },
+    {
+      "rookie": "Central Park, early in the morning.",
+      "junior": "Central Park, in the early morning.",
+      "master": "Central Park, in the hush of early morning."
+    },
+    {
+      "rookie": "Rosa has her violin. You have the brass egg.",
+      "junior": "Rosa has brought her violin. You are carrying the brass egg.",
+      "master": "Rosa has her violin in hand, and you carry the brass egg."
+    },
+    {
+      "rookie": "On the castle's east wall, the stone lark's nest fit the brass egg. Rosa played the whole song, E, G, G, D, A, D, and the wall opened. Eleanor's letter asked you to share the Lark with every child of the city. Seven silver letters spelled FREEDOM, and the Silver Lark sang again.",
+      "junior": "On the castle's east wall, the brass egg fit into the stone lark's nest. Rosa played the entire song, E, G, G, D, A, D, and the wall opened. In her letter, Eleanor asked you to share the Lark with every child of the city. Seven silver letters spelled FREEDOM, and the Silver Lark sang once again.",
+      "master": "On the castle's east wall, the brass egg nestled perfectly into the stone lark's nest. Rosa performed the complete song, E, G, G, D, A, D, and the wall slid open. Eleanor's letter urged you to share the Lark with every child of the city. Seven silver letters spelled FREEDOM, and the Silver Lark sang once more."
+    },
+    {
+      "rookie": "CENTRAL PARK",
+      "junior": "CENTRAL PARK",
+      "master": "CENTRAL PARK"
+    },
+    {
+      "rookie": "The owl with a nest",
+      "junior": "The owl with a nest",
+      "master": "The owl with a nest"
+    },
+    {
+      "rookie": "A round nest, yes. But the plate says a lark, not an owl.",
+      "junior": "It has a round nest, yes. But the plate says a lark, not an owl.",
+      "master": "The round nest is right, but the plate specifies a lark, not an owl."
+    },
+    {
+      "rookie": "The lark with no nest",
+      "junior": "The lark with no nest",
+      "master": "The lark with no nest"
+    },
+    {
+      "rookie": "A lark with open wings, yes. But where would the egg go?",
+      "junior": "It's a lark with open wings, yes. But where would the egg go?",
+      "master": "A lark with open wings, indeed. Yet where would the egg rest?"
+    },
+    {
+      "rookie": "The lark with a nest",
+      "junior": "The lark with a nest",
+      "master": "The lark with a nest"
+    },
+    {
+      "rookie": "Three stone birds sit on my east wall.",
+      "junior": "Three stone birds sit on my east wall.",
+      "master": "Three stone birds sit on my east wall."
+    },
+    {
+      "rookie": "a round nest the size of an egg",
+      "junior": "a round nest the size of an egg",
+      "master": "a round nest the size of an egg"
+    },
+    {
+      "rookie": "The East Wall",
+      "junior": "The East Wall",
+      "master": "The East Wall"
+    },
+    {
+      "rookie": "BELVEDERE CASTLE",
+      "junior": "BELVEDERE CASTLE",
+      "master": "BELVEDERE CASTLE"
+    },
+    {
+      "rookie": "You climb the castle tower, step by step.",
+      "junior": "You climb the castle tower one step at a time.",
+      "master": "You ascend the castle tower, step by winding step."
+    },
+    {
+      "rookie": "At the top, the whole park spreads out below.",
+      "junior": "From the top, you can see the whole park below.",
+      "master": "From the summit, the entire park unfolds beneath you."
+    },
+    {
+      "rookie": "\"Now face the wall the egg named,\" Rosa says. \"East!\"",
+      "junior": "\"Now turn to the wall the egg named,\" Rosa says. \"East!\"",
+      "master": "\"Now face the wall the egg pointed to,\" Rosa urges. \"East!\""
+    },
+    {
+      "rookie": "A small brass plate in the floor says:",
+      "junior": "A small brass plate in the floor reads:",
+      "master": "A small brass plate set into the floor reads:"
+    },
+    {
+      "rookie": "Three stone birds sit on my east wall.\nMy Lark's door is under one of them.\nIt is a lark, with its wings open.\nBelow it is a round nest the size of an egg.\n— E. H.",
+      "junior": "Three stone birds sit on my east wall.\nThe door to my Lark is under one of them.\nIt is a lark, and its wings are open.\nBelow it is a round nest the size of an egg.\n— E. H.",
+      "master": "Three stone birds sit on my east wall.\nBeneath one of them lies my Lark's door.\nIt is a lark, its wings spread open.\nBelow it is a round nest the size of an egg.\n— E. H."
+    },
+    {
+      "rookie": "Which stone bird hides the Lark's door?",
+      "junior": "Which stone bird is hiding the Lark's door?",
+      "master": "Beneath which stone bird is the Lark's door concealed?"
+    },
+    {
+      "rookie": "Find the brass plate in the floor and read it first.",
+      "junior": "First, find the brass plate in the floor and read it.",
+      "master": "Begin by locating the brass plate in the floor and reading it."
+    },
+    {
+      "rookie": "Check two things on each bird: is it a lark? Is there a nest?",
+      "junior": "Check two things on every bird: is it a lark? Does it have a nest?",
+      "master": "Verify two details on each bird: is it a lark, and is there a nest below it?"
+    },
+    {
+      "rookie": "You found the stone lark!",
+      "junior": "You've found the stone lark!",
+      "master": "You've identified the stone lark!"
+    },
+    {
+      "rookie": "Under the stone lark is a round nest, just the size of an egg.",
+      "junior": "Below the stone lark is a round nest, exactly the size of an egg.",
+      "master": "Beneath the stone lark sits a round nest, precisely the size of an egg."
+    },
+    {
+      "rookie": "In the nest lie two small silver letters: R and O.",
+      "junior": "Two small silver letters are lying in the nest: R and O.",
+      "master": "Nestled inside rest two small silver letters: R and O."
+    },
+    {
+      "rookie": "\"Eleanor's last puzzle has begun,\" Maya says.",
+      "junior": "\"Eleanor's final puzzle has started,\" Maya says.",
+      "master": "\"Eleanor's final puzzle is underway,\" Maya breathes."
+    },
+    {
+      "rookie": "The Stone Lark",
+      "junior": "The Stone Lark",
+      "master": "The Stone Lark"
+    },
+    {
+      "rookie": "The stone lark's nest fits the brass egg. Two silver letters lay in it: R and O.",
+      "junior": "The brass egg fits the stone lark's nest. There were two silver letters in it: R and O.",
+      "master": "The brass egg fits the stone lark's nest perfectly. Two silver letters lay within: R and O."
+    },
+    {
+      "rookie": "The castle tower",
+      "junior": "The castle tower",
+      "master": "The castle tower"
+    },
+    {
+      "rookie": "Look around the top of the tower. What did Eleanor leave here?",
+      "junior": "Look around the top of the tower. What did Eleanor leave for you here?",
+      "master": "Survey the top of the tower. What did Eleanor leave behind here?"
+    },
+    {
+      "rookie": "Which stone bird is the Lark's door? Look at the east wall.",
+      "junior": "Which stone bird is the door to the Lark? Look at the east wall.",
+      "master": "Which stone bird marks the Lark's door? Study the east wall."
+    },
+    {
+      "rookie": "Nothing here. Find Eleanor's brass plate in the floor.",
+      "junior": "There's nothing here. Find Eleanor's brass plate in the floor.",
+      "master": "Nothing of note here. Seek out Eleanor's brass plate in the floor."
+    },
+    {
+      "rookie": "THE BRASS PLATE",
+      "junior": "THE BRASS PLATE",
+      "master": "THE BRASS PLATE"
+    },
+    {
+      "rookie": "A small brass plate in the stone floor",
+      "junior": "A small brass plate in the stone floor",
+      "master": "A small brass plate in the stone floor"
+    },
+    {
+      "rookie": "THE WEATHER STATION",
+      "junior": "THE WEATHER STATION",
+      "master": "THE WEATHER STATION"
+    },
+    {
+      "rookie": "Little weather instruments on a pole",
+      "junior": "Small weather instruments on a pole",
+      "master": "Small weather instruments mounted on a pole"
+    },
+    {
+      "rookie": "A little weather station. This castle really watches the weather!",
+      "junior": "A small weather station. This castle really does watch the weather!",
+      "master": "A tiny weather station. This castle genuinely keeps watch over the weather!"
+    },
+    {
+      "rookie": "THE WEST WALL",
+      "junior": "THE WEST WALL",
+      "master": "THE WEST WALL"
+    },
+    {
+      "rookie": "The low stone wall on the left",
+      "junior": "The low stone wall on the left side",
+      "master": "The low stone wall to the left"
+    },
+    {
+      "rookie": "This is the west wall. The egg named the opposite way.",
+      "junior": "This is the west wall. The egg named the other direction.",
+      "master": "This is the west wall. The egg named the opposite direction."
+    },
+    {
+      "rookie": "THE EAST WALL",
+      "junior": "THE EAST WALL",
+      "master": "THE EAST WALL"
+    },
+    {
+      "rookie": "The stone wall on the right, with carved birds",
+      "junior": "The stone wall on the right, with birds carved into it",
+      "master": "The stone wall to the right, adorned with carved birds"
+    },
+    {
+      "rookie": "Carved stone birds. But which one? Find Eleanor's words first.",
+      "junior": "Carved stone birds. But which one is it? Read Eleanor's words first.",
+      "master": "Carved stone birds, but which is the one? Consult Eleanor's words first."
+    },
+    {
+      "rookie": "Read the brass plate first.",
+      "junior": "First, read the brass plate.",
+      "master": "You must read the brass plate first."
+    },
+    {
+      "rookie": "The pond and the park",
+      "junior": "The pond and the park",
+      "master": "The pond and the park"
+    },
+    {
+      "rookie": "The pond, the trees and the city's towers far away.",
+      "junior": "The pond, the trees and the city's towers in the distance.",
+      "master": "The pond, the trees and the city's towers on the distant horizon."
+    },
+    {
+      "rookie": "Which stone bird is a lark with open wings and a round nest below it? Tap one bird.",
+      "junior": "Which stone bird is a lark with open wings and a round nest below it? Tap one of the birds.",
+      "master": "Which stone bird is a lark with open wings, with a round nest below it? Tap a single bird."
+    },
+    {
+      "rookie": "a carved stone owl with folded wings, a round nest below it",
+      "junior": "a carved stone owl with its wings folded, a round nest below it",
+      "master": "a carved stone owl, wings folded, a round nest beneath it"
+    },
+    {
+      "rookie": "a carved stone lark with open wings, plain stone below it",
+      "junior": "a carved stone lark with its wings open, plain stone below it",
+      "master": "a carved stone lark, wings open, bare stone beneath it"
+    },
+    {
+      "rookie": "a carved stone lark with open wings, a round nest below it",
+      "junior": "a carved stone lark with its wings open, a round nest below it",
+      "master": "a carved stone lark, wings open, a round nest beneath it"
+    },
+    {
+      "rookie": "THE LARK'S DOOR",
+      "junior": "THE LARK'S DOOR",
+      "master": "THE LARK'S DOOR"
+    },
+    {
+      "rookie": "The nest is the size of the brass egg. And it holds two silver letters.",
+      "junior": "The nest is just the size of the brass egg, and there are two silver letters in it.",
+      "master": "The nest matches the brass egg in size, and it cradles two silver letters."
+    },
+    {
+      "rookie": "Play D, A, D",
+      "junior": "Play D, A, D",
+      "master": "Play D, A, D"
+    },
+    {
+      "rookie": "Ring the castle bell",
+      "junior": "Ring the castle bell",
+      "master": "Ring the castle bell"
+    },
+    {
+      "rookie": "Play E, G, G",
+      "junior": "Play E, G, G",
+      "master": "Play E, G, G"
+    },
+    {
+      "rookie": "Play C, A, B",
+      "junior": "Play C, A, B",
+      "master": "Play C, A, B"
+    },
+    {
+      "rookie": "Put the egg in the nest",
+      "junior": "Put the egg in the nest",
+      "master": "Put the egg in the nest"
+    },
+    {
+      "rookie": "The song starts with the notes on the bird's wing.",
+      "junior": "The song starts with the notes on the bird's wing.",
+      "master": "The song starts with the notes on the bird's wing."
+    },
+    {
+      "rookie": "Before the song, put my brass egg in the nest.",
+      "junior": "Before the song, put my brass egg in the nest.",
+      "master": "Before the song, put my brass egg in the nest."
+    },
+    {
+      "rookie": "The Whole Song",
+      "junior": "The Whole Song",
+      "master": "The Whole Song"
+    },
+    {
+      "rookie": "Rosa lifts her violin to her chin.",
+      "junior": "Rosa raises her violin to her chin.",
+      "master": "Rosa tucks her violin beneath her chin."
+    },
+    {
+      "rookie": "You hold the brass egg over the stone nest.",
+      "junior": "You hold the brass egg above the stone nest.",
+      "master": "You hold the brass egg poised above the stone nest."
+    },
+    {
+      "rookie": "\"Let's do it the way Eleanor wrote it,\" Maya says.",
+      "junior": "\"Let's do it exactly the way Eleanor wrote it,\" Maya says.",
+      "master": "\"Let's follow Eleanor's instructions to the letter,\" Maya says."
+    },
+    {
+      "rookie": "Your Notebook says:",
+      "junior": "Your Notebook reads:",
+      "master": "Your Notebook reads:"
+    },
+    {
+      "rookie": "ELEANOR: Before the song, put my brass egg in the nest.\nKARL: The song starts with the notes on the bird's wing.\nGRANDMA ANA: Our family keeps the end of the song.\nMAYA: Dexter guessed C, A, B. He was wrong.",
+      "junior": "ELEANOR: Before the song, put my brass egg in the nest.\nKARL: The song starts with the notes on the bird's wing.\nGRANDMA ANA: Our family keeps the end of the song.\nMAYA: Dexter guessed C, A, B. He was wrong.",
+      "master": "ELEANOR: Before the song, put my brass egg in the nest.\nKARL: The song starts with the notes on the bird's wing.\nGRANDMA ANA: Our family keeps the end of the song.\nMAYA: Dexter guessed C, A, B. He was wrong."
+    },
+    {
+      "rookie": "Wake the Lark. Put the steps in order.",
+      "junior": "Wake the Lark. Put the steps in the right order.",
+      "master": "Rouse the Lark by arranging the steps in their proper order."
+    },
+    {
+      "rookie": "Eleanor says what comes before the song.",
+      "junior": "Eleanor tells you what comes before the song.",
+      "master": "Eleanor explains what must precede the song."
+    },
+    {
+      "rookie": "Which notes start the song? Which notes end it?",
+      "junior": "Which notes begin the song? Which notes finish it?",
+      "master": "Which notes open the song, and which notes close it?"
+    },
+    {
+      "rookie": "The stone slides open!",
+      "junior": "The stone slides open!",
+      "master": "The stone grinds open!"
+    },
+    {
+      "rookie": "The egg clicks into the nest. Rosa plays: E, G, G... D, A, D.",
+      "junior": "The egg clicks into place in the nest. Rosa plays: E, G, G... D, A, D.",
+      "master": "The egg settles into the nest with a click. Rosa plays: E, G, G... D, A, D."
+    },
+    {
+      "rookie": "With a deep sound, a stone in the wall slides open.",
+      "junior": "There is a deep sound, and a stone in the wall slides open.",
+      "master": "With a low rumble, a stone in the wall slides aside."
+    },
+    {
+      "rookie": "Inside, something silver shines. And three more letters: E, D, M.",
+      "junior": "Something silver is shining inside. And there are three more letters: E, D, M.",
+      "master": "Within, something silver gleams, along with three more letters: E, D, M."
+    },
+    {
+      "rookie": "Start with what comes before the song. Then the start, then the end.",
+      "junior": "Begin with what comes before the song. Then the start, and then the end.",
+      "master": "Begin with what precedes the song, then the opening, then the ending."
+    },
+    {
+      "rookie": "The Song Is Played",
+      "junior": "The Song Is Played",
+      "master": "The Song Is Played"
+    },
+    {
+      "rookie": "The egg in the nest and the whole song opened the wall. Three more silver letters: E, D, M.",
+      "junior": "The egg in the nest and the entire song opened the wall. Three more silver letters: E, D, M.",
+      "master": "The egg in the nest and the complete song unsealed the wall. Three more silver letters: E, D, M."
+    },
+    {
+      "rookie": "Wake the Silver Lark.",
+      "junior": "Wake up the Silver Lark.",
+      "master": "Rouse the Silver Lark."
+    },
+    {
+      "rookie": "Wait! Let an old clockmaker listen.",
+      "junior": "Wait! Let an old clockmaker listen to this.",
+      "master": "Hold on! Allow an old clockmaker to listen."
+    },
+    {
+      "rookie": "Eleanor's machines hear every note. Play it right.",
+      "junior": "Eleanor's machines can hear every note. Play it correctly.",
+      "master": "Eleanor's machines catch every single note. Play it flawlessly."
+    },
+    {
+      "rookie": "Then we follow her words, one by one.",
+      "junior": "Then we'll follow her words, one at a time.",
+      "master": "Then we follow her instructions, one by one."
+    },
+    {
+      "rookie": "READ YOUR NOTEBOOK",
+      "junior": "READ YOUR NOTEBOOK",
+      "master": "READ YOUR NOTEBOOK"
+    },
+    {
+      "rookie": "THE WALL OPENS",
+      "junior": "THE WALL OPENS",
+      "master": "THE WALL OPENS"
+    },
+    {
+      "rookie": "Eleanor's machine still works after a hundred years.",
+      "junior": "After a hundred years, Eleanor's machine still works.",
+      "master": "A century later, Eleanor's machine still functions perfectly."
+    },
+    {
+      "rookie": "Let every child of the city hear its song.",
+      "junior": "Let every child of the city hear its song.",
+      "master": "Let every child of the city hear its song."
+    },
+    {
+      "rookie": "When you give something to everyone, you share it.",
+      "junior": "When you give something to everyone, you share it.",
+      "master": "When you give something to everyone, you share it."
+    },
+    {
+      "rookie": "Eleanor's Letter",
+      "junior": "Eleanor's Letter",
+      "master": "Eleanor's Letter"
+    },
+    {
+      "rookie": "Inside the wall sits a small silver cage.",
+      "junior": "A small silver cage sits inside the wall.",
+      "master": "Tucked inside the wall sits a small silver cage."
+    },
+    {
+      "rookie": "In it, a silver bird with folded wings sleeps.",
+      "junior": "Inside it, a silver bird is sleeping with its wings folded.",
+      "master": "Within it slumbers a silver bird, its wings folded."
+    },
+    {
+      "rookie": "A letter is tied to the cage with a red ribbon.",
+      "junior": "A letter is tied to the cage with a red ribbon.",
+      "master": "A letter is fastened to the cage with a red ribbon."
+    },
+    {
+      "rookie": "Eleanor's letter says:",
+      "junior": "Eleanor's letter reads:",
+      "master": "Eleanor's letter reads:"
+    },
+    {
+      "rookie": "To the child who found me,\nYou read every clue carefully. Thank you.\nDo not keep my Lark. Do not sell it.\nLet every child of the city hear its song.\nWhen you give something to everyone, you share it.\n— Eleanor Hart",
+      "junior": "To the child who found me,\nYou read every clue with care. Thank you.\nDo not keep my Lark. Do not sell it.\nLet every child of the city hear its song.\nWhen you give something to everyone, you share it.\n— Eleanor Hart",
+      "master": "To the child who found me,\nYou read each clue with great care, and I thank you.\nDo not keep my Lark. Do not sell it.\nLet every child of the city hear its song.\nWhen you give something to everyone, you share it.\n— Eleanor Hart"
+    },
+    {
+      "rookie": "What does Eleanor want you to do with the Lark?",
+      "junior": "What does Eleanor want you to do with the Lark?",
+      "master": "What does Eleanor wish you to do with the Lark?"
+    },
+    {
+      "rookie": "____ it with every child of the city.",
+      "junior": "____ it with every child of the city.",
+      "master": "____ it with every child of the city."
+    },
+    {
+      "rookie": "Read the line that says what not to do. Then the next line.",
+      "junior": "Find the line that says what not to do. Then read the next line.",
+      "master": "Locate the line that says what you must not do, then read the line after it."
+    },
+    {
+      "rookie": "The last line tells you the word.",
+      "junior": "The word is in the last line.",
+      "master": "The final line supplies the word."
+    },
+    {
+      "rookie": "You know Eleanor's wish!",
+      "junior": "Now you know Eleanor's wish!",
+      "master": "You've uncovered Eleanor's wish!"
+    },
+    {
+      "rookie": "Rosa reads the letter twice, smiling and crying.",
+      "junior": "Rosa reads the letter twice, smiling and crying at the same time.",
+      "master": "Rosa reads the letter twice, laughing and weeping at once."
+    },
+    {
+      "rookie": "Two more silver letters fall from it: F and E.",
+      "junior": "Two more silver letters drop out of it: F and E.",
+      "master": "Two more silver letters slip from its folds: F and E."
+    },
+    {
+      "rookie": "The little cage has a letter lock on its door.",
+      "junior": "There is a letter lock on the little cage's door.",
+      "master": "The little cage's door is secured by a letter lock."
+    },
+    {
+      "rookie": "Eleanor says: do not keep my Lark. Read the next line.",
+      "junior": "Eleanor says: do not keep my Lark. Read the line after that.",
+      "master": "Eleanor writes: do not keep my Lark. Read on to the next line."
+    },
+    {
+      "rookie": "Eleanor says: do not sell it. What does she want instead?",
+      "junior": "Eleanor says: do not sell it. What does she want you to do instead?",
+      "master": "Eleanor writes: do not sell it. What does she wish for instead?"
+    },
+    {
+      "rookie": "Check your spelling. It is the word in the last line.",
+      "junior": "Check how you spelled it. It's the word in the last line.",
+      "master": "Check your spelling: the word sits in the final line."
+    },
+    {
+      "rookie": "Eleanor's Wish",
+      "junior": "Eleanor's Wish",
+      "master": "Eleanor's Wish"
+    },
+    {
+      "rookie": "Eleanor wants the Lark shared with every child of the city. Two silver letters: F and E.",
+      "junior": "Eleanor wants the Lark to be shared with every child of the city. Two silver letters: F and E.",
+      "master": "Eleanor wishes the Lark to be shared with every child of the city. Two silver letters: F and E."
+    },
+    {
+      "rookie": "A GIFT FOR EVERYONE",
+      "junior": "A GIFT FOR EVERYONE",
+      "master": "A GIFT FOR EVERYONE"
+    },
+    {
+      "rookie": "The Lark was never meant to be owned. It was meant to be heard.",
+      "junior": "No one was ever supposed to own the Lark. It was made to be heard.",
+      "master": "The Lark was never intended to be possessed. It was created to be heard."
+    },
+    {
+      "rookie": "R",
+      "junior": "R",
+      "master": "R"
+    },
+    {
+      "rookie": "O",
+      "junior": "O",
+      "master": "O"
+    },
+    {
+      "rookie": "E",
+      "junior": "E",
+      "master": "E"
+    },
+    {
+      "rookie": "D",
+      "junior": "D",
+      "master": "D"
+    },
+    {
+      "rookie": "M",
+      "junior": "M",
+      "master": "M"
+    },
+    {
+      "rookie": "F",
+      "junior": "F",
+      "master": "F"
+    },
+    {
+      "rookie": "what every bird needs most",
+      "junior": "what every bird needs most",
+      "master": "what every bird needs most"
+    },
+    {
+      "rookie": "Her name, Liberty, means the same thing.",
+      "junior": "Her name, Liberty, means the same thing.",
+      "master": "Her name, Liberty, means the same thing."
+    },
+    {
+      "rookie": "The Silver Cage",
+      "junior": "The Silver Cage",
+      "master": "The Silver Cage"
+    },
+    {
+      "rookie": "The cage door has seven letter rings.",
+      "junior": "The cage door has seven rings with letters.",
+      "master": "Seven lettered rings encircle the cage door."
+    },
+    {
+      "rookie": "You lay the silver letters on the stone, one by one.",
+      "junior": "One by one, you place the silver letters on the stone.",
+      "master": "One by one, you set the silver letters out on the stone."
+    },
+    {
+      "rookie": "A line is written on the cage's tiny door.",
+      "junior": "There is a line written on the cage's tiny door.",
+      "master": "A single line is inscribed on the cage's tiny door."
+    },
+    {
+      "rookie": "The cage door says:",
+      "junior": "The cage door reads:",
+      "master": "The cage door reads:"
+    },
+    {
+      "rookie": "You found my seven silver letters: R, O, E, D, M, F, E.\nMy cage opens with what every bird needs most.\nThe green lady in the harbor stands for it.\nHer name, Liberty, means the same thing.",
+      "junior": "You have found my seven silver letters: R, O, E, D, M, F, E.\nMy cage opens with what every bird needs most.\nThe green lady in the harbor stands for it.\nHer name, Liberty, means the same thing.",
+      "master": "You have gathered my seven silver letters: R, O, E, D, M, F, E.\nMy cage opens with what every bird needs most.\nThe green lady in the harbor is its symbol.\nHer name, Liberty, means the same thing."
+    },
+    {
+      "rookie": "Spell the word that opens the Lark's cage.",
+      "junior": "Spell the word that unlocks the Lark's cage.",
+      "master": "Spell out the word that unlocks the Lark's cage."
+    },
+    {
+      "rookie": "A bird in a cage cannot fly. What does it need?",
+      "junior": "A bird inside a cage can't fly. What does it need?",
+      "master": "A caged bird cannot take flight. What does it long for?"
+    },
+    {
+      "rookie": "Liberty is another word for it. It starts with F.",
+      "junior": "Liberty is another word for it. It begins with F.",
+      "master": "Liberty is a synonym for it. It starts with F."
+    },
+    {
+      "rookie": "The cage opens. The Silver Lark sings!",
+      "junior": "The cage opens, and the Silver Lark sings!",
+      "master": "The cage springs open, and the Silver Lark bursts into song!"
+    },
+    {
+      "rookie": "The Lark opens its silver wings and sings: E, G, G, D, A, D.",
+      "junior": "The Lark spreads its silver wings and sings: E, G, G, D, A, D.",
+      "master": "The Lark unfurls its silver wings and sings: E, G, G, D, A, D."
+    },
+    {
+      "rookie": "People in the park stop and look up at the tower.",
+      "junior": "People in the park stop and look up at the tower.",
+      "master": "Throughout the park, people pause and gaze up at the tower."
+    },
+    {
+      "rookie": "After a hundred years, Eleanor's song is free.",
+      "junior": "After a hundred years, Eleanor's song is free at last.",
+      "master": "After a century of silence, Eleanor's song is finally free."
+    },
+    {
+      "rookie": "The seven letters fit. What does Liberty mean?",
+      "junior": "All seven letters fit. What does Liberty mean?",
+      "master": "All seven letters fit. What is the meaning of Liberty?"
+    },
+    {
+      "rookie": "THE SILVER CAGE",
+      "junior": "THE SILVER CAGE",
+      "master": "THE SILVER CAGE"
+    },
+    {
+      "rookie": "Great-grandma's song. I can hear her.",
+      "junior": "Great-grandma's song. I can hear her voice in it.",
+      "master": "Great-grandma's song. It's as if I can hear her."
+    },
+    {
+      "rookie": "A hundred years, and it still sings. Wonderful work.",
+      "junior": "A hundred years, and it's still singing. Wonderful work.",
+      "master": "A whole century, and still it sings. Splendid work."
+    },
+    {
+      "rookie": "Eleanor wanted every child to hear it.",
+      "junior": "Eleanor wanted every child to be able to hear it.",
+      "master": "Eleanor intended every child to hear it."
+    },
+    {
+      "rookie": "Then it will sing in the library, every Saturday.",
+      "junior": "Then it will sing in the library every Saturday.",
+      "master": "Then it shall sing in the library each and every Saturday."
+    },
+    {
+      "rookie": "And Otto will keep it ticking!",
+      "junior": "And Otto will keep it running!",
+      "master": "And Otto shall keep it ticking along!"
+    },
+    {
+      "rookie": "Over Central Park, a real lark answers the silver one.",
+      "junior": "Above Central Park, a real lark answers the silver one.",
+      "master": "High over Central Park, a living lark answers the silver one."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "entire": "전체의",
+      "hiding": "숨기는",
+      "direction": "방향",
+      "instruments": "기구, 도구",
+      "carved": "새겨진",
+      "distance": "먼 곳",
+      "correctly": "올바르게",
+      "begin": "시작하다",
+      "finish": "끝내다",
+      "tied": "묶인",
+      "supposed": "~하기로 되어 있는",
+      "spreads": "펼치다",
+      "running": "작동하는"
+    },
+    "master": {
+      "outcrop": "(바위의) 노출부",
+      "ascend": "오르다",
+      "summit": "꼭대기",
+      "unfolds": "펼쳐지다",
+      "concealed": "숨겨진",
+      "precede": "앞서다",
+      "rouse": "깨우다",
+      "flawlessly": "완벽하게",
+      "slumbers": "잠자다",
+      "fastened": "묶인, 고정된",
+      "forbids": "금지하다",
+      "possessed": "소유된",
+      "encircle": "둘러싸다",
+      "inscribed": "새겨진",
+      "synonym": "동의어",
+      "unfurls": "펼치다"
+    }
+  }
+}

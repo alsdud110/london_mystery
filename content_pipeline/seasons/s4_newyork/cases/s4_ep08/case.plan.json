@@ -1,0 +1,527 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep08",
+  "seasonId": "s4_newyork",
+  "number": 8,
+  "actId": "act2",
+  "title": "The Violin in Washington Square",
+  "synopsis": [
+    "By the white arch, musicians play every afternoon.",
+    "One of them knows Eleanor's old song.",
+    "You must reach her before the TV crew does."
+  ],
+  "goal": "Find the violin girl, earn her trust and learn her family's secret.",
+  "characters": [
+    "maya_chen",
+    "rosa_diaz",
+    "otto_brandt"
+  ],
+  "locations": [
+    "washington_square"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep08_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.square_arch",
+      "puzzle": {
+        "paletteId": "picture_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "imageChoice",
+        "answerSpec": {
+          "answer": "violin",
+          "options": [
+            {
+              "id": "guitar",
+              "label": "The guitar player",
+              "feedback": "A guitar has strings. But is it played with a bow?",
+              "altText": "a young man playing a guitar with his fingers, no bow",
+              "picture": "assets/seasons/season_04_newyork/cases/case_08/musician_guitar.png"
+            },
+            {
+              "id": "violin",
+              "label": "The violin player",
+              "altText": "a young woman in a green beret playing a violin with a bow, the violin under her chin",
+              "picture": "assets/seasons/season_04_newyork/cases/case_08/musician_violin.png"
+            },
+            {
+              "id": "cello",
+              "label": "The cello player",
+              "feedback": "Strings and a bow, yes. But a cello stands on the floor, not under the chin.",
+              "altText": "an old man playing a big cello with a bow, the cello standing on the floor",
+              "picture": "assets/seasons/season_04_newyork/cases/case_08/musician_cello.png"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.musician_guitar",
+          "s4_newyork.asset.musician_violin",
+          "s4_newyork.asset.musician_cello"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "A picture choice with the names hidden: Eleanor's spare note (strings, a bow) and Maya's line (under the chin); the guitar has no bow, the cello is not under the chin. Three scenes by the white arch, one musician each; the violinist is drawn from Rosa's portrait (a reference)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep04_e4",
+          "use": "answerDerivation",
+          "note": "Eleanor's family plays the song on strings, with a bow."
+        },
+        {
+          "ref": "s4_ep07_c3",
+          "use": "textMention",
+          "note": "The violin girl plays by the white arch."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep08_c1",
+        "evidence": "s4_ep08_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "'on strings, with a bow', 'under the chin'을 읽고 세 연주자 중 맞는 악기를 연주하는 사람을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "My family plays my song on strings, with a bow.",
+          "It sits under the chin."
+        ]
+      },
+      "play": {
+        "title": "Three Musicians",
+        "location": "WASHINGTON SQUARE PARK",
+        "story": [
+          "It is 3 PM. The white arch shines in the sun.",
+          "Three musicians play around the fountain.",
+          "The TV crew comes at four. There is no time to lose."
+        ],
+        "letterIntro": "Eleanor's spare note and Maya say:",
+        "letter": "ELEANOR: My family plays my song on strings, with a bow.\nMAYA: And the violin is small. It sits under the chin.",
+        "question": "Which musician plays Eleanor's song?",
+        "hints": [
+          "Look for strings AND a bow.",
+          "Where does each one sit: on the floor, or under the chin?"
+        ],
+        "successMessage": "You found the violin girl!",
+        "transition": [
+          "It is Rosa, the violinist from Grand Central.",
+          "She plays the same slow, old tune.",
+          "When she sees you, she stops."
+        ],
+        "mapX": 0.42,
+        "mapY": 0.55,
+        "clue": {
+          "title": "The Violinist",
+          "value": "STRINGS · A BOW · UNDER THE CHIN",
+          "note": "The violin girl is Rosa Diaz. She plays the same old song everywhere on the trail.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Rosa's Tune",
+          "icon": "feather",
+          "description": "The slow, old song Rosa plays every day.",
+          "inscription": "Heard at Grand Central and by the white arch."
+        },
+        "hideOptionNames": true,
+        "discovery": {
+          "type": "newLead",
+          "title": "THE SAME OLD TUNE",
+          "detail": "Rosa played it at Grand Central too. Was she watching the trail?"
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep08_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.square_arch",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "egg",
+          "options": [
+            {
+              "id": "tv",
+              "label": "Because you are on TV.",
+              "feedback": "Grandma Ana says never tell strangers. What will the careful reader bring?"
+            },
+            {
+              "id": "egg",
+              "label": "Because you have Eleanor's brass egg."
+            },
+            {
+              "id": "money",
+              "label": "Because you paid her.",
+              "feedback": "Grandma Ana says never sell it. Read who Rosa may play for."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Rosa asks to see what Eleanor's first friend gave you (the brass egg, Case 02): the recall. Letter: Grandma Ana's note in Rosa's violin case, with the song's last half (D, A, D)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep02_e2",
+          "use": "recall",
+          "note": "Rosa asks for what Eleanor's first friend gave you: the brass egg."
+        },
+        {
+          "ref": "s4_ep03_c3",
+          "use": "textMention",
+          "note": "The last three notes stay with Eleanor's family."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep08_c2",
+        "evidence": "s4_ep08_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "할머니의 쪽지에서 'a careful reader will bring Eleanor's brass egg'를 읽고 로사가 탐정을 믿는 이유를 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Our family keeps the end of Eleanor's song.",
+          "a careful reader will bring Eleanor's brass egg"
+        ],
+        "recallFrom": "s4_ep02_m2"
+      },
+      "play": {
+        "title": "Rosa's Test",
+        "location": "WASHINGTON SQUARE PARK",
+        "story": [
+          "Rosa holds her violin close.",
+          "\"Everyone wants my song today,\" she says.",
+          "\"Show me what Eleanor's first friend gave you.\""
+        ],
+        "letterIntro": "Rosa takes a note from her violin case:",
+        "letter": "To my Rosa,\nOur family keeps the end of Eleanor's song: D, A, D.\nNever sell it. Never tell strangers.\nOne day, a careful reader will bring Eleanor's brass egg.\nFor that reader, and only that reader, play the whole song.\n— Grandma Ana",
+        "question": "Why does Rosa trust you?",
+        "hints": [
+          "What will the careful reader bring?",
+          "Look at what you showed Rosa from your Notebook."
+        ],
+        "successMessage": "Rosa trusts you!",
+        "transition": [
+          "Rosa smiles for the first time.",
+          "\"The end of the song is D, A, D,\" she says.",
+          "\"Now I can tell you who I am.\""
+        ],
+        "mapX": 0.42,
+        "mapY": 0.55,
+        "clue": {
+          "title": "The Last Three Notes",
+          "value": "D, A, D",
+          "note": "The end of Eleanor's song, kept by her family: D, A, D.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Grandma Ana's Note",
+          "icon": "letter",
+          "description": "A note from Rosa's grandmother, kept in her violin case.",
+          "inscription": "Our family keeps the end of Eleanor's song: D, A, D."
+        },
+        "recall": {
+          "title": "Show Rosa",
+          "prompt": "Which thing in your Notebook did Eleanor's first friend give you?",
+          "miss": "That is not from the Lost and Found. What did Grace give you?"
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE END OF THE SONG",
+          "detail": "D, A, D. With E, G, G, you now know the whole song."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep08_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.square_arch",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "GRANDMOTHER",
+          "acceptedAnswers": [
+            "GRANDMA",
+            "GREAT-GRANDMOTHER",
+            "GREAT GRANDMOTHER",
+            "GRAND MOTHER"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Rosa's family tree. Karl's photo (Case 05) showed baby Ruth; Rosa is Ruth's granddaughter. The helper's secret, revealed."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep05_e4",
+          "use": "textMention",
+          "note": "Karl's photo: Eleanor and her baby, Ruth."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep08_c3",
+        "evidence": "s4_ep08_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "가계도(daughter, mother's grandmother)를 읽고 엘리너가 로사의 증조할머니(great-grandmother)임을 단어로 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Ruth had a daughter, Ana.",
+          "So Eleanor is my mother's grandmother."
+        ]
+      },
+      "play": {
+        "title": "Rosa's Secret",
+        "location": "WASHINGTON SQUARE PARK",
+        "story": [
+          "Rosa sits on the edge of the fountain.",
+          "She draws a little family tree in Maya's notebook.",
+          "Otto comes running across the square."
+        ],
+        "letterIntro": "Rosa's family tree says:",
+        "letter": "Eleanor Hart had a daughter, Ruth.\nRuth had a daughter, Ana.\nAna had a daughter: me, Rosa.\nSo Eleanor is my mother's grandmother.\nYour mother's grandmother is your great-grandmother.",
+        "question": "What is Eleanor to Rosa? Finish the sentence.",
+        "prompt": "Eleanor is Rosa's great-____.",
+        "hints": [
+          "Read the last line of the family tree.",
+          "Your mother's mother is one step back. Eleanor is one more step back."
+        ],
+        "successMessage": "You found Rosa's secret!",
+        "transition": [
+          "Rosa is Eleanor Hart's great-granddaughter!",
+          "\"Baby Ruth in Karl's photo was my grandma's mother,\" Rosa says.",
+          "\"I played our song on the trail to watch over it.\""
+        ],
+        "feedback": {
+          "MOTHER": "Eleanor is further back than Rosa's mother. Read the tree again.",
+          "AUNT": "An aunt is not in this tree. Count back: Rosa, Ana, Ruth, Eleanor."
+        },
+        "orderFeedback": "Check your spelling: grand + mother.",
+        "mapX": 0.42,
+        "mapY": 0.55,
+        "clue": {
+          "title": "Rosa's Secret",
+          "value": "ELEANOR'S GREAT-GRANDDAUGHTER",
+          "note": "Rosa Diaz is Eleanor Hart's great-granddaughter. Her family keeps the song's end.",
+          "symbol": "crown"
+        },
+        "evidence": {
+          "name": "Rosa's Family Tree",
+          "icon": "letter",
+          "description": "Rosa's family tree, drawn in Maya's notebook.",
+          "inscription": "Eleanor, Ruth, Ana, Rosa."
+        },
+        "talk": {
+          "speaker": "rosa_diaz",
+          "portrait": "assets/seasons/season_04_newyork/characters/rosa_base.png",
+          "goal": "Learn Rosa's secret.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Grandma said the Lark is for a child of the city."
+              },
+              {
+                "by": "speaker",
+                "text": "Not for us. So I kept quiet."
+              },
+              {
+                "by": "detective",
+                "text": "And you watched the trail with your song."
+              },
+              {
+                "by": "speaker",
+                "text": "Yes. I hoped the right reader would hear it."
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "storyDiscovery",
+          "title": "ELEANOR'S FAMILY",
+          "detail": "Rosa kept quiet to keep Eleanor's promise. The Lark is for a child of the city."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep08_final",
+    "slot": "final",
+    "placeId": "s4_newyork.square_arch",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "HART",
+        "options": [
+          {
+            "id": "t",
+            "label": "T"
+          },
+          {
+            "id": "a",
+            "label": "A"
+          },
+          {
+            "id": "h",
+            "label": "H"
+          },
+          {
+            "id": "r",
+            "label": "R"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Rosa's 1926 music box opens with the family's old name, the name on the building where Eleanor made her toys (Otto's letter, Case 05). Inside the lid: a big wheel by the sea, the way to Case 09."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep05_e1",
+        "use": "answerDerivation",
+        "note": "Otto's letter: Eleanor made her toys in the Hart Building."
+      },
+      {
+        "ref": "s4_ep08_c3",
+        "use": "textMention",
+        "note": "Rosa is Eleanor Hart's great-granddaughter."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep08_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "'our family's old name, the name on the building'을 읽고 하트 빌딩의 이름으로 글자를 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "It opens with our family's old name.",
+        "the name on the building where Eleanor made her toys"
+      ]
+    },
+    "play": {
+      "title": "Rosa's Music Box",
+      "location": "WASHINGTON SQUARE PARK",
+      "story": [
+        "Rosa takes a small wooden box from her bag.",
+        "\"Eleanor made this music box in 1926,\" she says.",
+        "\"It has a letter lock. I will let you open it.\""
+      ],
+      "letterIntro": "Rosa says:",
+      "letter": "My music box is locked. It opens with our family's old name.\nMy name is Diaz now. But a long time ago, it was different.\nIt is the name on the building where Eleanor made her toys.",
+      "question": "Spell the word that opens Rosa's music box.",
+      "hints": [
+        "What was Eleanor's family name?",
+        "Otto's letter talks about the building. What is it called?"
+      ],
+      "successMessage": "The music box opens and plays!",
+      "transition": [
+        "E, G, G, D, A, D. The whole song plays at last.",
+        "Inside the lid is a tiny painting: a big wheel by the sea.",
+        "Then a TV truck stops at the edge of the park."
+      ],
+      "orderFeedback": "The four tiles fit. What is the name of Eleanor's building?",
+      "mapX": 0.42,
+      "mapY": 0.55,
+      "evidence": {
+        "name": "Rosa's Music Box",
+        "icon": "key",
+        "description": "Eleanor's 1926 music box, kept by her family. It plays the Lark's whole song.",
+        "inscription": "Inside the lid: a big wheel by the sea."
+      },
+      "lockTitle": "THE MUSIC BOX",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "A big wheel by the sea... Coney Island!",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "The first half was on the bird: E, G, G.",
+          "evidence": "s4_ep06_e4"
+        },
+        {
+          "by": "speaker",
+          "text": "Yesterday Dexter Vance offered me money for this box.",
+          "speaker": "rosa_diaz",
+          "portrait": "assets/seasons/season_04_newyork/characters/rosa_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "I said no. He did not smile then.",
+          "speaker": "rosa_diaz",
+          "portrait": "assets/seasons/season_04_newyork/characters/rosa_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Dexter waves from the truck. His boots have little stars."
+        }
+      ]
+    }
+  },
+  "hook": "Rosa's music box shows a wheel by the sea. And Dexter Vance wants that box. Why?",
+  "learningGoal": {
+    "title": "Family words: daughter, grandmother, great-grandmother",
+    "titleKo": "가족 단어: daughter, grandmother, great-grandmother"
+  },
+  "play": {
+    "objectives": [
+      "Find the violin girl.",
+      "Earn Rosa's trust.",
+      "Open Rosa's music box."
+    ],
+    "intro": [
+      "Washington Square Park. A white arch, a fountain and music everywhere.",
+      "The TV crew will come at four.",
+      "You come at three."
+    ],
+    "caseSummary": "The violin girl is Rosa. She played the same song at Grand Central. She trusted you because you carry the brass egg. Her family keeps the song's end: D, A, D. Rosa is Eleanor's great-granddaughter. Her music box opened with HART and showed a wheel by the sea.",
+    "place": "WASHINGTON SQUARE PARK",
+    "keyWords": [
+      "daughter",
+      "grandmother",
+      "bow",
+      "strings",
+      "trust"
+    ],
+    "glossary": {
+      "violin": "바이올린",
+      "bow": "(현악기의) 활",
+      "chin": "턱",
+      "trust": "믿다",
+      "daughter": "딸",
+      "stranger": "낯선 사람",
+      "promise": "약속",
+      "great-granddaughter": "증손녀",
+      "great-grandmother": "증조할머니"
+    }
+  },
+  "notes": [
+    "Act 2's turning point: the helper's secret. Rosa is Eleanor's great-granddaughter; she watched the trail with her song and kept Eleanor's promise.",
+    "The music box (s4_ep08_e4) is stolen in Case 10 and found in Dexter's safe in Case 11. D, A, D (s4_ep08_c2) is paid off in Case 10 and Case 12."
+  ]
+}

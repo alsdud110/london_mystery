@@ -188,6 +188,6 @@ void main() {
   });
 
   test('Season ids are as before', () {
-    expect([for (final s in SeasonCatalog.all) s.id], [SeasonIds.london, SeasonIds.paris, SeasonIds.rome]);
+    expect([for (final s in SeasonCatalog.all) s.id], [SeasonIds.london, SeasonIds.paris, SeasonIds.rome, SeasonIds.newyork]);
   });
 }

@@ -1,0 +1,516 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep04",
+  "seasonId": "s4_newyork",
+  "number": 4,
+  "actId": "act1",
+  "title": "The Empty Bench",
+  "synopsis": [
+    "On the Brooklyn Bridge, Eleanor's bench waits under the first stone tower.",
+    "But the brass bird is gone.",
+    "Someone is following Eleanor's trail, one step ahead of you."
+  ],
+  "goal": "Find out when the brass bird was taken, what it looks like, and who was there.",
+  "characters": [
+    "maya_chen",
+    "otto_brandt"
+  ],
+  "locations": [
+    "brooklyn_bridge"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep04_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.bridge_walkway",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "between",
+          "options": [
+            {
+              "id": "before",
+              "label": "Before 9:30 AM",
+              "feedback": "The prints are in the paint. Was there paint before 9:30?"
+            },
+            {
+              "id": "between",
+              "label": "Between 9:30 and 11:30 AM"
+            },
+            {
+              "id": "after",
+              "label": "After 11:30 AM",
+              "feedback": "After 11:30 the paint was dry. Can a boot print stay in dry paint?"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the park's wet paint sign and the painter's line. The star prints are pressed into the paint, so the thief came while it was wet: 9:30 to 11:30. This window clears Otto in Case 06 (he was on the 9:30 ferry)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep03_e4",
+          "use": "textMention",
+          "note": "The tin note: the bench under the first stone tower."
+        },
+        {
+          "ref": "s4_ep02_e1",
+          "use": "evidenceLink",
+          "note": "The same star prints as at Grand Central."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep04_c1",
+        "evidence": "s4_ep04_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "페인트 안내문의 시간(painted at 9:30, dry at 11:30)을 읽고, 젖은 페인트에 발자국이 찍힌 시간대를 추론한다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "This bench was painted at 9:30 AM.",
+          "The paint takes two hours to dry."
+        ]
+      },
+      "play": {
+        "title": "Wet Paint",
+        "location": "THE BROOKLYN BRIDGE",
+        "story": [
+          "You walk the bridge to the first stone tower.",
+          "There is the bench. But the brass bird is gone!",
+          "Only four screw holes, and star prints pressed into green paint."
+        ],
+        "letterIntro": "A sign on the bench says:",
+        "letter": "WET PAINT\nThis bench was painted at 9:30 AM.\nThe paint takes two hours to dry.\nPlease do not touch it until 11:30 AM.\nPainter's note: I painted around the little brass bird.",
+        "question": "The star prints are pressed into the wet paint. When was the bird taken?",
+        "hints": [
+          "When did the paint go on? When was it dry?",
+          "A boot can only leave a print while the paint is wet."
+        ],
+        "successMessage": "You found when the bird was taken!",
+        "transition": [
+          "The bird was still there at 9:30. The painter painted around it.",
+          "Someone in star boots took it before 11:30.",
+          "\"The same stars as at Grand Central!\" Maya says."
+        ],
+        "mapX": 0.62,
+        "mapY": 0.72,
+        "clue": {
+          "title": "Prints in Wet Paint",
+          "value": "9:30 – 11:30 AM · STAR PRINTS",
+          "note": "The bird was taken while the paint was wet, between 9:30 and 11:30 on Sunday morning.",
+          "symbol": "footprint"
+        },
+        "evidence": {
+          "name": "The Wet Paint Sign",
+          "icon": "footprint",
+          "description": "The park's sign on the bench, with star prints in the green paint.",
+          "inscription": "Painted at 9:30 AM. Dry at 11:30 AM."
+        },
+        "evidenceLinkLine": "The same five little stars as the print at Grand Central.",
+        "discovery": {
+          "type": "deduction",
+          "title": "ONE STEP AHEAD",
+          "detail": "Someone heard the tin note and came here first. Their boots have stars."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep04_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.bridge_walkway",
+      "puzzle": {
+        "paletteId": "picture_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "imageChoice",
+        "answerSpec": {
+          "answer": "dancing",
+          "options": [
+            {
+              "id": "feet_down",
+              "label": "The bird standing on both feet",
+              "feedback": "Its wings are open. But the tag says one foot is up.",
+              "altText": "a small brass songbird with its wings wide open, standing on both feet, its beak open",
+              "picture": "assets/seasons/season_04_newyork/cases/case_04/bird_feet_down.png"
+            },
+            {
+              "id": "dancing",
+              "label": "The bird with one foot up",
+              "altText": "a small brass songbird with its wings wide open, one foot lifted and its beak open",
+              "picture": "assets/seasons/season_04_newyork/objects/brass_bird.png"
+            },
+            {
+              "id": "wings_closed",
+              "label": "The bird with folded wings",
+              "feedback": "One foot is up. But the tag says its wings are wide open.",
+              "altText": "a small brass songbird with its wings folded, one foot lifted, its beak open",
+              "picture": "assets/seasons/season_04_newyork/cases/case_04/bird_wings_closed.png"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.bird_feet_down",
+          "s4_newyork.asset.ev_brass_bird",
+          "s4_newyork.asset.bird_wings_closed"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "A picture choice with the names hidden: Eleanor's tag names three things (wings wide open, one foot up, beak open); each wrong bird misses one of them. The right bird is the evidence picture ev_brass_bird; the wrong ones are drawn from it.",
+          "The same three pictures come back in Case 11 M2, on Dexter's studio shelf."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep03_c3",
+          "use": "textMention",
+          "note": "The brass bird carries the first three notes."
+        },
+        {
+          "ref": "s4_ep04_c1",
+          "use": "textMention",
+          "note": "The bird was taken while the paint was wet."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep04_c2",
+        "evidence": "s4_ep04_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "놋쇠 꼬리표의 세 특징(wings wide open, one foot up, beak open)을 읽고 맞는 새 그림을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Its wings are wide open.",
+          "One foot is up, as if it dances."
+        ]
+      },
+      "play": {
+        "title": "The Missing Bird",
+        "location": "THE BROOKLYN BRIDGE",
+        "story": [
+          "Under the bench, a small brass tag is still screwed on.",
+          "The thief did not see it.",
+          "\"Now we know what the bird looks like,\" Maya says."
+        ],
+        "letterIntro": "Eleanor's brass tag says:",
+        "letter": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song.",
+        "question": "Which one is Eleanor's brass bird?",
+        "hints": [
+          "The tag gives three things: the wings, the feet and the beak.",
+          "Check all three on each bird."
+        ],
+        "successMessage": "Now you know Eleanor's brass bird!",
+        "transition": [
+          "Wings open, one foot up, beak open to sing.",
+          "If you ever see this bird again, you will know it.",
+          "A painter waves from the railing. \"I saw someone this morning!\""
+        ],
+        "mapX": 0.62,
+        "mapY": 0.72,
+        "clue": {
+          "title": "The Dancing Bird",
+          "value": "WINGS OPEN · ONE FOOT UP · BEAK OPEN",
+          "note": "Eleanor's brass bird dances on one foot, its wings wide open.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "Eleanor's Brass Bird",
+          "icon": "feather",
+          "description": "Eleanor's brass bird, as her tag tells it. Someone took it from the bench.",
+          "inscription": "Its beak is open to sing the first three notes of my song."
+        },
+        "hideOptionNames": true,
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE DANCING BIRD",
+          "detail": "The thief has the first half of the song now. Remember this bird."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep04_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.bridge_walkway",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "CLOCKMAKER",
+          "acceptedAnswers": [
+            "A CLOCKMAKER",
+            "CLOCK MAKER",
+            "A CLOCK MAKER"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the painter's note about an old man at nine. He fixes clocks: Otto, seen at Grand Central (Case 02). A red herring cleared in Case 06."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep02_c1",
+          "use": "textMention",
+          "note": "Otto was at Grand Central too, looking at the clock."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep04_c3",
+        "evidence": "s4_ep04_e3"
+      },
+      "learning": {
+        "dependency": "helpful",
+        "level": "application",
+        "objective": "화가의 메모(a magnifying glass, he fixes clocks)에서 노인의 직업 단어를 만든다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "He said he fixes clocks.",
+          "A person who makes and fixes clocks"
+        ]
+      },
+      "play": {
+        "title": "The Man with the Toolbox",
+        "location": "THE BROOKLYN BRIDGE",
+        "story": [
+          "The painter hands you a note.",
+          "\"I wrote it down,\" he says. \"He was a strange old man.\"",
+          "Maya reads it with you."
+        ],
+        "letterIntro": "The painter's note says:",
+        "letter": "At nine, an old man sat on this bench.\nHe wore a leather apron and carried a toolbox.\nA little magnifying glass sat on his forehead.\nHe looked at the brass bird. He said he fixes clocks.\nA person who makes and fixes clocks has one job name.",
+        "question": "What is the old man's job?",
+        "prompt": "He is a ____.",
+        "hints": [
+          "What does the old man fix?",
+          "Put two words together: what he fixes, and a person who makes things."
+        ],
+        "successMessage": "You know the old man's job!",
+        "transition": [
+          "A clockmaker with a toolbox and bushy eyebrows.",
+          "\"Otto Brandt!\" Maya says. \"He was at Grand Central too.\"",
+          "But Otto came at nine. The paint went on at 9:30."
+        ],
+        "feedback": {
+          "PAINTER": "The painter wrote this note. What does the old man fix?",
+          "WATCHMAKER": "Close! But the note says he fixes clocks."
+        },
+        "orderFeedback": "Check your spelling: clock + maker.",
+        "mapX": 0.62,
+        "mapY": 0.72,
+        "clue": {
+          "title": "The Man with the Toolbox",
+          "value": "9 AM · AN OLD CLOCKMAKER",
+          "note": "An old clockmaker looked at the bird at nine, before the paint. Was it Otto?",
+          "symbol": "gear"
+        },
+        "evidence": {
+          "name": "The Painter's Note",
+          "icon": "letter",
+          "description": "The bridge painter's note about the old man at the bench.",
+          "inscription": "At nine, an old man with a toolbox looked at the brass bird."
+        },
+        "talk": {
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png",
+          "goal": "Read the painter's note.",
+          "after": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Otto said Eleanor taught his grandfather."
+              },
+              {
+                "by": "detective",
+                "text": "So he knows about the bird."
+              },
+              {
+                "by": "speaker",
+                "text": "But does he have star boots?"
+              }
+            ]
+          }
+        },
+        "discovery": {
+          "type": "newLead",
+          "title": "THE CLOCKMAKER",
+          "detail": "Otto Brandt was here at nine. Where was he after 9:30?"
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep04_final",
+    "slot": "final",
+    "placeId": "s4_newyork.bridge_walkway",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "STARS",
+        "options": [
+          {
+            "id": "r",
+            "label": "R"
+          },
+          {
+            "id": "s1",
+            "label": "S"
+          },
+          {
+            "id": "a",
+            "label": "A"
+          },
+          {
+            "id": "t",
+            "label": "T"
+          },
+          {
+            "id": "s2",
+            "label": "S"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Eleanor's spare box under the bench, missed by the thief. Its word is what shines on the ceiling of the great hall of trains (the rubbing, Case 01). Inside: her spare note, the one that leads to Rosa in Case 08."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep01_c3",
+        "use": "answerDerivation",
+        "note": "The great hall of trains: its stars are painted on the ceiling."
+      },
+      {
+        "ref": "s4_ep04_c2",
+        "use": "textMention",
+        "note": "The bird is gone, but Eleanor left a spare."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep04_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "'what shines on the ceiling of the great hall of trains'를 읽고 첫 번째 단서(painted stars)를 떠올려 글자를 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "what shines on the ceiling of the great hall of trains"
+      ]
+    },
+    "play": {
+      "title": "Eleanor's Spare Box",
+      "location": "THE BROOKLYN BRIDGE",
+      "story": [
+        "Behind the brass tag is a tiny box with five letter rings.",
+        "Eleanor thought of everything.",
+        "A line is written on the lid."
+      ],
+      "letterIntro": "The lid says:",
+      "letter": "Clever reader!\nMy little box opens with a word:\nwhat shines on the ceiling of the great hall of trains.",
+      "question": "Spell the word that opens Eleanor's spare box.",
+      "hints": [
+        "Think of your first clue: the great hall of trains.",
+        "What is painted on its green ceiling? More than one!"
+      ],
+      "successMessage": "Eleanor's spare box opens!",
+      "transition": [
+        "Inside is a folded note from 1926.",
+        "\"If my bird is lost, my song still lives,\" Maya reads.",
+        "\"My family plays it on strings, with a bow.\""
+      ],
+      "orderFeedback": "The five tiles fit. What is painted on the ceiling? More than one.",
+      "mapX": 0.62,
+      "mapY": 0.72,
+      "evidence": {
+        "name": "Eleanor's Spare Note",
+        "icon": "letter",
+        "description": "A note from Eleanor's spare box under the bench.",
+        "inscription": "If my bird is lost, my song still lives. My family plays it on strings, with a bow. Find the one who plays it."
+      },
+      "lockTitle": "THE SPARE BOX",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Someone heard the tin note and came first.",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "Someone in star boots, while the paint was wet.",
+          "evidence": "s4_ep04_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "And Otto Brandt was here at nine.",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Far below, a ferry sails toward the Statue of Liberty."
+        },
+        {
+          "by": "narrator",
+          "text": "Who is racing you to the Lark?"
+        }
+      ]
+    }
+  },
+  "hook": "Someone is one step ahead on Eleanor's trail. Is it Otto the clockmaker?",
+  "learningGoal": {
+    "title": "Reading times: at 9:30, two hours, until",
+    "titleKo": "시간 읽기: at 9:30, two hours, until"
+  },
+  "play": {
+    "objectives": [
+      "Find out when the bird was taken.",
+      "Find out what the bird looks like.",
+      "Open Eleanor's spare box."
+    ],
+    "intro": [
+      "The Brooklyn Bridge. Stone towers, steel wires and the wind.",
+      "Below, boats sail on the East River.",
+      "Eleanor's brass bird should be on a bench here."
+    ],
+    "caseSummary": "The brass bird is gone. Star prints in wet paint show when: between 9:30 and 11:30. Eleanor's tag tells what the bird looks like. A clockmaker sat on the bench at nine. Eleanor's spare box opened with STARS. Her family plays her song on strings.",
+    "place": "BROOKLYN BRIDGE",
+    "keyWords": [
+      "wet",
+      "dry",
+      "until",
+      "wings",
+      "clockmaker"
+    ],
+    "glossary": {
+      "bench": "긴 의자, 벤치",
+      "wet": "젖은",
+      "dry": "마른",
+      "screw": "나사",
+      "magnifying": "확대하는 (magnifying glass: 돋보기)",
+      "forehead": "이마",
+      "spare": "여분의, 예비의"
+    }
+  },
+  "notes": [
+    "Act 1's turning point: the trail is no longer safe; someone who heard the tin note is ahead.",
+    "The 9:30 to 11:30 window (s4_ep04_c1) clears Otto in Case 06. Eleanor's spare note (s4_ep04_e4) leads to the violinist in Case 08."
+  ]
+}

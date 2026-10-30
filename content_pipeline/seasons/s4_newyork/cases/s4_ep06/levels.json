@@ -1,0 +1,598 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep06",
+  "lines": [
+    {
+      "rookie": "The Green Lady's Island",
+      "junior": "The Green Lady's Island",
+      "master": "The Green Lady's Island"
+    },
+    {
+      "rookie": "Otto says he was on Liberty Island when the bird was taken.",
+      "junior": "Otto says he was on Liberty Island when the bird was stolen.",
+      "master": "Otto maintains he was on Liberty Island when the bird was stolen."
+    },
+    {
+      "rookie": "His sister sells postcards there, under the great statue.",
+      "junior": "His sister sells postcards on the island, under the great statue.",
+      "master": "His sister sells postcards there, in the shadow of the great statue."
+    },
+    {
+      "rookie": "Is his story true, and if not Otto, then who?",
+      "junior": "Is his story true? And if it wasn't Otto, then who was it?",
+      "master": "Does his story hold up, and if Otto is innocent, who is the culprit?"
+    },
+    {
+      "rookie": "Otto is cleared. Where were Dexter Vance and Nora Bell on Sunday morning?",
+      "junior": "Otto is in the clear. Where were Dexter Vance and Nora Bell on Sunday morning?",
+      "master": "Otto has been cleared. So where were Dexter Vance and Nora Bell on Sunday morning?"
+    },
+    {
+      "rookie": "Put Otto's morning in order.",
+      "junior": "Put Otto's morning in the right order.",
+      "master": "Arrange Otto's morning in the correct order."
+    },
+    {
+      "rookie": "Find out if Otto has an alibi.",
+      "junior": "Find out whether Otto has an alibi.",
+      "master": "Establish whether Otto has an alibi."
+    },
+    {
+      "rookie": "Open Karl's pocket book.",
+      "junior": "Unlock Karl's pocket book.",
+      "master": "Unlock Karl's little pocket book."
+    },
+    {
+      "rookie": "Liberty Island, in New York Harbor.",
+      "junior": "Liberty Island, out in New York Harbor.",
+      "master": "Liberty Island, set in New York Harbor."
+    },
+    {
+      "rookie": "The Statue of Liberty holds her torch high.",
+      "junior": "The Statue of Liberty holds her torch up high.",
+      "master": "The Statue of Liberty raises her torch high above the water."
+    },
+    {
+      "rookie": "Otto's sister sells postcards here every day.",
+      "junior": "Every day, Otto's sister sells postcards here.",
+      "master": "Otto's sister sells postcards here, day in and day out."
+    },
+    {
+      "rookie": "Otto's boat left at 9:30. He reached the island at 9:45 and stayed until lunch. The bench paint was wet then, so Otto has an alibi. Only the TV crew heard the tin note and has no alibi. Karl's book gave the song's start: E, G, G.",
+      "junior": "Otto's boat left at 9:30. He got to the island at 9:45 and stayed there until lunch. The bench paint was still wet then, so Otto has an alibi. Only the TV crew heard the tin note and has no alibi. Karl's book gave the start of the song: E, G, G.",
+      "master": "Otto's boat departed at 9:30. He reached the island at 9:45 and remained until lunch, while the bench paint was still wet, so Otto has an alibi. Only the TV crew heard the tin note and lacks an alibi. Karl's book revealed the song's opening: E, G, G."
+    },
+    {
+      "rookie": "STATUE OF LIBERTY",
+      "junior": "STATUE OF LIBERTY",
+      "master": "STATUE OF LIBERTY"
+    },
+    {
+      "rookie": "Lunch with his sister",
+      "junior": "Lunch with his sister",
+      "master": "Lunch with his sister"
+    },
+    {
+      "rookie": "Otto goes back to the bridge",
+      "junior": "Otto goes back to the bridge",
+      "master": "Otto goes back to the bridge"
+    },
+    {
+      "rookie": "Otto reaches the island",
+      "junior": "Otto reaches the island",
+      "master": "Otto reaches the island"
+    },
+    {
+      "rookie": "Otto sits on the bench",
+      "junior": "Otto sits on the bench",
+      "master": "Otto sits on the bench"
+    },
+    {
+      "rookie": "Otto's boat leaves",
+      "junior": "Otto's boat leaves",
+      "master": "Otto's boat leaves"
+    },
+    {
+      "rookie": "The trip takes fifteen minutes.",
+      "junior": "The trip takes fifteen minutes.",
+      "master": "The trip takes fifteen minutes."
+    },
+    {
+      "rookie": "as soon as his boat arrived",
+      "junior": "as soon as his boat arrived",
+      "master": "as soon as his boat arrived"
+    },
+    {
+      "rookie": "Otto's Morning",
+      "junior": "Otto's Morning",
+      "master": "Otto's Morning"
+    },
+    {
+      "rookie": "LIBERTY ISLAND",
+      "junior": "LIBERTY ISLAND",
+      "master": "LIBERTY ISLAND"
+    },
+    {
+      "rookie": "The ferry crosses the harbor in the wind.",
+      "junior": "The ferry crosses the harbor in the strong wind.",
+      "master": "The ferry ploughs across the harbor through the wind."
+    },
+    {
+      "rookie": "The Statue of Liberty grows bigger and bigger.",
+      "junior": "The Statue of Liberty gets bigger and bigger.",
+      "master": "The Statue of Liberty looms ever larger."
+    },
+    {
+      "rookie": "Otto's sister waves from her postcard stand.",
+      "junior": "Otto's sister is waving from her postcard stand.",
+      "master": "Otto's sister waves cheerfully from her postcard stand."
+    },
+    {
+      "rookie": "Otto's ticket, the timetable and his sister say:",
+      "junior": "Here is what Otto's ticket, the timetable and his sister say:",
+      "master": "Otto's ticket, the timetable and his sister each have their say:"
+    },
+    {
+      "rookie": "TICKET: Battery Park to Liberty Island. The boat leaves at 9:30 AM.\nTIMETABLE: The trip takes fifteen minutes.\nSISTER: \"Otto came to my stand as soon as his boat arrived.\nWe ate lunch together at noon.\"\nOTTO: \"I sat on the bench half an hour before my boat.\"",
+      "junior": "TICKET: Battery Park to Liberty Island. The boat leaves at 9:30 AM.\nTIMETABLE: The trip takes fifteen minutes.\nSISTER: \"Otto came to my stand as soon as his boat arrived.\nWe ate lunch together at noon.\"\nOTTO: \"I sat on the bench half an hour before my boat.\"",
+      "master": "TICKET: Battery Park to Liberty Island. The boat leaves at 9:30 AM.\nTIMETABLE: The trip takes fifteen minutes.\nSISTER: \"Otto came to my stand as soon as his boat arrived.\nWe ate lunch together at noon.\"\nOTTO: \"I sat on the bench half an hour before my boat.\""
+    },
+    {
+      "rookie": "Put Otto's Sunday morning in order.",
+      "junior": "Put Otto's Sunday morning in the right order.",
+      "master": "Arrange Otto's Sunday morning in the correct order."
+    },
+    {
+      "rookie": "Half an hour before 9:30 is the earliest time.",
+      "junior": "The earliest time is half an hour before 9:30.",
+      "master": "The earliest time falls half an hour before 9:30."
+    },
+    {
+      "rookie": "Does anyone say Otto went back to the bridge?",
+      "junior": "Does anybody say that Otto went back to the bridge?",
+      "master": "Does anyone actually claim Otto returned to the bridge?"
+    },
+    {
+      "rookie": "Otto's morning is in order!",
+      "junior": "Otto's morning is in the right order!",
+      "master": "Otto's morning falls neatly into place!"
+    },
+    {
+      "rookie": "9:00, the bench. 9:30, the boat. 9:45, the island. Noon, lunch.",
+      "junior": "9:00, the bench. 9:30, the boat. 9:45, the island. Noon, lunch.",
+      "master": "9:00, the bench. 9:30, the boat. 9:45, the island. Noon, lunch."
+    },
+    {
+      "rookie": "\"He never left my stand,\" his sister says.",
+      "junior": "\"He never left my stand,\" says his sister.",
+      "master": "\"He never once left my stand,\" his sister declares."
+    },
+    {
+      "rookie": "\"Look, I took a photo of him with a seagull at ten!\"",
+      "junior": "\"Look, I took a photo of him with a seagull at ten o'clock!\"",
+      "master": "\"Look, I snapped a photo of him with a seagull at ten!\""
+    },
+    {
+      "rookie": "Find the earliest time first. Then follow the boat.",
+      "junior": "First find the earliest time. Then follow the boat.",
+      "master": "Start from the earliest time, then trace the boat."
+    },
+    {
+      "rookie": "Otto was on the boat at 9:30 and on Liberty Island from 9:45 until lunch.",
+      "junior": "Otto was on the boat at 9:30, and on Liberty Island from 9:45 until lunch.",
+      "master": "Otto was aboard the boat at 9:30 and on Liberty Island from 9:45 until lunch."
+    },
+    {
+      "rookie": "ON THE ISLAND AT 9:45",
+      "junior": "ON THE ISLAND AT 9:45",
+      "master": "ON THE ISLAND AT 9:45"
+    },
+    {
+      "rookie": "Otto's ticket and his sister tell the same story.",
+      "junior": "Otto's ticket and his sister both tell the same story.",
+      "master": "Otto's ticket and his sister's account match exactly."
+    },
+    {
+      "rookie": "When you can prove you were in another place, you have an alibi.",
+      "junior": "When you can prove you were in another place, you have an alibi.",
+      "master": "When you can prove you were in another place, you have an alibi."
+    },
+    {
+      "rookie": "His boots have no stars.",
+      "junior": "His boots have no stars.",
+      "master": "His boots have no stars."
+    },
+    {
+      "rookie": "Otto's Alibi",
+      "junior": "Otto's Alibi",
+      "master": "Otto's Alibi"
+    },
+    {
+      "rookie": "Otto's sister shows you her photo.",
+      "junior": "Otto's sister shows you the photo she took.",
+      "master": "Otto's sister produces her photo for you."
+    },
+    {
+      "rookie": "Otto, a seagull on his hat, the statue behind him.",
+      "junior": "Otto, with a seagull on his hat and the statue behind him.",
+      "master": "Otto, a seagull perched on his hat, the statue looming behind him."
+    },
+    {
+      "rookie": "Maya writes fast in her notebook.",
+      "junior": "Maya writes quickly in her notebook.",
+      "master": "Maya scribbles rapidly in her notebook."
+    },
+    {
+      "rookie": "Maya's notes say:",
+      "junior": "Maya's notes read:",
+      "master": "Maya has noted down:"
+    },
+    {
+      "rookie": "The bird was taken between 9:30 and 11:30.\nOtto's boat left at 9:30.\nFrom 9:45 until noon, he was with his sister on the island.\nHis boots have no stars.\nWhen you can prove you were in another place, you have an alibi.",
+      "junior": "The bird was taken between 9:30 and 11:30.\nOtto's boat left at 9:30.\nFrom 9:45 until noon, he was with his sister on the island.\nHis boots have no stars.\nWhen you can prove you were in another place, you have an alibi.",
+      "master": "The bird was taken between 9:30 and 11:30.\nOtto's boat left at 9:30.\nFrom 9:45 until noon, he was with his sister on the island.\nHis boots have no stars.\nWhen you can prove you were in another place, you have an alibi."
+    },
+    {
+      "rookie": "What does Otto have now?",
+      "junior": "What does Otto have now?",
+      "master": "What does Otto now possess?"
+    },
+    {
+      "rookie": "Otto has an ____.",
+      "junior": "Otto has an ____.",
+      "master": "Otto has an ____."
+    },
+    {
+      "rookie": "Read the last line. It tells you the word.",
+      "junior": "Read the last line. It gives you the word.",
+      "master": "Look to the final line. The word is there."
+    },
+    {
+      "rookie": "Otto can prove he was on the island. What is that called?",
+      "junior": "Otto can show he was on the island. What do we call that?",
+      "master": "Otto can prove he was on the island. What is the term for that?"
+    },
+    {
+      "rookie": "Otto has an alibi!",
+      "junior": "Otto has an alibi!",
+      "master": "Otto has an alibi after all!"
+    },
+    {
+      "rookie": "Otto was on the island while the paint was wet.",
+      "junior": "Otto was on the island while the paint was still wet.",
+      "master": "Otto was on the island the whole time the paint was wet."
+    },
+    {
+      "rookie": "He did not take the brass bird.",
+      "junior": "He did not steal the brass bird.",
+      "master": "He could not have taken the brass bird."
+    },
+    {
+      "rookie": "Otto lets out a long breath. \"Thank you.\"",
+      "junior": "Otto breathes out slowly. \"Thank you.\"",
+      "master": "Otto exhales deeply. \"Thank you.\""
+    },
+    {
+      "rookie": "An excuse is just a reason. Otto has proof he was in another place.",
+      "junior": "An excuse is only a reason. Otto has proof that he was in another place.",
+      "master": "An excuse is merely a reason. Otto has proof he was elsewhere, in another place."
+    },
+    {
+      "rookie": "The ticket is part of the proof. What is all the proof called?",
+      "junior": "The ticket is one part of the proof. What do we call all of the proof?",
+      "master": "The ticket forms part of the proof. What is the whole of it called?"
+    },
+    {
+      "rookie": "Check your spelling: it is the word in the last line.",
+      "junior": "Check your spelling: it's the word in the last line.",
+      "master": "Look over your spelling: it is the word in the final line."
+    },
+    {
+      "rookie": "Otto was on Liberty Island from 9:45. He did not take the bird.",
+      "junior": "Otto was on Liberty Island from 9:45. He did not steal the bird.",
+      "master": "From 9:45 Otto was on Liberty Island. He did not take the bird."
+    },
+    {
+      "rookie": "Check Otto's story.",
+      "junior": "Check whether Otto's story is true.",
+      "master": "Verify Otto's account."
+    },
+    {
+      "rookie": "I was grumpy. I am sorry.",
+      "junior": "I was grumpy. I'm sorry.",
+      "master": "I was grumpy. My apologies."
+    },
+    {
+      "rookie": "I only wanted Eleanor's bird to come home.",
+      "junior": "All I wanted was for Eleanor's bird to come home.",
+      "master": "My only wish was for Eleanor's bird to come home."
+    },
+    {
+      "rookie": "Then help us find who took it.",
+      "junior": "Then help us find out who took it.",
+      "master": "Then help us uncover who took it."
+    },
+    {
+      "rookie": "NOT OTTO",
+      "junior": "NOT OTTO",
+      "master": "NOT OTTO"
+    },
+    {
+      "rookie": "Otto has an alibi. Someone else was at the bench in star boots.",
+      "junior": "Otto has an alibi. Somebody else was at the bench wearing star boots.",
+      "master": "Otto has an alibi. Someone else stood at the bench in star boots."
+    },
+    {
+      "rookie": "Mrs. Lee",
+      "junior": "Mrs. Lee",
+      "master": "Mrs. Lee"
+    },
+    {
+      "rookie": "Mrs. Lee never leaves her shop on Sundays.",
+      "junior": "Mrs. Lee never leaves her shop on a Sunday.",
+      "master": "Mrs. Lee never steps out of her shop on Sundays."
+    },
+    {
+      "rookie": "Otto",
+      "junior": "Otto",
+      "master": "Otto"
+    },
+    {
+      "rookie": "Otto was not at the tea house. And he has an alibi.",
+      "junior": "Otto wasn't at the tea house. And he has an alibi.",
+      "master": "Otto was not at the tea house. Moreover, he has an alibi."
+    },
+    {
+      "rookie": "Someone from the TV crew",
+      "junior": "Someone from the TV crew",
+      "master": "Someone from the TV crew"
+    },
+    {
+      "rookie": "She never leaves her shop on Sundays.",
+      "junior": "She never leaves her shop on Sundays.",
+      "master": "She never leaves her shop on Sundays."
+    },
+    {
+      "rookie": "They said they would film the bridge.",
+      "junior": "They said they would film the bridge.",
+      "master": "They said they would film the bridge."
+    },
+    {
+      "rookie": "Who Heard the Note?",
+      "junior": "Who Heard the Note?",
+      "master": "Who Heard the Note?"
+    },
+    {
+      "rookie": "You sit on a bench by the water.",
+      "junior": "You sit down on a bench by the water.",
+      "master": "You settle on a bench beside the water."
+    },
+    {
+      "rookie": "\"Only a few people heard the tin note,\" Maya says.",
+      "junior": "\"Only a few people heard the tin note,\" says Maya.",
+      "master": "\"Only a handful of people heard the tin note,\" Maya points out."
+    },
+    {
+      "rookie": "She makes a list.",
+      "junior": "She writes a list.",
+      "master": "She draws up a list."
+    },
+    {
+      "rookie": "Maya's list says:",
+      "junior": "Maya's list reads:",
+      "master": "Maya's list runs:"
+    },
+    {
+      "rookie": "Who heard the tin note at the tea house?\nMrs. Lee. She never leaves her shop on Sundays.\nMaya and the detective. We were at the library on Sunday morning.\nDexter Vance and Nora Bell, the TV crew.\nThey said they would film the bridge.",
+      "junior": "Who heard the tin note at the tea house?\nMrs. Lee. She never leaves her shop on Sundays.\nMaya and the detective. We were at the library on Sunday morning.\nDexter Vance and Nora Bell, the TV crew.\nThey said they would film the bridge.",
+      "master": "Who heard the tin note at the tea house?\nMrs. Lee. She never leaves her shop on Sundays.\nMaya and the detective. We were at the library on Sunday morning.\nDexter Vance and Nora Bell, the TV crew.\nThey said they would film the bridge."
+    },
+    {
+      "rookie": "Who could have reached the bench first?",
+      "junior": "Who could have got to the bench first?",
+      "master": "Who could have reached the bench ahead of everyone?"
+    },
+    {
+      "rookie": "Cross out each person who was somewhere else.",
+      "junior": "Cross out every person who was in another place.",
+      "master": "Strike out each person who was elsewhere at the time."
+    },
+    {
+      "rookie": "Who said they would go to the bridge?",
+      "junior": "Who said they were going to the bridge?",
+      "master": "Who announced they would head to the bridge?"
+    },
+    {
+      "rookie": "You found who could have done it!",
+      "junior": "You found out who could have done it!",
+      "master": "You have narrowed down who could have done it!"
+    },
+    {
+      "rookie": "Only the TV crew is left on the list.",
+      "junior": "Only the TV crew is still on the list.",
+      "master": "Only the TV crew remains on the list."
+    },
+    {
+      "rookie": "\"But Dexter is so nice on TV!\" Maya says.",
+      "junior": "\"But Dexter is so friendly on TV!\" says Maya.",
+      "master": "\"But Dexter seems so charming on TV!\" Maya protests."
+    },
+    {
+      "rookie": "\"And Nora looked so worried at the tea house.\"",
+      "junior": "\"And Nora looked really worried at the tea house.\"",
+      "master": "\"And Nora seemed so anxious at the tea house.\""
+    },
+    {
+      "rookie": "The TV Crew",
+      "junior": "The TV Crew",
+      "master": "The TV Crew"
+    },
+    {
+      "rookie": "Only Dexter Vance and Nora Bell heard the tin note and have no alibi.",
+      "junior": "Only Dexter Vance and Nora Bell heard the tin note and don't have an alibi.",
+      "master": "Only Dexter Vance and Nora Bell heard the tin note and lack an alibi."
+    },
+    {
+      "rookie": "THE TV CREW",
+      "junior": "THE TV CREW",
+      "master": "THE TV CREW"
+    },
+    {
+      "rookie": "Dexter and Nora heard the tin note. Where were they on Sunday morning?",
+      "junior": "Dexter and Nora heard the tin note. Where were they on Sunday morning?",
+      "master": "Dexter and Nora heard the tin note. So where were they on Sunday morning?"
+    },
+    {
+      "rookie": "G",
+      "junior": "G",
+      "master": "G"
+    },
+    {
+      "rookie": "E",
+      "junior": "E",
+      "master": "E"
+    },
+    {
+      "rookie": "Music notes have letter names, from A to G.",
+      "junior": "Music notes have letter names, from A to G.",
+      "master": "Music notes have letter names, from A to G."
+    },
+    {
+      "rookie": "the thing Grace gave you at Grand Central",
+      "junior": "the thing Grace gave you at Grand Central",
+      "master": "the thing Grace gave you at Grand Central"
+    },
+    {
+      "rookie": "The Notes on the Wing",
+      "junior": "The Notes on the Wing",
+      "master": "The Notes on the Wing"
+    },
+    {
+      "rookie": "Otto takes a small notebook from his sister's stand.",
+      "junior": "Otto picks up a small notebook from his sister's stand.",
+      "master": "Otto retrieves a small notebook from his sister's stand."
+    },
+    {
+      "rookie": "\"My grandfather's pocket book. It has a letter lock.\"",
+      "junior": "\"This is my grandfather's pocket book. It has a letter lock.\"",
+      "master": "\"My grandfather's pocket book. It's fastened with a letter lock.\""
+    },
+    {
+      "rookie": "\"Karl drew Eleanor's bird in it. With the notes on its wing.\"",
+      "junior": "\"Karl drew Eleanor's bird in it, with the notes on its wing.\"",
+      "master": "\"Karl sketched Eleanor's bird inside, the notes on its wing included.\""
+    },
+    {
+      "rookie": "Otto says:",
+      "junior": "Otto tells you:",
+      "master": "Otto explains:"
+    },
+    {
+      "rookie": "I said hello to that bird every Sunday.\nThree notes are carved on its wing.\nMusic notes have letter names, from A to G.\nThese three notes spell a word:\nthe thing Grace gave you at Grand Central.\nKarl's book opens with that word.",
+      "junior": "I said hello to that bird every Sunday.\nThree notes are carved on its wing.\nMusic notes have letter names, from A to G.\nThese three notes spell a word:\nthe thing Grace gave you at Grand Central.\nKarl's book opens with that word.",
+      "master": "I said hello to that bird every Sunday.\nThree notes are carved on its wing.\nMusic notes have letter names, from A to G.\nThese three notes spell a word:\nthe thing Grace gave you at Grand Central.\nKarl's book opens with that word."
+    },
+    {
+      "rookie": "Spell the three notes on the bird's wing.",
+      "junior": "Spell out the three notes on the bird's wing.",
+      "master": "Spell the three notes carved on the bird's wing."
+    },
+    {
+      "rookie": "What did Grace give you at the Lost and Found?",
+      "junior": "What did Grace give you at the Lost and Found?",
+      "master": "What was it that Grace handed you at the Lost and Found?"
+    },
+    {
+      "rookie": "Look at your Notebook: it was made of brass.",
+      "junior": "Check your Notebook: it was made of brass.",
+      "master": "Consult your Notebook: it was made of brass."
+    },
+    {
+      "rookie": "Karl's pocket book opens!",
+      "junior": "Karl's pocket book is open!",
+      "master": "Karl's pocket book springs open!"
+    },
+    {
+      "rookie": "Karl's drawing shows the bird and its wing: E, G, G.",
+      "junior": "Karl's drawing shows the bird and its wing: E, G, G.",
+      "master": "Karl's sketch depicts the bird and its wing: E, G, G."
+    },
+    {
+      "rookie": "\"The song's first half,\" Maya says. \"The thief has it too.\"",
+      "junior": "\"It's the first half of the song,\" says Maya. \"The thief has it too.\"",
+      "master": "\"The song's first half,\" Maya murmurs. \"And the thief has it as well.\""
+    },
+    {
+      "rookie": "\"Then we need the second half,\" says Otto. \"Eleanor's family.\"",
+      "junior": "\"Then we need the second half,\" Otto says. \"Eleanor's family has it.\"",
+      "master": "\"Then we must find the second half,\" Otto declares. \"Eleanor's family.\""
+    },
+    {
+      "rookie": "The three tiles fit. What did Grace give you?",
+      "junior": "All three tiles fit. What did Grace give you?",
+      "master": "The three tiles fit. What did Grace give you?"
+    },
+    {
+      "rookie": "KARL'S POCKET BOOK",
+      "junior": "KARL'S POCKET BOOK",
+      "master": "KARL'S POCKET BOOK"
+    },
+    {
+      "rookie": "E, G, G. Now we know the song's first half.",
+      "junior": "E, G, G. Now we know the first half of the song.",
+      "master": "E, G, G. The song's first half is now ours."
+    },
+    {
+      "rookie": "The other half is with Eleanor's family.",
+      "junior": "Eleanor's family has the other half.",
+      "master": "The remaining half lies with Eleanor's family."
+    },
+    {
+      "rookie": "And the thief is not me. Find the TV people!",
+      "junior": "And I am not the thief. Go and find the TV people!",
+      "master": "And I am no thief. Track down the TV people!"
+    },
+    {
+      "rookie": "Across the water, Times Square's lights begin to shine.",
+      "junior": "Across the water, the lights of Times Square start to shine.",
+      "master": "Across the water, Times Square's lights begin to glimmer."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "stolen": "도난당한",
+      "whether": "~인지 아닌지",
+      "alibi": "알리바이",
+      "waving": "손을 흔드는",
+      "earliest": "가장 이른",
+      "seagull": "갈매기",
+      "quickly": "빠르게",
+      "steal": "훔치다",
+      "proof": "증거",
+      "excuse": "변명",
+      "cross": "줄을 긋다",
+      "friendly": "친절한",
+      "worried": "걱정하는",
+      "grumpy": "심술궂은"
+    },
+    "master": {
+      "maintains": "주장하다",
+      "culprit": "범인",
+      "cleared": "혐의를 벗은",
+      "departed": "출발했다",
+      "lacks": "없다",
+      "ploughs": "헤치고 나아가다",
+      "looms": "어렴풋이 커지다",
+      "declares": "단언하다",
+      "possess": "가지다",
+      "exhales": "숨을 내쉬다",
+      "merely": "단지",
+      "verify": "확인하다",
+      "handful": "소수",
+      "anxious": "불안한",
+      "retrieves": "꺼내다",
+      "depicts": "묘사하다",
+      "glimmer": "희미하게 빛나다"
+    }
+  }
+}

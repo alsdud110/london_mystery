@@ -52,6 +52,9 @@ void main() {
   Future<void> tapKey(WidgetTester t, String key) async {
     final f = find.byKey(ValueKey(key));
     await t.scrollUntilVisible(f, 200, scrollable: find.byType(Scrollable).first);
+    // Built is not on screen: a long list (four seasons on) can build a row below the fold.
+    await t.ensureVisible(f);
+    await t.pump();
     await t.tap(f);
     await wait(t, const Duration(milliseconds: 900));
   }

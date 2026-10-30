@@ -141,7 +141,7 @@ void main() {
 
   group('the cities', () {
     test('London, Paris and Rome have their seasons; Tokyo and Seoul none yet', () {
-      expect([for (final c in WorldCities.all) c.name], ['London', 'Paris', 'Rome', 'Tokyo', 'Seoul']);
+      expect([for (final c in WorldCities.all) c.name], ['London', 'Paris', 'Rome', 'Tokyo', 'Seoul', 'New York']);
       expect(WorldCities.london.seasonId, SeasonIds.london);
       expect(WorldCities.paris.seasonId, SeasonIds.paris);
       expect(WorldCities.ofSeason(SeasonIds.rome)!.id, 'rome', reason: "Rome's pin takes its season (generatedWorldCities)");
@@ -206,6 +206,7 @@ void main() {
         'rome': WorldCityStatus.locked, // Season 3 since the Rome integration: sealed by Paris
         'tokyo': WorldCityStatus.comingSoon,
         'seoul': WorldCityStatus.comingSoon,
+        'newyork': WorldCityStatus.locked, // Season 4: sealed by Rome
       });
       // London at the middle of the map, Paris beside it, named.
       final viewer = t.getRect(find.byKey(const ValueKey('world-map-viewer')));

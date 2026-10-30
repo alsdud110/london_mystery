@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep02",
+  "seasonId": "s4_newyork",
+  "number": 2,
+  "actId": "act1",
+  "title": "The Stars Painted Backwards",
+  "synopsis": [
+    "Eleanor's first clue leads to Grand Central Terminal.",
+    "Her first friend keeps the Lark's egg in the Lost and Found.",
+    "But someone came for it before you."
+  ],
+  "goal": "Get the Lark's egg, open it and find out who came first.",
+  "characters": [
+    "maya_chen",
+    "grace_kim",
+    "rosa_diaz",
+    "otto_brandt"
+  ],
+  "locations": [
+    "grand_central"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep02_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.main_concourse",
+      "puzzle": {
+        "paletteId": "witness_compare",
+        "surface": "mission",
+        "engineTable": "dialogues",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "man",
+          "options": [
+            {
+              "id": "man",
+              "label": "A tall man came for the egg at seven."
+            },
+            {
+              "id": "otto",
+              "label": "Otto took the egg at seven.",
+              "feedback": "Otto was looking at the clock. Who saw a man at the Lost and Found?"
+            },
+            {
+              "id": "nobody",
+              "label": "Nobody came before you.",
+              "feedback": "Grace and Rosa both saw someone. Compare what they say."
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.main_concourse",
+          "s4_newyork.asset.char_grace_base",
+          "s4_newyork.asset.char_rosa_base",
+          "s4_newyork.asset.char_otto_base"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a talk (DialogueScene) in the main concourse: Grace (at her window) and Rosa (playing nearby) both saw a tall man at the Lost and Found at seven. Otto, a clockmaker, saw only the clock: the first time he is seen (a red herring).",
+          "Rosa's answer about the man's boots (little stars) is heard after the deduction (then): the star prints pay off in Cases 04, 07 and 10."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_c3",
+          "use": "textMention",
+          "note": "The rubbing sends you to the Lost and Found for the Lark's egg."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep02_c1",
+        "evidence": "s4_ep02_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "세 사람의 대답을 비교해 아침 7시에 분실물 센터에 키 큰 남자가 왔다는 같은 진술을 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "What did you see at seven?",
+          "A tall man asked for the Lark's egg.",
+          "His wet boots left little stars."
+        ]
+      },
+      "play": {
+        "title": "The Early Visitor",
+        "location": "THE MAIN CONCOURSE",
+        "story": [
+          "Grand Central is huge and busy.",
+          "High above, gold stars shine on a green ceiling.",
+          "At the Lost and Found, Grace Kim frowns. \"You are the second one today.\""
+        ],
+        "letterIntro": "Your notes say:",
+        "letter": "Someone came for the Lark's egg before you.\nAsk each person what they saw at seven.\nFind two people who say the same thing.",
+        "question": "What happened at the Lost and Found at seven?",
+        "hints": [
+          "Ask every person: What did you see at seven?",
+          "Grace works at the window. Rosa plays her violin nearby. Compare them."
+        ],
+        "successMessage": "Two witnesses saw the same man!",
+        "transition": [
+          "A tall man asked for the egg at seven.",
+          "Rosa points at the floor: a dry print with little stars.",
+          "\"He could not answer my question,\" Grace says. \"Can you?\""
+        ],
+        "mapX": 0.58,
+        "mapY": 0.36,
+        "clue": {
+          "title": "The Early Visitor",
+          "value": "7 AM · A TALL MAN · STAR PRINTS",
+          "note": "A tall man in sunglasses asked for the egg at seven. His boots left little stars.",
+          "symbol": "footprint"
+        },
+        "evidence": {
+          "name": "The Star Print",
+          "icon": "footprint",
+          "description": "A dry boot print on the station floor, with little stars in it.",
+          "inscription": "Five little stars in a ring, and a line across the heel."
+        },
+        "dialogue": {
+          "place": "MAIN CONCOURSE",
+          "background": "assets/seasons/season_04_newyork/locations/main_concourse.png",
+          "goal": "Find out who came at seven.",
+          "how": "Ask each person. Write down what they say.",
+          "guide": "Talk to a witness.",
+          "questions": [
+            {
+              "id": "seven",
+              "text": "What did you see at seven?"
+            },
+            {
+              "id": "look",
+              "text": "What did the man look like?"
+            },
+            {
+              "id": "why",
+              "text": "Why are you here today?"
+            }
+          ],
+          "witnesses": [
+            {
+              "id": "grace",
+              "name": "Grace Kim",
+              "title": "THE LOST AND FOUND",
+              "portrait": "assets/seasons/season_04_newyork/characters/grace_base.png",
+              "description": "a neat woman with short black hair, a station uniform and a ring of keys",
+              "greeting": "I keep lost things. And one very old box.",
+              "answers": {
+                "seven": {
+                  "line": "A tall man asked for the Lark's egg.",
+                  "thing": "a man at the Lost and Found"
+                },
+                "look": {
+                  "line": "Sunglasses. He could not answer my question.",
+                  "thing": "sunglasses"
+                },
+                "why": {
+                  "line": "I keep the Lost and Found. And the egg.",
+                  "thing": "the Lost and Found"
+                }
+              }
+            },
+            {
+              "id": "rosa",
+              "name": "Rosa Diaz",
+              "title": "THE VIOLINIST",
+              "portrait": "assets/seasons/season_04_newyork/characters/rosa_base.png",
+              "description": "a young violinist in a green beret, her violin under her arm",
+              "greeting": "Hello. I play here every morning.",
+              "answers": {
+                "seven": {
+                  "line": "A tall man shouted at the Lost and Found.",
+                  "thing": "a man at the Lost and Found"
+                },
+                "look": {
+                  "line": "His wet boots left little stars.",
+                  "thing": "star prints"
+                },
+                "why": {
+                  "line": "I play my violin for the trains.",
+                  "thing": "her violin"
+                }
+              }
+            },
+            {
+              "id": "otto",
+              "name": "Otto Brandt",
+              "title": "THE CLOCKMAKER",
+              "portrait": "assets/seasons/season_04_newyork/characters/otto_base.png",
+              "description": "an old man with bushy white eyebrows, a leather apron and a toolbox",
+              "greeting": "Hmph. I am busy. What do you want?",
+              "answers": {
+                "seven": {
+                  "line": "Seven? I was looking at the clock.",
+                  "thing": "the clock"
+                },
+                "look": {
+                  "line": "I saw no man. Only the clock.",
+                  "thing": "no man"
+                },
+                "why": {
+                  "line": "Eleanor Hart taught my grandfather. That is why.",
+                  "thing": "Eleanor taught his grandfather"
+                }
+              }
+            }
+          ],
+          "deduction": {
+            "topic": "seven",
+            "pair": [
+              "grace.seven",
+              "rosa.seven"
+            ],
+            "then": [
+              "rosa.look"
+            ],
+            "askLine": "Ask a question.",
+            "anotherLine": "Ask another person.",
+            "readyLine": "Compare two answers.",
+            "compareGoal": "Find two people who saw the same thing at seven.",
+            "compareHow": "Tap two answers to compare them.",
+            "matchLine": "Both saw a tall man at the Lost and Found at seven.",
+            "offTopicLine": "These answers are not about seven o'clock.",
+            "checkLine": "Look for what happened at seven.",
+            "differentLine": "These two say different things.",
+            "retryLine": "Try another pair.",
+            "thenGoal": "Find out more about the man.",
+            "thenHow": "Ask Rosa what the man looked like.",
+            "doneLine": "His wet boots left little stars.",
+            "notesLine": "Your witness notes are ready."
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "SOMEONE CAME FIRST",
+          "detail": "A tall man in star boots wanted the egg. But he could not answer Grace's question."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep02_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.main_concourse",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "CLOCK",
+          "acceptedAnswers": [
+            "A CLOCK",
+            "THE CLOCK",
+            "CLOCKS"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Eleanor's 1926 question card, kept by the Lost and Found. The answer stands in the middle of the hall: the four-faced clock on the information booth (real)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_c2",
+          "use": "textMention",
+          "note": "Each friend asks one question."
+        },
+        {
+          "ref": "s4_ep02_c1",
+          "use": "textMention",
+          "note": "The tall man could not answer it."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep02_c2",
+        "evidence": "s4_ep02_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "수수께끼의 but 문장(hands, but I cannot clap)을 하나씩 읽고 무엇인지 단어로 쓴다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "I have hands, but I cannot clap.",
+          "I have four faces, but I never smile."
+        ]
+      },
+      "play": {
+        "title": "The Keeper's Question",
+        "location": "THE LOST AND FOUND",
+        "story": [
+          "Grace brings out a dusty box marked 1926.",
+          "Inside is a card in Eleanor's writing.",
+          "\"Answer it, and the egg is yours,\" Grace says."
+        ],
+        "letterIntro": "Eleanor's card says:",
+        "letter": "Here is my question.\nI have hands, but I cannot clap.\nI have four faces, but I never smile.\nI stand on the round booth in the middle of this hall.\nI tell everyone when to run for a train.\nWhat am I?\n— E. H.",
+        "question": "What is the answer to Eleanor's question?",
+        "prompt": "It is a ____.",
+        "hints": [
+          "Each line is one clue. What has hands and faces, but is not a person?",
+          "Look at the round booth in the middle of the hall."
+        ],
+        "successMessage": "You answered Eleanor's question!",
+        "transition": [
+          "\"A clock! Correct,\" Grace smiles.",
+          "She gives you a small brass egg.",
+          "It is shut tight, with four letter rings around it."
+        ],
+        "feedback": {
+          "STATUE": "A statue has hands, but it has only one face. This thing has four.",
+          "TRAIN": "A train has no hands and no faces. Look at the booth in the middle."
+        },
+        "orderFeedback": "Check your spelling. It is a short word.",
+        "mapX": 0.58,
+        "mapY": 0.36,
+        "clue": {
+          "title": "The Keeper's Answer",
+          "value": "A CLOCK WITH FOUR FACES",
+          "note": "Eleanor's question was about the clock with four faces in the middle of the hall.",
+          "symbol": "clock"
+        },
+        "evidence": {
+          "name": "The Brass Egg",
+          "icon": "gem",
+          "description": "A small brass egg from Eleanor's box, with four letter rings around its middle.",
+          "inscription": "Kept at the Lost and Found since 1926."
+        },
+        "discovery": {
+          "type": "evidenceFound",
+          "title": "THE LARK'S EGG",
+          "detail": "Grace gives you Eleanor's brass egg. The tall man never got it.",
+          "showEvidence": true
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep02_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.main_concourse",
+      "puzzle": {
+        "paletteId": "letter_tile_lock",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "letterLock",
+        "answerSpec": {
+          "answer": "EAST",
+          "options": [
+            {
+              "id": "s",
+              "label": "S"
+            },
+            {
+              "id": "a",
+              "label": "A"
+            },
+            {
+              "id": "t",
+              "label": "T"
+            },
+            {
+              "id": "e",
+              "label": "E"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the tag on the egg. The ceiling's stars are painted back to front (a real fact), so the painted west is the real east. EAST is paid off in Case 12 (face east at the castle)."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_c3",
+          "use": "answerDerivation",
+          "note": "The rubbing: the stars here are painted backwards."
+        },
+        {
+          "ref": "s4_ep02_e2",
+          "use": "textMention",
+          "note": "The brass egg with four letter rings."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep02_c3",
+        "evidence": "s4_ep02_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "backwards와 opposite을 읽고, 천장의 west가 실제로는 반대 방향(EAST)임을 추론해 글자를 맞춘다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "The stars above you are painted backwards.",
+          "the real sky is the opposite way"
+        ]
+      },
+      "play": {
+        "title": "The Brass Egg",
+        "location": "THE MAIN CONCOURSE",
+        "story": [
+          "A tiny paper tag hangs from the egg.",
+          "Maya looks up at the green ceiling.",
+          "\"The rubbing said the stars are painted backwards,\" she says."
+        ],
+        "letterIntro": "The tag on the egg says:",
+        "letter": "My egg opens with one word.\nThe stars above you are painted backwards.\nWhere the ceiling shows the west,\nthe real sky is the opposite way.\nSpell the real direction.",
+        "question": "Which direction opens the egg?",
+        "hints": [
+          "Backwards means the wrong way round.",
+          "What is the opposite of west?"
+        ],
+        "successMessage": "The brass egg clicks open!",
+        "transition": [
+          "Inside the egg is a small rolled note.",
+          "\"Eleanor's next friend!\" Maya says.",
+          "Nearby, Rosa starts to play a slow, old tune."
+        ],
+        "orderFeedback": "The four letters fit. What is the opposite of west?",
+        "mapX": 0.58,
+        "mapY": 0.36,
+        "clue": {
+          "title": "The Egg's Word",
+          "value": "EAST",
+          "note": "The ceiling is backwards, so its west is the real east. The egg opens with EAST.",
+          "symbol": "map"
+        },
+        "evidence": {
+          "name": "Eleanor's Egg Note",
+          "icon": "letter",
+          "description": "A small rolled note from inside the brass egg.",
+          "inscription": "Two red lanterns hang over the door. A gold dragon sits in the window."
+        },
+        "lockTitle": "THE BRASS EGG",
+        "discovery": {
+          "type": "deduction",
+          "title": "BACKWARDS STARS",
+          "detail": "The painted west is the real east. Remember this word: Eleanor chose it for a reason."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep02_final",
+    "slot": "final",
+    "placeId": "s4_newyork.main_concourse",
+    "puzzle": {
+      "paletteId": "picture_choice",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "imageChoice",
+      "answerSpec": {
+        "answer": "tea_house",
+        "options": [
+          {
+            "id": "bakery",
+            "label": "The shop with a cake in the window",
+            "feedback": "Two red lanterns, yes. But where is the gold dragon?",
+            "altText": "a small bakery with two red lanterns over its door and a big cake in its window",
+            "picture": "assets/seasons/season_04_newyork/cases/case_02/bakery_lanterns.png"
+          },
+          {
+            "id": "tea_house",
+            "label": "The shop with lanterns and a dragon",
+            "altText": "a tea shop with two red lanterns over its door and a gold dragon in its window",
+            "picture": "assets/seasons/season_04_newyork/locations/tea_house.png"
+          },
+          {
+            "id": "awning",
+            "label": "The shop with a striped awning",
+            "feedback": "A gold dragon, yes. But are there lanterns over the door?",
+            "altText": "a shop with a green striped awning over its door and a gold dragon in its window",
+            "picture": "assets/seasons/season_04_newyork/cases/case_02/dragon_awning.png"
+          }
+        ]
+      },
+      "assetNeeds": [
+        "s4_newyork.asset.bakery_lanterns",
+        "s4_newyork.asset.tea_house",
+        "s4_newyork.asset.dragon_awning"
+      ],
+      "status": "awaitingAssets",
+      "notes": [
+        "A picture choice with the names hidden: the egg note names two things (two red lanterns over the door, a gold dragon in the window); each wrong shop has only one of them. The lanterns and the awning differ by shape, never by colour alone.",
+        "The right shop (tea_house) is the place picture of Case 03, first seen here among the choices."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep02_e3",
+        "use": "answerDerivation",
+        "note": "The egg note: two red lanterns and a gold dragon."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep02_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "쪽지의 두 가지 특징(two red lanterns, a gold dragon)을 읽고 둘 다 있는 가게 그림을 고른다.",
+      "skill": "vocabulary",
+      "expressions": [
+        "Two red lanterns hang over the door.",
+        "A gold dragon sits in the window."
+      ]
+    },
+    "play": {
+      "title": "Eleanor's Next Friend",
+      "location": "THE MAIN CONCOURSE",
+      "story": [
+        "You unroll the little note from the egg.",
+        "Maya opens her phone and finds three shops in Chinatown.",
+        "Only one is Eleanor's friend."
+      ],
+      "letterIntro": "The note from the egg says:",
+      "letter": "My next friend sells tea where the old street bends like an elbow.\nTwo red lanterns hang over the door.\nA gold dragon sits in the window.\nAsk for the tea of 1926.\n— E. H.",
+      "question": "Which shop is Eleanor's next friend?",
+      "hints": [
+        "The note gives two things to look for. Find both.",
+        "Look over each door, then in each window."
+      ],
+      "successMessage": "You found Eleanor's next friend!",
+      "transition": [
+        "The Golden Lantern Tea House, in Chinatown.",
+        "Rosa's tune follows you to the door.",
+        "Otto the clockmaker hums it too, and then hurries away."
+      ],
+      "mapX": 0.58,
+      "mapY": 0.36,
+      "evidence": {
+        "name": "The Tea House Address",
+        "icon": "map",
+        "description": "Maya's note of the tea house in Chinatown.",
+        "inscription": "Golden Lantern Tea House, Doyers Street, Chinatown."
+      },
+      "hideOptionNames": true,
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "This tea house is a hundred years old!",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "And the man in star boots never got the egg.",
+          "evidence": "s4_ep02_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "Good luck. Eleanor's friends ask hard questions.",
+          "speaker": "grace_kim",
+          "portrait": "assets/seasons/season_04_newyork/characters/grace_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Rosa's violin plays the same old tune again."
+        },
+        {
+          "by": "speaker",
+          "text": "That song... where have I heard it?",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        }
+      ]
+    }
+  },
+  "hook": "Who wears the star boots? And why do Rosa and Otto know one song?",
+  "learningGoal": {
+    "title": "Riddles and opposites: but, backwards, east and west",
+    "titleKo": "수수께끼와 반대말: but, backwards, east와 west"
+  },
+  "play": {
+    "objectives": [
+      "Find out who came first.",
+      "Answer Eleanor's question.",
+      "Open the brass egg."
+    ],
+    "intro": [
+      "Grand Central Terminal. Trains, crowds and a giant clock.",
+      "High above, the ceiling is full of painted stars.",
+      "Eleanor's first friend waits here, at the Lost and Found."
+    ],
+    "caseSummary": "A tall man in star boots came for the egg at seven. He could not answer Eleanor's question. You could: a clock. The egg opened with EAST, because the stars are backwards. Its note sends you to Chinatown.",
+    "place": "GRAND CENTRAL TERMINAL",
+    "keyWords": [
+      "riddle",
+      "backwards",
+      "opposite",
+      "east",
+      "west"
+    ],
+    "glossary": {
+      "concourse": "기차역의 큰 홀",
+      "booth": "작은 칸막이 공간, 안내소",
+      "clap": "손뼉을 치다",
+      "opposite": "반대",
+      "direction": "방향",
+      "lantern": "등불, 초롱",
+      "elbow": "팔꿈치",
+      "sunglasses": "선글라스",
+      "clockmaker": "시계 만드는 사람"
+    }
+  },
+  "notes": [
+    "The star print (s4_ep02_e1) is the thread of Dexter's boots: the bridge's wet paint (Case 04), the TV shop window (Case 07) and the fountain (Case 10).",
+    "The brass egg (s4_ep02_e2) is shown to Rosa in Case 08 and fits the stone nest at the castle in Case 12. EAST (s4_ep02_c3) is paid off in Case 12."
+  ]
+}

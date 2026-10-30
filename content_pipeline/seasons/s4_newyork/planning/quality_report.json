@@ -1,0 +1,558 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s4_newyork",
+  "tool": "tool/season_planner/plan_season.dart check",
+  "counts": {
+    "ERROR": 0,
+    "WARNING": 55,
+    "INFO": 13
+  },
+  "summary": {
+    "bible": {
+      "characters": 9,
+      "locations": 10,
+      "mysteryQuestions": 12,
+      "clueThreads": 35,
+      "longRangeThreads": 37,
+      "englishReviews": 12
+    },
+    "assets": {
+      "total": 59,
+      "byType": {
+        "cover": 1,
+        "map": 1,
+        "place": 14,
+        "scene": 13,
+        "character": 9,
+        "object": 18,
+        "document": 3
+      },
+      "backgrounds": 29,
+      "characters": 9,
+      "objects": 21,
+      "reusedAcrossCases": 11,
+      "planned": 0,
+      "generated": 59,
+      "shownBySeasonPlaces": 14,
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "estimatedUsd": 3.78539,
+      "estimateNote": "List prices of 2026-10-29 (image_pricing.dart), an estimate before any call, each reference picture priced as 8000 image input tokens; nothing was sent."
+    },
+    "generator": {
+      "run": true,
+      "compatible": true,
+      "files": 28,
+      "blockedByPictures": 0
+    },
+    "cases": 12,
+    "plannedCases": 12,
+    "acts": 3,
+    "missions": 36,
+    "finals": 12,
+    "puzzlesByKind": {
+      "witness_compare": 4,
+      "text_choice": 9,
+      "scene_explore_choose": 6,
+      "order_sequence": 5,
+      "word_entry": 8,
+      "letter_tile_lock": 8,
+      "picture_choice": 6,
+      "combo_dial_lock": 2
+    },
+    "puzzlesOnPictures": 16,
+    "finalsByKind": {
+      "order_sequence": 2,
+      "picture_choice": 1,
+      "combo_dial_lock": 2,
+      "letter_tile_lock": 6,
+      "text_choice": 1
+    },
+    "crossCaseClueInputs": 57,
+    "recallSteps": 2,
+    "evidenceLinks": 5,
+    "characters": 9,
+    "locations": 10,
+    "places": 14,
+    "picturesPending": 0,
+    "apiCalls": 0
+  },
+  "findings": [
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep03 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep03_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep03 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep03_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep03 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep03_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep04 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep04_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep05 $.missions[2].clueOutputs.clue",
+      "source": "plan",
+      "message": "s4_ep05_c3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep05 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep05_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep06 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep06_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep06 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep06_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep06 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep06_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep07 $.missions[0].clueOutputs.clue",
+      "source": "plan",
+      "message": "s4_ep07_c1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep07 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep07_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep07 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep07_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep07 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep07_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep08 $.missions[0].clueOutputs.clue",
+      "source": "plan",
+      "message": "s4_ep08_c1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep08 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep08_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep08 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep08_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep08 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep08_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep09 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep09_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep09 $.missions[1].clueOutputs.clue",
+      "source": "plan",
+      "message": "s4_ep09_c2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep09 $.missions[2].clueOutputs.clue",
+      "source": "plan",
+      "message": "s4_ep09_c3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep10 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep10_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep10 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep10_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep10 $.final.clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep10_e4 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep11 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep11_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep11 $.missions[1].clueOutputs.clue",
+      "source": "plan",
+      "message": "s4_ep11_c2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep11 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep11_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep11 $.missions[2].clueOutputs.clue",
+      "source": "plan",
+      "message": "s4_ep11_c3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep11 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep11_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep11 $.final.clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep11_e4 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep12 $.missions[0].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep12_e1 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep12 $.missions[1].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep12_e2 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "clue_never_used",
+      "where": "cases/s4_ep12 $.missions[2].clueOutputs.evidence",
+      "source": "plan",
+      "message": "s4_ep12_e3 is left, but no mission is given it"
+    },
+    {
+      "level": "WARNING",
+      "code": "late_diversity_drop",
+      "where": "act3",
+      "source": "plan",
+      "message": "7 kinds of palette puzzle, fewer than act2's 8"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.synopsis[1]",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.play.caseSummary",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[0].play.story[1]",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[0].play.transition[0]",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[0].play.explore.spots[1].line",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[1].play.story[0]",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[1].play.successMessage",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[1].play.transition[0]",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[1].play.clue.note",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep03 $.missions[2].play.story[1]",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep06 $.missions[2].puzzle.answerSpec.options[0].label",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep06 $.missions[2].puzzle.answerSpec.options[0].feedback",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "story_unknown_name",
+      "where": "cases/s4_ep06 $.missions[2].play.letter",
+      "source": "season",
+      "message": "\"Mrs. Lee\" is no character of season.plan.json"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep01 $.missions[0].puzzle.answerSpec.options[1].feedback",
+      "source": "englishHeuristic",
+      "message": "\"find two people who say the same thing.\" 4 times in the season (cases/s4_ep02 $.missions[0].play.letter; cases/s4_ep07 $.missions[1].play.letter; cases/s4_ep11 $.missions[0].play.letter…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep01 $.missions[0].play.dialogue.how",
+      "source": "englishHeuristic",
+      "message": "\"write down what they say.\" 4 times in the season (cases/s4_ep02 $.missions[0].play.dialogue.how; cases/s4_ep07 $.missions[1].play.dialogue.how; cases/s4_ep11 $.missions[0].play.dialogue.how…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep01 $.missions[0].play.dialogue.deduction.compareHow",
+      "source": "englishHeuristic",
+      "message": "\"tap two answers to compare them.\" 4 times in the season (cases/s4_ep02 $.missions[0].play.dialogue.deduction.compareHow; cases/s4_ep07 $.missions[1].play.dialogue.deduction.compareHow; cases/s4_ep11 $.missions[0].play.dialogue.deduction.compareHow…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep01 $.missions[0].play.dialogue.deduction.differentLine",
+      "source": "englishHeuristic",
+      "message": "\"these two say different things.\" 4 times in the season (cases/s4_ep02 $.missions[0].play.dialogue.deduction.differentLine; cases/s4_ep07 $.missions[1].play.dialogue.deduction.differentLine; cases/s4_ep11 $.missions[0].play.dialogue.deduction.differentLine…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep01 $.missions[0].play.dialogue.deduction.notesLine",
+      "source": "englishHeuristic",
+      "message": "\"your witness notes are ready.\" 4 times in the season (cases/s4_ep02 $.missions[0].play.dialogue.deduction.notesLine; cases/s4_ep07 $.missions[1].play.dialogue.deduction.notesLine; cases/s4_ep11 $.missions[0].play.dialogue.deduction.notesLine…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep01 $.final.play.story[1]",
+      "source": "englishHeuristic",
+      "message": "\"its edge is a zigzag with three points.\" 3 times in the season (cases/s4_ep01 $.final.play.evidence.description; cases/s4_ep11 $.missions[2].play.letter…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep04 $.missions[1].play.letter",
+      "source": "englishHeuristic",
+      "message": "\"its beak is open to sing the first three notes of my song.\" 3 times in the season (cases/s4_ep04 $.missions[1].play.evidence.inscription; cases/s4_ep11 $.missions[1].play.letter…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep07 $.synopsis[2]",
+      "source": "englishHeuristic",
+      "message": "\"where was dexter on sunday morning?\" 3 times in the season (cases/s4_ep07 $.missions[1].play.question; cases/s4_ep07 $.missions[1].play.dialogue.questions[0].text…)"
+    },
+    {
+      "level": "WARNING",
+      "code": "en_repeated",
+      "where": "cases/s4_ep08 $.final.play.transition[0]",
+      "source": "englishHeuristic",
+      "message": "\"e, g, g, d, a, d.\" 3 times in the season (cases/s4_ep10 $.final.play.evidence.inscription; cases/s4_ep12 $.final.play.evidence.inscription…)"
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep01",
+      "source": "claudeReview",
+      "message": "A1-A2 (ages 8-10): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep02",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep03",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep04",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep05",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep06",
+      "source": "claudeReview",
+      "message": "A2-B1 (ages 10-12): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep07",
+      "source": "claudeReview",
+      "message": "A2-B1 (ages 10-12): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep08",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep09",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep10",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep11",
+      "source": "claudeReview",
+      "message": "A2-B1 (ages 10-12): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "english_review",
+      "where": "planning/story_bible.json s4_ep12",
+      "source": "claudeReview",
+      "message": "A2 (ages 9-11): Fits."
+    },
+    {
+      "level": "INFO",
+      "code": "generator_ok",
+      "where": "generate_season",
+      "source": "generator",
+      "message": "28 files made in memory (nothing written)"
+    }
+  ]
+}

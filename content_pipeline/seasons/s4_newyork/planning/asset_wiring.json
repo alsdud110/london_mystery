@@ -1,0 +1,1117 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s4_newyork",
+  "tool": "tool/asset_pipeline/asset_pipeline.dart --wiring --write",
+  "checkedAgainst": "lib/ as of 2026-10-30 (SeasonContent.places, explores, investigations, dialogues, talkMissions, endings, ChoiceOption.picture, ArtAssets.seasonCovers, SeasonMap.bySeason, ArtAssets.evidencePictures, SeasonContent.storyScenes); wired: in assets/ now",
+  "counts": {
+    "wired": 51,
+    "wired_when_made": 0,
+    "ready_to_wire": 8,
+    "blocked": 0,
+    "not_supported": 0
+  },
+  "assets": [
+    {
+      "assetId": "s4_newyork.asset.cover",
+      "type": "cover",
+      "subject": "s4_newyork.cover",
+      "caseIds": [],
+      "outputPath": "assets/seasons/season_04_newyork/cover/season4_cover_newyork.png",
+      "status": "ready_to_wire",
+      "screen": "World Map season board and the Detective Archives file strip",
+      "field": "ArtAssets.seasonCovers['s4_newyork'] (SeasonCover: file, pixels, crop, push, archiveLook) in lib/widgets/art_assets.dart",
+      "via": "libEdit",
+      "note": "Not shown yet: one SeasonCover line in lib/ (file, pixels 1024×1536, crop, push, archiveLook chosen on the drawn picture). Shown by BoxFit.cover: full screen on the season board, a 2:1 band in the archive, a 56×72 thumbnail."
+    },
+    {
+      "assetId": "s4_newyork.asset.city_map",
+      "type": "map",
+      "subject": "s4_newyork.map",
+      "caseIds": [],
+      "outputPath": "assets/seasons/season_04_newyork/locations/map/newyork_map.png",
+      "status": "ready_to_wire",
+      "screen": "Mission Map",
+      "field": "SeasonMap.bySeason['s4_newyork'] (artwork, pixels, aspect, landmarks, caseLandmarks) in lib/features/mission_map/map_world.dart",
+      "via": "libEdit",
+      "note": "Its landmarks are measured on the drawn map and written in lib/. Without a SeasonMap the season's Mission Map shows \"not ready\", so a released season needs this one."
+    },
+    {
+      "assetId": "s4_newyork.asset.exhibit_hall",
+      "type": "place",
+      "subject": "s4_newyork.exhibit_hall",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/exhibit_hall.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.exhibit_hall].file → SeasonContent.places['s4_newyork.exhibit_hall'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_m1",
+        "s4_ep01_m2",
+        "s4_ep01_m3"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.library_steps",
+      "type": "place",
+      "subject": "s4_newyork.library_steps",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/library_steps.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.library_steps].file → SeasonContent.places['s4_newyork.library_steps'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.main_concourse",
+      "type": "place",
+      "subject": "s4_newyork.main_concourse",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/main_concourse.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.main_concourse].file → SeasonContent.places['s4_newyork.main_concourse'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep02_m1",
+        "s4_ep02_m2",
+        "s4_ep02_m3",
+        "s4_ep02_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.tea_house",
+      "type": "place",
+      "subject": "s4_newyork.tea_house",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/tea_house.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.tea_house].file → SeasonContent.places['s4_newyork.tea_house'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep03_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.tea_room",
+      "type": "place",
+      "subject": "s4_newyork.tea_room",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/tea_room.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.tea_room].file → SeasonContent.places['s4_newyork.tea_room'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep03_m1",
+        "s4_ep03_m2",
+        "s4_ep03_m3"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.bridge_walkway",
+      "type": "place",
+      "subject": "s4_newyork.bridge_walkway",
+      "caseIds": [
+        "s4_ep04"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/bridge_walkway.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.bridge_walkway].file → SeasonContent.places['s4_newyork.bridge_walkway'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep04_m1",
+        "s4_ep04_m2",
+        "s4_ep04_m3",
+        "s4_ep04_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.clock_shop",
+      "type": "place",
+      "subject": "s4_newyork.clock_shop",
+      "caseIds": [
+        "s4_ep05"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/clock_shop.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.clock_shop].file → SeasonContent.places['s4_newyork.clock_shop'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep05_m1",
+        "s4_ep05_m2",
+        "s4_ep05_m3",
+        "s4_ep05_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.liberty_island",
+      "type": "place",
+      "subject": "s4_newyork.liberty_island",
+      "caseIds": [
+        "s4_ep06"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/liberty_island.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.liberty_island].file → SeasonContent.places['s4_newyork.liberty_island'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep06_m1",
+        "s4_ep06_m2",
+        "s4_ep06_m3",
+        "s4_ep06_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.times_square",
+      "type": "place",
+      "subject": "s4_newyork.times_square",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/times_square.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.times_square].file → SeasonContent.places['s4_newyork.times_square'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep07_m1",
+        "s4_ep07_m2",
+        "s4_ep07_m3",
+        "s4_ep07_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.square_arch",
+      "type": "place",
+      "subject": "s4_newyork.square_arch",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/square_arch.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.square_arch].file → SeasonContent.places['s4_newyork.square_arch'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep08_m1",
+        "s4_ep08_m2",
+        "s4_ep08_m3",
+        "s4_ep08_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.coney_boardwalk",
+      "type": "place",
+      "subject": "s4_newyork.coney_boardwalk",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/coney_boardwalk.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.coney_boardwalk].file → SeasonContent.places['s4_newyork.coney_boardwalk'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep09_m1",
+        "s4_ep09_m2",
+        "s4_ep09_m3",
+        "s4_ep09_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.bethesda_terrace",
+      "type": "place",
+      "subject": "s4_newyork.bethesda_terrace",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/bethesda_terrace.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.bethesda_terrace].file → SeasonContent.places['s4_newyork.bethesda_terrace'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep10_m1",
+        "s4_ep10_m2",
+        "s4_ep10_m3",
+        "s4_ep10_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.tv_studio",
+      "type": "place",
+      "subject": "s4_newyork.tv_studio",
+      "caseIds": [
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/tv_studio.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.tv_studio].file → SeasonContent.places['s4_newyork.tv_studio'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep11_m1",
+        "s4_ep11_m2",
+        "s4_ep11_m3",
+        "s4_ep11_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.belvedere_castle",
+      "type": "place",
+      "subject": "s4_newyork.belvedere_castle",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/locations/belvedere_castle.png",
+      "status": "wired",
+      "screen": "Mission scene: the place picture of its missions (PlaceArt, LandmarkArt.ofScene, PlaceScenery.scene)",
+      "field": "season.plan.json places[s4_newyork.belvedere_castle].file → SeasonContent.places['s4_newyork.belvedere_castle'] (ScenePlace); missions name it by sceneKey",
+      "via": "generator",
+      "missions": [
+        "s4_ep12_m1",
+        "s4_ep12_m2",
+        "s4_ep12_m3",
+        "s4_ep12_final"
+      ],
+      "note": "Shown by the generated content (generate_season.dart); the season itself is not in SeasonCatalog."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_maya_base",
+      "type": "character",
+      "subject": "maya_chen",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep02",
+        "s4_ep03",
+        "s4_ep04",
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep07",
+        "s4_ep08",
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/maya_base.png",
+      "status": "wired",
+      "screen": "Talk before or after a mission (CaseTalk, case_talk.dart); Final ending (CaseTalk, case_talk.dart)",
+      "field": "SeasonContent.talkMissions → TalkSpeaker.portraits; SeasonContent.endings → EndingLine.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_m2",
+        "s4_ep04_m3",
+        "s4_ep01_final",
+        "s4_ep02_final",
+        "s4_ep04_final",
+        "s4_ep05_final",
+        "s4_ep06_final",
+        "s4_ep07_final",
+        "s4_ep08_final",
+        "s4_ep09_final",
+        "s4_ep10_final",
+        "s4_ep12_final"
+      ],
+      "note": "A face of the story (talk, ending): the mission plays without it, the line shows no face until it is made."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_harold_base",
+      "type": "character",
+      "subject": "harold_brooks",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep05",
+        "s4_ep11",
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/harold_base.png",
+      "status": "wired",
+      "screen": "Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart); Talk before or after a mission (CaseTalk, case_talk.dart); Final ending (CaseTalk, case_talk.dart)",
+      "field": "SeasonContent.dialogues → DialogueSpeaker.portrait; SeasonContent.talkMissions → TalkSpeaker.portraits; SeasonContent.endings → EndingLine.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_m1",
+        "s4_ep05_m1",
+        "s4_ep11_final",
+        "s4_ep12_final"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_frank_base",
+      "type": "character",
+      "subject": "frank_russo",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/frank_base.png",
+      "status": "wired",
+      "screen": "Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart)",
+      "field": "SeasonContent.dialogues → DialogueSpeaker.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_m1",
+        "s4_ep11_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_sam_base",
+      "type": "character",
+      "subject": "sam_okafor",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep07"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/sam_base.png",
+      "status": "wired",
+      "screen": "Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart)",
+      "field": "SeasonContent.dialogues → DialogueSpeaker.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_m1",
+        "s4_ep07_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_dexter_base",
+      "type": "character",
+      "subject": "dexter_vance",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep03",
+        "s4_ep07",
+        "s4_ep10",
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/dexter_base.png",
+      "status": "wired",
+      "screen": "Final ending (CaseTalk, case_talk.dart); Talk before or after a mission (CaseTalk, case_talk.dart); Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart)",
+      "field": "SeasonContent.endings → EndingLine.portrait; SeasonContent.talkMissions → TalkSpeaker.portraits; SeasonContent.dialogues → DialogueSpeaker.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_final",
+        "s4_ep03_final",
+        "s4_ep11_final",
+        "s4_ep03_m1",
+        "s4_ep07_m2",
+        "s4_ep11_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_grace_base",
+      "type": "character",
+      "subject": "grace_kim",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/grace_base.png",
+      "status": "wired",
+      "screen": "Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart); Final ending (CaseTalk, case_talk.dart)",
+      "field": "SeasonContent.dialogues → DialogueSpeaker.portrait; SeasonContent.endings → EndingLine.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep02_m1",
+        "s4_ep02_final"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_rosa_base",
+      "type": "character",
+      "subject": "rosa_diaz",
+      "caseIds": [
+        "s4_ep02",
+        "s4_ep08",
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/rosa_base.png",
+      "status": "wired",
+      "screen": "Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart); Talk before or after a mission (CaseTalk, case_talk.dart); Final ending (CaseTalk, case_talk.dart)",
+      "field": "SeasonContent.dialogues → DialogueSpeaker.portrait; SeasonContent.talkMissions → TalkSpeaker.portraits; SeasonContent.endings → EndingLine.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep02_m1",
+        "s4_ep08_m3",
+        "s4_ep08_final",
+        "s4_ep09_final",
+        "s4_ep10_final",
+        "s4_ep12_final"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_otto_base",
+      "type": "character",
+      "subject": "otto_brandt",
+      "caseIds": [
+        "s4_ep02",
+        "s4_ep04",
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep08",
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/otto_base.png",
+      "status": "wired",
+      "screen": "Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart); Final ending (CaseTalk, case_talk.dart); Talk before or after a mission (CaseTalk, case_talk.dart)",
+      "field": "SeasonContent.dialogues → DialogueSpeaker.portrait; SeasonContent.endings → EndingLine.portrait; SeasonContent.talkMissions → TalkSpeaker.portraits",
+      "via": "generator",
+      "missions": [
+        "s4_ep02_m1",
+        "s4_ep05_final",
+        "s4_ep06_final",
+        "s4_ep12_final",
+        "s4_ep06_m2",
+        "s4_ep12_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.char_nora_base",
+      "type": "character",
+      "subject": "nora_bell",
+      "caseIds": [
+        "s4_ep03",
+        "s4_ep07",
+        "s4_ep10",
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/characters/nora_base.png",
+      "status": "wired",
+      "screen": "Final ending (CaseTalk, case_talk.dart); Talk with witnesses (DialogueInvestigation, dialogue_investigation.dart)",
+      "field": "SeasonContent.endings → EndingLine.portrait; SeasonContent.dialogues → DialogueSpeaker.portrait",
+      "via": "generator",
+      "missions": [
+        "s4_ep03_final",
+        "s4_ep10_final",
+        "s4_ep11_final",
+        "s4_ep07_m2",
+        "s4_ep11_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.musician_violin",
+      "type": "scene",
+      "subject": "s4_newyork.musician_violin",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_08/musician_violin.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep08_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.musician_guitar",
+      "type": "scene",
+      "subject": "s4_newyork.musician_guitar",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_08/musician_guitar.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep08_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.musician_cello",
+      "type": "scene",
+      "subject": "s4_newyork.musician_cello",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_08/musician_cello.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep08_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.planetarium",
+      "type": "scene",
+      "subject": "s4_newyork.planetarium",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_01/planetarium.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_m3"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.glass_station",
+      "type": "scene",
+      "subject": "s4_newyork.glass_station",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_01/glass_station.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep01_m3"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.bakery_lanterns",
+      "type": "scene",
+      "subject": "s4_newyork.bakery_lanterns",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_02/bakery_lanterns.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep02_final"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.dragon_awning",
+      "type": "scene",
+      "subject": "s4_newyork.dragon_awning",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_02/dragon_awning.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep02_final"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.ellis_island",
+      "type": "scene",
+      "subject": "s4_newyork.ellis_island",
+      "caseIds": [
+        "s4_ep05"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_05/ellis_island.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep05_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.island_fort",
+      "type": "scene",
+      "subject": "s4_newyork.island_fort",
+      "caseIds": [
+        "s4_ep05"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_05/island_fort.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep05_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.river_carousel",
+      "type": "scene",
+      "subject": "s4_newyork.river_carousel",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_07/river_carousel.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep07_m3"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.building_star",
+      "type": "scene",
+      "subject": "s4_newyork.building_star",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_10/building_star.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep10_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.building_clock",
+      "type": "scene",
+      "subject": "s4_newyork.building_clock",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_10/building_clock.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep10_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.building_spire",
+      "type": "scene",
+      "subject": "s4_newyork.building_spire",
+      "caseIds": [
+        "s4_ep10"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_10/building_spire.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep10_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_red_tin",
+      "type": "object",
+      "subject": "s4_ep03_e1",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/red_tin.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep03_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing). As evidence s4_ep03_e1, its notebook card still needs one lib/ line (ArtAssets.evidencePictures)."
+    },
+    {
+      "assetId": "s4_newyork.asset.tin_sun_rabbit",
+      "type": "object",
+      "subject": "s4_newyork.tin_sun_rabbit",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_03/tin_sun_rabbit.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep03_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.tin_moon_fish",
+      "type": "object",
+      "subject": "s4_newyork.tin_moon_fish",
+      "caseIds": [
+        "s4_ep03"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_03/tin_moon_fish.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep03_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_brass_bird",
+      "type": "object",
+      "subject": "s4_ep04_e2",
+      "caseIds": [
+        "s4_ep04",
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/brass_bird.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep04_m2",
+        "s4_ep11_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing). As evidence s4_ep04_e2, its notebook card still needs one lib/ line (ArtAssets.evidencePictures)."
+    },
+    {
+      "assetId": "s4_newyork.asset.bird_feet_down",
+      "type": "object",
+      "subject": "s4_newyork.bird_feet_down",
+      "caseIds": [
+        "s4_ep04",
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_04/bird_feet_down.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep04_m2",
+        "s4_ep11_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.bird_wings_closed",
+      "type": "object",
+      "subject": "s4_newyork.bird_wings_closed",
+      "caseIds": [
+        "s4_ep04",
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_04/bird_wings_closed.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep04_m2",
+        "s4_ep11_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_star_sole",
+      "type": "object",
+      "subject": "s4_ep07_e1",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/star_sole.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep07_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing). As evidence s4_ep07_e1, its notebook card still needs one lib/ line (ArtAssets.evidencePictures)."
+    },
+    {
+      "assetId": "s4_newyork.asset.sole_circles",
+      "type": "object",
+      "subject": "s4_newyork.sole_circles",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_07/sole_circles.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep07_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.sole_no_line",
+      "type": "object",
+      "subject": "s4_newyork.sole_no_line",
+      "caseIds": [
+        "s4_ep07"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_07/sole_no_line.png",
+      "status": "wired",
+      "screen": "Picture choice (question_widgets.dart)",
+      "field": "case JSON → ChoiceOption.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep07_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.car_still",
+      "type": "object",
+      "subject": "s4_newyork.car_still",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_09/car_still.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep09_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.car_rail",
+      "type": "object",
+      "subject": "s4_newyork.car_rail",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_09/car_rail.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep09_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.car_dome",
+      "type": "object",
+      "subject": "s4_newyork.car_dome",
+      "caseIds": [
+        "s4_ep09"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_09/car_dome.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep09_m2"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.stone_lark_nest",
+      "type": "object",
+      "subject": "s4_newyork.stone_lark_nest",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_12/stone_lark_nest.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep12_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.stone_owl_nest",
+      "type": "object",
+      "subject": "s4_newyork.stone_owl_nest",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_12/stone_owl_nest.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep12_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.stone_lark_plain",
+      "type": "object",
+      "subject": "s4_newyork.stone_lark_plain",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/cases/case_12/stone_lark_plain.png",
+      "status": "wired",
+      "screen": "Look round, its choice page (SceneExplore)",
+      "field": "SeasonContent.explores → ExplorePicture.picture",
+      "via": "generator",
+      "missions": [
+        "s4_ep12_m1"
+      ],
+      "note": "Needed to play: the generator stops without it (asset_file_missing)."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_newspaper",
+      "type": "document",
+      "subject": "s4_ep01_e2",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/newspaper.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s4_ep01_e2'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s4_ep01_m2"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_rubbing",
+      "type": "document",
+      "subject": "s4_ep01_e3",
+      "caseIds": [
+        "s4_ep01"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/rubbing.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s4_ep01_e3'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s4_ep01_m3"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_brass_egg",
+      "type": "object",
+      "subject": "s4_ep02_e2",
+      "caseIds": [
+        "s4_ep02"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/brass_egg.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s4_ep02_e2'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s4_ep02_m2"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_music_box",
+      "type": "object",
+      "subject": "s4_ep08_e4",
+      "caseIds": [
+        "s4_ep08"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/music_box.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s4_ep08_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s4_ep08_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_torn_page",
+      "type": "document",
+      "subject": "s4_ep11_e3",
+      "caseIds": [
+        "s4_ep11"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/torn_page.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s4_ep11_e3'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s4_ep11_m3"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    },
+    {
+      "assetId": "s4_newyork.asset.ev_silver_lark",
+      "type": "object",
+      "subject": "s4_ep12_e4",
+      "caseIds": [
+        "s4_ep12"
+      ],
+      "outputPath": "assets/seasons/season_04_newyork/objects/silver_lark.png",
+      "status": "ready_to_wire",
+      "screen": "Notebook evidence card and its close look (EvidenceCard)",
+      "field": "ArtAssets.evidencePictures['s4_ep12_e4'] in lib/widgets/art_assets.dart (square: the round frame; no evidencePrints entry)",
+      "via": "libEdit",
+      "missions": [
+        "s4_ep12_final"
+      ],
+      "note": "No SeasonContent table holds evidence pictures: a generated season needs one lib/ line per evidence id, or an engine table the generator could write."
+    }
+  ]
+}

@@ -148,6 +148,16 @@ void seasonPlaythroughTests(String seasonId, {Difficulty level = Difficulty.stan
       }
     }
 
+    /// READ ALL, while a line is still typing: it may finish on its own
+    /// while it is brought into view, and then there is nothing to skip.
+    Future<void> readAll(WidgetTester t) async {
+      if (find.text('READ ALL').evaluate().isEmpty) return;
+      await reveal(t, find.text('READ ALL'));
+      if (find.text('READ ALL').evaluate().isEmpty) return;
+      await t.tap(find.text('READ ALL').last);
+      await wait(t, const Duration(milliseconds: 300));
+    }
+
     Future<void> throughIntro(WidgetTester t, ProviderContainer c, SandboxPlay play, Episode e) async {
       c.read(routerProvider).go(Routes.intro);
       await wait(t, const Duration(milliseconds: 1500));
@@ -163,7 +173,7 @@ void seasonPlaythroughTests(String seasonId, {Difficulty level = Difficulty.stan
     /// The talk's lines, each read whole, then its finish.
     Future<void> hear(WidgetTester t, SandboxPlay play, TalkScene scene) async {
       for (final (i, line) in scene.opening.indexed) {
-        if (find.text('READ ALL').evaluate().isNotEmpty) await tapText(t, 'READ ALL', after: const Duration(milliseconds: 300));
+        await readAll(t);
         expect(findReadableContaining(line.text), findsWidgets, reason: '${scene.id} line $i: ${play.texts()}');
         if (i < scene.opening.length - 1) await tapText(t, 'NEXT', after: const Duration(milliseconds: 300));
       }
@@ -334,12 +344,19 @@ void seasonPlaythroughTests(String seasonId, {Difficulty level = Difficulty.stan
     Future<void> playFinal(WidgetTester t, ProviderContainer c, SandboxPlay play, Episode e, {required bool last}) async {
       final fin = e.finalMission;
       await play.toFinal(fin);
+      if (fin.type == MissionType.imageChoice) {
+        // A final can be a picture choice too: its right picture first seen here.
+        for (final o in fin.options) {
+          expect(shown(o.picture!), findsWidgets, reason: '${fin.id} ${o.id}: its picture on screen');
+        }
+        unrevealed.remove(fin.options.firstWhere((o) => o.id == fin.answer).picture);
+      }
       await play.answer(fin, fin.answer);
       await wait(t, const Duration(milliseconds: 1500));
       expect(find.byKey(const ValueKey('final-ending')), findsOneWidget, reason: '${e.id}: ${play.texts()}');
       final ending = SeasonCatalog.caseEnding(fin)!;
       for (final (i, line) in ending.indexed) {
-        if (find.text('READ ALL').evaluate().isNotEmpty) await tapText(t, 'READ ALL', after: const Duration(milliseconds: 300));
+        await readAll(t);
         expect(findReadableContaining(line.text), findsWidgets, reason: '${e.id} ending line $i: ${play.texts()}');
         onlyMine('${e.id} ending line $i', [for (final l in ending) l.text], (cases, _) => [SeasonCatalog.caseEnding(at(cases, fin.id)!)![i].text]);
         if (i < ending.length - 1) await tapText(t, 'NEXT', after: const Duration(milliseconds: 600));
@@ -405,16 +422,26 @@ void seasonPlaythroughTests(String seasonId, {Difficulty level = Difficulty.stan
         }
       }
 
-      // ── The season complete: said on the last report, with its last words.
-      await reveal(t, find.byKey(const ValueKey('season-complete')));
-      expect(find.text('${content.season.label} COMPLETE'), findsOneWidget, reason: play.texts());
-      final lastWords = finale.finale.isEmpty ? finale.outro : finale.finale;
+      // ── The season complete: said on the last report, with its last words;
+      // when a season comes after it, the report's ticket points on to it.
+      final next = c.read(nextSeasonProvider);
+      if (next == null) {
+        await reveal(t, find.byKey(const ValueKey('season-complete')));
+        expect(find.text('${content.season.label} COMPLETE'), findsOneWidget, reason: play.texts());
+      } else {
+        await reveal(t, find.byKey(const ValueKey('finale-next-season')));
+        expect(find.text('${next.season.label} · ${next.season.title.toUpperCase()}'), findsOneWidget, reason: play.texts());
+        expect(find.byKey(const ValueKey('finale-ticket')), findsOneWidget, reason: play.texts());
+      }
+      final lastWords = next == null
+          ? (finale.finale.isEmpty ? finale.outro : finale.finale)
+          : (finale.finale.isEmpty ? ['${finale.city} needs you again.'] : finale.finale);
       for (final line in lastWords) {
         expect(findReadableContaining(line), findsWidgets, reason: 'the finale: ${play.texts()}');
       }
       onlyMine('the finale', lastWords, (_, l) {
         final s = DifficultyContent.seasonAt(content, l);
-        return s.finale.isEmpty ? s.outro : s.finale;
+        return s.finale.isNotEmpty ? s.finale : (next == null ? s.outro : ['${s.city} needs you again.']);
       });
       expect(c.read(seasonOverviewProvider).complete, isTrue);
       expect(c.read(seasonOverviewProvider).solvedCount, episodes.length);

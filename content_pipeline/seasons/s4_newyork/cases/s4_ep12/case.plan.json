@@ -1,0 +1,697 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep12",
+  "seasonId": "s4_newyork",
+  "number": 12,
+  "actId": "act3",
+  "title": "The Lark's Song",
+  "synopsis": [
+    "Belvedere Castle stands on its rock above the pond.",
+    "You have Eleanor's egg. Rosa has Eleanor's song.",
+    "After a hundred years, the Silver Lark is waiting."
+  ],
+  "goal": "Follow Eleanor's last steps, wake the Silver Lark and decide what to do with it.",
+  "characters": [
+    "maya_chen",
+    "rosa_diaz",
+    "otto_brandt",
+    "harold_brooks"
+  ],
+  "locations": [
+    "central_park"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep12_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.belvedere_castle",
+      "puzzle": {
+        "paletteId": "scene_explore_choose",
+        "surface": "mission",
+        "engineTable": "explores",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "lark_nest",
+          "options": [
+            {
+              "id": "owl_nest",
+              "label": "The owl with a nest",
+              "feedback": "A round nest, yes. But the plate says a lark, not an owl."
+            },
+            {
+              "id": "lark_plain",
+              "label": "The lark with no nest",
+              "feedback": "A lark with open wings, yes. But where would the egg go?"
+            },
+            {
+              "id": "lark_nest",
+              "label": "The lark with a nest"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.belvedere_castle",
+          "s4_newyork.asset.stone_owl_nest",
+          "s4_newyork.asset.stone_lark_plain",
+          "s4_newyork.asset.stone_lark_nest"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a look round (ExploreScene) on the castle's top terrace: Eleanor's small brass plate is set in the floor by the tower door; the east wall opens once it is read. The three stone birds are told apart by the plate's words (a lark with open wings, a round nest the size of an egg below it).",
+          "Eleanor's steps (Case 09) and the egg's word EAST (Case 02) are followed here. Two silver letters (R, O) lie in the nest: the first of the final's seven.",
+          "Coordinates measured on the made belvedere_castle.png (1536x1024, sha256 a17fde78…) with a 50px grid sheet (season_factory). The three small carved birds sit in a row on the right wall's face at about y 440–530; the low wall runs along the whole lower left and middle; the little round tower between them belongs to no spot."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep09_e4",
+          "use": "textMention",
+          "note": "Eleanor's last steps: climb the tower, face the wall the egg named."
+        },
+        {
+          "ref": "s4_ep02_c3",
+          "use": "answerDerivation",
+          "note": "The egg's word: EAST. The stone birds are on the east wall."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep12_c1",
+        "evidence": "s4_ep12_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "놋쇠 판의 'a lark with open wings', 'a round nest the size of an egg'을 읽고 세 돌새 중 맞는 것을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Three stone birds sit on my east wall.",
+          "a round nest the size of an egg"
+        ]
+      },
+      "play": {
+        "title": "The East Wall",
+        "location": "BELVEDERE CASTLE",
+        "story": [
+          "You climb the castle tower, step by step.",
+          "At the top, the whole park spreads out below.",
+          "\"Now face the wall the egg named,\" Rosa says. \"East!\""
+        ],
+        "letterIntro": "A small brass plate in the floor says:",
+        "letter": "Three stone birds sit on my east wall.\nMy Lark's door is under one of them.\nIt is a lark, with its wings open.\nBelow it is a round nest the size of an egg.\n— E. H.",
+        "question": "Which stone bird hides the Lark's door?",
+        "hints": [
+          "Find the brass plate in the floor and read it first.",
+          "Check two things on each bird: is it a lark? Is there a nest?"
+        ],
+        "successMessage": "You found the stone lark!",
+        "transition": [
+          "Under the stone lark is a round nest, just the size of an egg.",
+          "In the nest lie two small silver letters: R and O.",
+          "\"Eleanor's last puzzle has begun,\" Maya says."
+        ],
+        "mapX": 0.45,
+        "mapY": 0.12,
+        "clue": {
+          "title": "The Stone Lark",
+          "value": "THE EAST WALL · SILVER LETTERS R, O",
+          "note": "The stone lark's nest fits the brass egg. Two silver letters lay in it: R and O.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "The Stone Nest",
+          "icon": "feather",
+          "description": "A round stone nest under the stone lark on the castle's east wall.",
+          "inscription": "Two silver letters: R and O."
+        },
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_04_newyork/locations/belvedere_castle.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            },
+            "measuredOn": "sha256:a17fde78a2dbb970fca0f6b3b3b03690bda332007341ccf8313f31528421df48"
+          },
+          "place": "The castle tower",
+          "task": "Look around the top of the tower. What did Eleanor leave here?",
+          "nextTask": "Which stone bird is the Lark's door? Look at the east wall.",
+          "missLine": "Nothing here. Find Eleanor's brass plate in the floor.",
+          "guideAt": [
+            795,
+            900
+          ],
+          "spots": [
+            {
+              "id": "plate",
+              "kind": "document",
+              "title": "THE BRASS PLATE",
+              "label": "A small brass plate in the stone floor",
+              "areas": [
+                [
+                  690,
+                  850,
+                  905,
+                  950
+                ]
+              ],
+              "mark": [
+                890,
+                862
+              ]
+            },
+            {
+              "id": "weather",
+              "kind": "note",
+              "title": "THE WEATHER STATION",
+              "label": "Little weather instruments on a pole",
+              "areas": [
+                [
+                  95,
+                  50,
+                  340,
+                  690
+                ]
+              ],
+              "mark": [
+                325,
+                62
+              ],
+              "line": "A little weather station. This castle really watches the weather!"
+            },
+            {
+              "id": "west",
+              "kind": "note",
+              "title": "THE WEST WALL",
+              "label": "The low stone wall on the left",
+              "areas": [
+                [
+                  0,
+                  695,
+                  1000,
+                  845
+                ]
+              ],
+              "mark": [
+                985,
+                707
+              ],
+              "line": "This is the west wall. The egg named the opposite way."
+            },
+            {
+              "id": "east",
+              "kind": "choice",
+              "title": "THE EAST WALL",
+              "label": "The stone wall on the right, with carved birds",
+              "areas": [
+                [
+                  1100,
+                  140,
+                  1536,
+                  850
+                ]
+              ],
+              "mark": [
+                1521,
+                152
+              ],
+              "requires": "plate",
+              "lockedLine": "Carved stone birds. But which one? Find Eleanor's words first.",
+              "unreadLine": "Read the brass plate first."
+            }
+          ],
+          "others": [
+            {
+              "label": "The pond and the park",
+              "areas": [
+                [
+                  345,
+                  120,
+                  995,
+                  690
+                ]
+              ],
+              "line": "The pond, the trees and the city's towers far away."
+            }
+          ],
+          "choiceTitle": "THE EAST WALL",
+          "choiceHow": "Which stone bird is a lark with open wings and a round nest below it? Tap one bird.",
+          "choicePixels": {
+            "width": 1024,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "owl_nest",
+              "picture": "assets/seasons/season_04_newyork/cases/case_12/stone_owl_nest.png",
+              "description": "a carved stone owl with folded wings, a round nest below it"
+            },
+            {
+              "optionId": "lark_plain",
+              "picture": "assets/seasons/season_04_newyork/cases/case_12/stone_lark_plain.png",
+              "description": "a carved stone lark with open wings, plain stone below it"
+            },
+            {
+              "optionId": "lark_nest",
+              "picture": "assets/seasons/season_04_newyork/cases/case_12/stone_lark_nest.png",
+              "description": "a carved stone lark with open wings, a round nest below it"
+            }
+          ],
+          "opening": [
+            20,
+            20,
+            1516,
+            1004
+          ]
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE LARK'S DOOR",
+          "detail": "The nest is the size of the brass egg. And it holds two silver letters."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep12_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.belvedere_castle",
+      "puzzle": {
+        "paletteId": "order_sequence",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "sequence",
+        "answerSpec": {
+          "answer": "egg,start,end",
+          "options": [
+            {
+              "id": "end",
+              "label": "Play D, A, D"
+            },
+            {
+              "id": "bell",
+              "label": "Ring the castle bell"
+            },
+            {
+              "id": "start",
+              "label": "Play E, G, G"
+            },
+            {
+              "id": "guess",
+              "label": "Play C, A, B"
+            },
+            {
+              "id": "egg",
+              "label": "Put the egg in the nest"
+            }
+          ],
+          "codeLength": 3
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: the three things the team knows. Before the song, the egg (Eleanor's steps, Case 09); the song starts with the bird's notes (Karl, Case 06) and ends with the family's (Grandma Ana, Case 08). 'Ring the castle bell' and 'Play C, A, B' are decoys. Three more silver letters (E, D, M) appear when the stone opens."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep06_e4",
+          "use": "answerDerivation",
+          "note": "The song starts with the bird's notes: E, G, G."
+        },
+        {
+          "ref": "s4_ep08_c2",
+          "use": "answerDerivation",
+          "note": "The family keeps the end: D, A, D."
+        },
+        {
+          "ref": "s4_ep02_e2",
+          "use": "textMention",
+          "note": "The brass egg goes in the nest."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep12_c2",
+        "evidence": "s4_ep12_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "starts with, ends with, before를 읽고 달걀과 노래의 앞·뒤 절반을 순서대로 놓는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "The song starts with the notes on the bird's wing.",
+          "Before the song, put my brass egg in the nest."
+        ]
+      },
+      "play": {
+        "title": "The Whole Song",
+        "location": "BELVEDERE CASTLE",
+        "story": [
+          "Rosa lifts her violin to her chin.",
+          "You hold the brass egg over the stone nest.",
+          "\"Let's do it the way Eleanor wrote it,\" Maya says."
+        ],
+        "letterIntro": "Your Notebook says:",
+        "letter": "ELEANOR: Before the song, put my brass egg in the nest.\nKARL: The song starts with the notes on the bird's wing.\nGRANDMA ANA: Our family keeps the end of the song.\nMAYA: Dexter guessed C, A, B. He was wrong.",
+        "question": "Wake the Lark. Put the steps in order.",
+        "hints": [
+          "Eleanor says what comes before the song.",
+          "Which notes start the song? Which notes end it?"
+        ],
+        "successMessage": "The stone slides open!",
+        "transition": [
+          "The egg clicks into the nest. Rosa plays: E, G, G... D, A, D.",
+          "With a deep sound, a stone in the wall slides open.",
+          "Inside, something silver shines. And three more letters: E, D, M."
+        ],
+        "orderFeedback": "Start with what comes before the song. Then the start, then the end.",
+        "mapX": 0.45,
+        "mapY": 0.12,
+        "clue": {
+          "title": "The Song Is Played",
+          "value": "EGG · E, G, G · D, A, D · LETTERS E, D, M",
+          "note": "The egg in the nest and the whole song opened the wall. Three more silver letters: E, D, M.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "The Open Stone",
+          "icon": "key",
+          "description": "The stone in the east wall, open after a hundred years.",
+          "inscription": "Three silver letters: E, D, M."
+        },
+        "talk": {
+          "speaker": "otto_brandt",
+          "portrait": "assets/seasons/season_04_newyork/characters/otto_base.png",
+          "goal": "Wake the Silver Lark.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Wait! Let an old clockmaker listen."
+              },
+              {
+                "by": "speaker",
+                "text": "Eleanor's machines hear every note. Play it right."
+              },
+              {
+                "by": "detective",
+                "text": "Then we follow her words, one by one."
+              }
+            ],
+            "finishLabel": "READ YOUR NOTEBOOK"
+          }
+        },
+        "discovery": {
+          "type": "storyDiscovery",
+          "title": "THE WALL OPENS",
+          "detail": "Eleanor's machine still works after a hundred years."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep12_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.belvedere_castle",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "SHARE",
+          "acceptedAnswers": [
+            "SHARE IT"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Eleanor's letter to the finder, inside the wall. Its last line defines the word. Two silver letters (F, E) are tucked inside it: the last of the final's seven. The 1926 newspaper (Case 01) said the Lark was for a child of the city."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_e2",
+          "use": "textMention",
+          "note": "The newspaper: the Lark is for a child of the city."
+        },
+        {
+          "ref": "s4_ep12_c2",
+          "use": "textMention",
+          "note": "The wall is open."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep12_c3",
+        "evidence": "s4_ep12_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "엘리너의 편지에서 'When you give something to everyone, you share it.'을 읽고 단어로 쓴다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Let every child of the city hear its song.",
+          "When you give something to everyone, you share it."
+        ]
+      },
+      "play": {
+        "title": "Eleanor's Letter",
+        "location": "BELVEDERE CASTLE",
+        "story": [
+          "Inside the wall sits a small silver cage.",
+          "In it, a silver bird with folded wings sleeps.",
+          "A letter is tied to the cage with a red ribbon."
+        ],
+        "letterIntro": "Eleanor's letter says:",
+        "letter": "To the child who found me,\nYou read every clue carefully. Thank you.\nDo not keep my Lark. Do not sell it.\nLet every child of the city hear its song.\nWhen you give something to everyone, you share it.\n— Eleanor Hart",
+        "question": "What does Eleanor want you to do with the Lark?",
+        "prompt": "____ it with every child of the city.",
+        "hints": [
+          "Read the line that says what not to do. Then the next line.",
+          "The last line tells you the word."
+        ],
+        "successMessage": "You know Eleanor's wish!",
+        "transition": [
+          "Rosa reads the letter twice, smiling and crying.",
+          "Two more silver letters fall from it: F and E.",
+          "The little cage has a letter lock on its door."
+        ],
+        "feedback": {
+          "KEEP": "Eleanor says: do not keep my Lark. Read the next line.",
+          "SELL": "Eleanor says: do not sell it. What does she want instead?"
+        },
+        "orderFeedback": "Check your spelling. It is the word in the last line.",
+        "mapX": 0.45,
+        "mapY": 0.12,
+        "clue": {
+          "title": "Eleanor's Wish",
+          "value": "SHARE IT · LETTERS F, E",
+          "note": "Eleanor wants the Lark shared with every child of the city. Two silver letters: F and E.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "Eleanor's Letter to the Finder",
+          "icon": "letter",
+          "description": "Eleanor's letter from inside the castle wall, written in 1926.",
+          "inscription": "Let every child of the city hear its song."
+        },
+        "discovery": {
+          "type": "storyDiscovery",
+          "title": "A GIFT FOR EVERYONE",
+          "detail": "The Lark was never meant to be owned. It was meant to be heard."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep12_final",
+    "slot": "final",
+    "placeId": "s4_newyork.belvedere_castle",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "FREEDOM",
+        "options": [
+          {
+            "id": "r",
+            "label": "R"
+          },
+          {
+            "id": "o",
+            "label": "O"
+          },
+          {
+            "id": "e1",
+            "label": "E"
+          },
+          {
+            "id": "d",
+            "label": "D"
+          },
+          {
+            "id": "m",
+            "label": "M"
+          },
+          {
+            "id": "f",
+            "label": "F"
+          },
+          {
+            "id": "e2",
+            "label": "E"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "The season's letter-collecting final: the seven silver letters found in this case's three missions (R O, E D M, F E, listed in that order so the letter does not spell the answer) make FREEDOM. The cage's line ties it to Liberty Island (Case 06): the statue's name means the same thing."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep12_c1",
+        "use": "answerDerivation",
+        "note": "Silver letters R and O."
+      },
+      {
+        "ref": "s4_ep12_c2",
+        "use": "answerDerivation",
+        "note": "Silver letters E, D and M."
+      },
+      {
+        "ref": "s4_ep12_c3",
+        "use": "answerDerivation",
+        "note": "Silver letters F and E."
+      },
+      {
+        "ref": "s4_ep06_c1",
+        "use": "textMention",
+        "note": "The green lady in the harbor: the Statue of Liberty."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep12_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "모은 은빛 글자 일곱 개와 'Liberty means the same thing'을 읽고 새에게 가장 필요한 것(FREEDOM)을 글자로 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "what every bird needs most",
+        "Her name, Liberty, means the same thing."
+      ]
+    },
+    "play": {
+      "title": "The Silver Cage",
+      "location": "BELVEDERE CASTLE",
+      "story": [
+        "The cage door has seven letter rings.",
+        "You lay the silver letters on the stone, one by one.",
+        "A line is written on the cage's tiny door."
+      ],
+      "letterIntro": "The cage door says:",
+      "letter": "You found my seven silver letters: R, O, E, D, M, F, E.\nMy cage opens with what every bird needs most.\nThe green lady in the harbor stands for it.\nHer name, Liberty, means the same thing.",
+      "question": "Spell the word that opens the Lark's cage.",
+      "hints": [
+        "A bird in a cage cannot fly. What does it need?",
+        "Liberty is another word for it. It starts with F."
+      ],
+      "successMessage": "The cage opens. The Silver Lark sings!",
+      "transition": [
+        "The Lark opens its silver wings and sings: E, G, G, D, A, D.",
+        "People in the park stop and look up at the tower.",
+        "After a hundred years, Eleanor's song is free."
+      ],
+      "orderFeedback": "The seven letters fit. What does Liberty mean?",
+      "mapX": 0.45,
+      "mapY": 0.12,
+      "evidence": {
+        "name": "The Silver Lark",
+        "icon": "feather",
+        "description": "Eleanor Hart's clockwork bird of 1926. It opens its wings and sings six notes.",
+        "inscription": "E, G, G, D, A, D. For every child of the city."
+      },
+      "lockTitle": "THE SILVER CAGE",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "Great-grandma's song. I can hear her.",
+          "speaker": "rosa_diaz",
+          "portrait": "assets/seasons/season_04_newyork/characters/rosa_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "A hundred years, and it still sings. Wonderful work.",
+          "speaker": "otto_brandt",
+          "portrait": "assets/seasons/season_04_newyork/characters/otto_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "Eleanor wanted every child to hear it.",
+          "evidence": "s4_ep12_e3"
+        },
+        {
+          "by": "speaker",
+          "text": "Then it will sing in the library, every Saturday.",
+          "speaker": "harold_brooks",
+          "portrait": "assets/seasons/season_04_newyork/characters/harold_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "And Otto will keep it ticking!",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Over Central Park, a real lark answers the silver one."
+        }
+      ]
+    }
+  },
+  "hook": "The Silver Lark sings again. What other songs is New York keeping?",
+  "learningGoal": {
+    "title": "Starts with, ends with: putting it all together",
+    "titleKo": "starts with, ends with: 모든 단서 모으기"
+  },
+  "play": {
+    "objectives": [
+      "Find the stone lark on the east wall.",
+      "Play the whole song.",
+      "Open the silver cage."
+    ],
+    "intro": [
+      "Central Park, early in the morning.",
+      "Belvedere Castle stands on its rock above the pond.",
+      "Rosa has her violin. You have the brass egg."
+    ],
+    "caseSummary": "On the castle's east wall, the stone lark's nest fit the brass egg. Rosa played the whole song, E, G, G, D, A, D, and the wall opened. Eleanor's letter asked you to share the Lark with every child of the city. Seven silver letters spelled FREEDOM, and the Silver Lark sang again.",
+    "place": "CENTRAL PARK",
+    "keyWords": [
+      "east",
+      "nest",
+      "start",
+      "end",
+      "share"
+    ],
+    "glossary": {
+      "castle": "성",
+      "nest": "둥지",
+      "cage": "새장",
+      "ribbon": "리본",
+      "share": "함께 나누다",
+      "freedom": "자유",
+      "liberty": "자유 (Liberty: 자유의 여신상의 이름)",
+      "clockmaker": "시계 만드는 사람"
+    }
+  },
+  "notes": [
+    "The season's last case pays off the brass egg and EAST (Case 02), the steps (Case 09), both halves of the song (Cases 06 and 08), the newspaper's promise (Case 01) and Liberty Island (Case 06).",
+    "The letter-collecting final: the seven silver letters of the three missions spell FREEDOM."
+  ]
+}

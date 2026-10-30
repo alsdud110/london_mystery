@@ -1,0 +1,761 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep03",
+  "lines": [
+    {
+      "rookie": "The Tea of 1926",
+      "junior": "The Tea of 1926",
+      "master": "The Tea of 1926"
+    },
+    {
+      "rookie": "In Chinatown, a tea house has kept Eleanor's red tin for a hundred years.",
+      "junior": "In Chinatown, a tea house has been keeping Eleanor's red tin for a hundred years.",
+      "master": "In Chinatown, a tea house has guarded Eleanor's red tin for a full hundred years."
+    },
+    {
+      "rookie": "Mrs. Lee will give it only to a careful reader.",
+      "junior": "Mrs. Lee will hand it over only to a careful reader.",
+      "master": "Mrs. Lee will entrust it solely to a careful reader."
+    },
+    {
+      "rookie": "And a TV crew wants to film everything.",
+      "junior": "And a TV crew wants to film every moment.",
+      "master": "Meanwhile, a TV crew is eager to capture every moment on film."
+    },
+    {
+      "rookie": "Everyone in the tea house heard the tin note. Who will reach the brass bird first?",
+      "junior": "The whole tea house heard about the tin note. Who will get to the brass bird first?",
+      "master": "Everyone in the tea house overheard the tin note. Who will be first to reach the brass bird?"
+    },
+    {
+      "rookie": "Find Eleanor's red tin.",
+      "junior": "Track down Eleanor's red tin.",
+      "master": "Locate Eleanor's red tin."
+    },
+    {
+      "rookie": "Make Eleanor's tea.",
+      "junior": "Prepare Eleanor's tea.",
+      "master": "Brew Eleanor's tea precisely."
+    },
+    {
+      "rookie": "Open the tin.",
+      "junior": "Unlock the tin.",
+      "master": "Unlock the red tin."
+    },
+    {
+      "rookie": "Chinatown. Narrow streets, red lanterns and the smell of dumplings.",
+      "junior": "Chinatown. Narrow streets, red lanterns and the warm smell of dumplings.",
+      "master": "Chinatown. Cramped streets, glowing red lanterns and the drifting aroma of dumplings."
+    },
+    {
+      "rookie": "Doyers Street bends like an elbow.",
+      "junior": "Doyers Street bends sharply, like an elbow.",
+      "master": "Doyers Street crooks sharply, like a bent elbow."
+    },
+    {
+      "rookie": "There stands the Golden Lantern Tea House.",
+      "junior": "And there is the Golden Lantern Tea House.",
+      "master": "And there, before you, stands the Golden Lantern Tea House."
+    },
+    {
+      "rookie": "Mrs. Lee's tea house kept Eleanor's red tin, with a rabbit under a full moon. You made Eleanor's tea the 1926 way and earned it. Mei Lee's diary told the Lark's secret: its six-note song is in two halves. The tin opened with 4, 2, 4 and sent you to a brass bird on the Brooklyn Bridge. Dexter and Nora heard it all.",
+      "junior": "Mrs. Lee's tea house had been keeping Eleanor's red tin, with a rabbit under a full moon. You made Eleanor's tea the 1926 way and earned it. Mei Lee's diary revealed the Lark's secret: its six-note song is split into two halves. The tin opened with 4, 2, 4 and pointed you to a brass bird on the Brooklyn Bridge. Dexter and Nora overheard everything.",
+      "master": "Mrs. Lee's tea house had safeguarded Eleanor's red tin, adorned with a rabbit under a full moon. By brewing Eleanor's tea the 1926 way, you earned it. Mei Lee's diary disclosed the Lark's secret: its six-note song is divided into two halves. The tin yielded to 4, 2, 4 and directed you to a brass bird on the Brooklyn Bridge. Dexter and Nora overheard every word."
+    },
+    {
+      "rookie": "CHINATOWN",
+      "junior": "CHINATOWN",
+      "master": "CHINATOWN"
+    },
+    {
+      "rookie": "The tin with a rabbit and a sun",
+      "junior": "The tin showing a rabbit and a sun",
+      "master": "The tin bearing a rabbit and a sun"
+    },
+    {
+      "rookie": "A rabbit, yes. But the card says under a full moon, not a sun.",
+      "junior": "There is a rabbit, yes. But the card says it sits under a full moon, not a sun.",
+      "master": "A rabbit, certainly. Yet the card specifies a full moon, not a sun."
+    },
+    {
+      "rookie": "The tin with a fish and a moon",
+      "junior": "The tin showing a fish and a moon",
+      "master": "The tin bearing a fish and a moon"
+    },
+    {
+      "rookie": "A full moon, yes. But what animal sits under it?",
+      "junior": "Yes, there is a full moon. But which animal should sit under it?",
+      "master": "A full moon, indeed. But which creature ought to sit beneath it?"
+    },
+    {
+      "rookie": "The tin with a rabbit and a moon",
+      "junior": "The tin showing a rabbit and a moon",
+      "master": "The tin bearing a rabbit and a moon"
+    },
+    {
+      "rookie": "a white rabbit under a full moon",
+      "junior": "a white rabbit under a full moon",
+      "master": "a white rabbit under a full moon"
+    },
+    {
+      "rookie": "Not a sun. Not a fish.",
+      "junior": "Not a sun. Not a fish.",
+      "master": "Not a sun. Not a fish."
+    },
+    {
+      "rookie": "The Red Tin",
+      "junior": "The Red Tin",
+      "master": "The Red Tin"
+    },
+    {
+      "rookie": "THE GOLDEN LANTERN TEA HOUSE",
+      "junior": "THE GOLDEN LANTERN TEA HOUSE",
+      "master": "THE GOLDEN LANTERN TEA HOUSE"
+    },
+    {
+      "rookie": "The tea house smells of jasmine and old wood.",
+      "junior": "The tea house smells of jasmine and old wooden beams.",
+      "master": "The tea house is fragrant with jasmine and aged timber."
+    },
+    {
+      "rookie": "Mrs. Lee, the owner, bows. \"My grandmother knew Eleanor.\"",
+      "junior": "Mrs. Lee, the owner, gives a small bow. \"My grandmother knew Eleanor.\"",
+      "master": "Mrs. Lee, the proprietor, bows graciously. \"My grandmother was acquainted with Eleanor.\""
+    },
+    {
+      "rookie": "Outside, a TV van parks. Dexter Vance waves at the window.",
+      "junior": "Outside, a TV van pulls up. Dexter Vance waves through the window.",
+      "master": "Outside, a TV van draws up to the curb. Dexter Vance waves cheerfully through the window."
+    },
+    {
+      "rookie": "A framed card on the wall says:",
+      "junior": "On the wall hangs a framed card. It says:",
+      "master": "A framed card mounted on the wall reads:"
+    },
+    {
+      "rookie": "Eleanor's tea is kept in a red tin.\nOn its lid: a white rabbit under a full moon.\nNot a sun. Not a fish.\n— Mei Lee, 1926",
+      "junior": "Eleanor's tea is kept in a red tin.\nOn its lid: a white rabbit under a full moon.\nNot a sun. Not a fish.\n— Mei Lee, 1926",
+      "master": "Eleanor's tea is kept in a red tin.\nOn its lid: a white rabbit under a full moon.\nNot a sun. Not a fish.\n— Mei Lee, 1926"
+    },
+    {
+      "rookie": "Which tin is Eleanor's?",
+      "junior": "Which of these tins belongs to Eleanor?",
+      "master": "Which of these tins is truly Eleanor's?"
+    },
+    {
+      "rookie": "Find the framed card on the wall and read it first.",
+      "junior": "First, find the framed card on the wall and read it.",
+      "master": "Before choosing, seek out the framed card on the wall and study it."
+    },
+    {
+      "rookie": "Look at each lid. You need a rabbit AND a full moon.",
+      "junior": "Check every lid. It needs both a rabbit AND a full moon.",
+      "master": "Examine every lid closely. Only one shows both a rabbit AND a full moon."
+    },
+    {
+      "rookie": "You found Eleanor's red tin!",
+      "junior": "You have found Eleanor's red tin!",
+      "master": "You have identified Eleanor's red tin!"
+    },
+    {
+      "rookie": "Mrs. Lee takes down the tin with the moon and the rabbit.",
+      "junior": "Mrs. Lee lifts down the tin with the moon and the rabbit.",
+      "master": "Mrs. Lee reaches up and retrieves the tin with the moon and the rabbit."
+    },
+    {
+      "rookie": "\"Not so fast,\" she smiles. \"First, my grandmother's question.\"",
+      "junior": "\"Not so fast,\" she says with a smile. \"First, my grandmother's question.\"",
+      "master": "\"Not so hasty,\" she says, smiling. \"First, you must answer my grandmother's question.\""
+    },
+    {
+      "rookie": "Dexter and his camera operator, Nora, come inside.",
+      "junior": "Dexter and Nora, his camera operator, follow you inside.",
+      "master": "Dexter and his camera operator, Nora, stroll in after you."
+    },
+    {
+      "rookie": "The Moon Tin",
+      "junior": "The Moon Tin",
+      "master": "The Moon Tin"
+    },
+    {
+      "rookie": "Eleanor's red tin has a rabbit under a full moon on its lid.",
+      "junior": "The lid of Eleanor's red tin shows a rabbit under a full moon.",
+      "master": "The lid of Eleanor's red tin is painted with a rabbit beneath a full moon."
+    },
+    {
+      "rookie": "The tea room",
+      "junior": "The tea room",
+      "master": "The tea parlor"
+    },
+    {
+      "rookie": "Look around the tea room. What does the old card say?",
+      "junior": "Have a look around the tea room. What does the old card on the wall say?",
+      "master": "Survey the tea room. What does the old card proclaim?"
+    },
+    {
+      "rookie": "Which tin is Eleanor's? Look at the shelf of tins.",
+      "junior": "Which tin belongs to Eleanor? Check the shelf of tins.",
+      "master": "Which tin is Eleanor's? Inspect the shelf of tins."
+    },
+    {
+      "rookie": "Nothing here. Find the framed card on the wall.",
+      "junior": "There's nothing here. Look for the framed card on the wall.",
+      "master": "Nothing of interest here. Seek out the framed card on the wall."
+    },
+    {
+      "rookie": "THE FRAMED CARD",
+      "junior": "THE FRAMED CARD",
+      "master": "THE FRAMED CARD"
+    },
+    {
+      "rookie": "An old card in a frame on the wall",
+      "junior": "An old card framed and hung on the wall",
+      "master": "A faded card, framed and mounted on the wall"
+    },
+    {
+      "rookie": "THE COUNTER",
+      "junior": "THE COUNTER",
+      "master": "THE COUNTER"
+    },
+    {
+      "rookie": "A wooden counter with teapots",
+      "junior": "A wooden counter covered with teapots",
+      "master": "A wooden counter crowded with teapots"
+    },
+    {
+      "rookie": "Teapots and cups. Mrs. Lee's tea smells of flowers.",
+      "junior": "Teapots and cups everywhere. Mrs. Lee's tea has a flowery smell.",
+      "master": "Teapots and cups abound. Mrs. Lee's tea carries a delicate floral scent."
+    },
+    {
+      "rookie": "THE LANTERN",
+      "junior": "THE LANTERN",
+      "master": "THE LANTERN"
+    },
+    {
+      "rookie": "A red paper lantern",
+      "junior": "A red lantern made of paper",
+      "master": "A crimson paper lantern"
+    },
+    {
+      "rookie": "A red lantern. Nothing is hidden inside.",
+      "junior": "Just a red lantern. There is nothing hidden inside it.",
+      "master": "Merely a red lantern. Nothing is concealed within."
+    },
+    {
+      "rookie": "THE TIN SHELF",
+      "junior": "THE TIN SHELF",
+      "master": "THE TIN SHELF"
+    },
+    {
+      "rookie": "A tall shelf full of tea tins",
+      "junior": "A tall shelf packed with tea tins",
+      "master": "A towering shelf crammed with tea tins"
+    },
+    {
+      "rookie": "So many tins! Which one? Read something first.",
+      "junior": "There are so many tins! Which one is it? You should read something first.",
+      "master": "Such a multitude of tins! Which could it be? Something must be read first."
+    },
+    {
+      "rookie": "Read the framed card first.",
+      "junior": "First, read the framed card.",
+      "master": "Consult the framed card before anything else."
+    },
+    {
+      "rookie": "Tables and chairs",
+      "junior": "Some tables and chairs",
+      "master": "Rows of tables and chairs"
+    },
+    {
+      "rookie": "Empty tables. It is still early.",
+      "junior": "The tables are empty. It's still early in the day.",
+      "master": "The tables stand vacant. The hour is still early."
+    },
+    {
+      "rookie": "The window",
+      "junior": "The front window",
+      "master": "The front window"
+    },
+    {
+      "rookie": "The TV van is parked outside.",
+      "junior": "Outside, the TV van is still parked.",
+      "master": "Beyond the glass, the TV van remains parked."
+    },
+    {
+      "rookie": "Which lid has a white rabbit under a full moon? Tap one tin.",
+      "junior": "Which lid shows a white rabbit under a full moon? Tap one of the tins.",
+      "master": "Which lid depicts a white rabbit under a full moon? Tap a single tin."
+    },
+    {
+      "rookie": "a red tea tin, its lid painted with a white rabbit under a round yellow sun with rays",
+      "junior": "a red tea tin, its lid painted with a white rabbit under a round yellow sun with rays",
+      "master": "a red tea tin, its lid painted with a white rabbit under a round yellow sun with rays"
+    },
+    {
+      "rookie": "a red tea tin, its lid painted with a white fish under a full moon",
+      "junior": "a red tea tin, its lid painted with a white fish under a full moon",
+      "master": "a red tea tin, its lid painted with a white fish under a full moon"
+    },
+    {
+      "rookie": "a red tea tin, its lid painted with a white rabbit under a full moon",
+      "junior": "a red tea tin, its lid painted with a white rabbit under a full moon",
+      "master": "a red tea tin, its lid painted with a white rabbit under a full moon"
+    },
+    {
+      "rookie": "Find Eleanor's tin.",
+      "junior": "Find the tin that belongs to Eleanor.",
+      "master": "Locate Eleanor's tin."
+    },
+    {
+      "rookie": "Hello again! Mind if we film? It's for the children!",
+      "junior": "Hello again! Do you mind if we film? It's for the kids!",
+      "master": "Hello once more! You don't object to a little filming, do you? It's for the children!"
+    },
+    {
+      "rookie": "How did you know we were here?",
+      "junior": "How did you know where to find us?",
+      "master": "How on earth did you know we were here?"
+    },
+    {
+      "rookie": "A good treasure hunter always knows! Go on, look around.",
+      "junior": "A good treasure hunter always knows! Go ahead, look around.",
+      "master": "A seasoned treasure hunter always knows! Carry on, have a look around."
+    },
+    {
+      "rookie": "LOOK AROUND",
+      "junior": "LOOK AROUND",
+      "master": "LOOK AROUND"
+    },
+    {
+      "rookie": "THE MOON AND THE RABBIT",
+      "junior": "THE MOON AND THE RABBIT",
+      "master": "THE MOON AND THE RABBIT"
+    },
+    {
+      "rookie": "Eleanor's tin has waited here for a hundred years. Three dials keep it shut.",
+      "junior": "Eleanor's tin has been waiting here for a hundred years. Three dials keep it locked.",
+      "master": "Eleanor's tin has lain in wait here for a century. Three dials hold it firmly shut."
+    },
+    {
+      "rookie": "Pour the tea into cups",
+      "junior": "Pour the tea into cups",
+      "master": "Pour the tea into cups"
+    },
+    {
+      "rookie": "Add milk",
+      "junior": "Add milk",
+      "master": "Add milk"
+    },
+    {
+      "rookie": "Pour in hot water",
+      "junior": "Pour in hot water",
+      "master": "Pour in hot water"
+    },
+    {
+      "rookie": "Warm the pot",
+      "junior": "Warm the pot",
+      "master": "Warm the pot"
+    },
+    {
+      "rookie": "Put in the tea leaves",
+      "junior": "Put in the tea leaves",
+      "master": "Put in the tea leaves"
+    },
+    {
+      "rookie": "But first of all, warm the pot.",
+      "junior": "But first of all, warm the pot.",
+      "master": "But first of all, warm the pot."
+    },
+    {
+      "rookie": "Hot water goes in only after the leaves.",
+      "junior": "Hot water goes in only after the leaves.",
+      "master": "Hot water goes in only after the leaves."
+    },
+    {
+      "rookie": "Eleanor's Tea",
+      "junior": "Eleanor's Tea",
+      "master": "Eleanor's Tea"
+    },
+    {
+      "rookie": "Mrs. Lee puts a teapot in front of you.",
+      "junior": "Mrs. Lee sets a teapot down in front of you.",
+      "master": "Mrs. Lee places a teapot before you."
+    },
+    {
+      "rookie": "\"My grandmother's question: make Eleanor's tea the 1926 way.\"",
+      "junior": "\"Here is my grandmother's question: make Eleanor's tea the 1926 way.\"",
+      "master": "\"My grandmother's question is this: prepare Eleanor's tea the 1926 way.\""
+    },
+    {
+      "rookie": "Nora films your hands. Dexter watches the tin.",
+      "junior": "Nora films your hands while Dexter keeps his eyes on the tin.",
+      "master": "Nora trains her camera on your hands. Dexter's gaze never leaves the tin."
+    },
+    {
+      "rookie": "Mei Lee's old recipe says:",
+      "junior": "Mei Lee's old recipe reads:",
+      "master": "Mei Lee's faded recipe reads:"
+    },
+    {
+      "rookie": "Never add milk to Eleanor's tea!\nPour the tea into cups last, after three minutes.\nHot water goes in only after the leaves.\nBut first of all, warm the pot.\nThe leaves go into the pot once it is warm.",
+      "junior": "Never add milk to Eleanor's tea!\nPour the tea into cups last, after three minutes.\nHot water goes in only after the leaves.\nBut first of all, warm the pot.\nThe leaves go into the pot once it is warm.",
+      "master": "Never add milk to Eleanor's tea!\nPour the tea into cups last, after three minutes.\nHot water goes in only after the leaves.\nBut first of all, warm the pot.\nThe leaves go into the pot once it is warm."
+    },
+    {
+      "rookie": "Make Eleanor's tea. Put the steps in order.",
+      "junior": "Make Eleanor's tea by putting the steps in the right order.",
+      "master": "Brew Eleanor's tea by arranging the steps in their proper order."
+    },
+    {
+      "rookie": "One line says what you do first of all.",
+      "junior": "One of the lines tells you what to do first of all.",
+      "master": "A single line reveals what must happen first of all."
+    },
+    {
+      "rookie": "Read 'after' and 'last'. Do you need every card?",
+      "junior": "Look closely at 'after' and 'last'. Do you really need every card?",
+      "master": "Pay close attention to 'after' and 'last'. Is every card truly required?"
+    },
+    {
+      "rookie": "Mrs. Lee smiles. \"A careful reader!\"",
+      "junior": "Mrs. Lee smiles warmly. \"What a careful reader!\"",
+      "master": "Mrs. Lee beams. \"A careful reader indeed!\""
+    },
+    {
+      "rookie": "The tea is perfect. Mrs. Lee gives you the red tin.",
+      "junior": "The tea is just right. Mrs. Lee hands you the red tin.",
+      "master": "The tea is flawless. Mrs. Lee presents you with the red tin."
+    },
+    {
+      "rookie": "Then she opens a small drawer.",
+      "junior": "Then she pulls open a small drawer.",
+      "master": "Then she slides open a small drawer."
+    },
+    {
+      "rookie": "\"My grandmother wrote about Eleanor's secret, too.\"",
+      "junior": "\"My grandmother also wrote about Eleanor's secret.\"",
+      "master": "\"My grandmother recorded Eleanor's secret as well.\""
+    },
+    {
+      "rookie": "Find what you do first of all. Then read 'once' and 'after'.",
+      "junior": "First find what you do first of all. Then look at 'once' and 'after'.",
+      "master": "Begin with what you do first of all. Then weigh the words 'once' and 'after'."
+    },
+    {
+      "rookie": "Mrs. Lee's Question",
+      "junior": "Mrs. Lee's Question",
+      "master": "Mrs. Lee's Question"
+    },
+    {
+      "rookie": "You made Eleanor's tea the 1926 way. Mrs. Lee gave you the tin.",
+      "junior": "You made Eleanor's tea the 1926 way, so Mrs. Lee handed you the tin.",
+      "master": "Having brewed Eleanor's tea the 1926 way, you received the tin from Mrs. Lee."
+    },
+    {
+      "rookie": "A CAREFUL READER",
+      "junior": "A CAREFUL READER",
+      "master": "A CAREFUL READER"
+    },
+    {
+      "rookie": "Each of Eleanor's friends asks a question. This one was about tea.",
+      "junior": "Each of Eleanor's friends asks you a question. This one was about tea.",
+      "master": "Each of Eleanor's friends poses a question. This particular one concerned tea."
+    },
+    {
+      "rookie": "On the brass bird",
+      "junior": "On the brass bird",
+      "master": "On the brass bird"
+    },
+    {
+      "rookie": "The brass bird has the first three notes. Where are the last three?",
+      "junior": "The first three notes are on the brass bird. So where are the last three?",
+      "master": "The brass bird bears only the first three notes. Where, then, are the remaining three?"
+    },
+    {
+      "rookie": "With Eleanor's own family",
+      "junior": "With Eleanor's own family",
+      "master": "With Eleanor's own family"
+    },
+    {
+      "rookie": "Inside the red tin",
+      "junior": "Inside the red tin",
+      "master": "Inside the red tin"
+    },
+    {
+      "rookie": "Mei Lee does not say the notes are in the tin. Read the fifth line.",
+      "junior": "Mei Lee never says the notes are in the tin. Look at the fifth line.",
+      "master": "Nowhere does Mei Lee claim the notes are in the tin. Examine the fifth line."
+    },
+    {
+      "rookie": "She put the first three notes on a brass bird.",
+      "junior": "She put the first three notes on a brass bird.",
+      "master": "She put the first three notes on a brass bird."
+    },
+    {
+      "rookie": "The last three notes stay with her own family.",
+      "junior": "The last three notes stay with her own family.",
+      "master": "The last three notes stay with her own family."
+    },
+    {
+      "rookie": "Mei Lee's Diary",
+      "junior": "Mei Lee's Diary",
+      "master": "Mei Lee's Diary"
+    },
+    {
+      "rookie": "The diary page is thin and brown.",
+      "junior": "The diary page is thin and has turned brown.",
+      "master": "The diary page is fragile and browned with age."
+    },
+    {
+      "rookie": "Mrs. Lee reads it out in a soft voice.",
+      "junior": "Mrs. Lee reads it aloud in a soft voice.",
+      "master": "Mrs. Lee reads it aloud in a hushed voice."
+    },
+    {
+      "rookie": "Nora moves her camera closer.",
+      "junior": "Nora moves her camera in closer.",
+      "master": "Nora edges her camera nearer."
+    },
+    {
+      "rookie": "Mei Lee's diary, 1926, says:",
+      "junior": "Mei Lee's diary from 1926 reads:",
+      "master": "Mei Lee's diary, dated 1926, reads:"
+    },
+    {
+      "rookie": "Today my friend Eleanor left her red tin with me.\nShe told me a secret about her Lark.\nIt sings a song of six notes.\nShe put the first three notes on a brass bird.\nThe last three notes stay with her own family.\n\"Only my whole song wakes my Lark,\" she said.",
+      "junior": "Today my friend Eleanor left her red tin with me.\nShe told me a secret about her Lark.\nIt sings a song of six notes.\nShe put the first three notes on a brass bird.\nThe last three notes stay with her own family.\n\"Only my whole song wakes my Lark,\" she said.",
+      "master": "Today my friend Eleanor left her red tin with me.\nShe told me a secret about her Lark.\nIt sings a song of six notes.\nShe put the first three notes on a brass bird.\nThe last three notes stay with her own family.\n\"Only my whole song wakes my Lark,\" she said."
+    },
+    {
+      "rookie": "Where are the last three notes of the Lark's song?",
+      "junior": "Where are the last three notes of the Lark's song kept?",
+      "master": "Where do the last three notes of the Lark's song reside?"
+    },
+    {
+      "rookie": "Find the line about the first three notes. The next line is the answer.",
+      "junior": "Look for the line about the first three notes. The line after it gives the answer.",
+      "master": "Locate the line about the first three notes. The line that follows holds the answer."
+    },
+    {
+      "rookie": "Who keeps the last three notes?",
+      "junior": "Who is keeping the last three notes?",
+      "master": "In whose keeping are the last three notes?"
+    },
+    {
+      "rookie": "You know Eleanor's secret!",
+      "junior": "Now you know Eleanor's secret!",
+      "master": "Eleanor's secret is now yours!"
+    },
+    {
+      "rookie": "The Lark needs its whole song: six notes.",
+      "junior": "The Lark needs its whole song, all six notes.",
+      "master": "The Lark requires its entire song: all six notes."
+    },
+    {
+      "rookie": "Three are on a brass bird. Three are with Eleanor's family.",
+      "junior": "Three of them are on a brass bird. The other three are with Eleanor's family.",
+      "master": "Three rest on a brass bird; the other three lie with Eleanor's family."
+    },
+    {
+      "rookie": "\"Does Eleanor still have a family?\" Maya wonders.",
+      "junior": "\"Is Eleanor's family still around?\" Maya wonders.",
+      "master": "\"Could Eleanor still have living family?\" Maya muses."
+    },
+    {
+      "rookie": "The Six-Note Song",
+      "junior": "The Six-Note Song",
+      "master": "The Six-Note Song"
+    },
+    {
+      "rookie": "The Lark wakes only to its whole song. Half is on a brass bird; half is with Eleanor's family.",
+      "junior": "Only its whole song can wake the Lark. One half is on a brass bird, and the other half is with Eleanor's family.",
+      "master": "The Lark stirs only at its complete song. One half resides on a brass bird; the other remains with Eleanor's family."
+    },
+    {
+      "rookie": "A SONG IN TWO HALVES",
+      "junior": "A SONG IN TWO HALVES",
+      "master": "A SONG IN TWO HALVES"
+    },
+    {
+      "rookie": "To wake the Lark, you need both halves of its song.",
+      "junior": "You need both halves of its song to wake the Lark.",
+      "master": "Only with both halves of its song can the Lark be awakened."
+    },
+    {
+      "rookie": "How many faces has the clock in the great hall?",
+      "junior": "How many faces has the clock in the great hall?",
+      "master": "How many faces has the clock in the great hall?"
+    },
+    {
+      "rookie": "How many letters open my egg?",
+      "junior": "How many letters open my egg?",
+      "master": "How many letters open my egg?"
+    },
+    {
+      "rookie": "The Three Dials",
+      "junior": "The Three Dials",
+      "master": "The Three Dials"
+    },
+    {
+      "rookie": "OUTSIDE THE TEA HOUSE",
+      "junior": "OUTSIDE THE TEA HOUSE",
+      "master": "OUTSIDE THE TEA HOUSE"
+    },
+    {
+      "rookie": "You sit on the step under the red lanterns.",
+      "junior": "You sit down on the step beneath the red lanterns.",
+      "master": "You settle onto the step beneath the red lanterns."
+    },
+    {
+      "rookie": "The tin has three small dials.",
+      "junior": "The tin has three little dials.",
+      "master": "Three tiny dials are set into the tin."
+    },
+    {
+      "rookie": "A card is tied to the lid.",
+      "junior": "There is a card tied to the lid.",
+      "master": "A card is fastened to the lid with string."
+    },
+    {
+      "rookie": "Eleanor's lid card says:",
+      "junior": "The card on Eleanor's lid says:",
+      "master": "The card on Eleanor's lid reads:"
+    },
+    {
+      "rookie": "My tin opens with three numbers.\nFirst: How many faces has the clock in the great hall?\nSecond: How many red lanterns hang over my friend's door?\nThird: How many letters open my egg?\n— E. H.",
+      "junior": "My tin opens with three numbers.\nFirst: How many faces has the clock in the great hall?\nSecond: How many red lanterns hang over my friend's door?\nThird: How many letters open my egg?\n— E. H.",
+      "master": "My tin opens with three numbers.\nFirst: How many faces has the clock in the great hall?\nSecond: How many red lanterns hang over my friend's door?\nThird: How many letters open my egg?\n— E. H."
+    },
+    {
+      "rookie": "Turn the dials to Eleanor's three numbers. Then open the tin.",
+      "junior": "Set the dials to Eleanor's three numbers, then open the tin.",
+      "master": "Turn the dials to Eleanor's three numbers, and then open the tin."
+    },
+    {
+      "rookie": "Your Notebook has Eleanor's question about the clock, and her egg note.",
+      "junior": "Eleanor's question about the clock and her egg note are both in your Notebook.",
+      "master": "Your Notebook holds both Eleanor's question about the clock and her egg note."
+    },
+    {
+      "rookie": "Count the letters of the word that opened the brass egg.",
+      "junior": "Count how many letters are in the word that opened the brass egg.",
+      "master": "Tally the letters in the word that unlocked the brass egg."
+    },
+    {
+      "rookie": "The red tin opens!",
+      "junior": "The red tin clicks open!",
+      "master": "With a click, the red tin springs open!"
+    },
+    {
+      "rookie": "Inside the tin is Eleanor's next note.",
+      "junior": "Eleanor's next note is waiting inside the tin.",
+      "master": "Inside the tin lies Eleanor's next note."
+    },
+    {
+      "rookie": "Nora films it very close. Dexter reads it over your shoulder.",
+      "junior": "Nora films it up close. Dexter reads it over your shoulder.",
+      "master": "Nora films it at close range while Dexter peers at it over your shoulder."
+    },
+    {
+      "rookie": "The next stop is the Brooklyn Bridge.",
+      "junior": "Your next stop is the Brooklyn Bridge.",
+      "master": "The trail now leads to the Brooklyn Bridge."
+    },
+    {
+      "rookie": "Count the clock's faces again. Read Eleanor's question in your Notebook.",
+      "junior": "Count the faces on the clock again. Check Eleanor's question in your Notebook.",
+      "master": "Recount the clock's faces. Consult Eleanor's question in your Notebook."
+    },
+    {
+      "rookie": "Look over the door again. How many lanterns does the egg note say?",
+      "junior": "Check over the door again. How many lanterns does the egg note mention?",
+      "master": "Look above the door once more. How many lanterns does the egg note specify?"
+    },
+    {
+      "rookie": "How many red lanterns? Read the egg note again.",
+      "junior": "How many red lanterns are there? Read the egg note one more time.",
+      "master": "How many red lanterns hang there? Reread the egg note."
+    },
+    {
+      "rookie": "Count the letters of the egg's word again.",
+      "junior": "Count the letters in the egg's word once more.",
+      "master": "Recount the letters of the egg's word."
+    },
+    {
+      "rookie": "These numbers fit, but not in this order. Clock, lanterns, then the egg.",
+      "junior": "These numbers are right, but the order is wrong. Clock, lanterns, then the egg.",
+      "master": "These numbers fit, yet they are out of order. Clock, lanterns, then the egg."
+    },
+    {
+      "rookie": "The note says: walk the great bridge to Brooklyn.",
+      "junior": "The note tells you to walk across the great bridge to Brooklyn.",
+      "master": "The note instructs you to cross the great bridge on foot to Brooklyn."
+    },
+    {
+      "rookie": "Under the first stone tower, a brass bird sits on a bench.",
+      "junior": "Beneath the first stone tower, a brass bird sits on a bench.",
+      "master": "Beneath the first stone tower, a brass bird is perched on a bench."
+    },
+    {
+      "rookie": "Wonderful! We'll film there tomorrow!",
+      "junior": "Fantastic! We'll film there tomorrow!",
+      "master": "Splendid! We'll shoot there tomorrow!"
+    },
+    {
+      "rookie": "The bird holds the song's first three notes.",
+      "junior": "The first three notes of the song are on the bird.",
+      "master": "The bird carries the first three notes of the song."
+    },
+    {
+      "rookie": "Sorry... I have to go now.",
+      "junior": "Sorry... I need to leave now.",
+      "master": "Forgive me... I really must go."
+    },
+    {
+      "rookie": "Why does Nora look so worried?",
+      "junior": "Why does Nora seem so worried?",
+      "master": "Why does Nora appear so troubled?"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "track": "추적하다",
+      "prepare": "준비하다",
+      "unlock": "열다",
+      "sharply": "급격히",
+      "revealed": "드러냈다",
+      "bow": "인사, 절",
+      "flowery": "꽃 같은",
+      "packed": "가득 찬",
+      "overheard": "엿들었다",
+      "aloud": "소리 내어",
+      "beneath": "~아래에",
+      "halves": "절반들(half의 복수)",
+      "clicks": "딸깍 소리가 나다",
+      "mention": "언급하다"
+    },
+    "master": {
+      "entrust": "맡기다",
+      "solely": "오로지",
+      "aroma": "향기",
+      "crooks": "구부러지다",
+      "safeguarded": "지켰다",
+      "adorned": "장식된",
+      "proprietor": "주인",
+      "acquainted": "아는 사이인",
+      "retrieves": "꺼내 오다",
+      "concealed": "숨겨진",
+      "multitude": "다수",
+      "vacant": "비어 있는",
+      "depicts": "묘사하다",
+      "flawless": "흠잡을 데 없는",
+      "hushed": "조용한",
+      "reside": "있다, 머무르다",
+      "muses": "곰곰이 생각하다",
+      "tally": "세다",
+      "troubled": "걱정하는",
+      "beams": "활짝 웃다"
+    }
+  }
+}

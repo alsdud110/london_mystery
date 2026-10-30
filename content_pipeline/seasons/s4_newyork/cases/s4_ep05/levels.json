@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep05",
+  "lines": [
+    {
+      "rookie": "The Clockmaker's Shop",
+      "junior": "The Clockmaker's Shop",
+      "master": "The Clockmaker's Shop"
+    },
+    {
+      "rookie": "Otto Brandt fixes clocks in the old Hart Building, where Eleanor made her toys.",
+      "junior": "Otto Brandt repairs clocks in the old Hart Building, the place where Eleanor made her toys.",
+      "master": "Otto Brandt mends clocks in the old Hart Building, the very place where Eleanor crafted her toys."
+    },
+    {
+      "rookie": "He was at Grand Central, and at the bench on the bridge.",
+      "junior": "He was at Grand Central, and also at the bench on the bridge.",
+      "master": "He turned up at Grand Central, and again at the bench on the bridge."
+    },
+    {
+      "rookie": "Is the grumpy clockmaker the one racing you?",
+      "junior": "Is the grumpy clockmaker the person racing you?",
+      "master": "Could the grumpy clockmaker be the one racing against you?"
+    },
+    {
+      "rookie": "Otto says he was on the 9:30 ferry. Can his sister on Liberty Island prove it?",
+      "junior": "Otto says he was on the 9:30 ferry. Can his sister on Liberty Island show that it's true?",
+      "master": "Otto insists he was aboard the 9:30 ferry. Can his sister on Liberty Island confirm it?"
+    },
+    {
+      "rookie": "Read Otto's letter.",
+      "junior": "Read the letter from Otto.",
+      "master": "Study Otto's letter."
+    },
+    {
+      "rookie": "Look around the clock shop.",
+      "junior": "Search the clock shop.",
+      "master": "Search the clock shop thoroughly."
+    },
+    {
+      "rookie": "Open Karl's drawer.",
+      "junior": "Unlock Karl's drawer.",
+      "master": "Unlock Karl's old drawer."
+    },
+    {
+      "rookie": "Greenwich Village. Small streets, old trees and brick houses.",
+      "junior": "Greenwich Village. Narrow streets, old trees and brick houses.",
+      "master": "Greenwich Village. Winding lanes, ancient trees and brick townhouses."
+    },
+    {
+      "rookie": "In 1926, Eleanor Hart made her toys in the Hart Building.",
+      "junior": "Back in 1926, Eleanor Hart made her toys in the Hart Building.",
+      "master": "In 1926, Eleanor Hart crafted her toys within the Hart Building."
+    },
+    {
+      "rookie": "Today, Otto Brandt fixes clocks there.",
+      "junior": "These days, Otto Brandt repairs clocks there.",
+      "master": "Nowadays, Otto Brandt mends clocks there."
+    },
+    {
+      "rookie": "Otto wants the Lark home, not money. He sat on the bench at nine. Then he took the 9:30 ferry to Liberty Island. His screws are clock screws, not the bench's. His boots have no stars. Karl's photo shows Eleanor, baby Ruth and a violin.",
+      "junior": "Otto wants the Lark home, not money. He sat on the bench at nine. After that he took the 9:30 ferry to Liberty Island. His screws are clock screws, not screws from the bench. His boots have no stars. Karl's photo shows Eleanor, baby Ruth and a violin.",
+      "master": "Otto wants the Lark home rather than money. He sat on the bench at nine, then caught the 9:30 ferry to Liberty Island. His screws belong to clocks, not to the bench. His boots bear no stars. Karl's photo reveals Eleanor, baby Ruth and a violin."
+    },
+    {
+      "rookie": "THE HART BUILDING",
+      "junior": "THE HART BUILDING",
+      "master": "THE HART BUILDING"
+    },
+    {
+      "rookie": "He wants to sell it.",
+      "junior": "He wants to sell it for money.",
+      "master": "He intends to sell it."
+    },
+    {
+      "rookie": "Read it again. What does Otto say about money?",
+      "junior": "Read it once more. What does Otto say about money?",
+      "master": "Read it again. What does Otto state about money?"
+    },
+    {
+      "rookie": "He wants to show it on TV.",
+      "junior": "He wants to put it on TV.",
+      "master": "He hopes to display it on TV."
+    },
+    {
+      "rookie": "Otto never talks about TV. Where does he want the Lark?",
+      "junior": "Otto never mentions TV. Where does he want the Lark to be?",
+      "master": "Otto never refers to TV. Where does he wish the Lark to be?"
+    },
+    {
+      "rookie": "He thinks it belongs in the Hart Building.",
+      "junior": "He believes it belongs in the Hart Building.",
+      "master": "He feels it belongs in the Hart Building."
+    },
+    {
+      "rookie": "Her Lark belongs here, where she made it.",
+      "junior": "Her Lark belongs here, where she made it.",
+      "master": "Her Lark belongs here, where she made it."
+    },
+    {
+      "rookie": "I do not want money. I want it home.",
+      "junior": "I do not want money. I want it home.",
+      "master": "I do not want money. I want it home."
+    },
+    {
+      "rookie": "Otto's Letter",
+      "junior": "Otto's Letter",
+      "master": "Otto's Letter"
+    },
+    {
+      "rookie": "On Bleecker Street stands an old brick building.",
+      "junior": "An old brick building stands on Bleecker Street.",
+      "master": "On Bleecker Street rises an old brick building."
+    },
+    {
+      "rookie": "Above the door, an iron bird is cut into the stone.",
+      "junior": "An iron bird is cut into the stone above the door.",
+      "master": "Above the doorway, an iron bird is carved into the stone."
+    },
+    {
+      "rookie": "Dr. Brooks meets you there with a letter in his hand.",
+      "junior": "Dr. Brooks is waiting for you there, holding a letter.",
+      "master": "Dr. Brooks awaits you there, a letter clutched in his hand."
+    },
+    {
+      "rookie": "Otto's letter to Dr. Brooks says:",
+      "junior": "Otto's letter to Dr. Brooks reads:",
+      "master": "The letter Otto sent to Dr. Brooks reads:"
+    },
+    {
+      "rookie": "Dear Dr. Brooks,\nThe notebook was found in the attic of MY building.\nEleanor Hart made her toys here. She taught my grandfather, Karl.\nHer Lark belongs here, where she made it.\nI do not want money. I want it home.\n— Otto Brandt",
+      "junior": "Dear Dr. Brooks,\nThe notebook was found in the attic of MY building.\nEleanor Hart made her toys here. She taught my grandfather, Karl.\nHer Lark belongs here, where she made it.\nI do not want money. I want it home.\n— Otto Brandt",
+      "master": "Dear Dr. Brooks,\nThe notebook was found in the attic of MY building.\nEleanor Hart made her toys here. She taught my grandfather, Karl.\nHer Lark belongs here, where she made it.\nI do not want money. I want it home.\n— Otto Brandt"
+    },
+    {
+      "rookie": "Why does Otto want the Silver Lark?",
+      "junior": "Why does Otto want the Silver Lark so much?",
+      "master": "What is Otto's reason for wanting the Silver Lark?"
+    },
+    {
+      "rookie": "Find the line that says where the Lark belongs.",
+      "junior": "Look for the line that tells where the Lark belongs.",
+      "master": "Locate the line that states where the Lark belongs."
+    },
+    {
+      "rookie": "Read the line about money. Does he want it?",
+      "junior": "Read the line about money. Does he want any?",
+      "master": "Consider the line concerning money. Is that what he wants?"
+    },
+    {
+      "rookie": "You know why Otto wants the Lark!",
+      "junior": "Now you know why Otto wants the Lark!",
+      "master": "You have uncovered why Otto wants the Lark!"
+    },
+    {
+      "rookie": "Otto wants the Lark back in the Hart Building.",
+      "junior": "Otto wants the Lark to come back to the Hart Building.",
+      "master": "Otto wishes the Lark to return to the Hart Building."
+    },
+    {
+      "rookie": "\"He was very angry,\" Dr. Brooks says.",
+      "junior": "\"He was extremely angry,\" says Dr. Brooks.",
+      "master": "\"He was furious,\" Dr. Brooks admits."
+    },
+    {
+      "rookie": "Inside, a hundred clocks are ticking.",
+      "junior": "Inside, a hundred clocks are all ticking.",
+      "master": "Inside, a hundred clocks tick in chorus."
+    },
+    {
+      "rookie": "Otto's Reason",
+      "junior": "Otto's Reason",
+      "master": "Otto's Reason"
+    },
+    {
+      "rookie": "Otto wants the Lark back in the Hart Building. He says he does not want money.",
+      "junior": "Otto wants the Lark to come back to the Hart Building. He says he doesn't want money.",
+      "master": "Otto wishes the Lark to return to the Hart Building. He claims he has no interest in money."
+    },
+    {
+      "rookie": "Otto wrote to me last week.",
+      "junior": "Otto sent me a letter last week.",
+      "master": "Otto wrote to me only last week."
+    },
+    {
+      "rookie": "Was he angry about the notebook?",
+      "junior": "Was he upset about the notebook?",
+      "master": "Was he troubled about the notebook?"
+    },
+    {
+      "rookie": "Very angry. Read it yourself.",
+      "junior": "Extremely angry. Read it for yourself.",
+      "master": "Furious. See for yourself."
+    },
+    {
+      "rookie": "READ OTTO'S LETTER",
+      "junior": "READ OTTO'S LETTER",
+      "master": "READ OTTO'S LETTER"
+    },
+    {
+      "rookie": "A REASON TO WANT IT",
+      "junior": "A REASON TO WANT IT",
+      "master": "A REASON TO WANT IT"
+    },
+    {
+      "rookie": "Otto has a reason. But does he have star boots?",
+      "junior": "Otto has a reason. But does he own star boots?",
+      "master": "Otto certainly has a motive. Yet does he own star boots?"
+    },
+    {
+      "rookie": "The island with the brick hall",
+      "junior": "The island with the brick hall",
+      "master": "The island with the brick hall"
+    },
+    {
+      "rookie": "A big brick hall, but no tall green lady. Read the diary again.",
+      "junior": "There is a big brick hall, but no tall green lady. Read the diary once more.",
+      "master": "A grand brick hall, yet no tall green lady. Consult the diary again."
+    },
+    {
+      "rookie": "The island with the green statue",
+      "junior": "The island with the green statue",
+      "master": "The island with the green statue"
+    },
+    {
+      "rookie": "The island with the round fort",
+      "junior": "The island with the round fort",
+      "master": "The island with the round fort"
+    },
+    {
+      "rookie": "A round stone fort, but no lady with a torch. Read the diary again.",
+      "junior": "There is a round stone fort, but no lady with a torch. Read the diary once more.",
+      "master": "A circular stone fort, yet no lady with a torch. Consult the diary again."
+    },
+    {
+      "rookie": "Took the ferry to see my sister.",
+      "junior": "Took the ferry to see my sister.",
+      "master": "Took the ferry to see my sister."
+    },
+    {
+      "rookie": "the island of the tall green lady with a torch",
+      "junior": "the island of the tall green lady with a torch",
+      "master": "the island of the tall green lady with a torch"
+    },
+    {
+      "rookie": "Otto's Diary",
+      "junior": "Otto's Diary",
+      "master": "Otto's Diary"
+    },
+    {
+      "rookie": "THE CLOCK SHOP",
+      "junior": "THE CLOCK SHOP",
+      "master": "THE CLOCK SHOP"
+    },
+    {
+      "rookie": "Otto is out. His shop door is open.",
+      "junior": "Otto is out, and his shop door is open.",
+      "master": "Otto is away, and his shop door stands ajar."
+    },
+    {
+      "rookie": "\"He never locks it,\" says the baker next door.",
+      "junior": "\"He never locks it,\" the baker next door tells you.",
+      "master": "\"He never bothers to lock it,\" remarks the baker next door."
+    },
+    {
+      "rookie": "Clocks tick on every wall. You look around carefully.",
+      "junior": "Clocks are ticking on every wall. You look around carefully.",
+      "master": "Clocks tick on every wall. You examine the room with care."
+    },
+    {
+      "rookie": "Otto's diary is open on the desk:",
+      "junior": "On the desk, Otto's diary is lying open:",
+      "master": "Otto's diary lies open on the desk:"
+    },
+    {
+      "rookie": "Sunday\n8:30 AM — Fixed the old clock in the bridge tower office.\n9:00 AM — Sat on Eleanor's bench. Said hello to her brass bird.\n9:30 AM — Took the ferry to see my sister.\nShe sells postcards on the island of the tall green lady with a torch.",
+      "junior": "Sunday\n8:30 AM — Fixed the old clock in the bridge tower office.\n9:00 AM — Sat on Eleanor's bench. Said hello to her brass bird.\n9:30 AM — Took the ferry to see my sister.\nShe sells postcards on the island of the tall green lady with a torch.",
+      "master": "Sunday\n8:30 AM — Fixed the old clock in the bridge tower office.\n9:00 AM — Sat on Eleanor's bench. Said hello to her brass bird.\n9:30 AM — Took the ferry to see my sister.\nShe sells postcards on the island of the tall green lady with a torch."
+    },
+    {
+      "rookie": "Where did Otto go after the bridge?",
+      "junior": "Where did Otto go after he left the bridge?",
+      "master": "Where did Otto head once he left the bridge?"
+    },
+    {
+      "rookie": "Find Otto's diary on the desk and read it first.",
+      "junior": "First find Otto's diary on the desk and read it.",
+      "master": "Begin by locating Otto's diary on the desk and reading it."
+    },
+    {
+      "rookie": "Look at each island on the photo wall. Which one has a tall green lady with a torch?",
+      "junior": "Check each island on the photo wall. Which one has a tall green lady with a torch?",
+      "master": "Examine each island on the photo wall. Which one features a tall green lady with a torch?"
+    },
+    {
+      "rookie": "You know where Otto went!",
+      "junior": "Now you know where Otto went!",
+      "master": "You have traced where Otto went!"
+    },
+    {
+      "rookie": "The tall green lady is the Statue of Liberty.",
+      "junior": "The tall green lady is the Statue of Liberty.",
+      "master": "The tall green lady is, of course, the Statue of Liberty."
+    },
+    {
+      "rookie": "At 9:30, Otto took a ferry to Liberty Island.",
+      "junior": "At 9:30, Otto caught a ferry to Liberty Island.",
+      "master": "At 9:30, Otto boarded a ferry bound for Liberty Island."
+    },
+    {
+      "rookie": "But is his diary true?",
+      "junior": "But is his diary telling the truth?",
+      "master": "Yet can his diary be trusted?"
+    },
+    {
+      "rookie": "Otto's Sunday",
+      "junior": "Otto's Sunday",
+      "master": "Otto's Sunday"
+    },
+    {
+      "rookie": "Otto's diary says he took the 9:30 ferry to see his sister on Liberty Island.",
+      "junior": "According to Otto's diary, he took the 9:30 ferry to visit his sister on Liberty Island.",
+      "master": "Otto's diary records that he caught the 9:30 ferry to visit his sister on Liberty Island."
+    },
+    {
+      "rookie": "The clock shop",
+      "junior": "The clock shop",
+      "master": "The clock shop"
+    },
+    {
+      "rookie": "Look around the shop. Where did Otto go on Sunday?",
+      "junior": "Search the shop. Where did Otto go on Sunday?",
+      "master": "Search the shop. Where did Otto travel on Sunday?"
+    },
+    {
+      "rookie": "Which island did Otto visit? Check the photo wall.",
+      "junior": "Which island did Otto go to? Look at the photo wall.",
+      "master": "Which island did Otto visit? Consult the photo wall."
+    },
+    {
+      "rookie": "Nothing here. Find Otto's diary on his desk.",
+      "junior": "There's nothing here. Find Otto's diary on his desk.",
+      "master": "Nothing of note here. Seek out Otto's diary on his desk."
+    },
+    {
+      "rookie": "OTTO'S DIARY",
+      "junior": "OTTO'S DIARY",
+      "master": "OTTO'S DIARY"
+    },
+    {
+      "rookie": "An open diary on the desk",
+      "junior": "An open diary on the desk",
+      "master": "An open diary on the desk"
+    },
+    {
+      "rookie": "THE WORKBENCH",
+      "junior": "THE WORKBENCH",
+      "master": "THE WORKBENCH"
+    },
+    {
+      "rookie": "A workbench covered in tiny parts",
+      "junior": "A workbench covered with tiny parts",
+      "master": "A workbench strewn with tiny parts"
+    },
+    {
+      "rookie": "Tiny brass screws, as small as grains of rice.",
+      "junior": "Tiny brass screws that are as small as grains of rice.",
+      "master": "Tiny brass screws, each as small as grains of rice."
+    },
+    {
+      "rookie": "OTTO'S BOOTS",
+      "junior": "OTTO'S BOOTS",
+      "master": "OTTO'S BOOTS"
+    },
+    {
+      "rookie": "A pair of old work boots by the door",
+      "junior": "A pair of old work boots next to the door",
+      "master": "A pair of worn work boots beside the door"
+    },
+    {
+      "rookie": "Otto's work boots. Their soles are flat and plain. No stars.",
+      "junior": "Otto's work boots. The soles are flat and plain, with no stars.",
+      "master": "Otto's work boots. Their soles are flat and unmarked, bearing no stars."
+    },
+    {
+      "rookie": "THE PHOTO WALL",
+      "junior": "THE PHOTO WALL",
+      "master": "THE PHOTO WALL"
+    },
+    {
+      "rookie": "Three framed island photos on the wall",
+      "junior": "Three island photos in frames on the wall",
+      "master": "Three framed photographs of islands on the wall"
+    },
+    {
+      "rookie": "Photos of three islands. Which one matters? Read something first.",
+      "junior": "Photos of three islands. Which one is important? Read something first.",
+      "master": "Photographs of three islands. Which one is significant? Read something first."
+    },
+    {
+      "rookie": "Read Otto's diary first.",
+      "junior": "First read Otto's diary.",
+      "master": "Read Otto's diary before anything else."
+    },
+    {
+      "rookie": "Clocks on the wall",
+      "junior": "Clocks on the wall",
+      "master": "Clocks on the wall"
+    },
+    {
+      "rookie": "Tick, tock. Every clock shows the right time.",
+      "junior": "Tick, tock. Every clock is showing the right time.",
+      "master": "Tick, tock. Every clock keeps perfect time."
+    },
+    {
+      "rookie": "Which island has a tall green lady with a torch? Tap one photo.",
+      "junior": "Which island has a tall green lady with a torch? Tap a photo.",
+      "master": "Which island boasts a tall green lady with a torch? Tap one photo."
+    },
+    {
+      "rookie": "an island with a big red-brick hall with four towers",
+      "junior": "an island with a big red-brick hall with four towers",
+      "master": "an island with a big red-brick hall with four towers"
+    },
+    {
+      "rookie": "an island with a tall green statue of a lady holding up a torch",
+      "junior": "an island with a tall green statue of a lady holding up a torch",
+      "master": "an island with a tall green statue of a lady holding up a torch"
+    },
+    {
+      "rookie": "an island with a round old stone fort among trees",
+      "junior": "an island with a round old stone fort among trees",
+      "master": "an island with a round old stone fort among trees"
+    },
+    {
+      "rookie": "THE 9:30 FERRY",
+      "junior": "THE 9:30 FERRY",
+      "master": "THE 9:30 FERRY"
+    },
+    {
+      "rookie": "If Otto was on the ferry at 9:30, who took the bird from the wet paint?",
+      "junior": "If Otto was on the ferry at 9:30, then who took the bird from the wet paint?",
+      "master": "If Otto was aboard the ferry at 9:30, who could have lifted the bird from the wet paint?"
+    },
+    {
+      "rookie": "Each hole is as wide as a finger.",
+      "junior": "Each hole is as wide as a finger.",
+      "master": "Each hole is as wide as a finger."
+    },
+    {
+      "rookie": "as small as grains of rice",
+      "junior": "as small as grains of rice",
+      "master": "as small as grains of rice"
+    },
+    {
+      "rookie": "The Tiny Screws",
+      "junior": "The Tiny Screws",
+      "master": "The Tiny Screws"
+    },
+    {
+      "rookie": "The door bangs open. Otto is back!",
+      "junior": "Otto bursts through the door. He is back!",
+      "master": "The door flies open. Otto has returned!"
+    },
+    {
+      "rookie": "\"What are you doing in my shop?\" he shouts.",
+      "junior": "\"What are you doing in my shop?\" he yells.",
+      "master": "\"What are you doing in my shop?\" he bellows."
+    },
+    {
+      "rookie": "Maya holds up a brass screw. \"Is this from the bench?\"",
+      "junior": "Maya lifts a brass screw. \"Is this from the bench?\"",
+      "master": "Maya raises a brass screw. \"Is this from the bench?\""
+    },
+    {
+      "rookie": "Maya's notes say:",
+      "junior": "Maya's notes read:",
+      "master": "Maya has jotted down:"
+    },
+    {
+      "rookie": "The bench had four screw holes.\nEach hole is as wide as a finger.\nOtto's brass screws are as small as grains of rice.\nA screw that small would fall right through the hole.",
+      "junior": "The bench had four screw holes.\nEach hole is as wide as a finger.\nOtto's brass screws are as small as grains of rice.\nA screw that small would fall right through the hole.",
+      "master": "The bench had four screw holes.\nEach hole is as wide as a finger.\nOtto's brass screws are as small as grains of rice.\nA screw that small would fall right through the hole."
+    },
+    {
+      "rookie": "Could Otto's screws come from the bench? Finish the sentence.",
+      "junior": "Could Otto's screws have come from the bench? Complete the sentence.",
+      "master": "Could Otto's screws possibly have come from the bench? Complete the sentence."
+    },
+    {
+      "rookie": "Otto's screws are too ____ for the bench's holes.",
+      "junior": "Otto's screws are too ____ for the bench's holes.",
+      "master": "Otto's screws are too ____ for the bench's holes."
+    },
+    {
+      "rookie": "Compare a finger and a grain of rice.",
+      "junior": "Think about a finger and a grain of rice.",
+      "master": "Weigh a finger against a grain of rice."
+    },
+    {
+      "rookie": "Could a grain of rice fill a hole as wide as a finger?",
+      "junior": "Would a grain of rice fill a hole as wide as a finger?",
+      "master": "Would a single grain of rice fill a hole as wide as a finger?"
+    },
+    {
+      "rookie": "The screws are not from the bench!",
+      "junior": "These screws didn't come from the bench!",
+      "master": "The screws did not come from the bench after all!"
+    },
+    {
+      "rookie": "\"They are clock screws, from the bridge tower clock!\" Otto snaps.",
+      "junior": "\"They are clock screws, from the clock in the bridge tower!\" Otto snaps.",
+      "master": "\"They're clock screws, from the bridge tower clock!\" Otto retorts sharply."
+    },
+    {
+      "rookie": "\"I said hello to that bird. I did not take it!\"",
+      "junior": "\"I said hello to that bird, but I did not take it!\"",
+      "master": "\"I greeted that bird, yes. But I did not take it!\""
+    },
+    {
+      "rookie": "But Otto still looks at you like a cat at a mouse.",
+      "junior": "But Otto still looks at you the way a cat looks at a mouse.",
+      "master": "Yet Otto still eyes you like a cat watching a mouse."
+    },
+    {
+      "rookie": "Is a grain of rice bigger than a finger? Read again.",
+      "junior": "Is a grain of rice larger than a finger? Read it again.",
+      "master": "Is a grain of rice truly larger than a finger? Reread it."
+    },
+    {
+      "rookie": "Check your spelling. It is a short word.",
+      "junior": "Check your spelling. The word is short.",
+      "master": "Look over your spelling. It is a short word."
+    },
+    {
+      "rookie": "Too Small",
+      "junior": "Too Small",
+      "master": "Too Small"
+    },
+    {
+      "rookie": "Otto's screws are clock screws. They are not from the bench.",
+      "junior": "Otto's screws are clock screws. They didn't come from the bench.",
+      "master": "Otto's screws are clock screws. They do not belong to the bench."
+    },
+    {
+      "rookie": "NOT THE BENCH SCREWS",
+      "junior": "NOT THE BENCH SCREWS",
+      "master": "NOT THE BENCH SCREWS"
+    },
+    {
+      "rookie": "Otto's screws are too small. But that does not prove where he was.",
+      "junior": "Otto's screws are too small. But that doesn't prove where he was.",
+      "master": "Otto's screws are too small. Yet that alone does not prove where he was."
+    },
+    {
+      "rookie": "At what hour did I fix the tower clock?",
+      "junior": "At what hour did I fix the tower clock?",
+      "master": "At what hour did I fix the tower clock?"
+    },
+    {
+      "rookie": "How many notes does the brass bird sing?",
+      "junior": "How many notes does the brass bird sing?",
+      "master": "How many notes does the brass bird sing?"
+    },
+    {
+      "rookie": "Karl's Drawer",
+      "junior": "Karl's Drawer",
+      "master": "Karl's Drawer"
+    },
+    {
+      "rookie": "Otto points at an old drawer with three dials.",
+      "junior": "Otto points to an old drawer with three dials.",
+      "master": "Otto gestures toward an old drawer fitted with three dials."
+    },
+    {
+      "rookie": "\"My grandfather Karl's drawer,\" he says.",
+      "junior": "\"This was my grandfather Karl's drawer,\" he says.",
+      "master": "\"My grandfather Karl's drawer,\" he explains."
+    },
+    {
+      "rookie": "\"If you read so carefully, open it.\"",
+      "junior": "\"If you read so carefully, then open it.\"",
+      "master": "\"Since you read so carefully, open it yourself.\""
+    },
+    {
+      "rookie": "Otto writes on a scrap of paper:",
+      "junior": "Otto writes something on a scrap of paper:",
+      "master": "Otto scribbles on a scrap of paper:"
+    },
+    {
+      "rookie": "First: At what hour did I fix the tower clock?\nSecond: At what hour did I sit on Eleanor's bench?\nThird: How many notes does the brass bird sing?\nNo minutes. Only the hours.",
+      "junior": "First: At what hour did I fix the tower clock?\nSecond: At what hour did I sit on Eleanor's bench?\nThird: How many notes does the brass bird sing?\nNo minutes. Only the hours.",
+      "master": "First: At what hour did I fix the tower clock?\nSecond: At what hour did I sit on Eleanor's bench?\nThird: How many notes does the brass bird sing?\nNo minutes. Only the hours."
+    },
+    {
+      "rookie": "Turn the dials to Otto's three numbers. Then open Karl's drawer.",
+      "junior": "Set the dials to Otto's three numbers. Then open Karl's drawer.",
+      "master": "Turn the dials to Otto's three numbers, then open Karl's drawer."
+    },
+    {
+      "rookie": "Open Otto's diary in your Notebook. Read only the hours.",
+      "junior": "Open Otto's diary in your Notebook. Only read the hours.",
+      "master": "Consult Otto's diary in your Notebook. Read only the hours."
+    },
+    {
+      "rookie": "Mei Lee's diary says how many notes are on the brass bird.",
+      "junior": "Mei Lee's diary tells how many notes are on the brass bird.",
+      "master": "Mei Lee's diary records how many notes are on the brass bird."
+    },
+    {
+      "rookie": "Karl's drawer opens!",
+      "junior": "Karl's drawer is open!",
+      "master": "Karl's drawer slides open!"
+    },
+    {
+      "rookie": "Inside is an old photo from 1926.",
+      "junior": "Inside there is an old photo from 1926.",
+      "master": "Inside lies an old photograph dating from 1926."
+    },
+    {
+      "rookie": "Eleanor holds a baby. A violin lies on the table beside her.",
+      "junior": "Eleanor is holding a baby. A violin lies on the table next to her.",
+      "master": "Eleanor cradles a baby. A violin rests on the table beside her."
+    },
+    {
+      "rookie": "\"Her daughter, Ruth,\" Otto says quietly.",
+      "junior": "\"Her daughter, Ruth,\" Otto says softly.",
+      "master": "\"Her daughter, Ruth,\" Otto murmurs."
+    },
+    {
+      "rookie": "Read Otto's diary again. When did he fix the tower clock?",
+      "junior": "Read Otto's diary once more. When did he fix the tower clock?",
+      "master": "Consult Otto's diary again. At what hour did he fix the tower clock?"
+    },
+    {
+      "rookie": "Read Otto's diary again. When did he sit on the bench?",
+      "junior": "Read Otto's diary once more. When did he sit on the bench?",
+      "master": "Consult Otto's diary again. At what hour did he sit on the bench?"
+    },
+    {
+      "rookie": "The whole song has six notes. How many are on the bird?",
+      "junior": "The whole song has six notes. How many of them are on the bird?",
+      "master": "The entire song has six notes. How many appear on the bird?"
+    },
+    {
+      "rookie": "These numbers fit, but not in this order. Tower clock, bench, then the bird.",
+      "junior": "These numbers are right, but the order is wrong. Tower clock, bench, then the bird.",
+      "master": "The numbers are right, yet the order is not. Tower clock, bench, then the bird."
+    },
+    {
+      "rookie": "Eleanor's family. I never met them.",
+      "junior": "Eleanor's family. I never got to meet them.",
+      "master": "Eleanor's family. I never had the chance to meet them."
+    },
+    {
+      "rookie": "Her family plays the song on strings, with a bow.",
+      "junior": "Her family plays the song on strings, using a bow.",
+      "master": "Her family performs the song on strings, with a bow."
+    },
+    {
+      "rookie": "A violin! Just like in the photo!",
+      "junior": "A violin! Just like the one in the photo!",
+      "master": "A violin! Exactly as in the photograph!"
+    },
+    {
+      "rookie": "And I did NOT take that bird. Ask my sister!",
+      "junior": "And I did NOT take that bird. Go and ask my sister!",
+      "master": "And I did NOT take that bird. Ask my sister, if you doubt me!"
+    },
+    {
+      "rookie": "Is Otto telling the truth?",
+      "junior": "Is Otto telling us the truth?",
+      "master": "Is Otto being truthful?"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "repairs": "수리하다",
+      "grumpy": "심술궂은",
+      "narrow": "좁은",
+      "mentions": "언급하다",
+      "believes": "믿다",
+      "extremely": "매우",
+      "upset": "속상한",
+      "caught": "(교통수단을) 탔다",
+      "according": "~에 따르면",
+      "important": "중요한",
+      "bursts": "갑자기 들어오다",
+      "yells": "소리치다",
+      "complete": "완성하다",
+      "larger": "더 큰",
+      "softly": "부드럽게"
+    },
+    "master": {
+      "mends": "고치다",
+      "crafted": "공들여 만들었다",
+      "confirm": "확인해 주다",
+      "motive": "동기",
+      "furious": "몹시 화난",
+      "ajar": "조금 열린",
+      "bellows": "고함치다",
+      "retorts": "쏘아붙이다",
+      "consult": "참고하다",
+      "significant": "중요한",
+      "boasts": "자랑하다, 갖추다",
+      "cradles": "안다",
+      "murmurs": "중얼거리다",
+      "unmarked": "아무 표시 없는",
+      "gestures": "손짓하다",
+      "aboard": "~에 탄"
+    }
+  }
+}

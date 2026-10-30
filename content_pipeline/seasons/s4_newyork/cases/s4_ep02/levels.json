@@ -1,0 +1,800 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep02",
+  "lines": [
+    {
+      "rookie": "The Stars Painted Backwards",
+      "junior": "The Stars Painted Backwards",
+      "master": "The Stars Painted Backwards"
+    },
+    {
+      "rookie": "Eleanor's first clue leads to Grand Central Terminal.",
+      "junior": "Eleanor's first clue takes you to Grand Central Terminal.",
+      "master": "Eleanor's first clue points the way to Grand Central Terminal."
+    },
+    {
+      "rookie": "Her first friend keeps the Lark's egg in the Lost and Found.",
+      "junior": "Her first friend keeps the Lark's egg safe in the Lost and Found.",
+      "master": "Her first friend has guarded the Lark's egg in the Lost and Found for decades."
+    },
+    {
+      "rookie": "But someone came for it before you.",
+      "junior": "But somebody got there before you.",
+      "master": "Yet someone has already come for it ahead of you."
+    },
+    {
+      "rookie": "Who wears the star boots? And why do Rosa and Otto know one song?",
+      "junior": "Who wears the star boots? And why do Rosa and Otto both know one song?",
+      "master": "Who wears the star boots? And how is it that Rosa and Otto share one song?"
+    },
+    {
+      "rookie": "Find out who came first.",
+      "junior": "Find out who arrived first.",
+      "master": "Uncover who arrived before you."
+    },
+    {
+      "rookie": "Answer Eleanor's question.",
+      "junior": "Answer Eleanor's question.",
+      "master": "Answer Eleanor's question correctly."
+    },
+    {
+      "rookie": "Open the brass egg.",
+      "junior": "Open the brass egg.",
+      "master": "Unlock the brass egg."
+    },
+    {
+      "rookie": "Grand Central Terminal. Trains, crowds and a giant clock.",
+      "junior": "Grand Central Terminal. Trains, busy crowds and a giant clock.",
+      "master": "Grand Central Terminal. Thundering trains, jostling crowds and a giant clock."
+    },
+    {
+      "rookie": "High above, the ceiling is full of painted stars.",
+      "junior": "High above you, the ceiling is covered in painted stars.",
+      "master": "Far overhead, the vaulted ceiling glitters with painted stars."
+    },
+    {
+      "rookie": "Eleanor's first friend waits here, at the Lost and Found.",
+      "junior": "Eleanor's first friend is waiting here, at the Lost and Found.",
+      "master": "Here, at the Lost and Found, Eleanor's first friend awaits."
+    },
+    {
+      "rookie": "A tall man in star boots came for the egg at seven. He could not answer Eleanor's question. You could: a clock. The egg opened with EAST, because the stars are backwards. Its note sends you to Chinatown.",
+      "junior": "At seven, a tall man in star boots asked for the egg. He couldn't answer Eleanor's question. You could: a clock. The egg opened with EAST, because the stars are painted backwards. Its note sends you on to Chinatown.",
+      "master": "At seven, a tall man in star boots tried to claim the egg, but Eleanor's question defeated him. You answered it: a clock. Because the stars are painted backwards, the egg yielded to EAST, and the note inside directs you to Chinatown."
+    },
+    {
+      "rookie": "GRAND CENTRAL TERMINAL",
+      "junior": "GRAND CENTRAL TERMINAL",
+      "master": "GRAND CENTRAL TERMINAL"
+    },
+    {
+      "rookie": "A tall man came for the egg at seven.",
+      "junior": "At seven, a tall man came for the egg.",
+      "master": "A tall man came seeking the egg at seven."
+    },
+    {
+      "rookie": "Otto took the egg at seven.",
+      "junior": "At seven, Otto took the egg.",
+      "master": "Otto made off with the egg at seven."
+    },
+    {
+      "rookie": "Otto was looking at the clock. Who saw a man at the Lost and Found?",
+      "junior": "Otto was watching the clock. Who saw a man at the Lost and Found?",
+      "master": "Otto's eyes were on the clock. Which witness saw a man at the Lost and Found?"
+    },
+    {
+      "rookie": "Nobody came before you.",
+      "junior": "No one came before you.",
+      "master": "No one arrived ahead of you."
+    },
+    {
+      "rookie": "Grace and Rosa both saw someone. Compare what they say.",
+      "junior": "Grace and Rosa both saw somebody. Compare their answers.",
+      "master": "Grace and Rosa each noticed someone. Weigh their accounts against each other."
+    },
+    {
+      "rookie": "What did you see at seven?",
+      "junior": "What did you see at seven?",
+      "master": "What did you see at seven?"
+    },
+    {
+      "rookie": "A tall man asked for the Lark's egg.",
+      "junior": "A tall man asked for the Lark's egg.",
+      "master": "A tall man asked for the Lark's egg."
+    },
+    {
+      "rookie": "His wet boots left little stars.",
+      "junior": "His wet boots left little stars.",
+      "master": "His wet boots left little stars."
+    },
+    {
+      "rookie": "The Early Visitor",
+      "junior": "The Early Visitor",
+      "master": "The Early Visitor"
+    },
+    {
+      "rookie": "THE MAIN CONCOURSE",
+      "junior": "THE MAIN CONCOURSE",
+      "master": "THE MAIN CONCOURSE"
+    },
+    {
+      "rookie": "Grand Central is huge and busy.",
+      "junior": "Grand Central is enormous and full of people.",
+      "master": "Grand Central is vast and bustling."
+    },
+    {
+      "rookie": "High above, gold stars shine on a green ceiling.",
+      "junior": "Far above, gold stars shine on a green ceiling.",
+      "master": "Far overhead, gold stars gleam across a green ceiling."
+    },
+    {
+      "rookie": "At the Lost and Found, Grace Kim frowns. \"You are the second one today.\"",
+      "junior": "At the Lost and Found, Grace Kim looks worried. \"You're the second person today.\"",
+      "master": "At the Lost and Found, Grace Kim knits her brow. \"You are the second visitor this morning.\""
+    },
+    {
+      "rookie": "Your notes say:",
+      "junior": "Your notes read:",
+      "master": "Your notebook reads:"
+    },
+    {
+      "rookie": "Someone came for the Lark's egg before you.\nAsk each person what they saw at seven.\nFind two people who say the same thing.",
+      "junior": "Someone came for the Lark's egg ahead of you.\nAsk each person what they saw at seven.\nFind two people who tell the same story.",
+      "master": "Someone sought the Lark's egg before you did.\nAsk each person what they witnessed at seven.\nFind two people whose accounts agree."
+    },
+    {
+      "rookie": "What happened at the Lost and Found at seven?",
+      "junior": "What happened at the Lost and Found at seven o'clock?",
+      "master": "What took place at the Lost and Found at seven?"
+    },
+    {
+      "rookie": "Ask every person: What did you see at seven?",
+      "junior": "Ask each person the same question: What did you see at seven?",
+      "master": "Put one question to everyone: What did you see at seven?"
+    },
+    {
+      "rookie": "Grace works at the window. Rosa plays her violin nearby. Compare them.",
+      "junior": "Grace works at the window, and Rosa plays her violin close by. Compare their answers.",
+      "master": "Grace staffs the window; Rosa plays her violin close at hand. Set their stories side by side."
+    },
+    {
+      "rookie": "Two witnesses saw the same man!",
+      "junior": "Two witnesses saw the very same man!",
+      "master": "Two witnesses' accounts point to the same man!"
+    },
+    {
+      "rookie": "A tall man asked for the egg at seven.",
+      "junior": "At seven, a tall man asked for the egg.",
+      "master": "At seven, a tall man came asking for the egg."
+    },
+    {
+      "rookie": "Rosa points at the floor: a dry print with little stars.",
+      "junior": "Rosa points at the floor: a dry print with little stars in it.",
+      "master": "Rosa gestures toward the floor: a dry print studded with little stars."
+    },
+    {
+      "rookie": "\"He could not answer my question,\" Grace says. \"Can you?\"",
+      "junior": "\"He couldn't answer my question,\" Grace says. \"Can you?\"",
+      "master": "\"My question defeated him,\" Grace remarks. \"Will it defeat you?\""
+    },
+    {
+      "rookie": "A tall man in sunglasses asked for the egg at seven. His boots left little stars.",
+      "junior": "At seven, a tall man in sunglasses asked for the egg. His boots left little stars behind.",
+      "master": "At seven, a tall man in sunglasses asked for the egg, his boots leaving little stars in their wake."
+    },
+    {
+      "rookie": "MAIN CONCOURSE",
+      "junior": "MAIN CONCOURSE",
+      "master": "MAIN CONCOURSE"
+    },
+    {
+      "rookie": "Find out who came at seven.",
+      "junior": "Find out who came at seven o'clock.",
+      "master": "Uncover who appeared at seven."
+    },
+    {
+      "rookie": "Ask each person. Write down what they say.",
+      "junior": "Question each person. Write down their answers.",
+      "master": "Question each person and record every answer."
+    },
+    {
+      "rookie": "Talk to a witness.",
+      "junior": "Speak to a witness.",
+      "master": "Choose a witness to question."
+    },
+    {
+      "rookie": "What did the man look like?",
+      "junior": "What did the man look like?",
+      "master": "What did the man look like?"
+    },
+    {
+      "rookie": "Why are you here today?",
+      "junior": "Why are you here today?",
+      "master": "What brings you here today?"
+    },
+    {
+      "rookie": "Grace Kim",
+      "junior": "Grace Kim",
+      "master": "Grace Kim"
+    },
+    {
+      "rookie": "THE LOST AND FOUND",
+      "junior": "THE LOST AND FOUND",
+      "master": "THE LOST AND FOUND"
+    },
+    {
+      "rookie": "a neat woman with short black hair, a station uniform and a ring of keys",
+      "junior": "a tidy woman with short black hair, wearing a station uniform and carrying a ring of keys",
+      "master": "a neat woman with cropped black hair, a station uniform and a jangling ring of keys"
+    },
+    {
+      "rookie": "I keep lost things. And one very old box.",
+      "junior": "I look after lost things. And one very old box.",
+      "master": "I safeguard lost belongings. And one very old box."
+    },
+    {
+      "rookie": "Sunglasses. He could not answer my question.",
+      "junior": "He wore sunglasses. He couldn't answer my question.",
+      "master": "Sunglasses. And my question left him stumped."
+    },
+    {
+      "rookie": "I keep the Lost and Found. And the egg.",
+      "junior": "I run the Lost and Found. And I keep the egg.",
+      "master": "I oversee the Lost and Found. And the egg."
+    },
+    {
+      "rookie": "Rosa Diaz",
+      "junior": "Rosa Diaz",
+      "master": "Rosa Diaz"
+    },
+    {
+      "rookie": "THE VIOLINIST",
+      "junior": "THE VIOLINIST",
+      "master": "THE VIOLINIST"
+    },
+    {
+      "rookie": "a young violinist in a green beret, her violin under her arm",
+      "junior": "a young violinist wearing a green beret, with her violin under her arm",
+      "master": "a young violinist in a green beret, her violin tucked beneath her arm"
+    },
+    {
+      "rookie": "Hello. I play here every morning.",
+      "junior": "Hi. I play here every single morning.",
+      "master": "Hello. I perform here each morning."
+    },
+    {
+      "rookie": "A tall man shouted at the Lost and Found.",
+      "junior": "A tall man was shouting at the Lost and Found.",
+      "master": "A tall man was raising his voice at the Lost and Found."
+    },
+    {
+      "rookie": "I play my violin for the trains.",
+      "junior": "I play my violin for the people on the trains.",
+      "master": "I serenade the trains with my violin."
+    },
+    {
+      "rookie": "Otto Brandt",
+      "junior": "Otto Brandt",
+      "master": "Otto Brandt"
+    },
+    {
+      "rookie": "THE CLOCKMAKER",
+      "junior": "THE CLOCKMAKER",
+      "master": "THE CLOCKMAKER"
+    },
+    {
+      "rookie": "an old man with bushy white eyebrows, a leather apron and a toolbox",
+      "junior": "an old man with bushy white eyebrows, wearing a leather apron and carrying a toolbox",
+      "master": "an elderly man with bushy white eyebrows, a leather apron and a battered toolbox"
+    },
+    {
+      "rookie": "Hmph. I am busy. What do you want?",
+      "junior": "Hmph. I'm busy. What do you want?",
+      "master": "Hmph. I am occupied. What is it you want?"
+    },
+    {
+      "rookie": "Seven? I was looking at the clock.",
+      "junior": "Seven? I was watching the clock.",
+      "master": "Seven? My eyes were on the clock."
+    },
+    {
+      "rookie": "I saw no man. Only the clock.",
+      "junior": "I didn't see any man. Just the clock.",
+      "master": "I noticed no man. Only the clock."
+    },
+    {
+      "rookie": "Eleanor Hart taught my grandfather. That is why.",
+      "junior": "Eleanor Hart was my grandfather's teacher. That's why.",
+      "master": "Eleanor Hart once taught my grandfather. That is the reason."
+    },
+    {
+      "rookie": "Ask a question.",
+      "junior": "Choose a question.",
+      "master": "Pose a question."
+    },
+    {
+      "rookie": "Ask another person.",
+      "junior": "Now ask someone else.",
+      "master": "Now question someone else."
+    },
+    {
+      "rookie": "Compare two answers.",
+      "junior": "Compare two of the answers.",
+      "master": "Set two answers side by side."
+    },
+    {
+      "rookie": "Find two people who saw the same thing at seven.",
+      "junior": "Find two people who noticed the same thing at seven.",
+      "master": "Find two witnesses whose accounts of seven o'clock agree."
+    },
+    {
+      "rookie": "Tap two answers to compare them.",
+      "junior": "Tap two answers to compare them with each other.",
+      "master": "Tap two answers to weigh one against the other."
+    },
+    {
+      "rookie": "Both saw a tall man at the Lost and Found at seven.",
+      "junior": "They both saw a tall man at the Lost and Found at seven.",
+      "master": "Both noticed a tall man at the Lost and Found at seven."
+    },
+    {
+      "rookie": "These answers are not about seven o'clock.",
+      "junior": "These answers aren't about seven o'clock.",
+      "master": "These answers have nothing to do with seven o'clock."
+    },
+    {
+      "rookie": "Look for what happened at seven.",
+      "junior": "Look for what happened at seven o'clock.",
+      "master": "Search for what took place at seven."
+    },
+    {
+      "rookie": "These two say different things.",
+      "junior": "These two tell different stories.",
+      "master": "These two accounts don't agree."
+    },
+    {
+      "rookie": "Try another pair.",
+      "junior": "Try a different pair.",
+      "master": "Try another pairing."
+    },
+    {
+      "rookie": "Find out more about the man.",
+      "junior": "Find out more about the tall man.",
+      "master": "Learn more about the mysterious man."
+    },
+    {
+      "rookie": "Ask Rosa what the man looked like.",
+      "junior": "Ask Rosa what the man looked like.",
+      "master": "Ask Rosa to describe the man's appearance."
+    },
+    {
+      "rookie": "Your witness notes are ready.",
+      "junior": "Your notes on the witnesses are ready.",
+      "master": "Your witness notes are complete."
+    },
+    {
+      "rookie": "SOMEONE CAME FIRST",
+      "junior": "SOMEONE CAME FIRST",
+      "master": "SOMEONE CAME FIRST"
+    },
+    {
+      "rookie": "A tall man in star boots wanted the egg. But he could not answer Grace's question.",
+      "junior": "A tall man in star boots wanted the egg, but he couldn't answer Grace's question.",
+      "master": "A tall man in star boots coveted the egg, yet Grace's question left him empty-handed."
+    },
+    {
+      "rookie": "I have hands, but I cannot clap.",
+      "junior": "I have hands, but I cannot clap.",
+      "master": "I have hands, but I cannot clap."
+    },
+    {
+      "rookie": "I have four faces, but I never smile.",
+      "junior": "I have four faces, but I never smile.",
+      "master": "I have four faces, but I never smile."
+    },
+    {
+      "rookie": "The Keeper's Question",
+      "junior": "The Keeper's Question",
+      "master": "The Keeper's Question"
+    },
+    {
+      "rookie": "Grace brings out a dusty box marked 1926.",
+      "junior": "Grace brings out a dusty old box marked 1926.",
+      "master": "Grace produces a dust-covered box stamped 1926."
+    },
+    {
+      "rookie": "Inside is a card in Eleanor's writing.",
+      "junior": "Inside, there is a card in Eleanor's handwriting.",
+      "master": "Within lies a card inscribed in Eleanor's hand."
+    },
+    {
+      "rookie": "\"Answer it, and the egg is yours,\" Grace says.",
+      "junior": "\"Answer it, and you can have the egg,\" Grace says.",
+      "master": "\"Answer it correctly, and the egg is yours,\" Grace declares."
+    },
+    {
+      "rookie": "Eleanor's card says:",
+      "junior": "Eleanor's card reads:",
+      "master": "Eleanor's card reads:"
+    },
+    {
+      "rookie": "Here is my question.\nI have hands, but I cannot clap.\nI have four faces, but I never smile.\nI stand on the round booth in the middle of this hall.\nI tell everyone when to run for a train.\nWhat am I?\n— E. H.",
+      "junior": "This is my question.\nI have hands, but I cannot clap.\nI have four faces, but I never smile.\nI stand on the round booth right in the middle of this hall.\nI tell everybody when to hurry for a train.\nWhat am I?\n— E. H.",
+      "master": "Here is my riddle.\nI have hands, but I cannot clap.\nI have four faces, but I never smile.\nI keep my post on the round booth at the heart of this hall.\nI let every traveller know when to dash for a train.\nWhat am I?\n— E. H."
+    },
+    {
+      "rookie": "What is the answer to Eleanor's question?",
+      "junior": "What is the answer to Eleanor's riddle?",
+      "master": "What is the solution to Eleanor's riddle?"
+    },
+    {
+      "rookie": "It is a ____.",
+      "junior": "It is a ____.",
+      "master": "It is a ____."
+    },
+    {
+      "rookie": "Each line is one clue. What has hands and faces, but is not a person?",
+      "junior": "Each line gives one clue. What has hands and faces, but isn't a person?",
+      "master": "Each line is a separate clue. What possesses hands and faces, yet is no person?"
+    },
+    {
+      "rookie": "Look at the round booth in the middle of the hall.",
+      "junior": "Check the round booth right in the middle of the hall.",
+      "master": "Turn your gaze to the round booth at the centre of the hall."
+    },
+    {
+      "rookie": "You answered Eleanor's question!",
+      "junior": "You solved Eleanor's question!",
+      "master": "You have answered Eleanor's riddle!"
+    },
+    {
+      "rookie": "\"A clock! Correct,\" Grace smiles.",
+      "junior": "\"A clock! That's right,\" Grace says with a smile.",
+      "master": "\"A clock! Quite right,\" Grace beams."
+    },
+    {
+      "rookie": "She gives you a small brass egg.",
+      "junior": "She hands you a small brass egg.",
+      "master": "She places a small brass egg in your palm."
+    },
+    {
+      "rookie": "It is shut tight, with four letter rings around it.",
+      "junior": "It is closed tight, and four letter rings go around it.",
+      "master": "It is sealed tight, girdled by four letter rings."
+    },
+    {
+      "rookie": "A statue has hands, but it has only one face. This thing has four.",
+      "junior": "A statue may have hands, but it only has one face. This thing has four.",
+      "master": "A statue may have hands, but it bears only one face. This thing has four."
+    },
+    {
+      "rookie": "A train has no hands and no faces. Look at the booth in the middle.",
+      "junior": "A train doesn't have hands or faces. Look at the booth in the middle.",
+      "master": "A train has neither hands nor faces. Study the booth at the centre."
+    },
+    {
+      "rookie": "Check your spelling. It is a short word.",
+      "junior": "Check how you spelled it. It's a short word.",
+      "master": "Check your spelling carefully; the word is a short one."
+    },
+    {
+      "rookie": "The Keeper's Answer",
+      "junior": "The Keeper's Answer",
+      "master": "The Keeper's Answer"
+    },
+    {
+      "rookie": "Eleanor's question was about the clock with four faces in the middle of the hall.",
+      "junior": "Eleanor's question described the clock with four faces in the centre of the hall.",
+      "master": "Eleanor's riddle described the clock with four faces at the centre of the hall."
+    },
+    {
+      "rookie": "THE LARK'S EGG",
+      "junior": "THE LARK'S EGG",
+      "master": "THE LARK'S EGG"
+    },
+    {
+      "rookie": "Grace gives you Eleanor's brass egg. The tall man never got it.",
+      "junior": "Grace hands you Eleanor's brass egg. The tall man never got his hands on it.",
+      "master": "Grace entrusts you with Eleanor's brass egg. The tall man never laid a finger on it."
+    },
+    {
+      "rookie": "S",
+      "junior": "S",
+      "master": "S"
+    },
+    {
+      "rookie": "A",
+      "junior": "A",
+      "master": "A"
+    },
+    {
+      "rookie": "T",
+      "junior": "T",
+      "master": "T"
+    },
+    {
+      "rookie": "E",
+      "junior": "E",
+      "master": "E"
+    },
+    {
+      "rookie": "The stars above you are painted backwards.",
+      "junior": "The stars above you are painted backwards.",
+      "master": "The stars above you are painted backwards."
+    },
+    {
+      "rookie": "the real sky is the opposite way",
+      "junior": "the real sky is the opposite way",
+      "master": "the real sky is the opposite way"
+    },
+    {
+      "rookie": "The Brass Egg",
+      "junior": "The Brass Egg",
+      "master": "The Brass Egg"
+    },
+    {
+      "rookie": "A tiny paper tag hangs from the egg.",
+      "junior": "A tiny paper tag is hanging from the egg.",
+      "master": "A tiny paper tag dangles from the egg."
+    },
+    {
+      "rookie": "Maya looks up at the green ceiling.",
+      "junior": "Maya looks up at the green ceiling above.",
+      "master": "Maya tilts her head back toward the green ceiling."
+    },
+    {
+      "rookie": "\"The rubbing said the stars are painted backwards,\" she says.",
+      "junior": "\"The rubbing told us the stars are painted backwards,\" she says.",
+      "master": "\"The rubbing claimed the stars are painted backwards,\" she murmurs."
+    },
+    {
+      "rookie": "The tag on the egg says:",
+      "junior": "The tag on the egg reads:",
+      "master": "The tag on the egg reads:"
+    },
+    {
+      "rookie": "My egg opens with one word.\nThe stars above you are painted backwards.\nWhere the ceiling shows the west,\nthe real sky is the opposite way.\nSpell the real direction.",
+      "junior": "My egg opens with a single word.\nThe stars above you are painted backwards.\nWhere the ceiling shows you the west,\nthe real sky is the opposite way.\nSpell out the real direction.",
+      "master": "Only one word will open my egg.\nThe stars above you are painted backwards.\nWherever the ceiling displays the west,\nthe real sky is the opposite way.\nSpell the true direction."
+    },
+    {
+      "rookie": "Which direction opens the egg?",
+      "junior": "Which direction will open the egg?",
+      "master": "Which direction unlocks the egg?"
+    },
+    {
+      "rookie": "Backwards means the wrong way round.",
+      "junior": "Backwards means turned the wrong way round.",
+      "master": "Backwards means reversed, turned the wrong way round."
+    },
+    {
+      "rookie": "What is the opposite of west?",
+      "junior": "What is the opposite of west?",
+      "master": "Which direction lies opposite west?"
+    },
+    {
+      "rookie": "The brass egg clicks open!",
+      "junior": "Click! The brass egg opens!",
+      "master": "With a soft click, the brass egg springs open!"
+    },
+    {
+      "rookie": "Inside the egg is a small rolled note.",
+      "junior": "There is a small rolled note inside the egg.",
+      "master": "Nestled inside the egg is a small rolled note."
+    },
+    {
+      "rookie": "\"Eleanor's next friend!\" Maya says.",
+      "junior": "\"It's Eleanor's next friend!\" Maya says.",
+      "master": "\"Eleanor's next friend!\" Maya exclaims."
+    },
+    {
+      "rookie": "Nearby, Rosa starts to play a slow, old tune.",
+      "junior": "Close by, Rosa begins to play a slow, old tune.",
+      "master": "Close at hand, Rosa strikes up a slow, old melody."
+    },
+    {
+      "rookie": "The four letters fit. What is the opposite of west?",
+      "junior": "All four letters fit. What is the opposite of west?",
+      "master": "All four letters belong. Which direction lies opposite west?"
+    },
+    {
+      "rookie": "The Egg's Word",
+      "junior": "The Egg's Word",
+      "master": "The Egg's Word"
+    },
+    {
+      "rookie": "The ceiling is backwards, so its west is the real east. The egg opens with EAST.",
+      "junior": "The ceiling is painted backwards, so its west is really east. The egg opens with EAST.",
+      "master": "Because the ceiling is reversed, its west is truly east. The egg opens with EAST."
+    },
+    {
+      "rookie": "THE BRASS EGG",
+      "junior": "THE BRASS EGG",
+      "master": "THE BRASS EGG"
+    },
+    {
+      "rookie": "BACKWARDS STARS",
+      "junior": "BACKWARDS STARS",
+      "master": "BACKWARDS STARS"
+    },
+    {
+      "rookie": "The painted west is the real east. Remember this word: Eleanor chose it for a reason.",
+      "junior": "The painted west is really east. Remember this word: Eleanor picked it for a reason.",
+      "master": "The painted west is the true east. Keep this word in mind: Eleanor chose it deliberately."
+    },
+    {
+      "rookie": "The shop with a cake in the window",
+      "junior": "The shop with a cake in its window",
+      "master": "The shop with a cake on display"
+    },
+    {
+      "rookie": "Two red lanterns, yes. But where is the gold dragon?",
+      "junior": "There are two red lanterns, yes. But where is the gold dragon?",
+      "master": "Two red lanterns, certainly. But where is the gold dragon?"
+    },
+    {
+      "rookie": "a small bakery with two red lanterns over its door and a big cake in its window",
+      "junior": "a little bakery with two red lanterns above its door and a big cake in its window",
+      "master": "a modest bakery with two red lanterns above its door and a lavish cake in its window"
+    },
+    {
+      "rookie": "The shop with lanterns and a dragon",
+      "junior": "The shop with lanterns and a dragon",
+      "master": "The shop with lanterns and a dragon"
+    },
+    {
+      "rookie": "a tea shop with two red lanterns over its door and a gold dragon in its window",
+      "junior": "a tea shop with two red lanterns above its door and a gold dragon in its window",
+      "master": "a tea shop with two red lanterns above its door and a gold dragon in its window"
+    },
+    {
+      "rookie": "The shop with a striped awning",
+      "junior": "The shop with a striped awning",
+      "master": "The shop with a striped awning"
+    },
+    {
+      "rookie": "A gold dragon, yes. But are there lanterns over the door?",
+      "junior": "There is a gold dragon, yes. But are there lanterns over the door?",
+      "master": "A gold dragon, certainly. But do any lanterns hang over the door?"
+    },
+    {
+      "rookie": "a shop with a green striped awning over its door and a gold dragon in its window",
+      "junior": "a shop with a green striped awning above its door and a gold dragon in its window",
+      "master": "a storefront with a green striped awning above its door and a gold dragon in its window"
+    },
+    {
+      "rookie": "Two red lanterns hang over the door.",
+      "junior": "Two red lanterns hang over the door.",
+      "master": "Two red lanterns hang over the door."
+    },
+    {
+      "rookie": "A gold dragon sits in the window.",
+      "junior": "A gold dragon sits in the window.",
+      "master": "A gold dragon sits in the window."
+    },
+    {
+      "rookie": "Eleanor's Next Friend",
+      "junior": "Eleanor's Next Friend",
+      "master": "Eleanor's Next Friend"
+    },
+    {
+      "rookie": "You unroll the little note from the egg.",
+      "junior": "You unroll the tiny note from the egg.",
+      "master": "You carefully unfurl the tiny note from the egg."
+    },
+    {
+      "rookie": "Maya opens her phone and finds three shops in Chinatown.",
+      "junior": "Maya checks her phone and finds three shops in Chinatown.",
+      "master": "Maya consults her phone and turns up three shops in Chinatown."
+    },
+    {
+      "rookie": "Only one is Eleanor's friend.",
+      "junior": "Only one of them is Eleanor's friend.",
+      "master": "Just one of them belongs to Eleanor's friend."
+    },
+    {
+      "rookie": "The note from the egg says:",
+      "junior": "The note from the egg reads:",
+      "master": "The note from the egg reads:"
+    },
+    {
+      "rookie": "My next friend sells tea where the old street bends like an elbow.\nTwo red lanterns hang over the door.\nA gold dragon sits in the window.\nAsk for the tea of 1926.\n— E. H.",
+      "junior": "My next friend sells tea where the old street turns like an elbow.\nTwo red lanterns hang over the door.\nA gold dragon sits in the window.\nAsk for the tea of 1926.\n— E. H.",
+      "master": "My next friend sells tea where the old street crooks like an elbow.\nTwo red lanterns hang over the door.\nA gold dragon sits in the window.\nRequest the tea of 1926.\n— E. H."
+    },
+    {
+      "rookie": "Which shop is Eleanor's next friend?",
+      "junior": "Which shop belongs to Eleanor's next friend?",
+      "master": "Which shop is the home of Eleanor's next friend?"
+    },
+    {
+      "rookie": "The note gives two things to look for. Find both.",
+      "junior": "The note tells you two things to look for. Find a shop with both.",
+      "master": "The note names two features. Only a shop with both will do."
+    },
+    {
+      "rookie": "Look over each door, then in each window.",
+      "junior": "Check above each door, then inside each window.",
+      "master": "Examine what hangs above each door, then what sits in each window."
+    },
+    {
+      "rookie": "You found Eleanor's next friend!",
+      "junior": "You've found Eleanor's next friend!",
+      "master": "You have tracked down Eleanor's next friend!"
+    },
+    {
+      "rookie": "The Golden Lantern Tea House, in Chinatown.",
+      "junior": "The Golden Lantern Tea House, in Chinatown.",
+      "master": "The Golden Lantern Tea House, in Chinatown."
+    },
+    {
+      "rookie": "Rosa's tune follows you to the door.",
+      "junior": "Rosa's tune follows you all the way to the door.",
+      "master": "Rosa's melody trails you all the way to the door."
+    },
+    {
+      "rookie": "Otto the clockmaker hums it too, and then hurries away.",
+      "junior": "Otto the clockmaker hums it as well, then rushes away.",
+      "master": "Otto the clockmaker hums it too, then scurries off."
+    },
+    {
+      "rookie": "This tea house is a hundred years old!",
+      "junior": "This tea house is one hundred years old!",
+      "master": "This tea house has stood for a hundred years!"
+    },
+    {
+      "rookie": "And the man in star boots never got the egg.",
+      "junior": "And the man in star boots never got his hands on the egg.",
+      "master": "And the egg never fell into the hands of the man in star boots."
+    },
+    {
+      "rookie": "Good luck. Eleanor's friends ask hard questions.",
+      "junior": "Good luck. Eleanor's friends ask difficult questions.",
+      "master": "Good luck. Eleanor's friends pose formidable questions."
+    },
+    {
+      "rookie": "Rosa's violin plays the same old tune again.",
+      "junior": "Rosa's violin plays that same old tune once more.",
+      "master": "Once again, Rosa's violin drifts into that same old melody."
+    },
+    {
+      "rookie": "That song... where have I heard it?",
+      "junior": "That song... where have I heard it before?",
+      "master": "That melody... where have I heard it before?"
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "handwriting": "손글씨",
+      "enormous": "거대한",
+      "worried": "걱정하는",
+      "tidy": "단정한",
+      "question": "질문하다",
+      "noticed": "알아차렸다",
+      "rushes": "서두르다",
+      "spelled": "철자를 썼다",
+      "difficult": "어려운",
+      "riddle": "수수께끼",
+      "solved": "풀었다",
+      "unroll": "펼치다",
+      "hurry": "서두르다"
+    },
+    "master": {
+      "vaulted": "아치형 천장의",
+      "thundering": "우레 같은",
+      "jostling": "밀치락달치락하는",
+      "bustling": "북적거리는",
+      "coveted": "탐냈다",
+      "stumped": "말문이 막힌",
+      "serenade": "세레나데를 연주하다",
+      "inscribed": "새겨진, 적힌",
+      "girdled": "둘러싸인",
+      "entrusts": "맡기다",
+      "dangles": "매달려 있다",
+      "unfurl": "펼치다",
+      "reversed": "뒤바뀐",
+      "formidable": "만만치 않은",
+      "scurries": "종종걸음으로 달아나다"
+    }
+  }
+}

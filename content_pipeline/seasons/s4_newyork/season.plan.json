@@ -1,0 +1,413 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s4_newyork",
+  "number": 4,
+  "city": "New York",
+  "title": "The Silver Lark of New York",
+  "tagline": "FOLLOW THE SONG",
+  "plannedCases": 12,
+  "mainMystery": {
+    "truth": "In 1926, toymaker Eleanor Hart hid the Silver Lark, a clockwork bird that sings, in Belvedere Castle as a gift for a child of the city. Her notebook's last page was the first clue of her trail. On Friday at 10 PM, TV treasure hunter Dexter Vance cut that page out of the notebook at the New York Public Library. He raced the detective along the trail, took Eleanor's brass bird from a bench on the Brooklyn Bridge and stole Rosa Diaz's music box, because he wanted to sell the Lark. But each of Eleanor's friends asks a question only a careful reader can answer, and Dexter never read carefully.",
+    "culprit": "Dexter Vance, the smiling host of a TV treasure-hunting show.",
+    "motive": "The Silver Lark is worth a fortune. He wanted to find it first, show it on TV and sell it.",
+    "revealCase": "s4_ep11"
+  },
+  "characters": [
+    {
+      "charId": "maya_chen",
+      "name": "Maya Chen",
+      "role": "Young librarian at the New York Public Library, the detective's partner in New York",
+      "firstCase": "s4_ep01"
+    },
+    {
+      "charId": "harold_brooks",
+      "name": "Harold Brooks",
+      "role": "Keeper of rare books at the library",
+      "firstCase": "s4_ep01"
+    },
+    {
+      "charId": "frank_russo",
+      "name": "Frank Russo",
+      "role": "Night guard of the library",
+      "firstCase": "s4_ep01"
+    },
+    {
+      "charId": "sam_okafor",
+      "name": "Sam Okafor",
+      "role": "Pretzel seller whose cart stands by the library lions",
+      "firstCase": "s4_ep01"
+    },
+    {
+      "charId": "dexter_vance",
+      "name": "Dexter Vance",
+      "role": "TV treasure hunter, secretly the one who cut out the page",
+      "firstCase": "s4_ep01",
+      "revealCase": "s4_ep11",
+      "secretUntil": "s4_ep11"
+    },
+    {
+      "charId": "grace_kim",
+      "name": "Grace Kim",
+      "role": "Keeper of the Lost and Found at Grand Central",
+      "firstCase": "s4_ep02"
+    },
+    {
+      "charId": "rosa_diaz",
+      "name": "Rosa Diaz",
+      "role": "Street violinist, secretly Eleanor Hart's great-granddaughter",
+      "firstCase": "s4_ep02",
+      "revealCase": "s4_ep08",
+      "secretUntil": "s4_ep08"
+    },
+    {
+      "charId": "otto_brandt",
+      "name": "Otto Brandt",
+      "role": "Grumpy clockmaker in the old Hart building, first a suspect, then a helper",
+      "firstCase": "s4_ep02",
+      "revealCase": "s4_ep06"
+    },
+    {
+      "charId": "nora_bell",
+      "name": "Nora Bell",
+      "role": "Dexter Vance's young camera operator",
+      "firstCase": "s4_ep03"
+    }
+  ],
+  "locations": [
+    {
+      "locId": "new_york_public_library",
+      "name": "New York Public Library",
+      "landmarkKey": "newYorkPublicLibrary"
+    },
+    {
+      "locId": "grand_central",
+      "name": "Grand Central Terminal",
+      "landmarkKey": "grandCentral"
+    },
+    {
+      "locId": "chinatown",
+      "name": "Chinatown",
+      "landmarkKey": "chinatown"
+    },
+    {
+      "locId": "brooklyn_bridge",
+      "name": "Brooklyn Bridge",
+      "landmarkKey": "brooklynBridge"
+    },
+    {
+      "locId": "hart_building",
+      "name": "The Hart Building",
+      "landmarkKey": "hartBuilding"
+    },
+    {
+      "locId": "statue_of_liberty",
+      "name": "Statue of Liberty",
+      "landmarkKey": "statueOfLiberty"
+    },
+    {
+      "locId": "times_square",
+      "name": "Times Square",
+      "landmarkKey": "timesSquare"
+    },
+    {
+      "locId": "washington_square",
+      "name": "Washington Square Park",
+      "landmarkKey": "washingtonSquare"
+    },
+    {
+      "locId": "coney_island",
+      "name": "Coney Island",
+      "landmarkKey": "coneyIsland"
+    },
+    {
+      "locId": "central_park",
+      "name": "Central Park",
+      "landmarkKey": "centralPark"
+    }
+  ],
+  "acts": [
+    {
+      "actId": "act1",
+      "theme": "THE TORN PAGE",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep02",
+        "s4_ep03",
+        "s4_ep04"
+      ]
+    },
+    {
+      "actId": "act2",
+      "theme": "THE RACE",
+      "caseIds": [
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep07",
+        "s4_ep08"
+      ]
+    },
+    {
+      "actId": "act3",
+      "theme": "THE LARK'S SONG",
+      "caseIds": [
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ]
+    }
+  ],
+  "outro": [
+    "The Silver Lark sings again in the library's great hall.",
+    "Every Saturday, the children of New York come to hear its song."
+  ],
+  "finale": [
+    "New York is loud, fast and full of songs.",
+    "This time, you heard the oldest one."
+  ],
+  "languageArc": [
+    "Act 1: places and directions (before, after, east, west), riddles and reading a description.",
+    "Act 2: times and timetables, an alibi, family words and who said what.",
+    "Act 3: where things are (behind, next to), a saying (finders keepers) and putting steps in order."
+  ],
+  "places": [
+    {
+      "placeId": "s4_newyork.exhibit_hall",
+      "file": "assets/seasons/season_04_newyork/locations/exhibit_hall.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "new_york_public_library"
+    },
+    {
+      "placeId": "s4_newyork.library_steps",
+      "file": "assets/seasons/season_04_newyork/locations/library_steps.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "new_york_public_library"
+    },
+    {
+      "placeId": "s4_newyork.main_concourse",
+      "file": "assets/seasons/season_04_newyork/locations/main_concourse.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "grand_central"
+    },
+    {
+      "placeId": "s4_newyork.tea_house",
+      "file": "assets/seasons/season_04_newyork/locations/tea_house.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "chinatown"
+    },
+    {
+      "placeId": "s4_newyork.tea_room",
+      "file": "assets/seasons/season_04_newyork/locations/tea_room.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "chinatown"
+    },
+    {
+      "placeId": "s4_newyork.bridge_walkway",
+      "file": "assets/seasons/season_04_newyork/locations/bridge_walkway.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "brooklyn_bridge"
+    },
+    {
+      "placeId": "s4_newyork.clock_shop",
+      "file": "assets/seasons/season_04_newyork/locations/clock_shop.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "hart_building"
+    },
+    {
+      "placeId": "s4_newyork.liberty_island",
+      "file": "assets/seasons/season_04_newyork/locations/liberty_island.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "statue_of_liberty"
+    },
+    {
+      "placeId": "s4_newyork.times_square",
+      "file": "assets/seasons/season_04_newyork/locations/times_square.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "times_square"
+    },
+    {
+      "placeId": "s4_newyork.square_arch",
+      "file": "assets/seasons/season_04_newyork/locations/square_arch.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "washington_square"
+    },
+    {
+      "placeId": "s4_newyork.coney_boardwalk",
+      "file": "assets/seasons/season_04_newyork/locations/coney_boardwalk.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "coney_island"
+    },
+    {
+      "placeId": "s4_newyork.bethesda_terrace",
+      "file": "assets/seasons/season_04_newyork/locations/bethesda_terrace.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "central_park"
+    },
+    {
+      "placeId": "s4_newyork.tv_studio",
+      "file": "assets/seasons/season_04_newyork/locations/tv_studio.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "times_square"
+    },
+    {
+      "placeId": "s4_newyork.belvedere_castle",
+      "file": "assets/seasons/season_04_newyork/locations/belvedere_castle.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "locId": "central_park"
+    }
+  ],
+  "art": {
+    "cover": {
+      "file": "assets/seasons/season_04_newyork/cover/season4_cover_newyork.png",
+      "pixels": {
+        "width": 1024,
+        "height": 1536
+      },
+      "archiveLook": [
+        0,
+        -0.15
+      ],
+      "crop": [
+        0,
+        0
+      ],
+      "push": [
+        0,
+        -0.2
+      ]
+    },
+    "map": {
+      "file": "assets/seasons/season_04_newyork/locations/map/newyork_map.png",
+      "pixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "measuredOn": "sha256:22742456195ccd380cd6a736a63c416dd85ccd9b81ee01d23d95f54dd74aa2b1",
+      "landmarks": [
+        {
+          "locId": "central_park",
+          "at": [
+            800,
+            150
+          ]
+        },
+        {
+          "locId": "times_square",
+          "at": [
+            515,
+            330
+          ]
+        },
+        {
+          "locId": "new_york_public_library",
+          "at": [
+            715,
+            385
+          ]
+        },
+        {
+          "locId": "grand_central",
+          "at": [
+            985,
+            390
+          ]
+        },
+        {
+          "locId": "washington_square",
+          "at": [
+            720,
+            545
+          ]
+        },
+        {
+          "locId": "hart_building",
+          "at": [
+            470,
+            540
+          ]
+        },
+        {
+          "locId": "chinatown",
+          "at": [
+            660,
+            760
+          ]
+        },
+        {
+          "locId": "brooklyn_bridge",
+          "at": [
+            1185,
+            580
+          ]
+        },
+        {
+          "locId": "statue_of_liberty",
+          "at": [
+            140,
+            760
+          ]
+        },
+        {
+          "locId": "coney_island",
+          "at": [
+            1265,
+            850
+          ]
+        }
+      ]
+    },
+    "worldCity": {
+      "cityId": "newyork",
+      "latitude": 40.71,
+      "longitude": -74.01
+    }
+  },
+  "notes": [
+    "Season 4, planned by Claude Code with tool/season_planner (PLAYBOOK.md) and carried into the game by the create-season skill from the input 'Season 4, New York'.",
+    "The Hart Building (Bleecker Street, Greenwich Village) and its clock shop are made up for the story; every other place is a real place in New York. The Golden Lantern Tea House and the TV studio are made up, in real neighbourhoods.",
+    "Real facts the puzzles lean on: Grand Central's ceiling shows the stars back to front, its information booth has a four-faced clock and the station has a Lost and Found; the Wonder Wheel at Coney Island (1920) has cars that swing and cars that stay still; Belvedere Castle stands on a rock above a pond in Central Park.",
+    "art.map (assets/seasons/season_04_newyork/locations/map/newyork_map.png) is written once the map is made, its landmarks measured on it (season_factory step 6), never guessed."
+  ]
+}

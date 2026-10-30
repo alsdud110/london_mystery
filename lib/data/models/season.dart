@@ -93,6 +93,9 @@ abstract final class SeasonIds {
 
   /// Season 3, made from its plans (`content_pipeline/seasons/s3_rome`).
   static const rome = 's3_rome';
+
+  /// Season 4, made from its plans (`content_pipeline/seasons/s4_newyork`).
+  static const newyork = 's4_newyork';
 }
 
 /// A season: the bigger story the cases belong to. Its cases are the

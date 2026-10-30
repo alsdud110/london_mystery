@@ -1,0 +1,1019 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s4_newyork",
+  "city": "New York",
+  "title": "The Silver Lark of New York",
+  "tagline": "FOLLOW THE SONG",
+  "logline": "A toymaker's 1926 notebook holds the first clue to the Silver Lark, a singing clockwork bird hidden in New York for a child of the city. When the page is cut out, the detective races a smiling TV treasure hunter along the trail, and a street violinist keeps the song that wakes the Lark.",
+  "coreMystery": {
+    "question": "Who cut the first clue out of Eleanor Hart's notebook, and where is the Silver Lark?",
+    "truth": "In 1926, toymaker Eleanor Hart hid the Silver Lark, a clockwork bird that sings, in Belvedere Castle as a gift for a child of the city. Her notebook's last page was the first clue of her trail. On Friday at 10 PM, TV treasure hunter Dexter Vance cut that page out of the notebook at the New York Public Library. He raced the detective along the trail, took Eleanor's brass bird from a bench on the Brooklyn Bridge and stole Rosa Diaz's music box, because he wanted to sell the Lark. But each of Eleanor's friends asks a question only a careful reader can answer, and Dexter never read carefully.",
+    "culprit": "Dexter Vance, the smiling host of a TV treasure-hunting show.",
+    "motive": "The Silver Lark is worth a fortune. He wanted to find it first, show it on TV and sell it.",
+    "method": "He stayed in the library after sending his crew home and cut the page with his tape knife at ten (Friday). He filmed the tin note at the tea house, took the brass bird from the wet-paint bench on Sunday, and stole Rosa's music box at Bethesda Terrace. Eleanor's friends' questions stopped him twice (Grand Central, Coney Island).",
+    "revealCase": "s4_ep11",
+    "resolvedCase": "s4_ep12"
+  },
+  "themes": [
+    "Careful reading beats speed and fame: every friend of the Lark asks a question.",
+    "Evidence over first impressions: the grumpy clockmaker is innocent, the smiling TV star is not.",
+    "A promise kept across a hundred years (Rosa's family).",
+    "Some treasures are meant to be shared, not owned (freedom, Liberty)."
+  ],
+  "startingSituation": "Saturday morning at the New York Public Library: Eleanor Hart's 1926 notebook is in its glass case, but the last page, the first clue to her Silver Lark, has been cut out in the night.",
+  "ending": "Dexter is caught with the page, the bird and the music box. The Silver Lark, woken by the brass egg and Rosa's whole song, sings in the library every Saturday for the children of New York; Otto keeps it ticking and Rosa plays beside it.",
+  "characters": [
+    {
+      "charId": "maya_chen",
+      "name": "Maya Chen",
+      "role": "Young librarian and the detective's partner",
+      "personality": "Bright, eager, a little starstruck by TV; loves puzzles and pencils.",
+      "purpose": "The player's companion: reads with you, keeps notes and lists, rubs the pencil, says what the player is thinking.",
+      "appearance": "Mid-twenties, black hair in a high ponytail, red-framed glasses, a denim jacket, a library lanyard, a tote bag with a notebook.",
+      "relationships": [
+        {
+          "charId": "harold_brooks",
+          "relation": "Her boss at the library."
+        },
+        {
+          "charId": "dexter_vance",
+          "relation": "A fan of his show at first; disappointed later."
+        }
+      ],
+      "cases": [
+        "s4_ep01",
+        "s4_ep02",
+        "s4_ep03",
+        "s4_ep04",
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep07",
+        "s4_ep08",
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ]
+    },
+    {
+      "charId": "harold_brooks",
+      "name": "Harold Brooks",
+      "role": "Keeper of rare books at the New York Public Library",
+      "personality": "Proud, careful, quietly warm.",
+      "purpose": "Shows Eleanor's notebook, tells what the Lark is worth (the motive), brings Otto's letter, gives the Lark a home in the library.",
+      "appearance": "About sixty-five, short grey beard, round glasses, tweed jacket, burgundy bow tie, white cotton gloves.",
+      "relationships": [
+        {
+          "charId": "maya_chen",
+          "relation": "Her boss."
+        },
+        {
+          "charId": "otto_brandt",
+          "relation": "Took the notebook to the library; Otto was angry."
+        }
+      ],
+      "cases": [
+        "s4_ep01",
+        "s4_ep05",
+        "s4_ep11",
+        "s4_ep12"
+      ]
+    },
+    {
+      "charId": "frank_russo",
+      "name": "Frank Russo",
+      "role": "Night guard of the library",
+      "personality": "Big, honest, a little embarrassed he missed the thief.",
+      "purpose": "A witness twice: the light at ten (Case 01) and the pass list and the voice in the dark (Case 11).",
+      "appearance": "About fifty, thick dark moustache, blue guard uniform and cap, a torch on his belt.",
+      "relationships": [
+        {
+          "charId": "harold_brooks",
+          "relation": "Guards his collection."
+        }
+      ],
+      "cases": [
+        "s4_ep01",
+        "s4_ep11"
+      ]
+    },
+    {
+      "charId": "sam_okafor",
+      "name": "Sam Okafor",
+      "role": "Pretzel seller by the library lions (on Sundays, by the bridge)",
+      "personality": "Cheerful, chatty, notices faces.",
+      "purpose": "The city's eyes: sees the man with the black bag (Case 01) and Dexter alone on the bridge (Case 07).",
+      "appearance": "Fifties, white apron, red cap, a pretzel in hand, a wide smile.",
+      "relationships": [
+        {
+          "charId": "maya_chen",
+          "relation": "Sells her a pretzel every morning."
+        }
+      ],
+      "cases": [
+        "s4_ep01",
+        "s4_ep07"
+      ]
+    },
+    {
+      "charId": "dexter_vance",
+      "name": "Dexter Vance",
+      "role": "TV treasure hunter, host of a treasure show; the culprit",
+      "personality": "Charming, loud, always performing; does not read carefully; \"Finders keepers!\"",
+      "purpose": "Cuts the page, races the detective, takes the brass bird and the music box to find and sell the Lark; caught in Case 11.",
+      "appearance": "About forty-five, slick dark hair with a silver streak, a very big smile, a safari vest with many pockets, sunglasses on his head, star-soled boots.",
+      "relationships": [
+        {
+          "charId": "nora_bell",
+          "relation": "Her boss; he makes her keep his secrets."
+        },
+        {
+          "charId": "rosa_diaz",
+          "relation": "Offers her money for her music box, then steals it."
+        }
+      ],
+      "cases": [
+        "s4_ep01",
+        "s4_ep03",
+        "s4_ep07",
+        "s4_ep10",
+        "s4_ep11"
+      ]
+    },
+    {
+      "charId": "grace_kim",
+      "name": "Grace Kim",
+      "role": "Keeper of the Lost and Found at Grand Central, Eleanor's first friend",
+      "personality": "Calm, exact, kind to careful people.",
+      "purpose": "Keeps the 1926 box and the brass egg; asks Eleanor's first question; sees the man in star boots fail it.",
+      "appearance": "About forty, short black bob, navy station uniform with brass buttons, a ring of old keys.",
+      "relationships": [
+        {
+          "charId": "dexter_vance",
+          "relation": "Refused him the egg at seven."
+        }
+      ],
+      "cases": [
+        "s4_ep02"
+      ]
+    },
+    {
+      "charId": "rosa_diaz",
+      "name": "Rosa Diaz",
+      "role": "Street violinist; secretly Eleanor Hart's great-granddaughter",
+      "personality": "Gentle, watchful, keeps promises; brave when it matters.",
+      "purpose": "The helper with a secret: plays the song on the trail to watch over it; keeps the song's end (D, A, D) and Eleanor's music box. Revealed in Case 08.",
+      "appearance": "About twenty-two, curly red-brown hair under a green beret, a cream sweater, her violin always with her.",
+      "relationships": [
+        {
+          "charId": "otto_brandt",
+          "relation": "Her great-grandmother taught his grandfather."
+        },
+        {
+          "charId": "dexter_vance",
+          "relation": "He stole her music box."
+        }
+      ],
+      "cases": [
+        "s4_ep02",
+        "s4_ep08",
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ]
+    },
+    {
+      "charId": "otto_brandt",
+      "name": "Otto Brandt",
+      "role": "Grumpy clockmaker in the old Hart Building; red herring, then helper",
+      "personality": "Gruff, proud, loyal to Eleanor's memory, soft inside.",
+      "purpose": "The suspect cleared by evidence (a ferry, a timetable, his sister, plain boots); remembers the bird's notes (E, G, G); will keep the Lark ticking.",
+      "appearance": "About seventy-five, bushy white eyebrows, a loupe on his forehead, a leather apron, a wooden toolbox.",
+      "relationships": [
+        {
+          "charId": "rosa_diaz",
+          "relation": "Eleanor taught his grandfather Karl."
+        },
+        {
+          "charId": "harold_brooks",
+          "relation": "Wanted the notebook kept in the Hart Building."
+        }
+      ],
+      "cases": [
+        "s4_ep02",
+        "s4_ep04",
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep08",
+        "s4_ep12"
+      ]
+    },
+    {
+      "charId": "nora_bell",
+      "name": "Nora Bell",
+      "role": "Dexter's young camera operator",
+      "personality": "Nervous, honest at heart; finds her courage in Act 3.",
+      "purpose": "Films the tin note (Case 03), gives Dexter away (Case 07), sends the studio address (Case 10) and opens the safe word (Case 11).",
+      "appearance": "About twenty-four, short blond hair under a black cap, headphones round her neck, a TV camera on her shoulder.",
+      "relationships": [
+        {
+          "charId": "dexter_vance",
+          "relation": "Her boss; she stops covering for him."
+        }
+      ],
+      "cases": [
+        "s4_ep03",
+        "s4_ep07",
+        "s4_ep10",
+        "s4_ep11"
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "locId": "new_york_public_library",
+      "name": "New York Public Library",
+      "cityArea": "Midtown Manhattan, Fifth Avenue and 42nd Street",
+      "visual": "A white marble library with two stone lions on its steps, a quiet exhibit hall with a glass case.",
+      "storyRole": "Where the page is cut (Case 01).",
+      "cases": [
+        "s4_ep01"
+      ],
+      "placeIds": [
+        "s4_newyork.exhibit_hall",
+        "s4_newyork.library_steps"
+      ]
+    },
+    {
+      "locId": "grand_central",
+      "name": "Grand Central Terminal",
+      "cityArea": "Midtown Manhattan, 42nd Street",
+      "visual": "A huge train hall, a green ceiling of gold stars painted backwards, a four-faced clock on a round booth, a Lost and Found.",
+      "storyRole": "Eleanor's first friend and the brass egg (Case 02).",
+      "cases": [
+        "s4_ep02"
+      ],
+      "placeIds": [
+        "s4_newyork.main_concourse"
+      ]
+    },
+    {
+      "locId": "chinatown",
+      "name": "Chinatown",
+      "cityArea": "Lower Manhattan, Doyers Street",
+      "visual": "A narrow street that bends like an elbow, red lanterns, an old tea house.",
+      "storyRole": "Mei Lee's tea house, the red tin and the song's secret (Case 03).",
+      "cases": [
+        "s4_ep03"
+      ],
+      "placeIds": [
+        "s4_newyork.tea_house",
+        "s4_newyork.tea_room"
+      ]
+    },
+    {
+      "locId": "brooklyn_bridge",
+      "name": "Brooklyn Bridge",
+      "cityArea": "Between Manhattan and Brooklyn, over the East River",
+      "visual": "Stone gothic towers, steel cables, a wooden walkway, a green bench.",
+      "storyRole": "The brass bird is taken from its bench (Case 04).",
+      "cases": [
+        "s4_ep04"
+      ],
+      "placeIds": [
+        "s4_newyork.bridge_walkway"
+      ]
+    },
+    {
+      "locId": "hart_building",
+      "name": "The Hart Building",
+      "cityArea": "Greenwich Village, Bleecker Street (made up)",
+      "visual": "An old brick building with an iron bird over the door; inside, Otto's ticking clock shop.",
+      "storyRole": "Where Eleanor made her toys; Otto's shop (Case 05).",
+      "cases": [
+        "s4_ep05"
+      ],
+      "placeIds": [
+        "s4_newyork.clock_shop"
+      ]
+    },
+    {
+      "locId": "statue_of_liberty",
+      "name": "Statue of Liberty",
+      "cityArea": "Liberty Island, New York Harbor",
+      "visual": "The tall green statue with her torch, a ferry dock, a postcard stand, seagulls.",
+      "storyRole": "Otto's alibi (Case 06); Liberty means freedom (Case 12).",
+      "cases": [
+        "s4_ep06"
+      ],
+      "placeIds": [
+        "s4_newyork.liberty_island"
+      ]
+    },
+    {
+      "locId": "times_square",
+      "name": "Times Square",
+      "cityArea": "Midtown Manhattan, Broadway and Seventh Avenue",
+      "visual": "Giant screens, red steps, yellow taxis; a TV studio under a glass star nearby.",
+      "storyRole": "Dexter's lie (Case 07) and his studio (Case 11).",
+      "cases": [
+        "s4_ep07",
+        "s4_ep11"
+      ],
+      "placeIds": [
+        "s4_newyork.times_square",
+        "s4_newyork.tv_studio"
+      ]
+    },
+    {
+      "locId": "washington_square",
+      "name": "Washington Square Park",
+      "cityArea": "Greenwich Village",
+      "visual": "A big white marble arch standing alone, a round fountain, street musicians.",
+      "storyRole": "Rosa's secret (Case 08).",
+      "cases": [
+        "s4_ep08"
+      ],
+      "placeIds": [
+        "s4_newyork.square_arch"
+      ]
+    },
+    {
+      "locId": "coney_island",
+      "name": "Coney Island",
+      "cityArea": "Southern Brooklyn, by the Atlantic",
+      "visual": "A wooden boardwalk, the beach, the 1920 Wonder Wheel with still and swinging cars.",
+      "storyRole": "Eleanor's last friend and box (Case 09).",
+      "cases": [
+        "s4_ep09"
+      ],
+      "placeIds": [
+        "s4_newyork.coney_boardwalk"
+      ]
+    },
+    {
+      "locId": "central_park",
+      "name": "Central Park",
+      "cityArea": "The middle of Manhattan",
+      "visual": "Bethesda Terrace with its angel fountain; Belvedere Castle on a rock above a pond, with a weather station.",
+      "storyRole": "Rosa's box is stolen (Case 10); the Lark sleeps in the castle (Case 12).",
+      "cases": [
+        "s4_ep10",
+        "s4_ep12"
+      ],
+      "placeIds": [
+        "s4_newyork.bethesda_terrace",
+        "s4_newyork.belvedere_castle"
+      ]
+    }
+  ],
+  "acts": [
+    {
+      "actId": "act1",
+      "title": "THE TORN PAGE",
+      "summary": "The notebook's first clue is cut out; the rubbing starts Eleanor's trail through Grand Central and Chinatown to the bridge.",
+      "caseIds": [
+        "s4_ep01",
+        "s4_ep02",
+        "s4_ep03",
+        "s4_ep04"
+      ],
+      "turningPoint": "Case 04: the brass bird is gone from the bench. Someone who heard the tin note is one step ahead."
+    },
+    {
+      "actId": "act2",
+      "title": "THE RACE",
+      "summary": "The clockmaker is suspected and cleared; the TV crew's boots, lie and note; the violinist's secret.",
+      "caseIds": [
+        "s4_ep05",
+        "s4_ep06",
+        "s4_ep07",
+        "s4_ep08"
+      ],
+      "turningPoint": "Case 08: Rosa is Eleanor's great-granddaughter and keeps the song's end; Dexter wants her music box."
+    },
+    {
+      "actId": "act3",
+      "title": "THE LARK'S SONG",
+      "summary": "The last friend names the castle; Dexter steals the song box and is caught; the Lark sings again.",
+      "caseIds": [
+        "s4_ep09",
+        "s4_ep10",
+        "s4_ep11",
+        "s4_ep12"
+      ],
+      "turningPoint": "Case 11: the cut page, the bird and the music box are in Dexter's studio. Case 12: the Lark is woken and shared."
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "s4_ep01",
+      "title": "The Torn Page",
+      "question": "When was the page taken, and where does the trail begin?",
+      "solution": "Between nine and 10:05 PM (a light at ten, a man with a black bag); the rubbing points to Grand Central.",
+      "fromPrevious": "The season opens.",
+      "toNext": "The great hall of trains and the Lark's egg."
+    },
+    {
+      "caseId": "s4_ep02",
+      "title": "The Stars Painted Backwards",
+      "question": "Who came for the egg first, and what does it hold?",
+      "solution": "A tall man in star boots who could not answer; CLOCK earns the egg, EAST opens it; the note names a tea house.",
+      "fromPrevious": "The pencil rubbing.",
+      "toNext": "The Golden Lantern Tea House in Chinatown."
+    },
+    {
+      "caseId": "s4_ep03",
+      "title": "The Tea of 1926",
+      "question": "What did Eleanor leave at the tea house?",
+      "solution": "The moon-and-rabbit tin, earned with Eleanor's tea; the song is in two halves; 4-2-4 opens the tin.",
+      "fromPrevious": "The egg note.",
+      "toNext": "The brass bird on the Brooklyn Bridge. The TV crew heard it."
+    },
+    {
+      "caseId": "s4_ep04",
+      "title": "The Empty Bench",
+      "question": "Who reached the bird first?",
+      "solution": "Star prints in wet paint (9:30-11:30); the dancing bird; a clockmaker at nine; STARS opens Eleanor's spare box.",
+      "fromPrevious": "The tin note.",
+      "toNext": "Otto Brandt, and Eleanor's family who plays the song."
+    },
+    {
+      "caseId": "s4_ep05",
+      "title": "The Clockmaker's Shop",
+      "question": "Is Otto the thief?",
+      "solution": "His reason is not money; his diary sends him to Liberty Island at 9:30; his screws are too small; Karl's photo shows baby Ruth and a violin.",
+      "fromPrevious": "The clockmaker at the bench.",
+      "toNext": "Otto's sister on Liberty Island."
+    },
+    {
+      "caseId": "s4_ep06",
+      "title": "The Green Lady's Island",
+      "question": "Was Otto really on the island?",
+      "solution": "Yes: ticket, timetable and sister give him an alibi; only the TV crew is left; Otto remembers E, G, G.",
+      "fromPrevious": "Otto's diary.",
+      "toNext": "The TV crew in Times Square."
+    },
+    {
+      "caseId": "s4_ep07",
+      "title": "Lights of Times Square",
+      "question": "Does Dexter tell the truth?",
+      "solution": "His show's boots made the prints; Nora and Sam say he was alone; the crew wants the violin girl's song.",
+      "fromPrevious": "Maya's list.",
+      "toNext": "The violin girl by the white arch."
+    },
+    {
+      "caseId": "s4_ep08",
+      "title": "The Violin in Washington Square",
+      "question": "Who is the violin girl?",
+      "solution": "Rosa, Eleanor's great-granddaughter; the egg earns her trust; D, A, D; HART opens the music box.",
+      "fromPrevious": "The crew's schedule.",
+      "toNext": "A big wheel by the sea."
+    },
+    {
+      "caseId": "s4_ep09",
+      "title": "The Wonder Wheel",
+      "question": "What does the last friend keep?",
+      "solution": "Eleanor's question (CASTLE), the box in the car that never swings (SONG) and her last steps.",
+      "fromPrevious": "The music box lid.",
+      "toNext": "The castle in Central Park, but first Rosa plays at Bethesda Terrace."
+    },
+    {
+      "caseId": "s4_ep10",
+      "title": "The Stolen Song",
+      "question": "Who took Rosa's music box?",
+      "solution": "Dexter, right next to the case; Nora sends his studio; his dropped page shows he lacks the castle; Rosa still has the song.",
+      "fromPrevious": "Eleanor's last steps.",
+      "toNext": "The studio with the glass star."
+    },
+    {
+      "caseId": "s4_ep11",
+      "title": "The Studio with the Glass Star",
+      "question": "Can Dexter be proved the thief?",
+      "solution": "Nora and Frank place him in the library at ten; the bird is on his shelf; the page fits the stub; KEEPERS opens his safe.",
+      "fromPrevious": "Nora's message.",
+      "toNext": "The castle, at last."
+    },
+    {
+      "caseId": "s4_ep12",
+      "title": "The Lark's Song",
+      "question": "Where is the Silver Lark, and what should be done with it?",
+      "solution": "In Belvedere Castle's east wall; the egg and the whole song wake it; Eleanor asks you to share it; FREEDOM opens its cage.",
+      "fromPrevious": "Dexter caught, the music box back.",
+      "toNext": "The season ends."
+    }
+  ],
+  "mysteryQuestions": [
+    {
+      "question": "When was the page taken?",
+      "raisedIn": "s4_ep01",
+      "answeredIn": "s4_ep01",
+      "answer": "Friday, between nine and 10:05 PM."
+    },
+    {
+      "question": "Who cut out the page?",
+      "raisedIn": "s4_ep01",
+      "answeredIn": "s4_ep11",
+      "answer": "Dexter Vance: in the library at ten, the page in his desk fits the stub."
+    },
+    {
+      "question": "How did a TV star hear the news so soon?",
+      "raisedIn": "s4_ep01",
+      "answeredIn": "s4_ep11",
+      "answer": "He was the thief: he had been in the library that night."
+    },
+    {
+      "question": "What is the Lark's egg?",
+      "raisedIn": "s4_ep01",
+      "answeredIn": "s4_ep02",
+      "answer": "A brass egg kept by Grand Central's Lost and Found since 1926."
+    },
+    {
+      "question": "Who asked for the egg first?",
+      "raisedIn": "s4_ep02",
+      "answeredIn": "s4_ep07",
+      "answer": "Dexter, in his show's star boots."
+    },
+    {
+      "question": "Why do Rosa and Otto know the same old song?",
+      "raisedIn": "s4_ep02",
+      "answeredIn": "s4_ep08",
+      "answer": "Rosa's family keeps it; Otto's grandfather learned from Eleanor."
+    },
+    {
+      "question": "Who reached the brass bird first?",
+      "raisedIn": "s4_ep04",
+      "answeredIn": "s4_ep11",
+      "answer": "Dexter: the bird was on his prop shelf."
+    },
+    {
+      "question": "Is Otto the thief?",
+      "raisedIn": "s4_ep04",
+      "answeredIn": "s4_ep06",
+      "answer": "No: he was on Liberty Island while the paint was wet, and his boots are plain."
+    },
+    {
+      "question": "Does Eleanor still have a family?",
+      "raisedIn": "s4_ep03",
+      "answeredIn": "s4_ep08",
+      "answer": "Yes: Rosa Diaz, her great-granddaughter."
+    },
+    {
+      "question": "Who took Rosa's music box?",
+      "raisedIn": "s4_ep10",
+      "answeredIn": "s4_ep11",
+      "answer": "Dexter: it was in his safe."
+    },
+    {
+      "question": "Where is the Silver Lark?",
+      "raisedIn": "s4_ep01",
+      "answeredIn": "s4_ep12",
+      "answer": "In the east wall of Belvedere Castle, behind the stone lark."
+    },
+    {
+      "question": "What should be done with the Lark?",
+      "raisedIn": "s4_ep01",
+      "answeredIn": "s4_ep12",
+      "answer": "Shared with every child of the city: it sings in the library every Saturday."
+    }
+  ],
+  "clueThreads": [
+    {
+      "from": "s4_ep01_c1",
+      "to": [
+        "s4_ep07_m2",
+        "s4_ep11_m1"
+      ],
+      "meaning": "The light at ten and the man with the black bag: Dexter in the library on Friday night (Case 07, proved in Case 11)."
+    },
+    {
+      "from": "s4_ep01_c2",
+      "to": [
+        "s4_ep02_m2",
+        "s4_ep03_m2",
+        "s4_ep09_m1"
+      ],
+      "meaning": "Eleanor's rule (each friend asks one question): Grace's, Mrs. Lee's and the wheel keeper's questions."
+    },
+    {
+      "from": "s4_ep01_c3",
+      "to": [
+        "s4_ep02_m1",
+        "s4_ep02_m3",
+        "s4_ep04_final"
+      ],
+      "meaning": "The great hall of trains and its painted stars: the egg's word EAST and the spare box's STARS."
+    },
+    {
+      "from": "s4_ep01_e2",
+      "to": [
+        "s4_ep11_final",
+        "s4_ep12_m3"
+      ],
+      "meaning": "The newspaper's promise, \"for a child of the city\": answered to Dexter in Case 11 and by Eleanor's letter in Case 12."
+    },
+    {
+      "from": "s4_ep01_e3",
+      "to": [
+        "s4_ep11_m3"
+      ],
+      "meaning": "The pencil rubbing: the same words as the page found in Dexter's desk."
+    },
+    {
+      "from": "s4_ep01_e4",
+      "to": [
+        "s4_ep11_m3"
+      ],
+      "meaning": "The page stub with a three-point zigzag: the cut page fits it in Case 11."
+    },
+    {
+      "from": "s4_ep02_c1",
+      "to": [
+        "s4_ep04_m3"
+      ],
+      "meaning": "The early visitor in star boots, and Otto seen at the clock: the clockmaker becomes a suspect."
+    },
+    {
+      "from": "s4_ep02_c2",
+      "to": [
+        "s4_ep03_final"
+      ],
+      "meaning": "The clock's four faces: the tin's first number."
+    },
+    {
+      "from": "s4_ep02_c3",
+      "to": [
+        "s4_ep03_final",
+        "s4_ep09_final",
+        "s4_ep12_m1"
+      ],
+      "meaning": "EAST: the tin's third number, the wall the egg named, the castle's east wall."
+    },
+    {
+      "from": "s4_ep02_e1",
+      "to": [
+        "s4_ep04_m1",
+        "s4_ep07_m1"
+      ],
+      "meaning": "The star print: matched in the bridge paint and in the TV shop window."
+    },
+    {
+      "from": "s4_ep02_e2",
+      "to": [
+        "s4_ep06_final",
+        "s4_ep08_m2",
+        "s4_ep12_m2"
+      ],
+      "meaning": "The brass egg: the notes on the bird's wing spell it, Rosa trusts its bearer, it fits the stone nest."
+    },
+    {
+      "from": "s4_ep02_e3",
+      "to": [
+        "s4_ep03_final"
+      ],
+      "meaning": "The egg note's two red lanterns: the tin's second number."
+    },
+    {
+      "from": "s4_ep02_e4",
+      "to": [
+        "s4_ep03_m1"
+      ],
+      "meaning": "The tea house address."
+    },
+    {
+      "from": "s4_ep03_c3",
+      "to": [
+        "s4_ep04_m2",
+        "s4_ep05_final",
+        "s4_ep06_final",
+        "s4_ep08_m2"
+      ],
+      "meaning": "The six-note song in two halves: the bird's three notes, Otto's memory of them, the family's end."
+    },
+    {
+      "from": "s4_ep03_e4",
+      "to": [
+        "s4_ep04_m1",
+        "s4_ep06_m3"
+      ],
+      "meaning": "The tin note, filmed by the TV crew: how the thief knew the bench, and why only the crew is left on Maya's list."
+    },
+    {
+      "from": "s4_ep04_c1",
+      "to": [
+        "s4_ep05_m2",
+        "s4_ep06_m2",
+        "s4_ep07_m2"
+      ],
+      "meaning": "The wet-paint window (9:30 to 11:30): Otto's ferry clears him; Dexter alone on the bridge at ten."
+    },
+    {
+      "from": "s4_ep04_c3",
+      "to": [
+        "s4_ep05_m1"
+      ],
+      "meaning": "The clockmaker at the bench: why the case goes to Otto's shop."
+    },
+    {
+      "from": "s4_ep04_e1",
+      "to": [
+        "s4_ep05_m3"
+      ],
+      "meaning": "The bench's finger-wide screw holes, against Otto's tiny screws."
+    },
+    {
+      "from": "s4_ep04_e2",
+      "to": [
+        "s4_ep11_m2"
+      ],
+      "meaning": "Eleanor's dancing bird: recognised on Dexter's prop shelf."
+    },
+    {
+      "from": "s4_ep04_e4",
+      "to": [
+        "s4_ep07_final",
+        "s4_ep08_m1"
+      ],
+      "meaning": "Eleanor's spare note (her family plays on strings, with a bow): the violin girl."
+    },
+    {
+      "from": "s4_ep05_c2",
+      "to": [
+        "s4_ep06_m1"
+      ],
+      "meaning": "Otto's diary: the 9:30 ferry, checked on Liberty Island."
+    },
+    {
+      "from": "s4_ep05_e1",
+      "to": [
+        "s4_ep08_final"
+      ],
+      "meaning": "Otto's letter names the Hart Building: the music box's word."
+    },
+    {
+      "from": "s4_ep05_e4",
+      "to": [
+        "s4_ep07_final",
+        "s4_ep08_m3"
+      ],
+      "meaning": "Karl's photo of Eleanor, baby Ruth and a violin: Rosa's family."
+    },
+    {
+      "from": "s4_ep06_c1",
+      "to": [
+        "s4_ep12_final"
+      ],
+      "meaning": "Liberty Island and its statue: Liberty means freedom, the cage's word."
+    },
+    {
+      "from": "s4_ep06_c3",
+      "to": [
+        "s4_ep07_m1"
+      ],
+      "meaning": "Only the TV crew heard the tin note and has no alibi."
+    },
+    {
+      "from": "s4_ep06_e4",
+      "to": [
+        "s4_ep12_m2"
+      ],
+      "meaning": "E, G, G: the song's start, played at the castle."
+    },
+    {
+      "from": "s4_ep07_c2",
+      "to": [
+        "s4_ep10_m1"
+      ],
+      "meaning": "Dexter's lie about Sunday: why he is watched at Bethesda Terrace."
+    },
+    {
+      "from": "s4_ep07_c3",
+      "to": [
+        "s4_ep08_m1"
+      ],
+      "meaning": "The crew's schedule: the violin girl by the white arch."
+    },
+    {
+      "from": "s4_ep07_e4",
+      "to": [
+        "s4_ep10_m3"
+      ],
+      "meaning": "The scribbled truck note: the same writing as the page Dexter drops."
+    },
+    {
+      "from": "s4_ep08_c2",
+      "to": [
+        "s4_ep09_m3",
+        "s4_ep10_final",
+        "s4_ep12_m2"
+      ],
+      "meaning": "D, A, D: the iron box's word, Rosa's case lock, the song's end."
+    },
+    {
+      "from": "s4_ep08_e4",
+      "to": [
+        "s4_ep09_m1",
+        "s4_ep10_m1"
+      ],
+      "meaning": "Rosa's music box: the wheel by the sea, then stolen at Bethesda Terrace."
+    },
+    {
+      "from": "s4_ep09_c1",
+      "to": [
+        "s4_ep10_m3"
+      ],
+      "meaning": "The castle Dexter could not name: what his dropped page is missing."
+    },
+    {
+      "from": "s4_ep09_e4",
+      "to": [
+        "s4_ep12_m1"
+      ],
+      "meaning": "Eleanor's last steps, followed at the castle."
+    },
+    {
+      "from": "s4_ep10_c2",
+      "to": [
+        "s4_ep11_m1"
+      ],
+      "meaning": "Nora's message: the studio under the glass star."
+    },
+    {
+      "from": "s4_ep10_e1",
+      "to": [
+        "s4_ep11_final"
+      ],
+      "meaning": "Rosa's notes: the music box went missing next to Dexter, found in his safe."
+    }
+  ],
+  "timeline": [
+    {
+      "when": "1926",
+      "what": "Eleanor Hart makes the Silver Lark and hides it in Belvedere Castle; she gives her clues to four friends (Grand Central's Lost and Found, Mei Lee's tea house, a bench on the Brooklyn Bridge, the Wonder Wheel) and the song's end to her family."
+    },
+    {
+      "when": "September, this year",
+      "what": "Eleanor's notebook is found in the attic of the Hart Building and given to the library; Otto protests."
+    },
+    {
+      "when": "Friday, 9 PM",
+      "what": "Frank sees the page on his round. Dexter sends Nora home and stays in the library."
+    },
+    {
+      "when": "Friday, 10 PM",
+      "what": "Dexter cuts out the last page with his tape knife by torchlight (\"Finders keepers!\")."
+    },
+    {
+      "when": "Friday, 10:05 PM",
+      "what": "Dexter leaves by the side door with his black bag (Sam, the pass list)."
+    },
+    {
+      "when": "Saturday, 7 AM",
+      "what": "Dexter asks Grace for the egg and cannot answer. Later, the detective earns it."
+    },
+    {
+      "when": "Saturday afternoon",
+      "what": "The tin note is read at the tea house; Dexter and Nora film it."
+    },
+    {
+      "when": "Sunday, 9 AM to 9:30 AM",
+      "what": "Otto sits on the bench, then takes the 9:30 ferry. The bench is painted at 9:30."
+    },
+    {
+      "when": "Sunday, 10 AM",
+      "what": "Dexter, alone, takes the brass bird; his boots print stars in the wet paint (Sam sees him)."
+    },
+    {
+      "when": "Monday",
+      "what": "The detective meets Rosa at 3 PM, before the crew's 4 PM; Dexter offers to buy her box. He tries the Wonder Wheel and says \"palace\"."
+    },
+    {
+      "when": "Wednesday, 2:00 to 2:10 PM",
+      "what": "Dexter takes Rosa's music box at Bethesda Terrace."
+    },
+    {
+      "when": "Wednesday, afternoon",
+      "what": "Dexter is caught at his studio."
+    },
+    {
+      "when": "Thursday morning",
+      "what": "The Silver Lark is woken at Belvedere Castle."
+    }
+  ],
+  "englishReview": [
+    {
+      "caseId": "s4_ep01",
+      "level": "A1-A2 (ages 8-10)",
+      "verdict": "Fits.",
+      "notes": [
+        "Witness answers are 4 to 10 words; the night is ordered by before/after and \"an hour after\".",
+        "\"Backwards\" and \"rubbing\" are in the glossary; the right station is told by trains and painted stars."
+      ]
+    },
+    {
+      "caseId": "s4_ep02",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "The riddle uses one pattern (I have X, but...); EAST is reached by \"backwards\" and \"opposite\", both in the text.",
+        "The shop picture is chosen by two named things, never colour alone."
+      ]
+    },
+    {
+      "caseId": "s4_ep03",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "The recipe is ordered by first of all, after, once and last; \"never add milk\" makes the decoy fair.",
+        "The dial numbers come from lines the player has already read."
+      ]
+    },
+    {
+      "caseId": "s4_ep04",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "Times with minutes and \"two hours to dry\" are the main skill.",
+        "CLOCKMAKER is built from \"fixes clocks\" plus \"maker\"; the definition is in the letter."
+      ]
+    },
+    {
+      "caseId": "s4_ep05",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "\"As wide as a finger\" against \"as small as grains of rice\" teaches comparison.",
+        "The island is chosen by what stands on it."
+      ]
+    },
+    {
+      "caseId": "s4_ep06",
+      "level": "A2-B1 (ages 10-12)",
+      "verdict": "Fits.",
+      "notes": [
+        "Timetable reading (leaves, takes fifteen minutes, as soon as).",
+        "ALIBI is defined in the letter, so no outside knowledge is needed."
+      ]
+    },
+    {
+      "caseId": "s4_ep07",
+      "level": "A2-B1 (ages 10-12)",
+      "verdict": "Fits.",
+      "notes": [
+        "Three-way comparison: Dexter's answer is the odd one out.",
+        "The schedule's description (an arch standing alone, a fountain in front) separates the parks."
+      ]
+    },
+    {
+      "caseId": "s4_ep08",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "Family words built step by step (daughter, grandmother, great-grandmother).",
+        "The music box word comes from Otto's letter, read three cases before."
+      ]
+    },
+    {
+      "caseId": "s4_ep09",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "\"Not a palace, but...\" riddle; the wheel car is chosen by \"outside edge\" and \"flat roof\".",
+        "Steps out of order with first, then, before and when."
+      ]
+    },
+    {
+      "caseId": "s4_ep10",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "Place words (behind, next to, far from) decide who was close.",
+        "The dropped page uses \"Got it\" and \"???\" to show what is missing."
+      ]
+    },
+    {
+      "caseId": "s4_ep11",
+      "level": "A2-B1 (ages 10-12)",
+      "verdict": "Fits.",
+      "notes": [
+        "\"Finders keepers\" is explained in the letter before it is spelled.",
+        "The proof is a comparison of two edges, told in short lines."
+      ]
+    },
+    {
+      "caseId": "s4_ep12",
+      "level": "A2 (ages 9-11)",
+      "verdict": "Fits.",
+      "notes": [
+        "\"Starts with\" and \"ends with\" order the song; \"share\" is defined in Eleanor's letter.",
+        "FREEDOM is reached from the letters found and \"Liberty means the same thing\"."
+      ]
+    }
+  ],
+  "notes": [
+    "Written by Claude Code for Season 4 (input: Season 4, New York), create-season STEP 1.",
+    "The Hart Building, the Golden Lantern Tea House and Dexter's studio are made up; everything else is a real place. Real facts used: Grand Central's backwards sky ceiling, its four-faced clock and Lost and Found; the Wonder Wheel (1920) with still and swinging cars; Belvedere Castle on Vista Rock with its weather station.",
+    "The culprit is suspected from Case 07 (boots, lie) and caught with proof in Case 11; the helper's secret is revealed in Case 08; the red herring is cleared in Case 06."
+  ]
+}

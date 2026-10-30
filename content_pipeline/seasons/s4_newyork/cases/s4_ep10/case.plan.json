@@ -1,0 +1,492 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep10",
+  "seasonId": "s4_newyork",
+  "number": 10,
+  "actId": "act3",
+  "title": "The Stolen Song",
+  "synopsis": [
+    "Rosa plays at Bethesda Terrace in Central Park.",
+    "The TV crew films her. Ten minutes later, her music box is gone.",
+    "Who took the song, and where did they go?"
+  ],
+  "goal": "Find who took Rosa's music box, where they went and what they still do not know.",
+  "characters": [
+    "maya_chen",
+    "rosa_diaz",
+    "dexter_vance",
+    "nora_bell"
+  ],
+  "locations": [
+    "central_park"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep10_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.bethesda_terrace",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "dexter",
+          "options": [
+            {
+              "id": "maya",
+              "label": "Maya, by the fountain",
+              "feedback": "Maya stood by the fountain, far from the case. Who stood right next to it?"
+            },
+            {
+              "id": "nora",
+              "label": "Nora, on the steps",
+              "feedback": "Nora was up on the steps with her camera, far away. Read again."
+            },
+            {
+              "id": "dexter",
+              "label": "Dexter, behind the case"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Rosa's notes of where everyone stood (by, on, behind, next to). Only one person was close enough to the open violin case."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep08_e4",
+          "use": "textMention",
+          "note": "Rosa's music box, which Dexter wanted to buy."
+        },
+        {
+          "ref": "s4_ep07_c2",
+          "use": "textMention",
+          "note": "Dexter lied about Sunday morning."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep10_c1",
+        "evidence": "s4_ep10_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "by, on, behind, next to 같은 위치 표현을 읽고 바이올린 케이스 가장 가까이에 있던 사람을 찾는다.",
+        "skill": "grammarInContext",
+        "expressions": [
+          "Dexter stood behind my violin case, right next to it.",
+          "Nora was up on the steps with her camera, far away."
+        ]
+      },
+      "play": {
+        "title": "The Empty Violin Case",
+        "location": "BETHESDA TERRACE",
+        "story": [
+          "Rosa plays by the angel fountain. A crowd listens.",
+          "Dexter's crew films her, smiling and clapping.",
+          "Then Rosa cries out. \"My music box! It's gone!\""
+        ],
+        "letterIntro": "Rosa's notes say:",
+        "letter": "At 2:00, I put my music box in my open violin case.\nMaya stood by the fountain, far from my case.\nNora was up on the steps with her camera, far away.\nDexter stood behind my violin case, right next to it.\nAt 2:10, the box was gone.",
+        "question": "Who was close enough to take the box?",
+        "hints": [
+          "Find the words 'far' in the notes. Those people were not close.",
+          "Who stood right next to the case?"
+        ],
+        "successMessage": "You found who was close to the box!",
+        "transition": [
+          "Only Dexter stood right next to the case.",
+          "And now Dexter is gone. So is his black bag.",
+          "Wet star prints run up the terrace steps."
+        ],
+        "mapX": 0.45,
+        "mapY": 0.15,
+        "clue": {
+          "title": "Behind the Case",
+          "value": "2:00 – 2:10 · DEXTER NEXT TO THE CASE",
+          "note": "Dexter stood right next to Rosa's violin case when her music box went missing.",
+          "symbol": "bag"
+        },
+        "evidence": {
+          "name": "Rosa's Notes",
+          "icon": "letter",
+          "description": "Rosa's notes of where everyone stood at Bethesda Terrace.",
+          "inscription": "Dexter stood behind my violin case, right next to it."
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "THE SONG IS STOLEN",
+          "detail": "Dexter was next to the case, and now he is gone. Where did he go?"
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep10_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.bethesda_terrace",
+      "puzzle": {
+        "paletteId": "picture_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "imageChoice",
+        "answerSpec": {
+          "answer": "star",
+          "options": [
+            {
+              "id": "clock",
+              "label": "The building with a clock on top",
+              "feedback": "This roof has a big round clock. Nora says a glass star.",
+              "altText": "a tall building near Times Square with a big round clock on its roof",
+              "picture": "assets/seasons/season_04_newyork/cases/case_10/building_clock.png"
+            },
+            {
+              "id": "star",
+              "label": "The building with a star on top",
+              "altText": "a tall building near Times Square with a big glass star on its roof",
+              "picture": "assets/seasons/season_04_newyork/cases/case_10/building_star.png"
+            },
+            {
+              "id": "spire",
+              "label": "The building with a needle on top",
+              "feedback": "This roof has a tall needle. Nora says a glass star.",
+              "altText": "a tall building near Times Square with a tall thin needle on its roof",
+              "picture": "assets/seasons/season_04_newyork/cases/case_10/building_spire.png"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.building_clock",
+          "s4_newyork.asset.building_star",
+          "s4_newyork.asset.building_spire"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "A picture choice with the names hidden: Nora's message names the studio's roof (a big glass star). The three buildings are drawn the same way and differ only by what stands on the roof (a star, a round clock, a needle), never by colour."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep10_c1",
+          "use": "textMention",
+          "note": "Dexter left with his black bag."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep10_c2",
+        "evidence": "s4_ep10_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "노라의 메시지 'a big glass star on its roof'를 읽고 세 건물 중 맞는 스튜디오를 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Dexter took a taxi to our studio.",
+          "the building with a big glass star on its roof"
+        ]
+      },
+      "play": {
+        "title": "Nora's Message",
+        "location": "BETHESDA TERRACE",
+        "story": [
+          "Nora runs down the steps, her camera bumping.",
+          "\"I can't stay. He will see me,\" she whispers.",
+          "A minute later, a message comes to Maya's phone."
+        ],
+        "letterIntro": "Nora's message says:",
+        "letter": "I'm sorry. I should have told you before.\nDexter took a taxi to our studio.\nIt is near Times Square,\nin the building with a big glass star on its roof.\nPlease come. — Nora",
+        "question": "Which building is Dexter's studio?",
+        "hints": [
+          "Read what is on the studio's roof.",
+          "Look at the top of each building."
+        ],
+        "successMessage": "You found Dexter's studio!",
+        "transition": [
+          "A tall building with a big glass star on its roof.",
+          "\"Nora wants to help us,\" Maya says.",
+          "By the steps, Rosa picks up a page that someone dropped."
+        ],
+        "mapX": 0.45,
+        "mapY": 0.15,
+        "clue": {
+          "title": "The Glass Star",
+          "value": "THE STUDIO WITH A GLASS STAR ON ITS ROOF",
+          "note": "Dexter took a taxi to his studio, near Times Square, under a big glass star.",
+          "symbol": "frame"
+        },
+        "evidence": {
+          "name": "Nora's Message",
+          "icon": "letter",
+          "description": "Nora's message to Maya's phone.",
+          "inscription": "Dexter took a taxi to our studio."
+        },
+        "hideOptionNames": true,
+        "discovery": {
+          "type": "newLead",
+          "title": "NORA'S CHOICE",
+          "detail": "Nora is on your side now. Dexter is at the studio with the glass star."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep10_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.bethesda_terrace",
+      "puzzle": {
+        "paletteId": "word_entry",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "wordInput",
+        "answerSpec": {
+          "answer": "PLACE",
+          "acceptedAnswers": [
+            "STOP",
+            "THE PLACE",
+            "THE LAST PLACE"
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: a page Dexter dropped on the steps, in the same fast writing as the scribbled note in his truck (Case 07). He has the bird's notes and Rosa's box, but not the castle."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep07_e4",
+          "use": "evidenceLink",
+          "note": "The same fast writing as the note in the TV truck."
+        },
+        {
+          "ref": "s4_ep09_c1",
+          "use": "textMention",
+          "note": "The keeper told him nothing: he said 'palace'."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep10_c3",
+        "evidence": "s4_ep10_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "떨어진 메모의 Got it과 ???를 비교해, 덱스터가 아직 모르는 것이 무엇인지 단어로 쓴다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "The keeper would not tell me.",
+          "I still need the last place."
+        ]
+      },
+      "play": {
+        "title": "The Dropped Page",
+        "location": "BETHESDA TERRACE",
+        "story": [
+          "The page is torn from a small pocket notebook.",
+          "The writing is fast and messy.",
+          "\"I have seen this writing before,\" Maya says."
+        ],
+        "letterIntro": "The dropped page says:",
+        "letter": "The bird: E, G, G. Got it.\nThe girl's box: the end of the song. Got it today!\nThe last place: ??? The keeper would not tell me.\nI said 'palace'. Wrong!\nI still need the last place.",
+        "question": "What does the writer still not know?",
+        "prompt": "He does not know the last ____.",
+        "hints": [
+          "Which line has question marks?",
+          "Read the last line of the page."
+        ],
+        "successMessage": "You know what he is missing!",
+        "transition": [
+          "He has the bird and the box, but not the castle.",
+          "The writing is the same as the note in the TV truck.",
+          "Dexter wrote both."
+        ],
+        "feedback": {
+          "SONG": "He says he got the song's end today. Read the third line.",
+          "BIRD": "He says 'Got it' for the bird. What has question marks?"
+        },
+        "orderFeedback": "Check your spelling. It is the word in the last line.",
+        "mapX": 0.45,
+        "mapY": 0.15,
+        "clue": {
+          "title": "Dexter's Page",
+          "value": "HE HAS THE SONG · NOT THE PLACE",
+          "note": "Dexter has the bird and Rosa's box. But he does not know the castle.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "Dexter's Dropped Page",
+          "icon": "letter",
+          "description": "A page from Dexter's pocket notebook, dropped on the terrace steps.",
+          "inscription": "The last place: ??? The keeper would not tell me."
+        },
+        "evidenceLinkLine": "The same fast writing as the scribbled note in the TV truck.",
+        "discovery": {
+          "type": "deduction",
+          "title": "THE SAME WRITING",
+          "detail": "Dexter wrote the truck note too. He has the bird. But he cannot find the Lark."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep10_final",
+    "slot": "final",
+    "placeId": "s4_newyork.bethesda_terrace",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "DAD",
+        "options": [
+          {
+            "id": "a",
+            "label": "A"
+          },
+          {
+            "id": "d1",
+            "label": "D"
+          },
+          {
+            "id": "d2",
+            "label": "D"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Rosa's violin case has a small letter lock on its inside pocket; it opens with the song's end (Grandma Ana's note, Case 08). Inside: her own copy of the whole song, so the song is not lost."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep08_c2",
+        "use": "answerDerivation",
+        "note": "The end of the song: D, A, D."
+      },
+      {
+        "ref": "s4_ep10_c3",
+        "use": "textMention",
+        "note": "Dexter thinks he has the only copy of the song's end."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep10_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "할머니의 쪽지에서 노래의 끝 세 음(the end of the song)을 떠올려 글자를 맞춘다.",
+      "skill": "sentenceMeaning",
+      "expressions": [
+        "I know the end of the song by heart.",
+        "My case opens with those three notes."
+      ]
+    },
+    "play": {
+      "title": "Rosa Remembers",
+      "location": "BETHESDA TERRACE",
+      "story": [
+        "Rosa wipes her eyes. Then she smiles a little.",
+        "\"He thinks he has the only copy,\" she says.",
+        "She opens a small pocket inside her violin case. It has a letter lock."
+      ],
+      "letterIntro": "Rosa says:",
+      "letter": "I know the end of the song by heart.\nGrandma Ana wrote it in her note: three notes.\nMy case opens with those three notes.\nInside, I keep a copy of the whole song.",
+      "question": "Spell the three notes that open Rosa's violin case.",
+      "hints": [
+        "Open Grandma Ana's note in your Notebook.",
+        "The end of Eleanor's song: three letters."
+      ],
+      "successMessage": "Rosa's case opens!",
+      "transition": [
+        "Inside is a folded page: E, G, G, D, A, D.",
+        "\"We still have the whole song,\" Rosa says.",
+        "\"Now let's get my box back.\""
+      ],
+      "orderFeedback": "The three tiles fit. What did Grandma Ana's note say?",
+      "mapX": 0.45,
+      "mapY": 0.15,
+      "evidence": {
+        "name": "Rosa's Copy of the Song",
+        "icon": "feather",
+        "description": "Rosa's own copy of Eleanor's whole song, from her violin case.",
+        "inscription": "E, G, G, D, A, D."
+      },
+      "lockTitle": "ROSA'S VIOLIN CASE",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "The song is safe. But my great-grandmother's box!",
+          "speaker": "rosa_diaz",
+          "portrait": "assets/seasons/season_04_newyork/characters/rosa_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "Dexter was right next to your case.",
+          "evidence": "s4_ep10_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "And Nora told us where he went.",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "I will open the studio door for you. Hurry!",
+          "speaker": "nora_bell",
+          "portrait": "assets/seasons/season_04_newyork/characters/nora_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "Above Times Square, a glass star shines."
+        }
+      ]
+    }
+  },
+  "hook": "Dexter has the bird and the box. Can you prove he took the page, too?",
+  "learningGoal": {
+    "title": "Where people stand: behind, next to, far from",
+    "titleKo": "위치 표현: behind, next to, far from"
+  },
+  "play": {
+    "objectives": [
+      "Find who was next to the music box.",
+      "Find Dexter's studio.",
+      "Read the dropped page."
+    ],
+    "intro": [
+      "Central Park. Green trees, a lake and an angel on a fountain.",
+      "Rosa plays here on Wednesdays.",
+      "Today, Dexter's crew has come to film her."
+    ],
+    "caseSummary": "Rosa's music box vanished while Dexter stood next to it. Nora sent you to his studio. His dropped page is in the same writing as the truck note. He has the bird and the box, but not the castle. Rosa still has a copy of the song.",
+    "place": "CENTRAL PARK",
+    "keyWords": [
+      "behind",
+      "next to",
+      "far",
+      "roof",
+      "copy"
+    ],
+    "glossary": {
+      "terrace": "테라스, 넓은 계단 광장",
+      "behind": "~ 뒤에",
+      "close": "가까운",
+      "studio": "방송 스튜디오",
+      "roof": "지붕",
+      "messy": "지저분한",
+      "copy": "복사본",
+      "great-grandmother": "증조할머니"
+    }
+  },
+  "notes": [
+    "Nora turns helper here: her message (s4_ep10_e2) and her talk in Case 11.",
+    "Dexter's dropped page (s4_ep10_e3) matches the truck note (s4_ep07_e4): the same writer."
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "seasonId": "s4_newyork",
+  "number": 4,
+  "city": "New York",
+  "cases": 12,
+  "acts": 3,
+  "assetRoot": "assets/seasons/season_04_newyork",
+  "playbook": "tool/season_planner/PLAYBOOK.md"
+}

@@ -10,7 +10,7 @@ import 'package:world_mystery/widgets/art_assets.dart';
 /// from there. London and Paris look as they always did.
 void main() {
   test('the maps: London, Paris and Rome, each its own; none for an unknown season', () {
-    expect(SeasonMap.bySeason.keys, [SeasonIds.london, SeasonIds.paris, SeasonIds.rome], reason: 'Rome its own since the Rome integration');
+    expect(SeasonMap.bySeason.keys, [SeasonIds.london, SeasonIds.paris, SeasonIds.rome, SeasonIds.newyork], reason: 'Rome its own since the Rome integration');
     expect(SeasonMap.forSeason(SeasonIds.london)!.artwork, ArtAssets.londonMap);
     expect(SeasonMap.forSeason(SeasonIds.paris)!.artwork, ArtAssets.parisMap);
     expect(SeasonMap.forSeason('s9_nowhere'), isNull);
@@ -33,7 +33,7 @@ void main() {
       const Alignment(0.3, 0),
       const Alignment(0.2, -0.2),
     ));
-    expect(ArtAssets.seasonCovers.keys, [SeasonIds.london, SeasonIds.paris, SeasonIds.rome]);
+    expect(ArtAssets.seasonCovers.keys, [SeasonIds.london, SeasonIds.paris, SeasonIds.rome, SeasonIds.newyork]);
     expect(ArtAssets.seasonCovers['s9_nowhere'], isNull);
   });
 

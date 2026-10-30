@@ -1,0 +1,642 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep08",
+  "lines": [
+    {
+      "rookie": "The Violin in Washington Square",
+      "junior": "The Violin in Washington Square",
+      "master": "The Violin in Washington Square"
+    },
+    {
+      "rookie": "By the white arch, musicians play every afternoon.",
+      "junior": "Every afternoon, musicians play beside the white arch.",
+      "master": "Each afternoon, musicians gather to perform in the shadow of the white arch."
+    },
+    {
+      "rookie": "One of them knows Eleanor's old song.",
+      "junior": "One of them knows Eleanor's old song by heart.",
+      "master": "Among them is one who knows Eleanor's old song."
+    },
+    {
+      "rookie": "You must reach her before the TV crew does.",
+      "junior": "You have to find her before the TV crew gets there.",
+      "master": "You must reach her before the TV crew descends on the square."
+    },
+    {
+      "rookie": "Rosa's music box shows a wheel by the sea. And Dexter Vance wants that box. Why?",
+      "junior": "Rosa's music box reveals a wheel by the sea. And Dexter Vance is after that box. Why?",
+      "master": "Rosa's music box conceals a wheel by the sea. And Dexter Vance covets that very box. Why?"
+    },
+    {
+      "rookie": "Find the violin girl.",
+      "junior": "Find the girl with the violin.",
+      "master": "Track down the violin girl."
+    },
+    {
+      "rookie": "Earn Rosa's trust.",
+      "junior": "Win Rosa's trust.",
+      "master": "Earn Rosa's trust and confidence."
+    },
+    {
+      "rookie": "Open Rosa's music box.",
+      "junior": "Get Rosa's music box open.",
+      "master": "Unlock Rosa's music box."
+    },
+    {
+      "rookie": "Washington Square Park. A white arch, a fountain and music everywhere.",
+      "junior": "Washington Square Park. A white arch, a fountain and music all around.",
+      "master": "Washington Square Park. A white arch, a fountain and music drifting from every corner."
+    },
+    {
+      "rookie": "The TV crew will come at four.",
+      "junior": "The TV crew is coming at four.",
+      "master": "The TV crew is due at four."
+    },
+    {
+      "rookie": "You come at three.",
+      "junior": "You arrive at three.",
+      "master": "You arrive an hour earlier, at three."
+    },
+    {
+      "rookie": "The violin girl is Rosa. She played the same song at Grand Central. She trusted you because you carry the brass egg. Her family keeps the song's end: D, A, D. Rosa is Eleanor's great-granddaughter. Her music box opened with HART and showed a wheel by the sea.",
+      "junior": "The violin girl is Rosa, who played the same song at Grand Central. She trusted you because you carry the brass egg. Her family keeps the end of the song: D, A, D. Rosa is Eleanor's great-granddaughter, and her music box opened with HART to show a wheel by the sea.",
+      "master": "The violin girl turned out to be Rosa, who had played the same song at Grand Central. She placed her trust in you because you carry the brass egg. Her family guards the song's ending, D, A, D. Rosa is Eleanor's great-granddaughter, and her music box, unlocked with HART, revealed a wheel by the sea."
+    },
+    {
+      "rookie": "WASHINGTON SQUARE PARK",
+      "junior": "WASHINGTON SQUARE PARK",
+      "master": "WASHINGTON SQUARE PARK"
+    },
+    {
+      "rookie": "The guitar player",
+      "junior": "The guitar player",
+      "master": "The guitar player"
+    },
+    {
+      "rookie": "A guitar has strings. But is it played with a bow?",
+      "junior": "A guitar has strings. But does anyone play it with a bow?",
+      "master": "A guitar certainly has strings. But is it ever played with a bow?"
+    },
+    {
+      "rookie": "a young man playing a guitar with his fingers, no bow",
+      "junior": "a young man playing a guitar with his fingers and no bow",
+      "master": "a young man plucking a guitar with his fingers, without any bow"
+    },
+    {
+      "rookie": "The violin player",
+      "junior": "The violin player",
+      "master": "The violin player"
+    },
+    {
+      "rookie": "a young woman in a green beret playing a violin with a bow, the violin under her chin",
+      "junior": "a young woman in a green beret playing a violin with a bow, holding the violin under her chin",
+      "master": "a young woman in a green beret drawing a bow across a violin tucked under her chin"
+    },
+    {
+      "rookie": "The cello player",
+      "junior": "The cello player",
+      "master": "The cello player"
+    },
+    {
+      "rookie": "Strings and a bow, yes. But a cello stands on the floor, not under the chin.",
+      "junior": "Yes, it has strings and a bow. But a cello stands on the floor, not under the chin.",
+      "master": "Strings and a bow, indeed. Yet a cello rests on the floor rather than under the chin."
+    },
+    {
+      "rookie": "an old man playing a big cello with a bow, the cello standing on the floor",
+      "junior": "an old man playing a large cello with a bow, the cello resting on the floor",
+      "master": "an elderly man drawing a bow across a large cello that rests on the floor"
+    },
+    {
+      "rookie": "My family plays my song on strings, with a bow.",
+      "junior": "My family plays my song on strings, with a bow.",
+      "master": "My family plays my song on strings, with a bow."
+    },
+    {
+      "rookie": "It sits under the chin.",
+      "junior": "It sits under the chin.",
+      "master": "It sits under the chin."
+    },
+    {
+      "rookie": "Three Musicians",
+      "junior": "Three Musicians",
+      "master": "Three Musicians"
+    },
+    {
+      "rookie": "It is 3 PM. The white arch shines in the sun.",
+      "junior": "It is 3 PM, and the white arch shines in the sunlight.",
+      "master": "It is 3 PM, and the white arch gleams in the afternoon sun."
+    },
+    {
+      "rookie": "Three musicians play around the fountain.",
+      "junior": "Around the fountain, three musicians are playing.",
+      "master": "Three musicians perform around the fountain."
+    },
+    {
+      "rookie": "The TV crew comes at four. There is no time to lose.",
+      "junior": "The TV crew arrives at four. You have no time to waste.",
+      "master": "The TV crew arrives at four. There isn't a moment to spare."
+    },
+    {
+      "rookie": "Eleanor's spare note and Maya say:",
+      "junior": "Here is what Eleanor's spare note and Maya say:",
+      "master": "Eleanor's spare note and Maya offer these words:"
+    },
+    {
+      "rookie": "ELEANOR: My family plays my song on strings, with a bow.\nMAYA: And the violin is small. It sits under the chin.",
+      "junior": "ELEANOR: My family plays my song on strings, with a bow.\nMAYA: Also, the violin is small. It sits under the chin.",
+      "master": "ELEANOR: My family plays my song on strings, with a bow.\nMAYA: And a violin is a small instrument. It sits under the chin."
+    },
+    {
+      "rookie": "Which musician plays Eleanor's song?",
+      "junior": "Which musician is playing Eleanor's song?",
+      "master": "Which of the musicians performs Eleanor's song?"
+    },
+    {
+      "rookie": "Look for strings AND a bow.",
+      "junior": "Find someone with strings AND a bow.",
+      "master": "Seek out a player with strings AND a bow."
+    },
+    {
+      "rookie": "Where does each one sit: on the floor, or under the chin?",
+      "junior": "Where does each instrument go: on the floor, or under the chin?",
+      "master": "Where does each instrument rest: on the floor, or under the chin?"
+    },
+    {
+      "rookie": "You found the violin girl!",
+      "junior": "You found the girl with the violin!",
+      "master": "You've tracked down the violin girl!"
+    },
+    {
+      "rookie": "It is Rosa, the violinist from Grand Central.",
+      "junior": "It is Rosa, the same violinist you saw at Grand Central.",
+      "master": "It is Rosa, the very violinist from Grand Central."
+    },
+    {
+      "rookie": "She plays the same slow, old tune.",
+      "junior": "She plays the same slow, old melody.",
+      "master": "She plays the same slow, haunting old melody."
+    },
+    {
+      "rookie": "When she sees you, she stops.",
+      "junior": "As soon as she sees you, she stops playing.",
+      "master": "The moment she notices you, her bow falls still."
+    },
+    {
+      "rookie": "The Violinist",
+      "junior": "The Violinist",
+      "master": "The Violinist"
+    },
+    {
+      "rookie": "The violin girl is Rosa Diaz. She plays the same old song everywhere on the trail.",
+      "junior": "The violin girl is Rosa Diaz. She plays the same old song all along the trail.",
+      "master": "The violin girl is Rosa Diaz, who plays the same old song at every stop along the trail."
+    },
+    {
+      "rookie": "THE SAME OLD TUNE",
+      "junior": "THE SAME OLD TUNE",
+      "master": "THE SAME OLD TUNE"
+    },
+    {
+      "rookie": "Rosa played it at Grand Central too. Was she watching the trail?",
+      "junior": "Rosa played it at Grand Central as well. Was she keeping an eye on the trail?",
+      "master": "Rosa performed it at Grand Central too. Had she been quietly watching the trail?"
+    },
+    {
+      "rookie": "Because you are on TV.",
+      "junior": "Because you are on TV.",
+      "master": "Because you appear on TV."
+    },
+    {
+      "rookie": "Grandma Ana says never tell strangers. What will the careful reader bring?",
+      "junior": "Grandma Ana says never to tell strangers. What will the careful reader bring?",
+      "master": "Grandma Ana forbids telling strangers. What is the careful reader meant to bring?"
+    },
+    {
+      "rookie": "Because you have Eleanor's brass egg.",
+      "junior": "Because you have Eleanor's brass egg.",
+      "master": "Because you have Eleanor's brass egg."
+    },
+    {
+      "rookie": "Because you paid her.",
+      "junior": "Because you gave her money.",
+      "master": "Because you paid her."
+    },
+    {
+      "rookie": "Grandma Ana says never sell it. Read who Rosa may play for.",
+      "junior": "Grandma Ana says never to sell it. Read who Rosa is allowed to play for.",
+      "master": "Grandma Ana forbids selling it. Read carefully for whom Rosa may play."
+    },
+    {
+      "rookie": "Our family keeps the end of Eleanor's song.",
+      "junior": "Our family keeps the end of Eleanor's song.",
+      "master": "Our family keeps the end of Eleanor's song."
+    },
+    {
+      "rookie": "a careful reader will bring Eleanor's brass egg",
+      "junior": "a careful reader will bring Eleanor's brass egg",
+      "master": "a careful reader will bring Eleanor's brass egg"
+    },
+    {
+      "rookie": "Rosa's Test",
+      "junior": "Rosa's Test",
+      "master": "Rosa's Test"
+    },
+    {
+      "rookie": "Rosa holds her violin close.",
+      "junior": "Rosa holds her violin tightly.",
+      "master": "Rosa clutches her violin protectively."
+    },
+    {
+      "rookie": "\"Everyone wants my song today,\" she says.",
+      "junior": "\"Everybody wants my song today,\" she says.",
+      "master": "\"Today, it seems, everyone is after my song,\" she remarks."
+    },
+    {
+      "rookie": "\"Show me what Eleanor's first friend gave you.\"",
+      "junior": "\"Show me the thing Eleanor's first friend gave you.\"",
+      "master": "\"Show me what Eleanor's first friend entrusted to you.\""
+    },
+    {
+      "rookie": "Rosa takes a note from her violin case:",
+      "junior": "Rosa pulls a note out of her violin case:",
+      "master": "Rosa draws a folded note from her violin case:"
+    },
+    {
+      "rookie": "To my Rosa,\nOur family keeps the end of Eleanor's song: D, A, D.\nNever sell it. Never tell strangers.\nOne day, a careful reader will bring Eleanor's brass egg.\nFor that reader, and only that reader, play the whole song.\n— Grandma Ana",
+      "junior": "To my Rosa,\nOur family keeps the end of Eleanor's song: D, A, D.\nDon't ever sell it. Don't ever tell strangers.\nSomeday, a careful reader will bring Eleanor's brass egg.\nFor that reader, and nobody else, play the whole song.\n— Grandma Ana",
+      "master": "To my Rosa,\nOur family keeps the end of Eleanor's song: D, A, D.\nNever part with it for money. Never reveal it to strangers.\nOne day, a careful reader will bring Eleanor's brass egg.\nFor that reader, and that reader alone, play the whole song.\n— Grandma Ana"
+    },
+    {
+      "rookie": "Why does Rosa trust you?",
+      "junior": "Why does Rosa decide to trust you?",
+      "master": "What makes Rosa willing to trust you?"
+    },
+    {
+      "rookie": "What will the careful reader bring?",
+      "junior": "What is the careful reader going to bring?",
+      "master": "What is the careful reader destined to bring?"
+    },
+    {
+      "rookie": "Look at what you showed Rosa from your Notebook.",
+      "junior": "Think about what you showed Rosa from your Notebook.",
+      "master": "Recall what you presented to Rosa from your Notebook."
+    },
+    {
+      "rookie": "Rosa trusts you!",
+      "junior": "Now Rosa trusts you!",
+      "master": "You've earned Rosa's trust!"
+    },
+    {
+      "rookie": "Rosa smiles for the first time.",
+      "junior": "For the first time, Rosa smiles.",
+      "master": "For the first time, a smile crosses Rosa's face."
+    },
+    {
+      "rookie": "\"The end of the song is D, A, D,\" she says.",
+      "junior": "\"The song ends with D, A, D,\" she tells you.",
+      "master": "\"The song closes with D, A, D,\" she confides."
+    },
+    {
+      "rookie": "\"Now I can tell you who I am.\"",
+      "junior": "\"Now I can tell you who I really am.\"",
+      "master": "\"Now I can reveal who I truly am.\""
+    },
+    {
+      "rookie": "The Last Three Notes",
+      "junior": "The Last Three Notes",
+      "master": "The Last Three Notes"
+    },
+    {
+      "rookie": "The end of Eleanor's song, kept by her family: D, A, D.",
+      "junior": "The end of Eleanor's song, which her family keeps: D, A, D.",
+      "master": "The ending of Eleanor's song, guarded by her family: D, A, D."
+    },
+    {
+      "rookie": "Show Rosa",
+      "junior": "Show Rosa",
+      "master": "Show Rosa"
+    },
+    {
+      "rookie": "Which thing in your Notebook did Eleanor's first friend give you?",
+      "junior": "Which thing in your Notebook came from Eleanor's first friend?",
+      "master": "Which item in your Notebook was a gift from Eleanor's first friend?"
+    },
+    {
+      "rookie": "That is not from the Lost and Found. What did Grace give you?",
+      "junior": "That did not come from the Lost and Found. What did Grace give you?",
+      "master": "That item didn't come from the Lost and Found. What did Grace hand you?"
+    },
+    {
+      "rookie": "THE END OF THE SONG",
+      "junior": "THE END OF THE SONG",
+      "master": "THE END OF THE SONG"
+    },
+    {
+      "rookie": "D, A, D. With E, G, G, you now know the whole song.",
+      "junior": "D, A, D. Together with E, G, G, you now know the whole song.",
+      "master": "D, A, D. Combined with E, G, G, the whole song is finally yours."
+    },
+    {
+      "rookie": "Ruth had a daughter, Ana.",
+      "junior": "Ruth had a daughter, Ana.",
+      "master": "Ruth had a daughter, Ana."
+    },
+    {
+      "rookie": "So Eleanor is my mother's grandmother.",
+      "junior": "So Eleanor is my mother's grandmother.",
+      "master": "So Eleanor is my mother's grandmother."
+    },
+    {
+      "rookie": "Rosa's Secret",
+      "junior": "Rosa's Secret",
+      "master": "Rosa's Secret"
+    },
+    {
+      "rookie": "Rosa sits on the edge of the fountain.",
+      "junior": "Rosa sits down on the edge of the fountain.",
+      "master": "Rosa perches on the rim of the fountain."
+    },
+    {
+      "rookie": "She draws a little family tree in Maya's notebook.",
+      "junior": "She draws a small family tree in Maya's notebook.",
+      "master": "She sketches a modest family tree in Maya's notebook."
+    },
+    {
+      "rookie": "Otto comes running across the square.",
+      "junior": "Otto runs over to you across the square.",
+      "master": "Otto comes hurrying across the square."
+    },
+    {
+      "rookie": "Rosa's family tree says:",
+      "junior": "This is Rosa's family tree:",
+      "master": "Rosa's family tree reads:"
+    },
+    {
+      "rookie": "Eleanor Hart had a daughter, Ruth.\nRuth had a daughter, Ana.\nAna had a daughter: me, Rosa.\nSo Eleanor is my mother's grandmother.\nYour mother's grandmother is your great-grandmother.",
+      "junior": "Eleanor Hart had a daughter, Ruth.\nRuth had a daughter, Ana.\nAna had a daughter, and that is me, Rosa.\nSo Eleanor is my mother's grandmother.\nThe grandmother of your mother is your great-grandmother.",
+      "master": "Eleanor Hart had a daughter, Ruth.\nRuth had a daughter, Ana.\nAna, in turn, had a daughter: me, Rosa.\nSo Eleanor is my mother's grandmother.\nYour mother's grandmother is, by definition, your great-grandmother."
+    },
+    {
+      "rookie": "What is Eleanor to Rosa? Finish the sentence.",
+      "junior": "Who is Eleanor to Rosa? Complete the sentence.",
+      "master": "How is Eleanor related to Rosa? Complete the sentence."
+    },
+    {
+      "rookie": "Eleanor is Rosa's great-____.",
+      "junior": "Eleanor is Rosa's great-____.",
+      "master": "Eleanor is Rosa's great-____."
+    },
+    {
+      "rookie": "Read the last line of the family tree.",
+      "junior": "Look at the last line of the family tree.",
+      "master": "Consult the final line of the family tree."
+    },
+    {
+      "rookie": "Your mother's mother is one step back. Eleanor is one more step back.",
+      "junior": "Your mother's mother is one step back. Eleanor is one step further back.",
+      "master": "Your mother's mother lies one generation back. Eleanor lies one generation beyond that."
+    },
+    {
+      "rookie": "You found Rosa's secret!",
+      "junior": "You discovered Rosa's secret!",
+      "master": "You've uncovered Rosa's secret!"
+    },
+    {
+      "rookie": "Rosa is Eleanor Hart's great-granddaughter!",
+      "junior": "Rosa is the great-granddaughter of Eleanor Hart!",
+      "master": "Rosa is none other than Eleanor Hart's great-granddaughter!"
+    },
+    {
+      "rookie": "\"Baby Ruth in Karl's photo was my grandma's mother,\" Rosa says.",
+      "junior": "\"Baby Ruth in Karl's photo was my grandma's mother,\" says Rosa.",
+      "master": "\"The baby Ruth in Karl's photo was my grandma's mother,\" Rosa explains."
+    },
+    {
+      "rookie": "\"I played our song on the trail to watch over it.\"",
+      "junior": "\"I played our song along the trail to watch over it.\"",
+      "master": "\"I played our song along the trail so I could keep watch over it.\""
+    },
+    {
+      "rookie": "Eleanor is further back than Rosa's mother. Read the tree again.",
+      "junior": "Eleanor is further back than Rosa's mother. Look at the tree again.",
+      "master": "Eleanor lies further back than Rosa's mother. Study the tree once more."
+    },
+    {
+      "rookie": "An aunt is not in this tree. Count back: Rosa, Ana, Ruth, Eleanor.",
+      "junior": "There is no aunt in this tree. Count back: Rosa, Ana, Ruth, Eleanor.",
+      "master": "No aunt appears in this tree. Count backward: Rosa, Ana, Ruth, Eleanor."
+    },
+    {
+      "rookie": "Check your spelling: grand + mother.",
+      "junior": "Check how you spelled it: grand + mother.",
+      "master": "Double-check your spelling: grand + mother."
+    },
+    {
+      "rookie": "Rosa Diaz is Eleanor Hart's great-granddaughter. Her family keeps the song's end.",
+      "junior": "Rosa Diaz is the great-granddaughter of Eleanor Hart. Her family keeps the end of the song.",
+      "master": "Rosa Diaz is Eleanor Hart's great-granddaughter, and her family guards the song's ending."
+    },
+    {
+      "rookie": "Learn Rosa's secret.",
+      "junior": "Find out Rosa's secret.",
+      "master": "Uncover Rosa's secret."
+    },
+    {
+      "rookie": "Grandma said the Lark is for a child of the city.",
+      "junior": "Grandma told me the Lark is for a child of the city.",
+      "master": "Grandma insisted the Lark belongs to a child of the city."
+    },
+    {
+      "rookie": "Not for us. So I kept quiet.",
+      "junior": "It is not for us. So I said nothing.",
+      "master": "Not to our family. So I held my tongue."
+    },
+    {
+      "rookie": "And you watched the trail with your song.",
+      "junior": "And you kept an eye on the trail with your song.",
+      "master": "And meanwhile you guarded the trail with your song."
+    },
+    {
+      "rookie": "Yes. I hoped the right reader would hear it.",
+      "junior": "Yes. I hoped the right reader would hear it someday.",
+      "master": "Yes. I hoped the right reader would eventually hear it."
+    },
+    {
+      "rookie": "ELEANOR'S FAMILY",
+      "junior": "ELEANOR'S FAMILY",
+      "master": "ELEANOR'S FAMILY"
+    },
+    {
+      "rookie": "Rosa kept quiet to keep Eleanor's promise. The Lark is for a child of the city.",
+      "junior": "Rosa said nothing to keep Eleanor's promise. The Lark is for a child of the city.",
+      "master": "Rosa stayed silent to honor Eleanor's promise. The Lark belongs to a child of the city."
+    },
+    {
+      "rookie": "T",
+      "junior": "T",
+      "master": "T"
+    },
+    {
+      "rookie": "A",
+      "junior": "A",
+      "master": "A"
+    },
+    {
+      "rookie": "H",
+      "junior": "H",
+      "master": "H"
+    },
+    {
+      "rookie": "R",
+      "junior": "R",
+      "master": "R"
+    },
+    {
+      "rookie": "It opens with our family's old name.",
+      "junior": "It opens with our family's old name.",
+      "master": "It opens with our family's old name."
+    },
+    {
+      "rookie": "the name on the building where Eleanor made her toys",
+      "junior": "the name on the building where Eleanor made her toys",
+      "master": "the name on the building where Eleanor made her toys"
+    },
+    {
+      "rookie": "Rosa's Music Box",
+      "junior": "Rosa's Music Box",
+      "master": "Rosa's Music Box"
+    },
+    {
+      "rookie": "Rosa takes a small wooden box from her bag.",
+      "junior": "Rosa takes a little wooden box out of her bag.",
+      "master": "Rosa produces a small wooden box from her bag."
+    },
+    {
+      "rookie": "\"Eleanor made this music box in 1926,\" she says.",
+      "junior": "\"Eleanor built this music box in 1926,\" she says.",
+      "master": "\"Eleanor crafted this music box in 1926,\" she explains."
+    },
+    {
+      "rookie": "\"It has a letter lock. I will let you open it.\"",
+      "junior": "\"It has a lock with letters. I will let you open it.\"",
+      "master": "\"It is sealed with a letter lock. The honor of opening it is yours.\""
+    },
+    {
+      "rookie": "Rosa says:",
+      "junior": "Rosa explains:",
+      "master": "Rosa tells you:"
+    },
+    {
+      "rookie": "My music box is locked. It opens with our family's old name.\nMy name is Diaz now. But a long time ago, it was different.\nIt is the name on the building where Eleanor made her toys.",
+      "junior": "This music box is locked. It opens with our family's old name.\nToday my name is Diaz. But long ago, it was something else.\nIt is the name on the building where Eleanor made her toys.",
+      "master": "This box was made to guard a secret. It opens with our family's old name.\nMy surname is Diaz now, but generations ago it was something else entirely.\nIt is the name on the building where Eleanor made her toys."
+    },
+    {
+      "rookie": "Spell the word that opens Rosa's music box.",
+      "junior": "Spell the word that unlocks Rosa's music box.",
+      "master": "Spell out the word that unlocks Rosa's music box."
+    },
+    {
+      "rookie": "What was Eleanor's family name?",
+      "junior": "What was Eleanor's last name?",
+      "master": "What surname did Eleanor's family bear?"
+    },
+    {
+      "rookie": "Otto's letter talks about the building. What is it called?",
+      "junior": "Otto's letter mentions the building. What is its name?",
+      "master": "Otto's letter refers to the building. What is it called?"
+    },
+    {
+      "rookie": "The music box opens and plays!",
+      "junior": "The music box opens and starts to play!",
+      "master": "The music box springs open and begins to play!"
+    },
+    {
+      "rookie": "E, G, G, D, A, D. The whole song plays at last.",
+      "junior": "E, G, G, D, A, D. At last, the whole song plays.",
+      "master": "E, G, G, D, A, D. At long last, the whole song rings out."
+    },
+    {
+      "rookie": "Inside the lid is a tiny painting: a big wheel by the sea.",
+      "junior": "Inside the lid there is a tiny painting: a big wheel by the sea.",
+      "master": "Inside the lid lies a tiny painting: a big wheel by the sea."
+    },
+    {
+      "rookie": "Then a TV truck stops at the edge of the park.",
+      "junior": "Just then, a TV truck pulls up at the edge of the park.",
+      "master": "At that very moment, a TV truck pulls up at the edge of the park."
+    },
+    {
+      "rookie": "The four tiles fit. What is the name of Eleanor's building?",
+      "junior": "The four tiles are right. What is Eleanor's building called?",
+      "master": "The four tiles are correct. What is the name of Eleanor's building?"
+    },
+    {
+      "rookie": "THE MUSIC BOX",
+      "junior": "THE MUSIC BOX",
+      "master": "THE MUSIC BOX"
+    },
+    {
+      "rookie": "A big wheel by the sea... Coney Island!",
+      "junior": "A big wheel next to the sea... It's Coney Island!",
+      "master": "A big wheel by the sea... That has to be Coney Island!"
+    },
+    {
+      "rookie": "The first half was on the bird: E, G, G.",
+      "junior": "The bird had the first half: E, G, G.",
+      "master": "The first half was engraved on the bird: E, G, G."
+    },
+    {
+      "rookie": "Yesterday Dexter Vance offered me money for this box.",
+      "junior": "Yesterday Dexter Vance tried to buy this box from me.",
+      "master": "Only yesterday, Dexter Vance offered me money for this box."
+    },
+    {
+      "rookie": "I said no. He did not smile then.",
+      "junior": "I told him no. After that, he stopped smiling.",
+      "master": "I refused. His smile vanished on the spot."
+    },
+    {
+      "rookie": "Dexter waves from the truck. His boots have little stars.",
+      "junior": "Dexter waves from the truck. There are little stars on his boots.",
+      "master": "Dexter waves from the truck. Tiny stars adorn his boots."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "perform": "공연하다",
+      "melody": "선율, 멜로디",
+      "tightly": "꽉",
+      "complete": "완성하다",
+      "discovered": "발견했다",
+      "spelled": "철자를 썼다",
+      "unlocks": "(잠긴 것을) 열다",
+      "pulls": "(차가) 서다",
+      "someday": "언젠가",
+      "strangers": "낯선 사람들",
+      "plucking": "(현을) 뜯다",
+      "locked": "잠긴"
+    },
+    "master": {
+      "descends": "몰려오다",
+      "covets": "탐내다",
+      "conceals": "숨기다",
+      "gleams": "빛나다",
+      "haunting": "잊히지 않는",
+      "clutches": "꽉 쥐다",
+      "protectively": "보호하듯",
+      "entrusted": "맡기다",
+      "confides": "털어놓다",
+      "destined": "~할 운명인",
+      "perches": "걸터앉다",
+      "generation": "세대",
+      "uncovered": "밝혀냈다",
+      "surname": "성(姓)",
+      "crafted": "정성껏 만들다",
+      "adorn": "장식하다",
+      "engraved": "새겨진",
+      "forbids": "금지하다"
+    }
+  }
+}

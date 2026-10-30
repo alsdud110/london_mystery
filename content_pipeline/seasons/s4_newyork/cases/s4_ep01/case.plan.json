@@ -1,0 +1,783 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep01",
+  "seasonId": "s4_newyork",
+  "number": 1,
+  "actId": "act1",
+  "title": "The Torn Page",
+  "synopsis": [
+    "Today the library will show the notebook of Eleanor Hart, a toymaker from 1926.",
+    "Its last page is the first clue to her hidden Silver Lark.",
+    "But this morning, the last page is gone."
+  ],
+  "goal": "Find out when the page went missing, and where Eleanor's trail begins.",
+  "characters": [
+    "maya_chen",
+    "harold_brooks",
+    "frank_russo",
+    "sam_okafor",
+    "dexter_vance"
+  ],
+  "locations": [
+    "new_york_public_library"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep01_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.exhibit_hall",
+      "puzzle": {
+        "paletteId": "witness_compare",
+        "surface": "mission",
+        "engineTable": "dialogues",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "light",
+          "options": [
+            {
+              "id": "light",
+              "label": "A small light moved in the hall."
+            },
+            {
+              "id": "alarm",
+              "label": "The alarm rang in the hall.",
+              "feedback": "Nobody talked about an alarm. Find two people who say the same thing."
+            },
+            {
+              "id": "nothing",
+              "label": "Nothing happened at ten.",
+              "feedback": "Dr. Brooks was at home. What did Frank and Sam see?"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.exhibit_hall",
+          "s4_newyork.asset.char_frank_base",
+          "s4_newyork.asset.char_harold_base",
+          "s4_newyork.asset.char_sam_base"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a talk (DialogueScene) in the exhibit hall: Frank (inside) and Sam (outside, by the window) both saw a small light move in the hall at ten.",
+          "Sam's answer to 'Where were you at ten?' (a man with a black bag came out of the side door) is heard after the deduction (then): paid off in Case 07 and Case 11."
+        ]
+      },
+      "clueInputs": [],
+      "clueOutputs": {
+        "clue": "s4_ep01_c1",
+        "evidence": "s4_ep01_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "세 사람에게 같은 질문을 하고, 밤 10시에 대해 두 사람이 같은 것을 본 진술(a small light)을 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "What did you see at ten?",
+          "A small light moved in the hall.",
+          "A man with a black bag came out!"
+        ]
+      },
+      "play": {
+        "title": "The Night at the Library",
+        "location": "THE EXHIBIT HALL",
+        "story": [
+          "Dr. Harold Brooks meets you by an empty glass case.",
+          "\"The last page of Eleanor's notebook is gone!\" he says.",
+          "Three people can tell you about last night."
+        ],
+        "letterIntro": "Your notes say:",
+        "letter": "Ask each person what they saw.\nFind two people who say the same thing about ten o'clock.",
+        "question": "What happened in the exhibit hall at ten?",
+        "hints": [
+          "Ask every person the same question: What did you see at ten?",
+          "Two people saw the same thing. One was inside, one was outside."
+        ],
+        "successMessage": "Two witnesses saw the same thing!",
+        "transition": [
+          "At ten, someone was in the dark hall with a small light.",
+          "And a man with a black bag left by the side door.",
+          "Frank hands you his night log."
+        ],
+        "mapX": 0.5,
+        "mapY": 0.37,
+        "clue": {
+          "title": "The Light at Ten",
+          "value": "10 PM · A LIGHT IN THE HALL",
+          "note": "Frank and Sam saw a small light move in the dark hall at ten.",
+          "symbol": "watch"
+        },
+        "evidence": {
+          "name": "Frank's Night Log",
+          "icon": "watch",
+          "description": "The night guard's log book for the exhibit hall.",
+          "inscription": "9 PM — The page is safe. 10 PM — A small light in the hall?"
+        },
+        "dialogue": {
+          "place": "EXHIBIT HALL",
+          "background": "assets/seasons/season_04_newyork/locations/exhibit_hall.png",
+          "goal": "Find out what happened at ten.",
+          "how": "Ask each person. Write down what they say.",
+          "guide": "Talk to a witness.",
+          "questions": [
+            {
+              "id": "last",
+              "text": "When did you last see the page?"
+            },
+            {
+              "id": "ten",
+              "text": "What did you see at ten?"
+            },
+            {
+              "id": "where",
+              "text": "Where were you at ten?"
+            }
+          ],
+          "witnesses": [
+            {
+              "id": "frank",
+              "name": "Frank Russo",
+              "title": "THE NIGHT GUARD",
+              "portrait": "assets/seasons/season_04_newyork/characters/frank_base.png",
+              "description": "a big, friendly guard in a blue uniform, with a torch on his belt",
+              "greeting": "I walk this hall every night. Ask me.",
+              "answers": {
+                "last": {
+                  "line": "At nine, on my round. It was safe.",
+                  "thing": "at nine"
+                },
+                "ten": {
+                  "line": "A small light moved in the hall.",
+                  "thing": "a small light in the hall"
+                },
+                "where": {
+                  "line": "At the front desk, with my radio.",
+                  "thing": "the front desk"
+                }
+              }
+            },
+            {
+              "id": "harold",
+              "name": "Harold Brooks",
+              "title": "THE KEEPER OF RARE BOOKS",
+              "portrait": "assets/seasons/season_04_newyork/characters/harold_base.png",
+              "description": "an older man with a grey beard, a tweed jacket and a bow tie",
+              "greeting": "That notebook is a treasure. Please help.",
+              "answers": {
+                "last": {
+                  "line": "At six, when I locked the case.",
+                  "thing": "at six"
+                },
+                "ten": {
+                  "line": "Nothing. I was at home by then.",
+                  "thing": "nothing"
+                },
+                "where": {
+                  "line": "At home, reading by the fire.",
+                  "thing": "at home"
+                }
+              }
+            },
+            {
+              "id": "sam",
+              "name": "Sam Okafor",
+              "title": "THE PRETZEL SELLER",
+              "portrait": "assets/seasons/season_04_newyork/characters/sam_base.png",
+              "description": "a cheerful man in a white apron and a red cap",
+              "greeting": "Pretzel? No? Okay, I can still help!",
+              "answers": {
+                "last": {
+                  "line": "Never! I sell pretzels, not books.",
+                  "thing": "never"
+                },
+                "ten": {
+                  "line": "I saw a little light in the window.",
+                  "thing": "a small light in the hall"
+                },
+                "where": {
+                  "line": "At my cart. A man with a black bag came out!",
+                  "thing": "a man with a black bag"
+                }
+              }
+            }
+          ],
+          "deduction": {
+            "topic": "ten",
+            "pair": [
+              "frank.ten",
+              "sam.ten"
+            ],
+            "then": [
+              "sam.where"
+            ],
+            "askLine": "Ask a question.",
+            "anotherLine": "Ask another person.",
+            "readyLine": "Compare two answers.",
+            "compareGoal": "Find two people who saw the same thing at ten.",
+            "compareHow": "Tap two answers to compare them.",
+            "matchLine": "Both saw a small light in the hall at ten.",
+            "offTopicLine": "These answers are not about ten o'clock.",
+            "checkLine": "Look for what happened at ten.",
+            "differentLine": "These two say different things.",
+            "retryLine": "Try another pair.",
+            "thenGoal": "Find out what Sam saw next.",
+            "thenHow": "Ask Sam where he was at ten.",
+            "doneLine": "A man with a black bag left by the side door.",
+            "notesLine": "Your witness notes are ready."
+          }
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "A LIGHT IN THE DARK",
+          "detail": "The page was safe at nine. At ten, someone was in the hall."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep01_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.exhibit_hall",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "question",
+          "options": [
+            {
+              "id": "money",
+              "label": "Pay each friend some money.",
+              "feedback": "The newspaper says nothing about money. What will each friend ask?"
+            },
+            {
+              "id": "question",
+              "label": "Answer each friend's question."
+            },
+            {
+              "id": "dig",
+              "label": "Dig in the park at night.",
+              "feedback": "Read it again. Who keeps each clue?"
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: a 1926 newspaper page in the glass case, beside the notebook. Eleanor's rule (each friend asks one question) is the season's rule: Dexter fails it in Case 02 and Case 09."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_c1",
+          "use": "textMention",
+          "note": "Someone was in the hall at ten, by the glass case."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep01_c2",
+        "evidence": "s4_ep01_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "1926년 신문 기사를 읽고, 단서마다 '친구'가 질문을 하나 한다는 규칙을 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Each clue is kept by a friend of the city.",
+          "Each friend will ask one question."
+        ]
+      },
+      "play": {
+        "title": "The 1926 Newspaper",
+        "location": "THE EXHIBIT HALL",
+        "story": [
+          "Next to the notebook lies an old newspaper page.",
+          "It is yellow and very thin.",
+          "Maya Chen, a young librarian, reads it with you."
+        ],
+        "letterIntro": "The old newspaper says:",
+        "letter": "TOYMAKER HIDES A SINGING BIRD\nMiss Eleanor Hart has made a silver bird that sings.\nShe calls it the Silver Lark.\nShe has hidden it in New York for a child of the city.\n\"My notebook's last page is the first clue,\" she says.\n\"Each clue is kept by a friend of the city.\nEach friend will ask one question.\nOnly a careful reader can answer it.\"",
+        "question": "How can you get each clue on the Lark's trail?",
+        "hints": [
+          "Read what Eleanor says about her friends.",
+          "What will each friend do when you come?"
+        ],
+        "successMessage": "You know Eleanor's rule!",
+        "transition": [
+          "Each friend of the Lark asks one question.",
+          "\"The Lark was never found,\" says Dr. Brooks.",
+          "\"Today, it is worth a fortune.\""
+        ],
+        "mapX": 0.5,
+        "mapY": 0.37,
+        "clue": {
+          "title": "Eleanor's Rule",
+          "value": "EACH FRIEND ASKS ONE QUESTION",
+          "note": "Eleanor gave each clue to a friend of the city. Only a careful reader can get it.",
+          "symbol": "letter"
+        },
+        "evidence": {
+          "name": "The 1926 Newspaper",
+          "icon": "letter",
+          "description": "An old newspaper page about Eleanor Hart and her Silver Lark.",
+          "inscription": "She has hidden it in New York for a child of the city."
+        },
+        "talk": {
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png",
+          "goal": "Read the old newspaper.",
+          "before": {
+            "lines": [
+              {
+                "by": "speaker",
+                "text": "Hi! I'm Maya. I help with this show."
+              },
+              {
+                "by": "detective",
+                "text": "What is the Silver Lark?"
+              },
+              {
+                "by": "speaker",
+                "text": "This old newspaper tells the story. Look!"
+              }
+            ],
+            "finishLabel": "READ THE NEWSPAPER"
+          }
+        },
+        "discovery": {
+          "type": "storyDiscovery",
+          "title": "A BIRD FOR A CHILD",
+          "detail": "Eleanor hid the Lark for a child who reads carefully. Now it is worth a fortune."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep01_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.exhibit_hall",
+      "puzzle": {
+        "paletteId": "scene_explore_choose",
+        "surface": "mission",
+        "engineTable": "explores",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "grand_central",
+          "options": [
+            {
+              "id": "planetarium",
+              "label": "The star dome",
+              "feedback": "Stars, yes. But there are no trains here. Find the great hall of trains."
+            },
+            {
+              "id": "grand_central",
+              "label": "Grand Central Terminal"
+            },
+            {
+              "id": "glass_station",
+              "label": "The glass train hall",
+              "feedback": "Trains, yes. But look up: are there stars on its ceiling?"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.exhibit_hall",
+          "s4_newyork.asset.planetarium",
+          "s4_newyork.asset.main_concourse",
+          "s4_newyork.asset.glass_station"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a look round (ExploreScene) in the exhibit hall: the notebook's next page holds the marks of the cut page; Maya's pencil rubbing brings them back. The city guide opens once it is read; its three pictures are told apart by 'great hall of trains' and 'stars painted' on the ceiling.",
+          "The choice pictures reuse one place picture (main_concourse, Case 02) and add two (planetarium, glass_station), all 1536x1024.",
+          "Coordinates measured on the made exhibit_hall.png (1536x1024, sha256 a06f1eb5…) with a 50px grid sheet (season_factory). The notebook's area is the whole glass case on its table; the guide's is the open book with its lectern; the door's is the open doorway and its door."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_c2",
+          "use": "textMention",
+          "note": "The last page is the first clue, kept by a friend."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep01_c3",
+        "evidence": "s4_ep01_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "연필 탁본의 'the great hall of trains', 'stars are painted backwards'를 읽고 세 그림 중 맞는 곳을 고른다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Go to the great hall of trains.",
+          "Its stars are painted backwards."
+        ]
+      },
+      "play": {
+        "title": "The Pencil Rubbing",
+        "location": "THE EXHIBIT HALL",
+        "story": [
+          "The last page was cut out of the notebook.",
+          "But Eleanor wrote with a hard pencil.",
+          "\"Her words may be pressed into the next page!\" Maya says."
+        ],
+        "letterIntro": "Maya rubs a soft pencil over the next page. Faint words come out:",
+        "letter": "Dear finder,\nGo to the great hall of trains.\nLook up: its stars are painted backwards.\nAsk the Lost and Found for the Lark's egg.\n— E. H.",
+        "question": "Where does Eleanor's trail begin?",
+        "hints": [
+          "Open the notebook in the glass case first.",
+          "Look at each picture in the city guide. Which one has trains and stars?"
+        ],
+        "successMessage": "You found where the trail begins!",
+        "transition": [
+          "A great hall of trains, with stars on its ceiling.",
+          "\"Grand Central Terminal!\" Maya says.",
+          "But who else knows? The thief has the page."
+        ],
+        "mapX": 0.5,
+        "mapY": 0.37,
+        "clue": {
+          "title": "The First Clue",
+          "value": "THE GREAT HALL OF TRAINS · THE LARK'S EGG",
+          "note": "Eleanor's first clue sends you to Grand Central's Lost and Found.",
+          "symbol": "train"
+        },
+        "evidence": {
+          "name": "The Pencil Rubbing",
+          "icon": "letter",
+          "description": "Maya's pencil rubbing of the notebook's next page.",
+          "inscription": "Look up: its stars are painted backwards."
+        },
+        "explore": {
+          "picture": {
+            "file": "assets/seasons/season_04_newyork/locations/exhibit_hall.png",
+            "pixels": {
+              "width": 1536,
+              "height": 1024
+            },
+            "measuredOn": "sha256:a06f1eb5240d63ebf59dcc30dcfc3b1de72578a9ec391ffdcfdf77f56e9df4bb"
+          },
+          "place": "The exhibit hall",
+          "task": "Look around the hall. Where is Eleanor's notebook?",
+          "nextTask": "Where does the trail begin? Check the city guide.",
+          "missLine": "Nothing here. Find the notebook in the glass case.",
+          "guideAt": [
+            560,
+            670
+          ],
+          "spots": [
+            {
+              "id": "notebook",
+              "kind": "document",
+              "title": "THE NOTEBOOK",
+              "label": "Eleanor's open notebook in the glass case",
+              "areas": [
+                [
+                  430,
+                  545,
+                  695,
+                  800
+                ]
+              ],
+              "mark": [
+                680,
+                557
+              ]
+            },
+            {
+              "id": "door",
+              "kind": "note",
+              "title": "THE SIDE DOOR",
+              "label": "A heavy side door",
+              "areas": [
+                [
+                  1270,
+                  195,
+                  1485,
+                  810
+                ]
+              ],
+              "mark": [
+                1470,
+                207
+              ],
+              "line": "The side door is not locked. Someone went out this way."
+            },
+            {
+              "id": "bench",
+              "kind": "note",
+              "title": "THE BENCH",
+              "label": "A long wooden bench",
+              "areas": [
+                [
+                  0,
+                  700,
+                  405,
+                  990
+                ]
+              ],
+              "mark": [
+                390,
+                712
+              ],
+              "line": "Only a bench. The thief did not sit down."
+            },
+            {
+              "id": "guide",
+              "kind": "choice",
+              "title": "THE CITY GUIDE",
+              "label": "A big city guide on a wooden stand",
+              "areas": [
+                [
+                  755,
+                  545,
+                  1095,
+                  990
+                ]
+              ],
+              "mark": [
+                1080,
+                557
+              ],
+              "requires": "notebook",
+              "lockedLine": "A guide to New York. But where should you go? Read the notebook first.",
+              "unreadLine": "Read the notebook first."
+            }
+          ],
+          "others": [
+            {
+              "label": "Tall windows",
+              "areas": [
+                [
+                  400,
+                  30,
+                  1060,
+                  390
+                ]
+              ],
+              "line": "Tall windows. The library lions are outside."
+            },
+            {
+              "label": "The bookshelves",
+              "areas": [
+                [
+                  0,
+                  0,
+                  395,
+                  690
+                ]
+              ],
+              "line": "Old books, all in their places."
+            }
+          ],
+          "choiceTitle": "THE CITY GUIDE",
+          "choiceHow": "Which place is a great hall of trains with stars on its ceiling? Tap one picture.",
+          "choicePixels": {
+            "width": 1536,
+            "height": 1024
+          },
+          "choices": [
+            {
+              "optionId": "planetarium",
+              "picture": "assets/seasons/season_04_newyork/cases/case_01/planetarium.png",
+              "description": "a dark round room under a dome, a big machine showing stars"
+            },
+            {
+              "optionId": "grand_central",
+              "picture": "assets/seasons/season_04_newyork/locations/main_concourse.png",
+              "description": "a great train hall with gold stars painted on a green ceiling"
+            },
+            {
+              "optionId": "glass_station",
+              "picture": "assets/seasons/season_04_newyork/cases/case_01/glass_station.png",
+              "description": "a busy train hall under a plain glass roof, with no stars"
+            }
+          ],
+          "opening": [
+            20,
+            20,
+            1516,
+            1004
+          ]
+        },
+        "discovery": {
+          "type": "clueFound",
+          "title": "THE GREAT HALL OF TRAINS",
+          "detail": "Eleanor's first friend waits at Grand Central's Lost and Found."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep01_final",
+    "slot": "final",
+    "placeId": "s4_newyork.library_steps",
+    "puzzle": {
+      "paletteId": "order_sequence",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "sequence",
+      "answerSpec": {
+        "answer": "lock,round,light,bag",
+        "options": [
+          {
+            "id": "light",
+            "label": "A small light moves in the hall"
+          },
+          {
+            "id": "open",
+            "label": "The library opens"
+          },
+          {
+            "id": "round",
+            "label": "Frank sees the page on his round"
+          },
+          {
+            "id": "bag",
+            "label": "A man with a black bag leaves"
+          },
+          {
+            "id": "lock",
+            "label": "Dr. Brooks locks the case"
+          }
+        ],
+        "codeLength": 4
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Letter: Maya's notes of the night, each told by before and after. 'The library opens' (the next morning) is a decoy: it is after the theft."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep01_c1",
+        "use": "answerDerivation",
+        "note": "The light at ten and the man with the black bag."
+      },
+      {
+        "ref": "s4_ep01_e1",
+        "use": "textMention",
+        "note": "Frank's log: the page was safe at nine."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep01_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "before, after, an hour later 같은 시간 표현을 읽고 밤의 사건을 순서대로 놓는다.",
+      "skill": "grammarInContext",
+      "expressions": [
+        "three hours after Dr. Brooks locked the case",
+        "five minutes after the light"
+      ]
+    },
+    "play": {
+      "title": "The Night in Order",
+      "location": "THE LIBRARY STEPS",
+      "story": [
+        "You sit on the steps between the two stone lions.",
+        "A thin strip of the page is still in the notebook. Its edge is a zigzag with three points.",
+        "\"Let's put last night in order,\" Maya says."
+      ],
+      "letterIntro": "Maya's notes say:",
+      "letter": "Frank saw the page on his round three hours after Dr. Brooks locked the case.\nThe small light moved in the hall one hour after Frank's round.\nSam saw the man with the black bag five minutes after the light.\nThe library opens at ten the next morning.",
+      "question": "Put last night in order, from first to last. When was the page taken?",
+      "hints": [
+        "Find the first thing: everything else comes after it.",
+        "The library opening is the next morning. Is it part of the night?"
+      ],
+      "successMessage": "Now you know when the page was taken!",
+      "transition": [
+        "Between nine and ten past ten, the page was taken.",
+        "Then the thief left by the side door with a black bag.",
+        "Suddenly, a TV van stops by the lions."
+      ],
+      "orderFeedback": "Find what came first. Then read 'after' in each line.",
+      "mapX": 0.5,
+      "mapY": 0.38,
+      "evidence": {
+        "name": "The Page Stub",
+        "icon": "frame",
+        "description": "A thin strip of the page left in the notebook. Its edge is a zigzag with three points.",
+        "inscription": "Cut out between 9 PM and 10:05 PM."
+      },
+      "ending": [
+        {
+          "by": "narrator",
+          "text": "A tall man jumps out of the TV van."
+        },
+        {
+          "by": "speaker",
+          "text": "Dexter Vance, treasure hunter! I'm here to help!",
+          "speaker": "dexter_vance",
+          "portrait": "assets/seasons/season_04_newyork/characters/dexter_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "Wow! He's on TV every week!",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "The page was taken between nine and ten past ten.",
+          "evidence": "s4_ep01_e1"
+        },
+        {
+          "by": "speaker",
+          "text": "Then let's go to Grand Central, fast!",
+          "speaker": "maya_chen",
+          "portrait": "assets/seasons/season_04_newyork/characters/maya_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "How did a TV star hear the news so soon?"
+        }
+      ]
+    }
+  },
+  "hook": "Who cut out the page? And how did a TV star hear so soon?",
+  "learningGoal": {
+    "title": "When things happen: at ten, before, after",
+    "titleKo": "시간과 순서: at ten, before, after"
+  },
+  "play": {
+    "objectives": [
+      "Talk to the three witnesses.",
+      "Read the old newspaper.",
+      "Find where Eleanor's trail begins."
+    ],
+    "intro": [
+      "New York. Yellow taxis, tall towers and noisy streets.",
+      "Today the New York Public Library shows an old notebook.",
+      "It belonged to Eleanor Hart, a toymaker, in 1926.",
+      "But the notebook's last page is gone!"
+    ],
+    "caseSummary": "The page was safe at nine. At ten, Frank and Sam saw a light in the hall. A man with a black bag left at 10:05. Eleanor's rule: each friend asks one question. Maya's rubbing sent you to the great hall of trains.",
+    "place": "NEW YORK PUBLIC LIBRARY",
+    "keyWords": [
+      "before",
+      "after",
+      "notebook",
+      "page",
+      "clue"
+    ],
+    "glossary": {
+      "toymaker": "장난감 만드는 사람",
+      "lark": "종다리 (노래하는 작은 새)",
+      "guard": "경비원",
+      "witness": "목격자",
+      "fortune": "큰 재산",
+      "rubbing": "연필로 문질러 뜬 자국",
+      "backwards": "거꾸로"
+    }
+  },
+  "notes": [
+    "Season 4 (New York), planned by Claude Code with tool/season_planner/PLAYBOOK.md.",
+    "The page stub (s4_ep01_e4) with its three-point zigzag pays off in Case 11, where the cut page is found in Dexter's studio. Sam's man with a black bag pays off in Case 07 and Case 11."
+  ]
+}

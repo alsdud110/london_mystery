@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep11",
+  "seasonId": "s4_newyork",
+  "number": 11,
+  "actId": "act3",
+  "title": "The Studio with the Glass Star",
+  "synopsis": [
+    "Nora opens the studio door for you.",
+    "Dexter smiles for his cameras. \"I found everything fair and square!\"",
+    "Now you need proof."
+  ],
+  "goal": "Prove where Dexter was on Friday night, find Eleanor's bird and page, and open his safe.",
+  "characters": [
+    "maya_chen",
+    "dexter_vance",
+    "nora_bell",
+    "frank_russo",
+    "harold_brooks",
+    "rosa_diaz"
+  ],
+  "locations": [
+    "times_square"
+  ],
+  "missions": [
+    {
+      "missionId": "s4_ep11_m1",
+      "slot": "m1",
+      "placeId": "s4_newyork.tv_studio",
+      "puzzle": {
+        "paletteId": "witness_compare",
+        "surface": "mission",
+        "engineTable": "dialogues",
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "library",
+          "options": [
+            {
+              "id": "home",
+              "label": "Dexter was at home, asleep.",
+              "feedback": "That is Dexter's own story. What do Nora and Frank say?"
+            },
+            {
+              "id": "library",
+              "label": "Dexter was still in the library at ten."
+            },
+            {
+              "id": "studio",
+              "label": "Dexter was in his studio.",
+              "feedback": "Nobody says the studio. Compare Nora and Frank."
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.tv_studio",
+          "s4_newyork.asset.char_dexter_base",
+          "s4_newyork.asset.char_nora_base",
+          "s4_newyork.asset.char_frank_base"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "Played as a talk (DialogueScene) in the studio: Nora (he sent her home at nine and stayed) and Frank (his pass shows he left at 10:05) agree; Dexter's 'at home' is the lie. 10:05 is Sam's man with the black bag (Case 01).",
+          "Nora's answer about the bag (a small knife for cutting tape) is heard after the deduction (then): how the page was cut. Her and Frank's 'Finders keepers!' answers set up the final."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_c1",
+          "use": "textMention",
+          "note": "A light in the hall at ten; a man with a black bag at 10:05."
+        },
+        {
+          "ref": "s4_ep10_c2",
+          "use": "textMention",
+          "note": "Nora's message: the studio under the glass star."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep11_c1",
+        "evidence": "s4_ep11_e1"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "comprehension",
+        "objective": "덱스터의 말과 노라·프랭크의 말을 비교해, 금요일 밤 10시에 덱스터가 도서관에 있었다는 같은 진술을 찾는다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Where was Dexter on Friday at ten?",
+          "He sent me home at nine. He stayed alone.",
+          "His pass shows he left the library at 10:05."
+        ]
+      },
+      "play": {
+        "title": "Friday Night",
+        "location": "THE TV STUDIO",
+        "story": [
+          "The studio is full of lights, cameras and fake treasure.",
+          "Dr. Brooks and Frank, the night guard, come in behind you.",
+          "Dexter spreads his arms. \"Welcome to my show!\""
+        ],
+        "letterIntro": "Your notes say:",
+        "letter": "The page was cut out on Friday, between nine and 10:05 PM.\nAsk each person where Dexter was on Friday at ten.\nFind two people who say the same thing.",
+        "question": "Where was Dexter on Friday night at ten?",
+        "hints": [
+          "Ask everyone the same question about Friday at ten.",
+          "Dexter tells his own story. Do Nora and Frank tell the same one?"
+        ],
+        "successMessage": "Two people say the same thing about Friday!",
+        "transition": [
+          "Dexter was still in the library at ten.",
+          "He left at 10:05, with his black bag. Just as Sam saw.",
+          "Dexter's smile gets smaller."
+        ],
+        "mapX": 0.4,
+        "mapY": 0.33,
+        "clue": {
+          "title": "Dexter on Friday",
+          "value": "IN THE LIBRARY AT 10 PM · OUT AT 10:05",
+          "note": "Nora and Frank show Dexter stayed in the library after nine and left at 10:05.",
+          "symbol": "watch"
+        },
+        "evidence": {
+          "name": "Dexter's Library Pass",
+          "icon": "ticket",
+          "description": "The library's pass list for the TV crew on Friday night.",
+          "inscription": "D. Vance — out at 10:05 PM."
+        },
+        "dialogue": {
+          "place": "TV STUDIO",
+          "background": "assets/seasons/season_04_newyork/locations/tv_studio.png",
+          "goal": "Find out where Dexter was on Friday at ten.",
+          "how": "Ask each person. Write down what they say.",
+          "guide": "Talk to a witness.",
+          "questions": [
+            {
+              "id": "friday",
+              "text": "Where was Dexter on Friday at ten?"
+            },
+            {
+              "id": "bag",
+              "text": "What was in Dexter's black bag?"
+            },
+            {
+              "id": "words",
+              "text": "What does Dexter always say?"
+            }
+          ],
+          "witnesses": [
+            {
+              "id": "dexter",
+              "name": "Dexter Vance",
+              "title": "THE TREASURE HUNTER",
+              "portrait": "assets/seasons/season_04_newyork/characters/dexter_base.png",
+              "description": "a tall man with a big smile, a safari vest and sunglasses on his head",
+              "greeting": "Ask me anything. The cameras love me!",
+              "answers": {
+                "friday": {
+                  "line": "At home, asleep. Ask anyone!",
+                  "thing": "at home"
+                },
+                "bag": {
+                  "line": "Just my camera. Nothing else!",
+                  "thing": "a camera"
+                },
+                "words": {
+                  "line": "Treasure is for the brave!",
+                  "thing": "treasure is for the brave"
+                }
+              }
+            },
+            {
+              "id": "nora",
+              "name": "Nora Bell",
+              "title": "THE CAMERA OPERATOR",
+              "portrait": "assets/seasons/season_04_newyork/characters/nora_base.png",
+              "description": "a young woman in a black cap, headphones round her neck",
+              "greeting": "I'm done keeping his secrets. Ask me.",
+              "answers": {
+                "friday": {
+                  "line": "He sent me home at nine. He stayed alone.",
+                  "thing": "in the library at ten"
+                },
+                "bag": {
+                  "line": "A small knife for cutting tape. And papers.",
+                  "thing": "a small knife"
+                },
+                "words": {
+                  "line": "'Finders keepers!' He shouts it on every show.",
+                  "thing": "finders keepers"
+                }
+              }
+            },
+            {
+              "id": "frank",
+              "name": "Frank Russo",
+              "title": "THE NIGHT GUARD",
+              "portrait": "assets/seasons/season_04_newyork/characters/frank_base.png",
+              "description": "a big, friendly guard in a blue uniform, with a torch on his belt",
+              "greeting": "I brought the library's pass list.",
+              "answers": {
+                "friday": {
+                  "line": "His pass shows he left the library at 10:05.",
+                  "thing": "in the library at ten"
+                },
+                "bag": {
+                  "line": "I never looked inside it. I should have!",
+                  "thing": "never looked"
+                },
+                "words": {
+                  "line": "At ten, a voice in the dark said 'Finders keepers!'",
+                  "thing": "a voice in the dark"
+                }
+              }
+            }
+          ],
+          "deduction": {
+            "topic": "friday",
+            "pair": [
+              "nora.friday",
+              "frank.friday"
+            ],
+            "then": [
+              "nora.bag"
+            ],
+            "askLine": "Ask a question.",
+            "anotherLine": "Ask another person.",
+            "readyLine": "Compare two answers.",
+            "compareGoal": "Find two people who say the same thing about Friday at ten.",
+            "compareHow": "Tap two answers to compare them.",
+            "matchLine": "Both say Dexter was still in the library at ten.",
+            "offTopicLine": "These answers are not about Friday at ten.",
+            "checkLine": "Look for where Dexter was on Friday at ten.",
+            "differentLine": "These two say different things.",
+            "retryLine": "Try another pair.",
+            "thenGoal": "Find out what was in the black bag.",
+            "thenHow": "Ask Nora what Dexter's bag held.",
+            "doneLine": "A small knife for cutting tape. And papers.",
+            "notesLine": "Your witness notes are ready."
+          }
+        },
+        "discovery": {
+          "type": "deduction",
+          "title": "THE MAN WITH THE BLACK BAG",
+          "detail": "Dexter was the man Sam saw at 10:05. His bag held a small knife."
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep11_m2",
+      "slot": "m2",
+      "placeId": "s4_newyork.tv_studio",
+      "puzzle": {
+        "paletteId": "picture_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "imageChoice",
+        "answerSpec": {
+          "answer": "dancing",
+          "options": [
+            {
+              "id": "wings_closed",
+              "label": "The bird with folded wings",
+              "feedback": "Eleanor's bird has its wings wide open. Look at your Notebook.",
+              "altText": "a small brass songbird with its wings folded, one foot lifted, its beak open",
+              "picture": "assets/seasons/season_04_newyork/cases/case_04/bird_wings_closed.png"
+            },
+            {
+              "id": "feet_down",
+              "label": "The bird standing on both feet",
+              "feedback": "Eleanor's bird dances on one foot. Look again.",
+              "altText": "a small brass songbird with its wings wide open, standing on both feet, its beak open",
+              "picture": "assets/seasons/season_04_newyork/cases/case_04/bird_feet_down.png"
+            },
+            {
+              "id": "dancing",
+              "label": "The bird with one foot up",
+              "altText": "a small brass songbird with its wings wide open, one foot lifted and its beak open",
+              "picture": "assets/seasons/season_04_newyork/objects/brass_bird.png"
+            }
+          ]
+        },
+        "assetNeeds": [
+          "s4_newyork.asset.bird_wings_closed",
+          "s4_newyork.asset.bird_feet_down",
+          "s4_newyork.asset.ev_brass_bird"
+        ],
+        "status": "awaitingAssets",
+        "notes": [
+          "A picture choice with the names hidden, with a recall: the player first shows Eleanor's brass bird from the Notebook (Case 04), then picks it among Dexter's three prop birds. The same three pictures as Case 04 M2, in another order."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep04_e2",
+          "use": "recall",
+          "note": "Eleanor's tag: wings open, one foot up, beak open."
+        },
+        {
+          "ref": "s4_ep11_c1",
+          "use": "textMention",
+          "note": "Dexter lied about Friday night."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep11_c2",
+        "evidence": "s4_ep11_e2"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "recall",
+        "objective": "4화의 놋쇠 새 묘사(wings wide open, one foot up)를 다시 떠올려 소품 새 세 마리 중 엘리너의 새를 찾는다.",
+        "skill": "vocabulary",
+        "expressions": [
+          "Its wings are wide open.",
+          "One foot is up, as if it dances."
+        ],
+        "recallFrom": "s4_ep04_m2"
+      },
+      "play": {
+        "title": "The Prop Shelf",
+        "location": "THE TV STUDIO",
+        "story": [
+          "A long shelf is full of fake treasure for the show.",
+          "Three brass birds stand among plastic gold.",
+          "\"Props!\" Dexter says. \"All fake!\""
+        ],
+        "letterIntro": "Eleanor's brass tag said:",
+        "letter": "Here sits my brass bird.\nIts wings are wide open.\nOne foot is up, as if it dances.\nIts beak is open to sing the first three notes of my song.",
+        "question": "Which bird on the shelf is Eleanor's?",
+        "hints": [
+          "Check the wings, the feet and the beak.",
+          "Eleanor's bird looks as if it dances."
+        ],
+        "successMessage": "You found Eleanor's brass bird!",
+        "transition": [
+          "On its wing, three notes are carved: E, G, G.",
+          "Four screw holes in its feet, as wide as a finger.",
+          "\"That's no prop,\" says Dr. Brooks. \"That's Eleanor's.\""
+        ],
+        "mapX": 0.4,
+        "mapY": 0.33,
+        "clue": {
+          "title": "The Bird on the Shelf",
+          "value": "ELEANOR'S BIRD · IN DEXTER'S STUDIO",
+          "note": "Eleanor's brass bird from the bridge was on Dexter's prop shelf.",
+          "symbol": "feather"
+        },
+        "evidence": {
+          "name": "The Brass Bird, Found",
+          "icon": "feather",
+          "description": "Eleanor's brass bird, found among Dexter's props.",
+          "inscription": "On its wing: E, G, G."
+        },
+        "recall": {
+          "title": "Eleanor's Bird",
+          "prompt": "Which thing in your Notebook tells you what Eleanor's bird looks like?",
+          "miss": "That is not about the bird. Find what you learned on the bridge."
+        },
+        "hideOptionNames": true,
+        "discovery": {
+          "type": "evidenceFound",
+          "title": "NO PROP",
+          "detail": "The bird from the Brooklyn Bridge was hidden among fake treasure.",
+          "showEvidence": true
+        }
+      }
+    },
+    {
+      "missionId": "s4_ep11_m3",
+      "slot": "m3",
+      "placeId": "s4_newyork.tv_studio",
+      "puzzle": {
+        "paletteId": "text_choice",
+        "surface": "mission",
+        "engineTable": null,
+        "missionType": "multipleChoice",
+        "answerSpec": {
+          "answer": "notebook",
+          "options": [
+            {
+              "id": "copy",
+              "label": "It is a copy Dexter wrote himself.",
+              "feedback": "A copy would not fit the stub. Compare the zigzag edges."
+            },
+            {
+              "id": "notebook",
+              "label": "It is the page cut from Eleanor's notebook."
+            },
+            {
+              "id": "other",
+              "label": "It is from another old notebook.",
+              "feedback": "Then its edge would not match the stub. Read Maya's notes again."
+            }
+          ]
+        },
+        "assetNeeds": [],
+        "status": "ready",
+        "notes": [
+          "Letter: Maya compares the page in Dexter's desk with the page stub (Case 01): the same zigzag of three points, the same words as the rubbing. The proof of the theft."
+        ]
+      },
+      "clueInputs": [
+        {
+          "ref": "s4_ep01_e4",
+          "use": "answerDerivation",
+          "note": "The page stub: a zigzag edge with three points."
+        },
+        {
+          "ref": "s4_ep01_e3",
+          "use": "evidenceLink",
+          "note": "The same words as Maya's pencil rubbing."
+        }
+      ],
+      "clueOutputs": {
+        "clue": "s4_ep11_c3",
+        "evidence": "s4_ep11_e3"
+      },
+      "learning": {
+        "dependency": "essential",
+        "level": "application",
+        "objective": "찢긴 가장자리(a zigzag with three points)와 탁본의 글을 비교해 그 종이가 공책에서 잘라 낸 바로 그 쪽임을 고른다.",
+        "skill": "sentenceMeaning",
+        "expressions": [
+          "Its edge is a zigzag with three points.",
+          "The two edges fit together like a puzzle."
+        ]
+      },
+      "play": {
+        "title": "The Page in the Drawer",
+        "location": "THE TV STUDIO",
+        "story": [
+          "Nora points at Dexter's desk. \"Second drawer.\"",
+          "Inside is an old page in a plastic sleeve.",
+          "Maya puts it next to a photo of the notebook's stub."
+        ],
+        "letterIntro": "Maya's notes say:",
+        "letter": "The page in the drawer is in Eleanor's writing.\nIts edge is a zigzag with three points.\nThe stub left in the notebook has a zigzag with three points.\nThe two edges fit together like a puzzle.\nThe words are the same as on my pencil rubbing.",
+        "question": "What does the page in the drawer prove?",
+        "hints": [
+          "Compare the edge of the page and the edge of the stub.",
+          "Do they fit together? Then where did the page come from?"
+        ],
+        "successMessage": "The page fits the notebook!",
+        "transition": [
+          "It is Eleanor's last page, cut out on Friday night.",
+          "Dexter's face goes red under the studio lights.",
+          "He backs away toward a big metal safe."
+        ],
+        "mapX": 0.4,
+        "mapY": 0.33,
+        "clue": {
+          "title": "The Torn Page",
+          "value": "IT FITS THE STUB",
+          "note": "The page in Dexter's drawer is the page cut from Eleanor's notebook.",
+          "symbol": "frame"
+        },
+        "evidence": {
+          "name": "Eleanor's Last Page",
+          "icon": "frame",
+          "description": "The page cut from Eleanor's notebook, found in Dexter's desk.",
+          "inscription": "Go to the great hall of trains."
+        },
+        "evidenceLinkLine": "The same words as Maya's pencil rubbing.",
+        "discovery": {
+          "type": "deduction",
+          "title": "THE PROOF",
+          "detail": "The page fits the stub. Dexter cut it out on Friday night."
+        }
+      }
+    }
+  ],
+  "final": {
+    "missionId": "s4_ep11_final",
+    "slot": "final",
+    "placeId": "s4_newyork.tv_studio",
+    "puzzle": {
+      "paletteId": "letter_tile_lock",
+      "surface": "finalMission",
+      "engineTable": null,
+      "missionType": "letterLock",
+      "answerSpec": {
+        "answer": "KEEPERS",
+        "options": [
+          {
+            "id": "p",
+            "label": "P"
+          },
+          {
+            "id": "e1",
+            "label": "E"
+          },
+          {
+            "id": "s",
+            "label": "S"
+          },
+          {
+            "id": "k",
+            "label": "K"
+          },
+          {
+            "id": "e2",
+            "label": "E"
+          },
+          {
+            "id": "r",
+            "label": "R"
+          },
+          {
+            "id": "e3",
+            "label": "E"
+          }
+        ]
+      },
+      "assetNeeds": [],
+      "status": "ready",
+      "notes": [
+        "Dexter's prop safe opens with the second word of the saying he always shouts (Nora and Frank in M1): 'Finders keepers', the one who finds a thing keeps it. Inside: Rosa's music box. The culprit is caught here."
+      ]
+    },
+    "clueInputs": [
+      {
+        "ref": "s4_ep11_c1",
+        "use": "answerDerivation",
+        "note": "Nora and Frank: 'Finders keepers!'"
+      },
+      {
+        "ref": "s4_ep10_e1",
+        "use": "textMention",
+        "note": "Rosa's music box went missing next to Dexter."
+      },
+      {
+        "ref": "s4_ep01_e2",
+        "use": "evidenceLink",
+        "note": "Eleanor hid the Lark for a child of the city."
+      }
+    ],
+    "clueOutputs": {
+      "evidence": "s4_ep11_e4"
+    },
+    "learning": {
+      "dependency": "essential",
+      "level": "application",
+      "objective": "관용 표현 'Finders keepers'의 뜻(the one who finds a thing keeps it)을 읽고 두 번째 단어로 금고를 연다.",
+      "skill": "vocabulary",
+      "expressions": [
+        "The one who finds a thing can keep it."
+      ]
+    },
+    "play": {
+      "title": "Finders Keepers",
+      "location": "THE TV STUDIO",
+      "story": [
+        "Dexter stands in front of his safe.",
+        "\"You'll never open it!\" he laughs.",
+        "Nora steps forward. \"I think we can.\""
+      ],
+      "letterIntro": "Nora says:",
+      "letter": "His safe opens with one word.\nOn every show, Dexter shouts the same two words: \"Finders ...!\"\nThe second word opens the safe.\nThe saying means: the one who finds a thing can keep it.",
+      "question": "Spell the word that opens Dexter's safe.",
+      "hints": [
+        "What did Nora and Frank say Dexter always shouts?",
+        "Finders... what? The one who finds it, keeps it."
+      ],
+      "successMessage": "The safe swings open!",
+      "transition": [
+        "Inside is Rosa's music box, safe and sound.",
+        "Rosa holds it to her heart.",
+        "Two police officers come in with Dr. Brooks."
+      ],
+      "orderFeedback": "The seven tiles fit. Finders... who keeps it?",
+      "mapX": 0.4,
+      "mapY": 0.33,
+      "evidence": {
+        "name": "Dexter's Safe",
+        "icon": "key",
+        "description": "Dexter's prop safe. Rosa's music box was inside.",
+        "inscription": "Finders keepers? Not this time."
+      },
+      "evidenceLinkLine": "The 1926 newspaper: the Lark is for a child of the city.",
+      "lockTitle": "DEXTER'S SAFE",
+      "ending": [
+        {
+          "by": "speaker",
+          "text": "I found them first! Finders keepers!",
+          "speaker": "dexter_vance",
+          "portrait": "assets/seasons/season_04_newyork/characters/dexter_base.png"
+        },
+        {
+          "by": "detective",
+          "text": "The Lark is for a child of the city. Not for you.",
+          "evidence": "s4_ep01_e2"
+        },
+        {
+          "by": "speaker",
+          "text": "And you cut a page from a treasure of this library.",
+          "speaker": "harold_brooks",
+          "portrait": "assets/seasons/season_04_newyork/characters/harold_base.png"
+        },
+        {
+          "by": "speaker",
+          "text": "I'm sorry I kept quiet so long.",
+          "speaker": "nora_bell",
+          "portrait": "assets/seasons/season_04_newyork/characters/nora_base.png"
+        },
+        {
+          "by": "narrator",
+          "text": "The police lead Dexter out. The Lark still sleeps in its castle."
+        }
+      ]
+    }
+  },
+  "hook": "Dexter is caught. Now, at last: the castle, the egg and the whole song.",
+  "learningGoal": {
+    "title": "A saying and proof: finders keepers",
+    "titleKo": "관용 표현과 증거: finders keepers"
+  },
+  "play": {
+    "objectives": [
+      "Find out where Dexter was on Friday night.",
+      "Find Eleanor's brass bird.",
+      "Open Dexter's safe."
+    ],
+    "intro": [
+      "Near Times Square, a glass star shines on a roof.",
+      "Under it is Dexter Vance's TV studio.",
+      "Nora is waiting at the back door."
+    ],
+    "caseSummary": "Nora and Frank put Dexter in the library at ten on Friday. Eleanor's bird was on his prop shelf. The page in his desk fits the notebook's stub. His safe opened with KEEPERS and held Rosa's music box. Dexter Vance is caught.",
+    "place": "TIMES SQUARE",
+    "keyWords": [
+      "proof",
+      "edge",
+      "fit",
+      "saying",
+      "keepers"
+    ],
+    "glossary": {
+      "prop": "소품 (가짜 물건)",
+      "fake": "가짜의",
+      "drawer": "서랍",
+      "stub": "남은 조각",
+      "proof": "증거",
+      "safe": "금고",
+      "keeper": "가지는 사람, 지키는 사람"
+    }
+  },
+  "notes": [
+    "The culprit is caught by evidence from every act: the light at ten and the black bag (Case 01), the bird (Case 04), the lie (Case 07), the song box (Case 10).",
+    "The page stub (s4_ep01_e4) pays off here."
+  ]
+}

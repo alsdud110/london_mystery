@@ -1,0 +1,900 @@
+{
+  "schemaVersion": 1,
+  "caseId": "s4_ep07",
+  "lines": [
+    {
+      "rookie": "Lights of Times Square",
+      "junior": "Lights of Times Square",
+      "master": "Lights of Times Square"
+    },
+    {
+      "rookie": "Dexter Vance's TV truck is parked in Times Square.",
+      "junior": "Dexter Vance's TV truck sits parked in the middle of Times Square.",
+      "master": "Dexter Vance's TV truck has claimed a spot in the heart of Times Square."
+    },
+    {
+      "rookie": "His crew heard the tin note, and his boots are famous.",
+      "junior": "His crew heard the tin note, and everyone knows his boots.",
+      "master": "His crew overheard the tin note, and his boots are known across the city."
+    },
+    {
+      "rookie": "Where was Dexter on Sunday morning?",
+      "junior": "Where was Dexter on Sunday morning?",
+      "master": "Where was Dexter on Sunday morning?"
+    },
+    {
+      "rookie": "Who is the violin girl, and is her old song the Lark's song?",
+      "junior": "Who is the violin girl, and could her old song be the Lark's song?",
+      "master": "Who is the violin girl, and might her old song turn out to be the Lark's song?"
+    },
+    {
+      "rookie": "Match the star prints.",
+      "junior": "Find the boots that match the star prints.",
+      "master": "Identify the boots behind the star prints."
+    },
+    {
+      "rookie": "Find out where Dexter was on Sunday.",
+      "junior": "Find out where Dexter really was on Sunday.",
+      "master": "Uncover where Dexter truly was on Sunday."
+    },
+    {
+      "rookie": "Look inside the TV truck.",
+      "junior": "Take a look inside the TV truck.",
+      "master": "Search the inside of the TV truck."
+    },
+    {
+      "rookie": "Times Square. Giant screens, bright lights and crowds.",
+      "junior": "Times Square. Huge screens, bright lights and busy crowds.",
+      "master": "Times Square. Towering screens, dazzling lights and endless crowds."
+    },
+    {
+      "rookie": "Dexter Vance's face is on a screen ten floors high.",
+      "junior": "Ten floors up, Dexter Vance's face fills a giant screen.",
+      "master": "Ten floors above the street, Dexter Vance's face beams down from a colossal screen."
+    },
+    {
+      "rookie": "His TV truck is parked in the middle of it all.",
+      "junior": "His TV truck stands right in the middle of everything.",
+      "master": "His TV truck is parked squarely in the middle of the commotion."
+    },
+    {
+      "rookie": "The star prints match the boots of Dexter's show. Dexter says he filmed all morning. Nora and Sam say he was alone. Sam saw him on the bridge at ten. The crew has the song's start, E, G, G. Now they want the violin girl's song.",
+      "junior": "The star prints match the boots from Dexter's show. Dexter claims he filmed all morning, but Nora and Sam say he was alone. Sam saw him on the bridge at ten. The crew already has the start of the song, E, G, G. Now they are after the violin girl's song.",
+      "master": "The star prints match the boots sold by Dexter's show. Dexter insists he filmed all morning, yet Nora and Sam both say he was alone, and Sam spotted him on the bridge at ten. The crew already holds the song's opening, E, G, G, and now they are hunting for the violin girl's song."
+    },
+    {
+      "rookie": "TIMES SQUARE",
+      "junior": "TIMES SQUARE",
+      "master": "TIMES SQUARE"
+    },
+    {
+      "rookie": "The sole with circles",
+      "junior": "The sole with circles",
+      "master": "The sole with circles"
+    },
+    {
+      "rookie": "A ring of five and a line on the heel. But are they stars?",
+      "junior": "Five shapes in a ring and a line on the heel. But are those shapes stars?",
+      "master": "Five shapes form a ring and a line crosses the heel. But are those shapes really stars?"
+    },
+    {
+      "rookie": "a brown boot sole with five little circles in a ring and a line across the heel",
+      "junior": "a brown boot sole with five little circles in a ring and a line across the heel",
+      "master": "a brown boot sole bearing five little circles in a ring and a line across the heel"
+    },
+    {
+      "rookie": "The sole with no heel line",
+      "junior": "The sole with no heel line",
+      "master": "The sole with no heel line"
+    },
+    {
+      "rookie": "Five stars in a ring, yes. But look at the heel.",
+      "junior": "Yes, five stars in a ring. But check the heel.",
+      "master": "Five stars in a ring, certainly. Now examine the heel."
+    },
+    {
+      "rookie": "a brown boot sole with five little stars in a ring and a plain heel",
+      "junior": "a brown boot sole with five little stars in a ring and nothing on the heel",
+      "master": "a brown boot sole bearing five little stars in a ring and an unmarked heel"
+    },
+    {
+      "rookie": "The sole with stars and a heel line",
+      "junior": "The sole with stars and a heel line",
+      "master": "The sole with stars and a heel line"
+    },
+    {
+      "rookie": "a brown boot sole with five little stars in a ring and a line across the heel",
+      "junior": "a brown boot sole with five little stars in a ring and a line going across the heel",
+      "master": "a brown boot sole bearing five little stars in a ring and a line across the heel"
+    },
+    {
+      "rookie": "Five little stars in a ring.",
+      "junior": "Five little stars in a ring.",
+      "master": "Five little stars in a ring."
+    },
+    {
+      "rookie": "A line across the heel.",
+      "junior": "A line across the heel.",
+      "master": "A line across the heel."
+    },
+    {
+      "rookie": "The Star Boots",
+      "junior": "The Star Boots",
+      "master": "The Star Boots"
+    },
+    {
+      "rookie": "Times Square is bright, even in the day.",
+      "junior": "Even in the daytime, Times Square is bright.",
+      "master": "Even in broad daylight, Times Square glows."
+    },
+    {
+      "rookie": "Giant screens flash. Yellow taxis honk.",
+      "junior": "Huge screens flash. Yellow taxis honk their horns.",
+      "master": "Giant screens flicker and flash. Yellow taxis blare their horns."
+    },
+    {
+      "rookie": "In a shop window, three boots stand upside down.",
+      "junior": "Three boots stand upside down in a shop window.",
+      "master": "In a shop window, three boots are displayed upside down, soles facing out."
+    },
+    {
+      "rookie": "Your Notebook says about the star print:",
+      "junior": "Here is what your Notebook says about the star print:",
+      "master": "Your Notebook records this about the star print:"
+    },
+    {
+      "rookie": "Five little stars in a ring.\nA line across the heel.\nThe same print was at Grand Central and in the bench's wet paint.",
+      "junior": "Five little stars in a ring.\nA line across the heel.\nThis same print was found at Grand Central and in the bench's wet paint.",
+      "master": "Five little stars in a ring.\nA line across the heel.\nThe identical print turned up at Grand Central and in the bench's wet paint."
+    },
+    {
+      "rookie": "Which boot made the star prints?",
+      "junior": "Which boot left the star prints?",
+      "master": "Which boot left behind the star prints?"
+    },
+    {
+      "rookie": "Count the shapes on each sole. Are they stars?",
+      "junior": "Count the shapes on every sole. Are they really stars?",
+      "master": "Study the shapes on every sole. Are they genuinely stars?"
+    },
+    {
+      "rookie": "Now look at each heel. Is there a line across it?",
+      "junior": "Next, check each heel. Does a line go across it?",
+      "master": "Then turn to each heel. Does a line run across it?"
+    },
+    {
+      "rookie": "You found the star boots!",
+      "junior": "You found the boots with the stars!",
+      "master": "You've identified the star boots!"
+    },
+    {
+      "rookie": "Over the window, a giant screen shows Dexter Vance.",
+      "junior": "Above the window, a giant screen shows Dexter Vance.",
+      "master": "Above the window, a colossal screen displays Dexter Vance."
+    },
+    {
+      "rookie": "He holds up the same boot. \"Wear what Dexter wears!\"",
+      "junior": "He lifts up the very same boot. \"Wear what Dexter wears!\"",
+      "master": "He brandishes the very same boot. \"Wear what Dexter wears!\""
+    },
+    {
+      "rookie": "His TV truck is parked right across the square.",
+      "junior": "His TV truck is parked just across the square.",
+      "master": "His TV truck sits directly across the square."
+    },
+    {
+      "rookie": "The star prints come from the boots of Dexter Vance's TV show. Dexter wears them every day.",
+      "junior": "The star prints were made by the boots from Dexter Vance's TV show. Dexter wears them every day.",
+      "master": "The star prints were left by the boots from Dexter Vance's TV show, and Dexter wears them every day."
+    },
+    {
+      "rookie": "DEXTER'S BOOTS",
+      "junior": "DEXTER'S BOOTS",
+      "master": "DEXTER'S BOOTS"
+    },
+    {
+      "rookie": "The star prints match the boots of Dexter's show. But many people buy them.",
+      "junior": "The star prints match the boots from Dexter's show. But lots of people buy them.",
+      "master": "The star prints match the boots from Dexter's show. Yet countless people own a pair."
+    },
+    {
+      "rookie": "Dexter filmed the Statue of Liberty all morning.",
+      "junior": "Dexter filmed the Statue of Liberty the whole morning.",
+      "master": "Dexter spent all morning filming the Statue of Liberty."
+    },
+    {
+      "rookie": "That is what Dexter says. Do two other people agree with him?",
+      "junior": "That is Dexter's story. Do two other people agree with it?",
+      "master": "That is merely Dexter's version. Do two other people back it up?"
+    },
+    {
+      "rookie": "Dexter was alone, and not filming.",
+      "junior": "Dexter was alone, and he was not filming.",
+      "master": "Dexter was alone, and not filming at all."
+    },
+    {
+      "rookie": "Nora filmed the bridge at ten.",
+      "junior": "Nora filmed the bridge at ten o'clock.",
+      "master": "Nora was filming the bridge at ten."
+    },
+    {
+      "rookie": "Nora says the crew filmed at noon. Compare Nora and Sam.",
+      "junior": "Nora says the crew started filming at noon. Compare what Nora and Sam say.",
+      "master": "According to Nora, the crew filmed at noon. Weigh Nora's words against Sam's."
+    },
+    {
+      "rookie": "He went off alone at nine.",
+      "junior": "He went off alone at nine.",
+      "master": "He went off alone at nine."
+    },
+    {
+      "rookie": "We only started filming at noon.",
+      "junior": "We only started filming at noon.",
+      "master": "We only started filming at noon."
+    },
+    {
+      "rookie": "Dexter's Sunday",
+      "junior": "Dexter's Sunday",
+      "master": "Dexter's Sunday"
+    },
+    {
+      "rookie": "Dexter jumps out of his truck with a big smile.",
+      "junior": "Dexter jumps down from his truck, smiling widely.",
+      "master": "Dexter bounds out of his truck, flashing a broad grin."
+    },
+    {
+      "rookie": "Nora stands behind him with her camera.",
+      "junior": "Nora waits behind him, holding her camera.",
+      "master": "Nora lingers behind him, camera in hand."
+    },
+    {
+      "rookie": "Sam's pretzel cart is on the corner today.",
+      "junior": "Today Sam's pretzel cart is parked on the corner.",
+      "master": "Today Sam's pretzel cart has set up on the corner."
+    },
+    {
+      "rookie": "Your notes say:",
+      "junior": "This is what your notes say:",
+      "master": "Your notes read:"
+    },
+    {
+      "rookie": "The bird was taken on Sunday, between 9:30 and 11:30.\nAsk each person where Dexter was on Sunday morning.\nFind two people who say the same thing.",
+      "junior": "The bird was taken on Sunday, between 9:30 and 11:30.\nAsk each person where Dexter was on Sunday morning.\nLook for two people who say the same thing.",
+      "master": "The bird vanished on Sunday, between 9:30 and 11:30.\nAsk each person where Dexter was on Sunday morning.\nSeek out two people whose accounts say the same thing."
+    },
+    {
+      "rookie": "Ask everyone the same question about Sunday morning.",
+      "junior": "Ask every person the same question about Sunday morning.",
+      "master": "Put the same question about Sunday morning to everyone."
+    },
+    {
+      "rookie": "Dexter tells his own story. Do Nora and Sam tell the same one?",
+      "junior": "Dexter tells one story. Do Nora and Sam tell the same story?",
+      "master": "Dexter offers his own account. Do Nora and Sam share the same one?"
+    },
+    {
+      "rookie": "Two people say the same thing about Dexter!",
+      "junior": "Two people tell the same story about Dexter!",
+      "master": "Two accounts of Dexter say the same thing!"
+    },
+    {
+      "rookie": "Dexter said he was filming. Nora and Sam say he was alone.",
+      "junior": "Dexter said he was filming. But Nora and Sam say he was alone.",
+      "master": "Dexter claimed he was filming. Nora and Sam, however, say he was alone."
+    },
+    {
+      "rookie": "\"Hey, I'm a busy man!\" Dexter laughs. He walks away fast.",
+      "junior": "\"Hey, I'm a busy man!\" Dexter laughs, and he hurries away.",
+      "master": "\"Hey, I'm a busy man!\" Dexter chuckles, striding off briskly."
+    },
+    {
+      "rookie": "Nora looks at the ground.",
+      "junior": "Nora stares down at the ground.",
+      "master": "Nora fixes her eyes on the pavement."
+    },
+    {
+      "rookie": "Dexter's Lie",
+      "junior": "Dexter's Lie",
+      "master": "Dexter's Lie"
+    },
+    {
+      "rookie": "Dexter says he filmed all morning. Nora and Sam say he was alone; Sam saw him on the bridge at ten.",
+      "junior": "Dexter claims he filmed all morning. Nora and Sam say he was alone, and Sam saw him on the bridge at ten.",
+      "master": "Dexter insists he filmed all morning. Nora and Sam say he was alone; Sam even spotted him on the bridge at ten."
+    },
+    {
+      "rookie": "Find out where Dexter was on Sunday morning.",
+      "junior": "Find out where Dexter really was on Sunday morning.",
+      "master": "Discover where Dexter truly was on Sunday morning."
+    },
+    {
+      "rookie": "Ask each person. Write down what they say.",
+      "junior": "Ask every person. Note down what they tell you.",
+      "master": "Question each person and record their answers."
+    },
+    {
+      "rookie": "Talk to a witness.",
+      "junior": "Speak to a witness.",
+      "master": "Approach a witness."
+    },
+    {
+      "rookie": "Does Dexter wear the star boots?",
+      "junior": "Does Dexter wear the boots with stars?",
+      "master": "Does Dexter wear the star boots himself?"
+    },
+    {
+      "rookie": "What does Dexter carry?",
+      "junior": "What does Dexter carry around?",
+      "master": "What does Dexter carry with him?"
+    },
+    {
+      "rookie": "Dexter Vance",
+      "junior": "Dexter Vance",
+      "master": "Dexter Vance"
+    },
+    {
+      "rookie": "THE TREASURE HUNTER",
+      "junior": "THE TREASURE HUNTER",
+      "master": "THE TREASURE HUNTER"
+    },
+    {
+      "rookie": "a tall man with a big smile, a safari vest and sunglasses on his head",
+      "junior": "a tall man with a wide smile, a safari vest and sunglasses pushed up on his head",
+      "master": "a tall, grinning man in a safari vest, sunglasses perched on his head"
+    },
+    {
+      "rookie": "Ask away! I have nothing to hide!",
+      "junior": "Go ahead and ask! I have nothing to hide!",
+      "master": "Fire away! I have nothing to hide!"
+    },
+    {
+      "rookie": "With my crew, filming the statue. All morning!",
+      "junior": "Filming the statue with my crew. The whole morning!",
+      "master": "Out with my crew, filming the statue. The entire morning!"
+    },
+    {
+      "rookie": "Star boots? Everyone has them now!",
+      "junior": "Star boots? Everybody owns a pair now!",
+      "master": "Star boots? Half the city wears them these days!"
+    },
+    {
+      "rookie": "Just my camera bag, my friend.",
+      "junior": "Only my camera bag, my friend.",
+      "master": "Merely my camera bag, my friend."
+    },
+    {
+      "rookie": "Nora Bell",
+      "junior": "Nora Bell",
+      "master": "Nora Bell"
+    },
+    {
+      "rookie": "THE CAMERA OPERATOR",
+      "junior": "THE CAMERA OPERATOR",
+      "master": "THE CAMERA OPERATOR"
+    },
+    {
+      "rookie": "a young woman in a black cap, headphones round her neck",
+      "junior": "a young woman in a black cap with headphones around her neck",
+      "master": "a young woman in a black cap, headphones slung around her neck"
+    },
+    {
+      "rookie": "Um... okay. Quickly, please.",
+      "junior": "Um... all right. Be quick, please.",
+      "master": "Um... fine. But make it brief, please."
+    },
+    {
+      "rookie": "He went off alone at nine. We only started filming at noon.",
+      "junior": "He went off alone at nine. We only started filming at noon.",
+      "master": "He went off alone at nine. We only started filming at noon."
+    },
+    {
+      "rookie": "He wears them every single day.",
+      "junior": "He wears them every day, without fail.",
+      "master": "He never goes a single day without them."
+    },
+    {
+      "rookie": "His black bag was very heavy that day.",
+      "junior": "That day his black bag was really heavy.",
+      "master": "His black bag was remarkably heavy that day."
+    },
+    {
+      "rookie": "Sam Okafor",
+      "junior": "Sam Okafor",
+      "master": "Sam Okafor"
+    },
+    {
+      "rookie": "THE PRETZEL SELLER",
+      "junior": "THE PRETZEL SELLER",
+      "master": "THE PRETZEL SELLER"
+    },
+    {
+      "rookie": "a cheerful man in a white apron and a red cap",
+      "junior": "a happy man wearing a white apron and a red cap",
+      "master": "a cheerful fellow in a white apron and a red cap"
+    },
+    {
+      "rookie": "On Sundays, my cart stands by the bridge!",
+      "junior": "Every Sunday, my cart stands next to the bridge!",
+      "master": "Sundays, you'll find my cart stationed by the bridge!"
+    },
+    {
+      "rookie": "At ten, he walked onto the bridge, alone.",
+      "junior": "At ten, he walked onto the bridge, all by himself.",
+      "master": "At ten, he strolled onto the bridge, entirely alone."
+    },
+    {
+      "rookie": "I look at faces, not feet!",
+      "junior": "I notice faces, not feet!",
+      "master": "I pay attention to faces, not feet!"
+    },
+    {
+      "rookie": "A big black bag. Like the man at the library!",
+      "junior": "A big black bag. Just like the man at the library!",
+      "master": "A bulky black bag. Exactly like the man at the library!"
+    },
+    {
+      "rookie": "Ask a question.",
+      "junior": "Ask someone a question.",
+      "master": "Pose a question."
+    },
+    {
+      "rookie": "Ask another person.",
+      "junior": "Ask somebody else.",
+      "master": "Question someone else."
+    },
+    {
+      "rookie": "Compare two answers.",
+      "junior": "Now compare two answers.",
+      "master": "Weigh two answers side by side."
+    },
+    {
+      "rookie": "Find two people who say the same thing about Sunday morning.",
+      "junior": "Find two people who tell the same story about Sunday morning.",
+      "master": "Identify two people whose accounts of Sunday morning say the same thing."
+    },
+    {
+      "rookie": "Tap two answers to compare them.",
+      "junior": "Tap two answers to compare them side by side.",
+      "master": "Tap two answers to set them against each other."
+    },
+    {
+      "rookie": "Both say Dexter was alone, not filming.",
+      "junior": "Both of them say Dexter was alone, not filming.",
+      "master": "Both accounts agree: Dexter was alone, not filming."
+    },
+    {
+      "rookie": "These answers are not about Sunday morning.",
+      "junior": "These answers are not about what happened on Sunday morning.",
+      "master": "These answers have nothing to do with Sunday morning."
+    },
+    {
+      "rookie": "Look for where Dexter was on Sunday morning.",
+      "junior": "Look for answers about where Dexter was on Sunday morning.",
+      "master": "Focus on where Dexter was on Sunday morning."
+    },
+    {
+      "rookie": "These two say different things.",
+      "junior": "These two tell different stories.",
+      "master": "These two accounts contradict each other."
+    },
+    {
+      "rookie": "Try another pair.",
+      "junior": "Try a different pair.",
+      "master": "Try another combination."
+    },
+    {
+      "rookie": "Find out about Dexter's bag.",
+      "junior": "Find out about the bag Dexter carries.",
+      "master": "Learn more about Dexter's bag."
+    },
+    {
+      "rookie": "Ask Sam what Dexter carries.",
+      "junior": "Ask Sam what Dexter was carrying.",
+      "master": "Ask Sam what Dexter carries."
+    },
+    {
+      "rookie": "A big black bag, like the man at the library.",
+      "junior": "A big black bag, just like the man at the library.",
+      "master": "A bulky black bag, exactly like the man at the library."
+    },
+    {
+      "rookie": "Your witness notes are ready.",
+      "junior": "Your notes on the witnesses are ready.",
+      "master": "Your witness notes are complete."
+    },
+    {
+      "rookie": "DEXTER LIED",
+      "junior": "DEXTER LIED",
+      "master": "DEXTER LIED"
+    },
+    {
+      "rookie": "Dexter was alone on Sunday morning, near the bridge, with a black bag.",
+      "junior": "On Sunday morning Dexter was alone, near the bridge, with a black bag.",
+      "master": "On Sunday morning, Dexter was alone near the bridge, carrying a black bag."
+    },
+    {
+      "rookie": "The fountain with the angel",
+      "junior": "The fountain with the angel",
+      "master": "The fountain with the angel"
+    },
+    {
+      "rookie": "A fountain, yes. But is there a big stone arch standing alone?",
+      "junior": "It is a fountain, yes. But does a big stone arch stand alone there?",
+      "master": "A fountain, certainly. But is there a big stone arch standing on its own?"
+    },
+    {
+      "rookie": "The park with the white arch",
+      "junior": "The park with the white arch",
+      "master": "The park with the white arch"
+    },
+    {
+      "rookie": "The carousel by the river",
+      "junior": "The carousel by the river",
+      "master": "The carousel by the river"
+    },
+    {
+      "rookie": "There is no stone arch here. Read the schedule again.",
+      "junior": "You can't see a stone arch here. Read the schedule once more.",
+      "master": "No stone arch stands here. Reread the schedule carefully."
+    },
+    {
+      "rookie": "by the big white stone arch",
+      "junior": "by the big white stone arch",
+      "master": "by the big white stone arch"
+    },
+    {
+      "rookie": "There is a round fountain in front of the arch.",
+      "junior": "There is a round fountain in front of the arch.",
+      "master": "There is a round fountain in front of the arch."
+    },
+    {
+      "rookie": "The TV Truck",
+      "junior": "The TV Truck",
+      "master": "The TV Truck"
+    },
+    {
+      "rookie": "Dexter has gone. His truck door is open.",
+      "junior": "Dexter is gone. The door of his truck is open.",
+      "master": "Dexter has vanished, leaving his truck door wide open."
+    },
+    {
+      "rookie": "\"We are only looking,\" Maya whispers.",
+      "junior": "\"We're only looking,\" Maya whispers.",
+      "master": "\"We're just looking,\" Maya murmurs."
+    },
+    {
+      "rookie": "Lights from the screens flash red, blue and gold.",
+      "junior": "The screens flash red, blue and gold light.",
+      "master": "The screens bathe everything in flashes of red, blue and gold."
+    },
+    {
+      "rookie": "A schedule is taped inside the truck door:",
+      "junior": "A schedule is stuck with tape inside the truck door:",
+      "master": "Taped inside the truck door is a schedule:"
+    },
+    {
+      "rookie": "MONDAY\n4 PM — Film the violin girl.\nShe plays an old song every afternoon,\nby the big white stone arch at the end of Fifth Avenue.\nThere is a round fountain in front of the arch.",
+      "junior": "MONDAY\n4 PM — Film the violin girl.\nEvery afternoon she plays an old song\nby the big white stone arch at the end of Fifth Avenue.\nThere is a round fountain in front of the arch.",
+      "master": "MONDAY\n4 PM — Film the violin girl.\nEach afternoon she performs an old song\nby the big white stone arch at the end of Fifth Avenue.\nThere is a round fountain in front of the arch."
+    },
+    {
+      "rookie": "Where will the TV crew film the violin girl?",
+      "junior": "Where is the TV crew going to film the violin girl?",
+      "master": "Where does the TV crew intend to film the violin girl?"
+    },
+    {
+      "rookie": "Find the paper inside the truck door and read it first.",
+      "junior": "First find the paper inside the truck door and read it.",
+      "master": "Begin with the paper inside the truck door, and read it closely."
+    },
+    {
+      "rookie": "Look at each park on the city map. Which one has a big stone arch standing alone?",
+      "junior": "Check each park on the city map. Which one has a big stone arch standing alone?",
+      "master": "Examine each park on the city map. Which has a big stone arch standing on its own?"
+    },
+    {
+      "rookie": "You know where the crew is going!",
+      "junior": "You know where the crew is heading!",
+      "master": "You've worked out the crew's destination!"
+    },
+    {
+      "rookie": "The white arch is in Washington Square Park.",
+      "junior": "The white arch stands in Washington Square Park.",
+      "master": "The white arch belongs to Washington Square Park."
+    },
+    {
+      "rookie": "\"A violin girl with an old song,\" Maya says slowly.",
+      "junior": "\"A violin girl who plays an old song,\" Maya says slowly.",
+      "master": "\"A violin girl with an old song,\" Maya repeats thoughtfully."
+    },
+    {
+      "rookie": "Under the schedule, a short note is scribbled.",
+      "junior": "Under the schedule, someone has scribbled a short note.",
+      "master": "Beneath the schedule, a brief note has been hastily scribbled."
+    },
+    {
+      "rookie": "The Violin Girl",
+      "junior": "The Violin Girl",
+      "master": "The Violin Girl"
+    },
+    {
+      "rookie": "The TV crew will film a violin girl by the white arch.",
+      "junior": "The TV crew is going to film a violin girl by the white arch.",
+      "master": "The TV crew plans to film a violin girl beside the white arch."
+    },
+    {
+      "rookie": "Times Square",
+      "junior": "Times Square",
+      "master": "Times Square"
+    },
+    {
+      "rookie": "Look around Times Square. What is in the TV truck?",
+      "junior": "Look around Times Square. What can you find in the TV truck?",
+      "master": "Survey Times Square. What lies inside the TV truck?"
+    },
+    {
+      "rookie": "Where will the crew go? Check the city map.",
+      "junior": "Where is the crew going? Check the city map.",
+      "master": "Where is the crew headed? Consult the city map."
+    },
+    {
+      "rookie": "Nothing here. Look inside the TV truck's open door.",
+      "junior": "There's nothing here. Look inside the open door of the TV truck.",
+      "master": "Nothing of interest here. Search inside the TV truck's open door."
+    },
+    {
+      "rookie": "THE TV TRUCK",
+      "junior": "THE TV TRUCK",
+      "master": "THE TV TRUCK"
+    },
+    {
+      "rookie": "A white TV truck with its side door open",
+      "junior": "A white TV truck with its side door open wide",
+      "master": "A white TV truck, its side door flung open"
+    },
+    {
+      "rookie": "SAM'S CART",
+      "junior": "SAM'S CART",
+      "master": "SAM'S CART"
+    },
+    {
+      "rookie": "A pretzel cart with a striped umbrella",
+      "junior": "A pretzel cart under a striped umbrella",
+      "master": "A pretzel cart beneath a striped umbrella"
+    },
+    {
+      "rookie": "Sam waves a pretzel at you. \"Good luck!\"",
+      "junior": "Sam waves a pretzel at you. \"Good luck to you!\"",
+      "master": "Sam brandishes a pretzel at you. \"Good luck!\""
+    },
+    {
+      "rookie": "THE RED STEPS",
+      "junior": "THE RED STEPS",
+      "master": "THE RED STEPS"
+    },
+    {
+      "rookie": "Wide red steps full of people",
+      "junior": "Wide red steps crowded with people",
+      "master": "Broad red steps packed with people"
+    },
+    {
+      "rookie": "People sit and watch the lights. No Dexter.",
+      "junior": "People sit there watching the lights. There's no Dexter.",
+      "master": "People sit gazing at the lights. Dexter is nowhere to be seen."
+    },
+    {
+      "rookie": "THE CITY MAP",
+      "junior": "THE CITY MAP",
+      "master": "THE CITY MAP"
+    },
+    {
+      "rookie": "A city map in a glass kiosk",
+      "junior": "A city map inside a glass kiosk",
+      "master": "A city map displayed in a glass kiosk"
+    },
+    {
+      "rookie": "A map of New York's parks. But which park? Find a clue first.",
+      "junior": "A map of the parks of New York. But which park? First find a clue.",
+      "master": "A map of New York's parks. But which one? You'll need a clue first."
+    },
+    {
+      "rookie": "Look inside the TV truck first.",
+      "junior": "First look inside the TV truck.",
+      "master": "Search the TV truck before anything else."
+    },
+    {
+      "rookie": "Giant screens",
+      "junior": "Giant screens",
+      "master": "Giant screens"
+    },
+    {
+      "rookie": "Giant screens flash. One shows Dexter's big smile.",
+      "junior": "Huge screens flash. One of them shows Dexter's big smile.",
+      "master": "Giant screens flicker. One displays Dexter's broad grin."
+    },
+    {
+      "rookie": "Which park has a big white stone arch with a round fountain in front? Tap one picture.",
+      "junior": "Which park has a big white stone arch with a round fountain in front? Tap a picture.",
+      "master": "Which park features a big white stone arch with a round fountain in front? Tap one picture."
+    },
+    {
+      "rookie": "a fountain with an angel statue, wide stone steps and a covered walkway",
+      "junior": "a fountain with an angel statue, wide stone steps and a walkway with a roof",
+      "master": "a fountain crowned by an angel statue, sweeping stone steps and a covered walkway"
+    },
+    {
+      "rookie": "a big white stone arch standing alone, a round fountain in front of it",
+      "junior": "a big white stone arch standing alone, with a round fountain in front of it",
+      "master": "a big white stone arch standing on its own, a round fountain before it"
+    },
+    {
+      "rookie": "an old carousel inside a glass box by a river, a bridge behind it",
+      "junior": "an old carousel in a glass box next to a river, with a bridge behind it",
+      "master": "an old carousel enclosed in a glass box beside a river, a bridge beyond it"
+    },
+    {
+      "rookie": "THE VIOLIN GIRL",
+      "junior": "THE VIOLIN GIRL",
+      "master": "THE VIOLIN GIRL"
+    },
+    {
+      "rookie": "The TV crew wants a violin girl who plays an old song. Why?",
+      "junior": "The TV crew is looking for a violin girl who plays an old song. Why?",
+      "master": "The TV crew is seeking a violin girl who plays an old song. What for?"
+    },
+    {
+      "rookie": "They want her for a music show.",
+      "junior": "They want her to be in a music show.",
+      "master": "They want her for a music show."
+    },
+    {
+      "rookie": "The note is not about a music show. What do they ask about her song?",
+      "junior": "The note doesn't talk about a music show. What do they ask about her song?",
+      "master": "The note makes no mention of a music show. What does it ask about her song?"
+    },
+    {
+      "rookie": "They think her song is the Lark's song.",
+      "junior": "They believe her song is the Lark's song.",
+      "master": "They suspect her song is the Lark's song."
+    },
+    {
+      "rookie": "She has the brass bird.",
+      "junior": "She is the one with the brass bird.",
+      "master": "She has the brass bird."
+    },
+    {
+      "rookie": "The note never says she has the bird. What does it say about her song?",
+      "junior": "The note doesn't say that she has the bird. What does it say about her song?",
+      "master": "Nowhere does the note claim she has the bird. What does it say about her song?"
+    },
+    {
+      "rookie": "Find out where she learned her song.",
+      "junior": "Find out where she learned her song.",
+      "master": "Find out where she learned her song."
+    },
+    {
+      "rookie": "Is it the Lark's song?",
+      "junior": "Is it the Lark's song?",
+      "master": "Is it the Lark's song?"
+    },
+    {
+      "rookie": "The Scribbled Note",
+      "junior": "The Scribbled Note",
+      "master": "The Scribbled Note"
+    },
+    {
+      "rookie": "The note under the schedule is written fast.",
+      "junior": "The note under the schedule was written in a hurry.",
+      "master": "The note beneath the schedule was dashed off in haste."
+    },
+    {
+      "rookie": "Some words are crossed out.",
+      "junior": "A few words are crossed out.",
+      "master": "Several words have been struck through."
+    },
+    {
+      "rookie": "Maya holds it up to the light of a screen.",
+      "junior": "Maya holds it up to the light from a screen.",
+      "master": "Maya raises it toward the glow of a screen."
+    },
+    {
+      "rookie": "The scribbled note says:",
+      "junior": "This is what the scribbled note says:",
+      "master": "The scribbled note reads:"
+    },
+    {
+      "rookie": "The violin girl plays the same old song every day.\nWe only have the first half: E, G, G.\nFind out where she learned her song.\nIs it the Lark's song?\nGet the rest of it. Then the Lark is ours.",
+      "junior": "Every day the violin girl plays the same old song.\nWe only have the first half: E, G, G.\nFind out where she learned her song.\nIs it the Lark's song?\nGet the rest of it. Then the Lark will be ours.",
+      "master": "Day after day the violin girl plays the same old song.\nWe only have the first half: E, G, G.\nFind out where she learned her song.\nIs it the Lark's song?\nObtain the remainder. Then the Lark is ours."
+    },
+    {
+      "rookie": "Why does the TV crew want the violin girl?",
+      "junior": "Why is the TV crew looking for the violin girl?",
+      "master": "What does the TV crew want with the violin girl?"
+    },
+    {
+      "rookie": "Read the question in the note.",
+      "junior": "Read the question written in the note.",
+      "master": "Pay attention to the question posed in the note."
+    },
+    {
+      "rookie": "Which half of the song do they still need?",
+      "junior": "Which half of the song are they still missing?",
+      "master": "Which half of the song do they still lack?"
+    },
+    {
+      "rookie": "You know what the crew wants!",
+      "junior": "You know what the crew is after!",
+      "master": "You've uncovered what the crew is after!"
+    },
+    {
+      "rookie": "The crew has the song's first half: E, G, G. From the brass bird!",
+      "junior": "The crew has the first half of the song: E, G, G. It came from the brass bird!",
+      "master": "The crew possesses the song's first half: E, G, G. Taken from the brass bird!"
+    },
+    {
+      "rookie": "They want the rest of it from the violin girl.",
+      "junior": "They want to get the rest of it from the violin girl.",
+      "master": "They intend to obtain the remainder from the violin girl."
+    },
+    {
+      "rookie": "\"Eleanor's family plays it on strings, with a bow,\" Maya says.",
+      "junior": "\"Eleanor's family plays it on strings, using a bow,\" Maya says.",
+      "master": "\"Eleanor's family plays it on strings, with a bow,\" Maya recalls."
+    },
+    {
+      "rookie": "Whoever wrote this has the brass bird.",
+      "junior": "The person who wrote this has the brass bird.",
+      "master": "Whoever penned this note has the brass bird."
+    },
+    {
+      "rookie": "And the violin girl... is it Rosa?",
+      "junior": "And the violin girl... could she be Rosa?",
+      "master": "And the violin girl... might she be Rosa?"
+    },
+    {
+      "rookie": "Rosa plays an old song every day. Just like Otto hummed!",
+      "junior": "Rosa plays an old song every day. Just like the one Otto hummed!",
+      "master": "Rosa plays an old song every single day. Precisely like the tune Otto hummed!"
+    },
+    {
+      "rookie": "The crew comes on Monday at 4 PM. You must get there first.",
+      "junior": "The crew is coming on Monday at 4 PM. You have to get there first.",
+      "master": "The crew arrives on Monday at 4 PM. You must reach her before they do."
+    }
+  ],
+  "glossary": {
+    "junior": {
+      "famous": "유명한",
+      "whole": "전체의",
+      "note": "적다, 기록하다",
+      "hurries": "서두르다",
+      "stares": "응시하다",
+      "scribbled": "휘갈겨 쓴",
+      "heading": "향하는",
+      "missing": "빠진, 없는",
+      "kiosk": "안내 부스",
+      "crowded": "붐비는",
+      "somebody": "누군가",
+      "believe": "믿다"
+    },
+    "master": {
+      "claimed": "차지했다, 주장했다",
+      "colossal": "거대한",
+      "commotion": "소동, 북적임",
+      "brandishes": "흔들어 보이다",
+      "bounds": "뛰어오르다",
+      "lingers": "머무르다",
+      "accounts": "진술",
+      "contradict": "모순되다",
+      "perched": "걸쳐 놓인",
+      "vanished": "사라졌다",
+      "hastily": "급히",
+      "enclosed": "둘러싸인",
+      "possesses": "소유하다",
+      "remainder": "나머지",
+      "penned": "썼다",
+      "struck": "(줄을) 그었다"
+    }
+  }
+}
