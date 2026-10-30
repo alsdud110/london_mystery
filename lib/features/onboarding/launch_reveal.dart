@@ -75,6 +75,10 @@ abstract final class LaunchReveal {
   /// them back to the game, once the reveal is over or when there is none.
   static Future<void> gameBars() async {
     if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return;
+    // The bars MaterialApp asks for with the game's light theme (black
+    // navigation bar, dark status icons); the status bar's own shade is
+    // MainActivity's to give back.
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     try {
       await _channel.invokeMethod<void>('gameBars');
     } catch (_) {
@@ -177,23 +181,35 @@ class LaunchRevealLayer extends StatelessWidget {
         final t = reveal.value;
         if (t >= 1) return const SizedBox.shrink();
         // Until it is gone the layer takes the taps: the title's buttons
-        // underneath are not shown yet.
-        return AbsorbPointer(
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Opacity(
-                opacity: 1 - LaunchRevealTiming.night.transform(t),
-                child: const ColoredBox(color: AppColors.navyDeep),
-              ),
-              Opacity(opacity: 1 - LaunchRevealTiming.glass.transform(t), child: picture),
-            ],
+        // underneath are not shown yet. The system bars stay the launch
+        // screen's navy with light icons all the while.
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: _launchBars,
+          child: AbsorbPointer(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Opacity(
+                  opacity: 1 - LaunchRevealTiming.night.transform(t),
+                  child: const ColoredBox(color: AppColors.navyDeep),
+                ),
+                Opacity(opacity: 1 - LaunchRevealTiming.glass.transform(t), child: picture),
+              ],
+            ),
           ),
         );
       },
       child: picture,
     );
   }
+
+  static const _launchBars = SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark, // iOS: a dark background
+    systemNavigationBarColor: AppColors.navyDeep,
+    systemNavigationBarIconBrightness: Brightness.light,
+  );
 }
 
 /// A soft band of warm light crossing the lens once, top left to bottom
