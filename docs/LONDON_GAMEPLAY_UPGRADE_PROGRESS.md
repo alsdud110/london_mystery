@@ -118,6 +118,10 @@
   `season_planner_test.dart` ("a hint that says the answer is a WARNING…",
   "English heuristics only warn…"), failing the same way at `c662fbb`
   (checked in a separate worktree): not from this work.
-- Images: 11 calls, $0.4699 from usage (budget $2.00 / 30 calls). Sources
-  and the cost manifest stay in `qa/london_upgrade/` (gitignored).
+- Images: **9 calls, $0.3855 from usage** (`qa/london_upgrade/image_manifest.json`
+  totals; budget $2.00 / 30 calls). The running "spent so far" lines above
+  and commit 45a639e's message over-counted (they said up to 11 calls /
+  $0.47): the manifest is the record. 8 calls are in the game (13 files: the
+  sheets cut into cards); the ravens' sheet is not. Sources and the
+  manifest stay in `qa/london_upgrade/` (gitignored).
 - Not checked on a real iPhone.
