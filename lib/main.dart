@@ -8,6 +8,7 @@ import 'data/repositories/episode_repository.dart';
 import 'data/repositories/profile_store.dart';
 import 'features/game/game_providers.dart';
 import 'features/onboarding/detective_hold_screen.dart';
+import 'features/onboarding/launch_reveal.dart';
 
 /// The game runs entirely on the device: no account, no server, no network.
 Future<void> main() async {
@@ -32,6 +33,9 @@ Future<void> main() async {
     for (final id in await episodes.availableEpisodeIds())
       await episodes.fetchEpisode(id),
   ]);
+  // The launch screen's glass, ready for the title's first frame (not when
+  // the detective must be chosen first: that page comes before the title).
+  await LaunchReveal.prepare(armed: start is ProfileSession);
 
   runApp(
     DeviceDetectiveGate(

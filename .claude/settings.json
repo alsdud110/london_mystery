@@ -319,7 +319,8 @@
       "WebFetch(domain:platform.openai.com)",
       "WebSearch",
       "WebFetch(domain:developers.openai.com)",
-      "Edit(/.claude/skills/create-season/**)"
+      "Edit(/.claude/skills/create-season/**)",
+      "mcp__claude-vscode__getDiagnostics"
     ],
     "additionalDirectories": [
       "C:\\Users\\20210701\\AppData\\Local\\Temp\\claude\\v--vscode-basic-london-mystery\\d4562509-5c5c-4753-adf3-0ec6f5e28a2c\\scratchpad\\shots\\p01"

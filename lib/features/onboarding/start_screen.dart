@@ -22,6 +22,7 @@ import '../game/game_controller.dart';
 import '../game/game_providers.dart';
 import '../game_master/parent_gate.dart';
 import 'how_to_play_state.dart';
+import 'launch_reveal.dart';
 
 /// Title page of the storybook: the name of the game, the harbour at night, and one way in.
 class StartScreen extends ConsumerStatefulWidget {
@@ -66,11 +67,44 @@ class _StartScreenState extends ConsumerState<StartScreen>
   /// The ambience starts a beat after the title is up, not with it.
   Timer? _ambientStart;
 
+  /// The launch screen's glass giving way to the room, on the first title of
+  /// a launch only (see [LaunchReveal]); the title comes in after it.
+  final LaunchGlass? _glass = LaunchReveal.take();
+  late final AnimationController _reveal = AnimationController(
+    vsync: this,
+    duration: LaunchRevealTiming.duration,
+    value: _glass == null ? 1 : 0,
+  );
+
   bool get _still => MediaQuery.maybeDisableAnimationsOf(context) ?? false;
 
   @override
   void initState() {
     super.initState();
+    final glass = _glass;
+    if (glass != null) {
+      // As soon as the game's glass is the one on screen (on Android 12+,
+      // once the system splash has gone; elsewhere from the first frame).
+      glass.onScreen.then((_) {
+        if (!mounted) return;
+        if (_reveal.isCompleted) {
+          // Reduced motion: the page is already simply there.
+          _releaseGlass();
+          _enter();
+          return;
+        }
+        _reveal.forward().whenCompleteOrCancel(() {
+          _releaseGlass();
+          if (mounted) _enter();
+        });
+      });
+    } else {
+      _enter();
+    }
+  }
+
+  /// The title's words and the ambience, once the room is shown.
+  void _enter() {
     if (_introduced) {
       _intro.value = 1;
     } else {
@@ -83,11 +117,19 @@ class _StartScreenState extends ConsumerState<StartScreen>
     );
   }
 
+  bool _glassReleased = false;
+  void _releaseGlass() {
+    if (_glassReleased) return;
+    _glassReleased = true;
+    _glass?.dispose();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Reduced motion: the page is simply there, and still.
     if (_still) {
+      _reveal.value = 1;
       _intro.value = 1;
       _setAmbient(false);
     }
@@ -114,9 +156,10 @@ class _StartScreenState extends ConsumerState<StartScreen>
   @override
   void dispose() {
     _ambientStart?.cancel();
-    for (final c in [_intro, _push, _rain, _lamp, _ambientIn]) {
+    for (final c in [_intro, _push, _rain, _lamp, _ambientIn, _reveal]) {
       c.dispose();
     }
+    _releaseGlass();
     super.dispose();
   }
 
@@ -322,6 +365,7 @@ class _StartScreenState extends ConsumerState<StartScreen>
                 ),
               ),
             ),
+            if (_glass != null) LaunchRevealLayer(glass: _glass, reveal: _reveal),
           ],
         ),
       ),
